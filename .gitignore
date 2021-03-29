@@ -1,0 +1,13 @@
+*.pyc
+.ipynb_checkpoints/
+build/
+*.vdf
+*.2mdl
+.idea/workspace.xml
+.idea/*
+pysd.egg*
+model_updated.py
+*.log
+.ipynb_checkpoints
+.vscode
+.~lock*

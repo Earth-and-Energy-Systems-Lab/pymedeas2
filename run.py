@@ -15,18 +15,27 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def main(model, config, run_params, **kwargs):
+def main(config, run_params):
+    """
+    Main function for running the model
+    """
 
-    for key, val in kwargs.items():
-        config['update_params'].update({key: val})
+    # loading the model object
+    model = load_model(os.path.join(config['folder'], config['model_py']))
 
-    # create path for the python model file
-    model_file = os.path.join(config['folder'], config['model_py'])
+    # updating from World model and others, used in regional models
+    if config['region'] != 'world':
+        create_external_data_files_paths(config)
+        update_pars = load_external_data(config,
+                                         model.components._subscript_dict)
+        for key, val in update_pars.items():
+            # update components from parents
+            config['update_params'].update({key: val})
+            model = update_model_component(model, key, val)
 
+    print(getattr(model.components, 'temperature_change')())
     # list of columns that need to be present in the output file
-    # TODO loading the model in utf should be avoided in further versions
-    model_py = read_file(model_file, 'utf-8')
-    return_columns = select_model_outputs(config, model_py)
+    return_columns = select_model_outputs(config, model)
 
     # run the simulation
     stock = run(config, model, run_params, return_columns)
@@ -36,23 +45,24 @@ def main(model, config, run_params, **kwargs):
     # running the plot tool
     if config['plot']:
         if not config['headless']:
-            plot_tool.main(config['folder'], result_df, config['scenario_sheet'])
+            plot_tool.main(config['folder'], result_df,
+                           config['scenario_sheet'])
         else:
-            print('We prevented the plot GUI from popping up, since you are in '
-                  'headless mode. To prevent this message from showing up again,'
-                  ' please either remove the -p (plot) or -b (headless) from the'
-                  ' simulation options')
+            print(
+                '\nWe prevented the plot GUI from popping up, since you are in '
+                'headless mode. To prevent this message from showing up again,'
+                ' please either remove the -p (plot) or -b (headless) from the'
+                ' simulation options.\n')
 
 
 if __name__ == "__main__":
-
     # default simulation parameters
     run_params = {'time_step': 0.03125,
                   'initial_time': 1995,
                   'final_time': 2050}
 
     # default configuration parameters
-    config = {'model_name': '',
+    config = {'region': 'world',
               'time': time.strftime('%H:%M'),
               'silent': False,
               'verbose': False,
@@ -67,22 +77,8 @@ if __name__ == "__main__":
               'update_params': {},
               'fname': None}
 
-    config = update_paths(config)
+    # get command line parameters and update paths
+    get_initial_user_input(config, run_params)
+    update_paths(config)
 
-    # get command line parameters:
-    config, run_params = get_initial_user_input(config, run_params)
-
-    # loading the model object
-    model = load_model(os.path.join(config['folder'], config['model_py']))
-
-    # parameters to update (fow now empty)
-    new_pars = {}
-
-    # updating from World model used in EU model
-    if False:
-        config = create_external_data_files_paths(config)
-        update_pars, config = load_external_data(config)
-        update_pars = new_pars.update(update_pars)
-
-    main(model, config, run_params, **new_pars)
-
+    main(config, run_params)

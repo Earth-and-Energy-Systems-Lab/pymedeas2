@@ -20,50 +20,61 @@ from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
 from pysd.py_backend import functions # do NOT delete this import
+from pysd.py_backend.utils import xrmerge
 
 import time
 
 
 def update_paths(config):
+    """
+    Updates config dictionary with the paths to the model folder,
+    names of the model and inputs files.
 
+    Parameters
+    ----------
+    config: dict
+        Configuration parameters. config['region'] must be defined.
+
+    """
     # load configuration file
-    conf = ConfigParser()
-    conf.read('config.ini')
+    f = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                          'models.json'),)
+    dict_models = json.load(f)
 
-    # assign region passed by user
-    config['region'] = conf.get('inputs', 'MODEL')
 
-    # assign folder where the model file resides (has to have same name than the model file)
-    config['folder'] = os.path.join(os.getcwd(), config['region'])
+    for model in dict_models['models']:
+        if model['region'] == config['region']:
+            config['parent'] = model["parent"]
+            config["parent_model"] = model["parent_model"]
+            config['model_py'] = model['model_py']
+            config['folder'] =  os.path.join(os.getcwd(), model['folder'])
+            config['scenario inputs'] = model['scenario inputs']
+            config['historic inputs'] = model['historic inputs']
+            return
 
-    # reading configuation file inside model folder
-    model_conf = ConfigParser()
-    model_conf.read(os.path.join(config['folder'], 'config.ini'))
-
-    #config['inputs_file'] = model_conf.get('inputs', 'inputs_file')
-    #config['default_inputs_file'] = model_conf.get('inputs', 'default_inputs_file')
-    config['model_py'] = config['region'] + '.py'
-    # geographical level can be global, europe, country
-    #config['geographical_level'] = model_conf.get('inputs', 'geographical_level')
-
-    return config
+    raise ValueError("Invalid region name " + config['region'])
 
 
 def get_initial_user_input(config, run_params):
     """
-    Ask for user input to update simulation parameters
-    Get user input
-    :param config: (dict) configuration parameters
-    :param run_params: (dict) simulation parameters
-    :return: updated conf  and run_params dictionaries according to user inputs
+    Ask for user input to update simulation parameters.
+    Get user input and updates the config and run_params dictionaries.
+
+    Parameters
+    ----------
+    config: dict
+        Configuration parameters.
+    run_params: dict
+        Simulation parameters.
     """
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hspbt:f:r:x:u:n:e:")
+        opts, args = getopt.getopt(sys.argv[1:], "hspbt:f:r:x:u:n:e:m:")
 
         for opt, arg in opts:
             if opt == '-h':
                 print('Run run.py module followed by any of the following options:\n'
                     '-h --> help menu \n'
+                    '-m --> model to use\n'
                     '-f --> final year of simulation (default is 2050) \n'
                     '-t --> time step of simulation (in years) (default is 0.03125 years) \n'
                     '-r --> time step of simulation result (in years) (default is 1 value per year) \n'
@@ -80,6 +91,8 @@ def get_initial_user_input(config, run_params):
 
             elif opt in ("-s", "--silent"):
                 config["silent"] = True
+            elif opt in ("-m", "--model", "--region"):
+                config["region"] = arg
             elif opt in ("-f", "--final_time"):
                 run_params["final_time"] = int(arg)
             elif opt in ("-t", "--time_step"):
@@ -107,7 +120,8 @@ def get_initial_user_input(config, run_params):
     except getopt.GetoptError:
         log.error("Wrong parameter definition (run 'python run.py -h' to see the description of available parameters)")
         sys.exit()
-    return config, run_params
+
+    return
 
 
 def compare_dataframes(df1, df2):
@@ -367,20 +381,21 @@ def updated_params_to_file(config, ext):
                     print('{}: {}'.format(func, val))
 
 
-def select_model_outputs(config, modelpy):
+def select_model_outputs(config, model):
 
 
     # these are the outputs that are plot by default in the plot tool.
     # If they were different for different models, the list could be changed depending
     # on the value of config['region']
 
-    if config['region'] == 'pymedeas_w':
+    if config['region'] == 'world':
         default_outputs = ['tpe_from_res_ej', # total primary energy supply from RES (MToe/Year)
                            'total_extraction_nre_ej', # Annual total extraction of non-renewable energy resources (EJ/Year)
                            'pes_oil_ej',
                            'pes_nat_gas',
                            'extraction_coal_ej',
                            'extraction_uranium_ej',
+                           'share_e_losses_cc',
                            'share_conv_vs_total_gas_extraction',
                            'share_conv_vs_total_oil_extraction',
                            'real_demand_by_sector',
@@ -390,8 +405,6 @@ def select_model_outputs(config, modelpy):
                            'abundance_coal',
                            'abundance_total_nat_gas',
                            'abundance_total_oil',
-                           'current_mineral_resources_mt',
-                           'current_mineral_reserves_mt',
                            'percent_res_vs_tpes', # Percent of primary energy from RES in the TPES (%)
                            'temperature_change', # Temperature of the Atmosphere and Upper Ocean, relative to preindustrial reference period (degreesC)
                            'total_land_requirements_renew_mha', # Land required for RES power plants and total bioenergy (land competition + marginal lands (MHa)
@@ -405,19 +418,8 @@ def select_model_outputs(config, modelpy):
     else:
         default_outputs = []
 
-    #  make the list of 'step'-cached (i.e. functions of time) variables
-    # Todo remove this regex, and use the model.compoents attribute
-    pattern = re.compile(r"@cache\('step'\)\s*def ([\w\_]*)\(\)")
-
-    all_columns = []
-    i = 0
-    for m in re.finditer(pattern, modelpy):
-        funcname = m.group(1).strip()
-        if not funcname.startswith('_'):
-            i += 1
-            all_columns.append(funcname)
-
-    sorted_list = sorted(list(set(all_columns)))
+    # returning cache.step objects
+    sorted_list = sorted(list(set(model._default_return_columns(run=False))))
 
     if config['silent']:
         col_ind = 'r'
@@ -534,42 +536,51 @@ def create_array(model, data, indexes, model_idxs):
                              dims=indexes)
     return array
 
-def update_model_component(model, comp, new_value):
+def update_model_component(model, comp, value):
     """
-    Creates a new function to replace the old one using the model.components
+    Creates a new function to add to the model.components
     method from pysd
-    :param model: model object (pysd.model)
-    :parameter: name of the component that needs to be changed
+
+    Parameters
+    ----------
+    model: pysd.Model
+        Model object.
+    comp: str
+        Name of the component that needs to be changed.
+    value: pd.series, str
+        Value to return by the function.
+
     """
-    if hasattr(model.components, comp):
+    if isinstance(value, pd.Series):
+        value = series2lookup(value)
 
-        if isinstance(new_value, pd.Series):
-            new_value = series2lookup(new_value)
+    if isinstance(value, str):
+        # execution of the new function and replacing it
+        exec("def {}(): return {}".format(comp, value))
+        exec("model.components.{} = {}".format(comp, comp))
 
-        if isinstance(new_value, str):
-            # definition of the new function name
-            new_name = "new_{}".format(comp)
-            # execution of the new function
-            if "lookup" in new_value:
-                exec("def {}(x): return {}".format(new_name, new_value))
-            else:
-                exec("def {}(): return {}".format(new_name, new_value))
+    elif isinstance(value, (int, float, xr.DataArray)):
+        setattr(model.components, comp, lambda: value)
 
-            # replacing the old function definition by the new one
-            exec("model.components.{} = {}".format(comp, new_name))
-
-        elif isinstance(new_value, (int, float, xr.DataArray)):
-            setattr(model.components, comp, lambda: new_value)
-
-        else:
-            log.error('Provide a valid data structure')
-            sys.exit(0)
     else:
-        print('The model does not have a variable called {}'.format(comp))
-        sys.exit(0)
+        raise ValueError('Provide a valid data structure')
 
+    return model
 
 def load_model(model_py):
+    """
+    Load model with PySD
+
+    Parameters
+    ----------
+    model_py: str
+        Model to load.
+
+    Returs
+    ------
+    pysd.Model class
+
+    """
     return pysd.load(os.path.join(model_py), initialize=False)
 
 
@@ -607,7 +618,7 @@ def run(config, model, run_params, return_columns):
                                          os.path.join(config['folder'], config["fname"] + ".csv"))
 
     )
-    if config['region'] == 'pymedeas_eu':
+    if config['region'] != 'world':
         print("- External data file: {}".format(config['extDataFilePath']))
 
     if config['update_params']:
@@ -675,23 +686,45 @@ def list_2_3d_array(data, big_index, col_index, row_index):
 
 def user_select_data_file_gui(region):
     """
-    Creates a GUI from which the use will be able to select the file from which
-    to import external data for the EU model
-    :return: (str) path to the file
+    Creates a GUI from which the use will be able to select the file f
+    rom which to import external data for the EU model.
+
+    Parameters
+    ----------
+    region: str
+        Folder of the region to open.
+
+    Returns
+    -------
+    filename: str
+        Name of the selected file.
+
     """
     defaultDir = os.path.join(os.getcwd(), region)
-    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
-    filename = askopenfilename(initialdir=defaultDir, title="Select external data file", filetypes=(('.csv files', '*.csv'), ("All files", '*')))
-
-    return filename
+    Tk().withdraw()  # keep the root window from appearing
+    return askopenfilename(
+        initialdir=defaultDir,
+        title="Select external data file",
+        filetypes=(('.csv files', '*.csv'), ("All files", '*'))
+        )
 
 
 def user_select_data_file_headless(region):
 
     """
-    Asks the user to select the csv file name from which to import data required
-    to run the EU model in std output. It looks only in the pymedeas_w folder.
-    :return: (str) filename of the file to load and extract data from
+    Asks the user to select the csv file name from which to import data
+    required to run the EU model in std output. It looks only in the
+    pymedeas_w folder.
+
+    Parameters
+    ----------
+    region: str
+        Region folder name.
+
+    Returns
+    -------
+    filename: str
+        Filename of the file to load and extract data from
     """
 
 
@@ -700,154 +733,225 @@ def user_select_data_file_headless(region):
     csv_list = [file for file in files_list if file.endswith('.csv')]
 
     if csv_list:
-        val = input("\nPlease write the number associated with the results file of the {} model from which you "
-                    "wish to import data:\n\t".format(region) + "\n\t".join("{}: {}".format(i, j)for i, j in enumerate(csv_list, 0)) + "\n\n here ->")
+        val = input(
+            "\nPlease write the number associated with the results file of the"
+            + " {} model from which you  wish to import  data:\n\t".format(region)
+            + "\n\t".join("{}: {}".format(i, j)
+                          for i, j in enumerate(csv_list, 0))
+            + "\n\n here ->")
         try:
             val = int(val)
         except TypeError:
-            print('Only numbers allowed')
-            sys.exit(0)
+            raise TypeError('Only integer numbers allowed')
 
         if (val >= 0) and (val < len(csv_list)):
             return csv_list[val]
         else:
-            print("Please provide a number between 0 and {}".format(len(csv_list)-1))
-            sys.exit(0)
-
+            raise ValueError("Please provide a number between 0 and "
+                             "{}".format(len(csv_list)-1))
     else:
-        print('There are no csv files to import data from. Please run the parent model/s first')
-        sys.exit(0)
+        raise ValueError('There are no csv files to import data from.\n'
+                         'Please run the parent model/s first')
 
 
 def create_external_data_files_paths(config):
+    """
+    This function lists all csv (results) files in the pymedeas_w and/or
+    pymedeas_eu folder/s and asks the user to choose one, so that all the
+    external data required by the EU or country model can be imported.
+    Updates config with the paths.
+
+    Parameters
+    ----------
+    config: dict
+        Configuration parameters.
 
     """
-    This function lists all csv (results) files in the pymedeas_w and/or pymedeas_eu folder/s and asks
-    the user to choose one, so that all the external data required by the EU or country model
-    can be imported.
-    :return: (dict) dictionary containing the external data variable names as keys,
-    and the actual data in the form of a string (functions.lookup(x, [...],[...]) as values
-    """
-
     file_paths = {}
 
-    def from_provided_external_file(config):
-        """ this creates the file paths of the folders where the external data files to be imported are located
-        when the user has provided them as a CLI parameter, after the -e
-        """
-
-        if len(config['extDataFname']) == 1:
-            if not config['geographical_level'] == 'country':
-                file_paths['global'] = os.path.join(os.getcwd(), 'pymedeas_w', config['extDataFname'][0])
-            else:
-                raise TypeError("Please provide two results files to run the country models, one from the global model and one from the european model")
-
-        elif len(config['extDataFname']) == 2:
-            file_paths['global'] = os.path.join(os.getcwd(), 'pymedeas_w', config['extDataFname'][0])
-            file_paths['europe'] = os.path.join(os.getcwd(), 'pymedeas_eu', config['extDataFname'][1])
-        elif len(config['extDataFname']) > 2:
-            raise TypeError("the -e option takes either one or two file names. If you gave two file names, make sure"
-                            "to not leave any blank space between them (e.g. file1.csv,file2.cv)")
-
-        # if any of the file paths generated does not exist, kill the execution
-        for path in file_paths:
-            if not os.path.exists(file_paths.get(path)):
-                print('The file {} cannot be found'.format(file_paths.get(path)))
-                sys.exit(0)
-
-        return file_paths
-
-    if config['silent']:  # no user input asked during execution, hence external files must be provided beforehand
-        if config['extDataFname']:  # external data files names provided
-            file_paths = from_provided_external_file(config)
-        else:  # silent mode and file names not provided -> error
+    if config['silent']:
+        # no user input asked during execution, hence external files must
+        # be provided beforehand
+        if config['extDataFname']:
+            # external data files names provided
+            from_provided_external_file(config, file_paths)
+        else:
+            # silent mode and file names not provided -> error
             print('If you want to run in silent mode, please provide the name '
                   'of the results file/s from which you want to '
                   'import data. Examples below:\n'
-                  '-e filename.csv (the file must be in the pymedeas_w folder)\n'
-                  '-e filename1.csv,filename2.csv (the first file must be in the pymedeas_w folder and the second in the pymedeas_eu folder)\n')
+                  '-e filename.csv (the file must be in the pymedeas_w folder)'
+                  '\n-e filename1.csv,filename2.csv (the first file must be '
+                  'in the pymedeas_w folder and the second in the '
+                  'pymedeas_eu folder)\n')
             sys.exit(0)
 
-    else:  # not silent, user may be asked for input
-        if config['headless']:  # no graphical interface can be displayed, only CLI
-            if config['extDataFname']:  # use filenames provided by user
-                file_paths = from_provided_external_file(config)
-            else:  # it won't open a graphical window to select the file but let you chose the file from CLI
-                file_paths['global'] = os.path.join(os.getcwd(), 'pymedeas_w',
-                                                        user_select_data_file_headless('pymedeas_w'))
-                if config['geographical_level'] == 'country':
-                    file_paths['europe'] = os.path.join(os.getcwd(), 'pymedeas_eu',
-                                                        user_select_data_file_headless('pymedeas_eu'))
+    else:
+        # not silent, user may be asked for input
+        if config['headless']:
+            # no graphical interface can be displayed, only CLI
+            if config['extDataFname']:
+                # external data files names provided
+                file_paths = from_provided_external_file(config, file_paths)
+            else:
+                # it won't open a graphical window to select the file
+                # but let you chose the file from CLI
+                file_paths['global'] =\
+                    os.path.join(
+                        os.getcwd(), 'pymedeas_w',
+                        user_select_data_file_headless('pymedeas_w'))
+                if config['parent'] != 'world':
+                    file_paths[config['parent']] =\
+                        os.path.join(
+                            os.getcwd(), config['parent_model'],
+                            user_select_data_file_headless(
+                                config['parent_model']))
                 elif len(config['extDataFname']) > 2:
-                    raise TypeError("the -e option takes either one or two file names. If you gave two file names, make sure"
-                            "to not leave any blank space between them (e.g. file1.csv,file2.cv)")
+                    raise TypeError(
+                        "-e option takes either one or two file names. "
+                        "If you gave two file names, make sure to not "
+                        "leave any blank space between them (e.g. "
+                        "file1.csv,file2.cv)")
 
-        else:  # the user will be asked for input and can be graphical
-            if not config['extDataFname']:  # the used does not provide filenames when launching simulation
-                if config['geographical_level'] == 'europe':
-                    file_paths['global'] = user_select_data_file_gui("pymedeas_w")
-                elif config['geographical_level'] == 'country':
-                    file_paths['global'] = user_select_data_file_gui("pymedeas_w")
-                    file_paths['europe'] = user_select_data_file_gui("pymedeas_eu")
-
-            else:  # the user provides the file names
-                file_paths = from_provided_external_file(config)
+        else:
+            if config['extDataFname']:
+                # external data files names provided
+                from_provided_external_file(config, file_paths)
+            else:
+                # the user will be asked for input and can be graphical
+                file_paths['global'] = user_select_data_file_gui("pymedeas_w")
+                if config['parent'] != 'world':
+                    file_paths[config['parent']] =\
+                        user_select_data_file_gui(config['parent_model'])
 
     config['extDataFilePath'] = file_paths
 
-    return config
+
+def from_provided_external_file(config, file_paths):
+    """
+    This creates the file paths of the folders where the external data
+    files to be imported are located.
+
+    Parameters
+    ----------
+    config: dict
+        Configuration parameters.
+    file_paths: dict
+        Dictionary to save the paths to the files where the outputs are.
+
+    """
+    if config['parent'] == 'world' and len(config['extDataFname']) != 1:
+        raise TypeError("Invalid number of results files  provided "
+                        "to run the model, only global result needs "
+                        "to be passed")
+
+    elif len(config['extDataFname']) > 2:
+        raise TypeError("the -e option takes either one or two file names."
+                        "If you gave two file names, make sure to not"
+                        "leave any blank space between them (e.g. "
+                        "file1.csv,file2.cv)")
+
+    file_paths['global'] = os.path.join(os.getcwd(), 'pymedeas_w',
+                                        config['extDataFname'][0])
+
+    if config['parent'] != 'world' and len(config['extDataFname']) == 2:
+        file_paths[config['parent']] =\
+            os.path.join(os.getcwd(), config['parent_model'],
+                         config['extDataFname'][1])
+    else:
+        raise TypeError("Please provide two results files to run the "
+                        "country models, one from the global model and"
+                        " one from the european model")
+
+    # if any of the file paths generated does not exist, kill the execution
+    for path in file_paths:
+        if not os.path.exists(file_paths.get(path)):
+            raise FileNotFoundError(
+                'The file {} cannot be found'.format(file_paths.get(path)))
 
 
-def load_external_data(config):
-    # the user can select the file from which data
-    # from World model will be extracted to run the EU model
-    dfs = {region: pd.read_csv(path, index_col=0).T for region, path in config['extDataFilePath'].items()}
+def load_external_data(config, subscript_dict):
+    """
+    Load outputs from parent models.
+
+    Parameters
+    ----------
+    config: dict
+        Configuration parameters.
+
+    subscript_dict: dict
+        Dictionary describing the possible dimensions of the
+        variable's subscripts
+
+    Returns
+    -------
+    dataDict: dict
+        Dictionary with the names of the functions and their return.
+
+    """
+    dfs = {region: pd.read_csv(path, index_col=0).T
+           for region, path in config['extDataFilePath'].items()}
+
     dfs['global'].index = pd.to_numeric(dfs['global'].index)
 
     # loading data from the global model
-    real_total_output_by_sector = [col for col in dfs['global'].columns if col.startswith("real_total_output_by_sector")]
-    real_final_energy_by_sector_and_fuel = [col for col in dfs['global'].columns if col.startswith("real_final_energy_by_sector_and_fuel")]
-    real_demand_by_sector = [col for col in dfs['global'].columns if col.startswith("real_demand_by_sector") and not 'delayed' in col]
+    real_total_output_by_sector = [
+        col for col in dfs['global'].columns
+        if col.startswith("real_total_output_by_sector[")
+        ]
+
+    real_final_energy_by_sector_and_fuel = [
+        col for col in dfs['global'].columns
+        if col.startswith("real_final_energy_by_sector_and_fuel[")
+        ]
+
+    real_demand_by_sector = [
+        col for col in dfs['global'].columns
+        if col.startswith("real_demand_by_sector[")
+        and not 'delayed' in col
+        ]
 
     # list of imports for country models
     imports_world = [
-                       "temperature_change",
-                       "share_e_losses_cc",
-                       "total_extraction_nre_ej",
-                       "pes_oil_ej",
-                       "extraction_coal_ej",
-                       "share_conv_vs_total_gas_extraction",
-                       "share_conv_vs_total_oil_extraction",
-                       #"current_mineral_resources_mt",
-                       # <----------- this may be a lookup in the world model, hence not in the output
-                       #"current_mineral_reserves_mt",
-                       # <----------- this may be a lookup in the world model, hence not in the output
-                       "annual_gdp_growth_rate",
-                       "abundance_coal",
-                       "abundance_total_natx_gas",
-                       "abundance_total_oil",
-                       "pes_natx_gas",
-                       "extraction_uranium_ej"] + \
-                   real_demand_by_sector + \
-                   real_total_output_by_sector + \
-                   real_final_energy_by_sector_and_fuel
+        "temperature_change",
+        "share_e_losses_cc",
+        "total_extraction_nre_ej",
+        "pes_oil_ej",
+        "pes_nat_gas",
+        "share_conv_vs_total_gas_extraction",
+        "share_conv_vs_total_oil_extraction",
+        #"current_mineral_resources_mt",
+        # <- this may be a lookup in the world model, hence not in the output
+        #"current_mineral_reserves_mt",
+        # <-this may be a lookup in the world model, hence not in the output
+        "annual_gdp_growth_rate",
+        "abundance_total_nat_gas",
+        "abundance_coal",
+        "extraction_coal_ej",
+        "abundance_total_oil",
+        "extraction_uranium_ej"]\
+        + real_demand_by_sector\
+        + real_total_output_by_sector\
+        + real_final_energy_by_sector_and_fuel
 
     dataDict = {}
+    xarrayDict = {
+        "real_demand_by_sector": [],
+        "real_total_output_by_sector": [],
+        "real_final_energy_by_sector_and_fuel": []}
 
-    # formatting the data imported from the world model results to replace the hardcoded values
+    # formatting the data imported from the world model results
     for var in imports_world:
         try:
             serie = dfs['global'][var]
         except:
-            print("Variable {} is not in the results file of the global model, the values will be "
-                  "taken from the default BAU scenario".format(var))
+            pass
+            raise NameError(f"Variable {var} is not in the results file"
+                            " of the global model")
         else:
             if '[' in var:
-                dataDict[var.replace('[', '_sub').replace(', ', '_sub').replace(' ', '_').rstrip(']')] = series2lookup(serie)
-            elif var in ["abundance_coal", "abundance_total_natx_gas", "abundance_total_oil"] and config["region"] == "pymedeas_eu":
-                dataDict[var + "_world"] = series2lookup(serie)
-            elif config['geographical_level'] == 'country' and var == 'share_conv_vs_total_gas_extraction':
-                dataDict[var + "_world"] = series2lookup(serie)
+                names = re.split('\[|\]| , |, | ,|,', var)[:-1]
+                xarrayDict[names[0]].append((series2lookup(serie), names[1:]))
             else:
                 dataDict[var] = series2lookup(serie)
 
@@ -855,21 +959,31 @@ def load_external_data(config):
 
         dfs['europe'].index = pd.to_numeric(dfs['europe'].index)
 
-        real_total_output_by_sector_eu = [col for col in dfs['europe'].columns if
-                                       col.startswith("real_total_output_by_sector_eu")]
-        real_final_energy_by_sector_and_fuel_eu = [col for col in dfs['europe'].columns if
-                                                col.startswith("real_final_energy_by_sector_and_fuel_eu")]
-        real_final_demand_by_sector_eu = [col for col in dfs['europe'].columns if
-                                 col.startswith("real_final_demand_by_sector_eu") and not 'delayed' in col]
+        real_total_output_by_sector_eu = [
+            col for col in dfs['europe'].columns
+            if col.startswith("real_total_output_by_sector_eu[")
+            ]
+        real_final_energy_by_sector_and_fuel_eu = [
+            col for col in dfs['europe'].columns
+            if col.startswith("real_final_energy_by_sector_and_fuel_eu[")
+            ]
+        real_final_demand_by_sector_eu = [
+            col for col in dfs['europe'].columns
+            if col.startswith("real_final_demand_by_sector_eu[")
+            and not 'delayed' in col]
 
         # list of variables in the outputs of the eu model
         imports_europe = [
             "gdp_eu",
             "total_fe_elec_generation_twh_eu",
-            "annual_gdp_growth_rate_eu"] + \
-            real_final_demand_by_sector_eu +\
-            real_final_energy_by_sector_and_fuel_eu +\
-            real_total_output_by_sector_eu
+            "annual_gdp_growth_rate_eu"]\
+            + real_final_demand_by_sector_eu\
+            + real_final_energy_by_sector_and_fuel_eu\
+            + real_total_output_by_sector_eu
+
+        xarrayDict["real_final_demand_by_sector_eu"] = []
+        xarrayDict["real_final_energy_by_sector_and_fuel_eu"] = []
+        xarrayDict["real_total_output_by_sector_eu"] = []
 
         for var in imports_europe:
             try:
@@ -879,25 +993,59 @@ def load_external_data(config):
                       "taken from the default BAU scenario".format(var))
             else:
                 if '[' in var:
-                    dataDict[
-                        var.replace('[', '_sub').replace(', ', '_sub').replace(',', '_sub').replace(' ', '_').rstrip(']')] = series2lookup(
-                        serie)
+                    names = re.split('\[|\]| , |, | ,|,', var)[:-1]
+                    xarrayDict[names[0]].append((series2lookup(serie), names[1:]))
                 else:
                     dataDict[var] = series2lookup(serie)
 
-    return dataDict, config
+    for var, value in xarrayDict.items():
+        dataDict[var] = merge_series(value, subscript_dict)
+
+    print(dataDict)
+    return dataDict
 
 
 def series2lookup(serie):
     """
-    Transformas a pandas DataFrame to a formatted lookup
-    :param serie: (pd DataFrame)
-    :return: (str)
-    """
+    Transformas a pandas DataFrame to a formatted lookup.
 
+    Parameters
+    ----------
+    serie: pd.DataFrame
+        Series to convert to a lookup.
+    Returns
+    -------
+    str
+        Formatted series.
+
+    """
     dates = ", ".join(serie.index.astype(str))
     values = ",".join(map(str, serie.values.tolist()))
+    return "functions.lookup(time(), [{}], [{}])".format(dates, values)
 
-    return "functions.lookup(x,\n [{}],\n [{}])".format(dates, values)
 
+def merge_series(series, subscript_dict):
+    """
+    Merge series of subscripted variables.
 
+    Parameters
+    ----------
+    series: list
+        List of tuuple with the series lookup expression and the
+        subscripts list.
+
+    subscript_dict: dict
+        Dictionary describing the possible dimensions of the
+        variable's subscripts
+
+    """
+    subs = [serie[1] for serie in series]
+    values = [serie[0] for serie in series]
+
+    # merge series, similar to what pysd builder does
+    new_subs = pysd.utils.make_merge_list(subs, subscript_dict)
+    for i, subs_i in enumerate(subs):
+        coords = pysd.utils.make_coord_dict(subs_i, subscript_dict, terse=False)
+        coords = {new_dim: coords[dim] for new_dim, dim in zip(new_subs, coords)}
+        values[i] = f"xr.DataArray({values[i]}, {coords}, {list(coords)})"
+    return 'xrmerge([%s])' % (', '.join(values))

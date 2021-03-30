@@ -1,2 +1,2 @@
 import pysd
-pysd.read_vensim('medeas_eu.mdl', initialize=False)
+pysd.read_vensim('pymedeas_eu.mdl', initialize=False)

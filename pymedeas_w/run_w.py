@@ -6,7 +6,7 @@ warnings.simplefilter('ignore')
 
 canon = test_utils.load_canon('default_out.tab')
 
-model = pysd.load('medeas_w.py', initialize=False)
+model = pysd.load('pymedeas_w.py', initialize=False)
 out = model.run(progress=True, return_columns=canon.columns)
 out.to_csv("python_out.tab", sep="\t")
 

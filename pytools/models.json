@@ -1,0 +1,31 @@
+{
+    "models": [
+        {
+            "region": "world",
+            "parent": "",
+            "parent_model": "",
+            "model_py": "pymedeas_w.py",
+            "folder": "pymedeas_w",
+            "scenario inputs": "scen_w.xlsx",
+            "historic inputs": "inputs_w.xlsx"
+        },
+        {
+            "region": "europe",
+            "parent": "world",
+            "parent_model": "pymedeas_w",
+            "model_py": "pymedeas_eu.py",
+            "folder": "pymedeas_eu",
+            "scenario inputs": "scen_eu.xlsx",
+            "historic inputs": "inputs_eu.xlsx"
+        },
+        {
+            "region": "austria",
+            "parent": "europe",
+            "parent_model": "pymedeas_eu",
+            "model_py": "pymedeas_at.py",
+            "folder": "pymedeas_at",
+            "scenario inputs": "scen_at.xlsx",
+            "historic inputs": "inputs_at.xlsx"
+        }
+    ]
+}

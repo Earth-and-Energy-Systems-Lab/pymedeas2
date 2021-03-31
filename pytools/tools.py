@@ -5,15 +5,17 @@ __status__ = "Development"
 
 import os
 import sys
+import time
 
 import re
-import time
+import json
 import pandas as pd
 import numpy as np
 import xarray as xr
-import getopt
-import json
 import pysd
+
+# imports to read command line
+import getopt
 
 # imports for GUI
 from tkinter import Tk

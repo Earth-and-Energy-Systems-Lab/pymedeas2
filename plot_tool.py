@@ -26,12 +26,13 @@ from tkinter.filedialog import askopenfilename
 from tkinter import messagebox, Button
 import numpy as np
 
-from configparser import ConfigParser
 import re
 from itertools import cycle
 
 import pandas as pd
 import tkinter as tk
+
+from pytools.tools import update_paths
 
 warnings.filterwarnings("ignore")
 
@@ -55,7 +56,7 @@ class Plot_tool(tk.Frame):
          # Share of blue water used vs accessible runoff water (Dmnl)
          'gdppc',  # GDP per capita (1995T$ per capita) ($/people)
          'eroist_system',  # EROI standard of the system (Dmnl)
-         'tfes_intensity_ej_tdollar',  # Total final energy intensity (EJ/T$)
+         'tfes_intensity_ej_t',  # Total final energy intensity (EJ/T$)
          'real_tfec',  # Real total final energy consumption (EJ)
          'gdp',  # Global GDP in T1995T$ (T$)
          'population',  # Population projection (people)
@@ -99,7 +100,7 @@ class Plot_tool(tk.Frame):
         self.legend_by_name = {}
 
         try:
-            with open(os.path.join('plotting', 'legend_by_name.txt'), 'r', encoding='utf-8') as f:
+            with open(os.path.join('pytools/plotting', 'legend_by_name.txt'), 'r', encoding='utf-8') as f:
                 legend_by_name_list = f.readlines()
         except:
             print('legend_by_name.txt cannot be read correctly\n No legends and'
@@ -403,12 +404,20 @@ def main(folder, df, scenario=''):
 
 if __name__ == '__main__':
 
-    # load configuration file
-    conf = ConfigParser()
-    conf.read('config.ini')
+    config = {'region': 'world'}
 
-    region = conf.get('inputs', 'MODEL')
-    path_to_results = os.path.join(os.path.dirname(os.path.abspath(__file__)), region)
+    # load configuration file
+    if len(sys.argv) == 2:
+        config['region'] = sys.argv[1]
+    elif len(sys.argv) > 2:
+        raise ValueError(
+            "python plot_tool.py only accepts 1 argument, corresponding"
+            + " to the region (e.g.: python plot_tool.py europe)")
+
+    update_paths(config)
+    path_to_results = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        config["out_folder"])
 
     main(path_to_results, None)
 

@@ -44,18 +44,25 @@ def update_paths(config):
                           'models.json'),)
     dict_models = json.load(f)
 
+    if config['region'] not in dict_models:
+        raise ValueError("Invalid region name " + config['region'],
+                         "Available regions are:\n\t" + ", ".join([
+                         model['region'] for model in dict_models['models']
+                         ]))
+    cwd = os.getcwd()
+    model = dict_models[config['region']]
+    config['model_py'] = model['model_py']
+    config['folder'] =  os.path.join(cwd, model['folder'])
+    config['scenario_inputs'] = model['scenario inputs']
+    config['historic_inputs'] = model['historic inputs']
+    config['out_folder'] =  os.path.join(cwd, model['out_folder'])
+    config['out_default'] =  model['out_default']
+    config['parent'] = [
+        {'name': par['name'],
+         'folder': dict_models[par['name']]['out_folder'],
+         'input_vars': par['input_vars']}
+        for par in model['parent']]
 
-    for model in dict_models['models']:
-        if model['region'] == config['region']:
-            config['parent'] = model['parent']
-            config['parent_model'] = model['parent_model']
-            config['model_py'] = model['model_py']
-            config['folder'] =  os.path.join(os.getcwd(), model['folder'])
-            config['scenario inputs'] = model['scenario inputs']
-            config['historic inputs'] = model['historic inputs']
-            return
-
-    raise ValueError("Invalid region name " + config['region'])
 
 
 def get_initial_user_input(config, run_params):
@@ -258,7 +265,7 @@ def _results_naming(config, base_name, fmt):
     :return (str) new file path
     """
 
-    folder = config['folder']
+    folder = config['out_folder']
 
     new_path = os.path.join(folder, '{}.{}'.format(base_name, fmt))
     old_path = os.path.join(folder, '{}_old.{}'.format(base_name, fmt))
@@ -280,39 +287,9 @@ def _results_naming(config, base_name, fmt):
 def select_model_outputs(config, model):
 
 
-    # these are the outputs that are plot by default in the plot tool.
-    # If they were different for different models, the list could be changed depending
-    # on the value of config['region']
-
-    if config['region'] == 'world':
-        default_outputs = ['tpe_from_res_ej', # total primary energy supply from RES (MToe/Year)
-                           'total_extraction_nre_ej', # Annual total extraction of non-renewable energy resources (EJ/Year)
-                           'pes_oil_ej',
-                           'pes_nat_gas',
-                           'extraction_coal_ej',
-                           'extraction_uranium_ej',
-                           'share_e_losses_cc',
-                           'share_conv_vs_total_gas_extraction',
-                           'share_conv_vs_total_oil_extraction',
-                           'real_demand_by_sector',
-                           'real_total_output_by_sector',
-                           'real_final_energy_by_sector_and_fuel',
-                           'annual_gdp_growth_rate',
-                           'abundance_coal',
-                           'abundance_total_nat_gas',
-                           'abundance_total_oil',
-                           'percent_res_vs_tpes', # Percent of primary energy from RES in the TPES (%)
-                           'temperature_change', # Temperature of the Atmosphere and Upper Ocean, relative to preindustrial reference period (degreesC)
-                           'total_land_requirements_renew_mha', # Land required for RES power plants and total bioenergy (land competition + marginal lands (MHa)
-                           'share_blue_water_use_vs_ar', # Share of blue water used vs accessible runoff water (Dmnl)
-                           'gdppc',  # GDP per capita (1995T$ per capita) ($/people)
-                           'eroist_system',  # EROI standard of the system (Dmnl)
-                           'tfes_intensity_ej_t',# Total final energy intensity (EJ/T$)
-                           'real_tfec',  # Real total final energy consumption (EJ)
-                           'gdp',  # Global GDP in T1995T$ (T$)
-                           'population']  # Population projection (people)
-    else:
-        default_outputs = []
+    # default outputs are plot by default in the plot tool or required
+    # by nested models. They depend on the choosen region see the list
+    # in models.json
 
     # returning cache.step objects
     sorted_list = sorted(list(set(model._default_return_columns(run=False))))
@@ -388,7 +365,7 @@ def select_model_outputs(config, model):
         return_columns = sorted(list(return_columns_set))
 
     # adding the default variables to the choice of the user
-    return_columns = list(set(return_columns + default_outputs))
+    return_columns = list(set(return_columns + config['out_default']))
 
     with open(os.path.join(config['folder'], 'last_output_conf.txt'), 'w', encoding='utf-8') as f:
         f.write(";".join(return_columns))
@@ -478,7 +455,7 @@ def run(config, model, run_params, return_columns):
                                          round(run_params['final_time']),
                                          run_params['time_step'],
                                          round(run_params['time_step']*365),
-                                         os.path.join(config['folder'], config["fname"] + ".csv"))
+                                         os.path.join(config['out_folder'], config["fname"] + ".csv"))
 
     )
     if config['region'] != 'world':
@@ -623,22 +600,11 @@ def create_external_data_files_paths(config):
             else:
                 # it won't open a graphical window to select the file
                 # but let you chose the file from CLI
-                file_paths['global'] =\
+                for parent in config['parent']:
+                    file_paths[parent['name']] =\
                     os.path.join(
-                        os.getcwd(), 'pymedeas_w',
-                        user_select_data_file_headless('pymedeas_w'))
-                if config['parent'] != 'world':
-                    file_paths[config['parent']] =\
-                        os.path.join(
-                            os.getcwd(), config['parent_model'],
-                            user_select_data_file_headless(
-                                config['parent_model']))
-                elif len(config['extDataFname']) > 2:
-                    raise TypeError(
-                        "-e option takes either one or two file names. "
-                        "If you gave two file names, make sure to not "
-                        "leave any blank space between them (e.g. "
-                        "file1.csv,file2.cv)")
+                        os.getcwd(), parent['folder'],
+                        user_select_data_file_headless(parent['folder']))
 
         else:
             if config['extDataFname']:
@@ -646,10 +612,9 @@ def create_external_data_files_paths(config):
                 from_provided_external_file(config, file_paths)
             else:
                 # the user will be asked for input and can be graphical
-                file_paths['global'] = user_select_data_file_gui("pymedeas_w")
-                if config['parent'] != 'world':
-                    file_paths[config['parent']] =\
-                        user_select_data_file_gui(config['parent_model'])
+                for parent in config['parent']:
+                    file_paths[parent['name']] =\
+                        user_select_data_file_gui(parent['folder'])
 
     config['extDataFilePath'] = file_paths
 
@@ -671,31 +636,17 @@ def from_provided_external_file(config, file_paths):
     None
 
     """
-    if config['parent'] == 'world' and len(config['extDataFname']) != 1:
-        raise TypeError("Invalid number of results files  provided "
-                        "to run the model, only global result needs "
-                        "to be passed")
+    if len(config['parent']) != len(config['extDataFname']):
+        raise TypeError(
+            "Invalid number of results files  provided to run the model,"
+            + f" need to provide {len(config['parent'])} files, but "
+            + f" {len(config['extDataFname'])} files where provided.\n"
+            + "If you gave two or more file names, make sure to not "
+            + "leave any blank space between them (e.g. file1.csv,file2.cv).")
 
-    elif len(config['extDataFname']) > 2:
-        raise TypeError("the -e option takes either one or two file names."
-                        "If you gave two file names, make sure to not"
-                        "leave any blank space between them (e.g. "
-                        "file1.csv,file2.cv)")
-
-    elif config['parent'] != 'world' and len(config['extDataFname']) == 2:
-        file_paths[config['parent']] =\
-            os.path.join(os.getcwd(), config['parent_model'],
-                         config['extDataFname'][1])
-
-    elif config['parent'] != 'world':
-        raise TypeError("Please provide two results files to run the "
-                        "country models, one from the global model and"
-                        " one from the european model")
-
-    file_paths['global'] = os.path.join(os.getcwd(), 'pymedeas_w',
-                                        config['extDataFname'][0])
-
-
+    for parent, filename in zip(config['parent'], config['extDataFname']):
+        file_paths[parent['name']] =\
+            os.path.join(os.getcwd(), parent['folder'], filename)
 
     # if any of the file paths generated does not exist, kill the execution
     for path in file_paths:
@@ -723,112 +674,33 @@ def load_external_data(config, subscript_dict):
         Dictionary with the names of the functions and their return.
 
     """
-    dfs = {region: pd.read_csv(path, index_col=0).T
-           for region, path in config['extDataFilePath'].items()}
-
-    dfs['global'].index = pd.to_numeric(dfs['global'].index)
-
-    # loading data from the global model
-    real_total_output_by_sector = [
-        col for col in dfs['global'].columns
-        if col.startswith("real_total_output_by_sector[")
-        ]
-
-    real_final_energy_by_sector_and_fuel = [
-        col for col in dfs['global'].columns
-        if col.startswith("real_final_energy_by_sector_and_fuel[")
-        ]
-
-    real_demand_by_sector = [
-        col for col in dfs['global'].columns
-        if col.startswith("real_demand_by_sector[")
-        and not 'delayed' in col
-        ]
-
-    # list of imports for country models
-    imports_world = [
-        "temperature_change",
-        "share_e_losses_cc",
-        "total_extraction_nre_ej",
-        "pes_oil_ej",
-        "pes_nat_gas",
-        "share_conv_vs_total_gas_extraction",
-        "share_conv_vs_total_oil_extraction",
-        "annual_gdp_growth_rate",
-        "abundance_total_nat_gas",
-        "abundance_coal",
-        "abundance_total_oil",
-        "extraction_coal_ej",
-        "extraction_uranium_ej"]\
-        + real_demand_by_sector\
-        + real_total_output_by_sector\
-        + real_final_energy_by_sector_and_fuel
-
     dataDict = {}
-    xarrayDict = {
-        # varname: [[], [final_subscripts]]
-        "real_demand_by_sector": [[], ["sectors"]],
-        "real_total_output_by_sector": [[], ["sectors"]],
-        "real_final_energy_by_sector_and_fuel":\
-            [[], ["final sources", "sectors"]]}
+    xarrayDict = {}
 
-    # formatting the data imported from the world model results
-    for var in imports_world:
-        try:
-            serie = dfs['global'][var]
-        except:
-            pass
-            raise NameError(f"Variable {var} is not in the results file"
-                            " of the global model")
-        else:
-            if '[' in var:
-                names = re.split('\[|\]| , |, | ,|,', var)[:-1]
-                xarrayDict[names[0]][0].append((series2lookup(serie), names[1:]))
+    for parent in config['parent']:
+        df = pd.read_csv(config['extDataFilePath'][parent['name']], index_col=0).T
+        df.index = pd.to_numeric(df.index)
+        imports = []
+        for import_var, subs in parent['input_vars'].items():
+            if subs:
+                # find all columns with subscripts
+                imports += [col for col in df.columns
+                            if col.startswith(import_var+"[")]
+                # add to the dictionary with the dimensions to merge
+                xarrayDict[import_var] = [[], subs]
             else:
-                dataDict[var] = series2lookup(serie)
+                imports.append(import_var)
 
-    if 'europe' in dfs.keys():  # if there's data to import from the eu model results
-
-        dfs['europe'].index = pd.to_numeric(dfs['europe'].index)
-
-        real_total_output_by_sector_eu = [
-            col for col in dfs['europe'].columns
-            if col.startswith("real_total_output_by_sector_eu[")
-            ]
-        real_final_energy_by_sector_and_fuel_eu = [
-            col for col in dfs['europe'].columns
-            if col.startswith("real_final_energy_by_sector_and_fuel_eu[")
-            ]
-        real_final_demand_by_sector_eu = [
-            col for col in dfs['europe'].columns
-            if col.startswith("real_final_demand_by_sector_eu[")
-            and not 'delayed' in col]
-
-        # list of variables in the outputs of the eu model
-        imports_europe = [
-            "gdp_eu",
-            "total_fe_elec_generation_twh_eu",
-            "annual_gdp_growth_rate_eu"]\
-            + real_final_demand_by_sector_eu\
-            + real_final_energy_by_sector_and_fuel_eu\
-            + real_total_output_by_sector_eu
-
-        xarrayDict["real_final_demand_by_sector_eu"] = [[], ["sectors"]]
-        xarrayDict["real_total_output_by_sector_eu"] = [[], ["sectors"]]
-        xarrayDict["real_final_energy_by_sector_and_fuel_eu"] =\
-             [[], ["final sources", "sectors"]]
-
-
-        for var in imports_europe:
+        for var in imports:
             try:
-                serie = dfs['europe'][var]
+                serie = df[var]
             except:
-                print(f"Variable {var} is not in the results file of"
-                       " the european model.")
+                raise NameError(f"Variable {var} is not in the results file"
+                                + f" of the {parent['name']} model")
             else:
                 if '[' in var:
                     names = re.split('\[|\]| , |, | ,|,', var)[:-1]
-                    xarrayDict[names[0]].append((series2lookup(serie), names[1:]))
+                    xarrayDict[names[0]][0].append((series2lookup(serie), names[1:]))
                 else:
                     dataDict[var] = series2lookup(serie)
 

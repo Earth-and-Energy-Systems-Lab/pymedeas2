@@ -1,5 +1,5 @@
 """
-Python model "medeas_w.py"
+Python model "pymedeas_w.py"
 Translated using PySD version 1.2.0
 """
 from os import path
@@ -7,22 +7,22 @@ import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
-    logical_or,
     DelayFixed,
-    active_initial,
-    step,
-    lookup,
     xidz,
+    zidz,
+    active_initial,
+    if_then_else,
+    step,
+    logical_and,
+    logical_or,
+    sum,
+    lookup,
+    Integ,
     Initial,
     SampleIfTrue,
-    if_then_else,
-    logical_and,
-    zidz,
-    Integ,
-    sum,
 )
-from pysd.py_backend.external import ExtData, ExtConstant, ExtLookup
-from pysd.py_backend.utils import rearrange, xrmerge
+from pysd.py_backend.external import ExtLookup, ExtData, ExtConstant
+from pysd.py_backend.utils import xrmerge, rearrange
 from pysd import cache, subs
 
 _subscript_dict = {
@@ -10980,6 +10980,7 @@ def ch4_and_n2o_radiative_forcing():
 
 
 @cache.step
+@subs(["RCP Scenario"], _subscript_dict)
 def other_forcings_rcp_scenario():
     """
     Real Name: Other Forcings RCP Scenario
@@ -11421,6 +11422,7 @@ def ch4_fractional_uptake():
 
 
 @cache.step
+@subs(["RCP Scenario"], _subscript_dict)
 def global_sf6_emissions_rcp():
     """
     Real Name: Global SF6 emissions RCP
@@ -11743,6 +11745,7 @@ def global_ch4_anthro_emissions():
 
 
 @cache.step
+@subs(["RCP Scenario"], _subscript_dict)
 def global_ch4_anthro_emissions_rcp():
     """
     Real Name: Global CH4 anthro emissions RCP
@@ -12058,6 +12061,7 @@ def global_hfc_emissions():
 
 
 @cache.step
+@subs(["HFC type"], _subscript_dict)
 def global_hfc_emissions_rcp_26():
     """
     Real Name: "Global HFC emissions RCP 2.6"
@@ -12079,6 +12083,7 @@ def global_hfc_emissions_rcp_26():
 
 
 @cache.step
+@subs(["HFC type"], _subscript_dict)
 def global_hfc_emissions_rcp_45():
     """
     Real Name: "Global HFC emissions RCP 4.5"
@@ -12100,6 +12105,7 @@ def global_hfc_emissions_rcp_45():
 
 
 @cache.step
+@subs(["HFC type"], _subscript_dict)
 def global_hfc_emissions_rcp_60():
     """
     Real Name: "Global HFC emissions RCP 6.0"
@@ -12213,6 +12219,7 @@ def global_pfc_emissions():
 
 
 @cache.step
+@subs(["RCP Scenario"], _subscript_dict)
 def global_pfc_emissions_rcp():
     """
     Real Name: Global PFC emissions RCP
@@ -12610,6 +12617,7 @@ def global_n2o_anthro_emissions():
 
 
 @cache.step
+@subs(["RCP Scenario"], _subscript_dict)
 def global_n2o_anthro_emissions_rcp():
     """
     Real Name: Global N2O Anthro Emissions RCP
@@ -12759,6 +12767,7 @@ def global_anthropogenic_ch4_emissions():
 
 
 @cache.step
+@subs(["HFC type"], _subscript_dict)
 def global_hfc_emissions_rcp_85():
     """
     Real Name: "Global HFC emissions RCP 8.5"
@@ -18720,7 +18729,7 @@ def total_energy_required_for_material_consumption_for_res_elec():
     """
     return sum(
         energy_required_for_material_consumption_per_res_elec(),
-        dim=("materials", "RES elec"),
+        dim=("RES elec", "materials"),
     )
 
 
@@ -25859,6 +25868,7 @@ def historic_res_capacity_for_heatnc(x):
 
 
 @cache.step
+@subs(["final sources1"], _subscript_dict)
 def historic_share_of_transformation_losses_vs_extraction():
     """
     Real Name: Historic share of transformation losses vs extraction
@@ -26746,6 +26756,7 @@ def pes_fossil_fuel_extraction_delayed():
 
 
 @cache.step
+@subs(["final sources1"], _subscript_dict)
 def historic_share_of_losses_vs_extraction():
     """
     Real Name: Historic share of losses vs extraction
@@ -29094,6 +29105,7 @@ def variation_labour_share():
 
 
 @cache.step
+@subs(["sectors"], _subscript_dict)
 def share_inventories_next_step():
     """
     Real Name: share inventories next step
@@ -29125,6 +29137,7 @@ def variation_historic_demand():
 
 
 @cache.step
+@subs(["sectors"], _subscript_dict)
 def share_consum_goverments():
     """
     Real Name: share consum goverments
@@ -29215,6 +29228,7 @@ def labour_share():
 
 
 @cache.step
+@subs(["sectors"], _subscript_dict)
 def share_inventories():
     """
     Real Name: share inventories
@@ -29230,6 +29244,7 @@ def share_inventories():
 
 
 @cache.step
+@subs(["sectors"], _subscript_dict)
 def share_consum_goverments_next_step():
     """
     Real Name: share consum goverments next step
@@ -29864,6 +29879,7 @@ def variation_cc_sectoral():
 
 
 @cache.step
+@subs(["sectors"], _subscript_dict)
 def share_cc_next_step():
     """
     Real Name: share CC next step
@@ -30608,6 +30624,7 @@ def initial_demand_by_sectot():
 
 
 @cache.step
+@subs(["sectors"], _subscript_dict)
 def share_cc_sectoral():
     """
     Real Name: share CC sectoral
@@ -41392,6 +41409,7 @@ def remaining_potential_tot_res_elec_after_intermitt():
 
 
 @cache.step
+@subs(["RES elec"], _subscript_dict)
 def invest_cost_res_elec():
     """
     Real Name: invest cost RES elec
@@ -41654,6 +41672,7 @@ def wear_res_elec():
 
 
 @cache.step
+@subs(["RES elec"], _subscript_dict)
 def cpini_res_elec():
     """
     Real Name: "Cp-ini RES elec"

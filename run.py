@@ -1,17 +1,20 @@
 #!/usr/bin/env python
-__author__ = "Oleg Osychenko, Roger Samsó"
-__maintainer__ = "Roger Samsó"
+__author__ = "Oleg Osychenko, Roger Samsó, Eneko Martin"
+__maintainer__ = "Eneko Martin"
 __status__ = "Development"
 
 """
-This code allows parametrizing, launching and saving and plotting the results of the pymedeas_w.py and pymedeas_eu models.
+This code allows parametrizing, launching and saving and plotting the
+results of the pymedeas models.
 """
+import os
+import warnings
+
+from datetime import datetime
 
 import plot_tool
 from pytools.tools import *
-import os
-import time
-import warnings
+
 warnings.filterwarnings("ignore")
 
 
@@ -23,6 +26,9 @@ def main(config, run_params):
     # loading the model object
     model = load_model(os.path.join(config['folder'], config['model_py']))
 
+    # select scenario sheet
+    select_scenario_sheet(model, config['scenario_sheet'])
+
     # updating from World model and others, used in regional models
     if config['region'] != 'world':
         create_external_data_files_paths(config)
@@ -33,7 +39,6 @@ def main(config, run_params):
             config['update_params'].update({key: val})
             model = update_model_component(model, key, val)
 
-    print(getattr(model.components, 'temperature_change')())
     # list of columns that need to be present in the output file
     return_columns = select_model_outputs(config, model)
 
@@ -63,7 +68,7 @@ if __name__ == "__main__":
 
     # default configuration parameters
     config = {'region': 'world',
-              'time': time.strftime('%H:%M'),
+              'datetime': datetime.now().strftime("%d_%m_%Y_%H_%M"),
               'silent': False,
               'verbose': False,
               'headless': False,

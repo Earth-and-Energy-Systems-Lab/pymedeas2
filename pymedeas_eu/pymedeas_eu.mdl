@@ -785,7 +785,7 @@ Implementatio policy to change final energy H[final sources]=
 	|
 
 Pressure to change energy technology H[ final sources]=
-	MIN(1,SUM(Pressure to change energy technology by fuel H[final sources!,final sources\
+	MIN(1,SUM(Pressure to change energy technology by fuel H[final sources1!,final sources\
 		]))
 	~	Dmnl
 	~	This variable represents the pressure in households for substituting a \
@@ -918,7 +918,7 @@ Maximum yearly aceleration of intensity improvement pct H[final sources]=
 
 share tech change fuel H[final sources1,final sources]=
 	ZIDZ( Pressure to change energy technology by fuel H[final sources1,final sources] ,\
-		 SUM(Pressure to change energy technology by fuel H[final sources!,final sources]))
+		 SUM(Pressure to change energy technology by fuel H[final sources1!,final sources]))
 	~	Dmnl
 	~	Share of the global pressure to change energy technology that corresponds \
 		to each fuel.
@@ -932,7 +932,7 @@ share tech change fuel H[final sources1,final sources]=
 	|
 
 Increase of intensity due to change energy technology H TOP DOWN[final sources]=
-	SUM(Increase of intensity due to change energy technology eff H[final sources,final sources\
+	SUM(Increase of intensity due to change energy technology eff H[final sources,final sources1\
 		!])
 	~	EJ/Tdollars
 	~	When in households, one type of energy (a) is replaced by another (b), the energy \
@@ -1414,7 +1414,7 @@ Maximum yearly aceleration of intensity improvement pct[Private Households with 
 	|
 
 Pressure to change energy technology 0[sectors,final sources]=
-	MIN(1,SUM(Pressure to change energy technology by fuel[sectors,final sources!,final sources\
+	MIN(1,SUM(Pressure to change energy technology by fuel[sectors,final sources1!,final sources\
 		]))
 	~	Dmnl
 	~	This variable represents the pressure in one sector for substituting a \
@@ -2733,7 +2733,7 @@ Year policy change energy by sector[Private Households with Employed Persons,fin
 
 share tech change fuel[sectors,final sources1,final sources]=
 	ZIDZ( Pressure to change energy technology by fuel[sectors,final sources1,final sources\
-		] , SUM(Pressure to change energy technology by fuel[sectors,final sources!,final sources\
+		] , SUM(Pressure to change energy technology by fuel[sectors,final sources1!,final sources\
 		]))
 	~	Dmnl
 	~	Share of the global pressure to change energy technology that corresponds \
@@ -2742,7 +2742,7 @@ share tech change fuel[sectors,final sources1,final sources]=
 
 Increase of intensity due to energy a technology change TOP DOWN[sectors,final sources\
 		]=
-	SUM(Increase of intensity due to energy a technology eff[sectors,final sources,final sources\
+	SUM(Increase of intensity due to energy a technology eff[sectors,final sources,final sources1\
 		!])
 	~	EJ/Tdollars
 	~	When in one economic sector, one type of energy (a) is replaced by another \
@@ -6051,14 +6051,245 @@ share cum materials to extract alt techn EU vs reserves World[materials]=
 		extraction of each material.
 	|
 
-current mineral reserves Mt[materials]:INTERPOLATE:
+
+current mineral reserves Mt[Adhesive]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV5') ~~|
+current mineral reserves Mt[Aluminium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV6') ~~|
+current mineral reserves Mt[Aluminium mirrors]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV7') ~~|
+current mineral reserves Mt[Cadmium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV8') ~~|
+current mineral reserves Mt[Carbon fiber]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV9') ~~|
+current mineral reserves Mt[Cement]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV10') ~~|
+current mineral reserves Mt[Chromium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV11') ~~|
+current mineral reserves Mt[Copper]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV12') ~~|
+current mineral reserves Mt[diesel]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV13') ~~|
+current mineral reserves Mt[Dy]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV14') ~~|
+current mineral reserves Mt[Electric electronic components]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV15') ~~|
+current mineral reserves Mt[Evacuation lines]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV16') ~~|
+current mineral reserves Mt[Fiberglass]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV17') ~~|
+current mineral reserves Mt[Foam glass]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV18') ~~|
+current mineral reserves Mt[Galium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV19') ~~|
+current mineral reserves Mt[Glass]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV20') ~~|
+current mineral reserves Mt[Glass reinforcing plastic]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV21') ~~|
+current mineral reserves Mt[gravel]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV22') ~~|
+current mineral reserves Mt[Indium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV23') ~~|
+current mineral reserves Mt[Iron]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV24') ~~|
+current mineral reserves Mt[KNO3 mined]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV25') ~~|
+current mineral reserves Mt[Asphalt]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV26') ~~|
+current mineral reserves Mt[Lime]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV27') ~~|
+current mineral reserves Mt[Limestone]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV28') ~~|
+current mineral reserves Mt[Lithium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV29') ~~|
+current mineral reserves Mt[Lubricant]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV30') ~~|
+current mineral reserves Mt[Magnesium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV31') ~~|
+current mineral reserves Mt[Manganese]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV32') ~~|
+current mineral reserves Mt[Heavy equipment]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV33') ~~|
+current mineral reserves Mt[Concrete]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV34') ~~|
+current mineral reserves Mt[Molybdenum]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV35') ~~|
+current mineral reserves Mt[NaNO3 mined]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV36') ~~|
+current mineral reserves Mt[NaNO3 synthetic]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV37') ~~|
+current mineral reserves Mt[Neodymium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV38') ~~|
+current mineral reserves Mt[Nickel]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV39') ~~|
+current mineral reserves Mt[Over grid 15per]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV40') ~~|
+current mineral reserves Mt[Over grid 5per]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV41') ~~|
+current mineral reserves Mt[Paint]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV42') ~~|
+current mineral reserves Mt[Lead]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV43') ~~|
+current mineral reserves Mt[Plastics]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV44') ~~|
+current mineral reserves Mt[Polypropylene]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV45') ~~|
+current mineral reserves Mt[Rock]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV46') ~~|
+current mineral reserves Mt[Rock wool]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV47') ~~|
+current mineral reserves Mt[Sand]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV48') ~~|
+current mineral reserves Mt[Silicon sand]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV49') ~~|
+current mineral reserves Mt[Silicon wafer modules]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV50') ~~|
+current mineral reserves Mt[Silver]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV51') ~~|
+current mineral reserves Mt[Site preparation]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV52') ~~|
+current mineral reserves Mt[Tin]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV53') ~~|
+current mineral reserves Mt[soda ash]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV54') ~~|
+current mineral reserves Mt[steel]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV55') ~~|
+current mineral reserves Mt[synthetic oil]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV56') ~~|
+current mineral reserves Mt[tellurium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV57') ~~|
+current mineral reserves Mt[titanium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV58') ~~|
+current mineral reserves Mt[titanium dioxide]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV59') ~~|
+current mineral reserves Mt[vanadium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV60') ~~|
+current mineral reserves Mt[wires]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV61') ~~|
+current mineral reserves Mt[zinc]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV62')
 	~	Mt
-	~	Current global mineral reserves. Source: global model.
+	~	Current mineral reserves.
 	|
 
-current mineral resources Mt[materials]:INTERPOLATE:
+current mineral resources Mt[Adhesive]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY5') ~~|
+current mineral resources Mt[Aluminium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY6') ~~|
+current mineral resources Mt[Aluminium mirrors]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY7') ~~|
+current mineral resources Mt[Cadmium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY8') ~~|
+current mineral resources Mt[Carbon fiber]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY9') ~~|
+current mineral resources Mt[Cement]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY10') ~~|
+current mineral resources Mt[Chromium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY11') ~~|
+current mineral resources Mt[Copper]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY12') ~~|
+current mineral resources Mt[diesel]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY13') ~~|
+current mineral resources Mt[Dy]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY14') ~~|
+current mineral resources Mt[Electric electronic components]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY15') ~~|
+current mineral resources Mt[Evacuation lines]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY16') ~~|
+current mineral resources Mt[Fiberglass]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY17') ~~|
+current mineral resources Mt[Foam glass]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY18') ~~|
+current mineral resources Mt[Galium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY19') ~~|
+current mineral resources Mt[Glass]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY20') ~~|
+current mineral resources Mt[Glass reinforcing plastic]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY21') ~~|
+current mineral resources Mt[gravel]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY22') ~~|
+current mineral resources Mt[Indium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY23') ~~|
+current mineral resources Mt[Iron]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY24') ~~|
+current mineral resources Mt[KNO3 mined]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY25') ~~|
+current mineral resources Mt[Asphalt]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY26') ~~|
+current mineral resources Mt[Lime]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY27') ~~|
+current mineral resources Mt[Limestone]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY28') ~~|
+current mineral resources Mt[Lithium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY29') ~~|
+current mineral resources Mt[Lubricant]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY30') ~~|
+current mineral resources Mt[Magnesium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY31') ~~|
+current mineral resources Mt[Manganese]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY32') ~~|
+current mineral resources Mt[Heavy equipment]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY33') ~~|
+current mineral resources Mt[Concrete]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY34') ~~|
+current mineral resources Mt[Molybdenum]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY35') ~~|
+current mineral resources Mt[NaNO3 mined]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY36') ~~|
+current mineral resources Mt[NaNO3 synthetic]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY37') ~~|
+current mineral resources Mt[Neodymium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY38') ~~|
+current mineral resources Mt[Nickel]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY39') ~~|
+current mineral resources Mt[Over grid 15per]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY40') ~~|
+current mineral resources Mt[Over grid 5per]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY41') ~~|
+current mineral resources Mt[Paint]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY42') ~~|
+current mineral resources Mt[Lead]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY43') ~~|
+current mineral resources Mt[Plastics]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY44') ~~|
+current mineral resources Mt[Polypropylene]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY45') ~~|
+current mineral resources Mt[Rock]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY46') ~~|
+current mineral resources Mt[Rock wool]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY47') ~~|
+current mineral resources Mt[Sand]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY48') ~~|
+current mineral resources Mt[Silicon sand]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY49') ~~|
+current mineral resources Mt[Silicon wafer modules]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY50') ~~|
+current mineral resources Mt[Silver]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY51') ~~|
+current mineral resources Mt[Site preparation]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY52') ~~|
+current mineral resources Mt[Tin]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY53') ~~|
+current mineral resources Mt[soda ash]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY54') ~~|
+current mineral resources Mt[steel]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY55') ~~|
+current mineral resources Mt[synthetic oil]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY56') ~~|
+current mineral resources Mt[tellurium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY57') ~~|
+current mineral resources Mt[titanium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY58') ~~|
+current mineral resources Mt[titanium dioxide]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY59') ~~|
+current mineral resources Mt[vanadium]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY60') ~~|
+current mineral resources Mt[wires]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY61') ~~|
+current mineral resources Mt[zinc]=
+	GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY62')
 	~	Mt
-	~	Current global mineral resources. Source: global model.
+	~	Current mineral resources.
 	|
 
 share annual demand alt techn vs current EU extraction[materials]=
@@ -34218,7 +34449,7 @@ Annual_GHG_emissions_COMP
 27:0,
 34:0,
 4:Time
-5:"1 to G"
+5:Total extraction NRE EJ
 35:Date
 36:YYYY-MM-DD
 37:1995

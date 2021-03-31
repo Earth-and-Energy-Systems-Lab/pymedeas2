@@ -1,28 +1,29 @@
 #!/usr/bin/env python
-__author__ = "Oleg Osychenko, Roger Samsó"
-__maintainer__ = "Roger Samsó"
+__author__ = "Oleg Osychenko, Roger Samsó, Eneko Martin"
+__maintainer__ = "Eneko Martin"
 __status__ = "Development"
 
+import os
+import sys
 
 import re
+import time
 import pandas as pd
 import numpy as np
-from pytools.logger.logger import log
-import os
 import xarray as xr
-import pysd
 import getopt
-import sys
 import json
-from configparser import ConfigParser
+import pysd
 
+# imports for GUI
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
-from pysd.py_backend import functions # do NOT delete this import
-from pysd.py_backend.utils import xrmerge
+from pytools.logger.logger import log
 
-import time
+# PySD imports for replaced functions
+from pysd.py_backend import functions
+from pysd.py_backend.utils import xrmerge
 
 
 def update_paths(config):
@@ -44,8 +45,8 @@ def update_paths(config):
 
     for model in dict_models['models']:
         if model['region'] == config['region']:
-            config['parent'] = model["parent"]
-            config["parent_model"] = model["parent_model"]
+            config['parent'] = model['parent']
+            config['parent_model'] = model['parent_model']
             config['model_py'] = model['model_py']
             config['folder'] =  os.path.join(os.getcwd(), model['folder'])
             config['scenario inputs'] = model['scenario inputs']
@@ -66,13 +67,15 @@ def get_initial_user_input(config, run_params):
         Configuration parameters.
     run_params: dict
         Simulation parameters.
+
     """
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hspbt:f:r:x:u:n:e:m:")
 
         for opt, arg in opts:
             if opt == '-h':
-                print('Run run.py module followed by any of the following options:\n'
+                print(
+                    'Run run.py module followed by any of the following options:\n'
                     '-h --> help menu \n'
                     '-m --> model to use\n'
                     '-f --> final year of simulation (default is 2050) \n'
@@ -118,66 +121,11 @@ def get_initial_user_input(config, run_params):
             config["update_params"].update(d)
 
     except getopt.GetoptError:
-        log.error("Wrong parameter definition (run 'python run.py -h' to see the description of available parameters)")
+        log.error("Wrong parameter definition (run 'python run.py -h'"
+                  + "to see the description of available parameters)")
         sys.exit()
 
     return
-
-
-def compare_dataframes(df1, df2):
-    """
-    Compares two dataframes and gets a list, which contains a list for every row
-     in the dataframes, and each of these lists contain the column number of the
-      values that are different between the two df's
-    :param df1: (dataframe) output of transforming an excel into a dataframe (inputs.xlsx)
-    :param df2: (dataframe) output of transforming an excel into a dataframe (inputs_default.xlsx)
-    :return: (list) a list for every row in the excel file. Each list contains the column numbers of the values that
-    changed from one excel to another
-    """
-
-    df = df1[df1.ne(df2)]
-    # makes the list of updated cells in the form:
-    # elem_id+2=row_index_in_xlsx, when row[elem_id]=[idx_1, idx_2,...]
-    lst = []
-    for _, row in df.iterrows():
-        mask = row.notnull()
-        lst += [row[mask].index.tolist()]
-
-    # setting a tolerance value to identify true differences between cells
-    tol = 1 / 100000
-
-    diff_list = []
-    for row, values in enumerate(lst, 0):
-        if values:
-            int_list = []
-            for val in values:
-                if isinstance(df1.iloc[row, val], (int, float)) and isinstance(df2.iloc[row, val], (int, float)):
-                    if abs(df1.iloc[row, val] - df2.iloc[row, val]) > tol:
-                        int_list.append(val)
-                    else:
-                        continue
-                else:
-                    continue
-            diff_list.append(int_list)
-        else:
-            diff_list.append([])
-
-    return diff_list
-
-
-def read_file(filename, enc='utf-8'):
-    """
-    This function reads a txt file and encodes it into
-    :param filename: (str) name of the file to open
-    :param enc: (str) encoding, defaults to utf8
-    :return: the file encoded in enc
-    """
-
-    try:
-        with open(filename, 'r', encoding=enc) as f:
-            return f.read()
-    except FileNotFoundError:
-        raise
 
 
 def store_results_csv(result, config, return_cols):
@@ -327,60 +275,6 @@ def _results_naming(config, base_name, fmt):
     return new_path
 
 
-def update_ctts(config, cells_updated):
-
-    """
-
-    :param config:
-    :param cells_updated:
-    :return: two dictionaries:
-        updated_params: (dict) contains only the updated parameters (key) and values that will be passed to the pysd.run method
-
-    """
-
-    try:
-        with open(os.path.join(config['folder'], 'constants.json'), 'r') as ctts:
-            const_cells = json.load(ctts)
-    except FileNotFoundError:
-        print('constants.json file not found')
-
-    updated_params = {}
-
-    is_cntt = []
-    for item in cells_updated:
-        if item[0] in const_cells.keys():
-            updated_params[const_cells[item[0]]['new_name']] = item[1]
-            is_cntt.append(item[0])
-
-    # cells that were updated and that are not constants
-    remaining = list(set([cells[0] for cells in cells_updated]) - set(is_cntt))
-
-    return remaining, updated_params
-
-
-def updated_params_to_file(config, ext):
-    """
-    Store the new values of the updated params in a file
-    :param config: (dict) configuration dictionary
-    :param params: (dict) names of params as keys, new values as values
-    :param ext: (str) extension of the file
-    :return: None
-    """
-    params = config['update_params']
-    file_path_params = _results_naming(config, 'updated_params', ext)
-
-    with open(file_path_params, 'w') as f:
-        for func, val in params.items():
-            if isinstance(val, pd.Series):
-                f.write(func + ',' + str(val.values) + '\n')
-                if config['verbose']:
-                    print('{}: {}'.format(func, val.values))
-            else:
-                f.write(func + ',' + str(val) + '\n')
-                if config['verbose']:
-                    print('{}: {}'.format(func, val))
-
-
 def select_model_outputs(config, model):
 
 
@@ -500,42 +394,6 @@ def select_model_outputs(config, model):
     return return_columns
 
 
-def _chunks(l, n):
-    """Yield successive n-sized chunks from a list."""
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
-
-
-def create_array(model, data, indexes, model_idxs):
-    """
-    Create and return xarray DataArray
-    :param data: (list) data of the xarray
-    :param indexes: (list) list of indexes of the matrix
-    :param model_idxs: (dict) all indexes of the model
-    :return: (xarray.DataArray) resulting xarray
-    """
-    if len(indexes) == 0:
-        time_init = 2015
-        time_final = getattr(model.components, 'final_time')()
-        times = list(range(time_init, time_final + 1))
-        array = pd.Series(data=data, index=times)
-
-    else:
-        if len(indexes) == 1:
-            values = data
-        elif len(indexes) == 2:
-            values = (list(_chunks(data, len(model_idxs[indexes[1]]))))
-        elif len(indexes) == 3:
-            values = list_2_3d_array(data, len(model_idxs[indexes[0]]), len(model_idxs[indexes[1]]), len(model_idxs[indexes[2]]))
-        coords = {}
-        for x in indexes:
-            coords[x] = model_idxs[x]
-
-        array = xr.DataArray(data=values,
-                             coords=coords,
-                             dims=indexes)
-    return array
-
 def update_model_component(model, comp, value):
     """
     Creates a new function to add to the model.components
@@ -555,8 +413,11 @@ def update_model_component(model, comp, value):
         value = series2lookup(value)
 
     if isinstance(value, str):
+        if "lookup" in value:
+            exec("def {}(x): return {}".format(comp, value))
+        else:
+            exec("def {}(): return {}".format(comp, value))
         # execution of the new function and replacing it
-        exec("def {}(): return {}".format(comp, value))
         exec("model.components.{} = {}".format(comp, comp))
 
     elif isinstance(value, (int, float, xr.DataArray)):
@@ -619,23 +480,7 @@ def run(config, model, run_params, return_columns):
 
     )
     if config['region'] != 'world':
-        print("- External data file: {}".format(config['extDataFilePath']))
-
-    if config['update_params']:
-        print("- Updated parameters:")
-        for key, val in config['update_params'].items():
-            if isinstance(val, (int, float)):
-                print("\t-" + key + ':' + str(val))
-            elif isinstance(val, xr.DataArray):
-                print("\t-" + key + ':' + str(val.data.tolist()))
-            elif isinstance(val, pd.Series):
-                print("\t-" + key + ':\n' + str(val.index.tolist()) + '\n' + str(val.values.tolist()) )
-            elif isinstance(val, str):
-                if "lookup" in val:
-                    print("\t-" + key + ':' + val.lstrip("functions.lookup(x, ").strip(")"))
-                else:
-                    print("\t-" + key + ':' + val)
-        print("\n")
+        print("- External data file: {}\n".format(config['extDataFilePath']))
     else:
         print("\n")
 
@@ -658,30 +503,6 @@ def run(config, model, run_params, return_columns):
     stocks.index.name = 'time'
 
     return stocks
-
-
-def list_2_3d_array(data, big_index, col_index, row_index):
-    """
-    Converts a list that represents a 3D matrix in a 3D array
-    e.g. [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] -> [[[1, 2, 3],[10, 11, 12]],[[4, 5, 6],[13, 14, 15]],[[7, 8, 9],[16,17,18]]]
-    :param big_index (int) length of the index that includes the col_index
-    :param col_index (int) length of the index that takes several columns
-    :param row_index (int) length of the index that takes several columns
-    :return: list of lists representing 3D matrix
-    """
-    mat3d = []
-    r = 0
-    for i in range(0, big_index, 1):
-        int_list = []
-        b = r
-        for row in range(row_index):
-            small_list = data[b:b+row_index]
-            int_list.append(small_list)
-            b += col_index * big_index
-
-        mat3d.append(int_list)
-        r += row_index
-    return mat3d
 
 
 def user_select_data_file_gui(region):
@@ -766,6 +587,10 @@ def create_external_data_files_paths(config):
     config: dict
         Configuration parameters.
 
+    Returns
+    -------
+    None
+
     """
     file_paths = {}
 
@@ -839,6 +664,10 @@ def from_provided_external_file(config, file_paths):
     file_paths: dict
         Dictionary to save the paths to the files where the outputs are.
 
+    Returns
+    -------
+    None
+
     """
     if config['parent'] == 'world' and len(config['extDataFname']) != 1:
         raise TypeError("Invalid number of results files  provided "
@@ -851,17 +680,20 @@ def from_provided_external_file(config, file_paths):
                         "leave any blank space between them (e.g. "
                         "file1.csv,file2.cv)")
 
-    file_paths['global'] = os.path.join(os.getcwd(), 'pymedeas_w',
-                                        config['extDataFname'][0])
-
-    if config['parent'] != 'world' and len(config['extDataFname']) == 2:
+    elif config['parent'] != 'world' and len(config['extDataFname']) == 2:
         file_paths[config['parent']] =\
             os.path.join(os.getcwd(), config['parent_model'],
                          config['extDataFname'][1])
-    else:
+
+    elif config['parent'] != 'world':
         raise TypeError("Please provide two results files to run the "
                         "country models, one from the global model and"
                         " one from the european model")
+
+    file_paths['global'] = os.path.join(os.getcwd(), 'pymedeas_w',
+                                        config['extDataFname'][0])
+
+
 
     # if any of the file paths generated does not exist, kill the execution
     for path in file_paths:
@@ -920,15 +752,11 @@ def load_external_data(config, subscript_dict):
         "pes_nat_gas",
         "share_conv_vs_total_gas_extraction",
         "share_conv_vs_total_oil_extraction",
-        #"current_mineral_resources_mt",
-        # <- this may be a lookup in the world model, hence not in the output
-        #"current_mineral_reserves_mt",
-        # <-this may be a lookup in the world model, hence not in the output
         "annual_gdp_growth_rate",
         "abundance_total_nat_gas",
         "abundance_coal",
-        "extraction_coal_ej",
         "abundance_total_oil",
+        "extraction_coal_ej",
         "extraction_uranium_ej"]\
         + real_demand_by_sector\
         + real_total_output_by_sector\
@@ -936,9 +764,11 @@ def load_external_data(config, subscript_dict):
 
     dataDict = {}
     xarrayDict = {
-        "real_demand_by_sector": [],
-        "real_total_output_by_sector": [],
-        "real_final_energy_by_sector_and_fuel": []}
+        # varname: [[], [final_subscripts]]
+        "real_demand_by_sector": [[], ["sectors"]],
+        "real_total_output_by_sector": [[], ["sectors"]],
+        "real_final_energy_by_sector_and_fuel":\
+            [[], ["final sources", "sectors"]]}
 
     # formatting the data imported from the world model results
     for var in imports_world:
@@ -951,7 +781,7 @@ def load_external_data(config, subscript_dict):
         else:
             if '[' in var:
                 names = re.split('\[|\]| , |, | ,|,', var)[:-1]
-                xarrayDict[names[0]].append((series2lookup(serie), names[1:]))
+                xarrayDict[names[0]][0].append((series2lookup(serie), names[1:]))
             else:
                 dataDict[var] = series2lookup(serie)
 
@@ -981,16 +811,18 @@ def load_external_data(config, subscript_dict):
             + real_final_energy_by_sector_and_fuel_eu\
             + real_total_output_by_sector_eu
 
-        xarrayDict["real_final_demand_by_sector_eu"] = []
-        xarrayDict["real_final_energy_by_sector_and_fuel_eu"] = []
-        xarrayDict["real_total_output_by_sector_eu"] = []
+        xarrayDict["real_final_demand_by_sector_eu"] = [[], ["sectors"]]
+        xarrayDict["real_total_output_by_sector_eu"] = [[], ["sectors"]]
+        xarrayDict["real_final_energy_by_sector_and_fuel_eu"] =\
+             [[], ["final sources", "sectors"]]
+
 
         for var in imports_europe:
             try:
                 serie = dfs['europe'][var]
             except:
-                print("Variable {} is not in the results file of the european model, the values will be "
-                      "taken from the default BAU scenario".format(var))
+                print(f"Variable {var} is not in the results file of"
+                       " the european model.")
             else:
                 if '[' in var:
                     names = re.split('\[|\]| , |, | ,|,', var)[:-1]
@@ -1001,7 +833,6 @@ def load_external_data(config, subscript_dict):
     for var, value in xarrayDict.items():
         dataDict[var] = merge_series(value, subscript_dict)
 
-    print(dataDict)
     return dataDict
 
 
@@ -1013,6 +844,7 @@ def series2lookup(serie):
     ----------
     serie: pd.DataFrame
         Series to convert to a lookup.
+
     Returns
     -------
     str
@@ -1020,8 +852,8 @@ def series2lookup(serie):
 
     """
     dates = ", ".join(serie.index.astype(str))
-    values = ",".join(map(str, serie.values.tolist()))
-    return "functions.lookup(time(), [{}], [{}])".format(dates, values)
+    values = ", ".join(map(str, serie.values.tolist()))
+    return "functions.lookup(x, [{}], [{}])".format(dates, values)
 
 
 def merge_series(series, subscript_dict):
@@ -1038,14 +870,41 @@ def merge_series(series, subscript_dict):
         Dictionary describing the possible dimensions of the
         variable's subscripts
 
+    Returns
+    -------
+    str
+        Merged series.
     """
-    subs = [serie[1] for serie in series]
-    values = [serie[0] for serie in series]
+    subs = [serie[1] for serie in series[0]]
+    values = [serie[0] for serie in series[0]]
+    dims = series[1]
 
     # merge series, similar to what pysd builder does
-    new_subs = pysd.utils.make_merge_list(subs, subscript_dict)
     for i, subs_i in enumerate(subs):
         coords = pysd.utils.make_coord_dict(subs_i, subscript_dict, terse=False)
-        coords = {new_dim: coords[dim] for new_dim, dim in zip(new_subs, coords)}
+        coords = {new_dim: coords[dim] for new_dim, dim in zip(dims, coords)}
         values[i] = f"xr.DataArray({values[i]}, {coords}, {list(coords)})"
     return 'xrmerge([%s])' % (', '.join(values))
+
+
+def select_scenario_sheet(model, scen_sheet_name):
+    """
+    Selects scenario sheet to load
+
+    Parameters
+    ----------
+    model: pysd.Model
+        Model object.
+    scen_sheet_name: str
+        Name of the scenario sheet.
+
+    Returns
+    -------
+    None
+
+    """
+    for element in model._external_elements:
+        # Replace only user scenario
+        element.sheets = [scen_sheet_name if sheet == 'User scenario'
+                          else sheet
+                          for sheet in element.sheets]

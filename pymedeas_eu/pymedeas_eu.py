@@ -7,21 +7,21 @@ import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
-    Smooth,
-    DelayFixed,
-    Integ,
-    lookup,
-    step,
     logical_and,
-    logical_or,
-    sum,
     xidz,
     zidz,
+    Smooth,
+    step,
     if_then_else,
+    logical_or,
+    sum,
+    lookup,
+    Integ,
+    DelayFixed,
 )
-from pysd.py_backend.external import ExtData, ExtLookup, ExtConstant
-from pysd.py_backend.utils import xrmerge, rearrange
-from pysd import cache, subs
+from pysd.py_backend.external import ExtConstant, ExtData, ExtLookup
+from pysd.py_backend.utils import rearrange, xrmerge
+from pysd import cache, subs, to_float
 
 _subscript_dict = {
     "GHGs": [
@@ -2709,6 +2709,7 @@ def time():
 
 
 @cache.step
+@to_float
 def historic_share_e_industry_ownuse_vs_tfec():
     """
     Real Name: "Historic share E industry own-use vs TFEC"
@@ -3128,6 +3129,7 @@ def final_energy_intensity_2020():
 
 
 @cache.step
+@to_float
 def abundance_coal_world():
     """
     Real Name: abundance coal World
@@ -3139,10 +3141,11 @@ def abundance_coal_world():
 
 
     """
-    return abundance_coal()
+    return abundance_coal(time())
 
 
 @cache.step
+@to_float
 def abundance_total_nat_gas_world():
     """
     Real Name: "abundance total nat. gas World"
@@ -3154,10 +3157,11 @@ def abundance_total_nat_gas_world():
 
 
     """
-    return abundance_total_nat_gas()
+    return abundance_total_nat_gas(time())
 
 
 @cache.step
+@to_float
 def abundance_total_oil_world():
     """
     Real Name: abundance total oil World
@@ -3169,7 +3173,7 @@ def abundance_total_oil_world():
 
 
     """
-    return abundance_total_oil()
+    return abundance_total_oil(time())
 
 
 @cache.step
@@ -3236,6 +3240,7 @@ def pressure_to_change_energy_technology():
 
 
 @cache.step
+@to_float
 def share_gascoal_gas_for_elec():
     """
     Real Name: "share gas/(coal +gas) for Elec"
@@ -3260,6 +3265,7 @@ def share_gascoal_gas_for_elec():
 
 
 @cache.run
+@to_float
 def share_gascoalgas_for_elec_in_2014():
     """
     Real Name: "share gas/(coal+gas) for Elec in 2014"
@@ -3275,6 +3281,7 @@ def share_gascoalgas_for_elec_in_2014():
 
 
 @cache.step
+@to_float
 def perception_of_interfuel_ps_scarcity_coalgas():
     """
     Real Name: "perception of inter-fuel PS scarcity coal-gas"
@@ -3295,6 +3302,7 @@ def perception_of_interfuel_ps_scarcity_coalgas():
 
 
 @cache.step
+@to_float
 def perception_of_interfuel_ps_scarcity_coaloil():
     """
     Real Name: "perception of inter-fuel PS scarcity coal-oil"
@@ -3315,6 +3323,7 @@ def perception_of_interfuel_ps_scarcity_coaloil():
 
 
 @cache.step
+@to_float
 def perception_of_interfuel_ps_scarcity_ffoil():
     """
     Real Name: "perception of inter-fuel PS scarcity FF-oil"
@@ -3334,6 +3343,7 @@ def perception_of_interfuel_ps_scarcity_ffoil():
 
 
 @cache.step
+@to_float
 def perception_of_interfuel_ps_scarcity_gascoal():
     """
     Real Name: "perception of inter-fuel PS scarcity gas-coal"
@@ -3354,6 +3364,7 @@ def perception_of_interfuel_ps_scarcity_gascoal():
 
 
 @cache.step
+@to_float
 def perception_of_interfuel_ps_scarcity_nat_gasoil():
     """
     Real Name: "perception of inter-fuel PS scarcity nat. gas-oil"
@@ -3375,6 +3386,7 @@ def perception_of_interfuel_ps_scarcity_nat_gasoil():
 
 
 @cache.step
+@to_float
 def decrease_share_gas_for_elec():
     """
     Real Name: decrease share gas for Elec
@@ -3394,6 +3406,7 @@ def decrease_share_gas_for_elec():
 
 
 @cache.step
+@to_float
 def decrease_share_oil_for_elec():
     """
     Real Name: decrease share oil for Elec
@@ -3414,6 +3427,7 @@ def decrease_share_oil_for_elec():
 
 
 @cache.step
+@to_float
 def perception_of_interfuel_ps_scarcity_oilnatgas():
     """
     Real Name: "perception of inter-fuel PS scarcity oil-nat.gas"
@@ -3435,6 +3449,7 @@ def perception_of_interfuel_ps_scarcity_oilnatgas():
 
 
 @cache.run
+@to_float
 def max_auxiliar_elec():
     """
     Real Name: max auxiliar Elec
@@ -3451,6 +3466,7 @@ def max_auxiliar_elec():
 
 
 @cache.step
+@to_float
 def increase_share_oil_for_elec():
     """
     Real Name: increase share oil for Elec
@@ -3471,6 +3487,7 @@ def increase_share_oil_for_elec():
 
 
 @cache.step
+@to_float
 def future_share_gascoalff_for_elec():
     """
     Real Name: "Future share gas+coal/FF for elec"
@@ -3486,6 +3503,7 @@ def future_share_gascoalff_for_elec():
 
 
 @cache.step
+@to_float
 def future_share_gascoalgas_for_elec():
     """
     Real Name: "Future share gas/(coal+gas) for Elec"
@@ -3501,6 +3519,7 @@ def future_share_gascoalgas_for_elec():
 
 
 @cache.step
+@to_float
 def future_share_oilff_for_elec():
     """
     Real Name: "Future share oil/FF for Elec"
@@ -3517,6 +3536,7 @@ def future_share_oilff_for_elec():
 
 
 @cache.run
+@to_float
 def switch_scarcityps_elec_substit():
     """
     Real Name: "switch scarcity-PS elec substit"
@@ -3533,6 +3553,7 @@ def switch_scarcityps_elec_substit():
 
 
 @cache.step
+@to_float
 def perception_of_interfuel_ps_scarcity_oilcoal():
     """
     Real Name: "perception of inter-fuel PS scarcity oil-coal"
@@ -3553,6 +3574,7 @@ def perception_of_interfuel_ps_scarcity_oilcoal():
 
 
 @cache.step
+@to_float
 def perception_of_interfuel_ps_scarcity_oilff():
     """
     Real Name: "perception of inter-fuel PS scarcity oil-FF"
@@ -3572,6 +3594,7 @@ def perception_of_interfuel_ps_scarcity_oilff():
 
 
 @cache.run
+@to_float
 def share_oilff_for_elec_in_2015():
     """
     Real Name: "share oil/FF for Elec in 2015"
@@ -3587,6 +3610,7 @@ def share_oilff_for_elec_in_2015():
 
 
 @cache.step
+@to_float
 def increase_share_gas_for_elec():
     """
     Real Name: increase share gas for Elec
@@ -3623,6 +3647,7 @@ def perception_in_primary_sources_scarcity():
 
 
 @cache.step
+@to_float
 def households_total_final_energy_demand():
     """
     Real Name: Households total final energy demand
@@ -3888,6 +3913,7 @@ def interfuel_scarcity_pressure_h():
 
 
 @cache.run
+@to_float
 def sensitivity_to_scarcity_option():
     """
     Real Name: sensitivity to scarcity option
@@ -3920,6 +3946,7 @@ def perception_of_final_energy_scarcity():
 
 
 @cache.run
+@to_float
 def sensitivity_to_energy_scarcity_medium():
     """
     Real Name: sensitivity to energy scarcity Medium
@@ -3952,6 +3979,7 @@ def scarcity_final_fuels():
 
 
 @cache.run
+@to_float
 def sensitivity_to_energy_scarcity_high():
     """
     Real Name: sensitivity to energy scarcity High
@@ -3967,6 +3995,7 @@ def sensitivity_to_energy_scarcity_high():
 
 
 @cache.run
+@to_float
 def sensitivity_to_energy_scarcity_low():
     """
     Real Name: sensitivity to energy scarcity Low
@@ -3982,6 +4011,7 @@ def sensitivity_to_energy_scarcity_low():
 
 
 @cache.run
+@to_float
 def sensitivity_to_scarcity_option_h():
     """
     Real Name: sensitivity to scarcity option H
@@ -3997,6 +4027,7 @@ def sensitivity_to_scarcity_option_h():
 
 
 @cache.step
+@to_float
 def sensitivity_to_scarcity():
     """
     Real Name: sensitivity to scarcity
@@ -4021,6 +4052,7 @@ def sensitivity_to_scarcity():
 
 
 @cache.step
+@to_float
 def sensitivity_to_scarcity_h():
     """
     Real Name: sensitivity to scarcity H
@@ -4409,6 +4441,7 @@ def perception_of_interfuel_final_energy_scarcities():
 
 
 @cache.run
+@to_float
 def energy_scarcity_forgetting_time_h():
     """
     Real Name: energy scarcity forgetting time H
@@ -4445,6 +4478,7 @@ def increase_in_perception_fe_scarcity_h():
 
 
 @cache.run
+@to_float
 def energy_scarcity_forgetting_time():
     """
     Real Name: energy scarcity forgetting time
@@ -4479,6 +4513,7 @@ def perception_of_final_energy_scarcity_h():
 
 
 @cache.run
+@to_float
 def year_to_finish_energy_intensity_policies_h():
     """
     Real Name: Year to finish energy intensity policies H
@@ -4620,6 +4655,7 @@ def inertial_rate_energy_intensity_h_top_down():
 
 
 @cache.run
+@to_float
 def final_year_target_h():
     """
     Real Name: final year target H
@@ -4652,6 +4688,7 @@ def historical_mean_rate_energy_intensity_h():
 
 
 @cache.step
+@to_float
 def available_improvement_efficiency_h():
     """
     Real Name: available improvement efficiency H
@@ -4716,6 +4753,7 @@ def households_final_energy_demand():
 
 
 @cache.run
+@to_float
 def choose_energy_intensity_target_method():
     """
     Real Name: Choose energy intensity target method
@@ -4832,7 +4870,7 @@ def implementatio_policy_to_change_final_energy_h():
 def pressure_to_change_energy_technology_h():
     """
     Real Name: Pressure to change energy technology H
-    Original Eqn: MIN(1,SUM(Pressure to change energy technology by fuel H[final sources!,final sources]))
+    Original Eqn: MIN(1,SUM(Pressure to change energy technology by fuel H[final sources1!,final sources]))
     Units: Dmnl
     Limits: (None, None)
     Type: component
@@ -4846,10 +4884,10 @@ def pressure_to_change_energy_technology_h():
         sum(
             rearrange(
                 pressure_to_change_energy_technology_by_fuel_h(),
-                ["final sources", "final sources"],
+                ["final sources1", "final sources"],
                 _subscript_dict,
             ),
-            dim=("final sources",),
+            dim=("final sources1",),
         ),
     )
 
@@ -5009,6 +5047,7 @@ def final_energy_intensity_2020_h():
 
 
 @cache.run
+@to_float
 def activate_scarcity_feedback_final_fuel_replacement():
     """
     Real Name: "Activate scarcity feedback final fuel replacement?"
@@ -5024,6 +5063,7 @@ def activate_scarcity_feedback_final_fuel_replacement():
 
 
 @cache.run
+@to_float
 def activate_transport_h_bottom_up_method():
     """
     Real Name: Activate transport H BOTTOM UP method
@@ -5039,6 +5079,7 @@ def activate_transport_h_bottom_up_method():
 
 
 @cache.run
+@to_float
 def percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities_0():
     """
     Real Name: Percentage of change over the historic maximun variation of energy intensities 0
@@ -5132,6 +5173,7 @@ def max_yearly_change_h():
 
 
 @cache.step
+@to_float
 def global_energy_intensity_h():
     """
     Real Name: Global energy intensity H
@@ -5170,7 +5212,7 @@ def maximum_yearly_aceleration_of_intensity_improvement_pct_h():
 def share_tech_change_fuel_h():
     """
     Real Name: share tech change fuel H
-    Original Eqn: ZIDZ( Pressure to change energy technology by fuel H[final sources1,final sources] ,SUM(Pressure to change energy technology by fuel H[final sources!,final sources]))
+    Original Eqn: ZIDZ( Pressure to change energy technology by fuel H[final sources1,final sources] ,SUM(Pressure to change energy technology by fuel H[final sources1!,final sources]))
     Units: Dmnl
     Limits: (None, None)
     Type: component
@@ -5188,10 +5230,10 @@ def share_tech_change_fuel_h():
         sum(
             rearrange(
                 pressure_to_change_energy_technology_by_fuel_h(),
-                ["final sources", "final sources"],
+                ["final sources1", "final sources"],
                 _subscript_dict,
             ),
-            dim=("final sources",),
+            dim=("final sources1",),
         ),
     )
 
@@ -5218,7 +5260,7 @@ def year_policy_to_improve_efficiency_h_sectoruniform():
 def increase_of_intensity_due_to_change_energy_technology_h_top_down():
     """
     Real Name: Increase of intensity due to change energy technology H TOP DOWN
-    Original Eqn: SUM(Increase of intensity due to change energy technology eff H[final sources,final sources!])
+    Original Eqn: SUM(Increase of intensity due to change energy technology eff H[final sources,final sources1!])
     Units: EJ/Tdollars
     Limits: (None, None)
     Type: component
@@ -5251,14 +5293,15 @@ def increase_of_intensity_due_to_change_energy_technology_h_top_down():
     return sum(
         rearrange(
             increase_of_intensity_due_to_change_energy_technology_eff_h(),
-            ["final sources", "final sources"],
+            ["final sources", "final sources1"],
             _subscript_dict,
         ),
-        dim=("final sources",),
+        dim=("final sources1",),
     )
 
 
 @cache.run
+@to_float
 def min_energy_intensity_vs_intial_h():
     """
     Real Name: min energy intensity vs intial H
@@ -5358,6 +5401,7 @@ def energy_intensity_target_h():
 
 
 @cache.run
+@to_float
 def exp_slow_evolution_improve_efficiency_h():
     """
     Real Name: exp slow evolution improve efficiency H
@@ -5411,6 +5455,7 @@ def year_policy_change_energy_h_by_sector():
 
 
 @cache.run
+@to_float
 def choose_policies_of_intensities_global_or_by_sector():
     """
     Real Name: Choose policies of intensities global or by sector
@@ -5426,6 +5471,7 @@ def choose_policies_of_intensities_global_or_by_sector():
 
 
 @cache.step
+@to_float
 def year_energy_intensity_target():
     """
     Real Name: year energy intensity target
@@ -5499,6 +5545,7 @@ def policy_to_improve_efficiency_speed_h_by_sector():
 
 
 @cache.step
+@to_float
 def total_fed_households():
     """
     Real Name: Total FED households
@@ -5531,6 +5578,7 @@ def year_policy_to_improve_efficiency_h_by_sector():
 
 
 @cache.step
+@to_float
 def total_fed_trasnport_households():
     """
     Real Name: Total FED trasnport households
@@ -5747,6 +5795,7 @@ def policy_to_improve_efficiency_speed_h_sectoruniform():
 
 
 @cache.run
+@to_float
 def exp_slow_evolution_change_energy_h():
     """
     Real Name: exp slow evolution change energy H
@@ -5778,6 +5827,7 @@ def transport_households_final_energy_demand():
 
 
 @cache.run
+@to_float
 def pct_change_energy_intensity_target():
     """
     Real Name: pct change energy intensity target
@@ -5815,6 +5865,7 @@ def policy_change_energy_speed_h():
 
 
 @cache.run
+@to_float
 def exp_rapid_evolution_improve_efficiency_h():
     """
     Real Name: exp rapid evolution improve efficiency H
@@ -5888,6 +5939,7 @@ def change_total_intensity_to_rest():
 
 
 @cache.run
+@to_float
 def initial_global_energy_intensity_2009_h():
     """
     Real Name: Initial global energy intensity 2009 H
@@ -5961,6 +6013,7 @@ def pressure_to_change_energy_technology_by_fuel_h():
 
 
 @cache.run
+@to_float
 def exp_rapid_evolution_change_energy_h():
     """
     Real Name: exp rapid evolution change energy H
@@ -6001,6 +6054,7 @@ def efficiency_rate_of_substitution_h():
 
 
 @cache.run
+@to_float
 def year_to_finish_policy_change_energy():
     """
     Real Name: Year to finish policy change energy
@@ -6016,6 +6070,7 @@ def year_to_finish_policy_change_energy():
 
 
 @cache.run
+@to_float
 def final_year_target():
     """
     Real Name: final year target
@@ -6058,7 +6113,7 @@ def maximum_yearly_aceleration_of_intensity_improvement_pct():
 def pressure_to_change_energy_technology_0():
     """
     Real Name: Pressure to change energy technology 0
-    Original Eqn: MIN(1,SUM(Pressure to change energy technology by fuel[sectors,final sources!,final sources]))
+    Original Eqn: MIN(1,SUM(Pressure to change energy technology by fuel[sectors,final sources1!,final sources]))
     Units: Dmnl
     Limits: (None, None)
     Type: component
@@ -6072,10 +6127,10 @@ def pressure_to_change_energy_technology_0():
         sum(
             rearrange(
                 pressure_to_change_energy_technology_by_fuel(),
-                ["sectors", "final sources", "final sources"],
+                ["sectors", "final sources1", "final sources"],
                 _subscript_dict,
             ),
-            dim=("final sources",),
+            dim=("final sources1",),
         ),
     )
 
@@ -6298,6 +6353,7 @@ def implementation_policy_to_improve_energy_intensity_efficiency():
 
 
 @cache.run
+@to_float
 def year_change_pct_energy_intensity_target():
     """
     Real Name: year change pct energy intensity target
@@ -6703,6 +6759,7 @@ def policy_to_improve_efficiency_speed_by_sector():
 
 
 @cache.run
+@to_float
 def percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities():
     """
     Real Name: Percentage of change over the historic maximun variation of energy intensities
@@ -6826,6 +6883,7 @@ def year_policy_change_energy_sectoruniform():
 
 
 @cache.run
+@to_float
 def min_energy_intensity_vs_intial():
     """
     Real Name: min energy intensity vs intial
@@ -6937,6 +6995,7 @@ def final_energy_footprint_by_fuel():
 
 
 @cache.step
+@to_float
 def modern_solids_bioe_demand_households():
     """
     Real Name: modern solids BioE demand households
@@ -7018,6 +7077,7 @@ def historical_mean_rate_energy_intensity():
 
 
 @cache.run
+@to_float
 def policy_to_improve_efficiency_speed_sectoruniform():
     """
     Real Name: "Policy to improve efficiency speed sector-uniform"
@@ -7034,6 +7094,7 @@ def policy_to_improve_efficiency_speed_sectoruniform():
 
 
 @cache.run
+@to_float
 def activate_scarcity_feedback_final_fuel_replacement_0():
     """
     Real Name: "Activate scarcity feedback final fuel replacement? 0"
@@ -7065,6 +7126,7 @@ def initial_global_energy_intensity_by_sector_2009():
 
 
 @cache.run
+@to_float
 def exp_slow_evol_change_energy():
     """
     Real Name: exp slow evol change energy
@@ -7140,6 +7202,7 @@ def evol_final_energy_intensity_by_sector_and_fuel():
 
 
 @cache.step
+@to_float
 def pe_traditional_biomass_demand_ej():
     """
     Real Name: PE traditional biomass demand EJ
@@ -7228,6 +7291,7 @@ def decrease_of_intensity_due_to_energy_a_technology_change_top_down():
 
 
 @cache.run
+@to_float
 def year_to_finish_energy_intensity_policies():
     """
     Real Name: Year to finish energy intensity policies
@@ -7243,6 +7307,7 @@ def year_to_finish_energy_intensity_policies():
 
 
 @cache.run
+@to_float
 def exp_rapid_evol_change_energy():
     """
     Real Name: exp rapid evol change energy
@@ -7259,6 +7324,7 @@ def exp_rapid_evol_change_energy():
 
 
 @cache.run
+@to_float
 def choose_final_sectoral_energy_intensities_evolution_method():
     """
     Real Name: Choose final sectoral energy intensities evolution method
@@ -7339,7 +7405,7 @@ def year_policy_change_energy_by_sector():
 def share_tech_change_fuel():
     """
     Real Name: share tech change fuel
-    Original Eqn: ZIDZ( Pressure to change energy technology by fuel[sectors,final sources1,final sources] , SUM(Pressure to change energy technology by fuel[sectors,final sources!,final sources]))
+    Original Eqn: ZIDZ( Pressure to change energy technology by fuel[sectors,final sources1,final sources] , SUM(Pressure to change energy technology by fuel[sectors,final sources1!,final sources]))
     Units: Dmnl
     Limits: (None, None)
     Type: component
@@ -7357,10 +7423,10 @@ def share_tech_change_fuel():
         sum(
             rearrange(
                 pressure_to_change_energy_technology_by_fuel(),
-                ["sectors", "final sources", "final sources"],
+                ["sectors", "final sources1", "final sources"],
                 _subscript_dict,
             ),
-            dim=("final sources",),
+            dim=("final sources1",),
         ),
     )
 
@@ -7370,7 +7436,7 @@ def share_tech_change_fuel():
 def increase_of_intensity_due_to_energy_a_technology_change_top_down():
     """
     Real Name: Increase of intensity due to energy a technology change TOP DOWN
-    Original Eqn: SUM(Increase of intensity due to energy a technology eff[sectors,final sources,final sources!])
+    Original Eqn: SUM(Increase of intensity due to energy a technology eff[sectors,final sources,final sources1!])
     Units: EJ/Tdollars
     Limits: (None, None)
     Type: component
@@ -7383,14 +7449,15 @@ def increase_of_intensity_due_to_energy_a_technology_change_top_down():
     return sum(
         rearrange(
             increase_of_intensity_due_to_energy_a_technology_eff(),
-            ["sectors", "final sources", "final sources"],
+            ["sectors", "final sources", "final sources1"],
             _subscript_dict,
         ),
-        dim=("final sources",),
+        dim=("final sources1",),
     )
 
 
 @cache.run
+@to_float
 def exp_slow_evolution_improve_efficiency():
     """
     Real Name: exp slow evolution improve efficiency
@@ -7611,6 +7678,7 @@ def available_improvement_efficiency():
 
 
 @cache.run
+@to_float
 def exp_rapid_evolution_improve_efficiency():
     """
     Real Name: exp rapid evolution improve efficiency
@@ -7643,6 +7711,7 @@ def final_energy_intensity_by_sector_and_fuel_eu():
 
 
 @cache.step
+@to_float
 def adapt_max_share_imports_oil_ue():
     """
     Real Name: adapt max share imports oil UE
@@ -7668,6 +7737,7 @@ def adapt_max_share_imports_oil_ue():
 
 
 @cache.step
+@to_float
 def imports_eu_coal_from_row_ej():
     """
     Real Name: imports EU coal from RoW EJ
@@ -7711,6 +7781,7 @@ def imports_eu_coal_from_row_ej():
 
 
 @cache.step
+@to_float
 def adapt_max_share_import_coal_ue():
     """
     Real Name: adapt max share import coal UE
@@ -7739,6 +7810,7 @@ def adapt_max_share_import_coal_ue():
 
 
 @cache.step
+@to_float
 def adapt_max_share_imports_nat_gas_ue():
     """
     Real Name: "adapt max share imports nat. gas UE"
@@ -7767,6 +7839,7 @@ def adapt_max_share_imports_nat_gas_ue():
 
 
 @cache.step
+@to_float
 def imports_eu_nat_gas_from_row_ej():
     """
     Real Name: "imports EU nat. gas from RoW EJ"
@@ -7806,6 +7879,7 @@ def imports_eu_nat_gas_from_row_ej():
 
 
 @cache.step
+@to_float
 def imports_eu_total_oil_from_row_ej():
     """
     Real Name: imports EU total oil from RoW EJ
@@ -7844,6 +7918,7 @@ def imports_eu_total_oil_from_row_ej():
 
 
 @cache.step
+@to_float
 def historic_share_coal_domestic_ue_extraction():
     """
     Real Name: Historic share coal domestic UE extraction
@@ -7859,6 +7934,7 @@ def historic_share_coal_domestic_ue_extraction():
 
 
 @cache.step
+@to_float
 def historic_share_coal_domestic_ue_extraction_until_2016():
     """
     Real Name: Historic share coal domestic UE extraction until 2016
@@ -7878,6 +7954,7 @@ def historic_share_coal_domestic_ue_extraction_until_2016():
 
 
 @cache.step
+@to_float
 def aux19():
     """
     Real Name: aux19
@@ -7893,6 +7970,7 @@ def aux19():
 
 
 @cache.run
+@to_float
 def max_share_import_coal_ue():
     """
     Real Name: max share import coal UE
@@ -7908,6 +7986,7 @@ def max_share_import_coal_ue():
 
 
 @cache.step
+@to_float
 def historic_net_imports_coal_eu():
     """
     Real Name: Historic net imports coal EU
@@ -7923,6 +8002,7 @@ def historic_net_imports_coal_eu():
 
 
 @cache.run
+@to_float
 def limited_coal_imports_from_row():
     """
     Real Name: "Limited coal imports from RoW?"
@@ -7939,6 +8019,7 @@ def limited_coal_imports_from_row():
 
 
 @cache.step
+@to_float
 def ped_domestic_eu_coal_ej():
     """
     Real Name: PED domestic EU coal EJ
@@ -7954,6 +8035,7 @@ def ped_domestic_eu_coal_ej():
 
 
 @cache.step
+@to_float
 def historic_share_unconv_nat_gas_domestric_eu_extraction():
     """
     Real Name: "Historic share unconv. nat. gas domestric EU extraction"
@@ -7969,6 +8051,7 @@ def historic_share_unconv_nat_gas_domestric_eu_extraction():
 
 
 @cache.run
+@to_float
 def limited_nat_gas_imports_from_row():
     """
     Real Name: "Limited nat. gas. imports from RoW?"
@@ -7985,6 +8068,7 @@ def limited_nat_gas_imports_from_row():
 
 
 @cache.step
+@to_float
 def historic_net_imports_nat_gas_eu():
     """
     Real Name: "Historic net imports nat. gas EU"
@@ -8004,6 +8088,7 @@ def historic_net_imports_nat_gas_eu():
 
 
 @cache.step
+@to_float
 def aux21():
     """
     Real Name: aux21
@@ -8019,6 +8104,7 @@ def aux21():
 
 
 @cache.step
+@to_float
 def historic_share_conv_nat_gas_domestic_eu_extraction():
     """
     Real Name: "Historic share conv. nat gas domestic EU extraction"
@@ -8034,6 +8120,7 @@ def historic_share_conv_nat_gas_domestic_eu_extraction():
 
 
 @cache.run
+@to_float
 def max_share_imports_nat_gas_ue():
     """
     Real Name: "max share imports nat. gas. UE"
@@ -8049,6 +8136,7 @@ def max_share_imports_nat_gas_ue():
 
 
 @cache.step
+@to_float
 def historic_share_unconv_nat_gas_domestric_eu_extraction_until_2016():
     """
     Real Name: "Historic share unconv. nat. gas domestric EU extraction until 2016"
@@ -8068,6 +8156,7 @@ def historic_share_unconv_nat_gas_domestric_eu_extraction_until_2016():
 
 
 @cache.step
+@to_float
 def historic_share_conv_nat_gas_domestic_eu_extraction_until_2016():
     """
     Real Name: "Historic share conv. nat gas domestic EU extraction until 2016"
@@ -8087,6 +8176,7 @@ def historic_share_conv_nat_gas_domestic_eu_extraction_until_2016():
 
 
 @cache.step
+@to_float
 def ped_domestic_eu_total_natgas_ej():
     """
     Real Name: "PED domestic EU total nat.gas EJ"
@@ -8105,6 +8195,7 @@ def ped_domestic_eu_total_natgas_ej():
 
 
 @cache.run
+@to_float
 def max_share_imports_oil_ue():
     """
     Real Name: max share imports oil UE
@@ -8120,6 +8211,7 @@ def max_share_imports_oil_ue():
 
 
 @cache.run
+@to_float
 def limited_oil_imports_from_row():
     """
     Real Name: "Limited oil imports from RoW?"
@@ -8136,6 +8228,7 @@ def limited_oil_imports_from_row():
 
 
 @cache.step
+@to_float
 def aux24():
     """
     Real Name: aux24
@@ -8151,6 +8244,7 @@ def aux24():
 
 
 @cache.step
+@to_float
 def historic_share_unconv_oil_domestric_eu_extraction_until_2016():
     """
     Real Name: "Historic share unconv. oil domestric EU extraction until 2016"
@@ -8170,6 +8264,7 @@ def historic_share_unconv_oil_domestric_eu_extraction_until_2016():
 
 
 @cache.step
+@to_float
 def historic_share_unconv_oil_domestric_eu_extraction():
     """
     Real Name: "Historic share unconv. oil domestric EU extraction"
@@ -8185,6 +8280,7 @@ def historic_share_unconv_oil_domestric_eu_extraction():
 
 
 @cache.step
+@to_float
 def aux23():
     """
     Real Name: aux23
@@ -8200,6 +8296,7 @@ def aux23():
 
 
 @cache.step
+@to_float
 def ped_domestic_eu_conv_oil_ej():
     """
     Real Name: "PED domestic EU conv. oil EJ"
@@ -8217,6 +8314,7 @@ def ped_domestic_eu_conv_oil_ej():
 
 
 @cache.step
+@to_float
 def historic_share_conv_oil_domestic_eu_extraction():
     """
     Real Name: "Historic share conv. oil domestic EU extraction"
@@ -8232,6 +8330,7 @@ def historic_share_conv_oil_domestic_eu_extraction():
 
 
 @cache.step
+@to_float
 def historic_share_conv_oil_domestic_eu_extraction_until_2016():
     """
     Real Name: "Historic share conv. oil domestic EU extraction\" until 2016"
@@ -8251,6 +8350,7 @@ def historic_share_conv_oil_domestic_eu_extraction_until_2016():
 
 
 @cache.step
+@to_float
 def historic_net_imports_oil_eu():
     """
     Real Name: Historic net imports oil EU
@@ -8270,6 +8370,7 @@ def historic_net_imports_oil_eu():
 
 
 @cache.step
+@to_float
 def ped_domestic_eu_total_oil_ej():
     """
     Real Name: PED domestic EU total oil EJ
@@ -8288,6 +8389,7 @@ def ped_domestic_eu_total_oil_ej():
 
 
 @cache.step
+@to_float
 def fed_heat_gascoal_ej():
     """
     Real Name: "FED Heat gas+coal EJ"
@@ -8303,6 +8405,7 @@ def fed_heat_gascoal_ej():
 
 
 @cache.step
+@to_float
 def urr_tot_agg_oil():
     """
     Real Name: URR tot agg oil
@@ -8335,6 +8438,7 @@ def urr_tot_agg_oil():
 
 
 @cache.step
+@to_float
 def desired_annual_gdp_growth_rate():
     """
     Real Name: Desired annual GDP growth rate
@@ -8371,6 +8475,7 @@ def materials_availability_reserves():
 
 
 @cache.step
+@to_float
 def max_extraction_tot_agg_oil_ej():
     """
     Real Name: max extraction tot agg oil EJ
@@ -8399,6 +8504,7 @@ def max_extraction_tot_agg_oil_ej():
 
 
 @cache.step
+@to_float
 def demand_elec_gas_and_coal_twh():
     """
     Real Name: demand Elec gas and coal TWh
@@ -8445,6 +8551,7 @@ def materials_availability_resources():
 
 
 @cache.step
+@to_float
 def share_pipeline_transport_fecgl_in_2015():
     """
     Real Name: "Share pipeline transport FECg+l in 2015"
@@ -8463,6 +8570,7 @@ def share_pipeline_transport_fecgl_in_2015():
 
 
 @cache.step
+@to_float
 def aux18_0():
     """
     Real Name: aux18 0
@@ -8479,6 +8587,7 @@ def aux18_0():
 
 
 @cache.step
+@to_float
 def fec_gasesliquids():
     """
     Real Name: "FEC gases+liquids"
@@ -8496,6 +8605,7 @@ def fec_gasesliquids():
 
 
 @cache.step
+@to_float
 def total_distribution_losses():
     """
     Real Name: Total distribution losses
@@ -8534,6 +8644,7 @@ def historic_pipeline_transport(x):
 
 
 @cache.step
+@to_float
 def pipeline_transport():
     """
     Real Name: Pipeline transport
@@ -8552,6 +8663,7 @@ def pipeline_transport():
 
 
 @cache.step
+@to_float
 def historic_share_pipeline_transport():
     """
     Real Name: Historic share pipeline transport
@@ -8572,6 +8684,7 @@ def historic_share_pipeline_transport():
 
 
 @cache.step
+@to_float
 def eroist_system():
     """
     Real Name: EROIst system
@@ -8587,6 +8700,7 @@ def eroist_system():
 
 
 @cache.step
+@to_float
 def feist_system():
     """
     Real Name: FEIst system
@@ -8621,6 +8735,7 @@ def historic_energy_industry_ownuse(x):
 
 
 @cache.step
+@to_float
 def share_e_industry_ownuse_vs_tfec_in_2015():
     """
     Real Name: "Share E industry own-use vs TFEC in 2015"
@@ -8640,6 +8755,7 @@ def share_e_industry_ownuse_vs_tfec_in_2015():
 
 
 @cache.step
+@to_float
 def aux1_1_1():
     """
     Real Name: aux1 1 1
@@ -8656,6 +8772,7 @@ def aux1_1_1():
 
 
 @cache.step
+@to_float
 def max_extraction_uranium_ej():
     """
     Real Name: max extraction uranium EJ
@@ -8684,6 +8801,7 @@ def max_extraction_uranium_ej():
 
 
 @cache.run
+@to_float
 def tonnes_per_kt():
     """
     Real Name: tonnes per kt
@@ -8699,6 +8817,7 @@ def tonnes_per_kt():
 
 
 @cache.step
+@to_float
 def desired_variation_gdppc():
     """
     Real Name: Desired variation GDPpc
@@ -8718,6 +8837,7 @@ def desired_variation_gdppc():
 
 
 @cache.step
+@to_float
 def smooth_desired_variation_gdppc():
     """
     Real Name: smooth Desired variation GDPpc
@@ -8737,6 +8857,7 @@ def smooth_desired_variation_gdppc():
 
 
 @cache.step
+@to_float
 def smooth_desired_gdppc():
     """
     Real Name: smooth Desired GDPpc
@@ -8752,6 +8873,7 @@ def smooth_desired_gdppc():
 
 
 @cache.step
+@to_float
 def gdppc_variation_asymptote_scen():
     """
     Real Name: GDPpc variation asymptote scen
@@ -8771,6 +8893,7 @@ def gdppc_variation_asymptote_scen():
 
 
 @cache.step
+@to_float
 def desired_variation_gdppc_per_scen():
     """
     Real Name: desired variation GDPpc per scen
@@ -8810,6 +8933,7 @@ def desired_variation_gdppc_per_scen():
 
 
 @cache.step
+@to_float
 def pop_variation():
     """
     Real Name: pop variation
@@ -8836,6 +8960,7 @@ def pop_variation():
 
 
 @cache.step
+@to_float
 def smooth_pop():
     """
     Real Name: smooth pop
@@ -8851,6 +8976,7 @@ def smooth_pop():
 
 
 @cache.step
+@to_float
 def smooth_probe():
     """
     Real Name: smooth probe
@@ -8870,6 +8996,7 @@ def smooth_probe():
 
 
 @cache.step
+@to_float
 def aux1_1_0():
     """
     Real Name: aux1 1 0
@@ -8886,6 +9013,7 @@ def aux1_1_0():
 
 
 @cache.step
+@to_float
 def pop_variation_delay_5_step():
     """
     Real Name: pop variation delay 5 step
@@ -8901,6 +9029,7 @@ def pop_variation_delay_5_step():
 
 
 @cache.step
+@to_float
 def pop_variation_delay_6_step():
     """
     Real Name: pop variation delay 6 step
@@ -8916,6 +9045,7 @@ def pop_variation_delay_6_step():
 
 
 @cache.step
+@to_float
 def pop_variation_by_scen():
     """
     Real Name: pop variation by scen
@@ -8954,6 +9084,7 @@ def pop_variation_by_scen():
 
 
 @cache.run
+@to_float
 def p_gdppc_asymptote():
     """
     Real Name: P GDPpc asymptote
@@ -8970,6 +9101,7 @@ def p_gdppc_asymptote():
 
 
 @cache.run
+@to_float
 def target_year_gdppc_asymptote():
     """
     Real Name: Target year GDPpc asymptote
@@ -8985,6 +9117,7 @@ def target_year_gdppc_asymptote():
 
 
 @cache.step
+@to_float
 def pop_variation_delay_4_step():
     """
     Real Name: pop variation delay 4 step
@@ -9000,6 +9133,7 @@ def pop_variation_delay_4_step():
 
 
 @cache.step
+@to_float
 def pop_variation_delay_1_step():
     """
     Real Name: pop variation delay 1 step
@@ -9015,6 +9149,7 @@ def pop_variation_delay_1_step():
 
 
 @cache.step
+@to_float
 def pop_variation_delay_2_step():
     """
     Real Name: pop variation delay 2 step
@@ -9030,6 +9165,7 @@ def pop_variation_delay_2_step():
 
 
 @cache.step
+@to_float
 def pop_variation_delay_3_step():
     """
     Real Name: pop variation delay 3 step
@@ -9045,6 +9181,7 @@ def pop_variation_delay_3_step():
 
 
 @cache.step
+@to_float
 def gdppc_until_p_customized_year_gdppc_evolution():
     """
     Real Name: GDPpc until P customized year GDPpc evolution
@@ -9064,6 +9201,7 @@ def gdppc_until_p_customized_year_gdppc_evolution():
 
 
 @cache.step
+@to_float
 def t_asymptote_gdppc():
     """
     Real Name: T asymptote GDPpc
@@ -9079,6 +9217,7 @@ def t_asymptote_gdppc():
 
 
 @cache.run
+@to_float
 def p_pop_asymptote_millions():
     """
     Real Name: P pop asymptote millions
@@ -9095,6 +9234,7 @@ def p_pop_asymptote_millions():
 
 
 @cache.step
+@to_float
 def pop_asymptote():
     """
     Real Name: pop asymptote
@@ -9110,6 +9250,7 @@ def pop_asymptote():
 
 
 @cache.step
+@to_float
 def aux1_1():
     """
     Real Name: aux1 1
@@ -9126,6 +9267,7 @@ def aux1_1():
 
 
 @cache.step
+@to_float
 def pop_variation_asymptote_scen():
     """
     Real Name: pop variation asymptote scen
@@ -9145,6 +9287,7 @@ def pop_variation_asymptote_scen():
 
 
 @cache.step
+@to_float
 def pop_until_p_customized_year_pop_evolution():
     """
     Real Name: pop until P customized year pop evolution
@@ -9164,6 +9307,7 @@ def pop_until_p_customized_year_pop_evolution():
 
 
 @cache.step
+@to_float
 def t_asymptote_pop():
     """
     Real Name: T asymptote pop
@@ -9179,6 +9323,7 @@ def t_asymptote_pop():
 
 
 @cache.run
+@to_float
 def target_year_pop_asymptote():
     """
     Real Name: Target year pop asymptote
@@ -10769,6 +10914,7 @@ def variation_gfcf():
 
 
 @cache.run
+@to_float
 def beta_0_con():
     """
     Real Name: beta 0 con
@@ -10784,6 +10930,7 @@ def beta_0_con():
 
 
 @cache.run
+@to_float
 def beta_1_cons():
     """
     Real Name: beta 1 cons
@@ -10799,6 +10946,7 @@ def beta_1_cons():
 
 
 @cache.run
+@to_float
 def beta_3_cons():
     """
     Real Name: beta 3 cons
@@ -10814,6 +10962,7 @@ def beta_3_cons():
 
 
 @cache.run
+@to_float
 def beta_2_cons():
     """
     Real Name: beta 2 cons
@@ -10829,6 +10978,7 @@ def beta_2_cons():
 
 
 @cache.step
+@to_float
 def variation_historic_real_long_term_interest_rate():
     """
     Real Name: variation historic real long term interest rate
@@ -10846,6 +10996,7 @@ def variation_historic_real_long_term_interest_rate():
 
 
 @cache.step
+@to_float
 def variation_historic_real_interest_rate_for_house_purchases():
     """
     Real Name: variation historic real interest rate for house purchases
@@ -10863,6 +11014,7 @@ def variation_historic_real_interest_rate_for_house_purchases():
 
 
 @cache.step
+@to_float
 def variation_real_interest_rate_for_corporations():
     """
     Real Name: variation real interest rate for corporations
@@ -10878,6 +11030,7 @@ def variation_real_interest_rate_for_corporations():
 
 
 @cache.step
+@to_float
 def variation_real_long_term_interest_rate():
     """
     Real Name: variation real long term interest rate
@@ -10935,6 +11088,7 @@ def historic_real_long_term_interest_rate(x):
 
 
 @cache.step
+@to_float
 def lc():
     """
     Real Name: LC
@@ -10950,6 +11104,7 @@ def lc():
 
 
 @cache.step
+@to_float
 def lc_next_step():
     """
     Real Name: LC next step
@@ -10965,6 +11120,7 @@ def lc_next_step():
 
 
 @cache.step
+@to_float
 def lc_not_covered():
     """
     Real Name: LC not covered
@@ -10981,6 +11137,7 @@ def lc_not_covered():
 
 
 @cache.step
+@to_float
 def variation_historic_real_interest_rate_for_corporations():
     """
     Real Name: variation historic real interest rate for corporations
@@ -10998,6 +11155,7 @@ def variation_historic_real_interest_rate_for_corporations():
 
 
 @cache.step
+@to_float
 def real_long_term_interest_rate():
     """
     Real Name: real long term interest rate
@@ -11013,6 +11171,7 @@ def real_long_term_interest_rate():
 
 
 @cache.run
+@to_float
 def beta_4_exp():
     """
     Real Name: beta 4 exp
@@ -11028,6 +11187,7 @@ def beta_4_exp():
 
 
 @cache.step
+@to_float
 def variation_real_interest_rate_for_house_purchases():
     """
     Real Name: variation real interest rate for house purchases
@@ -11043,6 +11203,7 @@ def variation_real_interest_rate_for_house_purchases():
 
 
 @cache.step
+@to_float
 def real_interest_rate_for_house_purchases():
     """
     Real Name: real interest rate for house purchases
@@ -11058,6 +11219,7 @@ def real_interest_rate_for_house_purchases():
 
 
 @cache.step
+@to_float
 def real_interest_rate_for_corporations_next_step():
     """
     Real Name: real interest rate for corporations next step
@@ -11076,6 +11238,7 @@ def real_interest_rate_for_corporations_next_step():
 
 
 @cache.step
+@to_float
 def real_long_term_interest_rate_next_step():
     """
     Real Name: real long term interest rate next step
@@ -11091,6 +11254,7 @@ def real_long_term_interest_rate_next_step():
 
 
 @cache.step
+@to_float
 def real_interest_rate_for_house_purchases_next_step():
     """
     Real Name: real interest rate for house purchases next step
@@ -11134,6 +11298,7 @@ def variation_household_demand():
 
 
 @cache.step
+@to_float
 def real_interest_rate_for_corporations():
     """
     Real Name: real interest rate for corporations
@@ -11149,6 +11314,7 @@ def real_interest_rate_for_corporations():
 
 
 @cache.step
+@to_float
 def ped2():
     """
     Real Name: PED2
@@ -11223,6 +11389,7 @@ def transformation_ff_losses_ej():
 
 
 @cache.step
+@to_float
 def other_gases_required():
     """
     Real Name: Other gases required
@@ -11242,6 +11409,7 @@ def other_gases_required():
 
 
 @cache.step
+@to_float
 def other_solids_required():
     """
     Real Name: Other solids required
@@ -11298,6 +11466,7 @@ def pes_fossil_fuel_extraction():
 
 
 @cache.step
+@to_float
 def urban_land_density_t1():
     """
     Real Name: "urban land density t-1"
@@ -11313,6 +11482,7 @@ def urban_land_density_t1():
 
 
 @cache.step
+@to_float
 def urban_land_density_variation():
     """
     Real Name: urban land density variation
@@ -11328,6 +11498,7 @@ def urban_land_density_variation():
 
 
 @cache.step
+@to_float
 def historic_urban_land_density():
     """
     Real Name: Historic urban land density
@@ -11344,6 +11515,7 @@ def historic_urban_land_density():
 
 
 @cache.run
+@to_float
 def p_variation_primary_forest():
     """
     Real Name: P variation primary forest
@@ -11359,6 +11531,7 @@ def p_variation_primary_forest():
 
 
 @cache.step
+@to_float
 def primary_forests_area():
     """
     Real Name: Primary forests area
@@ -11374,6 +11547,7 @@ def primary_forests_area():
 
 
 @cache.step
+@to_float
 def available_forest_area():
     """
     Real Name: "'Available' forest area"
@@ -11390,6 +11564,7 @@ def available_forest_area():
 
 
 @cache.step
+@to_float
 def available_to_primary_forest_rate():
     """
     Real Name: "'Available' to primary forest rate"
@@ -11414,6 +11589,7 @@ def available_to_primary_forest_rate():
 
 
 @cache.run
+@to_float
 def start_year_p_variation_primary_forest():
     """
     Real Name: Start year P variation primary forest
@@ -11429,6 +11605,7 @@ def start_year_p_variation_primary_forest():
 
 
 @cache.run
+@to_float
 def mha_to_m2():
     """
     Real Name: Mha to m2
@@ -11444,6 +11621,7 @@ def mha_to_m2():
 
 
 @cache.step
+@to_float
 def urban_land_density():
     """
     Real Name: urban land density
@@ -11478,6 +11656,7 @@ def urban_land_density():
 
 
 @cache.run
+@to_float
 def start_year_p_urban_land_density():
     """
     Real Name: Start year P urban land density
@@ -11493,6 +11672,7 @@ def start_year_p_urban_land_density():
 
 
 @cache.step
+@to_float
 def forest_extraction_ej():
     """
     Real Name: forest extraction EJ
@@ -11519,6 +11699,7 @@ def forest_extraction_ej():
 
 
 @cache.step
+@to_float
 def natural_lands():
     """
     Real Name: Natural lands
@@ -11534,6 +11715,7 @@ def natural_lands():
 
 
 @cache.step
+@to_float
 def deforestation_rate():
     """
     Real Name: Deforestation rate
@@ -11554,6 +11736,7 @@ def deforestation_rate():
 
 
 @cache.run
+@to_float
 def target_year_p_urban_land_density():
     """
     Real Name: Target year P urban land density
@@ -11569,6 +11752,7 @@ def target_year_p_urban_land_density():
 
 
 @cache.run
+@to_float
 def historic_av_variation_primary_forests_area():
     """
     Real Name: Historic av variation primary forests area
@@ -11584,6 +11768,7 @@ def historic_av_variation_primary_forests_area():
 
 
 @cache.step
+@to_float
 def total_eu_land_endogenous():
     """
     Real Name: Total EU land endogenous
@@ -11609,6 +11794,7 @@ def total_eu_land_endogenous():
 
 
 @cache.step
+@to_float
 def consum_wood_products_ej():
     """
     Real Name: consum wood products EJ
@@ -11629,6 +11815,7 @@ def consum_wood_products_ej():
 
 
 @cache.step
+@to_float
 def share_imports_eu_nre_from_row_vs_world_extraction():
     """
     Real Name: share imports EU NRE from RoW vs world extraction
@@ -11644,6 +11831,7 @@ def share_imports_eu_nre_from_row_vs_world_extraction():
 
 
 @cache.step
+@to_float
 def share_imports_eu_nre_vs_tpec():
     """
     Real Name: share imports EU NRE vs TPEC
@@ -11659,6 +11847,7 @@ def share_imports_eu_nre_vs_tpec():
 
 
 @cache.run
+@to_float
 def initial_agricultural_area():
     """
     Real Name: initial agricultural area
@@ -11674,6 +11863,7 @@ def initial_agricultural_area():
 
 
 @cache.step
+@to_float
 def total_extraction_nre_ej_world():
     """
     Real Name: Total extraction NRE EJ World
@@ -11685,10 +11875,11 @@ def total_extraction_nre_ej_world():
 
     Global total non-renewable primary energy extraction. Source: global model.
     """
-    return total_extraction_nre_ej()
+    return total_extraction_nre_ej(time())
 
 
 @cache.run
+@to_float
 def ratio_power_plants_energy_conversion_extraction_and_distribution_vs_total_ch4_emissions():
     """
     Real Name: "ratio Power Plants, Energy Conversion, Extraction, and Distribution vs total CH4 emissions"
@@ -11704,6 +11895,7 @@ def ratio_power_plants_energy_conversion_extraction_and_distribution_vs_total_ch
 
 
 @cache.run
+@to_float
 def nvs_1_to_m():
     """
     Real Name: "1 to M"
@@ -11719,6 +11911,7 @@ def nvs_1_to_m():
 
 
 @cache.step
+@to_float
 def eu_forest_energy_imports_from_row():
     """
     Real Name: EU forest energy imports from RoW
@@ -11734,6 +11927,7 @@ def eu_forest_energy_imports_from_row():
 
 
 @cache.run
+@to_float
 def growing_stock_forest_per_ha():
     """
     Real Name: Growing stock forest per Ha
@@ -11750,6 +11944,7 @@ def growing_stock_forest_per_ha():
 
 
 @cache.step
+@to_float
 def forest_stock_ratio():
     """
     Real Name: forest stock ratio
@@ -11765,6 +11960,7 @@ def forest_stock_ratio():
 
 
 @cache.step
+@to_float
 def forest_loss_to_sustain_agriculture():
     """
     Real Name: Forest loss to sustain agriculture
@@ -11785,6 +11981,7 @@ def forest_loss_to_sustain_agriculture():
 
 
 @cache.step
+@to_float
 def forest_consumption_ej():
     """
     Real Name: forest consumption EJ
@@ -11800,6 +11997,7 @@ def forest_consumption_ej():
 
 
 @cache.step
+@to_float
 def consum_forest_energy_non_traditional_ej():
     """
     Real Name: consum forest energy non traditional EJ
@@ -11824,6 +12022,7 @@ def consum_forest_energy_non_traditional_ej():
 
 
 @cache.step
+@to_float
 def urban_land_rate():
     """
     Real Name: urban land rate
@@ -11844,6 +12043,7 @@ def urban_land_rate():
 
 
 @cache.step
+@to_float
 def total_land_occupied_by_res():
     """
     Real Name: Total land occupied by RES
@@ -11864,6 +12064,7 @@ def total_land_occupied_by_res():
 
 
 @cache.step
+@to_float
 def consum_forest_energy_traditional_ej():
     """
     Real Name: consum forest energy traditional EJ
@@ -11881,6 +12082,7 @@ def consum_forest_energy_traditional_ej():
 
 
 @cache.step
+@to_float
 def total_imports_eu_nre_from_row():
     """
     Real Name: Total imports EU NRE from Row
@@ -11901,6 +12103,7 @@ def total_imports_eu_nre_from_row():
 
 
 @cache.step
+@to_float
 def ch4_anthro_emissions():
     """
     Real Name: CH4 anthro emissions
@@ -11934,6 +12137,7 @@ def ch4_anthro_emissions():
 
 
 @cache.step
+@to_float
 def pe_supply_res_nonelec_ej():
     """
     Real Name: "PE supply RES non-Elec EJ"
@@ -11954,6 +12158,7 @@ def pe_supply_res_nonelec_ej():
 
 
 @cache.step
+@to_float
 def ped_coal_ej():
     """
     Real Name: PED coal EJ
@@ -11979,6 +12184,7 @@ def ped_coal_ej():
 
 
 @cache.step
+@to_float
 def real_fe_consumption_solids_ej():
     """
     Real Name: real FE consumption solids EJ
@@ -12007,6 +12213,7 @@ def real_fe_consumption_solids_ej():
 
 
 @cache.step
+@to_float
 def pes_solids():
     """
     Real Name: PES solids
@@ -12029,6 +12236,7 @@ def pes_solids():
 
 
 @cache.step
+@to_float
 def tfec_res_ej():
     """
     Real Name: TFEC RES EJ
@@ -12095,6 +12303,7 @@ def variation_energy_intensity_of_households_transport():
 
 
 @cache.run
+@to_float
 def liq_2w():
     """
     Real Name: Liq 2w
@@ -12131,6 +12340,7 @@ def aux_reach_zero():
 
 
 @cache.step
+@to_float
 def extraction_conv_oil_ej():
     """
     Real Name: extraction conv oil EJ
@@ -12164,6 +12374,7 @@ def extraction_conv_oil_ej():
 
 
 @cache.step
+@to_float
 def extraction_tot_agg_gas_ej():
     """
     Real Name: extraction tot agg gas EJ
@@ -12198,6 +12409,7 @@ def extraction_tot_agg_gas_ej():
 
 
 @cache.step
+@to_float
 def extraction_tot_agg_oil_ej():
     """
     Real Name: extraction tot agg oil EJ
@@ -12231,6 +12443,7 @@ def extraction_tot_agg_oil_ej():
 
 
 @cache.step
+@to_float
 def historic_share_net_imports_oil_until_2016():
     """
     Real Name: Historic share net imports oil until 2016
@@ -12250,6 +12463,7 @@ def historic_share_net_imports_oil_until_2016():
 
 
 @cache.step
+@to_float
 def aux25():
     """
     Real Name: aux25
@@ -12265,6 +12479,7 @@ def aux25():
 
 
 @cache.step
+@to_float
 def extraction_conv_gas_ej():
     """
     Real Name: extraction conv gas EJ
@@ -12299,6 +12514,7 @@ def extraction_conv_gas_ej():
 
 
 @cache.step
+@to_float
 def ped_domestic_eu_conv_nat_gas_ej():
     """
     Real Name: "PED domestic EU conv. nat. gas EJ"
@@ -12317,6 +12533,7 @@ def ped_domestic_eu_conv_nat_gas_ej():
 
 
 @cache.step
+@to_float
 def historic_share_net_imports_nat_gas_until_2016():
     """
     Real Name: "Historic share net imports nat. gas until 2016"
@@ -12336,6 +12553,7 @@ def historic_share_net_imports_nat_gas_until_2016():
 
 
 @cache.step
+@to_float
 def aux22():
     """
     Real Name: aux22
@@ -12351,6 +12569,7 @@ def aux22():
 
 
 @cache.step
+@to_float
 def aux20():
     """
     Real Name: aux20
@@ -12366,6 +12585,7 @@ def aux20():
 
 
 @cache.step
+@to_float
 def desired_variation_gdp():
     """
     Real Name: Desired variation GDP
@@ -12389,6 +12609,7 @@ def desired_variation_gdp():
 
 
 @cache.step
+@to_float
 def variation_pop2():
     """
     Real Name: variation pop2
@@ -12408,6 +12629,7 @@ def variation_pop2():
 
 
 @cache.step
+@to_float
 def desired_annual_total_demand_growth_rate_delayed_1_yr():
     """
     Real Name: Desired annual total demand growth rate delayed 1 yr
@@ -12423,6 +12645,7 @@ def desired_annual_total_demand_growth_rate_delayed_1_yr():
 
 
 @cache.step
+@to_float
 def diff_demand_eu():
     """
     Real Name: diff demand EU
@@ -12447,6 +12670,7 @@ def diff_demand_eu():
 
 
 @cache.step
+@to_float
 def variation_historic_gdppc_2():
     """
     Real Name: variation historic gdppc 2
@@ -12466,6 +12690,7 @@ def variation_historic_gdppc_2():
 
 
 @cache.step
+@to_float
 def desire_gdp_next_step():
     """
     Real Name: Desire GDP next step
@@ -12481,6 +12706,7 @@ def desire_gdp_next_step():
 
 
 @cache.run
+@to_float
 def t_hist_inlandt():
     """
     Real Name: T hist inlandT
@@ -12651,6 +12877,7 @@ def aux_p_inland_transp():
 
 
 @cache.step
+@to_float
 def var_i_inlandt_gas():
     """
     Real Name: var I inlandT Gas
@@ -12674,6 +12901,7 @@ def var_i_inlandt_gas():
 
 
 @cache.step
+@to_float
 def var_i_inlandt_liq():
     """
     Real Name: var I inlandT liq
@@ -12737,6 +12965,7 @@ def aaux_tveh_ini():
 
 
 @cache.step
+@to_float
 def var_i_inland_elec():
     """
     Real Name: var I inland Elec
@@ -12993,6 +13222,7 @@ def aaux_tveh():
 
 
 @cache.step
+@to_float
 def new_cellulosic_biofuels():
     """
     Real Name: new cellulosic biofuels
@@ -13032,6 +13262,7 @@ def new_cellulosic_biofuels():
 
 
 @cache.step
+@to_float
 def new_land_marg_for_biofuels():
     """
     Real Name: new land marg for biofuels
@@ -13051,6 +13282,7 @@ def new_land_marg_for_biofuels():
 
 
 @cache.step
+@to_float
 def new_biofuels_land_marg():
     """
     Real Name: new biofuels land marg
@@ -13095,6 +13327,7 @@ def new_biofuels_land_marg():
 
 
 @cache.step
+@to_float
 def max_potential_csp_twe():
     """
     Real Name: max potential CSP TWe
@@ -13116,6 +13349,7 @@ def max_potential_csp_twe():
 
 
 @cache.step
+@to_float
 def new_biofuels_2gen_land_compet():
     """
     Real Name: new biofuels 2gen land compet
@@ -13146,6 +13380,7 @@ def new_biofuels_2gen_land_compet():
 
 
 @cache.step
+@to_float
 def max_potential_solar_pv_twe():
     """
     Real Name: max potential solar PV TWe
@@ -13167,6 +13402,7 @@ def max_potential_solar_pv_twe():
 
 
 @cache.step
+@to_float
 def land_availability_constraint():
     """
     Real Name: Land availability constraint
@@ -13183,6 +13419,7 @@ def land_availability_constraint():
 
 
 @cache.step
+@to_float
 def marginal_land_for_biofuels_rate():
     """
     Real Name: Marginal land for biofuels rate
@@ -13198,6 +13435,7 @@ def marginal_land_for_biofuels_rate():
 
 
 @cache.step
+@to_float
 def available_land():
     """
     Real Name: "'Available land'"
@@ -13217,6 +13455,7 @@ def available_land():
 
 
 @cache.step
+@to_float
 def max_csp_on_land_mha():
     """
     Real Name: max CSP on land MHa
@@ -13233,6 +13472,7 @@ def max_csp_on_land_mha():
 
 
 @cache.step
+@to_float
 def compet_land_for_biofuels_rate():
     """
     Real Name: compet land for biofuels rate
@@ -13249,6 +13489,7 @@ def compet_land_for_biofuels_rate():
 
 
 @cache.step
+@to_float
 def new_bioe_residues_for_nonbiofuels():
     """
     Real Name: "new BioE residues for non-biofuels"
@@ -13283,6 +13524,7 @@ def new_bioe_residues_for_nonbiofuels():
 
 
 @cache.step
+@to_float
 def max_solar_pv_on_land_mha():
     """
     Real Name: max solar PV on land MHa
@@ -13299,6 +13541,7 @@ def max_solar_pv_on_land_mha():
 
 
 @cache.step
+@to_float
 def max_solar_on_land_mha():
     """
     Real Name: max solar on land Mha
@@ -13314,6 +13557,7 @@ def max_solar_on_land_mha():
 
 
 @cache.step
+@to_float
 def permanent_snowsglaciers_area():
     """
     Real Name: "permanent snows&glaciers area"
@@ -13329,6 +13573,7 @@ def permanent_snowsglaciers_area():
 
 
 @cache.run
+@to_float
 def initial_permanent_snowsglaciers_area():
     """
     Real Name: "initial permanent snows&glaciers area"
@@ -13344,6 +13589,7 @@ def initial_permanent_snowsglaciers_area():
 
 
 @cache.step
+@to_float
 def warning_biodiversity_loss_12():
     """
     Real Name: "Warning biodiversity loss <12%"
@@ -13359,6 +13605,7 @@ def warning_biodiversity_loss_12():
 
 
 @cache.run
+@to_float
 def total_eu_land():
     """
     Real Name: Total EU land
@@ -13374,6 +13621,7 @@ def total_eu_land():
 
 
 @cache.step
+@to_float
 def land_for_res_elec_rate():
     """
     Real Name: Land for RES elec rate
@@ -13409,6 +13657,7 @@ def aux_reach_available_land():
 
 
 @cache.step
+@to_float
 def increase_agricultural_land():
     """
     Real Name: increase agricultural land
@@ -13431,6 +13680,7 @@ def increase_agricultural_land():
 
 
 @cache.step
+@to_float
 def total_land_requirements_renew_mha():
     """
     Real Name: Total land requirements renew Mha
@@ -13452,6 +13702,7 @@ def total_land_requirements_renew_mha():
 
 
 @cache.step
+@to_float
 def land_requirements_res_elec_compet_uses_t1():
     """
     Real Name: "Land requirements RES elec compet uses t-1"
@@ -13469,6 +13720,7 @@ def land_requirements_res_elec_compet_uses_t1():
 
 
 @cache.run
+@to_float
 def initial_available_land():
     """
     Real Name: initial 'available land'
@@ -13488,6 +13740,7 @@ def initial_available_land():
 
 
 @cache.step
+@to_float
 def land_for_solar_and_hydro_res():
     """
     Real Name: Land for solar and hydro RES
@@ -13503,6 +13756,7 @@ def land_for_solar_and_hydro_res():
 
 
 @cache.step
+@to_float
 def aux16():
     """
     Real Name: aux16
@@ -13518,6 +13772,7 @@ def aux16():
 
 
 @cache.step
+@to_float
 def agricultural_land_until_2015():
     """
     Real Name: agricultural land until 2015
@@ -13534,6 +13789,7 @@ def agricultural_land_until_2015():
 
 
 @cache.run
+@to_float
 def p_urban_land_density():
     """
     Real Name: P urban land density
@@ -13563,6 +13819,7 @@ def historic_urban_land(x):
 
 
 @cache.step
+@to_float
 def hist_variation_urban_land():
     """
     Real Name: hist variation urban land
@@ -13687,6 +13944,7 @@ def var_percents_h_vehicles():
 
 
 @cache.step
+@to_float
 def h_gas_initial_growth():
     """
     Real Name: H gas initial growth
@@ -13716,6 +13974,7 @@ def h_gas_initial_growth():
 
 
 @cache.step
+@to_float
 def h_2w_liq_initial_growth():
     """
     Real Name: H 2w liq initial growth
@@ -13743,6 +14002,7 @@ def h_2w_liq_initial_growth():
 
 
 @cache.step
+@to_float
 def h_hyb_initial_growth():
     """
     Real Name: H hyb initial growth
@@ -13772,6 +14032,7 @@ def h_hyb_initial_growth():
 
 
 @cache.step
+@to_float
 def h_2w_elec_initial_growth():
     """
     Real Name: H 2w elec initial growth
@@ -13801,6 +14062,7 @@ def h_2w_elec_initial_growth():
 
 
 @cache.step
+@to_float
 def h_2w_liq_adapt_growth():
     """
     Real Name: H 2w liq adapt growth
@@ -13832,6 +14094,7 @@ def aaux_hveh_t():
 
 
 @cache.step
+@to_float
 def a2_coef_th():
     """
     Real Name: A2 coef tH
@@ -13847,6 +14110,7 @@ def a2_coef_th():
 
 
 @cache.step
+@to_float
 def h_elec_initial_growth():
     """
     Real Name: H elec initial growth
@@ -14037,6 +14301,7 @@ def percent_h_vehicles_tini():
 
 
 @cache.run
+@to_float
 def p_labour_share():
     """
     Real Name: P labour share
@@ -14052,6 +14317,7 @@ def p_labour_share():
 
 
 @cache.run
+@to_float
 def initial_labour_share():
     """
     Real Name: Initial Labour share
@@ -14088,6 +14354,7 @@ def gfcf_not_covered():
 
 
 @cache.step
+@to_float
 def cc_total_not_covered():
     """
     Real Name: CC total not covered
@@ -14104,6 +14371,7 @@ def cc_total_not_covered():
 
 
 @cache.step
+@to_float
 def historic_labour_share_growth():
     """
     Real Name: Historic labour share growth
@@ -14119,6 +14387,7 @@ def historic_labour_share_growth():
 
 
 @cache.step
+@to_float
 def real_exchange_next_step():
     """
     Real Name: real exchange next step
@@ -14185,6 +14454,7 @@ def beta_1_exp():
 
 
 @cache.step
+@to_float
 def variation_real_exchange():
     """
     Real Name: variation real exchange
@@ -14200,6 +14470,7 @@ def variation_real_exchange():
 
 
 @cache.run
+@to_float
 def beta_2_gfcf():
     """
     Real Name: beta 2 gfcf
@@ -14216,6 +14487,7 @@ def beta_2_gfcf():
 
 
 @cache.step
+@to_float
 def total_gfcf():
     """
     Real Name: Total GFCF
@@ -14231,6 +14503,7 @@ def total_gfcf():
 
 
 @cache.run
+@to_float
 def beta_2_hh():
     """
     Real Name: beta 2 hh
@@ -14247,6 +14520,7 @@ def beta_2_hh():
 
 
 @cache.run
+@to_float
 def beta_3_gfcf():
     """
     Real Name: beta 3 gfcf
@@ -14263,6 +14537,7 @@ def beta_3_gfcf():
 
 
 @cache.run
+@to_float
 def beta_3_exp():
     """
     Real Name: beta 3 exp
@@ -14279,6 +14554,7 @@ def beta_3_exp():
 
 
 @cache.run
+@to_float
 def initial_capital_share():
     """
     Real Name: Initial capital share
@@ -14294,6 +14570,7 @@ def initial_capital_share():
 
 
 @cache.run
+@to_float
 def initial_cc_total():
     """
     Real Name: initial CC total
@@ -14309,6 +14586,7 @@ def initial_cc_total():
 
 
 @cache.step
+@to_float
 def annual_gdppc_growth_rate():
     """
     Real Name: Annual GDPpc growth rate
@@ -14359,6 +14637,7 @@ def number_vehicles_h():
 
 
 @cache.step
+@to_float
 def total_government_expenditure():
     """
     Real Name: Total government expenditure
@@ -14424,6 +14703,7 @@ def historic_real_exchange(x):
 
 
 @cache.run
+@to_float
 def select_gdppc_evolution_input():
     """
     Real Name: select GDPpc evolution input
@@ -14455,6 +14735,7 @@ def gross_fixed_capital_formation():
 
 
 @cache.step
+@to_float
 def growth_capital_share():
     """
     Real Name: growth capital share
@@ -14478,6 +14759,7 @@ def growth_capital_share():
 
 
 @cache.step
+@to_float
 def growth_labour_share():
     """
     Real Name: growth labour share
@@ -14533,6 +14815,7 @@ def initial_exports_demand():
 
 
 @cache.step
+@to_float
 def total_exports():
     """
     Real Name: Total exports
@@ -14548,6 +14831,7 @@ def total_exports():
 
 
 @cache.step
+@to_float
 def capital_share():
     """
     Real Name: capital share
@@ -14609,6 +14893,7 @@ def variation_historic_gfcf():
 
 
 @cache.step
+@to_float
 def real_demand_world_next_step():
     """
     Real Name: real demand world next step
@@ -14686,6 +14971,7 @@ def increase_households_energy_final_demand_for_transp():
 
 
 @cache.step
+@to_float
 def variation_labour_share():
     """
     Real Name: variation labour share
@@ -14701,6 +14987,7 @@ def variation_labour_share():
 
 
 @cache.run
+@to_float
 def initial_lc_total():
     """
     Real Name: initial LC total
@@ -14716,6 +15003,7 @@ def initial_lc_total():
 
 
 @cache.run
+@to_float
 def bet_0_hh():
     """
     Real Name: Bet 0 hh
@@ -14732,6 +15020,7 @@ def bet_0_hh():
 
 
 @cache.run
+@to_float
 def beta_0_gfcf():
     """
     Real Name: beta 0 gfcf
@@ -14748,6 +15037,7 @@ def beta_0_gfcf():
 
 
 @cache.run
+@to_float
 def beta_0_exp():
     """
     Real Name: beta 0 exp
@@ -14777,6 +15067,7 @@ def historic_hd(x):
 
 
 @cache.run
+@to_float
 def year_final_capial_share():
     """
     Real Name: Year final capial share
@@ -14828,6 +15119,7 @@ def share_gfcf_vs_gfcfhdexp():
 
 
 @cache.run
+@to_float
 def beta_2_exp():
     """
     Real Name: beta 2 exp
@@ -14844,6 +15136,7 @@ def beta_2_exp():
 
 
 @cache.run
+@to_float
 def laborcapital_share_cte():
     """
     Real Name: "Labor/Capital share cte?"
@@ -14859,6 +15152,7 @@ def laborcapital_share_cte():
 
 
 @cache.run
+@to_float
 def p_capital_share():
     """
     Real Name: P capital share
@@ -14895,6 +15189,7 @@ def demand_not_covered_by_sector_fd_eu():
 
 
 @cache.step
+@to_float
 def historic_capital_share_growth():
     """
     Real Name: Historic capital share growth
@@ -14910,6 +15205,7 @@ def historic_capital_share_growth():
 
 
 @cache.step
+@to_float
 def variation_capital_share():
     """
     Real Name: variation capital share
@@ -14925,6 +15221,7 @@ def variation_capital_share():
 
 
 @cache.step
+@to_float
 def variation_cc():
     """
     Real Name: variation CC
@@ -14949,6 +15246,7 @@ def variation_cc():
 
 
 @cache.step
+@to_float
 def p_timeseries_gdppc_growth_rate():
     """
     Real Name: P timeseries GDPpc growth rate
@@ -14964,6 +15262,7 @@ def p_timeseries_gdppc_growth_rate():
 
 
 @cache.run
+@to_float
 def p_customized_cte_gdppc_variation():
     """
     Real Name: P customized cte GDPpc variation
@@ -15037,6 +15336,7 @@ def variation_demand_flow_fd_eu():
 
 
 @cache.step
+@to_float
 def desired_gdp():
     """
     Real Name: Desired GDP
@@ -15052,6 +15352,7 @@ def desired_gdp():
 
 
 @cache.step
+@to_float
 def desired_gdp_delayed_1yr():
     """
     Real Name: Desired GDP delayed 1yr
@@ -15103,6 +15404,7 @@ def sectoral_changes_in_inventories():
 
 
 @cache.step
+@to_float
 def desired_gdppc():
     """
     Real Name: Desired GDPpc
@@ -15118,6 +15420,7 @@ def desired_gdppc():
 
 
 @cache.step
+@to_float
 def diff_annual_gdp_growth_rate():
     """
     Real Name: diff annual GDP growth rate
@@ -15153,6 +15456,7 @@ def variation_historic_demand():
 
 
 @cache.step
+@to_float
 def capital_share_growth():
     """
     Real Name: capital share growth
@@ -15171,6 +15475,7 @@ def capital_share_growth():
 
 
 @cache.step
+@to_float
 def variation_historic_real_exchange():
     """
     Real Name: variation historic real exchange
@@ -15202,6 +15507,7 @@ def initial_household_demand():
 
 
 @cache.run
+@to_float
 def gdppc_initial_year():
     """
     Real Name: GDPpc initial year
@@ -15217,6 +15523,7 @@ def gdppc_initial_year():
 
 
 @cache.step
+@to_float
 def cc_next_step():
     """
     Real Name: CC next step
@@ -15232,6 +15539,7 @@ def cc_next_step():
 
 
 @cache.step
+@to_float
 def cc_total_delayed():
     """
     Real Name: CC total delayed
@@ -15247,6 +15555,7 @@ def cc_total_delayed():
 
 
 @cache.step
+@to_float
 def real_exchange():
     """
     Real Name: real exchange
@@ -15318,6 +15627,7 @@ def exports_demand_not_covered():
 
 
 @cache.run
+@to_float
 def year_final_labour_share():
     """
     Real Name: Year Final Labour share
@@ -15355,6 +15665,7 @@ def household_demand_not_covered():
 
 
 @cache.step
+@to_float
 def hh_demand_pc():
     """
     Real Name: HH demand pc
@@ -15386,6 +15697,7 @@ def exports_demand():
 
 
 @cache.run
+@to_float
 def p_customized_year_gdppc_evolution():
     """
     Real Name: P customized year GDPpc evolution
@@ -15401,6 +15713,7 @@ def p_customized_year_gdppc_evolution():
 
 
 @cache.step
+@to_float
 def variation_historic_gdppc():
     """
     Real Name: variation historic GDPpc
@@ -15436,6 +15749,7 @@ def household_demand():
 
 
 @cache.run
+@to_float
 def beta_3_hh():
     """
     Real Name: beta 3 hh
@@ -15452,6 +15766,7 @@ def beta_3_hh():
 
 
 @cache.run
+@to_float
 def year_initial_capital_share():
     """
     Real Name: Year initial capital share
@@ -15467,6 +15782,7 @@ def year_initial_capital_share():
 
 
 @cache.step
+@to_float
 def cc_total():
     """
     Real Name: CC total
@@ -15482,6 +15798,7 @@ def cc_total():
 
 
 @cache.step
+@to_float
 def labour_share_growth():
     """
     Real Name: Labour share growth
@@ -15500,6 +15817,7 @@ def labour_share_growth():
 
 
 @cache.run
+@to_float
 def year_initial_labour_share():
     """
     Real Name: Year Initial Labour share
@@ -15515,6 +15833,7 @@ def year_initial_labour_share():
 
 
 @cache.step
+@to_float
 def variation_lc():
     """
     Real Name: variation LC
@@ -15539,6 +15858,7 @@ def variation_lc():
 
 
 @cache.step
+@to_float
 def desired_annual_total_demand_growth_rate():
     """
     Real Name: Desired annual total demand growth rate
@@ -15555,6 +15875,7 @@ def desired_annual_total_demand_growth_rate():
 
 
 @cache.step
+@to_float
 def labour_share():
     """
     Real Name: labour share
@@ -15570,6 +15891,7 @@ def labour_share():
 
 
 @cache.step
+@to_float
 def household_demand_total():
     """
     Real Name: Household demand total
@@ -15617,6 +15939,7 @@ def gdppc_annual_growth_ssp2(x):
 
 
 @cache.run
+@to_float
 def initial_planted_forests():
     """
     Real Name: initial planted forests
@@ -15632,6 +15955,7 @@ def initial_planted_forests():
 
 
 @cache.step
+@to_float
 def initial_available_forest_area():
     """
     Real Name: initial 'available' forest area
@@ -15647,6 +15971,7 @@ def initial_available_forest_area():
 
 
 @cache.run
+@to_float
 def initial_urban_land():
     """
     Real Name: initial urban land
@@ -15676,6 +16001,7 @@ def historic_primary_forest(x):
 
 
 @cache.run
+@to_float
 def initial_other_naturally_regen_forest():
     """
     Real Name: initial other naturally regen forest
@@ -15691,6 +16017,7 @@ def initial_other_naturally_regen_forest():
 
 
 @cache.run
+@to_float
 def initial_primary_forest_area():
     """
     Real Name: initial primary forest area
@@ -15706,6 +16033,7 @@ def initial_primary_forest_area():
 
 
 @cache.step
+@to_float
 def hist_variation_primary_forest():
     """
     Real Name: hist variation primary forest
@@ -15726,6 +16054,7 @@ def hist_variation_primary_forest():
 
 
 @cache.step
+@to_float
 def urban_land():
     """
     Real Name: Urban land
@@ -15742,6 +16071,7 @@ def urban_land():
 
 
 @cache.step
+@to_float
 def land_requirements_res_elec_compet_uses():
     """
     Real Name: Land requirements RES elec compet uses
@@ -15759,6 +16089,7 @@ def land_requirements_res_elec_compet_uses():
 
 
 @cache.step
+@to_float
 def historic_conv_oil_domestic_eu_extracted_ej():
     """
     Real Name: Historic conv oil domestic EU extracted EJ
@@ -15774,6 +16105,7 @@ def historic_conv_oil_domestic_eu_extracted_ej():
 
 
 @cache.step
+@to_float
 def historic_unconv_nat_gas_domestic_eu_extracted_ej():
     """
     Real Name: "Historic unconv nat. gas domestic EU extracted EJ"
@@ -15789,6 +16121,7 @@ def historic_unconv_nat_gas_domestic_eu_extracted_ej():
 
 
 @cache.step
+@to_float
 def historic_unconv_oil_domestic_eu_extracted_ej():
     """
     Real Name: Historic unconv oil domestic EU extracted EJ
@@ -15804,6 +16137,7 @@ def historic_unconv_oil_domestic_eu_extracted_ej():
 
 
 @cache.step
+@to_float
 def historic_uranium_domestic_eu_extracted_t():
     """
     Real Name: Historic uranium domestic EU extracted t
@@ -15819,6 +16153,7 @@ def historic_uranium_domestic_eu_extracted_t():
 
 
 @cache.step
+@to_float
 def pec_uranium_eu_ej():
     """
     Real Name: PEC uranium EU EJ
@@ -15834,6 +16169,7 @@ def pec_uranium_eu_ej():
 
 
 @cache.step
+@to_float
 def pec_uranium_eu_kt():
     """
     Real Name: PEC uranium EU kt
@@ -15849,6 +16185,7 @@ def pec_uranium_eu_kt():
 
 
 @cache.step
+@to_float
 def historic_conv_nat_gas_domestic_eu_extracted_ej():
     """
     Real Name: "Historic conv nat. gas domestic EU extracted EJ"
@@ -15864,6 +16201,7 @@ def historic_conv_nat_gas_domestic_eu_extracted_ej():
 
 
 @cache.step
+@to_float
 def imports_eu_conv_oil_from_row_ej():
     """
     Real Name: imports EU conv oil from RoW EJ
@@ -15881,6 +16219,7 @@ def imports_eu_conv_oil_from_row_ej():
 
 
 @cache.step
+@to_float
 def pec_conv_oil():
     """
     Real Name: PEC conv oil
@@ -15896,6 +16235,7 @@ def pec_conv_oil():
 
 
 @cache.step
+@to_float
 def co2_emissions_conv_gas_without_gtl():
     """
     Real Name: CO2 emissions conv gas without GTL
@@ -15927,6 +16267,7 @@ def co2_emissions_conv_gas_without_gtl():
 
 
 @cache.step
+@to_float
 def co2_emissions_conv_oil():
     """
     Real Name: CO2 emissions conv oil
@@ -15947,6 +16288,7 @@ def co2_emissions_conv_oil():
 
 
 @cache.step
+@to_float
 def imports_eu_unconv_oil_from_row_ej():
     """
     Real Name: imports EU unconv oil from RoW EJ
@@ -15964,6 +16306,7 @@ def imports_eu_unconv_oil_from_row_ej():
 
 
 @cache.step
+@to_float
 def co2_emissions_coal_without_ctl():
     """
     Real Name: CO2 emissions coal without CTL
@@ -15984,6 +16327,7 @@ def co2_emissions_coal_without_ctl():
 
 
 @cache.step
+@to_float
 def real_consumption_unconv_oil_emissions_relevant_ej():
     """
     Real Name: real consumption unconv oil emissions relevant EJ
@@ -16011,6 +16355,7 @@ def real_consumption_unconv_oil_emissions_relevant_ej():
 
 
 @cache.step
+@to_float
 def ch4_emissions_ctl():
     """
     Real Name: CH4 emissions CTL
@@ -16026,6 +16371,7 @@ def ch4_emissions_ctl():
 
 
 @cache.step
+@to_float
 def co2_emissions_ctl():
     """
     Real Name: CO2 emissions CTL
@@ -16041,6 +16387,7 @@ def co2_emissions_ctl():
 
 
 @cache.step
+@to_float
 def real_consumption_unconv_gas_emissions_relevant_ej():
     """
     Real Name: real consumption unconv gas emissions relevant EJ
@@ -16064,6 +16411,7 @@ def real_consumption_unconv_gas_emissions_relevant_ej():
 
 
 @cache.step
+@to_float
 def consumption_ue_coal_emissions_relevant_ej():
     """
     Real Name: consumption UE coal emissions relevant EJ
@@ -16084,6 +16432,7 @@ def consumption_ue_coal_emissions_relevant_ej():
 
 
 @cache.step
+@to_float
 def pec_conv_gas():
     """
     Real Name: PEC conv gas
@@ -16099,6 +16448,7 @@ def pec_conv_gas():
 
 
 @cache.step
+@to_float
 def share_imports_eu_uranium_from_row_vs_extraction_world():
     """
     Real Name: share imports EU uranium from RoW vs extraction World
@@ -16114,6 +16464,7 @@ def share_imports_eu_uranium_from_row_vs_extraction_world():
 
 
 @cache.step
+@to_float
 def co2_emissions_unconv_oil():
     """
     Real Name: CO2 emissions unconv oil
@@ -16140,6 +16491,7 @@ def co2_emissions_unconv_oil():
 
 
 @cache.step
+@to_float
 def real_consumption_ue_conv_oil_emissions_relevant_ej():
     """
     Real Name: real consumption UE conv oil emissions relevant EJ
@@ -16166,6 +16518,7 @@ def real_consumption_ue_conv_oil_emissions_relevant_ej():
 
 
 @cache.step
+@to_float
 def pec_unconv_gas():
     """
     Real Name: PEC unconv gas
@@ -16181,6 +16534,7 @@ def pec_unconv_gas():
 
 
 @cache.step
+@to_float
 def pec_unconv_oil():
     """
     Real Name: PEC unconv oil
@@ -16196,6 +16550,7 @@ def pec_unconv_oil():
 
 
 @cache.step
+@to_float
 def ch4_emissions_oil():
     """
     Real Name: CH4 emissions oil
@@ -16211,6 +16566,7 @@ def ch4_emissions_oil():
 
 
 @cache.step
+@to_float
 def real_consumption_ue_conv_gas_emissions_relevant_ej():
     """
     Real Name: real consumption UE conv gas emissions relevant EJ
@@ -16234,6 +16590,7 @@ def real_consumption_ue_conv_gas_emissions_relevant_ej():
 
 
 @cache.step
+@to_float
 def ch4_emissions_conv_gas_without_gtl():
     """
     Real Name: CH4 emissions conv gas without GTL
@@ -16263,6 +16620,7 @@ def ch4_emissions_conv_gas_without_gtl():
 
 
 @cache.step
+@to_float
 def ch4_emissions_coal_without_ctl():
     """
     Real Name: CH4 emissions coal without CTL
@@ -16283,6 +16641,7 @@ def ch4_emissions_coal_without_ctl():
 
 
 @cache.step
+@to_float
 def share_imports_eu_tot_oil_from_row_vs_extraction_world():
     """
     Real Name: share imports EU tot oil from RoW vs extraction World
@@ -16298,6 +16657,7 @@ def share_imports_eu_tot_oil_from_row_vs_extraction_world():
 
 
 @cache.step
+@to_float
 def power_density_solar_pv_in_urban_twemha():
     """
     Real Name: "power density solar PV in urban TWe/Mha"
@@ -16320,6 +16680,7 @@ def power_density_solar_pv_in_urban_twemha():
 
 
 @cache.step
+@to_float
 def power_density_solar_pv_on_land_twemha():
     """
     Real Name: "power density solar PV on land TWe/Mha"
@@ -16341,6 +16702,7 @@ def power_density_solar_pv_on_land_twemha():
 
 
 @cache.step
+@to_float
 def power_density_solar_thermal_in_urban_twemha():
     """
     Real Name: "power density solar thermal in urban TWe/Mha"
@@ -16363,6 +16725,7 @@ def power_density_solar_thermal_in_urban_twemha():
 
 
 @cache.step
+@to_float
 def share_imports_eu_nat_gas_from_row_vs_extraction_world():
     """
     Real Name: "share imports EU nat. gas from RoW vs extraction World"
@@ -16378,6 +16741,7 @@ def share_imports_eu_nat_gas_from_row_vs_extraction_world():
 
 
 @cache.run
+@to_float
 def av_past_eu_domestic_uranium_extraction():
     """
     Real Name: av past EU domestic uranium extraction
@@ -16393,6 +16757,7 @@ def av_past_eu_domestic_uranium_extraction():
 
 
 @cache.run
+@to_float
 def choose_gwp_time_frame():
     """
     Real Name: Choose GWP time frame
@@ -16450,6 +16815,7 @@ def gwp_100_year():
 
 
 @cache.step
+@to_float
 def total_co2e():
     """
     Real Name: Total CO2e
@@ -16558,6 +16924,7 @@ def total_co2e():
 
 
 @cache.step
+@to_float
 def total_co2e_ce():
     """
     Real Name: Total CO2e Ce
@@ -16573,6 +16940,7 @@ def total_co2e_ce():
 
 
 @cache.run
+@to_float
 def nvs_1_to_g():
     """
     Real Name: "1 to G"
@@ -16588,6 +16956,7 @@ def nvs_1_to_g():
 
 
 @cache.step
+@to_float
 def annual_gdp_growth_rate_world():
     """
     Real Name: Annual GDP growth rate World
@@ -16599,7 +16968,7 @@ def annual_gdp_growth_rate_world():
 
     Annual GDP growth rate. Source: global model.
     """
-    return annual_gdp_growth_rate()
+    return annual_gdp_growth_rate(time())
 
 
 @cache.step
@@ -16634,10 +17003,11 @@ def real_final_energy_by_sector_and_fuel_world():
 
     Real final energy consumed by sector and fuel. Source: global model.
     """
-    return real_final_energy_by_sector_and_fuel()
+    return real_final_energy_by_sector_and_fuel(time())
 
 
 @cache.step
+@to_float
 def real_demand_world():
     """
     Real Name: Real demand World
@@ -16653,6 +17023,7 @@ def real_demand_world():
 
 
 @cache.step
+@to_float
 def pec_nat_gas():
     """
     Real Name: "PEC nat. gas"
@@ -16668,6 +17039,7 @@ def pec_nat_gas():
 
 
 @cache.step
+@to_float
 def pes_liquids_ej():
     """
     Real Name: PES Liquids EJ
@@ -16683,6 +17055,7 @@ def pes_liquids_ej():
 
 
 @cache.step
+@to_float
 def pes_gases():
     """
     Real Name: PES gases
@@ -16698,6 +17071,7 @@ def pes_gases():
 
 
 @cache.step
+@to_float
 def ped_eu_nat_gas_from_row():
     """
     Real Name: "PED EU nat. gas from RoW"
@@ -16713,6 +17087,7 @@ def ped_eu_nat_gas_from_row():
 
 
 @cache.step
+@to_float
 def pec_total_oil():
     """
     Real Name: PEC total oil
@@ -16728,6 +17103,7 @@ def pec_total_oil():
 
 
 @cache.step
+@to_float
 def historic_share_net_imports_coal_eu_until_2016():
     """
     Real Name: Historic share net imports coal EU until 2016
@@ -16747,6 +17123,7 @@ def historic_share_net_imports_coal_eu_until_2016():
 
 
 @cache.step
+@to_float
 def historic_coal_domestic_eu_extracted_ej_2():
     """
     Real Name: Historic coal domestic EU extracted EJ 2
@@ -16762,6 +17139,7 @@ def historic_coal_domestic_eu_extracted_ej_2():
 
 
 @cache.step
+@to_float
 def pec_coal():
     """
     Real Name: PEC coal
@@ -16777,6 +17155,7 @@ def pec_coal():
 
 
 @cache.step
+@to_float
 def aux18():
     """
     Real Name: aux18
@@ -16792,6 +17171,7 @@ def aux18():
 
 
 @cache.step
+@to_float
 def share_imports_eu_coal_from_row_vs_extraction_world():
     """
     Real Name: share imports EU coal from RoW vs extraction World
@@ -16807,6 +17187,7 @@ def share_imports_eu_coal_from_row_vs_extraction_world():
 
 
 @cache.step
+@to_float
 def extraction_coal_ej_eu():
     """
     Real Name: extraction coal EJ EU
@@ -16840,6 +17221,7 @@ def extraction_coal_ej_eu():
 
 
 @cache.step
+@to_float
 def extraction_coal_ej_row():
     """
     Real Name: extraction coal EJ RoW
@@ -16871,6 +17253,7 @@ def current_mineral_resources_mt_world():
 
 
 @cache.step
+@to_float
 def historic_coal_domestic_eu_extracted_ej():
     """
     Real Name: Historic coal domestic EU extracted EJ
@@ -16939,6 +17322,48 @@ def share_cum_materials_to_extract_alt_techn_eu_vs_reserves_world():
         cum_materials_to_extract_for_alt_techn_from_2015_eu(),
         current_mineral_reserves_mt_world(),
     )
+
+
+@cache.run
+@subs(["materials"], _subscript_dict)
+def current_mineral_reserves_mt():
+    """
+    Real Name: current mineral reserves Mt
+    Original Eqn:
+      GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV5')
+        .
+        .
+        .
+      GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AV62')
+    Units: Mt
+    Limits: (None, None)
+    Type: constant
+    Subs: ['materials']
+
+    Current mineral reserves.
+    """
+    return _ext_constant_current_mineral_reserves_mt()
+
+
+@cache.run
+@subs(["materials"], _subscript_dict)
+def current_mineral_resources_mt():
+    """
+    Real Name: current mineral resources Mt
+    Original Eqn:
+      GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY5')
+        .
+        .
+        .
+      GET DIRECT CONSTANTS('?../pymedeas_w/inputs_w.xlsx', 'Materials', 'AY62')
+    Units: Mt
+    Limits: (None, None)
+    Type: constant
+    Subs: ['materials']
+
+    Current mineral resources.
+    """
+    return _ext_constant_current_mineral_resources_mt()
 
 
 @cache.step
@@ -17040,6 +17465,7 @@ def total_energy_embedded_in_eu28_imports():
 
 
 @cache.step
+@to_float
 def coverage_energy_rate():
     """
     Real Name: Coverage energy rate
@@ -17071,6 +17497,7 @@ def total_energy_embedded_in_eu28_exports():
 
 
 @cache.step
+@to_float
 def total_final_energy_footprint():
     """
     Real Name: Total final energy footprint
@@ -17087,6 +17514,7 @@ def total_final_energy_footprint():
 
 
 @cache.step
+@to_float
 def max_fe_solar_thermal_urban_twth():
     """
     Real Name: max FE solar thermal urban TWth
@@ -17102,6 +17530,7 @@ def max_fe_solar_thermal_urban_twth():
 
 
 @cache.run
+@to_float
 def share_available_roof_for_solar_thermal():
     """
     Real Name: share available roof for solar thermal
@@ -18129,6 +18558,7 @@ def a_matrix_eu_exports_2007():
 
 
 @cache.step
+@to_float
 def gdp_eu():
     """
     Real Name: GDP EU
@@ -18529,6 +18959,7 @@ def ic_imports_eu_matrix():
 
 
 @cache.step
+@to_float
 def real_demand_tdollars():
     """
     Real Name: Real demand Tdollars
@@ -18730,6 +19161,7 @@ def a_matrix_eu_exports_2009():
 
 
 @cache.step
+@to_float
 def real_demand_delayed_1yr():
     """
     Real Name: Real demand delayed 1yr
@@ -19378,6 +19810,7 @@ def ia_matrix_eu_exports_1995():
 
 
 @cache.step
+@to_float
 def real_demand():
     """
     Real Name: Real demand
@@ -19536,7 +19969,7 @@ def real_total_output_by_sector_world():
 
     Real total output by sector. Source: global model.
     """
-    return real_total_output_by_sector()
+    return real_total_output_by_sector(time())
 
 
 @cache.step
@@ -19568,7 +20001,7 @@ def real_demand_by_sector_world():
 
     Real demand by sector. Source: global model.
     """
-    return real_demand_by_sector()
+    return real_demand_by_sector(time())
 
 
 @cache.step
@@ -19592,6 +20025,7 @@ def demand_by_sector_row():
 
 
 @cache.step
+@to_float
 def extraction_nat_gas_ej_world():
     """
     Real Name: "extraction nat. gas EJ World"
@@ -19603,10 +20037,11 @@ def extraction_nat_gas_ej_world():
 
     Global primary energy supply of natural gas. Source: global model.
     """
-    return pes_nat_gas()
+    return pes_nat_gas(time())
 
 
 @cache.step
+@to_float
 def extraction_coal_ej_world():
     """
     Real Name: extraction coal EJ World
@@ -19618,10 +20053,11 @@ def extraction_coal_ej_world():
 
     Global primary energy supply. Source: global model.
     """
-    return extraction_coal_ej()
+    return extraction_coal_ej(time())
 
 
 @cache.step
+@to_float
 def extraction_uranium_row():
     """
     Real Name: extraction uranium RoW
@@ -19641,6 +20077,7 @@ def extraction_uranium_row():
 
 
 @cache.step
+@to_float
 def imports_eu_unconv_gas_from_row_ej():
     """
     Real Name: imports EU unconv gas from RoW EJ
@@ -19658,6 +20095,7 @@ def imports_eu_unconv_gas_from_row_ej():
 
 
 @cache.step
+@to_float
 def extraction_uranium_ej_world():
     """
     Real Name: extraction uranium EJ World
@@ -19669,10 +20107,11 @@ def extraction_uranium_ej_world():
 
     Global uranium extracted. Source: global model.
     """
-    return extraction_uranium_ej()
+    return extraction_uranium_ej(time())
 
 
 @cache.step
+@to_float
 def extraction_oil_ej_world():
     """
     Real Name: Extraction oil EJ World
@@ -19684,10 +20123,11 @@ def extraction_oil_ej_world():
 
     Global primary energy supply of oil. Source: global model.
     """
-    return pes_oil_ej()
+    return pes_oil_ej(time())
 
 
 @cache.step
+@to_float
 def share_conv_vs_total_gas_extraction_world():
     """
     Real Name: share conv vs total gas extraction World
@@ -19700,10 +20140,11 @@ def share_conv_vs_total_gas_extraction_world():
     Share of global conventional vs global total (unconventional +
         conventional) gas extraction. Source: global model.
     """
-    return share_conv_vs_total_gas_extraction()
+    return share_conv_vs_total_gas_extraction(time())
 
 
 @cache.step
+@to_float
 def imports_eu_conv_gas_from_row_ej():
     """
     Real Name: imports EU conv gas from RoW EJ
@@ -19719,6 +20160,7 @@ def imports_eu_conv_gas_from_row_ej():
 
 
 @cache.step
+@to_float
 def share_conv_vs_total_oil_extraction_world():
     """
     Real Name: share conv vs total oil extraction World
@@ -19731,10 +20173,11 @@ def share_conv_vs_total_oil_extraction_world():
     Share of global conventional vs global total (unconventional +
         conventional) oil extraction. Source: global model.
     """
-    return share_conv_vs_total_oil_extraction()
+    return share_conv_vs_total_oil_extraction(time())
 
 
 @cache.step
+@to_float
 def fed_heatnc_ej():
     """
     Real Name: "FED Heat-nc EJ"
@@ -20460,6 +20903,7 @@ def historic_demand_by_sector_row(x):
 
 
 @cache.step
+@to_float
 def land_saved_by_urban_pv():
     """
     Real Name: Land saved by urban PV
@@ -20482,6 +20926,7 @@ def land_saved_by_urban_pv():
 
 
 @cache.step
+@to_float
 def remaining_potential_solar_pv_urban():
     """
     Real Name: remaining potential solar PV urban
@@ -20652,6 +21097,7 @@ def surface_res_elec():
 
 
 @cache.step
+@to_float
 def share_land_res_land_compet_vs_arable():
     """
     Real Name: share land RES land compet vs arable
@@ -20673,6 +21119,7 @@ def share_land_res_land_compet_vs_arable():
 
 
 @cache.step
+@to_float
 def surface_hydro_mha():
     """
     Real Name: surface hydro Mha
@@ -20688,6 +21135,7 @@ def surface_hydro_mha():
 
 
 @cache.step
+@to_float
 def surface_onshore_wind_mha():
     """
     Real Name: surface onshore wind Mha
@@ -20703,6 +21151,7 @@ def surface_onshore_wind_mha():
 
 
 @cache.step
+@to_float
 def surface_solar_pv_on_land_mha():
     """
     Real Name: surface solar PV on land Mha
@@ -20718,6 +21167,7 @@ def surface_solar_pv_on_land_mha():
 
 
 @cache.step
+@to_float
 def surface_csp_mha():
     """
     Real Name: surface CSP Mha
@@ -20733,6 +21183,7 @@ def surface_csp_mha():
 
 
 @cache.step
+@to_float
 def land_compet_biofuels_3gen_abandonned():
     """
     Real Name: Land compet biofuels 3gen abandonned
@@ -20749,6 +21200,7 @@ def land_compet_biofuels_3gen_abandonned():
 
 
 @cache.step
+@to_float
 def land_compet_biofuels_3gen_mha():
     """
     Real Name: Land compet biofuels 3gen Mha
@@ -20765,6 +21217,7 @@ def land_compet_biofuels_3gen_mha():
 
 
 @cache.step
+@to_float
 def potential_peavail_biofuels_land_marg_abandonned():
     """
     Real Name: Potential PEavail biofuels land marg abandonned
@@ -20780,6 +21233,7 @@ def potential_peavail_biofuels_land_marg_abandonned():
 
 
 @cache.step
+@to_float
 def potential_pe_cellulosic_biofuel_abanndoned():
     """
     Real Name: Potential PE cellulosic biofuel abanndoned
@@ -20795,6 +21249,7 @@ def potential_pe_cellulosic_biofuel_abanndoned():
 
 
 @cache.step
+@to_float
 def potential_pe_cellulosic_biofuel_ej():
     """
     Real Name: Potential PE cellulosic biofuel EJ
@@ -20810,6 +21265,7 @@ def potential_pe_cellulosic_biofuel_ej():
 
 
 @cache.step
+@to_float
 def land_compet_biofuels_2gen_abandonned():
     """
     Real Name: Land compet biofuels 2gen abandonned
@@ -20826,6 +21282,7 @@ def land_compet_biofuels_2gen_abandonned():
 
 
 @cache.step
+@to_float
 def land_compet_biofuels_2gen_mha():
     """
     Real Name: Land compet biofuels 2gen Mha
@@ -20842,6 +21299,7 @@ def land_compet_biofuels_2gen_mha():
 
 
 @cache.step
+@to_float
 def potential_peavail_biofuels_land_marg_ej():
     """
     Real Name: Potential PEavail biofuels land marg EJ
@@ -20963,6 +21421,7 @@ def pes_dem_res_for_heatcom_by_techn():
 
 
 @cache.run
+@to_float
 def p_share_installed_pv_urban_vs_tot_pv():
     """
     Real Name: P share installed PV urban vs tot PV
@@ -20978,6 +21437,7 @@ def p_share_installed_pv_urban_vs_tot_pv():
 
 
 @cache.step
+@to_float
 def potential_elec_gen_from_solar_pv_on_land_twh():
     """
     Real Name: Potential elec gen from solar PV on land TWh
@@ -20996,6 +21456,7 @@ def potential_elec_gen_from_solar_pv_on_land_twh():
 
 
 @cache.step
+@to_float
 def potential_elec_gen_from_solar_pv_urban_twh():
     """
     Real Name: Potential elec gen from solar PV urban TWh
@@ -21015,6 +21476,7 @@ def potential_elec_gen_from_solar_pv_urban_twh():
 
 
 @cache.step
+@to_float
 def potential_elec_gen_from_solar_pv_urban_unconstrained_twh():
     """
     Real Name: Potential elec gen from solar PV urban unconstrained TWh
@@ -21034,6 +21496,7 @@ def potential_elec_gen_from_solar_pv_urban_unconstrained_twh():
 
 
 @cache.step
+@to_float
 def share_solar_pv_vs_tot_solar_gen():
     """
     Real Name: share solar PV vs tot solar gen
@@ -21052,6 +21515,7 @@ def share_solar_pv_vs_tot_solar_gen():
 
 
 @cache.step
+@to_float
 def real_share_pv_urban_vs_total_pv():
     """
     Real Name: real share PV urban vs total PV
@@ -21073,6 +21537,7 @@ def real_share_pv_urban_vs_total_pv():
 
 
 @cache.step
+@to_float
 def fe_elec_gen_from_solar_pv_on_land_twh():
     """
     Real Name: FE Elec gen from solar PV on land TWh
@@ -21090,6 +21555,7 @@ def fe_elec_gen_from_solar_pv_on_land_twh():
 
 
 @cache.step
+@to_float
 def historic_share_installed_pv_urban_vs_tot_pv():
     """
     Real Name: historic share installed PV urban vs tot PV
@@ -21105,6 +21571,7 @@ def historic_share_installed_pv_urban_vs_tot_pv():
 
 
 @cache.step
+@to_float
 def desired_share_installed_pv_urban_vs_tot_pv():
     """
     Real Name: desired share installed PV urban vs tot PV
@@ -21138,6 +21605,7 @@ def desired_share_installed_pv_urban_vs_tot_pv():
 
 
 @cache.step
+@to_float
 def aux1_0():
     """
     Real Name: aux1 0
@@ -21195,6 +21663,7 @@ def max_res_elec_twe():
 
 
 @cache.step
+@to_float
 def max_tot_solar_pv_twe():
     """
     Real Name: max tot solar PV TWe
@@ -21210,6 +21679,7 @@ def max_tot_solar_pv_twe():
 
 
 @cache.step
+@to_float
 def power_density_csp():
     """
     Real Name: power density CSP
@@ -21225,6 +21695,7 @@ def power_density_csp():
 
 
 @cache.step
+@to_float
 def max_solar_pv_on_land_twe():
     """
     Real Name: max solar PV on land TWe
@@ -21242,6 +21713,7 @@ def max_solar_pv_on_land_twe():
 
 
 @cache.run
+@to_float
 def f1_pv_solar_in_target_year():
     """
     Real Name: f1 PV solar in target year
@@ -21257,6 +21729,7 @@ def f1_pv_solar_in_target_year():
 
 
 @cache.step
+@subs(["RES elec"], _subscript_dict)
 def power_density_initial_res_elec_twemha():
     """
     Real Name: "power density initial RES elec TWe/Mha"
@@ -21286,6 +21759,7 @@ def power_density_initial_res_elec_twemha():
 
 
 @cache.run
+@to_float
 def f2_pf_solar_pv():
     """
     Real Name: f2 PF solar PV
@@ -21411,6 +21885,7 @@ def power_density_res_elec_twemha():
 
 
 @cache.run
+@to_float
 def f3_solar_pv_on_land():
     """
     Real Name: f3 solar PV on land
@@ -21426,6 +21901,7 @@ def f3_solar_pv_on_land():
 
 
 @cache.run
+@to_float
 def av_solar_i():
     """
     Real Name: av solar I
@@ -21441,6 +21917,7 @@ def av_solar_i():
 
 
 @cache.run
+@to_float
 def twhmha_per_wem2():
     """
     Real Name: "TWh/Mha per We/m2"
@@ -21456,6 +21933,7 @@ def twhmha_per_wem2():
 
 
 @cache.step
+@to_float
 def f1_solar_pv():
     """
     Real Name: f1 solar PV
@@ -21486,6 +21964,7 @@ def f1_solar_pv():
 
 
 @cache.run
+@to_float
 def share_available_roof():
     """
     Real Name: share available roof
@@ -21501,6 +21980,7 @@ def share_available_roof():
 
 
 @cache.run
+@to_float
 def share_available_roof_for_rooftop_pv():
     """
     Real Name: share available roof for rooftop PV
@@ -21516,6 +21996,7 @@ def share_available_roof_for_rooftop_pv():
 
 
 @cache.run
+@to_float
 def start_year_p_f1_solar_pv():
     """
     Real Name: Start year P f1 solar PV
@@ -21531,6 +22012,7 @@ def start_year_p_f1_solar_pv():
 
 
 @cache.step
+@to_float
 def max_solar_pv_urban():
     """
     Real Name: max solar PV urban
@@ -21546,6 +22028,7 @@ def max_solar_pv_urban():
 
 
 @cache.run
+@to_float
 def target_year_f1_solar_pv():
     """
     Real Name: Target year f1 solar PV
@@ -21561,6 +22044,7 @@ def target_year_f1_solar_pv():
 
 
 @cache.run
+@to_float
 def f1ini_solar_pv():
     """
     Real Name: "f1-ini solar PV"
@@ -21576,6 +22060,7 @@ def f1ini_solar_pv():
 
 
 @cache.step
+@to_float
 def pes_coal_for_heatnc_plants():
     """
     Real Name: "PES coal for Heat-nc plants"
@@ -21593,6 +22078,7 @@ def pes_coal_for_heatnc_plants():
 
 
 @cache.step
+@to_float
 def pe_losses_coal_for_elec_ej():
     """
     Real Name: PE losses coal for Elec EJ
@@ -21613,6 +22099,7 @@ def pe_losses_coal_for_elec_ej():
 
 
 @cache.step
+@to_float
 def abundance_coal_eu():
     """
     Real Name: abundance coal EU
@@ -21638,6 +22125,7 @@ def abundance_coal_eu():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_coal_twh():
     """
     Real Name: FE Elec generation from coal TWh
@@ -21658,6 +22146,7 @@ def fe_elec_generation_from_coal_twh():
 
 
 @cache.step
+@to_float
 def total_fe_elec_consumption_twh():
     """
     Real Name: Total FE Elec consumption TWh
@@ -21674,6 +22163,7 @@ def total_fe_elec_consumption_twh():
 
 
 @cache.step
+@to_float
 def pes_coal_for_heatcom_plants():
     """
     Real Name: "PES coal for Heat-com plants"
@@ -21691,6 +22181,7 @@ def pes_coal_for_heatcom_plants():
 
 
 @cache.step
+@to_float
 def ped_eu_coal_from_row():
     """
     Real Name: PED EU coal from RoW
@@ -21706,6 +22197,7 @@ def ped_eu_coal_from_row():
 
 
 @cache.step
+@to_float
 def fe_nuclear_elec_generation_twh():
     """
     Real Name: FE nuclear Elec generation TWh
@@ -21725,6 +22217,7 @@ def fe_nuclear_elec_generation_twh():
 
 
 @cache.step
+@to_float
 def effects_shortage_uranium():
     """
     Real Name: effects shortage uranium
@@ -21751,6 +22244,7 @@ def effects_shortage_uranium():
 
 
 @cache.step
+@to_float
 def total_consumption_nre_ej():
     """
     Real Name: Total consumption NRE EJ
@@ -21777,6 +22271,7 @@ def total_consumption_nre_ej():
 
 
 @cache.step
+@to_float
 def cc_impacts_feedback_shortage_coeff():
     """
     Real Name: CC impacts feedback shortage coeff
@@ -21793,6 +22288,7 @@ def cc_impacts_feedback_shortage_coeff():
 
 
 @cache.step
+@to_float
 def pe_losses_uranium_for_elec_ej():
     """
     Real Name: PE losses uranium for Elec EJ
@@ -21811,6 +22307,7 @@ def pe_losses_uranium_for_elec_ej():
 
 
 @cache.step
+@to_float
 def share_elosses_cc_world():
     """
     Real Name: "Share E-losses CC World"
@@ -21823,11 +22320,12 @@ def share_elosses_cc_world():
 
     """
     return if_then_else(
-        activate_elf_by_scen() == 1, lambda: share_e_losses_cc(), lambda: 0
+        activate_elf_by_scen() == 1, lambda: share_e_losses_cc(time()), lambda: 0
     )
 
 
 @cache.step
+@to_float
 def total_fe_heat_consumption_ej():
     """
     Real Name: Total FE Heat consumption EJ
@@ -21844,6 +22342,7 @@ def total_fe_heat_consumption_ej():
 
 
 @cache.step
+@to_float
 def imports_eu_uranium_from_row_ej():
     """
     Real Name: imports EU uranium from RoW EJ
@@ -21859,6 +22358,7 @@ def imports_eu_uranium_from_row_ej():
 
 
 @cache.step
+@to_float
 def abundance_uranium():
     """
     Real Name: abundance uranium
@@ -21893,6 +22393,7 @@ def abundance_uranium():
 
 
 @cache.step
+@to_float
 def abundance_liquids():
     """
     Real Name: abundance liquids
@@ -21914,6 +22415,7 @@ def abundance_liquids():
 
 
 @cache.step
+@to_float
 def pe_losses_oil_for_elec_ej():
     """
     Real Name: PE losses oil for Elec EJ
@@ -21933,6 +22435,7 @@ def pe_losses_oil_for_elec_ej():
 
 
 @cache.step
+@to_float
 def pe_losses_uncon_gas_for_elec_ej():
     """
     Real Name: PE losses uncon gas for Elec EJ
@@ -21953,6 +22456,7 @@ def pe_losses_uncon_gas_for_elec_ej():
 
 
 @cache.step
+@to_float
 def pe_losses_conv_gas_for_elec_ej():
     """
     Real Name: PE losses conv gas for Elec EJ
@@ -21973,6 +22477,7 @@ def pe_losses_conv_gas_for_elec_ej():
 
 
 @cache.step
+@to_float
 def abundance_gases():
     """
     Real Name: abundance gases
@@ -21994,6 +22499,7 @@ def abundance_gases():
 
 
 @cache.step
+@to_float
 def pes_oil_for_heatnc_plants():
     """
     Real Name: "PES oil for Heat-nc plants"
@@ -22009,6 +22515,7 @@ def pes_oil_for_heatnc_plants():
 
 
 @cache.step
+@to_float
 def share_liquids_dem_for_heatnc():
     """
     Real Name: "share liquids dem for Heat-nc"
@@ -22025,6 +22532,7 @@ def share_liquids_dem_for_heatnc():
 
 
 @cache.step
+@to_float
 def check_liquids():
     """
     Real Name: check liquids
@@ -22042,6 +22550,7 @@ def check_liquids():
 
 
 @cache.step
+@to_float
 def share_gases_dem_for_heatnc():
     """
     Real Name: "share gases dem for Heat-nc"
@@ -22058,6 +22567,7 @@ def share_gases_dem_for_heatnc():
 
 
 @cache.step
+@to_float
 def check_gases():
     """
     Real Name: check gases
@@ -22073,6 +22583,7 @@ def check_gases():
 
 
 @cache.step
+@to_float
 def pes_nat_gas_for_heatnc_plants():
     """
     Real Name: "PES nat. gas for Heat-nc plants"
@@ -22088,6 +22599,7 @@ def pes_nat_gas_for_heatnc_plants():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_unconv_gas_twh():
     """
     Real Name: FE Elec generation from unconv gas TWh
@@ -22108,6 +22620,7 @@ def fe_elec_generation_from_unconv_gas_twh():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_conv_gas_twh():
     """
     Real Name: FE Elec generation from conv gas TWh
@@ -22128,6 +22641,7 @@ def fe_elec_generation_from_conv_gas_twh():
 
 
 @cache.step
+@to_float
 def real_fe_consumption_gases_ej():
     """
     Real Name: real FE consumption gases EJ
@@ -22146,6 +22660,7 @@ def real_fe_consumption_gases_ej():
 
 
 @cache.step
+@to_float
 def pes_nat_gas_for_heatcom_plants():
     """
     Real Name: "PES nat. gas for Heat-com plants"
@@ -22163,6 +22678,7 @@ def pes_nat_gas_for_heatcom_plants():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_total_oil_twh():
     """
     Real Name: FE Elec generation from total oil TWh
@@ -22183,6 +22699,7 @@ def fe_elec_generation_from_total_oil_twh():
 
 
 @cache.step
+@to_float
 def real_fe_consumption_liquids_ej():
     """
     Real Name: real FE consumption liquids EJ
@@ -22201,6 +22718,7 @@ def real_fe_consumption_liquids_ej():
 
 
 @cache.step
+@to_float
 def pes_oil_for_heatcom_plants():
     """
     Real Name: "PES oil for Heat-com plants"
@@ -22218,6 +22736,7 @@ def pes_oil_for_heatcom_plants():
 
 
 @cache.step
+@to_float
 def ped_eu_total_oil_from_row():
     """
     Real Name: PED EU total oil from RoW
@@ -22233,6 +22752,7 @@ def ped_eu_total_oil_from_row():
 
 
 @cache.step
+@to_float
 def rurr_tot_agg_oil():
     """
     Real Name: RURR tot agg oil
@@ -22248,6 +22768,7 @@ def rurr_tot_agg_oil():
 
 
 @cache.step
+@to_float
 def rurr_tot_agg_gas():
     """
     Real Name: RURR tot agg gas
@@ -22263,6 +22784,7 @@ def rurr_tot_agg_gas():
 
 
 @cache.step
+@to_float
 def percent_share_blue_water_use_vs_ar():
     """
     Real Name: Percent share blue water use vs AR
@@ -22278,6 +22800,7 @@ def percent_share_blue_water_use_vs_ar():
 
 
 @cache.run
+@to_float
 def minimum_eroi_brandt_2017():
     """
     Real Name: "minimum EROI (Brandt, 2017)"
@@ -22296,6 +22819,7 @@ def minimum_eroi_brandt_2017():
 
 
 @cache.run
+@to_float
 def minimum_eroi_hall_et_al_2009():
     """
     Real Name: "minimum EROI (Hall et al, 2009)"
@@ -22311,6 +22835,7 @@ def minimum_eroi_hall_et_al_2009():
 
 
 @cache.step
+@to_float
 def physical_energy_intensity_tpes_vs_final():
     """
     Real Name: Physical energy intensity TPES vs final
@@ -22326,6 +22851,7 @@ def physical_energy_intensity_tpes_vs_final():
 
 
 @cache.step
+@to_float
 def physical_energy_intensity_tpes_vs_net():
     """
     Real Name: Physical energy intensity TPES vs net
@@ -22362,6 +22888,7 @@ def required_final_energy_transport_iot_sectors():
 
 
 @cache.step
+@to_float
 def available_max_pe_solid_bioe_for_elec_ej():
     """
     Real Name: available max PE solid bioE for elec EJ
@@ -22381,6 +22908,7 @@ def available_max_pe_solid_bioe_for_elec_ej():
 
 
 @cache.step
+@to_float
 def remaining_potential_tot_res_heat():
     """
     Real Name: remaining potential tot RES heat
@@ -22403,6 +22931,7 @@ def remaining_potential_tot_res_heat():
 
 
 @cache.step
+@to_float
 def pes_tot_res_for_heat():
     """
     Real Name: PES tot RES for heat
@@ -22421,6 +22950,7 @@ def pes_tot_res_for_heat():
 
 
 @cache.step
+@to_float
 def pes_solids_bioe_ej():
     """
     Real Name: PES solids bioE EJ
@@ -22443,6 +22973,7 @@ def pes_solids_bioe_ej():
 
 
 @cache.step
+@to_float
 def max_tot_fe_potential_res_for_heat():
     """
     Real Name: Max tot FE potential RES for heat
@@ -22461,6 +22992,7 @@ def max_tot_fe_potential_res_for_heat():
 
 
 @cache.step
+@to_float
 def max_pe_potential_solid_bioe_for_heat_ej():
     """
     Real Name: max PE potential solid bioE for heat EJ
@@ -22478,6 +23010,7 @@ def max_pe_potential_solid_bioe_for_heat_ej():
 
 
 @cache.step
+@to_float
 def max_fe_potential_solid_bioe_for_elec_twe():
     """
     Real Name: max FE potential solid bioE for elec TWe
@@ -22535,6 +23068,7 @@ def max_pe_potential_res_for_heat():
 
 
 @cache.step
+@to_float
 def max_pe_potential_solid_bioe_for_elec_ej():
     """
     Real Name: max PE potential solid bioE for elec EJ
@@ -22554,6 +23088,7 @@ def max_pe_potential_solid_bioe_for_elec_ej():
 
 
 @cache.step
+@to_float
 def max_pe_potential_tot_res_heat_ej():
     """
     Real Name: max PE potential tot RES heat EJ
@@ -22571,6 +23106,7 @@ def max_pe_potential_tot_res_heat_ej():
 
 
 @cache.step
+@to_float
 def share_solids_bioe_for_elec_vs_heat():
     """
     Real Name: share solids bioE for elec vs heat
@@ -22592,6 +23128,7 @@ def share_solids_bioe_for_elec_vs_heat():
 
 
 @cache.step
+@to_float
 def solid_bioe_emissions_relevant_ej():
     """
     Real Name: solid bioE emissions relevant EJ
@@ -22651,6 +23188,7 @@ def max_fe_potential_res_for_heat():
 
 
 @cache.step
+@to_float
 def pe_supply_from_res_nonelec_without_trad_bioe_ej():
     """
     Real Name: "PE supply from RES non-elec without trad bioE EJ"
@@ -22739,6 +23277,7 @@ def max_potential_res_elec_twh():
 
 
 @cache.step
+@to_float
 def max_potential_tot_res_elec_twh():
     """
     Real Name: max potential tot RES elec TWh
@@ -22758,6 +23297,7 @@ def max_potential_tot_res_elec_twh():
 
 
 @cache.step
+@to_float
 def efficiency_biogas_for_heat():
     """
     Real Name: efficiency biogas for heat
@@ -22773,6 +23313,7 @@ def efficiency_biogas_for_heat():
 
 
 @cache.step
+@to_float
 def max_biogas_for_tfc():
     """
     Real Name: max biogas for TFC
@@ -22788,6 +23329,7 @@ def max_biogas_for_tfc():
 
 
 @cache.step
+@to_float
 def max_pe_potential_biogas_for_elec():
     """
     Real Name: max PE potential biogas for elec
@@ -22824,6 +23366,7 @@ def remaining_potential_res_elec():
 
 
 @cache.step
+@to_float
 def max_fe_potential_biogas_for_heat():
     """
     Real Name: max FE potential biogas for heat
@@ -22841,6 +23384,7 @@ def max_fe_potential_biogas_for_heat():
 
 
 @cache.step
+@to_float
 def tfec_per_capita_before_heat_dem_corr():
     """
     Real Name: TFEC per capita before heat dem corr
@@ -22856,6 +23400,7 @@ def tfec_per_capita_before_heat_dem_corr():
 
 
 @cache.step
+@to_float
 def share_total_net_energy_vs_tpes():
     """
     Real Name: share total net energy vs TPES
@@ -22872,6 +23417,7 @@ def share_total_net_energy_vs_tpes():
 
 
 @cache.step
+@to_float
 def net_tfec():
     """
     Real Name: Net TFEC
@@ -22888,6 +23434,7 @@ def net_tfec():
 
 
 @cache.step
+@to_float
 def real_tfec_before_heat_dem_corr():
     """
     Real Name: Real TFEC before heat dem corr
@@ -22907,6 +23454,7 @@ def real_tfec_before_heat_dem_corr():
 
 
 @cache.step
+@to_float
 def dynamic_threshold_high_development():
     """
     Real Name: Dynamic threshold 'high development'
@@ -22926,6 +23474,7 @@ def dynamic_threshold_high_development():
 
 
 @cache.step
+@to_float
 def dynamic_low_range_fec_good_standard_of_living():
     """
     Real Name: Dynamic low range FEC good standard of living
@@ -22945,6 +23494,7 @@ def dynamic_low_range_fec_good_standard_of_living():
 
 
 @cache.step
+@to_float
 def dynamic_high_range_fec_good_standard_of_living():
     """
     Real Name: Dynamic high range FEC good standard of living
@@ -23034,6 +23584,7 @@ def real_fec_before_heat_dem_corr():
 
 
 @cache.step
+@to_float
 def net_tfec_per_capita():
     """
     Real Name: Net TFEC per capita
@@ -23049,6 +23600,7 @@ def net_tfec_per_capita():
 
 
 @cache.step
+@to_float
 def share_tfec_before_heat_dem_corr_vs_real_tfec():
     """
     Real Name: share TFEC before heat dem corr vs real TFEC
@@ -23066,6 +23618,7 @@ def share_tfec_before_heat_dem_corr_vs_real_tfec():
 
 
 @cache.step
+@to_float
 def share_tfed_before_heat_dem_corr_vs_real_tfec():
     """
     Real Name: share TFED before heat dem corr vs real TFEC
@@ -23083,6 +23636,7 @@ def share_tfed_before_heat_dem_corr_vs_real_tfec():
 
 
 @cache.step
+@to_float
 def bioe_potential_npp_marginal_lands():
     """
     Real Name: BioE potential NPP marginal lands
@@ -23105,6 +23659,7 @@ def bioe_potential_npp_marginal_lands():
 
 
 @cache.step
+@to_float
 def co2_soillucf_emissions():
     """
     Real Name: "CO2 soil&LUCF emissions"
@@ -23121,6 +23676,7 @@ def co2_soillucf_emissions():
 
 
 @cache.step
+@to_float
 def co2_lulcf():
     """
     Real Name: CO2 LULCF
@@ -23136,6 +23692,7 @@ def co2_lulcf():
 
 
 @cache.step
+@to_float
 def max_peavail_potential_biofuels_marginal_lands():
     """
     Real Name: Max PEavail potential biofuels marginal lands
@@ -23151,6 +23708,7 @@ def max_peavail_potential_biofuels_marginal_lands():
 
 
 @cache.run
+@to_float
 def potential_marginal_lands_mha():
     """
     Real Name: Potential marginal lands MHa
@@ -23166,6 +23724,7 @@ def potential_marginal_lands_mha():
 
 
 @cache.step
+@to_float
 def land_shifted_to_biofuels_3gen():
     """
     Real Name: Land shifted to biofuels 3gen
@@ -23203,6 +23762,7 @@ def land_shifted_to_biofuels_3gen():
 
 
 @cache.step
+@to_float
 def adapt_growth_biogas():
     """
     Real Name: adapt growth biogas
@@ -23228,6 +23788,7 @@ def adapt_growth_biogas():
 
 
 @cache.step
+@to_float
 def available_max_pe_solid_bioe_for_heat_ej():
     """
     Real Name: available max PE solid bioE for heat EJ
@@ -23246,6 +23807,7 @@ def available_max_pe_solid_bioe_for_heat_ej():
 
 
 @cache.step
+@to_float
 def total_pe_solid_bioe_potential_heatelec_ej():
     """
     Real Name: "Total PE solid bioE potential heat+elec EJ"
@@ -23263,6 +23825,7 @@ def total_pe_solid_bioe_potential_heatelec_ej():
 
 
 @cache.step
+@to_float
 def fes_total_biofuels_production_ej():
     """
     Real Name: FES total biofuels production EJ
@@ -23283,6 +23846,7 @@ def fes_total_biofuels_production_ej():
 
 
 @cache.step
+@to_float
 def remaining_potential_biofuels_land_compet():
     """
     Real Name: remaining potential biofuels land compet
@@ -23307,6 +23871,7 @@ def remaining_potential_biofuels_land_compet():
 
 
 @cache.step
+@to_float
 def remaining_potential_biofuels_land_marg():
     """
     Real Name: remaining potential biofuels land marg
@@ -23331,6 +23896,7 @@ def remaining_potential_biofuels_land_marg():
 
 
 @cache.step
+@to_float
 def peavail_tot_biofuels_land_compet_ej():
     """
     Real Name: PEavail tot biofuels land compet EJ
@@ -23349,6 +23915,7 @@ def peavail_tot_biofuels_land_compet_ej():
 
 
 @cache.run
+@to_float
 def p_biofuels_marg_lands():
     """
     Real Name: P biofuels marg lands
@@ -23365,6 +23932,7 @@ def p_biofuels_marg_lands():
 
 
 @cache.step
+@to_float
 def remaining_potential_biofuels():
     """
     Real Name: remaining potential biofuels
@@ -23385,6 +23953,7 @@ def remaining_potential_biofuels():
 
 
 @cache.step
+@to_float
 def fe_demand_oil_elec_plants_twh():
     """
     Real Name: FE demand oil Elec plants TWh
@@ -23400,6 +23969,7 @@ def fe_demand_oil_elec_plants_twh():
 
 
 @cache.step
+@to_float
 def pe_demand_oil_elec_plants_ej():
     """
     Real Name: PE demand oil Elec plants EJ
@@ -23482,6 +24052,7 @@ def adapt_growth_res_for_heatnc():
 
 
 @cache.run
+@to_float
 def start_year_p_growth_res_heat():
     """
     Real Name: Start year P growth RES heat
@@ -23497,6 +24068,7 @@ def start_year_p_growth_res_heat():
 
 
 @cache.step
+@to_float
 def eroi_fc_system_from_2015():
     """
     Real Name: EROI FC system from 2015
@@ -23848,6 +24420,7 @@ def adapt_growth_res_elec():
 
 
 @cache.step
+@to_float
 def adapt_growth_phs():
     """
     Real Name: adapt growth PHS
@@ -23881,6 +24454,7 @@ def adapt_growth_phs():
 
 
 @cache.step
+@to_float
 def variation_energy_demand_due_to_eroi_fc_system():
     """
     Real Name: Variation energy demand due to EROI FC system
@@ -23897,6 +24471,7 @@ def variation_energy_demand_due_to_eroi_fc_system():
 
 
 @cache.run
+@to_float
 def start_year_p_growth_res_elec():
     """
     Real Name: Start year P growth RES elec
@@ -23913,6 +24488,7 @@ def start_year_p_growth_res_elec():
 
 
 @cache.run
+@to_float
 def land_productivity_biofuels_marg_ej_mha():
     """
     Real Name: Land productivity biofuels marg EJ MHa
@@ -23929,6 +24505,7 @@ def land_productivity_biofuels_marg_ej_mha():
 
 
 @cache.step
+@to_float
 def ratio_land_productivity_2gen_vs_marg():
     """
     Real Name: ratio land productivity 2gen vs marg
@@ -23948,6 +24525,7 @@ def ratio_land_productivity_2gen_vs_marg():
 
 
 @cache.step
+@to_float
 def b_lineal_regr_phaseout_oil_for_elec():
     """
     Real Name: "b lineal regr phase-out oil for elec"
@@ -23968,6 +24546,7 @@ def b_lineal_regr_phaseout_oil_for_elec():
 
 
 @cache.run
+@to_float
 def share_in_target_year_oil_for_elec():
     """
     Real Name: share in target year oil for elec
@@ -23983,6 +24562,7 @@ def share_in_target_year_oil_for_elec():
 
 
 @cache.run
+@to_float
 def share_in_target_year_oil_for_heat():
     """
     Real Name: share in target year oil for heat
@@ -23998,6 +24578,7 @@ def share_in_target_year_oil_for_heat():
 
 
 @cache.step
+@to_float
 def a_lineal_regr_phaseout_oil_for_elec():
     """
     Real Name: "a lineal regr phase-out oil for elec"
@@ -24017,6 +24598,7 @@ def a_lineal_regr_phaseout_oil_for_elec():
 
 
 @cache.step
+@to_float
 def a_lineal_regr_phaseout_oil_for_heat():
     """
     Real Name: "a lineal regr phase-out oil for heat"
@@ -24038,6 +24620,7 @@ def a_lineal_regr_phaseout_oil_for_heat():
 
 
 @cache.run
+@to_float
 def start_year_policy_phaseout_oil_for_elec():
     """
     Real Name: "start year policy phase-out oil for elec"
@@ -24053,6 +24636,7 @@ def start_year_policy_phaseout_oil_for_elec():
 
 
 @cache.run
+@to_float
 def target_year_policy_phaseout_oil_for_elec():
     """
     Real Name: "target year policy phase-out oil for elec"
@@ -24068,6 +24652,7 @@ def target_year_policy_phaseout_oil_for_elec():
 
 
 @cache.run
+@to_float
 def target_year_policy_phaseout_oil_for_heat():
     """
     Real Name: "target year policy phase-out oil for heat"
@@ -24083,6 +24668,7 @@ def target_year_policy_phaseout_oil_for_heat():
 
 
 @cache.step
+@to_float
 def p_share_oil_for_elec():
     """
     Real Name: P share oil for Elec
@@ -24102,6 +24688,7 @@ def p_share_oil_for_elec():
 
 
 @cache.step
+@to_float
 def p_share_oil_for_heat():
     """
     Real Name: P share oil for Heat
@@ -24121,6 +24708,7 @@ def p_share_oil_for_heat():
 
 
 @cache.step
+@to_float
 def b_lineal_regr_phaseout_oil_for_heat():
     """
     Real Name: "b lineal regr phase-out oil for heat"
@@ -24141,6 +24729,7 @@ def b_lineal_regr_phaseout_oil_for_heat():
 
 
 @cache.run
+@to_float
 def start_year_policy_phaseout_oil_for_heat():
     """
     Real Name: "start year policy phase-out oil for heat"
@@ -24156,6 +24745,7 @@ def start_year_policy_phaseout_oil_for_heat():
 
 
 @cache.step
+@to_float
 def share_liquids_for_heat_plants():
     """
     Real Name: share liquids for heat plants
@@ -24183,6 +24773,7 @@ def share_liquids_for_heat_plants():
 
 
 @cache.step
+@to_float
 def share_oil_for_elec():
     """
     Real Name: share oil for Elec
@@ -24214,6 +24805,7 @@ def share_oil_for_elec():
 
 
 @cache.step
+@to_float
 def pe_traditional_biomass_consum_ej():
     """
     Real Name: PE traditional biomass consum EJ
@@ -24264,6 +24856,7 @@ def scarcity_resources_flag():
 
 
 @cache.step
+@to_float
 def percent_res_vs_tpes():
     """
     Real Name: Percent RES vs TPES
@@ -24311,6 +24904,7 @@ def year_init_scarcity_reserves():
 
 
 @cache.step
+@to_float
 def percent_tot_monet_invest_reselec_vs_gdp():
     """
     Real Name: Percent tot monet invest RESelec vs GDP
@@ -24447,6 +25041,7 @@ def year_init_scarcity_resources():
 
 
 @cache.step
+@to_float
 def percent_remaining_potential_tot_res_heat():
     """
     Real Name: Percent remaining potential tot RES heat
@@ -24523,6 +25118,7 @@ def scarcity_final_fuels_flags():
 
 
 @cache.step
+@to_float
 def percent_remaining_potential_tot_res_elec():
     """
     Real Name: Percent remaining potential tot RES elec
@@ -24558,6 +25154,7 @@ def year_final_scarcity_final_fuels():
 
 
 @cache.step
+@to_float
 def share_blue_water_use_vs_ar():
     """
     Real Name: share blue water use vs AR
@@ -24575,6 +25172,7 @@ def share_blue_water_use_vs_ar():
 
 
 @cache.run
+@to_float
 def ar_water():
     """
     Real Name: AR water
@@ -24590,6 +25188,7 @@ def ar_water():
 
 
 @cache.step
+@to_float
 def share_total_water_use_vs_ar():
     """
     Real Name: share total water use vs AR
@@ -24605,6 +25204,7 @@ def share_total_water_use_vs_ar():
 
 
 @cache.step
+@to_float
 def shortage_bioe_non_trad():
     """
     Real Name: shortage BioE non trad
@@ -24623,6 +25223,7 @@ def shortage_bioe_non_trad():
 
 
 @cache.run
+@to_float
 def renewable_water_resources():
     """
     Real Name: Renewable water resources
@@ -24638,6 +25239,7 @@ def renewable_water_resources():
 
 
 @cache.step
+@to_float
 def share_blue_water_use_vs_renewable_water_resources():
     """
     Real Name: share blue water use vs renewable water resources
@@ -24655,6 +25257,7 @@ def share_blue_water_use_vs_renewable_water_resources():
 
 
 @cache.run
+@to_float
 def dam3_per_km3():
     """
     Real Name: dam3 per km3
@@ -24670,6 +25273,7 @@ def dam3_per_km3():
 
 
 @cache.step
+@to_float
 def share_total_water_use_vs_renewable_water_resources():
     """
     Real Name: share total water use vs renewable water resources
@@ -24685,6 +25289,7 @@ def share_total_water_use_vs_renewable_water_resources():
 
 
 @cache.step
+@to_float
 def total_pe_solid_bioe_potential_ej():
     """
     Real Name: Total PE solid bioE potential EJ
@@ -24746,6 +25351,7 @@ def cp_res_for_heat():
 
 
 @cache.step
+@to_float
 def shortage_bioe_non_trad_delayed_1yr():
     """
     Real Name: shortage BioE non trad delayed 1yr
@@ -24974,6 +25580,7 @@ def replacement_res_for_heatcom_tw():
 
 
 @cache.step
+@to_float
 def demand_forest_energy_non_tradition_ej():
     """
     Real Name: demand forest energy non tradition EJ
@@ -24992,6 +25599,7 @@ def demand_forest_energy_non_tradition_ej():
 
 
 @cache.step
+@to_float
 def max_e_forest_available_non_trad():
     """
     Real Name: max E forest available non trad
@@ -25009,6 +25617,7 @@ def max_e_forest_available_non_trad():
 
 
 @cache.step
+@to_float
 def max_e_tot_forest_available():
     """
     Real Name: max E tot forest available
@@ -25028,6 +25637,7 @@ def max_e_tot_forest_available():
 
 
 @cache.step
+@to_float
 def max_e_forest_energy_non_trad():
     """
     Real Name: max E forest energy non trad
@@ -25044,6 +25654,7 @@ def max_e_forest_energy_non_trad():
 
 
 @cache.run
+@to_float
 def max_eroi_fc():
     """
     Real Name: max EROI FC
@@ -25061,6 +25672,7 @@ def max_eroi_fc():
 
 
 @cache.step
+@to_float
 def eroi_fc_system_from_2015_1():
     """
     Real Name: EROI FC system from 2015 1
@@ -25091,6 +25703,7 @@ def eroi_fc_system_from_2015_1():
 
 
 @cache.run
+@to_float
 def p_rr_ti_rest():
     """
     Real Name: P rr Ti Rest
@@ -25106,6 +25719,7 @@ def p_rr_ti_rest():
 
 
 @cache.run
+@to_float
 def p_rr_li_rest():
     """
     Real Name: P rr Li Rest
@@ -25121,6 +25735,7 @@ def p_rr_li_rest():
 
 
 @cache.run
+@to_float
 def p_rr_v_rest():
     """
     Real Name: P rr V Rest
@@ -25136,6 +25751,7 @@ def p_rr_v_rest():
 
 
 @cache.run
+@to_float
 def p_rr_mg_rest():
     """
     Real Name: P rr Mg Rest
@@ -25151,6 +25767,7 @@ def p_rr_mg_rest():
 
 
 @cache.run
+@to_float
 def p_rr_zn_rest():
     """
     Real Name: P rr Zn Rest
@@ -25253,6 +25870,7 @@ def p_rr_minerals_rest():
 
 
 @cache.run
+@to_float
 def p_rr_cd_rest():
     """
     Real Name: P rr Cd Rest
@@ -25356,6 +25974,7 @@ def by_mineral_rr_rest_1yr():
 
 
 @cache.run
+@to_float
 def p_rr_cu_rest():
     """
     Real Name: P rr Cu Rest
@@ -25411,6 +26030,7 @@ def a_lineal_regr_rr_rest():
 
 
 @cache.run
+@to_float
 def start_year_p_rr_minerals_rest():
     """
     Real Name: start year P rr minerals Rest
@@ -25447,6 +26067,7 @@ def common_rr_minerals_variation_rest():
 
 
 @cache.run
+@to_float
 def p_rr_in_rest():
     """
     Real Name: P rr In Rest
@@ -25462,6 +26083,7 @@ def p_rr_in_rest():
 
 
 @cache.run
+@to_float
 def p_rr_te_rest():
     """
     Real Name: P rr Te Rest
@@ -25477,6 +26099,7 @@ def p_rr_te_rest():
 
 
 @cache.run
+@to_float
 def p_rr_mo_rest():
     """
     Real Name: P rr Mo Rest
@@ -25508,6 +26131,7 @@ def by_mineral_rr_rest():
 
 
 @cache.run
+@to_float
 def p_rr_ag_rest():
     """
     Real Name: P rr Ag Rest
@@ -25523,6 +26147,7 @@ def p_rr_ag_rest():
 
 
 @cache.run
+@to_float
 def p_rr_mn_rest():
     """
     Real Name: P rr Mn Rest
@@ -25538,6 +26163,7 @@ def p_rr_mn_rest():
 
 
 @cache.run
+@to_float
 def p_rr_al_rest():
     """
     Real Name: P rr Al Rest
@@ -25553,6 +26179,7 @@ def p_rr_al_rest():
 
 
 @cache.run
+@to_float
 def target_year_p_rr_minerals_rest():
     """
     Real Name: target year P rr minerals Rest
@@ -25569,6 +26196,7 @@ def target_year_p_rr_minerals_rest():
 
 
 @cache.run
+@to_float
 def p_rr_ga_rest():
     """
     Real Name: P rr Ga Rest
@@ -25584,6 +26212,7 @@ def p_rr_ga_rest():
 
 
 @cache.run
+@to_float
 def p_rr_sn_rest():
     """
     Real Name: P rr Sn Rest
@@ -25599,6 +26228,7 @@ def p_rr_sn_rest():
 
 
 @cache.run
+@to_float
 def p_rr_pb_rest():
     """
     Real Name: P rr Pb Rest
@@ -25614,6 +26244,7 @@ def p_rr_pb_rest():
 
 
 @cache.run
+@to_float
 def p_rr_cr_rest():
     """
     Real Name: P rr Cr Rest
@@ -25629,6 +26260,7 @@ def p_rr_cr_rest():
 
 
 @cache.run
+@to_float
 def p_rr_ni_rest():
     """
     Real Name: P rr Ni Rest
@@ -25644,6 +26276,7 @@ def p_rr_ni_rest():
 
 
 @cache.run
+@to_float
 def p_rr_fe_rest():
     """
     Real Name: P rr Fe Rest
@@ -25706,6 +26339,7 @@ def current_recycling_rates_minerals_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_mg_alt_techn():
     """
     Real Name: P rr Mg alt techn
@@ -25810,6 +26444,7 @@ def p_rr_minerals_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_mn_alt_techn():
     """
     Real Name: P rr Mn alt techn
@@ -25825,6 +26460,7 @@ def p_rr_mn_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_mo_alt_techn():
     """
     Real Name: P rr Mo alt techn
@@ -25840,6 +26476,7 @@ def p_rr_mo_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_ni_alt_techn():
     """
     Real Name: P rr Ni alt techn
@@ -25855,6 +26492,7 @@ def p_rr_ni_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_pb_alt_techn():
     """
     Real Name: P rr Pb alt techn
@@ -25904,6 +26542,7 @@ def by_mineral_rr_alt_techn_1yr():
 
 
 @cache.run
+@to_float
 def p_rr_al_alt_techn():
     """
     Real Name: P rr Al alt techn
@@ -25919,6 +26558,7 @@ def p_rr_al_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_cd_alt_techn():
     """
     Real Name: P rr Cd alt techn
@@ -25934,6 +26574,7 @@ def p_rr_cd_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_cu_alt_techn():
     """
     Real Name: P rr Cu alt techn
@@ -25949,6 +26590,7 @@ def p_rr_cu_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_fe_alt_techn():
     """
     Real Name: P rr Fe alt techn
@@ -25964,6 +26606,7 @@ def p_rr_fe_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_ga_alt_techn():
     """
     Real Name: P rr Ga alt techn
@@ -25979,6 +26622,7 @@ def p_rr_ga_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_in_alt_techn():
     """
     Real Name: P rr In alt techn
@@ -25994,6 +26638,7 @@ def p_rr_in_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_li_alt_techn():
     """
     Real Name: P rr Li alt techn
@@ -26026,6 +26671,7 @@ def recycling_rates_minerals_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_v_alt_techn():
     """
     Real Name: P rr V alt techn
@@ -26041,6 +26687,7 @@ def p_rr_v_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_zn_alt_techn():
     """
     Real Name: P rr Zn alt techn
@@ -26056,6 +26703,7 @@ def p_rr_zn_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_ti_alt_techn():
     """
     Real Name: P rr Ti alt techn
@@ -26071,6 +26719,7 @@ def p_rr_ti_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_cr_alt_techn():
     """
     Real Name: P rr Cr alt techn
@@ -26086,6 +26735,7 @@ def p_rr_cr_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_ag_alt_techn():
     """
     Real Name: P rr Ag alt techn
@@ -26101,6 +26751,7 @@ def p_rr_ag_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_sn_alt_techn():
     """
     Real Name: P rr Sn alt techn
@@ -26116,6 +26767,7 @@ def p_rr_sn_alt_techn():
 
 
 @cache.run
+@to_float
 def p_rr_te_alt_techn():
     """
     Real Name: P rr Te alt techn
@@ -26185,6 +26837,7 @@ def by_mineral_rr_variation_alt_techn():
 
 
 @cache.run
+@to_float
 def start_year_p_rr_minerals_alt_techn():
     """
     Real Name: start year P rr minerals alt techn
@@ -26201,6 +26854,7 @@ def start_year_p_rr_minerals_alt_techn():
 
 
 @cache.run
+@to_float
 def target_year_p_rr_minerals_alt_techn():
     """
     Real Name: target year P rr minerals alt techn
@@ -26217,6 +26871,7 @@ def target_year_p_rr_minerals_alt_techn():
 
 
 @cache.step
+@subs(["RCP Scenario"], _subscript_dict)
 def sf6_emissions_rcp():
     """
     Real Name: SF6 emissions RCP
@@ -26237,6 +26892,7 @@ def sf6_emissions_rcp():
 
 
 @cache.run
+@to_float
 def choose_rcp():
     """
     Real Name: Choose RCP
@@ -26252,6 +26908,7 @@ def choose_rcp():
 
 
 @cache.step
+@subs(["RCP Scenario"], _subscript_dict)
 def ch4_anthro_emissions_rcp():
     """
     Real Name: CH4 anthro emissions RCP
@@ -26518,6 +27175,7 @@ def hfc_emissions():
 
 
 @cache.step
+@subs(["HFC type"], _subscript_dict)
 def hfc_emissions_rcp_26():
     """
     Real Name: "HFC emissions RCP 2.6"
@@ -26539,6 +27197,7 @@ def hfc_emissions_rcp_26():
 
 
 @cache.step
+@subs(["HFC type"], _subscript_dict)
 def hfc_emissions_rcp_45():
     """
     Real Name: "HFC emissions RCP 4.5"
@@ -26560,6 +27219,7 @@ def hfc_emissions_rcp_45():
 
 
 @cache.step
+@subs(["HFC type"], _subscript_dict)
 def hfc_emissions_rcp_60():
     """
     Real Name: "HFC emissions RCP 6.0"
@@ -26581,6 +27241,7 @@ def hfc_emissions_rcp_60():
 
 
 @cache.step
+@to_float
 def pfc_emissions():
     """
     Real Name: PFC emissions
@@ -26609,6 +27270,7 @@ def pfc_emissions():
 
 
 @cache.step
+@subs(["RCP Scenario"], _subscript_dict)
 def pfc_emissions_rcp():
     """
     Real Name: PFC emissions RCP
@@ -26629,6 +27291,7 @@ def pfc_emissions_rcp():
 
 
 @cache.step
+@to_float
 def sf6_emissions():
     """
     Real Name: SF6 emissions
@@ -26657,6 +27320,7 @@ def sf6_emissions():
 
 
 @cache.step
+@to_float
 def n2o_anthro_emissions():
     """
     Real Name: N2O Anthro Emissions
@@ -26685,6 +27349,7 @@ def n2o_anthro_emissions():
 
 
 @cache.step
+@subs(["RCP Scenario"], _subscript_dict)
 def n2o_anthro_emissions_rcp():
     """
     Real Name: N2O Anthro Emissions RCP
@@ -26705,6 +27370,7 @@ def n2o_anthro_emissions_rcp():
 
 
 @cache.step
+@subs(["HFC type"], _subscript_dict)
 def hfc_emissions_rcp_85():
     """
     Real Name: "HFC emissions RCP 8.5"
@@ -26746,6 +27412,7 @@ def common_rr_minerals_variation_alt_techn():
 
 
 @cache.run
+@to_float
 def choose_targets_mineral_recycling_rates():
     """
     Real Name: choose targets mineral recycling rates
@@ -26761,6 +27428,7 @@ def choose_targets_mineral_recycling_rates():
 
 
 @cache.step
+@to_float
 def total_water_use_per_capita():
     """
     Real Name: Total water use per capita
@@ -26776,6 +27444,7 @@ def total_water_use_per_capita():
 
 
 @cache.step
+@to_float
 def total_water_use():
     """
     Real Name: Total water use
@@ -26897,6 +27566,7 @@ def water_intensity_for_households():
 
 
 @cache.run
+@to_float
 def p_minimum_forest():
     """
     Real Name: P minimum forest
@@ -26912,6 +27582,7 @@ def p_minimum_forest():
 
 
 @cache.run
+@to_float
 def forest_extraction_per_ha():
     """
     Real Name: forest extraction per Ha
@@ -26929,6 +27600,7 @@ def forest_extraction_per_ha():
 
 
 @cache.step
+@to_float
 def max_sustainable_forest_extraction_ej():
     """
     Real Name: max sustainable forest extraction EJ
@@ -26945,6 +27617,7 @@ def max_sustainable_forest_extraction_ej():
 
 
 @cache.run
+@to_float
 def demand_forest_wood_products_pc():
     """
     Real Name: demand forest wood products pc
@@ -26960,6 +27633,7 @@ def demand_forest_wood_products_pc():
 
 
 @cache.step
+@to_float
 def demand_wood_products_m3():
     """
     Real Name: demand wood products m3
@@ -26975,6 +27649,7 @@ def demand_wood_products_m3():
 
 
 @cache.step
+@to_float
 def past_trends_co2_lucf():
     """
     Real Name: Past trends CO2 LUCF
@@ -26990,6 +27665,7 @@ def past_trends_co2_lucf():
 
 
 @cache.step
+@to_float
 def deficit_wood_products():
     """
     Real Name: deficit wood products
@@ -27008,6 +27684,7 @@ def deficit_wood_products():
 
 
 @cache.step
+@to_float
 def unsustainable_loggin():
     """
     Real Name: unsustainable loggin
@@ -27027,6 +27704,7 @@ def unsustainable_loggin():
 
 
 @cache.run
+@to_float
 def wood_energy_density():
     """
     Real Name: wood energy density
@@ -27042,6 +27720,7 @@ def wood_energy_density():
 
 
 @cache.step
+@to_float
 def demand_wood_products_ej():
     """
     Real Name: demand wood products EJ
@@ -27058,6 +27737,7 @@ def demand_wood_products_ej():
 
 
 @cache.step
+@to_float
 def total_demand_forest_biomass_ej():
     """
     Real Name: total demand forest biomass EJ
@@ -27077,6 +27757,7 @@ def total_demand_forest_biomass_ej():
 
 
 @cache.step
+@to_float
 def demand_forest_energy_traditional_ej():
     """
     Real Name: demand forest energy traditional EJ
@@ -27204,6 +27885,7 @@ def water_use_by_sector():
 
 
 @cache.step
+@to_float
 def total_co2_emissions_gtco2():
     """
     Real Name: Total CO2 emissions GTCO2
@@ -27225,6 +27907,7 @@ def total_co2_emissions_gtco2():
 
 
 @cache.step
+@to_float
 def pe_traditional_biomass_ej_delayed_1yr():
     """
     Real Name: PE traditional biomass EJ delayed 1yr
@@ -27241,6 +27924,7 @@ def pe_traditional_biomass_ej_delayed_1yr():
 
 
 @cache.step
+@to_float
 def population_dependent_on_trad_biomass():
     """
     Real Name: Population dependent on trad biomass
@@ -27259,6 +27943,7 @@ def population_dependent_on_trad_biomass():
 
 
 @cache.run
+@to_float
 def mt_to_dam3():
     """
     Real Name: Mt to dam3
@@ -27386,6 +28071,7 @@ def initial_water_use_by_sector():
 
 
 @cache.step
+@to_float
 def deficit_forest_biomass():
     """
     Real Name: deficit forest biomass
@@ -27409,6 +28095,7 @@ def deficit_forest_biomass():
 
 
 @cache.step
+@to_float
 def total_demand_energy_forest_ej():
     """
     Real Name: total demand energy forest EJ
@@ -27426,6 +28113,7 @@ def total_demand_energy_forest_ej():
 
 
 @cache.run
+@to_float
 def p_forest_overexplotation():
     """
     Real Name: P forest overexplotation
@@ -27445,6 +28133,7 @@ def p_forest_overexplotation():
 
 
 @cache.step
+@to_float
 def adapt_growth_waste():
     """
     Real Name: adapt growth waste
@@ -27470,6 +28159,7 @@ def adapt_growth_waste():
 
 
 @cache.step
+@to_float
 def adapt_co2_emissions_unconv_gas():
     """
     Real Name: Adapt CO2 emissions unconv gas
@@ -27497,6 +28187,7 @@ def adapt_co2_emissions_unconv_gas():
 
 
 @cache.step
+@to_float
 def adapt_emissions_shale_oil():
     """
     Real Name: Adapt emissions shale oil
@@ -27524,6 +28215,7 @@ def adapt_emissions_shale_oil():
 
 
 @cache.step
+@to_float
 def adapt_growth_biofuels_2gen():
     """
     Real Name: adapt growth biofuels 2gen
@@ -27568,6 +28260,7 @@ def demand_by_sector_fd_adjusted():
 
 
 @cache.step
+@to_float
 def total_demand_adjusted():
     """
     Real Name: total demand adjusted
@@ -27599,6 +28292,7 @@ def domestic_demand_by_sector():
 
 
 @cache.step
+@to_float
 def aux4():
     """
     Real Name: aux4
@@ -27614,6 +28308,7 @@ def aux4():
 
 
 @cache.run
+@to_float
 def nvs_1_year():
     """
     Real Name: "1 year"
@@ -27645,6 +28340,7 @@ def eptb_dynamic():
 
 
 @cache.step
+@to_float
 def eroist_system_delayed():
     """
     Real Name: EROIst system delayed
@@ -27661,6 +28357,7 @@ def eroist_system_delayed():
 
 
 @cache.step
+@to_float
 def eroist_system_delayed_1yr():
     """
     Real Name: EROIst system delayed 1yr
@@ -28337,6 +29034,7 @@ def leontief_matrix_1995():
 
 
 @cache.step
+@to_float
 def replacement_batteries():
     """
     Real Name: replacement batteries
@@ -28352,6 +29050,7 @@ def replacement_batteries():
 
 
 @cache.step
+@to_float
 def share_of_electric_light_vehicles():
     """
     Real Name: share of electric light vehicles
@@ -28367,6 +29066,7 @@ def share_of_electric_light_vehicles():
 
 
 @cache.step
+@to_float
 def share_elechyb_light_vehicles():
     """
     Real Name: "share elec+hyb light vehicles"
@@ -28384,6 +29084,7 @@ def share_elechyb_light_vehicles():
 
 
 @cache.run
+@to_float
 def t_fin_inlandt():
     """
     Real Name: T fin inlandT
@@ -28399,6 +29100,7 @@ def t_fin_inlandt():
 
 
 @cache.run
+@to_float
 def t_fin_hveh():
     """
     Real Name: T fin Hveh
@@ -28414,6 +29116,7 @@ def t_fin_hveh():
 
 
 @cache.run
+@to_float
 def t_ini_hveh():
     """
     Real Name: T ini Hveh
@@ -28429,6 +29132,7 @@ def t_ini_hveh():
 
 
 @cache.step
+@to_float
 def variation_pop_ssp4():
     """
     Real Name: variation pop SSP4
@@ -28446,6 +29150,7 @@ def variation_pop_ssp4():
 
 
 @cache.step
+@to_float
 def variation_pop_ssp5():
     """
     Real Name: variation pop SSP5
@@ -28463,6 +29168,7 @@ def variation_pop_ssp5():
 
 
 @cache.run
+@to_float
 def start_year_p_common_rr_minerals_alt_techn():
     """
     Real Name: start year P common rr minerals alt techn
@@ -28479,6 +29185,7 @@ def start_year_p_common_rr_minerals_alt_techn():
 
 
 @cache.run
+@to_float
 def start_year_p_common_rr_minerals_rest():
     """
     Real Name: start year P common rr minerals Rest
@@ -28495,6 +29202,7 @@ def start_year_p_common_rr_minerals_rest():
 
 
 @cache.run
+@to_float
 def select_pop_ssps():
     """
     Real Name: select pop SSPs
@@ -28510,6 +29218,7 @@ def select_pop_ssps():
 
 
 @cache.step
+@to_float
 def variation_pop_ssp1():
     """
     Real Name: variation pop SSP1
@@ -28527,6 +29236,7 @@ def variation_pop_ssp1():
 
 
 @cache.step
+@to_float
 def variation_pop_ssp2():
     """
     Real Name: variation pop SSP2
@@ -28544,6 +29254,7 @@ def variation_pop_ssp2():
 
 
 @cache.step
+@to_float
 def variation_pop_ssp3():
     """
     Real Name: variation pop SSP3
@@ -28561,6 +29272,7 @@ def variation_pop_ssp3():
 
 
 @cache.step
+@to_float
 def annual_population_growth_rate():
     """
     Real Name: Annual population growth rate
@@ -28588,6 +29300,7 @@ def annual_population_growth_rate():
 
 
 @cache.step
+@to_float
 def variation_pop_ssps():
     """
     Real Name: variation pop SSPs
@@ -28689,6 +29402,7 @@ def pop_ssp3(x):
 
 
 @cache.step
+@to_float
 def cp_ev_batteries_for_elec_storage():
     """
     Real Name: Cp EV batteries for elec storage
@@ -28706,6 +29420,7 @@ def cp_ev_batteries_for_elec_storage():
 
 
 @cache.step
+@to_float
 def max_cp_ev_batteries_for_elec_storage():
     """
     Real Name: max Cp EV batteries for elec storage
@@ -28722,6 +29437,7 @@ def max_cp_ev_batteries_for_elec_storage():
 
 
 @cache.step
+@to_float
 def tfec_intensity_until_2009():
     """
     Real Name: TFEC intensity until 2009
@@ -28737,6 +29453,7 @@ def tfec_intensity_until_2009():
 
 
 @cache.step
+@to_float
 def cumulative_tfec_intensity_change_from_2009():
     """
     Real Name: Cumulative TFEC intensity change from 2009
@@ -28756,6 +29473,7 @@ def cumulative_tfec_intensity_change_from_2009():
 
 
 @cache.step
+@to_float
 def lifetime_ev_batteries():
     """
     Real Name: lifetime EV batteries
@@ -28778,6 +29496,7 @@ def lifetime_ev_batteries():
 
 
 @cache.step
+@to_float
 def tfec_per_capita():
     """
     Real Name: TFEC per capita
@@ -28793,6 +29512,7 @@ def tfec_per_capita():
 
 
 @cache.step
+@to_float
 def aux15():
     """
     Real Name: aux15
@@ -28809,6 +29529,7 @@ def aux15():
 
 
 @cache.run
+@to_float
 def cp_ev_batteries_for_transp():
     """
     Real Name: Cp EV batteries for Transp
@@ -28824,6 +29545,7 @@ def cp_ev_batteries_for_transp():
 
 
 @cache.step
+@to_float
 def annual_growth_rate_electricity_generation_res_elec_tot():
     """
     Real Name: Annual growth rate electricity generation RES elec tot
@@ -28843,6 +29565,7 @@ def annual_growth_rate_electricity_generation_res_elec_tot():
 
 
 @cache.step
+@to_float
 def annual_growth_rate_res_for_heat():
     """
     Real Name: Annual growth rate RES for heat
@@ -28858,6 +29581,7 @@ def annual_growth_rate_res_for_heat():
 
 
 @cache.run
+@to_float
 def p_customized_year_pop_evolution():
     """
     Real Name: P customized year pop evolution
@@ -28873,6 +29597,7 @@ def p_customized_year_pop_evolution():
 
 
 @cache.run
+@to_float
 def select_population_evolution_input():
     """
     Real Name: select Population evolution input
@@ -28888,6 +29613,7 @@ def select_population_evolution_input():
 
 
 @cache.step
+@to_float
 def fe_tot_generation_all_res_elec_twh_delayed_1yr():
     """
     Real Name: FE tot generation all RES elec TWh delayed 1yr
@@ -28903,6 +29629,7 @@ def fe_tot_generation_all_res_elec_twh_delayed_1yr():
 
 
 @cache.run
+@to_float
 def p_customized_cte_pop_variation():
     """
     Real Name: P customized cte pop variation
@@ -28918,6 +29645,7 @@ def p_customized_cte_pop_variation():
 
 
 @cache.step
+@to_float
 def fes_res_for_heat_delayed_1yr():
     """
     Real Name: FES RES for heat delayed 1yr
@@ -28933,6 +29661,7 @@ def fes_res_for_heat_delayed_1yr():
 
 
 @cache.step
+@to_float
 def tpes_intensity_until_2009():
     """
     Real Name: TPES intensity until 2009
@@ -28948,6 +29677,7 @@ def tpes_intensity_until_2009():
 
 
 @cache.step
+@to_float
 def aux13():
     """
     Real Name: aux13
@@ -28964,6 +29694,7 @@ def aux13():
 
 
 @cache.step
+@to_float
 def aux14():
     """
     Real Name: aux14
@@ -28980,6 +29711,7 @@ def aux14():
 
 
 @cache.step
+@to_float
 def cumulative_tpes_intensity_change_from_2009():
     """
     Real Name: Cumulative TPES intensity change from 2009
@@ -28999,6 +29731,7 @@ def cumulative_tpes_intensity_change_from_2009():
 
 
 @cache.step
+@to_float
 def cumulative_tfec_intensity_change_from_2009_without_eroi():
     """
     Real Name: Cumulative TFEC intensity change from 2009 without EROI
@@ -29022,6 +29755,7 @@ def cumulative_tfec_intensity_change_from_2009_without_eroi():
 
 
 @cache.step
+@to_float
 def tfec_intensity_until_2009_without_eroi():
     """
     Real Name: TFEC intensity until 2009 without EROI
@@ -29039,6 +29773,7 @@ def tfec_intensity_until_2009_without_eroi():
 
 
 @cache.step
+@to_float
 def annual_tfes_intensity_change_rate_without_eroi():
     """
     Real Name: Annual TFES intensity change rate without EROI
@@ -29056,6 +29791,7 @@ def annual_tfes_intensity_change_rate_without_eroi():
 
 
 @cache.step
+@to_float
 def tfes_intensity_without_eroi_delayed_1yr():
     """
     Real Name: TFES intensity without EROI delayed 1yr
@@ -29071,6 +29807,7 @@ def tfes_intensity_without_eroi_delayed_1yr():
 
 
 @cache.step
+@to_float
 def required_tfed_sectors():
     """
     Real Name: required TFED sectors
@@ -29086,6 +29823,7 @@ def required_tfed_sectors():
 
 
 @cache.step
+@to_float
 def ratio_fed_households_vs_sectors():
     """
     Real Name: ratio FED households vs sectors
@@ -29101,6 +29839,7 @@ def ratio_fed_households_vs_sectors():
 
 
 @cache.step
+@to_float
 def tfes_intensity_ej_t_without_eroi():
     """
     Real Name: TFES intensity EJ T$ without EROI
@@ -29116,6 +29855,7 @@ def tfes_intensity_ej_t_without_eroi():
 
 
 @cache.step
+@to_float
 def cumulative_co2e_ghg_emissions():
     """
     Real Name: Cumulative CO2e GHG emissions
@@ -29131,6 +29871,7 @@ def cumulative_co2e_ghg_emissions():
 
 
 @cache.run
+@to_float
 def target_year_p_growth_res_elec():
     """
     Real Name: Target year P growth RES elec
@@ -29147,6 +29888,7 @@ def target_year_p_growth_res_elec():
 
 
 @cache.run
+@to_float
 def target_year_p_growth_res_heat():
     """
     Real Name: Target year P growth RES heat
@@ -29162,6 +29904,7 @@ def target_year_p_growth_res_heat():
 
 
 @cache.step
+@to_float
 def total_ghg_emissions_baucat_medeas_d32():
     """
     Real Name: "Total GHG emissions BAU-CAT MEDEAS D3.2"
@@ -29177,6 +29920,7 @@ def total_ghg_emissions_baucat_medeas_d32():
 
 
 @cache.step
+@to_float
 def total_ghg_emissions_mlt2030_medeas_d32():
     """
     Real Name: "Total GHG emissions MLT2030 MEDEAS D3.2"
@@ -29192,6 +29936,7 @@ def total_ghg_emissions_mlt2030_medeas_d32():
 
 
 @cache.step
+@to_float
 def total_ghg_emissions_mlt2020_medeas_d32():
     """
     Real Name: "Total GHG emissions MLT2020 MEDEAS D3.2"
@@ -29207,6 +29952,7 @@ def total_ghg_emissions_mlt2020_medeas_d32():
 
 
 @cache.run
+@to_float
 def low_range_fec_good_standard_of_living():
     """
     Real Name: Low range FEC good standard of living
@@ -29224,6 +29970,7 @@ def low_range_fec_good_standard_of_living():
 
 
 @cache.run
+@to_float
 def threshold_fec_high_development():
     """
     Real Name: Threshold FEC 'high development'
@@ -29241,6 +29988,7 @@ def threshold_fec_high_development():
 
 
 @cache.run
+@to_float
 def high_range_fec_good_standard_of_living():
     """
     Real Name: High range FEC good standard of living
@@ -29300,6 +30048,7 @@ def max_yearly_change():
 
 
 @cache.run
+@to_float
 def gwp_100_years_ch4():
     """
     Real Name: GWP 100 years CH4
@@ -29315,6 +30064,7 @@ def gwp_100_years_ch4():
 
 
 @cache.run
+@to_float
 def correction_factor_all_ghgs():
     """
     Real Name: correction factor all GHGs
@@ -29331,6 +30081,7 @@ def correction_factor_all_ghgs():
 
 
 @cache.run
+@to_float
 def activate_energy_scarcity_feedback():
     """
     Real Name: "Activate energy scarcity feedback?"
@@ -29346,6 +30097,7 @@ def activate_energy_scarcity_feedback():
 
 
 @cache.step
+@to_float
 def max_potential_phs_twh():
     """
     Real Name: max potential PHS TWh
@@ -29361,6 +30113,7 @@ def max_potential_phs_twh():
 
 
 @cache.step
+@to_float
 def replacement_rate_phs():
     """
     Real Name: replacement rate PHS
@@ -29380,6 +30133,7 @@ def replacement_rate_phs():
 
 
 @cache.step
+@to_float
 def real_fe_elec_stored_ev_batteries_twh():
     """
     Real Name: real FE elec stored EV batteries TWh
@@ -29397,6 +30151,7 @@ def real_fe_elec_stored_ev_batteries_twh():
 
 
 @cache.step
+@to_float
 def share_tot_fei_res_elec_var():
     """
     Real Name: share tot FEI RES elec var
@@ -29412,6 +30167,7 @@ def share_tot_fei_res_elec_var():
 
 
 @cache.step
+@to_float
 def cp_ev_batteries_required():
     """
     Real Name: Cp EV batteries required
@@ -29427,6 +30183,7 @@ def cp_ev_batteries_required():
 
 
 @cache.step
+@to_float
 def output_ev_bateries_for_storage_over_lifetime():
     """
     Real Name: output EV bateries for storage over lifetime
@@ -29449,6 +30206,7 @@ def output_ev_bateries_for_storage_over_lifetime():
 
 
 @cache.step
+@to_float
 def discarded_batteries():
     """
     Real Name: discarded batteries
@@ -29464,6 +30222,7 @@ def discarded_batteries():
 
 
 @cache.step
+@to_float
 def esoi_elec_storage():
     """
     Real Name: ESOI elec storage
@@ -29482,6 +30241,7 @@ def esoi_elec_storage():
 
 
 @cache.step
+@to_float
 def esoi_ev_batteries():
     """
     Real Name: ESOI EV batteries
@@ -29510,6 +30270,7 @@ def esoi_ev_batteries():
 
 
 @cache.step
+@to_float
 def rt_elec_storage_efficiency():
     """
     Real Name: rt elec storage efficiency
@@ -29528,6 +30289,7 @@ def rt_elec_storage_efficiency():
 
 
 @cache.step
+@to_float
 def abundance_storage():
     """
     Real Name: abundance storage
@@ -29552,6 +30314,7 @@ def abundance_storage():
 
 
 @cache.step
+@to_float
 def used_ev_batteries_for_elec_storage():
     """
     Real Name: Used EV batteries for elec storage
@@ -29567,6 +30330,7 @@ def used_ev_batteries_for_elec_storage():
 
 
 @cache.step
+@to_float
 def max_cp_ev_batteries():
     """
     Real Name: max Cp EV batteries
@@ -29586,6 +30350,7 @@ def max_cp_ev_batteries():
 
 
 @cache.step
+@to_float
 def total_capacity_elec_storage_tw():
     """
     Real Name: Total capacity elec storage TW
@@ -29601,6 +30366,7 @@ def total_capacity_elec_storage_tw():
 
 
 @cache.step
+@to_float
 def demand_ev_batteries_for_elec_storage():
     """
     Real Name: demand EV batteries for elec storage
@@ -29616,6 +30382,7 @@ def demand_ev_batteries_for_elec_storage():
 
 
 @cache.step
+@to_float
 def ced_per_tw_over_lifetime_phs():
     """
     Real Name: CED per TW over lifetime PHS
@@ -29639,6 +30406,7 @@ def ced_per_tw_over_lifetime_phs():
 
 
 @cache.step
+@to_float
 def remaining_potential_constraint_on_new_phs_capacity():
     """
     Real Name: remaining potential constraint on new PHS capacity
@@ -29659,6 +30427,7 @@ def remaining_potential_constraint_on_new_phs_capacity():
 
 
 @cache.step
+@to_float
 def new_required_phs_capacity():
     """
     Real Name: new required PHS capacity
@@ -29687,6 +30456,7 @@ def new_required_phs_capacity():
 
 
 @cache.step
+@to_float
 def share_dyn_fei_for_res_vs_tfec():
     """
     Real Name: share dyn FEI for RES vs TFEC
@@ -29702,6 +30472,7 @@ def share_dyn_fei_for_res_vs_tfec():
 
 
 @cache.step
+@to_float
 def fei_ev_batteries():
     """
     Real Name: FEI EV batteries
@@ -29717,6 +30488,7 @@ def fei_ev_batteries():
 
 
 @cache.step
+@to_float
 def output_phs_over_lifetime():
     """
     Real Name: output PHS over lifetime
@@ -29739,6 +30511,7 @@ def output_phs_over_lifetime():
 
 
 @cache.step
+@to_float
 def esoi_static_phs():
     """
     Real Name: ESOI static PHS
@@ -29756,6 +30529,7 @@ def esoi_static_phs():
 
 
 @cache.step
+@to_float
 def total_dyn_fei_res():
     """
     Real Name: Total dyn FEI RES
@@ -29800,6 +30574,7 @@ def adapt_growth_res_elec_after_allocation():
 
 
 @cache.step
+@to_float
 def esoi_phs():
     """
     Real Name: ESOI PHS
@@ -29818,6 +30593,7 @@ def esoi_phs():
 
 
 @cache.run
+@to_float
 def p_phs_growth():
     """
     Real Name: P PHS growth
@@ -29864,6 +30640,7 @@ def constraint_elec_storage_availability():
 
 
 @cache.run
+@to_float
 def initial_instal_cap_phs():
     """
     Real Name: initial instal cap PHS
@@ -29879,6 +30656,7 @@ def initial_instal_cap_phs():
 
 
 @cache.step
+@to_float
 def cedtot_over_lifetime_phs():
     """
     Real Name: CEDtot over lifetime PHS
@@ -29894,6 +30672,7 @@ def cedtot_over_lifetime_phs():
 
 
 @cache.step
+@to_float
 def installed_capacity_phs_tw():
     """
     Real Name: installed capacity PHS TW
@@ -29909,6 +30688,7 @@ def installed_capacity_phs_tw():
 
 
 @cache.step
+@to_float
 def phs_capacity_under_construction():
     """
     Real Name: PHS capacity under construction
@@ -29926,6 +30706,7 @@ def phs_capacity_under_construction():
 
 
 @cache.run
+@to_float
 def past_phs_capacity_growth():
     """
     Real Name: past PHS capacity growth
@@ -29941,6 +30722,7 @@ def past_phs_capacity_growth():
 
 
 @cache.step
+@to_float
 def new_phs_capacity_under_planning():
     """
     Real Name: new PHS capacity under planning
@@ -29958,6 +30740,7 @@ def new_phs_capacity_under_planning():
 
 
 @cache.step
+@to_float
 def wear_phs():
     """
     Real Name: wear PHS
@@ -29978,6 +30761,7 @@ def wear_phs():
 
 
 @cache.step
+@to_float
 def replacement_capacity_phs():
     """
     Real Name: replacement capacity PHS
@@ -29996,6 +30780,7 @@ def replacement_capacity_phs():
 
 
 @cache.step
+@to_float
 def real_fe_elec_stored_phs_twh():
     """
     Real Name: real FE elec stored PHS TWh
@@ -30013,6 +30798,7 @@ def real_fe_elec_stored_phs_twh():
 
 
 @cache.step
+@to_float
 def phs_planned_capacity():
     """
     Real Name: PHS planned capacity
@@ -30028,6 +30814,7 @@ def phs_planned_capacity():
 
 
 @cache.step
+@to_float
 def final_energy_invested_phs():
     """
     Real Name: Final energy invested PHS
@@ -30044,6 +30831,7 @@ def final_energy_invested_phs():
 
 
 @cache.step
+@to_float
 def remaining_potential_phs():
     """
     Real Name: remaining potential PHS
@@ -30064,6 +30852,7 @@ def remaining_potential_phs():
 
 
 @cache.step
+@to_float
 def historic_new_required_capacity_phs():
     """
     Real Name: Historic new required capacity PHS
@@ -30099,6 +30888,7 @@ def table_hist_capacity_phs(x):
 
 
 @cache.step
+@to_float
 def initial_capacity_in_construction_phs():
     """
     Real Name: initial capacity in construction PHS
@@ -30115,6 +30905,7 @@ def initial_capacity_in_construction_phs():
 
 
 @cache.step
+@to_float
 def required_capacity_phs():
     """
     Real Name: required capacity PHS
@@ -30130,6 +30921,7 @@ def required_capacity_phs():
 
 
 @cache.run
+@to_float
 def initial_required_capacity_phs():
     """
     Real Name: initial required capacity PHS
@@ -30146,6 +30938,7 @@ def initial_required_capacity_phs():
 
 
 @cache.step
+@to_float
 def total_fei_over_lifetime_res_elec_dispatch():
     """
     Real Name: Total FEI over lifetime RES elec dispatch
@@ -30161,6 +30954,7 @@ def total_fei_over_lifetime_res_elec_dispatch():
 
 
 @cache.run
+@to_float
 def min_lifetime_ev_batteries():
     """
     Real Name: min lifetime EV batteries
@@ -30182,6 +30976,7 @@ def min_lifetime_ev_batteries():
 
 
 @cache.step
+@to_float
 def total_final_energy_invested_res_elec_var():
     """
     Real Name: Total final energy invested RES elec var
@@ -30219,6 +31014,7 @@ def materials_required_for_ev_batteries_mt():
 
 
 @cache.step
+@to_float
 def newreplaced_batteries_tw():
     """
     Real Name: "new+replaced batteries TW"
@@ -30238,6 +31034,7 @@ def newreplaced_batteries_tw():
 
 
 @cache.step
+@to_float
 def energy_intensity_construction_ev_batteries_mjmw():
     """
     Real Name: "Energy intensity construction EV batteries MJ/MW"
@@ -30258,6 +31055,7 @@ def energy_intensity_construction_ev_batteries_mjmw():
 
 
 @cache.step
+@to_float
 def new_batteries():
     """
     Real Name: new batteries
@@ -30276,6 +31074,7 @@ def new_batteries():
 
 
 @cache.step
+@to_float
 def batteries_evhib2we():
     """
     Real Name: "batteries EV+hib+2wE"
@@ -30292,6 +31091,7 @@ def batteries_evhib2we():
 
 
 @cache.run
+@to_float
 def kw_per_mw():
     """
     Real Name: kW per MW
@@ -30307,6 +31107,7 @@ def kw_per_mw():
 
 
 @cache.run
+@to_float
 def net_stored_energy_ev_battery_over_lifetime():
     """
     Real Name: Net stored energy EV battery over lifetime
@@ -30322,6 +31123,7 @@ def net_stored_energy_ev_battery_over_lifetime():
 
 
 @cache.run
+@to_float
 def grid_correction_factor_ev_batteries():
     """
     Real Name: Grid correction factor EV batteries
@@ -30337,6 +31139,7 @@ def grid_correction_factor_ev_batteries():
 
 
 @cache.run
+@to_float
 def share_energy_requirements_for_decom_ev_batteries():
     """
     Real Name: Share energy requirements for decom EV batteries
@@ -30352,6 +31155,7 @@ def share_energy_requirements_for_decom_ev_batteries():
 
 
 @cache.step
+@to_float
 def working_hours_per_year():
     """
     Real Name: Working hours per year
@@ -30367,6 +31171,7 @@ def working_hours_per_year():
 
 
 @cache.run
+@to_float
 def days_per_year():
     """
     Real Name: days per year
@@ -30382,6 +31187,7 @@ def days_per_year():
 
 
 @cache.step
+@to_float
 def total_energy_required_for_material_consumption_for_res_elec():
     """
     Real Name: Total energy required for material consumption for RES elec
@@ -30418,6 +31224,7 @@ def total_energy_required_for_material_consumption_per_res_elec():
 
 
 @cache.run
+@to_float
 def mw_in_1_year_to_mj():
     """
     Real Name: MW in 1 year to MJ
@@ -30433,6 +31240,7 @@ def mw_in_1_year_to_mj():
 
 
 @cache.run
+@to_float
 def working_hours_per_day():
     """
     Real Name: Working hours per day
@@ -30448,6 +31256,7 @@ def working_hours_per_day():
 
 
 @cache.step
+@to_float
 def annual_work_hours_for_res():
     """
     Real Name: Annual work hours for RES
@@ -30463,6 +31272,7 @@ def annual_work_hours_for_res():
 
 
 @cache.step
+@to_float
 def hours_work_per_gj_res_delivered():
     """
     Real Name: Hours work per GJ RES delivered
@@ -30478,6 +31288,7 @@ def hours_work_per_gj_res_delivered():
 
 
 @cache.step
+@to_float
 def total_energy_required_for_total_material_consumption_for_ev_batteries():
     """
     Real Name: Total energy required for total material consumption for EV batteries
@@ -30495,6 +31306,7 @@ def total_energy_required_for_total_material_consumption_for_ev_batteries():
 
 
 @cache.step
+@to_float
 def tfe_required_for_total_material_consumption_for_alt_techn():
     """
     Real Name: TFE required for total material consumption for alt techn
@@ -30554,6 +31366,7 @@ def total_energy_required_per_material_for_alt_techn():
 
 
 @cache.step
+@to_float
 def total_jobs_res_elec():
     """
     Real Name: Total jobs RES elec
@@ -30569,6 +31382,7 @@ def total_jobs_res_elec():
 
 
 @cache.step
+@to_float
 def total_jobs_biofuels():
     """
     Real Name: total jobs biofuels
@@ -30584,6 +31398,7 @@ def total_jobs_biofuels():
 
 
 @cache.step
+@to_float
 def total_jobs_res():
     """
     Real Name: Total jobs RES
@@ -30620,6 +31435,7 @@ def total_di_jobs_res_heat_per_techn():
 
 
 @cache.step
+@to_float
 def total_jobs_res_heat():
     """
     Real Name: Total jobs RES heat
@@ -30691,6 +31507,7 @@ def ratio_total_vs_d_jobs_res_elec():
 
 
 @cache.run
+@to_float
 def employment_factor_biofuels():
     """
     Real Name: Employment factor biofuels
@@ -30768,6 +31585,7 @@ def d_jobs_new_installed_res_heat_per_techn():
 
 
 @cache.step
+@to_float
 def d_jobs_fuel_supply_solids_bioe():
     """
     Real Name: D jobs fuel supply solids bioE
@@ -30801,6 +31619,7 @@ def new_capacity_installed_growth_rate_res_elec():
 
 
 @cache.run
+@to_float
 def employment_factor_fuel_supply_solids_bioe():
     """
     Real Name: Employment factor fuel supply solids bioE
@@ -30816,6 +31635,7 @@ def employment_factor_fuel_supply_solids_bioe():
 
 
 @cache.step
+@to_float
 def exogenous_growth_gtl():
     """
     Real Name: Exogenous growth GTL
@@ -30844,6 +31664,7 @@ def exogenous_growth_gtl():
 
 
 @cache.step
+@to_float
 def replacement_gtl():
     """
     Real Name: replacement GTL
@@ -30874,6 +31695,7 @@ def replacement_gtl():
 
 
 @cache.run
+@to_float
 def crash_programme_gtl():
     """
     Real Name: "Crash programme GTL?"
@@ -30889,6 +31711,7 @@ def crash_programme_gtl():
 
 
 @cache.run
+@to_float
 def activate_eroi_fc_system_feedback():
     """
     Real Name: "Activate EROI FC system feedback?"
@@ -30904,6 +31727,7 @@ def activate_eroi_fc_system_feedback():
 
 
 @cache.step
+@to_float
 def exogenous_growth_ctl():
     """
     Real Name: Exogenous growth CTL
@@ -30932,6 +31756,7 @@ def exogenous_growth_ctl():
 
 
 @cache.step
+@to_float
 def replacement_ctl():
     """
     Real Name: replacement CTL
@@ -31031,6 +31856,7 @@ def table_max_extraction_aspo_oil_ej_0_1_0(x):
 
 
 @cache.step
+@to_float
 def aux12():
     """
     Real Name: aux12
@@ -31046,6 +31872,7 @@ def aux12():
 
 
 @cache.step
+@to_float
 def coal_to_leave_underground():
     """
     Real Name: coal to leave underground
@@ -31065,6 +31892,7 @@ def coal_to_leave_underground():
 
 
 @cache.step
+@to_float
 def rurr_coal_start_year_plg():
     """
     Real Name: RURR coal start year PLG
@@ -31085,6 +31913,7 @@ def rurr_coal_start_year_plg():
 
 
 @cache.step
+@to_float
 def rurr_conv_oil_until_start_year_plg():
     """
     Real Name: RURR conv oil until start year PLG
@@ -31105,6 +31934,7 @@ def rurr_conv_oil_until_start_year_plg():
 
 
 @cache.step
+@to_float
 def conv_gas_to_leave_underground():
     """
     Real Name: conv gas to leave underground
@@ -31126,6 +31956,7 @@ def conv_gas_to_leave_underground():
 
 
 @cache.step
+@to_float
 def conv_oil_to_leave_underground():
     """
     Real Name: conv oil to leave underground
@@ -31146,6 +31977,7 @@ def conv_oil_to_leave_underground():
 
 
 @cache.step
+@to_float
 def rurr_unconv_oil_until_start_year_plg():
     """
     Real Name: RURR unconv oil until start year PLG
@@ -31166,6 +31998,7 @@ def rurr_unconv_oil_until_start_year_plg():
 
 
 @cache.step
+@to_float
 def rurr_unconv_gas_until_start_year_plg():
     """
     Real Name: RURR unconv gas until start year PLG
@@ -31186,6 +32019,7 @@ def rurr_unconv_gas_until_start_year_plg():
 
 
 @cache.step
+@to_float
 def unconv_gas_to_leave_underground():
     """
     Real Name: unconv gas to leave underground
@@ -31207,6 +32041,7 @@ def unconv_gas_to_leave_underground():
 
 
 @cache.step
+@to_float
 def tot_agg_gas_to_leave_underground():
     """
     Real Name: tot agg gas to leave underground
@@ -31228,6 +32063,7 @@ def tot_agg_gas_to_leave_underground():
 
 
 @cache.step
+@to_float
 def unconv_oil_to_leave_underground():
     """
     Real Name: unconv oil to leave underground
@@ -31249,6 +32085,7 @@ def unconv_oil_to_leave_underground():
 
 
 @cache.step
+@to_float
 def aux11():
     """
     Real Name: aux11
@@ -31264,6 +32101,7 @@ def aux11():
 
 
 @cache.step
+@to_float
 def tot_agg_oil_to_leave_underground():
     """
     Real Name: tot agg oil to leave underground
@@ -31285,6 +32123,7 @@ def tot_agg_oil_to_leave_underground():
 
 
 @cache.step
+@to_float
 def aux6():
     """
     Real Name: aux6
@@ -31300,6 +32139,7 @@ def aux6():
 
 
 @cache.step
+@to_float
 def aux7():
     """
     Real Name: aux7
@@ -31315,6 +32155,7 @@ def aux7():
 
 
 @cache.step
+@to_float
 def aux8():
     """
     Real Name: aux8
@@ -31330,6 +32171,7 @@ def aux8():
 
 
 @cache.step
+@to_float
 def aux9():
     """
     Real Name: aux9
@@ -31345,6 +32187,7 @@ def aux9():
 
 
 @cache.step
+@to_float
 def rurr_conv_gas_until_start_year_plg():
     """
     Real Name: RURR conv gas until start year PLG
@@ -31365,6 +32208,7 @@ def rurr_conv_gas_until_start_year_plg():
 
 
 @cache.step
+@to_float
 def aux10():
     """
     Real Name: aux10
@@ -31587,6 +32431,7 @@ def table_max_extraction_aspo_oil_ej_0_0(x):
 
 
 @cache.step
+@to_float
 def rurr_tot_gas_until_start_year_plg():
     """
     Real Name: RURR tot gas until start year PLG
@@ -31607,6 +32452,7 @@ def rurr_tot_gas_until_start_year_plg():
 
 
 @cache.step
+@to_float
 def rurr_tot_oil_until_start_year_plg():
     """
     Real Name: RURR tot oil until start year PLG
@@ -31627,6 +32473,7 @@ def rurr_tot_oil_until_start_year_plg():
 
 
 @cache.step
+@to_float
 def share_elec_demand_covered_by_res():
     """
     Real Name: share Elec demand covered by RES
@@ -31649,6 +32496,7 @@ def share_elec_demand_covered_by_res():
 
 
 @cache.step
+@to_float
 def rurr_conv_gas():
     """
     Real Name: RURR conv gas
@@ -31664,6 +32512,7 @@ def rurr_conv_gas():
 
 
 @cache.step
+@to_float
 def rurr_unconv_gas():
     """
     Real Name: RURR unconv gas
@@ -31679,6 +32528,7 @@ def rurr_unconv_gas():
 
 
 @cache.step
+@to_float
 def rurr_conv_oil():
     """
     Real Name: RURR conv oil
@@ -31694,6 +32544,7 @@ def rurr_conv_oil():
 
 
 @cache.step
+@to_float
 def variation_share_transmdistr_losses_elec():
     """
     Real Name: "variation share transm&distr losses elec"
@@ -31712,6 +32563,7 @@ def variation_share_transmdistr_losses_elec():
 
 
 @cache.step
+@to_float
 def share_demand_solids_in_transport():
     """
     Real Name: Share demand solids in transport
@@ -31727,6 +32579,7 @@ def share_demand_solids_in_transport():
 
 
 @cache.step
+@to_float
 def share_demand_gas_in_transport():
     """
     Real Name: Share demand gas in transport
@@ -31758,6 +32611,7 @@ def share_demand_by_fuel_in_transport():
 
 
 @cache.step
+@to_float
 def share_demand_electricity_in_transport():
     """
     Real Name: Share demand electricity in transport
@@ -31775,6 +32629,7 @@ def share_demand_electricity_in_transport():
 
 
 @cache.step
+@to_float
 def share_demand_heat_in_transport():
     """
     Real Name: Share demand heat in transport
@@ -31790,6 +32645,7 @@ def share_demand_heat_in_transport():
 
 
 @cache.step
+@to_float
 def share_demand_liquids_in_transport():
     """
     Real Name: Share demand liquids in transport
@@ -31805,6 +32661,7 @@ def share_demand_liquids_in_transport():
 
 
 @cache.step
+@to_float
 def co2_emissions_per_value_added():
     """
     Real Name: CO2 emissions per value added
@@ -31820,6 +32677,7 @@ def co2_emissions_per_value_added():
 
 
 @cache.step
+@to_float
 def liquids_per_x_bus():
     """
     Real Name: liquids per X bus
@@ -31843,6 +32701,7 @@ def liquids_per_x_bus():
 
 
 @cache.step
+@to_float
 def liquids_per_x_hv():
     """
     Real Name: liquids per X HV
@@ -31864,6 +32723,7 @@ def liquids_per_x_hv():
 
 
 @cache.step
+@to_float
 def liquids_per_x_lv():
     """
     Real Name: liquids per X LV
@@ -31885,6 +32745,7 @@ def liquids_per_x_lv():
 
 
 @cache.step
+@to_float
 def energy_per_x_train():
     """
     Real Name: energy per X train
@@ -31906,6 +32767,7 @@ def energy_per_x_train():
 
 
 @cache.run
+@to_float
 def adjust_energy_for_transport_to_inland_transport():
     """
     Real Name: adjust energy for transport to inland transport
@@ -31925,6 +32787,7 @@ def adjust_energy_for_transport_to_inland_transport():
 
 
 @cache.step
+@to_float
 def effects_shortage_elec_on_evhib():
     """
     Real Name: "effects shortage elec on EV/hib"
@@ -31947,6 +32810,7 @@ def effects_shortage_elec_on_evhib():
 
 
 @cache.step
+@to_float
 def required_number_standard_batteries():
     """
     Real Name: required number standard batteries
@@ -31965,6 +32829,7 @@ def required_number_standard_batteries():
 
 
 @cache.step
+@to_float
 def transport_tfed_energy_intensity():
     """
     Real Name: Transport TFED energy intensity
@@ -31980,6 +32845,7 @@ def transport_tfed_energy_intensity():
 
 
 @cache.step
+@to_float
 def total_number_light_vehicles():
     """
     Real Name: total number light vehicles
@@ -32004,6 +32870,7 @@ def total_number_light_vehicles():
 
 
 @cache.step
+@to_float
 def transport_tfed():
     """
     Real Name: Transport TFED
@@ -32019,6 +32886,7 @@ def transport_tfed():
 
 
 @cache.step
+@to_float
 def co2_emissions_unconv_gas():
     """
     Real Name: CO2 emissions unconv gas
@@ -32039,6 +32907,7 @@ def co2_emissions_unconv_gas():
 
 
 @cache.run
+@to_float
 def phaseout_oil_for_electricity():
     """
     Real Name: "phase-out oil for electricity?"
@@ -32054,6 +32923,7 @@ def phaseout_oil_for_electricity():
 
 
 @cache.step
+@to_float
 def total_ch4_emissions_fossil_fuels():
     """
     Real Name: Total CH4 emissions fossil fuels
@@ -32076,6 +32946,7 @@ def total_ch4_emissions_fossil_fuels():
 
 
 @cache.step
+@to_float
 def max_csp_twe():
     """
     Real Name: max CSP TWe
@@ -32093,6 +32964,7 @@ def max_csp_twe():
 
 
 @cache.run
+@to_float
 def gch4_per_mj_gtl():
     """
     Real Name: gCH4 per MJ GTL
@@ -32108,6 +32980,7 @@ def gch4_per_mj_gtl():
 
 
 @cache.step
+@to_float
 def ch4_emissions_gtl():
     """
     Real Name: CH4 emissions GTL
@@ -32123,6 +32996,7 @@ def ch4_emissions_gtl():
 
 
 @cache.run
+@to_float
 def phaseout_oil_for_heat():
     """
     Real Name: "phase-out oil for heat?"
@@ -32138,6 +33012,7 @@ def phaseout_oil_for_heat():
 
 
 @cache.run
+@to_float
 def gch4_per_mj_ctl():
     """
     Real Name: gCH4 per MJ CTL
@@ -32153,6 +33028,7 @@ def gch4_per_mj_ctl():
 
 
 @cache.run
+@to_float
 def g_per_gt():
     """
     Real Name: g per Gt
@@ -32168,6 +33044,7 @@ def g_per_gt():
 
 
 @cache.step
+@to_float
 def bioe_co2_emissions():
     """
     Real Name: BioE CO2 emissions
@@ -32256,6 +33133,7 @@ def p_h_vehicle():
 
 
 @cache.step
+@to_float
 def eroist_system_until_2015():
     """
     Real Name: EROIst system until 2015
@@ -32292,6 +33170,7 @@ def remaining_potential_elec_storage_by_res_techn():
 
 
 @cache.run
+@to_float
 def cp_hydro_2015():
     """
     Real Name: Cp hydro 2015
@@ -32307,6 +33186,7 @@ def cp_hydro_2015():
 
 
 @cache.step
+@to_float
 def esoi_phs_full_potential():
     """
     Real Name: ESOI PHS full potential
@@ -32324,6 +33204,7 @@ def esoi_phs_full_potential():
 
 
 @cache.step
+@to_float
 def max_capacity_elec_storage():
     """
     Real Name: max capacity elec storage
@@ -32340,6 +33221,7 @@ def max_capacity_elec_storage():
 
 
 @cache.run
+@to_float
 def eolrr_minerals_alt_techn_res_vs_total_economy():
     """
     Real Name: "EOL-RR minerals alt techn RES vs. total economy"
@@ -32358,6 +33240,7 @@ def eolrr_minerals_alt_techn_res_vs_total_economy():
 
 
 @cache.run
+@to_float
 def crash_programme_ctl():
     """
     Real Name: "Crash programme CTL?"
@@ -32389,6 +33272,7 @@ def recycling_rates_minerals_rest():
 
 
 @cache.run
+@to_float
 def p_percent_elec_hveh():
     """
     Real Name: P percent elec Hveh
@@ -32461,6 +33345,7 @@ def percents_h_vehicles():
 
 
 @cache.run
+@to_float
 def t_hist_h_transp():
     """
     Real Name: T hist H transp
@@ -32476,6 +33361,7 @@ def t_hist_h_transp():
 
 
 @cache.step
+@to_float
 def bat_number_2w():
     """
     Real Name: bat number 2w
@@ -32496,6 +33382,7 @@ def bat_number_2w():
 
 
 @cache.run
+@to_float
 def bateries_ratio_2w_e():
     """
     Real Name: bateries ratio 2w E
@@ -32512,6 +33399,7 @@ def bateries_ratio_2w_e():
 
 
 @cache.step
+@to_float
 def bat_number_ev():
     """
     Real Name: bat number EV
@@ -32533,6 +33421,7 @@ def bat_number_ev():
 
 
 @cache.step
+@to_float
 def bat_number_hib():
     """
     Real Name: bat number hib
@@ -32560,6 +33449,7 @@ def bat_number_hib():
 
 
 @cache.run
+@to_float
 def bateries_ratio_bus_e():
     """
     Real Name: bateries ratio bus E
@@ -32576,6 +33466,7 @@ def bateries_ratio_bus_e():
 
 
 @cache.run
+@to_float
 def bateries_ratio_hib_bus():
     """
     Real Name: bateries ratio hib bus
@@ -32592,6 +33483,7 @@ def bateries_ratio_hib_bus():
 
 
 @cache.run
+@to_float
 def bateries_ratio_hib_hv():
     """
     Real Name: bateries ratio hib HV
@@ -32608,6 +33500,7 @@ def bateries_ratio_hib_hv():
 
 
 @cache.run
+@to_float
 def bateries_ratio_hib_lv():
     """
     Real Name: bateries ratio hib LV
@@ -32624,6 +33517,7 @@ def bateries_ratio_hib_lv():
 
 
 @cache.step
+@to_float
 def total_number_hybrid_light_vehicles():
     """
     Real Name: total number hybrid light vehicles
@@ -32641,6 +33535,7 @@ def total_number_hybrid_light_vehicles():
 
 
 @cache.step
+@to_float
 def total_number_elec_light_vehicles():
     """
     Real Name: total number elec light vehicles
@@ -32659,6 +33554,7 @@ def total_number_elec_light_vehicles():
 
 
 @cache.step
+@to_float
 def total_number_gas_light_vehicles():
     """
     Real Name: total number gas light vehicles
@@ -32676,6 +33572,7 @@ def total_number_gas_light_vehicles():
 
 
 @cache.step
+@to_float
 def ev_batteries_tw():
     """
     Real Name: EV batteries TW
@@ -32842,6 +33739,7 @@ def var_percent_t_vehicles():
 
 
 @cache.run
+@to_float
 def p_percent_train_elec():
     """
     Real Name: P percent train elec
@@ -32858,6 +33756,7 @@ def p_percent_train_elec():
 
 
 @cache.run
+@to_float
 def p_percent_hv_gas():
     """
     Real Name: P percent HV gas
@@ -32874,6 +33773,7 @@ def p_percent_hv_gas():
 
 
 @cache.run
+@to_float
 def t_ini_inlandt():
     """
     Real Name: T ini inlandT
@@ -32944,6 +33844,7 @@ def p_inlandt():
 
 
 @cache.run
+@to_float
 def activate_policy_inlandt():
     """
     Real Name: Activate policy inlandT
@@ -32961,6 +33862,7 @@ def activate_policy_inlandt():
 
 
 @cache.run
+@to_float
 def p_percent_lv_elec():
     """
     Real Name: P percent LV elec
@@ -32977,6 +33879,7 @@ def p_percent_lv_elec():
 
 
 @cache.run
+@to_float
 def p_percent_lv_hyb():
     """
     Real Name: P percent LV hyb
@@ -32993,6 +33896,7 @@ def p_percent_lv_hyb():
 
 
 @cache.run
+@to_float
 def p_percent_bus_elec():
     """
     Real Name: P percent bus elec
@@ -33009,6 +33913,7 @@ def p_percent_bus_elec():
 
 
 @cache.run
+@to_float
 def p_percent_bus_gas():
     """
     Real Name: P percent bus gas
@@ -33025,6 +33930,7 @@ def p_percent_bus_gas():
 
 
 @cache.run
+@to_float
 def p_percent_bus_hyb():
     """
     Real Name: P percent bus hyb
@@ -33147,6 +34053,7 @@ def percents_train():
 
 
 @cache.run
+@to_float
 def p_percent_hv_hyb():
     """
     Real Name: P percent HV hyb
@@ -33300,6 +34207,7 @@ def efects_shortage_inlandt():
 
 
 @cache.run
+@to_float
 def p_percent_lv_gas():
     """
     Real Name: P percent LV gas
@@ -33365,6 +34273,7 @@ def percents_hv():
 
 
 @cache.run
+@to_float
 def initial_xt_inland():
     """
     Real Name: initial Xt inland
@@ -33381,6 +34290,7 @@ def initial_xt_inland():
 
 
 @cache.step
+@to_float
 def nx_bus_inlandt():
     """
     Real Name: NX bus inlandT
@@ -33402,6 +34312,7 @@ def nx_bus_inlandt():
 
 
 @cache.step
+@to_float
 def nx_hv_inland_t():
     """
     Real Name: NX HV inland T
@@ -33422,6 +34333,7 @@ def nx_hv_inland_t():
 
 
 @cache.step
+@to_float
 def nx_lv_inland_t():
     """
     Real Name: NX LV inland T
@@ -33584,6 +34496,7 @@ def energy_per_x_t():
 
 
 @cache.step
+@to_float
 def nx_train_inland_t():
     """
     Real Name: NX train inland T
@@ -33599,6 +34512,7 @@ def nx_train_inland_t():
 
 
 @cache.step
+@to_float
 def h_gas_adapt_growth():
     """
     Real Name: H gas adapt growth
@@ -33616,6 +34530,7 @@ def h_gas_adapt_growth():
 
 
 @cache.step
+@to_float
 def h_hyb_adapt_growth():
     """
     Real Name: H hyb adapt growth
@@ -33633,6 +34548,7 @@ def h_hyb_adapt_growth():
 
 
 @cache.run
+@to_float
 def activate_policy_h_transp():
     """
     Real Name: Activate policy H transp
@@ -33677,6 +34593,7 @@ def initial_energy_intensity_of_households_transport_2009():
 
 
 @cache.step
+@to_float
 def h_elec_adapt_growth():
     """
     Real Name: H elec adapt growth
@@ -33694,6 +34611,7 @@ def h_elec_adapt_growth():
 
 
 @cache.step
+@to_float
 def var_ih_e2():
     """
     Real Name: var IH E2
@@ -33717,6 +34635,7 @@ def var_ih_e2():
 
 
 @cache.step
+@to_float
 def var_ih_gas2():
     """
     Real Name: var IH gas2
@@ -33737,6 +34656,7 @@ def var_ih_gas2():
 
 
 @cache.step
+@to_float
 def a1_coef_th():
     """
     Real Name: A1 coef tH
@@ -33752,6 +34672,7 @@ def a1_coef_th():
 
 
 @cache.step
+@to_float
 def var_ih_liq2():
     """
     Real Name: var IH liq2
@@ -33791,6 +34712,7 @@ def energy_intensity_of_households_transport():
 
 
 @cache.step
+@to_float
 def h_2w_elec_adapt_growth():
     """
     Real Name: H 2w elec adapt growth
@@ -33810,6 +34732,7 @@ def h_2w_elec_adapt_growth():
 
 
 @cache.run
+@to_float
 def liq_4w():
     """
     Real Name: Liq 4w
@@ -33825,6 +34748,7 @@ def liq_4w():
 
 
 @cache.run
+@to_float
 def percent_2w_liq():
     """
     Real Name: percent 2w liq
@@ -33841,6 +34765,7 @@ def percent_2w_liq():
 
 
 @cache.run
+@to_float
 def percent_4w_liq():
     """
     Real Name: percent 4w liq
@@ -33857,6 +34782,7 @@ def percent_4w_liq():
 
 
 @cache.run
+@to_float
 def n_vehicles_h():
     """
     Real Name: N vehicles H
@@ -33872,6 +34798,7 @@ def n_vehicles_h():
 
 
 @cache.run
+@to_float
 def demand_h():
     """
     Real Name: Demand H
@@ -33888,6 +34815,7 @@ def demand_h():
 
 
 @cache.step
+@to_float
 def ratio_n_veh_demand_h():
     """
     Real Name: ratio N veh Demand H
@@ -34033,6 +34961,7 @@ def percents_4w_h_vehicles():
 
 
 @cache.run
+@to_float
 def p_percent_2w_elec():
     """
     Real Name: P percent 2w elec
@@ -34105,6 +35034,7 @@ def aux_hist_h():
 
 
 @cache.run
+@to_float
 def p_percent_gas_hveh():
     """
     Real Name: P percent gas Hveh
@@ -34121,6 +35051,7 @@ def p_percent_gas_hveh():
 
 
 @cache.run
+@to_float
 def p_share_2wheelers():
     """
     Real Name: P share 2wheelers
@@ -34137,6 +35068,7 @@ def p_share_2wheelers():
 
 
 @cache.run
+@to_float
 def p_percent_hyb_hveh():
     """
     Real Name: P percent hyb Hveh
@@ -34153,6 +35085,7 @@ def p_percent_hyb_hveh():
 
 
 @cache.run
+@to_float
 def initial_2w_percent():
     """
     Real Name: initial 2w percent
@@ -34209,6 +35142,7 @@ def share_feh_over_fed_by_final_fuel():
 
 
 @cache.run
+@to_float
 def share_feh_over_fed_oil():
     """
     Real Name: share FEH over FED oil
@@ -34224,6 +35158,7 @@ def share_feh_over_fed_oil():
 
 
 @cache.run
+@to_float
 def share_feh_over_fed_coal():
     """
     Real Name: share FEH over FED coal
@@ -34239,6 +35174,7 @@ def share_feh_over_fed_coal():
 
 
 @cache.run
+@to_float
 def share_feh_over_fed_nat_gas():
     """
     Real Name: "share FEH over FED nat. gas"
@@ -34254,6 +35190,7 @@ def share_feh_over_fed_nat_gas():
 
 
 @cache.step
+@to_float
 def fed_coal_for_heatnc():
     """
     Real Name: "FED coal for heat-nc"
@@ -34280,6 +35217,7 @@ def fed_coal_for_heatnc():
 
 
 @cache.step
+@to_float
 def pes_oil_ej_delayed():
     """
     Real Name: PES oil EJ delayed
@@ -34316,6 +35254,7 @@ def energy_required_for_material_consumption_for_ev_batteries():
 
 
 @cache.step
+@to_float
 def effects_shortage_elec_on_ev():
     """
     Real Name: effects shortage elec on EV
@@ -34338,6 +35277,7 @@ def effects_shortage_elec_on_ev():
 
 
 @cache.step
+@to_float
 def effects_shortage_gas_h_veh():
     """
     Real Name: effects shortage gas H veh
@@ -34420,6 +35360,7 @@ def variation_nonenergy_use():
 
 
 @cache.step
+@to_float
 def number_2w():
     """
     Real Name: Number 2w
@@ -34437,6 +35378,7 @@ def number_2w():
 
 
 @cache.step
+@to_float
 def number_4w():
     """
     Real Name: Number 4w
@@ -34457,6 +35399,7 @@ def number_4w():
 
 
 @cache.step
+@to_float
 def number_all():
     """
     Real Name: Number all
@@ -34472,6 +35415,7 @@ def number_all():
 
 
 @cache.step
+@to_float
 def percent_4w():
     """
     Real Name: percent 4w
@@ -34492,6 +35436,7 @@ def percent_4w():
 
 
 @cache.run
+@to_float
 def saving_ratio_2we():
     """
     Real Name: saving ratio 2wE
@@ -34507,6 +35452,7 @@ def saving_ratio_2we():
 
 
 @cache.step
+@to_float
 def percent_all():
     """
     Real Name: percent all
@@ -34522,6 +35468,7 @@ def percent_all():
 
 
 @cache.step
+@to_float
 def percent_2w():
     """
     Real Name: percent 2w
@@ -34539,6 +35486,7 @@ def percent_2w():
 
 
 @cache.step
+@to_float
 def share_fed_coal_vs_nre_heatnc():
     """
     Real Name: "share FED coal vs NRE heat-nc"
@@ -34555,6 +35503,7 @@ def share_fed_coal_vs_nre_heatnc():
 
 
 @cache.step
+@to_float
 def share_fed_gas_vs_nre_heatnc():
     """
     Real Name: "share FED gas vs NRE heat-nc"
@@ -34571,6 +35520,7 @@ def share_fed_gas_vs_nre_heatnc():
 
 
 @cache.step
+@to_float
 def fed_nre_for_heatnc():
     """
     Real Name: "FED NRE for heat-nc"
@@ -34586,6 +35536,7 @@ def fed_nre_for_heatnc():
 
 
 @cache.step
+@to_float
 def share_fed_liquids_vs_nre_heatnc():
     """
     Real Name: "share FED liquids vs NRE heat-nc"
@@ -34680,6 +35631,7 @@ def required_fed_by_fuel():
 
 
 @cache.step
+@to_float
 def bioe_gen_land_marg_available():
     """
     Real Name: BioE gen land marg available
@@ -34701,6 +35653,7 @@ def bioe_gen_land_marg_available():
 
 
 @cache.step
+@to_float
 def potential_peavail_cellulosic_biofuel_ej():
     """
     Real Name: Potential PEavail cellulosic biofuel EJ
@@ -34716,6 +35669,7 @@ def potential_peavail_cellulosic_biofuel_ej():
 
 
 @cache.step
+@to_float
 def potential_peavail_total_biofuels():
     """
     Real Name: Potential PEavail total biofuels
@@ -34736,6 +35690,7 @@ def potential_peavail_total_biofuels():
 
 
 @cache.step
+@to_float
 def biofuels_3gen_land_compet_available():
     """
     Real Name: Biofuels 3gen land compet available
@@ -34755,6 +35710,7 @@ def biofuels_3gen_land_compet_available():
 
 
 @cache.step
+@to_float
 def fes_total_biofuels_production_ej_2():
     """
     Real Name: FES total biofuels production EJ 2
@@ -34772,6 +35728,7 @@ def fes_total_biofuels_production_ej_2():
 
 
 @cache.step
+@to_float
 def fes_total_biofuels_production_mbd():
     """
     Real Name: "FES total biofuels production Mb/d"
@@ -34787,6 +35744,7 @@ def fes_total_biofuels_production_mbd():
 
 
 @cache.step
+@to_float
 def peavail_biofuels_2gen_land_compet_ej():
     """
     Real Name: PEavail biofuels 2gen land compet EJ
@@ -34804,6 +35762,7 @@ def peavail_biofuels_2gen_land_compet_ej():
 
 
 @cache.step
+@to_float
 def peavail_biofuels_3gen_land_compet_ej():
     """
     Real Name: PEavail biofuels 3gen land compet EJ
@@ -34821,6 +35780,7 @@ def peavail_biofuels_3gen_land_compet_ej():
 
 
 @cache.step
+@to_float
 def peavail_biofuels_land_marg_ej():
     """
     Real Name: PEavail biofuels land marg EJ
@@ -34838,6 +35798,7 @@ def peavail_biofuels_land_marg_ej():
 
 
 @cache.step
+@to_float
 def pe_biofuels_land_marg_ej():
     """
     Real Name: PE biofuels land marg EJ
@@ -34854,6 +35815,7 @@ def pe_biofuels_land_marg_ej():
 
 
 @cache.step
+@to_float
 def pe_biofuels_prod_2gen3gen_ej():
     """
     Real Name: "PE biofuels prod 2gen+3gen EJ"
@@ -34872,6 +35834,7 @@ def pe_biofuels_prod_2gen3gen_ej():
 
 
 @cache.step
+@to_float
 def pe_biomass_for_biofuels_production_ej():
     """
     Real Name: PE biomass for biofuels production EJ
@@ -34891,6 +35854,7 @@ def pe_biomass_for_biofuels_production_ej():
 
 
 @cache.step
+@to_float
 def pe_cellulosic_biofuel_ej():
     """
     Real Name: PE cellulosic biofuel EJ
@@ -34906,6 +35870,7 @@ def pe_cellulosic_biofuel_ej():
 
 
 @cache.step
+@to_float
 def max_peavail_biofuels_potential():
     """
     Real Name: Max PEavail biofuels potential
@@ -34925,6 +35890,7 @@ def max_peavail_biofuels_potential():
 
 
 @cache.run
+@to_float
 def start_year_biofuels_land_marg():
     """
     Real Name: start year biofuels land marg
@@ -34940,6 +35906,7 @@ def start_year_biofuels_land_marg():
 
 
 @cache.step
+@to_float
 def land_required_biofuels_land_marg():
     """
     Real Name: Land required biofuels land marg
@@ -34959,6 +35926,7 @@ def land_required_biofuels_land_marg():
 
 
 @cache.step
+@to_float
 def share_biofuels_overcapacity():
     """
     Real Name: share biofuels overcapacity
@@ -34977,6 +35945,7 @@ def share_biofuels_overcapacity():
 
 
 @cache.run
+@to_float
 def land_occupation_ratio_biofuels_marg_land():
     """
     Real Name: Land occupation ratio biofuels marg land
@@ -34994,6 +35963,7 @@ def land_occupation_ratio_biofuels_marg_land():
 
 
 @cache.step
+@to_float
 def peavail_cellulosic_biofuel_ej():
     """
     Real Name: PEavail cellulosic biofuel EJ
@@ -35025,6 +35995,7 @@ def start_production_biofuels(x):
 
 
 @cache.step
+@to_float
 def additional_pe_production_of_bioenergy_for_biofuels():
     """
     Real Name: Additional PE production of bioenergy for biofuels
@@ -35042,6 +36013,7 @@ def additional_pe_production_of_bioenergy_for_biofuels():
 
 
 @cache.step
+@to_float
 def oil_liquids_saved_by_biofuels_ej():
     """
     Real Name: Oil liquids saved by biofuels EJ
@@ -35057,6 +36029,7 @@ def oil_liquids_saved_by_biofuels_ej():
 
 
 @cache.step
+@to_float
 def efficiency_bioe_residues_to_cellulosic_liquids():
     """
     Real Name: Efficiency bioE residues to cellulosic liquids
@@ -35074,6 +36047,7 @@ def efficiency_bioe_residues_to_cellulosic_liquids():
 
 
 @cache.run
+@to_float
 def conv_efficiency_from_npp_to_biofuels():
     """
     Real Name: Conv efficiency from NPP to biofuels
@@ -35090,6 +36064,7 @@ def conv_efficiency_from_npp_to_biofuels():
 
 
 @cache.step
+@to_float
 def ped_nre_liquids():
     """
     Real Name: PED NRE Liquids
@@ -35106,6 +36081,7 @@ def ped_nre_liquids():
 
 
 @cache.step
+@to_float
 def potential_fes_ctlgtl_ej():
     """
     Real Name: "Potential FES CTL+GTL EJ"
@@ -35121,6 +36097,7 @@ def potential_fes_ctlgtl_ej():
 
 
 @cache.step
+@to_float
 def tfec_res_delayed_1yr():
     """
     Real Name: TFEC RES delayed 1yr
@@ -35136,6 +36113,7 @@ def tfec_res_delayed_1yr():
 
 
 @cache.step
+@to_float
 def fes_ctlgtl_ej():
     """
     Real Name: "FES CTL+GTL EJ"
@@ -35151,6 +36129,7 @@ def fes_ctlgtl_ej():
 
 
 @cache.step
+@to_float
 def tpes_res_delayed_1yr():
     """
     Real Name: TPES RES delayed 1yr
@@ -35166,6 +36145,7 @@ def tpes_res_delayed_1yr():
 
 
 @cache.step
+@to_float
 def annual_tpes_res_growth_rate():
     """
     Real Name: Annual TPES RES growth rate
@@ -35181,6 +36161,7 @@ def annual_tpes_res_growth_rate():
 
 
 @cache.step
+@to_float
 def ped_nat_gas_ej():
     """
     Real Name: "PED nat. gas EJ"
@@ -35196,6 +36177,7 @@ def ped_nat_gas_ej():
 
 
 @cache.step
+@to_float
 def annual_share_res_vs_tfec_growth_rate():
     """
     Real Name: Annual share RES vs TFEC growth rate
@@ -35211,6 +36193,7 @@ def annual_share_res_vs_tfec_growth_rate():
 
 
 @cache.step
+@to_float
 def annual_share_res_vs_tpes_growth_rate():
     """
     Real Name: Annual share RES vs TPES growth rate
@@ -35226,6 +36209,7 @@ def annual_share_res_vs_tpes_growth_rate():
 
 
 @cache.step
+@to_float
 def share_res_vs_tpes_delayed_1yr():
     """
     Real Name: share RES vs TPES delayed 1yr
@@ -35241,6 +36225,7 @@ def share_res_vs_tpes_delayed_1yr():
 
 
 @cache.step
+@to_float
 def gtl_production():
     """
     Real Name: GTL production
@@ -35256,6 +36241,7 @@ def gtl_production():
 
 
 @cache.step
+@to_float
 def pes_biogas_for_tfc():
     """
     Real Name: PES biogas for TFC
@@ -35271,6 +36257,7 @@ def pes_biogas_for_tfc():
 
 
 @cache.step
+@to_float
 def share_ctlgtl_overcapacity():
     """
     Real Name: "share CTL+GTL overcapacity"
@@ -35288,6 +36275,7 @@ def share_ctlgtl_overcapacity():
 
 
 @cache.step
+@to_float
 def share_res_vs_tfec_delayed_1yr():
     """
     Real Name: share RES vs TFEC delayed 1yr
@@ -35303,6 +36291,7 @@ def share_res_vs_tfec_delayed_1yr():
 
 
 @cache.step
+@to_float
 def ped_nat_gas_for_gtl_ej():
     """
     Real Name: "PED nat. gas for GTL EJ"
@@ -35318,6 +36307,7 @@ def ped_nat_gas_for_gtl_ej():
 
 
 @cache.step
+@to_float
 def max_unconv_gas_growth_extraction():
     """
     Real Name: max unconv gas growth extraction
@@ -35346,6 +36336,7 @@ def max_unconv_gas_growth_extraction():
 
 
 @cache.step
+@to_float
 def ped_coal_for_ctl_ej():
     """
     Real Name: PED coal for CTL EJ
@@ -35361,6 +36352,7 @@ def ped_coal_for_ctl_ej():
 
 
 @cache.step
+@to_float
 def annual_tfec_res_growth_rate():
     """
     Real Name: Annual TFEC RES growth rate
@@ -35376,6 +36368,7 @@ def annual_tfec_res_growth_rate():
 
 
 @cache.step
+@to_float
 def ped_total_oil_ej():
     """
     Real Name: PED total oil EJ
@@ -35391,6 +36384,7 @@ def ped_total_oil_ej():
 
 
 @cache.step
+@to_float
 def ctl_production():
     """
     Real Name: CTL production
@@ -35406,6 +36400,7 @@ def ctl_production():
 
 
 @cache.step
+@to_float
 def total_fe_real_supply_res_for_heatnc_ej():
     """
     Real Name: "Total FE real supply RES for heat-nc EJ"
@@ -35421,6 +36416,7 @@ def total_fe_real_supply_res_for_heatnc_ej():
 
 
 @cache.step
+@to_float
 def real_extraction_conv_oil_emissions_relevant_ej():
     """
     Real Name: real extraction conv oil emissions relevant EJ
@@ -35501,6 +36497,7 @@ def annual_variation_nonenergy_use():
 
 
 @cache.step
+@to_float
 def real_extraction_conv_gas_emissions_relevant_ej():
     """
     Real Name: real extraction conv gas emissions relevant EJ
@@ -35545,6 +36542,7 @@ def pes_res_for_heatnc_by_techn():
 
 
 @cache.step
+@to_float
 def fes_nre_for_heat():
     """
     Real Name: FES NRE for heat
@@ -35582,6 +36580,7 @@ def installed_capacity_res_heatnc_tw():
 
 
 @cache.step
+@to_float
 def fed_heatcom_plants_fossil_fuels_ej():
     """
     Real Name: "FED Heat-com plants fossil fuels EJ"
@@ -35603,6 +36602,7 @@ def fed_heatcom_plants_fossil_fuels_ej():
 
 
 @cache.step
+@to_float
 def real_extraction_unconv_gas_emissions_relevant_ej():
     """
     Real Name: real extraction unconv gas emissions relevant EJ
@@ -35631,6 +36631,7 @@ def real_extraction_unconv_gas_emissions_relevant_ej():
 
 
 @cache.step
+@to_float
 def real_extraction_unconv_oil_emissions_relevant_ej():
     """
     Real Name: real extraction unconv oil emissions relevant EJ
@@ -35684,6 +36685,7 @@ def remaining_potential_res_for_heat():
 
 
 @cache.step
+@to_float
 def extraction_coal_emissions_relevant_ej():
     """
     Real Name: extraction coal emissions relevant EJ
@@ -35736,6 +36738,7 @@ def fe_real_generation_res_heatnc_ej():
 
 
 @cache.step
+@to_float
 def total_fe_real_supply_res_for_heatcom_ej():
     """
     Real Name: "Total FE real supply RES for heat-com EJ"
@@ -35770,6 +36773,7 @@ def past_res_growth_for_heatcom_0():
 
 
 @cache.run
+@to_float
 def efficiency_conversion_bioe_plants_to_heat_0():
     """
     Real Name: Efficiency conversion BioE plants to heat 0
@@ -35787,6 +36791,7 @@ def efficiency_conversion_bioe_plants_to_heat_0():
 
 
 @cache.step
+@to_float
 def fed_heatcom_after_priorities_ej():
     """
     Real Name: "FED Heat-com after priorities EJ"
@@ -35808,6 +36813,7 @@ def fed_heatcom_after_priorities_ej():
 
 
 @cache.step
+@to_float
 def fes_heat_from_biow():
     """
     Real Name: FES heat from BioW
@@ -35829,6 +36835,7 @@ def fes_heat_from_biow():
 
 
 @cache.step
+@to_float
 def abundance_res_heatnc():
     """
     Real Name: "abundance RES heat-nc"
@@ -35854,6 +36861,7 @@ def abundance_res_heatnc():
 
 
 @cache.run
+@to_float
 def efficiency_geothermal_for_heat_0():
     """
     Real Name: Efficiency geothermal for heat 0
@@ -35869,6 +36877,7 @@ def efficiency_geothermal_for_heat_0():
 
 
 @cache.step
+@to_float
 def fes_heatcom_nuclear_chp_plants_ej():
     """
     Real Name: "FES Heat-com nuclear CHP plants EJ"
@@ -35886,6 +36895,7 @@ def fes_heatcom_nuclear_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def fe_real_supply_res_for_heatnc_tot_ej():
     """
     Real Name: "FE real supply RES for heat-nc tot EJ"
@@ -35941,6 +36951,7 @@ def past_res_growth_for_heatnc():
 
 
 @cache.step
+@to_float
 def fed_heat_fossil_fuels_chp_plants_ej():
     """
     Real Name: FED heat fossil fuels CHP plants EJ
@@ -35978,6 +36989,7 @@ def replacement_res_for_heatnc():
 
 
 @cache.run
+@to_float
 def efficiency_solar_panels_for_heat_0():
     """
     Real Name: Efficiency solar panels for heat 0
@@ -35993,6 +37005,7 @@ def efficiency_solar_panels_for_heat_0():
 
 
 @cache.step
+@to_float
 def abundance_res_heatcom():
     """
     Real Name: "abundance RES heat-com"
@@ -36021,6 +37034,7 @@ def abundance_res_heatcom():
 
 
 @cache.step
+@to_float
 def abundance_res_heatnc2():
     """
     Real Name: "abundance RES heat-nc2"
@@ -36036,6 +37050,7 @@ def abundance_res_heatnc2():
 
 
 @cache.step
+@to_float
 def potential_fes_tot_res_for_heatnc_ej():
     """
     Real Name: "potential FES tot RES for heat-nc EJ"
@@ -36128,6 +37143,7 @@ def replacement_res_for_heat_0():
 
 
 @cache.step
+@to_float
 def fes_res_for_heat_ej():
     """
     Real Name: FES RES for heat EJ
@@ -36147,6 +37163,7 @@ def fes_res_for_heat_ej():
 
 
 @cache.step
+@to_float
 def fe_real_supply_res_for_heatcom_tot_ej():
     """
     Real Name: "FE real supply RES for heat-com tot EJ"
@@ -36165,6 +37182,7 @@ def fe_real_supply_res_for_heatcom_tot_ej():
 
 
 @cache.run
+@to_float
 def losses_solar_for_heat_0():
     """
     Real Name: Losses solar for heat 0
@@ -36180,6 +37198,7 @@ def losses_solar_for_heat_0():
 
 
 @cache.step
+@to_float
 def res_heatnc_tot_overcapacity():
     """
     Real Name: "RES heat-nc tot overcapacity"
@@ -36239,6 +37258,7 @@ def historic_res_capacity_for_heatnc(x):
 
 
 @cache.step
+@subs(["final sources1"], _subscript_dict)
 def historic_share_of_transformation_losses_vs_extraction():
     """
     Real Name: Historic share of transformation losses vs extraction
@@ -36257,6 +37277,7 @@ def historic_share_of_transformation_losses_vs_extraction():
 
 
 @cache.step
+@to_float
 def ratio_gain_gas_vs_lose_solids_in_tranf_processes():
     """
     Real Name: Ratio gain gas vs lose solids in tranf processes
@@ -36273,6 +37294,7 @@ def ratio_gain_gas_vs_lose_solids_in_tranf_processes():
 
 
 @cache.step
+@to_float
 def fes_elec_fossil_fuel_chp_plants_ej():
     """
     Real Name: FES Elec fossil fuel CHP plants EJ
@@ -36292,6 +37314,7 @@ def fes_elec_fossil_fuel_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def total_fe_elec_demand_after_priorities_twh():
     """
     Real Name: Total FE Elec demand after priorities TWh
@@ -36312,6 +37335,7 @@ def total_fe_elec_demand_after_priorities_twh():
 
 
 @cache.step
+@to_float
 def demand_elec_nre_twh():
     """
     Real Name: Demand Elec NRE TWh
@@ -36349,6 +37373,7 @@ def nonenergy_use_demand_by_final_fuel_ej():
 
 
 @cache.step
+@to_float
 def share_solids_for_final_energy():
     """
     Real Name: share solids for final energy
@@ -36367,6 +37392,7 @@ def share_solids_for_final_energy():
 
 
 @cache.step
+@to_float
 def total_real_nonenergy_use_consumption_ej():
     """
     Real Name: "Total real non-energy use consumption EJ"
@@ -36382,6 +37408,7 @@ def total_real_nonenergy_use_consumption_ej():
 
 
 @cache.step
+@to_float
 def share_gases_for_final_energy():
     """
     Real Name: share gases for final energy
@@ -36400,6 +37427,7 @@ def share_gases_for_final_energy():
 
 
 @cache.step
+@to_float
 def ratio_fed_for_heatnc_vs_fed_for_heatcom():
     """
     Real Name: "ratio FED for heat-nc vs FED for heat-com"
@@ -36494,6 +37522,7 @@ def real_fe_consumption_by_fuel_before_heat_correction():
 
 
 @cache.step
+@to_float
 def required_tfed_before_heat_dem_corr():
     """
     Real Name: Required TFED before heat dem corr
@@ -36546,6 +37575,7 @@ def total_recycled_materials_for_ev_batteries_mt():
 
 
 @cache.step
+@to_float
 def share_res_vs_tfec():
     """
     Real Name: share RES vs TFEC
@@ -36703,6 +37733,7 @@ def total_materials_required_for_ev_batteries():
 
 
 @cache.step
+@to_float
 def tfec_from_res_per_capita():
     """
     Real Name: TFEC from RES per capita
@@ -36718,6 +37749,7 @@ def tfec_from_res_per_capita():
 
 
 @cache.run
+@to_float
 def rt_storage_efficiency_ev_batteries():
     """
     Real Name: rt storage efficiency EV batteries
@@ -36750,6 +37782,7 @@ def cum_materials_to_extract_for_ev_batteries_from_2015():
 
 
 @cache.run
+@to_float
 def initial_cumulated_material_requirements_for_ev_batteries_1995():
     """
     Real Name: initial cumulated material requirements for EV batteries 1995
@@ -36765,6 +37798,7 @@ def initial_cumulated_material_requirements_for_ev_batteries_1995():
 
 
 @cache.step
+@to_float
 def fe_tot_generation_all_res_elec_ej():
     """
     Real Name: FE tot generation all RES elec EJ
@@ -36780,6 +37814,7 @@ def fe_tot_generation_all_res_elec_ej():
 
 
 @cache.step
+@to_float
 def carbon_footprint_tonnescperson():
     """
     Real Name: "Carbon footprint tonnesC/person"
@@ -36795,6 +37830,7 @@ def carbon_footprint_tonnescperson():
 
 
 @cache.step
+@to_float
 def potential_max_hdi():
     """
     Real Name: Potential max HDI
@@ -36815,6 +37851,7 @@ def potential_max_hdi():
 
 
 @cache.run
+@to_float
 def kw_per_battery_ev():
     """
     Real Name: kW per battery EV
@@ -36867,6 +37904,7 @@ def pes_fossil_fuel_extraction_delayed():
 
 
 @cache.step
+@subs(["final sources1"], _subscript_dict)
 def historic_share_of_losses_vs_extraction():
     """
     Real Name: Historic share of losses vs extraction
@@ -36974,6 +38012,7 @@ def historic_variation_demand():
 
 
 @cache.step
+@to_float
 def share_conv_vs_total_oil_extraction_eu():
     """
     Real Name: share conv vs total oil extraction EU
@@ -36992,6 +38031,7 @@ def share_conv_vs_total_oil_extraction_eu():
 
 
 @cache.step
+@to_float
 def pes_nat_gas_without_gtl():
     """
     Real Name: "PES nat. gas without GTL"
@@ -37007,6 +38047,7 @@ def pes_nat_gas_without_gtl():
 
 
 @cache.step
+@to_float
 def co2_emissions_gtl():
     """
     Real Name: CO2 emissions GTL
@@ -37046,6 +38087,7 @@ def shortage_coef_without_min_without_elosses():
 
 
 @cache.step
+@to_float
 def share_conv_vs_total_gas_extraction_eu():
     """
     Real Name: share conv vs total gas extraction EU
@@ -37064,6 +38106,7 @@ def share_conv_vs_total_gas_extraction_eu():
 
 
 @cache.step
+@to_float
 def ch4_emissions_unconv_gas():
     """
     Real Name: CH4 emissions unconv gas
@@ -37084,6 +38127,7 @@ def ch4_emissions_unconv_gas():
 
 
 @cache.step
+@to_float
 def share_electricity_vs_tfes():
     """
     Real Name: share electricity vs TFES
@@ -37104,6 +38148,7 @@ def share_electricity_vs_tfes():
 
 
 @cache.step
+@to_float
 def co2_emissions_peat():
     """
     Real Name: CO2 emissions peat
@@ -37119,6 +38164,7 @@ def co2_emissions_peat():
 
 
 @cache.step
+@to_float
 def required_fed_by_gas():
     """
     Real Name: Required FED by gas
@@ -37134,6 +38180,7 @@ def required_fed_by_gas():
 
 
 @cache.step
+@to_float
 def required_tfed():
     """
     Real Name: Required TFED
@@ -37154,6 +38201,7 @@ def required_tfed():
 
 
 @cache.step
+@to_float
 def total_fe_elec_consumption_ej():
     """
     Real Name: Total FE Elec consumption EJ
@@ -37171,6 +38219,7 @@ def total_fe_elec_consumption_ej():
 
 
 @cache.step
+@to_float
 def ped_gases():
     """
     Real Name: PED gases
@@ -37195,6 +38244,7 @@ def ped_gases():
 
 
 @cache.step
+@to_float
 def share_solids_vs_tfes():
     """
     Real Name: share solids vs TFES
@@ -37213,6 +38263,7 @@ def share_solids_vs_tfes():
 
 
 @cache.step
+@to_float
 def share_gases_vs_tfes():
     """
     Real Name: share gases vs TFES
@@ -37231,6 +38282,7 @@ def share_gases_vs_tfes():
 
 
 @cache.step
+@to_float
 def required_fed_solids():
     """
     Real Name: Required FED solids
@@ -37246,6 +38298,7 @@ def required_fed_solids():
 
 
 @cache.step
+@to_float
 def share_heat_vs_tfes():
     """
     Real Name: share heat vs TFES
@@ -37264,6 +38317,7 @@ def share_heat_vs_tfes():
 
 
 @cache.step
+@to_float
 def ped_solids():
     """
     Real Name: PED solids
@@ -37288,6 +38342,7 @@ def ped_solids():
 
 
 @cache.step
+@to_float
 def scarcity_conv_oil():
     """
     Real Name: scarcity conv oil
@@ -37319,6 +38374,7 @@ def scarcity_conv_oil():
 
 
 @cache.step
+@to_float
 def share_liquids_vs_tfes():
     """
     Real Name: share liquids vs TFES
@@ -37337,6 +38393,7 @@ def share_liquids_vs_tfes():
 
 
 @cache.step
+@to_float
 def real_total_output_inland_transport():
     """
     Real Name: Real total output inland transport
@@ -37355,6 +38412,7 @@ def real_total_output_inland_transport():
 
 
 @cache.step
+@to_float
 def tfes_intensity_ej_t():
     """
     Real Name: TFES intensity EJ T$
@@ -37370,6 +38428,7 @@ def tfes_intensity_ej_t():
 
 
 @cache.step
+@to_float
 def tfes_intensity_ej_t_delayed_1yr():
     """
     Real Name: TFES intensity EJ T$ delayed 1yr
@@ -37385,6 +38444,7 @@ def tfes_intensity_ej_t_delayed_1yr():
 
 
 @cache.step
+@to_float
 def tpes_intensity_ej_t_delayed_1yr():
     """
     Real Name: TPES intensity EJ T$ delayed 1yr
@@ -37400,6 +38460,7 @@ def tpes_intensity_ej_t_delayed_1yr():
 
 
 @cache.step
+@to_float
 def annual_tpes_intensity_change_rate():
     """
     Real Name: Annual TPES intensity change rate
@@ -37415,6 +38476,7 @@ def annual_tpes_intensity_change_rate():
 
 
 @cache.step
+@to_float
 def annual_tfes_intensity_change_rate():
     """
     Real Name: Annual TFES intensity change rate
@@ -37664,6 +38726,7 @@ def saving_ratios_v():
 
 
 @cache.run
+@to_float
 def share_feh_over_pes_gases():
     """
     Real Name: share FEH over PES gases
@@ -37679,6 +38742,7 @@ def share_feh_over_pes_gases():
 
 
 @cache.step
+@to_float
 def increase_scarcity_conv_gas():
     """
     Real Name: increase scarcity conv gas
@@ -37694,6 +38758,7 @@ def increase_scarcity_conv_gas():
 
 
 @cache.step
+@to_float
 def scarcity_conv_gas_stock():
     """
     Real Name: scarcity conv gas stock
@@ -37711,6 +38776,7 @@ def scarcity_conv_gas_stock():
 
 
 @cache.step
+@to_float
 def real_growth_ctl():
     """
     Real Name: real growth CTL
@@ -37737,6 +38803,7 @@ def real_growth_ctl():
 
 
 @cache.step
+@to_float
 def ctl_potential_production():
     """
     Real Name: CTL potential production
@@ -37752,6 +38819,7 @@ def ctl_potential_production():
 
 
 @cache.step
+@to_float
 def abundance_liquids_gtl():
     """
     Real Name: abundance liquids GTL
@@ -37772,6 +38840,7 @@ def abundance_liquids_gtl():
 
 
 @cache.step
+@to_float
 def gtl_potential_production():
     """
     Real Name: GTL potential production
@@ -37787,6 +38856,7 @@ def gtl_potential_production():
 
 
 @cache.step
+@to_float
 def abundance_liquids_ctl():
     """
     Real Name: abundance liquids CTL
@@ -37807,6 +38877,7 @@ def abundance_liquids_ctl():
 
 
 @cache.step
+@to_float
 def wear_gtl():
     """
     Real Name: wear GTL
@@ -37824,6 +38895,7 @@ def wear_gtl():
 
 
 @cache.run
+@to_float
 def lifetime_gtl():
     """
     Real Name: lifetime GTL
@@ -37839,6 +38911,7 @@ def lifetime_gtl():
 
 
 @cache.run
+@to_float
 def lifetime_ctl():
     """
     Real Name: lifetime CTL
@@ -37854,6 +38927,7 @@ def lifetime_ctl():
 
 
 @cache.step
+@to_float
 def wear_ctl():
     """
     Real Name: wear CTL
@@ -37871,6 +38945,7 @@ def wear_ctl():
 
 
 @cache.step
+@to_float
 def abundance_unconv_oil_stock():
     """
     Real Name: abundance unconv oil stock
@@ -37886,6 +38961,7 @@ def abundance_unconv_oil_stock():
 
 
 @cache.step
+@to_float
 def increase_abundance_unconv_oil():
     """
     Real Name: increase abundance unconv oil
@@ -37901,6 +38977,7 @@ def increase_abundance_unconv_oil():
 
 
 @cache.step
+@to_float
 def abundance_unconv_oil():
     """
     Real Name: abundance unconv oil
@@ -37928,6 +39005,7 @@ def abundance_unconv_oil():
 
 
 @cache.step
+@to_float
 def abundance_unconv_oil_delayed_1yr():
     """
     Real Name: abundance unconv oil delayed 1yr
@@ -37943,6 +39021,7 @@ def abundance_unconv_oil_delayed_1yr():
 
 
 @cache.step
+@to_float
 def abundance_unconv_oil2():
     """
     Real Name: abundance unconv oil2
@@ -37961,6 +39040,7 @@ def abundance_unconv_oil2():
 
 
 @cache.step
+@to_float
 def real_extraction_unconv_oil_ej():
     """
     Real Name: real extraction unconv oil EJ
@@ -37980,6 +39060,7 @@ def real_extraction_unconv_oil_ej():
 
 
 @cache.step
+@to_float
 def scarcity_conv_oil_stock():
     """
     Real Name: scarcity conv oil stock
@@ -37997,6 +39078,7 @@ def scarcity_conv_oil_stock():
 
 
 @cache.step
+@to_float
 def share_variable_res_elec_generation_vs_total_gen():
     """
     Real Name: Share variable RES elec generation vs total gen
@@ -38014,6 +39096,7 @@ def share_variable_res_elec_generation_vs_total_gen():
 
 
 @cache.step
+@to_float
 def extra_monet_invest_to_cope_with_variable_elec_res():
     """
     Real Name: extra monet invest to cope with variable Elec RES
@@ -38034,6 +39117,7 @@ def extra_monet_invest_to_cope_with_variable_elec_res():
 
 
 @cache.step
+@to_float
 def increase_scarcity_conv_oil():
     """
     Real Name: increase scarcity conv oil
@@ -38049,6 +39133,7 @@ def increase_scarcity_conv_oil():
 
 
 @cache.step
+@to_float
 def share_extra_monet_invest_to_cope_with_variable_elec_res():
     """
     Real Name: share extra monet invest to cope with variable Elec RES
@@ -38069,6 +39154,7 @@ def share_extra_monet_invest_to_cope_with_variable_elec_res():
 
 
 @cache.run
+@to_float
 def initial_share_variable_res_elec_gen_vs_total():
     """
     Real Name: initial share variable RES elec gen vs total
@@ -38085,6 +39171,7 @@ def initial_share_variable_res_elec_gen_vs_total():
 
 
 @cache.step
+@to_float
 def cumulated_invest_e_grid():
     """
     Real Name: cumulated invest E grid
@@ -38101,6 +39188,7 @@ def cumulated_invest_e_grid():
 
 
 @cache.step
+@to_float
 def total_monet_invest_res_for_elec_tdolar():
     """
     Real Name: Total monet invest RES for elec Tdolar
@@ -38117,6 +39205,7 @@ def total_monet_invest_res_for_elec_tdolar():
 
 
 @cache.step
+@to_float
 def cp_exogenous_res_elec_var_reduction():
     """
     Real Name: Cp exogenous RES elec var reduction
@@ -38136,6 +39225,7 @@ def cp_exogenous_res_elec_var_reduction():
 
 
 @cache.step
+@to_float
 def cp_exogenous_res_elec_dispatch_reduction():
     """
     Real Name: Cp exogenous RES elec dispatch reduction
@@ -38158,6 +39248,7 @@ def cp_exogenous_res_elec_dispatch_reduction():
 
 
 @cache.step
+@to_float
 def increase_variable_res_share_elec_vs_total_generation():
     """
     Real Name: increase variable RES share elec vs total generation
@@ -38176,6 +39267,7 @@ def increase_variable_res_share_elec_vs_total_generation():
 
 
 @cache.step
+@to_float
 def pes_nre_heatnc():
     """
     Real Name: "PES NRE Heat-nc"
@@ -38195,6 +39287,7 @@ def pes_nre_heatnc():
 
 
 @cache.run
+@to_float
 def share_feh_over_pes_liquids():
     """
     Real Name: share FEH over PES liquids
@@ -38210,6 +39303,7 @@ def share_feh_over_pes_liquids():
 
 
 @cache.step
+@to_float
 def fed_nat_gas_for_heatnc():
     """
     Real Name: "FED nat. gas for heat-nc"
@@ -38233,6 +39327,7 @@ def fed_nat_gas_for_heatnc():
 
 
 @cache.step
+@to_float
 def tpes_heat():
     """
     Real Name: TPES heat
@@ -38248,6 +39343,7 @@ def tpes_heat():
 
 
 @cache.step
+@to_float
 def fed_oil_for_heatnc():
     """
     Real Name: "FED oil for heat-nc"
@@ -38271,6 +39367,7 @@ def fed_oil_for_heatnc():
 
 
 @cache.step
+@to_float
 def pes_nre_heat():
     """
     Real Name: PES NRE heat
@@ -38286,6 +39383,7 @@ def pes_nre_heat():
 
 
 @cache.step
+@to_float
 def pes_nre_heatcom():
     """
     Real Name: "PES NRE Heat-com"
@@ -38347,6 +39445,7 @@ def fed_by_fuel_for_heatnc():
 
 
 @cache.step
+@to_float
 def share_fed_heatcom_vs_total_heat():
     """
     Real Name: "Share FED heat-com vs total heat"
@@ -38362,6 +39461,7 @@ def share_fed_heatcom_vs_total_heat():
 
 
 @cache.step
+@to_float
 def average_elec_consumption_per_capita():
     """
     Real Name: Average elec consumption per capita
@@ -38377,6 +39477,7 @@ def average_elec_consumption_per_capita():
 
 
 @cache.step
+@to_float
 def fed_solid_bioe_for_heatnc():
     """
     Real Name: "FED solid bioE for heat-nc"
@@ -38400,6 +39501,7 @@ def fed_solid_bioe_for_heatnc():
 
 
 @cache.step
+@to_float
 def total_fed_heat_ej():
     """
     Real Name: Total FED Heat EJ
@@ -38415,6 +39517,7 @@ def total_fed_heat_ej():
 
 
 @cache.step
+@to_float
 def heatnc_distribution_losses():
     """
     Real Name: "Heat-nc distribution losses"
@@ -38430,6 +39533,7 @@ def heatnc_distribution_losses():
 
 
 @cache.step
+@to_float
 def total_fed_heatnc_ej():
     """
     Real Name: "Total FED Heat-nc EJ"
@@ -38446,6 +39550,7 @@ def total_fed_heatnc_ej():
 
 
 @cache.step
+@to_float
 def total_fed_nre_heatnc():
     """
     Real Name: "Total FED NRE Heat-nc"
@@ -38464,6 +39569,7 @@ def total_fed_nre_heatnc():
 
 
 @cache.step
+@to_float
 def ped_gas_heatnc():
     """
     Real Name: "PED gas Heat-nc"
@@ -38485,6 +39591,7 @@ def ped_gas_heatnc():
 
 
 @cache.step
+@to_float
 def ped_coal_heatnc():
     """
     Real Name: "PED coal Heat-nc"
@@ -38506,6 +39613,7 @@ def ped_coal_heatnc():
 
 
 @cache.step
+@to_float
 def ped_liquids_heatnc():
     """
     Real Name: "PED liquids Heat-nc"
@@ -38527,6 +39635,7 @@ def ped_liquids_heatnc():
 
 
 @cache.run
+@to_float
 def share_feh_over_fed_solid_bioe():
     """
     Real Name: share FEH over FED solid bioE
@@ -38543,6 +39652,7 @@ def share_feh_over_fed_solid_bioe():
 
 
 @cache.step
+@to_float
 def fes_heat_from_coal():
     """
     Real Name: FES Heat from coal
@@ -38560,6 +39670,7 @@ def fes_heat_from_coal():
 
 
 @cache.step
+@to_float
 def fes_heat_from_nat_gas():
     """
     Real Name: "FES Heat from nat. gas"
@@ -38578,6 +39689,7 @@ def fes_heat_from_nat_gas():
 
 
 @cache.step
+@to_float
 def fes_heat_from_oil():
     """
     Real Name: FES Heat from oil
@@ -38595,6 +39707,7 @@ def fes_heat_from_oil():
 
 
 @cache.step
+@to_float
 def abundance_heat():
     """
     Real Name: Abundance heat
@@ -38635,6 +39748,7 @@ def required_fed_sectors_by_fuel():
 
 
 @cache.run
+@to_float
 def share_trad_biomass_vs_solids_in_households():
     """
     Real Name: share trad biomass vs solids in households
@@ -38676,6 +39790,7 @@ def new_res_capacity_for_heatcom_tw():
 
 
 @cache.step
+@to_float
 def share_global_pop_dependent_on_trad_biomass():
     """
     Real Name: share global pop dependent on trad biomass
@@ -38709,6 +39824,7 @@ def historic_res_capacity_for_heatcom(x):
 
 
 @cache.step
+@to_float
 def share_coal_dem_for_heatnc():
     """
     Real Name: "share coal dem for Heat-nc"
@@ -38725,6 +39841,7 @@ def share_coal_dem_for_heatnc():
 
 
 @cache.step
+@to_float
 def res_heatcom_tot_overcapacity():
     """
     Real Name: "RES heat-com tot overcapacity"
@@ -38749,6 +39866,7 @@ def res_heatcom_tot_overcapacity():
 
 
 @cache.step
+@subs(["sectors"], _subscript_dict)
 def share_inventories_next_step():
     """
     Real Name: share inventories next step
@@ -38764,6 +39882,7 @@ def share_inventories_next_step():
 
 
 @cache.step
+@subs(["sectors"], _subscript_dict)
 def government_expenditure_share():
     """
     Real Name: Government expenditure share
@@ -38779,6 +39898,7 @@ def government_expenditure_share():
 
 
 @cache.step
+@subs(["sectors"], _subscript_dict)
 def changes_in_inventories_share():
     """
     Real Name: Changes in inventories share
@@ -38794,6 +39914,7 @@ def changes_in_inventories_share():
 
 
 @cache.step
+@subs(["sectors"], _subscript_dict)
 def share_government_expenditure_next_step():
     """
     Real Name: share Government expenditure next step
@@ -38842,6 +39963,7 @@ def share_government_expenditures_and_changes_in_inventories_next_step():
 
 
 @cache.run
+@to_float
 def include_materials_for_overgrids():
     """
     Real Name: "include materials for overgrids?"
@@ -38857,6 +39979,7 @@ def include_materials_for_overgrids():
 
 
 @cache.run
+@to_float
 def all_minerals_virgin():
     """
     Real Name: "All minerals virgin?"
@@ -39290,6 +40413,7 @@ def demand_by_sector_fd_eu():
 
 
 @cache.step
+@to_float
 def sum_variation():
     """
     Real Name: sum variation
@@ -39327,6 +40451,7 @@ def cedtot_per_tw_over_lifetime_res_elec_dispatch():
 
 
 @cache.step
+@to_float
 def quality_of_electricity_2015():
     """
     Real Name: quality of electricity 2015
@@ -39344,6 +40469,7 @@ def quality_of_electricity_2015():
 
 
 @cache.step
+@to_float
 def share_total_final_energy_vs_tpes():
     """
     Real Name: share total final energy vs TPES
@@ -39361,6 +40487,7 @@ def share_total_final_energy_vs_tpes():
 
 
 @cache.step
+@to_float
 def gquality_of_electricity():
     """
     Real Name: "g=quality of electricity"
@@ -39470,6 +40597,7 @@ def res_elec_variables():
 
 
 @cache.step
+@to_float
 def aux3():
     """
     Real Name: aux3
@@ -39807,6 +40935,7 @@ def cedtot_om_res_elec_var():
 
 
 @cache.step
+@to_float
 def b_lineal_regr():
     """
     Real Name: b lineal regr
@@ -39824,6 +40953,7 @@ def b_lineal_regr():
 
 
 @cache.step
+@to_float
 def a_lineal_regr():
     """
     Real Name: a lineal regr
@@ -39841,6 +40971,7 @@ def a_lineal_regr():
 
 
 @cache.run
+@to_float
 def esoi_phs_depleted_potential():
     """
     Real Name: ESOI PHS depleted potential
@@ -39857,6 +40988,7 @@ def esoi_phs_depleted_potential():
 
 
 @cache.step
+@to_float
 def total_demand():
     """
     Real Name: total demand
@@ -39888,6 +41020,7 @@ def initial_demand_by_sectot():
 
 
 @cache.step
+@to_float
 def demand_not_covered_total_fd():
     """
     Real Name: demand not covered total FD
@@ -39903,6 +41036,7 @@ def demand_not_covered_total_fd():
 
 
 @cache.step
+@to_float
 def tped_by_fuel():
     """
     Real Name: TPED by fuel
@@ -39926,6 +41060,7 @@ def tped_by_fuel():
 
 
 @cache.step
+@to_float
 def abundance_tpe():
     """
     Real Name: abundance TPE
@@ -40009,6 +41144,7 @@ def fe_real_generation_res_heatcom_ej():
 
 
 @cache.step
+@to_float
 def potential_fes_tot_res_for_heatcom_ej():
     """
     Real Name: "potential FES tot RES for heat-com EJ"
@@ -40025,6 +41161,7 @@ def potential_fes_tot_res_for_heatcom_ej():
 
 
 @cache.step
+@to_float
 def available_max_fe_solid_bioe_for_elec_ej():
     """
     Real Name: available max FE solid bioE for elec EJ
@@ -40042,6 +41179,7 @@ def available_max_fe_solid_bioe_for_elec_ej():
 
 
 @cache.step
+@to_float
 def max_bioe_twe():
     """
     Real Name: max BioE TWe
@@ -40058,6 +41196,7 @@ def max_bioe_twe():
 
 
 @cache.step
+@to_float
 def potential_fes_heatcom_nuclear_chp_plants_ej():
     """
     Real Name: "Potential FES Heat-com nuclear CHP plants EJ"
@@ -40076,6 +41215,7 @@ def potential_fes_heatcom_nuclear_chp_plants_ej():
 
 
 @cache.run
+@to_float
 def share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation():
     """
     Real Name: share of heat production in CHP plants vs total nucelar elec generation
@@ -40093,6 +41233,7 @@ def share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation():
 
 
 @cache.step
+@to_float
 def pes_waste_for_elec_plants():
     """
     Real Name: PES waste for elec plants
@@ -40108,6 +41249,7 @@ def pes_waste_for_elec_plants():
 
 
 @cache.step
+@to_float
 def losses_chp_biogas():
     """
     Real Name: Losses CHP biogas
@@ -40127,6 +41269,7 @@ def losses_chp_biogas():
 
 
 @cache.step
+@to_float
 def losses_chp_waste():
     """
     Real Name: Losses CHP waste
@@ -40146,6 +41289,7 @@ def losses_chp_waste():
 
 
 @cache.step
+@to_float
 def share_pes_biogas_for_heat():
     """
     Real Name: share PES biogas for heat
@@ -40161,6 +41305,7 @@ def share_pes_biogas_for_heat():
 
 
 @cache.step
+@to_float
 def pe_losses_res_for_elec():
     """
     Real Name: PE losses RES for elec
@@ -40180,6 +41325,7 @@ def pe_losses_res_for_elec():
 
 
 @cache.step
+@to_float
 def pes_tot_waste_for_elec():
     """
     Real Name: PES tot waste for elec
@@ -40200,6 +41346,7 @@ def pes_tot_waste_for_elec():
 
 
 @cache.step
+@to_float
 def pes_tot_waste_for_heatcom():
     """
     Real Name: "PES tot waste for heat-com"
@@ -40220,6 +41367,7 @@ def pes_tot_waste_for_heatcom():
 
 
 @cache.step
+@to_float
 def abundance_res_heatcom2():
     """
     Real Name: "abundance RES heat-com2"
@@ -40235,6 +41383,7 @@ def abundance_res_heatcom2():
 
 
 @cache.step
+@to_float
 def max_pe_potential_biogas_for_heat():
     """
     Real Name: max PE potential biogas for heat
@@ -40251,6 +41400,7 @@ def max_pe_potential_biogas_for_heat():
 
 
 @cache.step
+@to_float
 def share_efficiency_biogas_for_elec_in_chp_plants():
     """
     Real Name: share efficiency biogas for elec in CHP plants
@@ -40269,6 +41419,7 @@ def share_efficiency_biogas_for_elec_in_chp_plants():
 
 
 @cache.step
+@to_float
 def share_efficiency_waste_for_elec_in_chp_plants():
     """
     Real Name: share efficiency waste for elec in CHP plants
@@ -40286,6 +41437,7 @@ def share_efficiency_waste_for_elec_in_chp_plants():
 
 
 @cache.step
+@to_float
 def max_potential_pe_nonelectric_res():
     """
     Real Name: "Max potential PE non-electric RES"
@@ -40302,6 +41454,7 @@ def max_potential_pe_nonelectric_res():
 
 
 @cache.step
+@to_float
 def pes_tot_biogas_for_elec():
     """
     Real Name: PES tot biogas for elec
@@ -40322,6 +41475,7 @@ def pes_tot_biogas_for_elec():
 
 
 @cache.step
+@to_float
 def pes_tot_biogas_for_heatcom():
     """
     Real Name: "PES tot biogas for heat-com"
@@ -40342,6 +41496,7 @@ def pes_tot_biogas_for_heatcom():
 
 
 @cache.step
+@to_float
 def pe_losses_nre_elec_generation():
     """
     Real Name: PE losses NRE elec generation
@@ -40363,6 +41518,7 @@ def pe_losses_nre_elec_generation():
 
 
 @cache.step
+@to_float
 def elec_gen_related_losses_ej():
     """
     Real Name: Elec gen related losses EJ
@@ -40378,6 +41534,7 @@ def elec_gen_related_losses_ej():
 
 
 @cache.step
+@to_float
 def pe_losses_biogas_for_elec():
     """
     Real Name: PE losses biogas for elec
@@ -40393,6 +41550,7 @@ def pe_losses_biogas_for_elec():
 
 
 @cache.step
+@to_float
 def pe_losses_waste_for_elec():
     """
     Real Name: PE losses waste for elec
@@ -40408,6 +41566,7 @@ def pe_losses_waste_for_elec():
 
 
 @cache.step
+@to_float
 def share_pes_biogas_for_elec():
     """
     Real Name: share PES biogas for elec
@@ -40423,6 +41582,7 @@ def share_pes_biogas_for_elec():
 
 
 @cache.run
+@to_float
 def p_hydro_growth():
     """
     Real Name: P hydro growth
@@ -40438,6 +41598,7 @@ def p_hydro_growth():
 
 
 @cache.step
+@to_float
 def fe_real_tot_generation_res_elec_twh():
     """
     Real Name: FE real tot generation RES elec TWh
@@ -40456,6 +41617,7 @@ def fe_real_tot_generation_res_elec_twh():
 
 
 @cache.run
+@to_float
 def p_solar_pv_growth():
     """
     Real Name: P solar PV growth
@@ -40494,6 +41656,7 @@ def remaining_potential_constraint_on_new_res_heat_capacity():
 
 
 @cache.step
+@to_float
 def total_fe_elec_generation_twh_eu():
     """
     Real Name: Total FE Elec generation TWh EU
@@ -40514,6 +41677,7 @@ def total_fe_elec_generation_twh_eu():
 
 
 @cache.step
+@to_float
 def fe_tot_generation_all_res_elec_twh():
     """
     Real Name: FE tot generation all RES elec TWh
@@ -40529,6 +41693,7 @@ def fe_tot_generation_all_res_elec_twh():
 
 
 @cache.run
+@to_float
 def p_oceanic_growth():
     """
     Real Name: P oceanic growth
@@ -40544,6 +41709,7 @@ def p_oceanic_growth():
 
 
 @cache.step
+@to_float
 def pe_elec_generation_from_res_ej():
     """
     Real Name: PE Elec generation from RES EJ
@@ -40614,6 +41780,7 @@ def p_res_elec_growth():
 
 
 @cache.step
+@to_float
 def share_res_electricity_generation():
     """
     Real Name: share RES electricity generation
@@ -40629,6 +41796,7 @@ def share_res_electricity_generation():
 
 
 @cache.run
+@to_float
 def p_solid_bioeelec_growth():
     """
     Real Name: "P solid bioE-elec growth"
@@ -40644,6 +41812,7 @@ def p_solid_bioeelec_growth():
 
 
 @cache.run
+@to_float
 def p_csp_growth():
     """
     Real Name: P CSP growth
@@ -40659,6 +41828,7 @@ def p_csp_growth():
 
 
 @cache.step
+@to_float
 def remaining_potential_tot_res_elec():
     """
     Real Name: remaining potential tot RES elec
@@ -40681,6 +41851,7 @@ def remaining_potential_tot_res_elec():
 
 
 @cache.run
+@to_float
 def p_wind_offshore_growth():
     """
     Real Name: P wind offshore growth
@@ -40696,6 +41867,7 @@ def p_wind_offshore_growth():
 
 
 @cache.run
+@to_float
 def p_wind_onshore_growth():
     """
     Real Name: P wind onshore growth
@@ -40711,6 +41883,7 @@ def p_wind_onshore_growth():
 
 
 @cache.step
+@to_float
 def elec_generation_dispatch_from_res_twh():
     """
     Real Name: Elec generation dispatch from RES TWh
@@ -40732,6 +41905,7 @@ def elec_generation_dispatch_from_res_twh():
 
 
 @cache.step
+@to_float
 def fes_elec_from_res_with_priority_twh():
     """
     Real Name: FES elec from RES with priority TWh
@@ -40747,6 +41921,7 @@ def fes_elec_from_res_with_priority_twh():
 
 
 @cache.step
+@to_float
 def abundance_res_elec():
     """
     Real Name: abundance RES elec
@@ -40778,6 +41953,7 @@ def abundance_res_elec():
 
 
 @cache.step
+@to_float
 def fes_elec_from_biow():
     """
     Real Name: FES elec from BioW
@@ -40798,6 +41974,7 @@ def fes_elec_from_biow():
 
 
 @cache.run
+@to_float
 def p_geot_growth():
     """
     Real Name: P geot growth
@@ -40813,6 +41990,7 @@ def p_geot_growth():
 
 
 @cache.run
+@to_float
 def p_solid_bioe_for_heat():
     """
     Real Name: P solid bioE for heat
@@ -40916,6 +42094,7 @@ def pe_real_generation_res_elec():
 
 
 @cache.step
+@to_float
 def fed_heatcom_by_nre_chp_plants_ej():
     """
     Real Name: "FED heat-com by NRE CHP plants EJ"
@@ -40934,6 +42113,7 @@ def fed_heatcom_by_nre_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def share_oil_dem_for_heatcom():
     """
     Real Name: "share oil dem for Heat-com"
@@ -40954,6 +42134,7 @@ def share_oil_dem_for_heatcom():
 
 
 @cache.step
+@to_float
 def total_fe_heat_generation_ej():
     """
     Real Name: Total FE Heat generation EJ
@@ -40970,6 +42151,7 @@ def total_fe_heat_generation_ej():
 
 
 @cache.step
+@to_float
 def share_coal_dem_for_elec():
     """
     Real Name: share coal dem for Elec
@@ -40989,6 +42171,7 @@ def share_coal_dem_for_elec():
 
 
 @cache.step
+@to_float
 def share_oil_dem_for_elec():
     """
     Real Name: share oil dem for Elec
@@ -41008,6 +42191,7 @@ def share_oil_dem_for_elec():
 
 
 @cache.step
+@to_float
 def share_coal_dem_for_heatcom():
     """
     Real Name: "share coal dem for Heat-com"
@@ -41027,6 +42211,7 @@ def share_coal_dem_for_heatcom():
 
 
 @cache.step
+@to_float
 def share_res_heat_generation():
     """
     Real Name: share RES heat generation
@@ -41042,6 +42227,7 @@ def share_res_heat_generation():
 
 
 @cache.step
+@to_float
 def share_nat_gas_dem_for_elec():
     """
     Real Name: "share nat. gas dem for Elec"
@@ -41061,6 +42247,7 @@ def share_nat_gas_dem_for_elec():
 
 
 @cache.step
+@to_float
 def share_nat_gas_dem_for_heatcom():
     """
     Real Name: "share nat. gas dem for Heat-com"
@@ -41081,6 +42268,7 @@ def share_nat_gas_dem_for_heatcom():
 
 
 @cache.step
+@to_float
 def year_scarcity_heat():
     """
     Real Name: Year scarcity Heat
@@ -41097,6 +42285,7 @@ def year_scarcity_heat():
 
 
 @cache.step
+@to_float
 def fes_heatcom_from_biogas_in_chp_plants():
     """
     Real Name: "FES heat-com from biogas in CHP plants"
@@ -41112,6 +42301,7 @@ def fes_heatcom_from_biogas_in_chp_plants():
 
 
 @cache.run
+@to_float
 def efficiency_biogas_for_heat_plants():
     """
     Real Name: efficiency biogas for heat plants
@@ -41127,6 +42317,7 @@ def efficiency_biogas_for_heat_plants():
 
 
 @cache.step
+@to_float
 def fes_elec_from_biogas_in_chp_plants():
     """
     Real Name: FES elec from biogas in CHP plants
@@ -41142,6 +42333,7 @@ def fes_elec_from_biogas_in_chp_plants():
 
 
 @cache.step
+@to_float
 def fes_elec_from_biogas_ej():
     """
     Real Name: FES elec from biogas EJ
@@ -41157,6 +42349,7 @@ def fes_elec_from_biogas_ej():
 
 
 @cache.step
+@to_float
 def pes_biogas_for_heatcom_plants():
     """
     Real Name: "PES biogas for heat-com plants"
@@ -41172,6 +42365,7 @@ def pes_biogas_for_heatcom_plants():
 
 
 @cache.step
+@to_float
 def fes_elec_from_biogas_in_elec_plants():
     """
     Real Name: FES elec from biogas in elec plants
@@ -41187,6 +42381,7 @@ def fes_elec_from_biogas_in_elec_plants():
 
 
 @cache.run
+@to_float
 def efficiency_biogas_for_elec_plants():
     """
     Real Name: efficiency biogas for elec plants
@@ -41202,6 +42397,7 @@ def efficiency_biogas_for_elec_plants():
 
 
 @cache.step
+@to_float
 def fes_biogas_for_heatcom_plants():
     """
     Real Name: "FES biogas for heat-com plants"
@@ -41217,6 +42413,7 @@ def fes_biogas_for_heatcom_plants():
 
 
 @cache.step
+@to_float
 def pes_biogas_for_elec_plants():
     """
     Real Name: PES biogas for elec plants
@@ -41232,6 +42429,7 @@ def pes_biogas_for_elec_plants():
 
 
 @cache.run
+@to_float
 def share_pes_biogas_tfc():
     """
     Real Name: share PES biogas TFC
@@ -41247,6 +42445,7 @@ def share_pes_biogas_tfc():
 
 
 @cache.step
+@to_float
 def potential_pes_biogas_for_tfc():
     """
     Real Name: Potential PES biogas for TFC
@@ -41262,6 +42461,7 @@ def potential_pes_biogas_for_tfc():
 
 
 @cache.step
+@to_float
 def fes_elec_from_biogas_twh():
     """
     Real Name: FES elec from biogas TWh
@@ -41277,6 +42477,7 @@ def fes_elec_from_biogas_twh():
 
 
 @cache.step
+@to_float
 def pes_biogas_for_chp():
     """
     Real Name: PES biogas for CHP
@@ -41292,6 +42493,7 @@ def pes_biogas_for_chp():
 
 
 @cache.run
+@to_float
 def share_pes_biogas_for_heatcom_plants():
     """
     Real Name: "share PES biogas for heat-com plants"
@@ -41307,6 +42509,7 @@ def share_pes_biogas_for_heatcom_plants():
 
 
 @cache.run
+@to_float
 def efficiency_biogas_for_elec_chp_plants():
     """
     Real Name: efficiency biogas for elec CHP plants
@@ -41322,6 +42525,7 @@ def efficiency_biogas_for_elec_chp_plants():
 
 
 @cache.step
+@to_float
 def fes_heatcom_from_biogas_ej():
     """
     Real Name: "FES heat-com from biogas EJ"
@@ -41337,6 +42541,7 @@ def fes_heatcom_from_biogas_ej():
 
 
 @cache.run
+@to_float
 def efficiency_biogas_for_heat_chp_plants():
     """
     Real Name: efficiency biogas for heat CHP plants
@@ -41352,6 +42557,7 @@ def efficiency_biogas_for_heat_chp_plants():
 
 
 @cache.run
+@to_float
 def share_pes_biogas_for_elec_plants():
     """
     Real Name: share PES biogas for elec plants
@@ -41367,6 +42573,7 @@ def share_pes_biogas_for_elec_plants():
 
 
 @cache.run
+@to_float
 def share_pes_biogas_for_chp():
     """
     Real Name: share PES biogas for CHP
@@ -41382,6 +42589,7 @@ def share_pes_biogas_for_chp():
 
 
 @cache.step
+@to_float
 def demand_elec_plants_fossil_fuels_twh():
     """
     Real Name: demand Elec plants fossil fuels TWh
@@ -41404,6 +42612,7 @@ def demand_elec_plants_fossil_fuels_twh():
 
 
 @cache.step
+@to_float
 def new_pes_biogas():
     """
     Real Name: new PES biogas
@@ -41602,6 +42811,7 @@ def total_recycled_materials_for_res_elec_mt():
 
 
 @cache.run
+@to_float
 def p_common_rr_minerals_variation_rest():
     """
     Real Name: P common rr minerals variation Rest
@@ -41689,6 +42899,7 @@ def total_materials_to_extract_for_res_elec_from_2015_mt():
 
 
 @cache.run
+@to_float
 def max_recycling_rates_minerals():
     """
     Real Name: Max recycling rates minerals
@@ -41704,6 +42915,7 @@ def max_recycling_rates_minerals():
 
 
 @cache.run
+@to_float
 def p_common_rr_minerals_variation_alt_techn():
     """
     Real Name: P common rr minerals variation alt techn
@@ -41805,6 +43017,7 @@ def materials_required_for_om_res_elec_mt():
 
 
 @cache.step
+@to_float
 def tpes_ej():
     """
     Real Name: TPES EJ
@@ -41820,6 +43033,7 @@ def tpes_ej():
 
 
 @cache.step
+@to_float
 def fes_heatcom_from_waste_ej():
     """
     Real Name: "FES heat-com from waste EJ"
@@ -41835,6 +43049,7 @@ def fes_heatcom_from_waste_ej():
 
 
 @cache.step
+@to_float
 def fes_waste_for_heatcom_plants():
     """
     Real Name: "FES waste for heat-com plants"
@@ -41850,6 +43065,7 @@ def fes_waste_for_heatcom_plants():
 
 
 @cache.step
+@to_float
 def fes_elec_from_waste_in_chp_plants():
     """
     Real Name: FES elec from waste in CHP plants
@@ -41865,6 +43081,7 @@ def fes_elec_from_waste_in_chp_plants():
 
 
 @cache.step
+@to_float
 def fes_elec_from_waste_in_elec_plants():
     """
     Real Name: FES elec from waste in elec plants
@@ -41880,6 +43097,7 @@ def fes_elec_from_waste_in_elec_plants():
 
 
 @cache.step
+@to_float
 def fes_heatcom_from_waste_in_chp_plants():
     """
     Real Name: "FES heat-com from waste in CHP plants"
@@ -41895,6 +43113,7 @@ def fes_heatcom_from_waste_in_chp_plants():
 
 
 @cache.step
+@to_float
 def pes_waste_for_heatcom_plants():
     """
     Real Name: "PES waste for heat-com plants"
@@ -41910,6 +43129,7 @@ def pes_waste_for_heatcom_plants():
 
 
 @cache.run
+@to_float
 def share_pes_waste_for_heatcom_plants():
     """
     Real Name: "share PES waste for heat-com plants"
@@ -41925,6 +43145,7 @@ def share_pes_waste_for_heatcom_plants():
 
 
 @cache.run
+@to_float
 def share_pes_waste_tfc():
     """
     Real Name: share PES waste TFC
@@ -41940,6 +43161,7 @@ def share_pes_waste_tfc():
 
 
 @cache.run
+@to_float
 def share_pes_waste_for_chp():
     """
     Real Name: share PES waste for CHP
@@ -41955,6 +43177,7 @@ def share_pes_waste_for_chp():
 
 
 @cache.run
+@to_float
 def share_pes_waste_for_elec_plants():
     """
     Real Name: share PES waste for elec plants
@@ -41970,6 +43193,7 @@ def share_pes_waste_for_elec_plants():
 
 
 @cache.step
+@to_float
 def new_waste_supply_ej():
     """
     Real Name: new waste supply EJ
@@ -41995,6 +43219,7 @@ def new_waste_supply_ej():
 
 
 @cache.step
+@to_float
 def waste_change():
     """
     Real Name: waste change
@@ -42014,6 +43239,7 @@ def waste_change():
 
 
 @cache.step
+@to_float
 def fes_elec_from_waste_ej():
     """
     Real Name: FES elec from waste EJ
@@ -42029,6 +43255,7 @@ def fes_elec_from_waste_ej():
 
 
 @cache.step
+@to_float
 def fes_elec_from_waste_twh():
     """
     Real Name: FES elec from waste TWh
@@ -42044,6 +43271,7 @@ def fes_elec_from_waste_twh():
 
 
 @cache.run
+@to_float
 def efficiency_waste_for_elec_plants():
     """
     Real Name: efficiency waste for elec plants
@@ -42059,6 +43287,7 @@ def efficiency_waste_for_elec_plants():
 
 
 @cache.step
+@to_float
 def pes_waste_ej():
     """
     Real Name: PES waste EJ
@@ -42075,6 +43304,7 @@ def pes_waste_ej():
 
 
 @cache.step
+@to_float
 def pes_waste_for_chp_plants():
     """
     Real Name: PES waste for CHP plants
@@ -42090,6 +43320,7 @@ def pes_waste_for_chp_plants():
 
 
 @cache.run
+@to_float
 def efficiency_waste_for_elec_chp_plants():
     """
     Real Name: efficiency waste for elec CHP plants
@@ -42105,6 +43336,7 @@ def efficiency_waste_for_elec_chp_plants():
 
 
 @cache.run
+@to_float
 def initial_pes_waste():
     """
     Real Name: initial PES waste
@@ -42120,6 +43352,7 @@ def initial_pes_waste():
 
 
 @cache.step
+@to_float
 def pes_waste_for_tfc():
     """
     Real Name: PES waste for TFC
@@ -42135,6 +43368,7 @@ def pes_waste_for_tfc():
 
 
 @cache.run
+@to_float
 def efficiency_waste_for_heat_chp_plants():
     """
     Real Name: efficiency waste for heat CHP plants
@@ -42150,6 +43384,7 @@ def efficiency_waste_for_heat_chp_plants():
 
 
 @cache.run
+@to_float
 def p_waste_change():
     """
     Real Name: P waste change
@@ -42165,6 +43400,7 @@ def p_waste_change():
 
 
 @cache.run
+@to_float
 def efficiency_waste_for_heat_plants():
     """
     Real Name: efficiency waste for heat plants
@@ -42180,6 +43416,7 @@ def efficiency_waste_for_heat_plants():
 
 
 @cache.run
+@to_float
 def max_pe_waste():
     """
     Real Name: max PE waste
@@ -42195,6 +43432,7 @@ def max_pe_waste():
 
 
 @cache.step
+@to_float
 def pes_solids_bioe__waste_ej():
     """
     Real Name: "PES solids bioE & waste EJ"
@@ -42210,6 +43448,7 @@ def pes_solids_bioe__waste_ej():
 
 
 @cache.run
+@to_float
 def past_waste_growth():
     """
     Real Name: Past waste growth
@@ -42239,6 +43478,7 @@ def historic_pes_waste_ej(x):
 
 
 @cache.run
+@to_float
 def gch4_per_mj_coal():
     """
     Real Name: gCH4 per MJ coal
@@ -42255,6 +43495,7 @@ def gch4_per_mj_coal():
 
 
 @cache.run
+@to_float
 def gch4_per_mj_oil():
     """
     Real Name: gCH4 per MJ oil
@@ -42271,6 +43512,7 @@ def gch4_per_mj_oil():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_fossil_fuels_twh():
     """
     Real Name: FE Elec generation from fossil fuels TWh
@@ -42292,6 +43534,7 @@ def fe_elec_generation_from_fossil_fuels_twh():
 
 
 @cache.step
+@to_float
 def pe_demand_uranium_eu_ej():
     """
     Real Name: PE demand uranium EU EJ
@@ -42311,6 +43554,7 @@ def pe_demand_uranium_eu_ej():
 
 
 @cache.step
+@to_float
 def fes_elec_fossil_fuel_chp_plants_twh():
     """
     Real Name: FES Elec fossil fuel CHP plants TWh
@@ -42326,6 +43570,7 @@ def fes_elec_fossil_fuel_chp_plants_twh():
 
 
 @cache.step
+@to_float
 def fes_heatcom_fossil_fuels_chp_plants_ej():
     """
     Real Name: "FES heat-com fossil fuels CHP plants EJ"
@@ -42342,6 +43587,7 @@ def fes_heatcom_fossil_fuels_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def potential_generation_nuclear_elec_twh():
     """
     Real Name: potential generation nuclear elec TWh
@@ -42363,6 +43609,7 @@ def potential_generation_nuclear_elec_twh():
 
 
 @cache.run
+@to_float
 def threshold_remaining_potential_new_capacity():
     """
     Real Name: threshold remaining potential new capacity
@@ -42573,6 +43820,7 @@ def initial_energy_cons_per_unit_of_material_cons_recycled__data():
 
 
 @cache.run
+@to_float
 def cp_phs():
     """
     Real Name: Cp PHS
@@ -42588,6 +43836,7 @@ def cp_phs():
 
 
 @cache.run
+@to_float
 def max_potential_phs_twe():
     """
     Real Name: max potential PHS TWe
@@ -42603,6 +43852,7 @@ def max_potential_phs_twe():
 
 
 @cache.step
+@to_float
 def max_capacity_potential_phs():
     """
     Real Name: max capacity potential PHS
@@ -42664,6 +43914,7 @@ def materials_per_new_res_elec_capacity_installed__material_overgrid_high_power(
 
 
 @cache.step
+@to_float
 def real_growth_gtl():
     """
     Real Name: real growth GTL
@@ -42690,6 +43941,7 @@ def real_growth_gtl():
 
 
 @cache.step
+@to_float
 def scarcity_conv_gas_delayed_1yr():
     """
     Real Name: scarcity conv gas delayed 1yr
@@ -42707,6 +43959,7 @@ def scarcity_conv_gas_delayed_1yr():
 
 
 @cache.step
+@to_float
 def scarcity_conv_oil_delayed_1yr():
     """
     Real Name: scarcity conv oil delayed 1yr
@@ -42724,6 +43977,7 @@ def scarcity_conv_oil_delayed_1yr():
 
 
 @cache.step
+@to_float
 def pes_nat_gas_eu():
     """
     Real Name: PES nat gas EU
@@ -42739,6 +43993,7 @@ def pes_nat_gas_eu():
 
 
 @cache.run
+@to_float
 def exponent_availability_conv_oil():
     """
     Real Name: exponent availability conv oil
@@ -42754,6 +44009,7 @@ def exponent_availability_conv_oil():
 
 
 @cache.step
+@to_float
 def abundance_total_nat_gas_eu():
     """
     Real Name: "abundance total nat. gas EU"
@@ -42775,6 +44031,7 @@ def abundance_total_nat_gas_eu():
 
 
 @cache.run
+@to_float
 def exponent_availability_conv_gas():
     """
     Real Name: exponent availability conv gas
@@ -42790,6 +44047,7 @@ def exponent_availability_conv_gas():
 
 
 @cache.step
+@to_float
 def scarcity_conv_gas():
     """
     Real Name: scarcity conv gas
@@ -42821,6 +44079,7 @@ def scarcity_conv_gas():
 
 
 @cache.step
+@to_float
 def year_scarcity_total_nat_gas():
     """
     Real Name: "Year scarcity total nat. gas"
@@ -42837,6 +44096,7 @@ def year_scarcity_total_nat_gas():
 
 
 @cache.step
+@to_float
 def share_unconv_gas_vs_tot_agg_in_2050():
     """
     Real Name: share unconv gas vs tot agg in 2050
@@ -42861,6 +44121,7 @@ def share_unconv_gas_vs_tot_agg_in_2050():
 
 
 @cache.run
+@to_float
 def share_unconv_gas_vs_tot_agg_in_2050_lahèrrere2010():
     """
     Real Name: share unconv gas vs tot agg in 2050 Lahèrrere2010
@@ -42876,6 +44137,7 @@ def share_unconv_gas_vs_tot_agg_in_2050_lahèrrere2010():
 
 
 @cache.run
+@to_float
 def share_unconv_gas_vs_tot_agg_in_2050_mohr12_bg():
     """
     Real Name: share unconv gas vs tot agg in 2050 Mohr12 BG
@@ -42891,6 +44153,7 @@ def share_unconv_gas_vs_tot_agg_in_2050_mohr12_bg():
 
 
 @cache.run
+@to_float
 def share_unconv_gas_vs_tot_agg_in_2050_user_defined():
     """
     Real Name: share unconv gas vs tot agg in 2050 User defined
@@ -42906,6 +44169,7 @@ def share_unconv_gas_vs_tot_agg_in_2050_user_defined():
 
 
 @cache.step
+@to_float
 def cumulated_tot_agg_gas_extraction_to_1995():
     """
     Real Name: cumulated tot agg gas extraction to 1995
@@ -42924,6 +44188,7 @@ def cumulated_tot_agg_gas_extraction_to_1995():
 
 
 @cache.step
+@to_float
 def share_conv_gas_vs_tot_agg():
     """
     Real Name: share conv gas vs tot agg
@@ -42939,6 +44204,7 @@ def share_conv_gas_vs_tot_agg():
 
 
 @cache.run
+@to_float
 def share_rurr_tot_agg_gas_to_leave_underground():
     """
     Real Name: share RURR tot agg gas to leave underground
@@ -42955,6 +44221,7 @@ def share_rurr_tot_agg_gas_to_leave_underground():
 
 
 @cache.step
+@to_float
 def share_unconv_gas_vs_tot_agg():
     """
     Real Name: share unconv gas vs tot agg
@@ -42974,6 +44241,7 @@ def share_unconv_gas_vs_tot_agg():
 
 
 @cache.step
+@to_float
 def flow_tot_agg_gas_left_in_ground():
     """
     Real Name: Flow tot agg gas left in ground
@@ -42999,6 +44267,7 @@ def flow_tot_agg_gas_left_in_ground():
 
 
 @cache.step
+@to_float
 def tot_rurr_tot_agg_gas():
     """
     Real Name: Tot RURR tot agg gas
@@ -43015,6 +44284,7 @@ def tot_rurr_tot_agg_gas():
 
 
 @cache.run
+@to_float
 def urr_total_agg_gas_unlimited():
     """
     Real Name: URR total agg gas unlimited
@@ -43030,6 +44300,7 @@ def urr_total_agg_gas_unlimited():
 
 
 @cache.run
+@to_float
 def start_policy_leave_in_ground_tot_agg_gas():
     """
     Real Name: Start policy leave in ground tot agg gas
@@ -43046,6 +44317,7 @@ def start_policy_leave_in_ground_tot_agg_gas():
 
 
 @cache.step
+@to_float
 def extraction_unconv_gas__tot_agg():
     """
     Real Name: "extraction unconv gas - tot agg"
@@ -43061,6 +44333,7 @@ def extraction_unconv_gas__tot_agg():
 
 
 @cache.step
+@to_float
 def total_agg_gas_left_in_ground():
     """
     Real Name: Total agg gas left in ground
@@ -43076,6 +44349,7 @@ def total_agg_gas_left_in_ground():
 
 
 @cache.step
+@to_float
 def evolution_share_unconv_gas_vs_tot_agg():
     """
     Real Name: evolution share unconv gas vs tot agg
@@ -43095,6 +44369,7 @@ def evolution_share_unconv_gas_vs_tot_agg():
 
 
 @cache.step
+@to_float
 def real_extraction_conv_gas_ej():
     """
     Real Name: real extraction conv gas EJ
@@ -43114,6 +44389,7 @@ def real_extraction_conv_gas_ej():
 
 
 @cache.step
+@to_float
 def urr_tot_agg_gas():
     """
     Real Name: URR tot agg gas
@@ -43150,6 +44426,7 @@ def urr_tot_agg_gas():
 
 
 @cache.step
+@to_float
 def cumulated_tot_agg_gas_extraction():
     """
     Real Name: cumulated tot agg gas extraction
@@ -43165,6 +44442,7 @@ def cumulated_tot_agg_gas_extraction():
 
 
 @cache.step
+@to_float
 def extraction_conv_gas__tot_agg():
     """
     Real Name: "extraction conv gas - tot agg"
@@ -43180,6 +44458,7 @@ def extraction_conv_gas__tot_agg():
 
 
 @cache.step
+@to_float
 def real_extraction_unconv_gas_ej():
     """
     Real Name: real extraction unconv gas EJ
@@ -43199,6 +44478,7 @@ def real_extraction_unconv_gas_ej():
 
 
 @cache.step
+@to_float
 def max_extraction_tot_agg_gas_ej():
     """
     Real Name: max extraction tot agg gas EJ
@@ -43230,6 +44510,7 @@ def max_extraction_tot_agg_gas_ej():
 
 
 @cache.step
+@to_float
 def real_extraction_conv_oil_mbd():
     """
     Real Name: "real extraction conv oil Mb/d"
@@ -43245,6 +44526,7 @@ def real_extraction_conv_oil_mbd():
 
 
 @cache.step
+@to_float
 def share_unconv_oil_vs_tot_agg():
     """
     Real Name: share unconv oil vs tot agg
@@ -43264,6 +44546,7 @@ def share_unconv_oil_vs_tot_agg():
 
 
 @cache.step
+@to_float
 def evolution_share_unconv_oil_vs_tot_agg():
     """
     Real Name: evolution share unconv oil vs tot agg
@@ -43283,6 +44566,7 @@ def evolution_share_unconv_oil_vs_tot_agg():
 
 
 @cache.step
+@to_float
 def share_unconv_oil_vs_tot_agg_in_2050():
     """
     Real Name: share unconv oil vs tot agg in 2050
@@ -43303,6 +44587,7 @@ def share_unconv_oil_vs_tot_agg_in_2050():
 
 
 @cache.run
+@to_float
 def share_unconv_oil_vs_tot_agg_in_2050_lahèrrere2006():
     """
     Real Name: share unconv oil vs tot agg in 2050 Lahèrrere2006
@@ -43318,6 +44603,7 @@ def share_unconv_oil_vs_tot_agg_in_2050_lahèrrere2006():
 
 
 @cache.run
+@to_float
 def share_unconv_oil_vs_tot_agg_in_2050_user_defined():
     """
     Real Name: share unconv oil vs tot agg in 2050 User defined
@@ -43333,6 +44619,7 @@ def share_unconv_oil_vs_tot_agg_in_2050_user_defined():
 
 
 @cache.step
+@to_float
 def extraction_conv_oil__tot_agg():
     """
     Real Name: "extraction conv oil - tot agg"
@@ -43348,6 +44635,7 @@ def extraction_conv_oil__tot_agg():
 
 
 @cache.step
+@to_float
 def extraction_unconv_oil__tot_agg():
     """
     Real Name: "extraction unconv oil - tot agg"
@@ -43363,6 +44651,7 @@ def extraction_unconv_oil__tot_agg():
 
 
 @cache.step
+@to_float
 def share_conv_oil_vs_tot_agg():
     """
     Real Name: share conv oil vs tot agg
@@ -43378,6 +44667,7 @@ def share_conv_oil_vs_tot_agg():
 
 
 @cache.step
+@to_float
 def pes_total_oil_ej_eu():
     """
     Real Name: PES total oil EJ EU
@@ -43393,6 +44683,7 @@ def pes_total_oil_ej_eu():
 
 
 @cache.step
+@to_float
 def real_extraction_conv_oil_ej():
     """
     Real Name: real extraction conv oil EJ
@@ -43412,6 +44703,7 @@ def real_extraction_conv_oil_ej():
 
 
 @cache.run
+@to_float
 def gch4_per_mj_conv_gas():
     """
     Real Name: gCH4 per MJ conv gas
@@ -43428,6 +44720,7 @@ def gch4_per_mj_conv_gas():
 
 
 @cache.step
+@to_float
 def total_agg_oil_left_in_ground():
     """
     Real Name: Total agg oil left in ground
@@ -43443,6 +44736,7 @@ def total_agg_oil_left_in_ground():
 
 
 @cache.step
+@to_float
 def cumulated_tot_agg_oil_extraction():
     """
     Real Name: cumulated tot agg oil extraction
@@ -43458,6 +44752,7 @@ def cumulated_tot_agg_oil_extraction():
 
 
 @cache.step
+@to_float
 def cumulated_tot_agg_extraction_to_1995():
     """
     Real Name: cumulated tot agg extraction to 1995
@@ -43476,6 +44771,7 @@ def cumulated_tot_agg_extraction_to_1995():
 
 
 @cache.run
+@to_float
 def urr_tot_agg_oil_unlimited():
     """
     Real Name: URR tot agg oil unlimited
@@ -43491,6 +44787,7 @@ def urr_tot_agg_oil_unlimited():
 
 
 @cache.step
+@to_float
 def tot_rurr_tot_agg_oil():
     """
     Real Name: Tot RURR tot agg oil
@@ -43507,6 +44804,7 @@ def tot_rurr_tot_agg_oil():
 
 
 @cache.run
+@to_float
 def start_policy_leave_in_ground_tot_agg_oil():
     """
     Real Name: Start policy leave in ground tot agg oil
@@ -43523,6 +44821,7 @@ def start_policy_leave_in_ground_tot_agg_oil():
 
 
 @cache.step
+@to_float
 def flow_tot_agg_oil_left_in_ground():
     """
     Real Name: Flow tot agg oil left in ground
@@ -43548,6 +44847,7 @@ def flow_tot_agg_oil_left_in_ground():
 
 
 @cache.run
+@to_float
 def g_per_mt():
     """
     Real Name: g per Mt
@@ -43563,6 +44863,7 @@ def g_per_mt():
 
 
 @cache.run
+@to_float
 def share_rurr_tot_agg_oil_to_leave_underground():
     """
     Real Name: share RURR tot agg oil to leave underground
@@ -43579,6 +44880,7 @@ def share_rurr_tot_agg_oil_to_leave_underground():
 
 
 @cache.run
+@to_float
 def gch4_per_mj_unconv_gas():
     """
     Real Name: gCH4 per MJ unconv gas
@@ -43595,6 +44897,7 @@ def gch4_per_mj_unconv_gas():
 
 
 @cache.step
+@to_float
 def tot_rurr_unconv_gas():
     """
     Real Name: Tot RURR unconv gas
@@ -43611,6 +44914,7 @@ def tot_rurr_unconv_gas():
 
 
 @cache.run
+@to_float
 def start_policy_leave_in_ground_coal():
     """
     Real Name: Start policy leave in ground coal
@@ -43627,6 +44931,7 @@ def start_policy_leave_in_ground_coal():
 
 
 @cache.step
+@to_float
 def total_unconv_gas_left_in_ground():
     """
     Real Name: Total unconv gas left in ground
@@ -43643,6 +44948,7 @@ def total_unconv_gas_left_in_ground():
 
 
 @cache.step
+@to_float
 def flow_coal_left_in_ground():
     """
     Real Name: Flow coal left in ground
@@ -43667,6 +44973,7 @@ def flow_coal_left_in_ground():
 
 
 @cache.step
+@to_float
 def flow_conv_gas_left_in_ground():
     """
     Real Name: Flow conv gas left in ground
@@ -43692,6 +44999,7 @@ def flow_conv_gas_left_in_ground():
 
 
 @cache.step
+@to_float
 def flow_conv_oil_left_in_ground():
     """
     Real Name: Flow conv oil left in ground
@@ -43716,6 +45024,7 @@ def flow_conv_oil_left_in_ground():
 
 
 @cache.step
+@to_float
 def flow_unconv_oil_left_in_ground():
     """
     Real Name: Flow unconv oil left in ground
@@ -43740,6 +45049,7 @@ def flow_unconv_oil_left_in_ground():
 
 
 @cache.run
+@to_float
 def share_rurr_unconv_gas_to_leave_underground():
     """
     Real Name: share RURR unconv gas to leave underground
@@ -43756,6 +45066,7 @@ def share_rurr_unconv_gas_to_leave_underground():
 
 
 @cache.run
+@to_float
 def share_rurr_unconv_oil_to_leave_underground():
     """
     Real Name: share RURR unconv oil to leave underground
@@ -43772,6 +45083,7 @@ def share_rurr_unconv_oil_to_leave_underground():
 
 
 @cache.step
+@to_float
 def extraction_unconv_gas_ej():
     """
     Real Name: extraction unconv gas EJ
@@ -43803,6 +45115,7 @@ def extraction_unconv_gas_ej():
 
 
 @cache.step
+@to_float
 def tot_rurr_coal():
     """
     Real Name: Tot RURR coal
@@ -43819,6 +45132,7 @@ def tot_rurr_coal():
 
 
 @cache.step
+@to_float
 def tot_rurr_conv_gas():
     """
     Real Name: Tot RURR conv gas
@@ -43835,6 +45149,7 @@ def tot_rurr_conv_gas():
 
 
 @cache.step
+@to_float
 def tot_rurr_conv_oil():
     """
     Real Name: Tot RURR conv oil
@@ -43851,6 +45166,7 @@ def tot_rurr_conv_oil():
 
 
 @cache.run
+@to_float
 def share_rurr_conv_oil_to_leave_underground():
     """
     Real Name: share RURR conv oil to leave underground
@@ -43867,6 +45183,7 @@ def share_rurr_conv_oil_to_leave_underground():
 
 
 @cache.step
+@to_float
 def tot_rurr_unconv_oil():
     """
     Real Name: Tot RURR unconv oil
@@ -43883,6 +45200,7 @@ def tot_rurr_unconv_oil():
 
 
 @cache.step
+@to_float
 def total_unconv_oil_left_in_ground():
     """
     Real Name: Total unconv oil left in ground
@@ -43898,6 +45216,7 @@ def total_unconv_oil_left_in_ground():
 
 
 @cache.step
+@to_float
 def total_coal_left_in_ground():
     """
     Real Name: Total coal left in ground
@@ -43913,6 +45232,7 @@ def total_coal_left_in_ground():
 
 
 @cache.step
+@to_float
 def total_conv_gas_left_in_ground():
     """
     Real Name: Total conv gas left in ground
@@ -43929,6 +45249,7 @@ def total_conv_gas_left_in_ground():
 
 
 @cache.step
+@to_float
 def total_conv_oil_left_in_ground():
     """
     Real Name: Total conv oil left in ground
@@ -43944,6 +45265,7 @@ def total_conv_oil_left_in_ground():
 
 
 @cache.step
+@to_float
 def rurr_coal():
     """
     Real Name: RURR coal
@@ -43959,6 +45281,7 @@ def rurr_coal():
 
 
 @cache.step
+@to_float
 def max_extraction_conv_oil_ej():
     """
     Real Name: max extraction conv oil EJ
@@ -43994,6 +45317,7 @@ def max_extraction_conv_oil_ej():
 
 
 @cache.run
+@to_float
 def start_policy_leave_in_ground_unconv_gas():
     """
     Real Name: Start policy leave in ground unconv gas
@@ -44010,6 +45334,7 @@ def start_policy_leave_in_ground_unconv_gas():
 
 
 @cache.step
+@to_float
 def flow_unconv_gas_left_in_ground():
     """
     Real Name: Flow unconv gas left in ground
@@ -44035,6 +45360,7 @@ def flow_unconv_gas_left_in_ground():
 
 
 @cache.run
+@to_float
 def start_policy_leave_in_ground_unconv_oil():
     """
     Real Name: Start policy leave in ground unconv oil
@@ -44051,6 +45377,7 @@ def start_policy_leave_in_ground_unconv_oil():
 
 
 @cache.run
+@to_float
 def start_policy_leave_in_ground_conv_oil():
     """
     Real Name: Start policy leave in ground conv oil
@@ -44067,6 +45394,7 @@ def start_policy_leave_in_ground_conv_oil():
 
 
 @cache.run
+@to_float
 def share_rurr_coal_to_leave_underground():
     """
     Real Name: share RURR coal to leave underground
@@ -44083,6 +45411,7 @@ def share_rurr_coal_to_leave_underground():
 
 
 @cache.step
+@to_float
 def pes_oil_mbd():
     """
     Real Name: "PES oil Mb/d"
@@ -44098,6 +45427,7 @@ def pes_oil_mbd():
 
 
 @cache.step
+@to_float
 def losses_in_charcoal_plants_ej():
     """
     Real Name: Losses in charcoal plants EJ
@@ -44113,6 +45443,7 @@ def losses_in_charcoal_plants_ej():
 
 
 @cache.run
+@to_float
 def share_rurr_conv_gas_to_leave_underground():
     """
     Real Name: share RURR conv gas to leave underground
@@ -44129,6 +45460,7 @@ def share_rurr_conv_gas_to_leave_underground():
 
 
 @cache.run
+@to_float
 def start_policy_leave_in_ground_conv_gas():
     """
     Real Name: Start policy leave in ground conv gas
@@ -44145,6 +45477,7 @@ def start_policy_leave_in_ground_conv_gas():
 
 
 @cache.step
+@to_float
 def demand_conv_gas():
     """
     Real Name: Demand conv gas
@@ -44162,6 +45495,7 @@ def demand_conv_gas():
 
 
 @cache.step
+@to_float
 def ped_nat_gas_without_gtl():
     """
     Real Name: "PED nat. gas without GTL"
@@ -44177,6 +45511,7 @@ def ped_nat_gas_without_gtl():
 
 
 @cache.step
+@to_float
 def abundance_solids():
     """
     Real Name: abundance solids
@@ -44198,6 +45533,7 @@ def abundance_solids():
 
 
 @cache.step
+@to_float
 def fe_demand_coal_elec_plants_twh():
     """
     Real Name: FE demand coal Elec plants TWh
@@ -44213,6 +45549,7 @@ def fe_demand_coal_elec_plants_twh():
 
 
 @cache.step
+@to_float
 def fe_demand_gas_elec_plants_twh():
     """
     Real Name: FE demand gas Elec plants TWh
@@ -44228,6 +45565,7 @@ def fe_demand_gas_elec_plants_twh():
 
 
 @cache.step
+@to_float
 def share_coal_for_elec():
     """
     Real Name: share coal for Elec
@@ -44244,6 +45582,7 @@ def share_coal_for_elec():
 
 
 @cache.step
+@to_float
 def share_chp_plants_oil():
     """
     Real Name: share CHP plants oil
@@ -44270,6 +45609,7 @@ def share_chp_plants_oil():
 
 
 @cache.step
+@to_float
 def historic_share_chp_plants_gas():
     """
     Real Name: historic share CHP plants gas
@@ -44286,6 +45626,7 @@ def historic_share_chp_plants_gas():
 
 
 @cache.step
+@to_float
 def share_chp_plants_coal():
     """
     Real Name: share CHP plants coal
@@ -44302,6 +45643,7 @@ def share_chp_plants_coal():
 
 
 @cache.step
+@to_float
 def historic_share_liquids_for_heat_plants():
     """
     Real Name: Historic share liquids for heat plants
@@ -44318,6 +45660,7 @@ def historic_share_liquids_for_heat_plants():
 
 
 @cache.step
+@to_float
 def share_coalcoalgas_for_heat_plants():
     """
     Real Name: "share coal(coal+gas) for heat plants"
@@ -44334,6 +45677,7 @@ def share_coalcoalgas_for_heat_plants():
 
 
 @cache.step
+@to_float
 def historic_share_chp_plants_oil():
     """
     Real Name: historic share CHP plants oil
@@ -44369,6 +45713,7 @@ def output_elec_over_lifetime_res_elec_for_allocation2():
 
 
 @cache.step
+@to_float
 def demand_storage_capacity():
     """
     Real Name: demand storage capacity
@@ -44387,6 +45732,7 @@ def demand_storage_capacity():
 
 
 @cache.step
+@to_float
 def share_capacity_storageres_elec_var():
     """
     Real Name: "share capacity storage/RES elec var"
@@ -44403,6 +45749,7 @@ def share_capacity_storageres_elec_var():
 
 
 @cache.run
+@to_float
 def staticdynamic_quality_of_electricity():
     """
     Real Name: "static/dynamic quality of electricity?"
@@ -44420,6 +45767,7 @@ def staticdynamic_quality_of_electricity():
 
 
 @cache.step
+@to_float
 def static_eroigrid_toteffective_for_allocation_res_elec():
     """
     Real Name: "'static' EROIgrid tot-effective for allocation RES elec"
@@ -44479,6 +45827,7 @@ def ratio_eroi_per_techn_vs_eroitot_static():
 
 
 @cache.step
+@to_float
 def total_installed_capacity_res_elec_var():
     """
     Real Name: Total installed capacity RES elec var
@@ -44532,6 +45881,7 @@ def share_res_elec_generation_curtailedstored():
 
 
 @cache.run
+@to_float
 def rt_storage_efficiency_phs():
     """
     Real Name: rt storage efficiency PHS
@@ -44563,6 +45913,7 @@ def cp_baseload_reduction():
 
 
 @cache.run
+@to_float
 def ratio__1():
     """
     Real Name: "ratio = 1"
@@ -44800,6 +46151,7 @@ def replacement_rate_res_elec():
 
 
 @cache.step
+@to_float
 def static_eroitot_res_elec():
     """
     Real Name: "'static' EROItot RES elec"
@@ -44821,6 +46173,7 @@ def static_eroitot_res_elec():
 
 
 @cache.step
+@to_float
 def static_eroitoteffective_for_allocation_res_elec():
     """
     Real Name: "'static' EROItot-effective for allocation RES elec"
@@ -44840,6 +46193,7 @@ def static_eroitoteffective_for_allocation_res_elec():
 
 
 @cache.step
+@to_float
 def new_capacity_installed_onshore_wind_tw():
     """
     Real Name: new capacity installed onshore wind TW
@@ -45712,6 +47066,7 @@ def energy_requirements_per_unit_of_water_consumption():
 
 
 @cache.run
+@to_float
 def unlimited_nre():
     """
     Real Name: "unlimited NRE?"
@@ -45729,6 +47084,7 @@ def unlimited_nre():
 
 
 @cache.step
+@to_float
 def extraction_uranium_ej_eu():
     """
     Real Name: extraction uranium EJ EU
@@ -45763,6 +47119,7 @@ def extraction_uranium_ej_eu():
 
 
 @cache.step
+@to_float
 def urr_uranium():
     """
     Real Name: URR uranium
@@ -45799,6 +47156,7 @@ def urr_uranium():
 
 
 @cache.step
+@to_float
 def urr_conv_oil():
     """
     Real Name: URR conv oil
@@ -45853,6 +47211,7 @@ def historic_biogas_pes(x):
 
 
 @cache.run
+@to_float
 def past_biogas_growth():
     """
     Real Name: past biogas growth
@@ -45868,6 +47227,7 @@ def past_biogas_growth():
 
 
 @cache.step
+@to_float
 def pes_biogas_ej():
     """
     Real Name: PES Biogas EJ
@@ -45886,6 +47246,7 @@ def pes_biogas_ej():
 
 
 @cache.run
+@to_float
 def p_biogas():
     """
     Real Name: P biogas
@@ -45901,6 +47262,7 @@ def p_biogas():
 
 
 @cache.run
+@to_float
 def max_pe_biogas_ej():
     """
     Real Name: max PE biogas EJ
@@ -45916,6 +47278,7 @@ def max_pe_biogas_ej():
 
 
 @cache.step
+@to_float
 def historic_pes_peat_ej():
     """
     Real Name: Historic PES peat EJ
@@ -45931,6 +47294,7 @@ def historic_pes_peat_ej():
 
 
 @cache.step
+@to_float
 def pes_peat_ej():
     """
     Real Name: PES peat EJ
@@ -45973,6 +47337,7 @@ def fei_over_lifetime_res_elec_dispatch():
 
 
 @cache.run
+@to_float
 def activate_eroi_allocation_rule():
     """
     Real Name: activate EROI allocation rule
@@ -46037,6 +47402,7 @@ def dynamic_eroi_res_elec_var():
 
 
 @cache.step
+@subs(["RES elec"], _subscript_dict)
 def eroiini_res_elec_dispatch():
     """
     Real Name: "EROI-ini RES elec dispatch"
@@ -46085,6 +47451,7 @@ def res_elec_capacity_under_construction_tw():
 
 
 @cache.step
+@to_float
 def real_generation_solar_pv_ej():
     """
     Real Name: real generation solar PV EJ
@@ -46293,6 +47660,7 @@ def real_generation_res_elec_ej():
 
 
 @cache.step
+@to_float
 def cedtot_solar_pv():
     """
     Real Name: CEDtot solar PV
@@ -46342,6 +47710,7 @@ def total_materials_required_for_om_res_elec_mt():
 
 
 @cache.run
+@to_float
 def eroi1():
     """
     Real Name: "EROI=1"
@@ -46357,6 +47726,7 @@ def eroi1():
 
 
 @cache.step
+@to_float
 def electrical_distribution_losses_twh():
     """
     Real Name: Electrical distribution losses TWh
@@ -46372,6 +47742,7 @@ def electrical_distribution_losses_twh():
 
 
 @cache.step
+@to_float
 def max_share_transmdistr_elec_losses():
     """
     Real Name: "Max share transm&distr elec losses"
@@ -46390,6 +47761,7 @@ def max_share_transmdistr_elec_losses():
 
 
 @cache.step
+@to_float
 def heatcom_distribution_losses():
     """
     Real Name: "Heat-com distribution losses"
@@ -46445,6 +47817,7 @@ def output_elec_over_lifetime_res_elec():
 
 
 @cache.step
+@to_float
 def variation_share_transmdistr_elec_losses():
     """
     Real Name: "variation share transm&distr elec losses"
@@ -46466,6 +47839,7 @@ def variation_share_transmdistr_elec_losses():
 
 
 @cache.step
+@to_float
 def remaining_share_transmdistr_elec_losses():
     """
     Real Name: "remaining share transm&distr elec losses"
@@ -46484,6 +47858,7 @@ def remaining_share_transmdistr_elec_losses():
 
 
 @cache.step
+@to_float
 def share_transmdistr_elec_losses():
     """
     Real Name: "share transm&distr elec losses"
@@ -46501,6 +47876,7 @@ def share_transmdistr_elec_losses():
 
 
 @cache.step
+@to_float
 def total_gen_losses_demand_for_elec_plants_ej():
     """
     Real Name: Total gen losses demand for Elec plants EJ
@@ -46522,6 +47898,7 @@ def total_gen_losses_demand_for_elec_plants_ej():
 
 
 @cache.step
+@to_float
 def pe_losses_bioe_for_elec_ej():
     """
     Real Name: PE losses BioE for Elec EJ
@@ -46579,6 +47956,7 @@ def total_materials_required_for_res_elec_mt():
 
 
 @cache.step
+@to_float
 def share_energy_for_material_consumption_for_alt_techn_vs_tfec():
     """
     Real Name: share energy for material consumption for alt techn vs TFEC
@@ -46900,6 +48278,7 @@ def cum_materials_requirements_for_res_elec():
 
 
 @cache.run
+@to_float
 def mj_per_ej():
     """
     Real Name: MJ per EJ
@@ -47000,6 +48379,7 @@ def materials_per_new_capacity_installed__wind_onshore():
 
 
 @cache.run
+@to_float
 def initial_cumulated_material_requirements_for_res_elec_1995():
     """
     Real Name: initial cumulated material requirements for RES elec 1995
@@ -47036,6 +48416,7 @@ def materials_per_new_capacity_installed__pv():
 
 
 @cache.run
+@to_float
 def kg_per_mt():
     """
     Real Name: kg per Mt
@@ -47051,6 +48432,7 @@ def kg_per_mt():
 
 
 @cache.run
+@to_float
 def m_per_t():
     """
     Real Name: M per T
@@ -47066,6 +48448,7 @@ def m_per_t():
 
 
 @cache.step
+@to_float
 def elec_generation_variable_from_res_twh():
     """
     Real Name: Elec generation variable from RES TWh
@@ -47086,6 +48469,7 @@ def elec_generation_variable_from_res_twh():
 
 
 @cache.step
+@to_float
 def total_gen_losses_demand_for_heat_plants_ej():
     """
     Real Name: Total gen losses demand for Heat plants EJ
@@ -47105,6 +48489,7 @@ def total_gen_losses_demand_for_heat_plants_ej():
 
 
 @cache.step
+@to_float
 def total_gen_losses_demand_for_chp_plants_ej():
     """
     Real Name: Total gen losses demand for CHP plants EJ
@@ -47127,6 +48512,7 @@ def total_gen_losses_demand_for_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def new_required_capacity_nuclear():
     """
     Real Name: new required capacity nuclear
@@ -47177,6 +48563,7 @@ def replacement_res_for_heatcom():
 
 
 @cache.run
+@to_float
 def losses_solar_for_heat():
     """
     Real Name: Losses solar for heat
@@ -47211,6 +48598,7 @@ def cpini_res_for_heat():
 
 
 @cache.run
+@to_float
 def efficiency_geothermal_for_heat():
     """
     Real Name: Efficiency geothermal for heat
@@ -47226,6 +48614,7 @@ def efficiency_geothermal_for_heat():
 
 
 @cache.run
+@to_float
 def f1_solar_panels_for_heat():
     """
     Real Name: f1 solar panels for heat
@@ -47241,6 +48630,7 @@ def f1_solar_panels_for_heat():
 
 
 @cache.run
+@to_float
 def p_geothermal_for_heat():
     """
     Real Name: P geothermal for heat
@@ -47310,6 +48700,7 @@ def initial_value_res_for_heatcom():
 
 
 @cache.run
+@to_float
 def p_solar_for_heat():
     """
     Real Name: P solar for heat
@@ -47360,6 +48751,7 @@ def wear_res_capacity_for_heatcom_tw():
 
 
 @cache.step
+@to_float
 def potential_fe_gen_elec_fossil_fuel_chp_plants_ej():
     """
     Real Name: Potential FE gen Elec fossil fuel CHP plants EJ
@@ -47379,6 +48771,7 @@ def potential_fe_gen_elec_fossil_fuel_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def efficiency_heat_oil_chp_plants():
     """
     Real Name: efficiency Heat oil CHP plants
@@ -47394,6 +48787,7 @@ def efficiency_heat_oil_chp_plants():
 
 
 @cache.step
+@to_float
 def fed_heat_liquids_chp_plants_ej():
     """
     Real Name: FED heat liquids CHP plants EJ
@@ -47409,6 +48803,7 @@ def fed_heat_liquids_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def potential_fe_gen_elec_liquids_chp_plants_ej():
     """
     Real Name: Potential FE gen Elec liquids CHP plants EJ
@@ -47424,6 +48819,7 @@ def potential_fe_gen_elec_liquids_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def efficiency_elec_coal_chp_plants():
     """
     Real Name: efficiency Elec coal CHP plants
@@ -47439,6 +48835,7 @@ def efficiency_elec_coal_chp_plants():
 
 
 @cache.step
+@to_float
 def efficiency_elec_gas_chp_plants():
     """
     Real Name: efficiency Elec gas CHP plants
@@ -47454,6 +48851,7 @@ def efficiency_elec_gas_chp_plants():
 
 
 @cache.step
+@to_float
 def efficiency_elec_oil_chp_plants():
     """
     Real Name: efficiency Elec oil CHP plants
@@ -47469,6 +48867,7 @@ def efficiency_elec_oil_chp_plants():
 
 
 @cache.step
+@to_float
 def potential_fe_gen_elec_coal_chp_plants_ej():
     """
     Real Name: Potential FE gen Elec coal CHP plants EJ
@@ -47484,6 +48883,7 @@ def potential_fe_gen_elec_coal_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def potential_fe_gen_elec_gas_chp_plants_ej():
     """
     Real Name: Potential FE gen Elec gas CHP plants EJ
@@ -47499,6 +48899,7 @@ def potential_fe_gen_elec_gas_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def fed_heat_gas_chp_plants_ej():
     """
     Real Name: FED heat gas CHP plants EJ
@@ -47514,6 +48915,7 @@ def fed_heat_gas_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def efficiency_heat_gas_chp_plants():
     """
     Real Name: efficiency Heat gas CHP plants
@@ -47529,6 +48931,7 @@ def efficiency_heat_gas_chp_plants():
 
 
 @cache.step
+@to_float
 def ped_oil_for_chp_plants_ej():
     """
     Real Name: PED oil for CHP plants EJ
@@ -47544,6 +48947,7 @@ def ped_oil_for_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation():
     """
     Real Name: "Share heat-com CHP plants NRE vs NRE tot heat-com generation"
@@ -47560,6 +48964,7 @@ def share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation():
 
 
 @cache.step
+@to_float
 def efficiency_heat_coal_chp_plants():
     """
     Real Name: efficiency Heat coal CHP plants
@@ -47575,6 +48980,7 @@ def efficiency_heat_coal_chp_plants():
 
 
 @cache.step
+@to_float
 def fed_heat_coal_chp_plants_ej():
     """
     Real Name: FED heat coal CHP plants EJ
@@ -47590,6 +48996,7 @@ def fed_heat_coal_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def ped_gas_for_chp_plants_ej():
     """
     Real Name: PED gas for CHP plants EJ
@@ -47605,6 +49012,7 @@ def ped_gas_for_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def ped_coal_for_chp_plants_ej():
     """
     Real Name: PED coal for CHP plants EJ
@@ -47620,6 +49028,7 @@ def ped_coal_for_chp_plants_ej():
 
 
 @cache.step
+@to_float
 def pe_csp_for_elec_generation_ej():
     """
     Real Name: PE CSP for Elec generation EJ
@@ -47635,6 +49044,7 @@ def pe_csp_for_elec_generation_ej():
 
 
 @cache.step
+@to_float
 def invest_res_for_elec():
     """
     Real Name: Invest RES for Elec
@@ -47660,6 +49070,7 @@ def invest_res_for_elec():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_csp_twh():
     """
     Real Name: FE Elec generation from CSP TWh
@@ -47675,6 +49086,7 @@ def fe_elec_generation_from_csp_twh():
 
 
 @cache.step
+@to_float
 def invest_csp_tdolar():
     """
     Real Name: invest CSP Tdolar
@@ -47690,6 +49102,7 @@ def invest_csp_tdolar():
 
 
 @cache.step
+@to_float
 def cp_limit_nuclear():
     """
     Real Name: Cp limit nuclear
@@ -47705,6 +49118,7 @@ def cp_limit_nuclear():
 
 
 @cache.step
+@to_float
 def invest_nuclear_tdolar():
     """
     Real Name: invest nuclear Tdolar
@@ -47731,6 +49145,7 @@ def invest_nuclear_tdolar():
 
 
 @cache.step
+@to_float
 def cp_nuclear():
     """
     Real Name: Cp nuclear
@@ -47746,6 +49161,7 @@ def cp_nuclear():
 
 
 @cache.step
+@to_float
 def installed_capacity_nuclear_tw():
     """
     Real Name: installed capacity nuclear TW
@@ -47761,6 +49177,7 @@ def installed_capacity_nuclear_tw():
 
 
 @cache.step
+@to_float
 def nuclear_capacity_phaseout():
     """
     Real Name: "nuclear capacity phase-out"
@@ -47784,6 +49201,7 @@ def nuclear_capacity_phaseout():
 
 
 @cache.run
+@to_float
 def min_cp_nuclear():
     """
     Real Name: min Cp nuclear
@@ -47800,6 +49218,7 @@ def min_cp_nuclear():
 
 
 @cache.step
+@to_float
 def replacement_nuclear_capacity():
     """
     Real Name: replacement nuclear capacity
@@ -47854,6 +49273,7 @@ def min_cp_baseload_res():
 
 
 @cache.step
+@to_float
 def nuclear_overcapacity():
     """
     Real Name: nuclear overcapacity
@@ -47877,6 +49297,7 @@ def nuclear_overcapacity():
 
 
 @cache.run
+@to_float
 def p_nuclear_scen34():
     """
     Real Name: "P nuclear scen3-4"
@@ -47894,6 +49315,7 @@ def p_nuclear_scen34():
 
 
 @cache.run
+@to_float
 def start_year_nuclear_growth_scen34():
     """
     Real Name: "start year nuclear growth scen3-4"
@@ -47910,6 +49332,7 @@ def start_year_nuclear_growth_scen34():
 
 
 @cache.step
+@to_float
 def p_nuclear_elec_gen():
     """
     Real Name: P nuclear elec gen
@@ -47945,6 +49368,7 @@ def p_nuclear_elec_gen():
 
 
 @cache.step
+@to_float
 def required_capacity_nuclear_tw():
     """
     Real Name: required capacity nuclear TW
@@ -47960,6 +49384,7 @@ def required_capacity_nuclear_tw():
 
 
 @cache.run
+@to_float
 def time_planification_nuclear():
     """
     Real Name: time planification nuclear
@@ -47975,6 +49400,7 @@ def time_planification_nuclear():
 
 
 @cache.run
+@to_float
 def time_construction_nuclear():
     """
     Real Name: time construction nuclear
@@ -47990,6 +49416,7 @@ def time_construction_nuclear():
 
 
 @cache.step
+@to_float
 def initial_capacity_installed_nuclear():
     """
     Real Name: initial capacity installed nuclear
@@ -48005,6 +49432,7 @@ def initial_capacity_installed_nuclear():
 
 
 @cache.step
+@to_float
 def nuclear_capacity_under_construction():
     """
     Real Name: Nuclear capacity under construction
@@ -48029,6 +49457,7 @@ def nuclear_capacity_under_construction():
 
 
 @cache.step
+@to_float
 def new_nuclear_capacity_under_planning():
     """
     Real Name: new nuclear capacity under planning
@@ -48044,6 +49473,7 @@ def new_nuclear_capacity_under_planning():
 
 
 @cache.run
+@to_float
 def selection_of_nuclear_scenario():
     """
     Real Name: selection of nuclear scenario
@@ -48059,6 +49489,7 @@ def selection_of_nuclear_scenario():
 
 
 @cache.run
+@to_float
 def initial_gen_nuclear():
     """
     Real Name: initial gen nuclear
@@ -48074,6 +49505,7 @@ def initial_gen_nuclear():
 
 
 @cache.run
+@to_float
 def initial_capacity_in_construction_nuclear():
     """
     Real Name: initial capacity in construction nuclear
@@ -48089,6 +49521,7 @@ def initial_capacity_in_construction_nuclear():
 
 
 @cache.run
+@to_float
 def initial_required_capacity_nuclear():
     """
     Real Name: initial required capacity nuclear
@@ -48104,6 +49537,7 @@ def initial_required_capacity_nuclear():
 
 
 @cache.step
+@to_float
 def planned_nuclear_capacity_tw():
     """
     Real Name: Planned nuclear capacity TW
@@ -48119,6 +49553,7 @@ def planned_nuclear_capacity_tw():
 
 
 @cache.step
+@to_float
 def wear_nuclear():
     """
     Real Name: wear nuclear
@@ -48138,6 +49573,7 @@ def wear_nuclear():
 
 
 @cache.step
+@to_float
 def tpes_intensity_ej_t():
     """
     Real Name: TPES intensity EJ T$
@@ -48153,6 +49589,7 @@ def tpes_intensity_ej_t():
 
 
 @cache.step
+@to_float
 def real_ped_intensity_of_electricity():
     """
     Real Name: real PED intensity of Electricity
@@ -48172,6 +49609,7 @@ def real_ped_intensity_of_electricity():
 
 
 @cache.step
+@to_float
 def annual_gdp_growth_rate_eu():
     """
     Real Name: Annual GDP growth rate EU
@@ -48187,6 +49625,7 @@ def annual_gdp_growth_rate_eu():
 
 
 @cache.step
+@to_float
 def gdp_delayed_1yr():
     """
     Real Name: GDP delayed 1yr
@@ -48202,6 +49641,7 @@ def gdp_delayed_1yr():
 
 
 @cache.step
+@to_float
 def share_tot_monet_invest_elec_res_vs_gdp():
     """
     Real Name: share tot monet invest Elec RES vs GDP
@@ -48218,6 +49658,7 @@ def share_tot_monet_invest_elec_res_vs_gdp():
 
 
 @cache.step
+@to_float
 def gdppc():
     """
     Real Name: GDPpc
@@ -48233,6 +49674,7 @@ def gdppc():
 
 
 @cache.run
+@to_float
 def unlimited_coal():
     """
     Real Name: "unlimited coal?"
@@ -48249,6 +49691,7 @@ def unlimited_coal():
 
 
 @cache.step
+@to_float
 def real_tfec():
     """
     Real Name: Real TFEC
@@ -48267,6 +49710,7 @@ def real_tfec():
 
 
 @cache.run
+@to_float
 def unlimited_uranium():
     """
     Real Name: "unlimited uranium?"
@@ -48283,6 +49727,7 @@ def unlimited_uranium():
 
 
 @cache.run
+@to_float
 def urr_coal_unlimited():
     """
     Real Name: URR coal unlimited
@@ -48298,6 +49743,7 @@ def urr_coal_unlimited():
 
 
 @cache.run
+@to_float
 def urr_uranium_unlimited():
     """
     Real Name: URR uranium unlimited
@@ -48313,6 +49759,7 @@ def urr_uranium_unlimited():
 
 
 @cache.run
+@to_float
 def urr_conv_gas_unlimited():
     """
     Real Name: URR conv gas unlimited
@@ -48328,6 +49775,7 @@ def urr_conv_gas_unlimited():
 
 
 @cache.run
+@to_float
 def unlimited_gas():
     """
     Real Name: "unlimited gas?"
@@ -48344,6 +49792,7 @@ def unlimited_gas():
 
 
 @cache.run
+@to_float
 def unlimited_oil():
     """
     Real Name: "unlimited oil?"
@@ -48360,6 +49809,7 @@ def unlimited_oil():
 
 
 @cache.run
+@to_float
 def urr_conv_oil_unlimited():
     """
     Real Name: URR conv oil unlimited
@@ -48375,6 +49825,7 @@ def urr_conv_oil_unlimited():
 
 
 @cache.run
+@to_float
 def activate_elf_by_scen():
     """
     Real Name: "activate ELF by scen?"
@@ -48390,6 +49841,7 @@ def activate_elf_by_scen():
 
 
 @cache.step
+@to_float
 def total_demand_liquids_mbd():
     """
     Real Name: "Total demand liquids mb/d"
@@ -48405,6 +49857,7 @@ def total_demand_liquids_mbd():
 
 
 @cache.step
+@to_float
 def ped_coal_without_ctl():
     """
     Real Name: PED coal without CTL
@@ -48420,6 +49873,7 @@ def ped_coal_without_ctl():
 
 
 @cache.step
+@to_float
 def grid_reinforcement_costs_tdollar():
     """
     Real Name: Grid reinforcement costs Tdollar
@@ -48479,6 +49933,7 @@ def initial_nonenergy_use():
 
 
 @cache.step
+@to_float
 def real_total_output():
     """
     Real Name: Real total output
@@ -48494,6 +49949,7 @@ def real_total_output():
 
 
 @cache.step
+@to_float
 def pe_onshore_wind_for_elec_generation_ej():
     """
     Real Name: PE onshore wind for Elec generation EJ
@@ -48509,6 +49965,7 @@ def pe_onshore_wind_for_elec_generation_ej():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_solar_pv_twh():
     """
     Real Name: FE Elec generation from solar PV TWh
@@ -48524,6 +49981,7 @@ def fe_elec_generation_from_solar_pv_twh():
 
 
 @cache.step
+@to_float
 def pe_hydro_for_elec_generation_ej():
     """
     Real Name: PE hydro for Elec generation EJ
@@ -48539,6 +49997,7 @@ def pe_hydro_for_elec_generation_ej():
 
 
 @cache.step
+@to_float
 def invest_biow_tdolar():
     """
     Real Name: invest bioW Tdolar
@@ -48554,6 +50013,7 @@ def invest_biow_tdolar():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_hydro_twh():
     """
     Real Name: FE Elec generation from hydro TWh
@@ -48569,6 +50029,7 @@ def fe_elec_generation_from_hydro_twh():
 
 
 @cache.step
+@to_float
 def invest_geotelec_tdolar():
     """
     Real Name: "invest geot-elec Tdolar"
@@ -48584,6 +50045,7 @@ def invest_geotelec_tdolar():
 
 
 @cache.step
+@to_float
 def invest_hydro_tdolar():
     """
     Real Name: invest hydro Tdolar
@@ -48599,6 +50061,7 @@ def invest_hydro_tdolar():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_onshore_wind_twh():
     """
     Real Name: FE Elec generation from onshore wind TWh
@@ -48614,6 +50077,7 @@ def fe_elec_generation_from_onshore_wind_twh():
 
 
 @cache.step
+@to_float
 def invest_oceanic_tdolar():
     """
     Real Name: invest oceanic Tdolar
@@ -48629,6 +50093,7 @@ def invest_oceanic_tdolar():
 
 
 @cache.step
+@to_float
 def invest_onshore_wind_tdolar():
     """
     Real Name: invest onshore wind Tdolar
@@ -48644,6 +50109,7 @@ def invest_onshore_wind_tdolar():
 
 
 @cache.step
+@to_float
 def invest_offshore_wind_tdolar():
     """
     Real Name: invest offshore wind Tdolar
@@ -48659,6 +50125,7 @@ def invest_offshore_wind_tdolar():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_geotelec_twh():
     """
     Real Name: "FE Elec generation from geot-elec TWh"
@@ -48674,6 +50141,7 @@ def fe_elec_generation_from_geotelec_twh():
 
 
 @cache.step
+@to_float
 def pe_geotelec_for_elec_generation_ej():
     """
     Real Name: "PE geot-elec for Elec generation EJ"
@@ -48689,6 +50157,7 @@ def pe_geotelec_for_elec_generation_ej():
 
 
 @cache.step
+@to_float
 def pe_solar_pv_for_elec_generation_ej():
     """
     Real Name: PE solar PV for Elec generation EJ
@@ -48704,6 +50173,7 @@ def pe_solar_pv_for_elec_generation_ej():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_bioe_twh():
     """
     Real Name: FE Elec generation from bioE TWh
@@ -48719,6 +50189,7 @@ def fe_elec_generation_from_bioe_twh():
 
 
 @cache.step
+@to_float
 def pe_oceanic_for_elec_generation_ej():
     """
     Real Name: PE oceanic for Elec generation EJ
@@ -48734,6 +50205,7 @@ def pe_oceanic_for_elec_generation_ej():
 
 
 @cache.step
+@to_float
 def pe_bioe_for_elec_generation_ej():
     """
     Real Name: PE bioE for Elec generation EJ
@@ -48749,6 +50221,7 @@ def pe_bioe_for_elec_generation_ej():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_offshore_wind_twh():
     """
     Real Name: FE Elec generation from offshore wind TWh
@@ -48764,6 +50237,7 @@ def fe_elec_generation_from_offshore_wind_twh():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_oceanic_twh():
     """
     Real Name: FE Elec generation from oceanic TWh
@@ -48779,6 +50253,7 @@ def fe_elec_generation_from_oceanic_twh():
 
 
 @cache.step
+@to_float
 def pe_offshore_wind_for_elec_generation_ej():
     """
     Real Name: PE offshore wind for Elec generation EJ
@@ -48794,6 +50269,7 @@ def pe_offshore_wind_for_elec_generation_ej():
 
 
 @cache.step
+@to_float
 def invest_solar_tdolar():
     """
     Real Name: invest solar Tdolar
@@ -48809,6 +50285,7 @@ def invest_solar_tdolar():
 
 
 @cache.step
+@to_float
 def initial_value_land_compet_biofuels_2gen_mha():
     """
     Real Name: initial value land compet biofuels 2gen Mha
@@ -48824,6 +50301,7 @@ def initial_value_land_compet_biofuels_2gen_mha():
 
 
 @cache.run
+@to_float
 def initial_value_land_compet_biofuels_2gen_ktoe():
     """
     Real Name: initial value land compet biofuels 2gen ktoe
@@ -48839,6 +50317,7 @@ def initial_value_land_compet_biofuels_2gen_ktoe():
 
 
 @cache.step
+@to_float
 def efficiency_liquids_for_heat_plants():
     """
     Real Name: efficiency liquids for heat plants
@@ -48854,6 +50333,7 @@ def efficiency_liquids_for_heat_plants():
 
 
 @cache.step
+@to_float
 def share_gascoalgas_for_heat_plants():
     """
     Real Name: "share gas/(coal+gas) for heat plants"
@@ -48870,6 +50350,7 @@ def share_gascoalgas_for_heat_plants():
 
 
 @cache.run
+@to_float
 def share_heat_distribution_losses():
     """
     Real Name: Share heat distribution losses
@@ -48887,6 +50368,7 @@ def share_heat_distribution_losses():
 
 
 @cache.step
+@to_float
 def efficiency_coal_for_heat_plants():
     """
     Real Name: efficiency coal for heat plants
@@ -48902,6 +50384,7 @@ def efficiency_coal_for_heat_plants():
 
 
 @cache.step
+@to_float
 def efficiency_gases_for_heat_plants():
     """
     Real Name: efficiency gases for heat plants
@@ -48917,6 +50400,7 @@ def efficiency_gases_for_heat_plants():
 
 
 @cache.step
+@to_float
 def potential_tot_res_elec_after_intermitt():
     """
     Real Name: potential tot RES elec after intermitt
@@ -48951,6 +50435,7 @@ def invest_res_elec_tdolar():
 
 
 @cache.step
+@to_float
 def pe_biow_for_elec_generation_mtoe():
     """
     Real Name: PE BioW for Elec generation Mtoe
@@ -48969,6 +50454,7 @@ def pe_biow_for_elec_generation_mtoe():
 
 
 @cache.step
+@to_float
 def remaining_potential_tot_res_elec_after_intermitt():
     """
     Real Name: remaining potential tot RES elec after intermitt
@@ -48993,6 +50479,7 @@ def remaining_potential_tot_res_elec_after_intermitt():
 
 
 @cache.step
+@subs(["RES elec"], _subscript_dict)
 def invest_cost_res_elec():
     """
     Real Name: invest cost RES elec
@@ -49033,6 +50520,7 @@ def time_95pc_ts_potential_res_elec():
 
 
 @cache.step
+@to_float
 def max_geotelec_twe():
     """
     Real Name: "max geot-elec TWe"
@@ -49049,6 +50537,7 @@ def max_geotelec_twe():
 
 
 @cache.run
+@to_float
 def max_pe_geotelec_twth():
     """
     Real Name: "max PE geot-elec TWth"
@@ -49064,6 +50553,7 @@ def max_pe_geotelec_twth():
 
 
 @cache.run
+@to_float
 def efficiency_conversion_geot_pe_to_elec():
     """
     Real Name: Efficiency conversion geot PE to Elec
@@ -49080,6 +50570,7 @@ def efficiency_conversion_geot_pe_to_elec():
 
 
 @cache.step
+@to_float
 def geot_pe_potential_for_heat_ej():
     """
     Real Name: Geot PE potential for heat EJ
@@ -49116,6 +50607,7 @@ def initial_instal_cap_res_elec():
 
 
 @cache.step
+@to_float
 def abundance_res_elec2():
     """
     Real Name: abundance RES elec2
@@ -49131,6 +50623,7 @@ def abundance_res_elec2():
 
 
 @cache.step
+@to_float
 def potential_tot_generation_res_elec_twh():
     """
     Real Name: potential tot generation RES elec TWh
@@ -49147,6 +50640,7 @@ def potential_tot_generation_res_elec_twh():
 
 
 @cache.step
+@to_float
 def res_elec_tot_overcapacity():
     """
     Real Name: RES elec tot overcapacity
@@ -49191,6 +50685,7 @@ def wear_res_elec():
 
 
 @cache.step
+@subs(["RES elec"], _subscript_dict)
 def cpini_res_elec():
     """
     Real Name: "Cp-ini RES elec"
@@ -49218,6 +50713,7 @@ def cpini_res_elec():
 
 
 @cache.run
+@to_float
 def g_per_t():
     """
     Real Name: G per T
@@ -49358,6 +50854,7 @@ def past_res_elec_capacity_growth():
 
 
 @cache.step
+@to_float
 def afforestation_program_2020_gtco2():
     """
     Real Name: Afforestation program 2020 GtCO2
@@ -49377,6 +50874,7 @@ def afforestation_program_2020_gtco2():
 
 
 @cache.run
+@to_float
 def mt_per_gt():
     """
     Real Name: Mt per Gt
@@ -49392,6 +50890,7 @@ def mt_per_gt():
 
 
 @cache.run
+@to_float
 def gtl_efficiency():
     """
     Real Name: GTL efficiency
@@ -49407,6 +50906,7 @@ def gtl_efficiency():
 
 
 @cache.run
+@to_float
 def ctl_efficiency():
     """
     Real Name: CTL efficiency
@@ -49422,6 +50922,7 @@ def ctl_efficiency():
 
 
 @cache.step
+@to_float
 def ctlgtl_gb():
     """
     Real Name: "CTL+GTL Gb"
@@ -49437,6 +50938,7 @@ def ctlgtl_gb():
 
 
 @cache.run
+@to_float
 def mbd_per_ejyear():
     """
     Real Name: "Mb/d per EJ/year"
@@ -49452,6 +50954,7 @@ def mbd_per_ejyear():
 
 
 @cache.run
+@to_float
 def hist_growth_ctl():
     """
     Real Name: Hist growth CTL
@@ -49467,6 +50970,7 @@ def hist_growth_ctl():
 
 
 @cache.run
+@to_float
 def gboe_per_ej():
     """
     Real Name: Gboe per EJ
@@ -49526,6 +51030,7 @@ def userdefined_extraction_growth_unconv_oil(x):
 
 
 @cache.run
+@to_float
 def hist_growth_gtl():
     """
     Real Name: Hist growth GTL
@@ -49541,6 +51046,7 @@ def hist_growth_gtl():
 
 
 @cache.run
+@to_float
 def urr_uranium_user_defined():
     """
     Real Name: URR uranium User defined
@@ -49556,6 +51062,7 @@ def urr_uranium_user_defined():
 
 
 @cache.run
+@to_float
 def replacement_rate_nuclear():
     """
     Real Name: replacement rate nuclear
@@ -49572,6 +51079,7 @@ def replacement_rate_nuclear():
 
 
 @cache.step
+@to_float
 def demand_gas_for_oil_refinery_gains():
     """
     Real Name: demand gas for oil refinery gains
@@ -49588,6 +51096,7 @@ def demand_gas_for_oil_refinery_gains():
 
 
 @cache.step
+@to_float
 def share_res_vs_tpes():
     """
     Real Name: share RES vs TPES
@@ -49603,6 +51112,7 @@ def share_res_vs_tpes():
 
 
 @cache.step
+@to_float
 def tpes_mtoe():
     """
     Real Name: TPES Mtoe
@@ -49618,6 +51128,7 @@ def tpes_mtoe():
 
 
 @cache.step
+@to_float
 def fe_elec_generation_from_nre_twh():
     """
     Real Name: FE Elec generation from NRE TWh
@@ -49634,6 +51145,7 @@ def fe_elec_generation_from_nre_twh():
 
 
 @cache.step
+@to_float
 def pepc_consumption_people_depending_on_trad_biomass():
     """
     Real Name: PEpc consumption people depending on trad biomass
@@ -49650,6 +51162,7 @@ def pepc_consumption_people_depending_on_trad_biomass():
 
 
 @cache.step
+@to_float
 def share_gas_for_oil_refinery_gains():
     """
     Real Name: share gas for oil refinery gains
@@ -49671,6 +51184,7 @@ def share_gas_for_oil_refinery_gains():
 
 
 @cache.run
+@to_float
 def people_relying_trad_biomass_ref():
     """
     Real Name: People relying trad biomass ref
@@ -49687,6 +51201,7 @@ def people_relying_trad_biomass_ref():
 
 
 @cache.run
+@to_float
 def pe_consumption_trad_biomass_ref():
     """
     Real Name: PE consumption trad biomass ref
@@ -49703,6 +51218,7 @@ def pe_consumption_trad_biomass_ref():
 
 
 @cache.run
+@to_float
 def tpefpc_threshold_high_development():
     """
     Real Name: TPEFpc threshold high development
@@ -49719,6 +51235,7 @@ def tpefpc_threshold_high_development():
 
 
 @cache.run
+@to_float
 def tpedpc_acceptable_standard_living():
     """
     Real Name: TPEDpc acceptable standard living
@@ -49736,6 +51253,7 @@ def tpedpc_acceptable_standard_living():
 
 
 @cache.step
+@to_float
 def pop_not_dependent_on_trad_biomass():
     """
     Real Name: Pop not dependent on trad biomass
@@ -49751,6 +51269,7 @@ def pop_not_dependent_on_trad_biomass():
 
 
 @cache.step
+@to_float
 def carbon_footprint_tco2person():
     """
     Real Name: "Carbon footprint tCO2/person"
@@ -49766,6 +51285,7 @@ def carbon_footprint_tco2person():
 
 
 @cache.step
+@to_float
 def average_tpespc_without_trad_biomass():
     """
     Real Name: "Average TPESpc (without trad biomass)"
@@ -49786,6 +51306,7 @@ def average_tpespc_without_trad_biomass():
 
 
 @cache.step
+@to_float
 def tpes_without_trad_biomass():
     """
     Real Name: "TPES (without trad biomass)"
@@ -49801,6 +51322,7 @@ def tpes_without_trad_biomass():
 
 
 @cache.step
+@to_float
 def max_npp_potential_bioe_residues_for_nonbiofuels():
     """
     Real Name: "Max NPP potential BioE residues for non-biofuels"
@@ -49818,6 +51340,7 @@ def max_npp_potential_bioe_residues_for_nonbiofuels():
 
 
 @cache.step
+@to_float
 def max_npp_potential_bioe_residues_for_cellulosic_biofuels():
     """
     Real Name: Max NPP potential BioE residues for cellulosic biofuels
@@ -49835,6 +51358,7 @@ def max_npp_potential_bioe_residues_for_cellulosic_biofuels():
 
 
 @cache.step
+@to_float
 def total_cumulative_emissions_gtco2():
     """
     Real Name: Total cumulative emissions GtCO2
@@ -49850,6 +51374,7 @@ def total_cumulative_emissions_gtco2():
 
 
 @cache.step
+@to_float
 def gtco2_historic_emissions_rcps():
     """
     Real Name: GtCO2 historic emissions RCPs
@@ -49865,6 +51390,7 @@ def gtco2_historic_emissions_rcps():
 
 
 @cache.step
+@to_float
 def carbon_emissions_gtc():
     """
     Real Name: Carbon emissions GtC
@@ -49880,6 +51406,7 @@ def carbon_emissions_gtc():
 
 
 @cache.step
+@to_float
 def historic_unconv_oil():
     """
     Real Name: Historic unconv oil
@@ -49895,6 +51422,7 @@ def historic_unconv_oil():
 
 
 @cache.run
+@to_float
 def gco2_per_mj_unconv_gas():
     """
     Real Name: gCO2 per MJ unconv gas
@@ -49910,6 +51438,7 @@ def gco2_per_mj_unconv_gas():
 
 
 @cache.run
+@to_float
 def gco2_per_mj_unconv_oil():
     """
     Real Name: gCO2 per MJ unconv oil
@@ -49925,6 +51454,7 @@ def gco2_per_mj_unconv_oil():
 
 
 @cache.run
+@to_float
 def gco2_per_mj_conv_gas():
     """
     Real Name: gCO2 per MJ conv gas
@@ -49940,6 +51470,7 @@ def gco2_per_mj_conv_gas():
 
 
 @cache.run
+@to_float
 def gco2_per_mj_ctl():
     """
     Real Name: gCO2 per MJ CTL
@@ -49955,6 +51486,7 @@ def gco2_per_mj_ctl():
 
 
 @cache.run
+@to_float
 def gco2_per_mj_gtl():
     """
     Real Name: gCO2 per MJ GTL
@@ -49970,6 +51502,7 @@ def gco2_per_mj_gtl():
 
 
 @cache.step
+@to_float
 def historic_unconv_gas():
     """
     Real Name: Historic unconv gas
@@ -49985,6 +51518,7 @@ def historic_unconv_gas():
 
 
 @cache.run
+@to_float
 def gco2_per_mj_coal():
     """
     Real Name: gCO2 per MJ coal
@@ -50000,6 +51534,7 @@ def gco2_per_mj_coal():
 
 
 @cache.run
+@to_float
 def gco2_per_mj_conv_oil():
     """
     Real Name: gCO2 per MJ conv oil
@@ -50015,6 +51550,7 @@ def gco2_per_mj_conv_oil():
 
 
 @cache.run
+@to_float
 def gco2_per_mj_shale_oil():
     """
     Real Name: gCO2 per MJ shale oil
@@ -50030,6 +51566,7 @@ def gco2_per_mj_shale_oil():
 
 
 @cache.run
+@to_float
 def dollars_to_tdollars():
     """
     Real Name: dollars to Tdollars
@@ -50045,6 +51582,7 @@ def dollars_to_tdollars():
 
 
 @cache.step
+@to_float
 def variation_historic_pop():
     """
     Real Name: variation historic pop
@@ -50078,6 +51616,7 @@ def historic_pop(x):
 
 
 @cache.step
+@to_float
 def land_compet_2gen_vs_total_land_compet():
     """
     Real Name: land compet 2gen vs total land compet
@@ -50097,6 +51636,7 @@ def land_compet_2gen_vs_total_land_compet():
 
 
 @cache.run
+@to_float
 def gj_per_ej():
     """
     Real Name: GJ per EJ
@@ -50112,6 +51652,7 @@ def gj_per_ej():
 
 
 @cache.step
+@to_float
 def average_tpes_per_capita():
     """
     Real Name: Average TPES per capita
@@ -50127,6 +51668,7 @@ def average_tpes_per_capita():
 
 
 @cache.run
+@to_float
 def geot_pe_potential_for_heat_twth():
     """
     Real Name: Geot PE potential for heat TWth
@@ -50142,6 +51684,7 @@ def geot_pe_potential_for_heat_twth():
 
 
 @cache.step
+@to_float
 def share_res_for_elec_vs_tpe_res():
     """
     Real Name: share RES for Elec vs TPE RES
@@ -50159,6 +51702,7 @@ def share_res_for_elec_vs_tpe_res():
 
 
 @cache.step
+@to_float
 def tpes_de_castro_phd__scen_madcoal_ej():
     """
     Real Name: "TPES de Castro PhD - Scen 'madcoal' EJ"
@@ -50174,6 +51718,7 @@ def tpes_de_castro_phd__scen_madcoal_ej():
 
 
 @cache.step
+@to_float
 def extraction_coal_mtoe():
     """
     Real Name: extraction coal Mtoe
@@ -50189,6 +51734,7 @@ def extraction_coal_mtoe():
 
 
 @cache.step
+@to_float
 def max_extraction_coal_mtoe():
     """
     Real Name: max extraction coal Mtoe
@@ -50204,6 +51750,7 @@ def max_extraction_coal_mtoe():
 
 
 @cache.step
+@to_float
 def tpe_from_res_ej():
     """
     Real Name: TPE from RES EJ
@@ -50219,6 +51766,7 @@ def tpe_from_res_ej():
 
 
 @cache.step
+@to_float
 def tpe_from_res_mtoe():
     """
     Real Name: TPE from RES Mtoe
@@ -50234,6 +51782,7 @@ def tpe_from_res_mtoe():
 
 
 @cache.step
+@to_float
 def tpes_de_castro_phd__scen_ii_ej():
     """
     Real Name: "TPES de Castro PhD - Scen II EJ"
@@ -50250,6 +51799,7 @@ def tpes_de_castro_phd__scen_ii_ej():
 
 
 @cache.step
+@to_float
 def electrical_distribution_losses_ej():
     """
     Real Name: Electrical distribution losses EJ
@@ -50265,6 +51815,7 @@ def electrical_distribution_losses_ej():
 
 
 @cache.run
+@to_float
 def efficiency_conversion_bioe_plants_to_heat():
     """
     Real Name: Efficiency conversion BioE plants to heat
@@ -50282,6 +51833,7 @@ def efficiency_conversion_bioe_plants_to_heat():
 
 
 @cache.run
+@to_float
 def efficiency_improvement_biofuels_3gen():
     """
     Real Name: Efficiency improvement biofuels 3gen
@@ -50298,6 +51850,7 @@ def efficiency_improvement_biofuels_3gen():
 
 
 @cache.step
+@to_float
 def potential_peavail_biofuels_2gen_land_compet_ej():
     """
     Real Name: Potential PEavail biofuels 2gen land compet EJ
@@ -50314,6 +51867,7 @@ def potential_peavail_biofuels_2gen_land_compet_ej():
 
 
 @cache.step
+@to_float
 def annual_additional_historic_land_use_biofuels_2gen():
     """
     Real Name: Annual additional historic land use biofuels 2gen
@@ -50333,6 +51887,7 @@ def annual_additional_historic_land_use_biofuels_2gen():
 
 
 @cache.run
+@to_float
 def max_npp_potential_bioe_residues():
     """
     Real Name: Max NPP potential bioE residues
@@ -50348,6 +51903,7 @@ def max_npp_potential_bioe_residues():
 
 
 @cache.run
+@to_float
 def grid_reinforcement_costs():
     """
     Real Name: Grid reinforcement costs
@@ -50364,6 +51920,7 @@ def grid_reinforcement_costs():
 
 
 @cache.step
+@to_float
 def balancing_costs():
     """
     Real Name: Balancing costs
@@ -50381,6 +51938,7 @@ def balancing_costs():
 
 
 @cache.step
+@to_float
 def historic_land_compet_available_for_biofuels_2gen():
     """
     Real Name: Historic land compet available for biofuels 2gen
@@ -50397,6 +51955,7 @@ def historic_land_compet_available_for_biofuels_2gen():
 
 
 @cache.run
+@to_float
 def land_productivity_biofuels_2gen_ej_mha():
     """
     Real Name: Land productivity biofuels 2gen EJ MHa
@@ -50413,6 +51972,7 @@ def land_productivity_biofuels_2gen_ej_mha():
 
 
 @cache.step
+@to_float
 def max_peavail_potential_biofuels_land_compet():
     """
     Real Name: Max PEavail potential biofuels land compet
@@ -50449,6 +52009,7 @@ def balancing_costs_ref(x):
 
 
 @cache.run
+@to_float
 def efficiency_conversion_bioe_to_elec():
     """
     Real Name: efficiency conversion bioE to Elec
@@ -50465,6 +52026,7 @@ def efficiency_conversion_bioe_to_elec():
 
 
 @cache.step
+@to_float
 def potential_peavail_biofuels_prod_3gen_ej():
     """
     Real Name: Potential PEavail biofuels prod 3gen EJ
@@ -50485,6 +52047,7 @@ def potential_peavail_biofuels_prod_3gen_ej():
 
 
 @cache.step
+@to_float
 def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
     """
     Real Name: Max PEavail potential bioE residues for cellulosic biofuels
@@ -50503,6 +52066,7 @@ def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
 
 
 @cache.run
+@to_float
 def p_biofuels_3gen_land_compet():
     """
     Real Name: P biofuels 3gen land compet
@@ -50519,6 +52083,7 @@ def p_biofuels_3gen_land_compet():
 
 
 @cache.step
+@to_float
 def constrain_gas_exogenous_growth_delayed_1yr():
     """
     Real Name: "constrain gas exogenous growth? delayed 1yr"
@@ -50534,6 +52099,7 @@ def constrain_gas_exogenous_growth_delayed_1yr():
 
 
 @cache.step
+@to_float
 def constrain_gas_exogenous_growth():
     """
     Real Name: "constrain gas exogenous growth?"
@@ -50550,6 +52116,7 @@ def constrain_gas_exogenous_growth():
 
 
 @cache.step
+@to_float
 def constrain_liquids_exogenous_growth_delayed_1yr():
     """
     Real Name: "constrain liquids exogenous growth? delayed 1yr"
@@ -50565,6 +52132,7 @@ def constrain_liquids_exogenous_growth_delayed_1yr():
 
 
 @cache.step
+@to_float
 def check_liquids_delayed_1yr():
     """
     Real Name: check liquids delayed 1yr
@@ -50580,6 +52148,7 @@ def check_liquids_delayed_1yr():
 
 
 @cache.step
+@to_float
 def check_gas_delayed_1yr():
     """
     Real Name: check gas delayed 1yr
@@ -50595,6 +52164,7 @@ def check_gas_delayed_1yr():
 
 
 @cache.step
+@to_float
 def constrain_liquids_exogenous_growth():
     """
     Real Name: "constrain liquids exogenous growth?"
@@ -50611,6 +52181,7 @@ def constrain_liquids_exogenous_growth():
 
 
 @cache.step
+@to_float
 def share_variable_res_elec_vs_total_generation_delayed_1yr():
     """
     Real Name: Share variable RES elec vs total generation delayed 1yr
@@ -50626,6 +52197,7 @@ def share_variable_res_elec_vs_total_generation_delayed_1yr():
 
 
 @cache.step
+@to_float
 def overcapacity_vs_intermittent_res_penetration_0():
     """
     Real Name: "overcapacity vs. intermittent RES penetration 0"
@@ -50646,6 +52218,7 @@ def overcapacity_vs_intermittent_res_penetration_0():
 
 
 @cache.step
+@to_float
 def total_electrical_losses_ej():
     """
     Real Name: Total electrical losses EJ
@@ -50661,6 +52234,7 @@ def total_electrical_losses_ej():
 
 
 @cache.step
+@to_float
 def gen_losses_vs_pe_for_elec():
     """
     Real Name: Gen losses vs PE for elec
@@ -50676,6 +52250,7 @@ def gen_losses_vs_pe_for_elec():
 
 
 @cache.run
+@to_float
 def initial_gtl_production():
     """
     Real Name: initial GTL production
@@ -50691,6 +52266,7 @@ def initial_gtl_production():
 
 
 @cache.step
+@to_float
 def variation_ctl():
     """
     Real Name: variation CTL
@@ -50715,6 +52291,7 @@ def variation_ctl():
 
 
 @cache.step
+@to_float
 def variation_gtl():
     """
     Real Name: variation GTL
@@ -50753,6 +52330,7 @@ def historic_gtl_production(x):
 
 
 @cache.run
+@to_float
 def initial_ctl_production():
     """
     Real Name: initial CTL production
@@ -50782,6 +52360,7 @@ def historic_ctl_production(x):
 
 
 @cache.step
+@to_float
 def improvement_efficiency_gas_for_electricity():
     """
     Real Name: improvement efficiency gas for electricity
@@ -50807,6 +52386,7 @@ def improvement_efficiency_gas_for_electricity():
 
 
 @cache.step
+@to_float
 def pe_demand_gas_elec_plants_ej():
     """
     Real Name: PE demand gas Elec plants EJ
@@ -50825,6 +52405,7 @@ def pe_demand_gas_elec_plants_ej():
 
 
 @cache.step
+@to_float
 def pe_demand_coal_elec_plants_ej():
     """
     Real Name: PE demand coal Elec plants EJ
@@ -50843,6 +52424,7 @@ def pe_demand_coal_elec_plants_ej():
 
 
 @cache.run
+@to_float
 def max_efficiency_gas_power_plants():
     """
     Real Name: Max efficiency gas power plants
@@ -50858,6 +52440,7 @@ def max_efficiency_gas_power_plants():
 
 
 @cache.step
+@to_float
 def total_pe_for_electricity_consumption_ej():
     """
     Real Name: Total PE for electricity consumption EJ
@@ -50873,6 +52456,7 @@ def total_pe_for_electricity_consumption_ej():
 
 
 @cache.run
+@to_float
 def initial_efficiency_gas_for_electricity():
     """
     Real Name: initial efficiency gas for electricity
@@ -50888,6 +52472,7 @@ def initial_efficiency_gas_for_electricity():
 
 
 @cache.step
+@to_float
 def remaining_efficiency_improv_gas_for_electricity():
     """
     Real Name: remaining efficiency improv gas for electricity
@@ -50905,6 +52490,7 @@ def remaining_efficiency_improv_gas_for_electricity():
 
 
 @cache.run
+@to_float
 def efficiency_improv_gas_for_electricity():
     """
     Real Name: Efficiency improv gas for electricity
@@ -50921,6 +52507,7 @@ def efficiency_improv_gas_for_electricity():
 
 
 @cache.step
+@to_float
 def efficiency_gas_for_electricity():
     """
     Real Name: efficiency gas for electricity
@@ -50936,6 +52523,7 @@ def efficiency_gas_for_electricity():
 
 
 @cache.run
+@to_float
 def percent_to_share():
     """
     Real Name: percent to share
@@ -50951,6 +52539,7 @@ def percent_to_share():
 
 
 @cache.step
+@to_float
 def additional_pe_production_of_ctlgtl_for_liquids():
     """
     Real Name: "Additional PE production of CTL+GTL for liquids"
@@ -50969,6 +52558,7 @@ def additional_pe_production_of_ctlgtl_for_liquids():
 
 
 @cache.step
+@to_float
 def annual_additional_historic_product_biofuels_2gen():
     """
     Real Name: Annual additional historic product biofuels 2gen
@@ -51004,6 +52594,7 @@ def historic_produc_biofuels_2gen(x):
 
 
 @cache.run
+@to_float
 def cumulative_emissions_to_1995():
     """
     Real Name: Cumulative emissions to 1995
@@ -51021,6 +52612,7 @@ def cumulative_emissions_to_1995():
 
 
 @cache.run
+@to_float
 def start_year_bioe_residues_for_nonbiofuels():
     """
     Real Name: "start year BioE residues for non-biofuels"
@@ -51036,6 +52628,7 @@ def start_year_bioe_residues_for_nonbiofuels():
 
 
 @cache.step
+@to_float
 def co2_fossil_fuel_emissions():
     """
     Real Name: CO2 fossil fuel emissions
@@ -51059,6 +52652,7 @@ def co2_fossil_fuel_emissions():
 
 
 @cache.run
+@to_float
 def t_per_gt():
     """
     Real Name: t per Gt
@@ -51074,6 +52668,7 @@ def t_per_gt():
 
 
 @cache.step
+@to_float
 def share_land_compet_biofuels():
     """
     Real Name: Share land compet biofuels
@@ -51092,6 +52687,7 @@ def share_land_compet_biofuels():
 
 
 @cache.step
+@to_float
 def share_land_total_res_vs_arable():
     """
     Real Name: share land total RES vs arable
@@ -51107,6 +52703,7 @@ def share_land_total_res_vs_arable():
 
 
 @cache.step
+@to_float
 def year_scarcity_oil():
     """
     Real Name: Year scarcity oil
@@ -51123,6 +52720,7 @@ def year_scarcity_oil():
 
 
 @cache.step
+@to_float
 def cumulated_conv_gas_extraction():
     """
     Real Name: cumulated conv gas extraction
@@ -51138,6 +52736,7 @@ def cumulated_conv_gas_extraction():
 
 
 @cache.run
+@to_float
 def cumulated_conv_gas_extraction_to_1995():
     """
     Real Name: cumulated conv gas extraction to 1995
@@ -51153,6 +52752,7 @@ def cumulated_conv_gas_extraction_to_1995():
 
 
 @cache.step
+@to_float
 def cumulated_unconv_gas_extraction():
     """
     Real Name: Cumulated unconv gas extraction
@@ -51168,6 +52768,7 @@ def cumulated_unconv_gas_extraction():
 
 
 @cache.run
+@to_float
 def cumulated_unconv_gas_extraction_to_1995():
     """
     Real Name: cumulated unconv gas extraction to 1995
@@ -51183,6 +52784,7 @@ def cumulated_unconv_gas_extraction_to_1995():
 
 
 @cache.step
+@to_float
 def rurr_uranium():
     """
     Real Name: RURR uranium
@@ -51198,6 +52800,7 @@ def rurr_uranium():
 
 
 @cache.run
+@to_float
 def cumulated_uranium_extraction_to_1995():
     """
     Real Name: cumulated uranium extraction to 1995
@@ -51213,6 +52816,7 @@ def cumulated_uranium_extraction_to_1995():
 
 
 @cache.step
+@to_float
 def cumulated_conv_oil_extraction():
     """
     Real Name: cumulated conv oil extraction
@@ -51228,6 +52832,7 @@ def cumulated_conv_oil_extraction():
 
 
 @cache.run
+@to_float
 def cumulated_conv_oil_extraction_to_1995():
     """
     Real Name: cumulated conv oil extraction to 1995
@@ -51243,6 +52848,7 @@ def cumulated_conv_oil_extraction_to_1995():
 
 
 @cache.step
+@to_float
 def cumulated_unconv_oil_extraction():
     """
     Real Name: cumulated unconv oil extraction
@@ -51258,6 +52864,7 @@ def cumulated_unconv_oil_extraction():
 
 
 @cache.step
+@to_float
 def cumulated_coal_extraction():
     """
     Real Name: Cumulated coal extraction
@@ -51273,6 +52880,7 @@ def cumulated_coal_extraction():
 
 
 @cache.run
+@to_float
 def cumulated_coal_extraction_to_1995():
     """
     Real Name: cumulated coal extraction to 1995
@@ -51288,6 +52896,7 @@ def cumulated_coal_extraction_to_1995():
 
 
 @cache.run
+@to_float
 def cumulated_unconv_oil_extraction_to_1995():
     """
     Real Name: cumulated unconv oil extraction to 1995
@@ -51303,6 +52912,7 @@ def cumulated_unconv_oil_extraction_to_1995():
 
 
 @cache.step
+@to_float
 def cumulated_uranium_extraction():
     """
     Real Name: Cumulated uranium extraction
@@ -51318,6 +52928,7 @@ def cumulated_uranium_extraction():
 
 
 @cache.step
+@to_float
 def oil_refinery_gains_ej():
     """
     Real Name: Oil refinery gains EJ
@@ -51333,6 +52944,7 @@ def oil_refinery_gains_ej():
 
 
 @cache.run
+@to_float
 def oil_refinery_gains_share():
     """
     Real Name: Oil refinery gains share
@@ -51351,6 +52963,7 @@ def oil_refinery_gains_share():
 
 
 @cache.run
+@to_float
 def efficiency_gas_for_oil_refinery_gains():
     """
     Real Name: Efficiency gas for oil refinery gains
@@ -51366,6 +52979,7 @@ def efficiency_gas_for_oil_refinery_gains():
 
 
 @cache.run
+@to_float
 def one_year():
     """
     Real Name: one year
@@ -51381,6 +52995,7 @@ def one_year():
 
 
 @cache.step
+@to_float
 def land_compet_required_dedicated_crops_for_biofuels():
     """
     Real Name: Land compet required dedicated crops for biofuels
@@ -51397,6 +53012,7 @@ def land_compet_required_dedicated_crops_for_biofuels():
 
 
 @cache.run
+@to_float
 def annual_shift_from_2gen_to_3gen():
     """
     Real Name: Annual shift from 2gen to 3gen
@@ -51413,6 +53029,7 @@ def annual_shift_from_2gen_to_3gen():
 
 
 @cache.run
+@to_float
 def p_bioe_residues():
     """
     Real Name: P bioE residues
@@ -51429,6 +53046,7 @@ def p_bioe_residues():
 
 
 @cache.step
+@to_float
 def cellulosic_biofuels_available():
     """
     Real Name: Cellulosic biofuels available
@@ -51450,6 +53068,7 @@ def cellulosic_biofuels_available():
 
 
 @cache.step
+@to_float
 def bioe_residues_for_nonbiofuels_available():
     """
     Real Name: "BioE residues for non-biofuels available"
@@ -51472,6 +53091,7 @@ def bioe_residues_for_nonbiofuels_available():
 
 
 @cache.step
+@to_float
 def pe_bioe_residues_nonbiofuels_ej():
     """
     Real Name: "PE bioE residues non-biofuels EJ"
@@ -51487,6 +53107,7 @@ def pe_bioe_residues_nonbiofuels_ej():
 
 
 @cache.run
+@to_float
 def share_cellulosic_biofuels_vs_bioe_residues():
     """
     Real Name: share cellulosic biofuels vs BioE residues
@@ -51503,6 +53124,7 @@ def share_cellulosic_biofuels_vs_bioe_residues():
 
 
 @cache.step
+@to_float
 def share_land_total_res_vs_urban_surface():
     """
     Real Name: share land total RES vs urban surface
@@ -51518,6 +53140,7 @@ def share_land_total_res_vs_urban_surface():
 
 
 @cache.step
+@to_float
 def max_land_compet_biofuels_2gen():
     """
     Real Name: Max land compet biofuels 2gen
@@ -51537,6 +53160,7 @@ def max_land_compet_biofuels_2gen():
 
 
 @cache.run
+@to_float
 def p_biofuels_2gen_land_compet():
     """
     Real Name: P biofuels 2gen land compet
@@ -51553,6 +53177,7 @@ def p_biofuels_2gen_land_compet():
 
 
 @cache.run
+@to_float
 def past_biofuels_2gen():
     """
     Real Name: past biofuels 2gen
@@ -51568,6 +53193,7 @@ def past_biofuels_2gen():
 
 
 @cache.run
+@to_float
 def ej_per_ktoe():
     """
     Real Name: EJ per ktoe
@@ -51583,6 +53209,7 @@ def ej_per_ktoe():
 
 
 @cache.step
+@to_float
 def abundance_total_oil_eu():
     """
     Real Name: abundance total oil EU
@@ -51605,6 +53232,7 @@ def abundance_total_oil_eu():
 
 
 @cache.run
+@to_float
 def cp_nuclear_initial():
     """
     Real Name: Cp nuclear initial
@@ -51621,6 +53249,7 @@ def cp_nuclear_initial():
 
 
 @cache.step
+@to_float
 def extraction_coal_without_ctl_ej():
     """
     Real Name: extraction coal without CTL EJ
@@ -51636,6 +53265,7 @@ def extraction_coal_without_ctl_ej():
 
 
 @cache.step
+@to_float
 def extraction_coal_for_ctl_ej():
     """
     Real Name: extraction coal for CTL EJ
@@ -51652,6 +53282,7 @@ def extraction_coal_for_ctl_ej():
 
 
 @cache.step
+@to_float
 def other_liquids_supply_ej():
     """
     Real Name: Other liquids supply EJ
@@ -51669,6 +53300,7 @@ def other_liquids_supply_ej():
 
 
 @cache.run
+@to_float
 def max_offshore_wind_twe():
     """
     Real Name: max offshore wind TWe
@@ -51685,6 +53317,7 @@ def max_offshore_wind_twe():
 
 
 @cache.run
+@to_float
 def urr_unconv_oil_high_mohr15():
     """
     Real Name: URR unconv oil High Mohr15
@@ -51700,6 +53333,7 @@ def urr_unconv_oil_high_mohr15():
 
 
 @cache.run
+@to_float
 def urr_unconv_oil_low_mohr15():
     """
     Real Name: URR unconv oil Low Mohr15
@@ -51715,6 +53349,7 @@ def urr_unconv_oil_low_mohr15():
 
 
 @cache.run
+@to_float
 def urr_unconv_oil_user_defined():
     """
     Real Name: URR unconv oil User defined
@@ -51730,6 +53365,7 @@ def urr_unconv_oil_user_defined():
 
 
 @cache.run
+@to_float
 def urr_conv_oil_mohr15_high():
     """
     Real Name: URR conv oil Mohr15 High
@@ -51745,6 +53381,7 @@ def urr_conv_oil_mohr15_high():
 
 
 @cache.run
+@to_float
 def urr_conv_oil_mohr15_low():
     """
     Real Name: URR conv oil Mohr15 Low
@@ -51802,6 +53439,7 @@ def table_max_extraction_mohr15_bg_conv_oil_ej(x):
 
 
 @cache.run
+@to_float
 def separate_conv_and_unconv_gas():
     """
     Real Name: "separate conv and unconv gas?"
@@ -51834,6 +53472,7 @@ def table_max_extraction_unconv_oil_user_defined(x):
 
 
 @cache.run
+@to_float
 def urr_tot_agg_oil_user_defined():
     """
     Real Name: URR tot agg oil User defined
@@ -51849,6 +53488,7 @@ def urr_tot_agg_oil_user_defined():
 
 
 @cache.run
+@to_float
 def choose_extraction_curve_tot_agg_oil():
     """
     Real Name: choose extraction curve tot agg oil
@@ -51864,6 +53504,7 @@ def choose_extraction_curve_tot_agg_oil():
 
 
 @cache.run
+@to_float
 def urr_conv_oil_mohr15_bg():
     """
     Real Name: URR conv oil Mohr15 BG
@@ -51879,6 +53520,7 @@ def urr_conv_oil_mohr15_bg():
 
 
 @cache.run
+@to_float
 def urr_conv_oil_user_defined():
     """
     Real Name: URR conv oil User defined
@@ -51894,6 +53536,7 @@ def urr_conv_oil_user_defined():
 
 
 @cache.run
+@to_float
 def choose_extraction_tot_agg_gas_curve():
     """
     Real Name: choose extraction tot agg gas curve
@@ -51923,6 +53566,7 @@ def table_max_extraction_unconv_oil_low_mohr15(x):
 
 
 @cache.run
+@to_float
 def urr_unconv_oil_bg_mohr15():
     """
     Real Name: URR unconv oil BG Mohr15
@@ -51980,6 +53624,7 @@ def table_max_conv_oil_extraction_user_defined(x):
 
 
 @cache.run
+@to_float
 def separate_conv_and_unconv_oil():
     """
     Real Name: "separate conv and unconv oil?"
@@ -51998,6 +53643,7 @@ def separate_conv_and_unconv_oil():
 
 
 @cache.run
+@to_float
 def kt_uranium_per_ej():
     """
     Real Name: kt uranium per EJ
@@ -52013,6 +53659,7 @@ def kt_uranium_per_ej():
 
 
 @cache.run
+@to_float
 def life_time_nuclear():
     """
     Real Name: life time nuclear
@@ -52028,6 +53675,7 @@ def life_time_nuclear():
 
 
 @cache.step
+@to_float
 def hist_share_oilff_elec():
     """
     Real Name: "Hist share oil/FF Elec"
@@ -52044,6 +53692,7 @@ def hist_share_oilff_elec():
 
 
 @cache.step
+@to_float
 def cumulated_uranium_extraction_kt():
     """
     Real Name: Cumulated uranium extraction kt
@@ -52059,6 +53708,7 @@ def cumulated_uranium_extraction_kt():
 
 
 @cache.step
+@to_float
 def extraction_uranium_kt():
     """
     Real Name: extraction uranium kt
@@ -52074,6 +53724,7 @@ def extraction_uranium_kt():
 
 
 @cache.run
+@to_float
 def efficiency_uranium_for_electricity():
     """
     Real Name: efficiency uranium for electricity
@@ -52089,6 +53740,7 @@ def efficiency_uranium_for_electricity():
 
 
 @cache.step
+@to_float
 def hist_share_gascoal_gas_elec():
     """
     Real Name: "Hist share gas/(coal +gas) Elec"
@@ -52118,6 +53770,7 @@ def historic_nuclear_generation_twh(x):
 
 
 @cache.step
+@to_float
 def invest_cost_nuclear():
     """
     Real Name: invest cost nuclear
@@ -52135,6 +53788,7 @@ def invest_cost_nuclear():
 
 
 @cache.run
+@to_float
 def kwh_per_twh():
     """
     Real Name: kWh per TWh
@@ -52150,6 +53804,7 @@ def kwh_per_twh():
 
 
 @cache.step
+@to_float
 def total_fe_elec_demand_ej():
     """
     Real Name: Total FE Elec demand EJ
@@ -52165,6 +53820,7 @@ def total_fe_elec_demand_ej():
 
 
 @cache.run
+@to_float
 def gco2e_per_kwh_biomass():
     """
     Real Name: gCO2e per KWh biomass
@@ -52180,6 +53836,7 @@ def gco2e_per_kwh_biomass():
 
 
 @cache.run
+@to_float
 def mtoe_per_ej():
     """
     Real Name: MToe per EJ
@@ -52195,6 +53852,7 @@ def mtoe_per_ej():
 
 
 @cache.run
+@to_float
 def share_transmdistr_elec_losses_initial():
     """
     Real Name: "share transm&distr elec losses initial"
@@ -52212,6 +53870,7 @@ def share_transmdistr_elec_losses_initial():
 
 
 @cache.run
+@to_float
 def ej_per_twh():
     """
     Real Name: EJ per TWh
@@ -52227,6 +53886,7 @@ def ej_per_twh():
 
 
 @cache.run
+@to_float
 def twe_per_twh():
     """
     Real Name: TWe per TWh
@@ -52242,6 +53902,7 @@ def twe_per_twh():
 
 
 @cache.run
+@to_float
 def initial_population():
     """
     Real Name: initial population
@@ -52257,6 +53918,7 @@ def initial_population():
 
 
 @cache.step
+@to_float
 def population():
     """
     Real Name: Population
@@ -52272,6 +53934,7 @@ def population():
 
 
 @cache.run
+@to_float
 def ve_objetive_ue2020_extrap():
     """
     Real Name: VE objetive UE2020 extrap
@@ -52287,6 +53950,7 @@ def ve_objetive_ue2020_extrap():
 
 
 @cache.run
+@to_float
 def ve_objetive_ue2020():
     """
     Real Name: VE objetive UE2020
@@ -52302,6 +53966,7 @@ def ve_objetive_ue2020():
 
 
 @cache.run
+@to_float
 def choose_extraction_uranium_curve():
     """
     Real Name: Choose extraction uranium curve
@@ -52317,6 +53982,7 @@ def choose_extraction_uranium_curve():
 
 
 @cache.step
+@to_float
 def year_scarcity_tpe():
     """
     Real Name: Year scarcity TPE
@@ -52333,6 +53999,7 @@ def year_scarcity_tpe():
 
 
 @cache.step
+@to_float
 def year_scarcity_uranium():
     """
     Real Name: Year scarcity uranium
@@ -52349,6 +54016,7 @@ def year_scarcity_uranium():
 
 
 @cache.step
+@to_float
 def year_scarcity_coal():
     """
     Real Name: Year scarcity coal
@@ -52365,6 +54033,7 @@ def year_scarcity_coal():
 
 
 @cache.step
+@to_float
 def year_scarcity_liquids():
     """
     Real Name: Year scarcity liquids
@@ -52381,6 +54050,7 @@ def year_scarcity_liquids():
 
 
 @cache.step
+@to_float
 def effects_shortage_gas():
     """
     Real Name: effects shortage gas
@@ -52401,6 +54071,7 @@ def effects_shortage_gas():
 
 
 @cache.step
+@to_float
 def year_scarcity_gases():
     """
     Real Name: Year scarcity gases
@@ -52417,6 +54088,7 @@ def year_scarcity_gases():
 
 
 @cache.run
+@to_float
 def max_percent_of_change():
     """
     Real Name: max percent of change
@@ -52432,6 +54104,7 @@ def max_percent_of_change():
 
 
 @cache.run
+@to_float
 def choose_extraction_coal_curve():
     """
     Real Name: choose extraction coal curve
@@ -52447,6 +54120,7 @@ def choose_extraction_coal_curve():
 
 
 @cache.run
+@to_float
 def selection_constraint_extraction_unconv_gas():
     """
     Real Name: Selection constraint extraction unconv gas
@@ -52463,6 +54137,7 @@ def selection_constraint_extraction_unconv_gas():
 
 
 @cache.step
+@to_float
 def year_scarcity_elec():
     """
     Real Name: Year scarcity Elec
@@ -52479,6 +54154,7 @@ def year_scarcity_elec():
 
 
 @cache.step
+@to_float
 def extraction_unconv_gas_delayed():
     """
     Real Name: extraction unconv gas delayed
@@ -52494,6 +54170,7 @@ def extraction_unconv_gas_delayed():
 
 
 @cache.step
+@to_float
 def max_unconv_gas_growth_extraction_ej():
     """
     Real Name: max unconv gas growth extraction EJ
@@ -52515,6 +54192,7 @@ def max_unconv_gas_growth_extraction_ej():
 
 
 @cache.run
+@to_float
 def p_constraint_growth_extraction_unconv_gas():
     """
     Real Name: P constraint growth extraction unconv gas
@@ -52530,6 +54208,7 @@ def p_constraint_growth_extraction_unconv_gas():
 
 
 @cache.run
+@to_float
 def choose_extraction_curve_unconv_gas():
     """
     Real Name: choose extraction curve unconv gas
@@ -52545,6 +54224,7 @@ def choose_extraction_curve_unconv_gas():
 
 
 @cache.run
+@to_float
 def choose_extraction_curve_unconv_oil():
     """
     Real Name: choose extraction curve unconv oil
@@ -52560,6 +54240,7 @@ def choose_extraction_curve_unconv_oil():
 
 
 @cache.step
+@to_float
 def biofuels_land_compet_available():
     """
     Real Name: Biofuels land compet available
@@ -52579,6 +54260,7 @@ def biofuels_land_compet_available():
 
 
 @cache.run
+@to_float
 def urr_oil_aspo():
     """
     Real Name: URR oil ASPO
@@ -52594,6 +54276,7 @@ def urr_oil_aspo():
 
 
 @cache.run
+@to_float
 def urr_gas_mohr_high2013():
     """
     Real Name: URR gas Mohr High2013
@@ -52609,6 +54292,7 @@ def urr_gas_mohr_high2013():
 
 
 @cache.run
+@to_float
 def urr_gas_leherrere2010():
     """
     Real Name: URR gas Leherrere2010
@@ -52624,6 +54308,7 @@ def urr_gas_leherrere2010():
 
 
 @cache.run
+@to_float
 def urr_gas_mohr_bg2012():
     """
     Real Name: URR gas Mohr BG2012
@@ -52639,6 +54324,7 @@ def urr_gas_mohr_bg2012():
 
 
 @cache.run
+@to_float
 def res_to_fossil_accounting():
     """
     Real Name: RES to fossil accounting
@@ -52659,6 +54345,7 @@ def res_to_fossil_accounting():
 
 
 @cache.step
+@to_float
 def new_c_gtc():
     """
     Real Name: new C GtC
@@ -52674,6 +54361,7 @@ def new_c_gtc():
 
 
 @cache.run
+@to_float
 def year_adjust():
     """
     Real Name: year adjust
@@ -52942,6 +54630,7 @@ def tpes_de_castro_phd__scen_madcoal(x):
 
 
 @cache.run
+@to_float
 def urban_surface_2015():
     """
     Real Name: urban surface 2015
@@ -52957,6 +54646,7 @@ def urban_surface_2015():
 
 
 @cache.run
+@to_float
 def c_per_co2():
     """
     Real Name: C per CO2
@@ -52987,6 +54677,7 @@ def gtc_historic_emissions_rcps(x):
 
 
 @cache.run
+@to_float
 def activate_affores_program():
     """
     Real Name: activate Affores program
@@ -53002,6 +54693,7 @@ def activate_affores_program():
 
 
 @cache.step
+@to_float
 def afforestation_program_2020():
     """
     Real Name: Afforestation program 2020
@@ -53018,6 +54710,7 @@ def afforestation_program_2020():
 
 
 @cache.run
+@to_float
 def agricultural_land_2015():
     """
     Real Name: Agricultural land 2015
@@ -53033,6 +54726,7 @@ def agricultural_land_2015():
 
 
 @cache.run
+@to_float
 def choose_extraction_curve_conv_oil():
     """
     Real Name: choose extraction curve conv oil
@@ -53048,6 +54742,7 @@ def choose_extraction_curve_conv_oil():
 
 
 @cache.run
+@to_float
 def choose_extraction_conv_gas_curve():
     """
     Real Name: choose extraction conv gas curve
@@ -53063,6 +54758,7 @@ def choose_extraction_conv_gas_curve():
 
 
 @cache.step
+@to_float
 def cumulated_total_monet_invest_res_for_elec():
     """
     Real Name: Cumulated total monet invest RES for Elec
@@ -53079,6 +54775,7 @@ def cumulated_total_monet_invest_res_for_elec():
 
 
 @cache.run
+@to_float
 def efficiency_coal_for_electricity():
     """
     Real Name: efficiency coal for electricity
@@ -53110,6 +54807,7 @@ def historic_efficiency_gas_for_electricity(x):
 
 
 @cache.run
+@to_float
 def efficiency_liquids_for_electricity():
     """
     Real Name: efficiency liquids for electricity
@@ -53126,6 +54824,7 @@ def efficiency_liquids_for_electricity():
 
 
 @cache.run
+@to_float
 def additional_land_compet_available_for_biofuels():
     """
     Real Name: Additional land compet available for biofuels
@@ -53142,6 +54841,7 @@ def additional_land_compet_available_for_biofuels():
 
 
 @cache.run
+@to_float
 def max_hydro_twe():
     """
     Real Name: max hydro TWe
@@ -53157,6 +54857,7 @@ def max_hydro_twe():
 
 
 @cache.run
+@to_float
 def max_oceanic_twe():
     """
     Real Name: max oceanic TWe
@@ -53172,6 +54873,7 @@ def max_oceanic_twe():
 
 
 @cache.run
+@to_float
 def max_onshore_wind_twe():
     """
     Real Name: max onshore wind TWe
@@ -53187,6 +54889,7 @@ def max_onshore_wind_twe():
 
 
 @cache.step
+@to_float
 def p_timeseries_pop_growth_rate():
     """
     Real Name: P timeseries pop growth rate
@@ -53203,6 +54906,7 @@ def p_timeseries_pop_growth_rate():
 
 
 @cache.run
+@to_float
 def p_ctl():
     """
     Real Name: P CTL
@@ -53219,6 +54923,7 @@ def p_ctl():
 
 
 @cache.run
+@to_float
 def p_gtl():
     """
     Real Name: P GTL
@@ -53235,6 +54940,7 @@ def p_gtl():
 
 
 @cache.run
+@to_float
 def start_year_3gen_cellulosic_biofuels():
     """
     Real Name: start year 3gen cellulosic biofuels
@@ -53492,6 +55198,7 @@ def time_dmnl(x):
 
 
 @cache.step
+@to_float
 def share_variable_res_elec_generation_vs_total():
     """
     Real Name: Share variable RES elec generation vs total
@@ -53789,6 +55496,7 @@ def table_max_extraction_gas_mohr_bg2012(x):
 
 
 @cache.step
+@to_float
 def total_cumulative_emissions_gtc():
     """
     Real Name: Total cumulative emissions GtC
@@ -57085,6 +58793,7 @@ def tpes_de_castro_phd__scen_ii(x):
 
 
 @cache.run
+@to_float
 def p_nuclear_scen_1():
     """
     Real Name: P nuclear scen 1
@@ -57101,6 +58810,7 @@ def p_nuclear_scen_1():
 
 
 @cache.run
+@to_float
 def p_nuclear_23():
     """
     Real Name: "P nuclear 2-3"
@@ -57117,6 +58827,7 @@ def p_nuclear_23():
 
 
 @cache.run
+@to_float
 def gco2e_per_gtco2e_4():
     """
     Real Name: gCO2e per GTCO2e 4
@@ -57132,6 +58843,7 @@ def gco2e_per_gtco2e_4():
 
 
 @cache.run
+@to_float
 def gco2e_per_gtco2e_3():
     """
     Real Name: gCO2e per GTCO2e 3
@@ -57147,6 +58859,7 @@ def gco2e_per_gtco2e_3():
 
 
 @cache.run
+@to_float
 def gco2e_per_gtco2e_0():
     """
     Real Name: gCO2e per GTCO2e 0
@@ -57162,6 +58875,7 @@ def gco2e_per_gtco2e_0():
 
 
 @cache.run
+@to_float
 def gco2e_per_gtco2e_1():
     """
     Real Name: gCO2e per GTCO2e 1
@@ -57177,6 +58891,7 @@ def gco2e_per_gtco2e_1():
 
 
 @cache.run
+@to_float
 def twh_per_gco2e_0():
     """
     Real Name: TWh per gCO2e 0
@@ -57192,6 +58907,7 @@ def twh_per_gco2e_0():
 
 
 @cache.step
+@to_float
 def other_liquids_required_ej():
     """
     Real Name: Other liquids required EJ
@@ -57211,6 +58927,7 @@ def other_liquids_required_ej():
 
 
 @cache.step
+@to_float
 def agricultural_land():
     """
     Real Name: Agricultural land
@@ -57227,6 +58944,7 @@ def agricultural_land():
 
 
 @cache.step
+@to_float
 def compet_agricultural_land_for_biofuels():
     """
     Real Name: Compet agricultural land for biofuels
@@ -57243,6 +58961,7 @@ def compet_agricultural_land_for_biofuels():
 
 
 @cache.step
+@to_float
 def marginal_land_for_biofuels():
     """
     Real Name: Marginal land for biofuels
@@ -57278,6 +58997,7 @@ def real_gfcf_by_sector():
 
 
 @cache.step
+@to_float
 def urr_coal():
     """
     Real Name: URR coal
@@ -57399,6 +59119,7 @@ def real_total_output_by_fuel_and_sector():
 
 
 @cache.step
+@to_float
 def fe_demand_elec_consum_twh():
     """
     Real Name: FE demand Elec consum TWh
@@ -57416,6 +59137,7 @@ def fe_demand_elec_consum_twh():
 
 
 @cache.step
+@to_float
 def fed_heatcom_ej():
     """
     Real Name: "FED Heat-com EJ"
@@ -57435,6 +59157,7 @@ def fed_heatcom_ej():
 
 
 @cache.run
+@to_float
 def initial_marginal_land_occupied_by_biofuels():
     """
     Real Name: initial marginal land occupied by biofuels
@@ -57450,6 +59173,7 @@ def initial_marginal_land_occupied_by_biofuels():
 
 
 @cache.step
+@to_float
 def ped_oil_for_heat_plants_ej():
     """
     Real Name: PED oil for Heat plants EJ
@@ -57466,6 +59190,7 @@ def ped_oil_for_heat_plants_ej():
 
 
 @cache.step
+@to_float
 def total_fe_elec_demand_twh():
     """
     Real Name: Total FE Elec demand TWh
@@ -58188,6 +59913,7 @@ def total_domestic_output_required_by_sector():
 
 
 @cache.step
+@to_float
 def rurr_unconv_oil_ej():
     """
     Real Name: RURR unconv oil EJ
@@ -58203,6 +59929,7 @@ def rurr_unconv_oil_ej():
 
 
 @cache.step
+@to_float
 def share_liquids_for_final_energy():
     """
     Real Name: share liquids for final energy
@@ -58220,6 +59947,7 @@ def share_liquids_for_final_energy():
 
 
 @cache.step
+@to_float
 def ped_liquids_ej():
     """
     Real Name: PED liquids EJ
@@ -58243,6 +59971,7 @@ def ped_liquids_ej():
 
 
 @cache.step
+@to_float
 def fed_heat_liquids_plants_ej():
     """
     Real Name: FED Heat liquids plants EJ
@@ -58315,6 +60044,7 @@ def inland_transport_variation_intensity():
 
 
 @cache.step
+@to_float
 def max_unconv_oil_growth_extraction():
     """
     Real Name: max unconv oil growth extraction
@@ -58348,6 +60078,7 @@ def max_unconv_oil_growth_extraction():
 
 
 @cache.step
+@to_float
 def fed_heatcom_nre_ej():
     """
     Real Name: "FED Heat-com NRE EJ"
@@ -58415,6 +60146,7 @@ def real_fe_consumption_by_fuel():
 
 
 @cache.step
+@to_float
 def required_fed_by_liquids_ej():
     """
     Real Name: Required FED by liquids EJ
@@ -58430,6 +60162,7 @@ def required_fed_by_liquids_ej():
 
 
 @cache.step
+@to_float
 def extraction_unconv_oil_ej():
     """
     Real Name: extraction unconv oil EJ
@@ -58464,6 +60197,7 @@ def extraction_unconv_oil_ej():
 
 
 @cache.step
+@to_float
 def demand_conv_oil_ej():
     """
     Real Name: Demand conv oil EJ
@@ -58481,6 +60215,7 @@ def demand_conv_oil_ej():
 
 
 @cache.step
+@to_float
 def max_unconv_oil_growth_extraction_ej():
     """
     Real Name: max unconv oil growth extraction EJ
@@ -58502,6 +60237,7 @@ def max_unconv_oil_growth_extraction_ej():
 
 
 @cache.step
+@to_float
 def total_fed_heatcom_ej():
     """
     Real Name: "Total FED Heat-com EJ"
@@ -58517,6 +60253,7 @@ def total_fed_heatcom_ej():
 
 
 @cache.step
+@to_float
 def urr_unconv_oil():
     """
     Real Name: URR unconv oil
@@ -58548,6 +60285,7 @@ def urr_unconv_oil():
 
 
 @cache.step
+@to_float
 def max_extraction_unconv_gas():
     """
     Real Name: max extraction unconv gas
@@ -58579,6 +60317,7 @@ def max_extraction_unconv_gas():
 
 
 @cache.step
+@to_float
 def max_extraction_unconv_oil():
     """
     Real Name: max extraction unconv oil
@@ -58610,6 +60349,7 @@ def max_extraction_unconv_oil():
 
 
 @cache.step
+@to_float
 def max_extraction_coal_ej():
     """
     Real Name: max extraction coal EJ
@@ -58641,6 +60381,7 @@ def max_extraction_coal_ej():
 
 
 @cache.step
+@to_float
 def max_extraction_conv_gas_ej():
     """
     Real Name: max extraction conv gas EJ
@@ -58676,6 +60417,7 @@ def max_extraction_conv_gas_ej():
 
 
 @cache.step
+@to_float
 def fed_heat_gas_plants_ej():
     """
     Real Name: FED Heat gas plants EJ
@@ -58691,6 +60433,7 @@ def fed_heat_gas_plants_ej():
 
 
 @cache.step
+@to_float
 def fed_heat_coal_plants_ej():
     """
     Real Name: FED Heat coal plants EJ
@@ -58706,6 +60449,7 @@ def fed_heat_coal_plants_ej():
 
 
 @cache.step
+@to_float
 def urr_conv_gas():
     """
     Real Name: URR conv gas
@@ -58772,6 +60516,7 @@ def required_final_energy_other_transport():
 
 
 @cache.step
+@to_float
 def ped_gases_for_heat_plants_ej():
     """
     Real Name: PED gases for Heat plants EJ
@@ -58788,6 +60533,7 @@ def ped_gases_for_heat_plants_ej():
 
 
 @cache.step
+@to_float
 def ped_coal_for_heat_plants_ej():
     """
     Real Name: PED coal for Heat plants EJ
@@ -59055,6 +60801,7 @@ def table_max_extraction_coal_high_mohr15(x):
 
 
 @cache.run
+@to_float
 def urr_coal_bg_mohr15():
     """
     Real Name: URR coal BG Mohr15
@@ -59070,6 +60817,7 @@ def urr_coal_bg_mohr15():
 
 
 @cache.run
+@to_float
 def urr_coal_user_defined_ej():
     """
     Real Name: URR coal User defined EJ
@@ -59085,6 +60833,7 @@ def urr_coal_user_defined_ej():
 
 
 @cache.run
+@to_float
 def urr_conv_gas_bg_mohr15():
     """
     Real Name: URR conv gas BG Mohr15
@@ -59100,6 +60849,7 @@ def urr_conv_gas_bg_mohr15():
 
 
 @cache.run
+@to_float
 def urr_conv_gas_high_mohr15():
     """
     Real Name: URR conv gas High Mohr15
@@ -59115,6 +60865,7 @@ def urr_conv_gas_high_mohr15():
 
 
 @cache.run
+@to_float
 def urr_conv_gas_low_mohr15():
     """
     Real Name: URR conv gas Low Mohr15
@@ -59130,6 +60881,7 @@ def urr_conv_gas_low_mohr15():
 
 
 @cache.run
+@to_float
 def urr_conv_gas_user_defined():
     """
     Real Name: URR conv gas User defined
@@ -59145,6 +60897,7 @@ def urr_conv_gas_user_defined():
 
 
 @cache.run
+@to_float
 def urr_total_gas_user_defined():
     """
     Real Name: URR total gas User defined
@@ -59160,6 +60913,7 @@ def urr_total_gas_user_defined():
 
 
 @cache.step
+@to_float
 def urr_unconv_gas():
     """
     Real Name: URR unconv gas
@@ -59191,6 +60945,7 @@ def urr_unconv_gas():
 
 
 @cache.run
+@to_float
 def urr_unconv_gas_bg_mohr15():
     """
     Real Name: URR unconv gas BG Mohr15
@@ -59262,6 +61017,7 @@ def table_max_extraction_conv_gas_high_mohr15(x):
 
 
 @cache.run
+@to_float
 def urr_unconv_gas_low_mohr15():
     """
     Real Name: URR unconv gas Low Mohr15
@@ -59277,6 +61033,7 @@ def urr_unconv_gas_low_mohr15():
 
 
 @cache.run
+@to_float
 def urr_coal_high15():
     """
     Real Name: URR coal High15
@@ -59292,6 +61049,7 @@ def urr_coal_high15():
 
 
 @cache.run
+@to_float
 def urr_coal_low_mohr15():
     """
     Real Name: URR coal Low Mohr15
@@ -59307,6 +61065,7 @@ def urr_coal_low_mohr15():
 
 
 @cache.run
+@to_float
 def urr_unconv_gas_high_mohr15():
     """
     Real Name: URR unconv gas High Mohr15
@@ -59322,6 +61081,7 @@ def urr_unconv_gas_high_mohr15():
 
 
 @cache.run
+@to_float
 def urr_unconv_gas_user_defined():
     """
     Real Name: URR unconv gas User defined
@@ -59351,6 +61111,7 @@ def table_max_extraction_unconv_oil_bg_mohr15(x):
 
 
 @cache.run
+@to_float
 def selection_constraint_extraction_unconv_oil():
     """
     Real Name: Selection constraint extraction unconv oil
@@ -59366,6 +61127,7 @@ def selection_constraint_extraction_unconv_oil():
 
 
 @cache.step
+@to_float
 def abundance_electricity():
     """
     Real Name: Abundance electricity
@@ -59391,6 +61153,7 @@ def abundance_electricity():
 
 
 @cache.run
+@to_float
 def p_constraint_growth_extraction_unconv_oil():
     """
     Real Name: P constraint growth extraction unconv oil
@@ -59406,6 +61169,7 @@ def p_constraint_growth_extraction_unconv_oil():
 
 
 @cache.step
+@to_float
 def extraction_unconv_oil_delayed():
     """
     Real Name: extraction unconv oil delayed
@@ -59422,6 +61186,7 @@ def extraction_unconv_oil_delayed():
 
 
 @cache.run
+@to_float
 def final_time():
     """
     Real Name: FINAL TIME
@@ -59437,6 +61202,7 @@ def final_time():
 
 
 @cache.run
+@to_float
 def initial_time():
     """
     Real Name: INITIAL TIME
@@ -59452,6 +61218,7 @@ def initial_time():
 
 
 @cache.run
+@to_float
 def saveper():
     """
     Real Name: SAVEPER
@@ -59467,6 +61234,7 @@ def saveper():
 
 
 @cache.run
+@to_float
 def time_step():
     """
     Real Name: TIME STEP
@@ -66585,6 +68353,674 @@ _ext_data_historic_coal_domestic_eu_extracted_ej = ExtData(
     {},
     _root,
     "_ext_data_historic_coal_domestic_eu_extracted_ej",
+)
+
+
+_ext_constant_current_mineral_reserves_mt = ExtConstant(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV5",
+    {"materials": ["Adhesive"]},
+    _root,
+    "_ext_constant_current_mineral_reserves_mt",
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV6", {"materials": ["Aluminium"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV7",
+    {"materials": ["Aluminium mirrors"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV8", {"materials": ["Cadmium"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV9", {"materials": ["Carbon fiber"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV10", {"materials": ["Cement"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV11", {"materials": ["Chromium"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV12", {"materials": ["Copper"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV13", {"materials": ["diesel"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV14", {"materials": ["Dy"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV15",
+    {"materials": ["Electric electronic components"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV16",
+    {"materials": ["Evacuation lines"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV17", {"materials": ["Fiberglass"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV18", {"materials": ["Foam glass"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV19", {"materials": ["Galium"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV20", {"materials": ["Glass"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV21",
+    {"materials": ["Glass reinforcing plastic"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV22", {"materials": ["gravel"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV23", {"materials": ["Indium"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV24", {"materials": ["Iron"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV25", {"materials": ["KNO3 mined"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV26", {"materials": ["Asphalt"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV27", {"materials": ["Lime"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV28", {"materials": ["Limestone"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV29", {"materials": ["Lithium"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV30", {"materials": ["Lubricant"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV31", {"materials": ["Magnesium"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV32", {"materials": ["Manganese"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV33",
+    {"materials": ["Heavy equipment"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV34", {"materials": ["Concrete"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV35", {"materials": ["Molybdenum"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV36", {"materials": ["NaNO3 mined"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV37",
+    {"materials": ["NaNO3 synthetic"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV38", {"materials": ["Neodymium"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV39", {"materials": ["Nickel"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV40",
+    {"materials": ["Over grid 15per"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV41",
+    {"materials": ["Over grid 5per"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV42", {"materials": ["Paint"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV43", {"materials": ["Lead"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV44", {"materials": ["Plastics"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV45",
+    {"materials": ["Polypropylene"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV46", {"materials": ["Rock"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV47", {"materials": ["Rock wool"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV48", {"materials": ["Sand"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV49", {"materials": ["Silicon sand"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV50",
+    {"materials": ["Silicon wafer modules"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV51", {"materials": ["Silver"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV52",
+    {"materials": ["Site preparation"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV53", {"materials": ["Tin"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV54", {"materials": ["soda ash"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV55", {"materials": ["steel"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV56",
+    {"materials": ["synthetic oil"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV57", {"materials": ["tellurium"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV58", {"materials": ["titanium"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AV59",
+    {"materials": ["titanium dioxide"]},
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV60", {"materials": ["vanadium"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV61", {"materials": ["wires"]}
+)
+
+
+_ext_constant_current_mineral_reserves_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AV62", {"materials": ["zinc"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt = ExtConstant(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY5",
+    {"materials": ["Adhesive"]},
+    _root,
+    "_ext_constant_current_mineral_resources_mt",
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY6", {"materials": ["Aluminium"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY7",
+    {"materials": ["Aluminium mirrors"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY8", {"materials": ["Cadmium"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY9", {"materials": ["Carbon fiber"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY10", {"materials": ["Cement"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY11", {"materials": ["Chromium"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY12", {"materials": ["Copper"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY13", {"materials": ["diesel"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY14", {"materials": ["Dy"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY15",
+    {"materials": ["Electric electronic components"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY16",
+    {"materials": ["Evacuation lines"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY17", {"materials": ["Fiberglass"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY18", {"materials": ["Foam glass"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY19", {"materials": ["Galium"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY20", {"materials": ["Glass"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY21",
+    {"materials": ["Glass reinforcing plastic"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY22", {"materials": ["gravel"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY23", {"materials": ["Indium"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY24", {"materials": ["Iron"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY25", {"materials": ["KNO3 mined"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY26", {"materials": ["Asphalt"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY27", {"materials": ["Lime"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY28", {"materials": ["Limestone"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY29", {"materials": ["Lithium"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY30", {"materials": ["Lubricant"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY31", {"materials": ["Magnesium"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY32", {"materials": ["Manganese"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY33",
+    {"materials": ["Heavy equipment"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY34", {"materials": ["Concrete"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY35", {"materials": ["Molybdenum"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY36", {"materials": ["NaNO3 mined"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY37",
+    {"materials": ["NaNO3 synthetic"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY38", {"materials": ["Neodymium"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY39", {"materials": ["Nickel"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY40",
+    {"materials": ["Over grid 15per"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY41",
+    {"materials": ["Over grid 5per"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY42", {"materials": ["Paint"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY43", {"materials": ["Lead"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY44", {"materials": ["Plastics"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY45",
+    {"materials": ["Polypropylene"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY46", {"materials": ["Rock"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY47", {"materials": ["Rock wool"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY48", {"materials": ["Sand"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY49", {"materials": ["Silicon sand"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY50",
+    {"materials": ["Silicon wafer modules"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY51", {"materials": ["Silver"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY52",
+    {"materials": ["Site preparation"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY53", {"materials": ["Tin"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY54", {"materials": ["soda ash"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY55", {"materials": ["steel"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY56",
+    {"materials": ["synthetic oil"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY57", {"materials": ["tellurium"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY58", {"materials": ["titanium"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx",
+    "Materials",
+    "AY59",
+    {"materials": ["titanium dioxide"]},
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY60", {"materials": ["vanadium"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY61", {"materials": ["wires"]}
+)
+
+
+_ext_constant_current_mineral_resources_mt.add(
+    "?../pymedeas_w/inputs_w.xlsx", "Materials", "AY62", {"materials": ["zinc"]}
 )
 
 
@@ -74424,49 +76860,54 @@ _ext_data_hfc_emissions_rcp_26 = ExtData(
     "50",
     "J68",
     "interpolate",
-    {"GHGs": ["HFC134a"]},
+    {"HFC type": ["HFC134a"]},
     _root,
     "_ext_data_hfc_emissions_rcp_26",
 )
 
 
 _ext_data_hfc_emissions_rcp_26.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J72", "interpolate", {"GHGs": ["HFC23"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J72", "interpolate", {"HFC type": ["HFC23"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_26.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J76", "interpolate", {"GHGs": ["HFC32"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J76", "interpolate", {"HFC type": ["HFC32"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_26.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J80", "interpolate", {"GHGs": ["HFC125"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J80", "interpolate", {"HFC type": ["HFC125"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_26.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J84", "interpolate", {"GHGs": ["HFC143a"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J84", "interpolate", {"HFC type": ["HFC143a"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_26.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J88", "interpolate", {"GHGs": ["HFC152a"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J88", "interpolate", {"HFC type": ["HFC152a"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_26.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J92", "interpolate", {"GHGs": ["HFC227ea"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J92", "interpolate", {"HFC type": ["HFC227ea"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_26.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J96", "interpolate", {"GHGs": ["HFC245ca"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J96", "interpolate", {"HFC type": ["HFC245ca"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_26.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J100", "interpolate", {"GHGs": ["HFC4310mee"]}
+    "?inputs_eu.xlsx",
+    "Climate",
+    "50",
+    "J100",
+    "interpolate",
+    {"HFC type": ["HFC4310mee"]},
 )
 
 
@@ -74476,49 +76917,54 @@ _ext_data_hfc_emissions_rcp_45 = ExtData(
     "50",
     "J69",
     "interpolate",
-    {"GHGs": ["HFC134a"]},
+    {"HFC type": ["HFC134a"]},
     _root,
     "_ext_data_hfc_emissions_rcp_45",
 )
 
 
 _ext_data_hfc_emissions_rcp_45.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J73", "interpolate", {"GHGs": ["HFC23"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J73", "interpolate", {"HFC type": ["HFC23"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_45.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J77", "interpolate", {"GHGs": ["HFC32"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J77", "interpolate", {"HFC type": ["HFC32"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_45.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J81", "interpolate", {"GHGs": ["HFC125"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J81", "interpolate", {"HFC type": ["HFC125"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_45.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J85", "interpolate", {"GHGs": ["HFC143a"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J85", "interpolate", {"HFC type": ["HFC143a"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_45.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J89", "interpolate", {"GHGs": ["HFC152a"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J89", "interpolate", {"HFC type": ["HFC152a"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_45.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J93", "interpolate", {"GHGs": ["HFC227ea"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J93", "interpolate", {"HFC type": ["HFC227ea"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_45.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J97", "interpolate", {"GHGs": ["HFC245ca"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J97", "interpolate", {"HFC type": ["HFC245ca"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_45.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J101", "interpolate", {"GHGs": ["HFC4310mee"]}
+    "?inputs_eu.xlsx",
+    "Climate",
+    "50",
+    "J101",
+    "interpolate",
+    {"HFC type": ["HFC4310mee"]},
 )
 
 
@@ -74528,49 +76974,54 @@ _ext_data_hfc_emissions_rcp_60 = ExtData(
     "50",
     "J70",
     "interpolate",
-    {"GHGs": ["HFC134a"]},
+    {"HFC type": ["HFC134a"]},
     _root,
     "_ext_data_hfc_emissions_rcp_60",
 )
 
 
 _ext_data_hfc_emissions_rcp_60.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J74", "interpolate", {"GHGs": ["HFC23"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J74", "interpolate", {"HFC type": ["HFC23"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_60.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J78", "interpolate", {"GHGs": ["HFC32"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J78", "interpolate", {"HFC type": ["HFC32"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_60.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J82", "interpolate", {"GHGs": ["HFC125"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J82", "interpolate", {"HFC type": ["HFC125"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_60.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J86", "interpolate", {"GHGs": ["HFC143a"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J86", "interpolate", {"HFC type": ["HFC143a"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_60.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J90", "interpolate", {"GHGs": ["HFC152a"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J90", "interpolate", {"HFC type": ["HFC152a"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_60.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J94", "interpolate", {"GHGs": ["HFC227ea"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J94", "interpolate", {"HFC type": ["HFC227ea"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_60.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J98", "interpolate", {"GHGs": ["HFC245ca"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J98", "interpolate", {"HFC type": ["HFC245ca"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_60.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J102", "interpolate", {"GHGs": ["HFC4310mee"]}
+    "?inputs_eu.xlsx",
+    "Climate",
+    "50",
+    "J102",
+    "interpolate",
+    {"HFC type": ["HFC4310mee"]},
 )
 
 
@@ -74664,49 +77115,54 @@ _ext_data_hfc_emissions_rcp_85 = ExtData(
     "50",
     "J71",
     "interpolate",
-    {"GHGs": ["HFC134a"]},
+    {"HFC type": ["HFC134a"]},
     _root,
     "_ext_data_hfc_emissions_rcp_85",
 )
 
 
 _ext_data_hfc_emissions_rcp_85.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J75", "interpolate", {"GHGs": ["HFC23"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J75", "interpolate", {"HFC type": ["HFC23"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_85.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J79", "interpolate", {"GHGs": ["HFC32"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J79", "interpolate", {"HFC type": ["HFC32"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_85.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J83", "interpolate", {"GHGs": ["HFC125"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J83", "interpolate", {"HFC type": ["HFC125"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_85.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J87", "interpolate", {"GHGs": ["HFC143a"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J87", "interpolate", {"HFC type": ["HFC143a"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_85.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J91", "interpolate", {"GHGs": ["HFC152a"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J91", "interpolate", {"HFC type": ["HFC152a"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_85.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J95", "interpolate", {"GHGs": ["HFC227ea"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J95", "interpolate", {"HFC type": ["HFC227ea"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_85.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J99", "interpolate", {"GHGs": ["HFC245ca"]}
+    "?inputs_eu.xlsx", "Climate", "50", "J99", "interpolate", {"HFC type": ["HFC245ca"]}
 )
 
 
 _ext_data_hfc_emissions_rcp_85.add(
-    "?inputs_eu.xlsx", "Climate", "50", "J103", "interpolate", {"GHGs": ["HFC4310mee"]}
+    "?inputs_eu.xlsx",
+    "Climate",
+    "50",
+    "J103",
+    "interpolate",
+    {"HFC type": ["HFC4310mee"]},
 )
 
 

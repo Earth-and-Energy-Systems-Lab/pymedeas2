@@ -13,6 +13,9 @@ results. It can also run independently, in which case the results must be import
 from a csv file. In both cases, only two curves can be represetnted at the same
 time.
 """
+import os
+import sys
+import warnings
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -22,15 +25,14 @@ from matplotlib.figure import Figure
 from tkinter.filedialog import askopenfilename
 from tkinter import messagebox, Button
 import numpy as np
-import os
+
 from configparser import ConfigParser
 import re
 from itertools import cycle
 
 import pandas as pd
 import tkinter as tk
-import sys
-import warnings
+
 warnings.filterwarnings("ignore")
 
 
@@ -110,12 +112,12 @@ class Plot_tool(tk.Frame):
         self.init_window()
 
     def init_window(self):
-                
+
         self.pack(fill=tk.BOTH, expand=1)
 
         menubar = tk.Menu(self.master)
         self.master.config(menu=menubar)
-        
+
         filemenu = tk.Menu(menubar)
         filemenu.add_command(label="Load data", command=self.open_file)
         filemenu.add_command(label="Exit", command=lambda: on_closing(self))
@@ -204,7 +206,7 @@ class Plot_tool(tk.Frame):
     def replace_let_by_x(stri):
         for let in '\"\'-+\%?&\/=\(\)': stri = stri.replace(let, 'x')
         return stri
-        
+
     def open_file(self):
         ext = (("csv", "*.*csv"), ("all files", "*.*"))
         filename = askopenfilename(initialdir="./", title="Open file", filetypes=ext)
@@ -291,9 +293,9 @@ class Plot_tool(tk.Frame):
 
         self.subplot.clear()
         self.canvas.draw()
-        
+
         # image name will be named after the plotted variable name
-        self.canvas.get_default_filename = lambda: self.column 
+        self.canvas.get_default_filename = lambda: self.column
 
         title = self.define_title(self.column)
         title = title + '\n({})'.format(self.column) if title else self.column

@@ -22,10 +22,20 @@
             "region": "austria",
             "parent": "europe",
             "parent_model": "pymedeas_eu",
-            "model_py": "pymedeas_at.py",
-            "folder": "pymedeas_at",
-            "scenario inputs": "scen_at.xlsx",
-            "historic inputs": "inputs_at.xlsx"
+            "model_py": "pymedeas_aut.py",
+            "folder": "pymedeas_aut",
+            "scenario inputs": "scen_aut.xlsx",
+            "historic inputs": "inputs_aut.xlsx"
+        },
+        {
+            "region": "bulgaria",
+            "parent": "europe",
+            "parent_model": "pymedeas_eu",
+            "model_py": "pymedeas_bgr.py",
+            "folder": "pymedeas_bgr",
+            "scenario inputs": "scen_bgr.xlsx",
+            "historic inputs": "inputs_bgr.xlsx"
         }
+
     ]
 }

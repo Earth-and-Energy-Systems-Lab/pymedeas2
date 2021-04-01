@@ -10019,22 +10019,6 @@ HFC type:
 	~	Hydrofluorocarbons.
 	|
 
-Layers:
-	(Layer1-Layer4)
-	~
-	~	Deep ocean layers.
-	|
-
-upper:
-	(Layer1-Layer3) -> lower
-	~
-	~		|
-
-lower:
-	(Layer2-Layer4) -> upper
-	~
-	~		|
-
 common rr minerals variation alt techn[materials]=
 	IF THEN ELSE(Time<start year P common rr minerals alt techn, Historic improvement recycling rates minerals\
 		[materials], P common rr minerals variation alt techn)
@@ -16392,10 +16376,6 @@ new PES biogas=
 	~	New annual primary energy supply of biogas.
 	|
 
-final sources1:
-	electricity, heat, liquids,gases, solids
-	~
-	~		|
 
 constrain rr improv for alt techn per mineral[materials]=
 	IF THEN ELSE(recycling rates minerals alt techn[materials]<Max recycling rates minerals\
@@ -34440,6 +34420,9 @@ Annual_GHG_emissions_COMP
 22:Unit,Units
 22:Week,Weeks
 22:Year,Years
+30:?../../scenarios/scen_eu.xlsx=Z:\CREAF\dev\pymedeas\scenarios\scen_eu.xlsx
+30:?../pymedeas_w/inputs_w.xlsx=Z:\CREAF\dev\pymedeas\models\pymedeas_w\inputs_w.xlsx
+30:?inputs_eu.xlsx=inputs_eu.xlsx
 13:Wv130_Py
 23:0
 18:MEDEAS_v134.vsc
@@ -34466,11 +34449,10 @@ Annual_GHG_emissions_COMP
 6:blue water
 6:clean pumped water
 6:CO2
-6:electricity
 6:coal
+6:electricity
 6:HV liq
 6:hydro
-6:Layer1
 6:liq 4wheels
 6:RCP26
 6:solar heat

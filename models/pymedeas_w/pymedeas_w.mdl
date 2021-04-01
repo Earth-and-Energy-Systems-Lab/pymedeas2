@@ -31971,6 +31971,8 @@ Annual_GHG_emissions_COMP
 22:Unit,Units
 22:Week,Weeks
 22:Year,Years
+30:?../../scenarios/scen_w.xlsx=Z:\CREAF\dev\pymedeas\scenarios\scen_w.xlsx
+30:?inputs_w.xlsx=inputs_w.xlsx
 23:0
 15:0,0,0,0,0,0
 19:5,0

@@ -388,24 +388,9 @@ def update_model_component(model, comp, value):
         Value to return by the function.
 
     """
-    if isinstance(value, pd.Series):
-        value = series2lookup(value)
+    exec("def {}(x): return {}".format(comp, value))
+    exec("model.components.{} = {}".format(comp, comp))
 
-    if isinstance(value, str):
-        if "lookup" in value:
-            exec("def {}(x): return {}".format(comp, value))
-        else:
-            exec("def {}(): return {}".format(comp, value))
-        # execution of the new function and replacing it
-        exec("model.components.{} = {}".format(comp, comp))
-
-    elif isinstance(value, (int, float, xr.DataArray)):
-        setattr(model.components, comp, lambda: value)
-
-    else:
-        raise ValueError('Provide a valid data structure')
-
-    return model
 
 def load_model(model_py):
     """
@@ -418,7 +403,8 @@ def load_model(model_py):
 
     Returs
     ------
-    pysd.Model class
+    model: pysd.Model
+        Model object.
 
     """
     return pysd.load(os.path.join(model_py), initialize=False)
@@ -426,15 +412,27 @@ def load_model(model_py):
 
 def run(config, model, run_params, return_columns):
     """
+    Runs the model
 
-    :param config: (dict) configuration parameters
-    :param model: (pysd.model) pysd model object
-    :param run_params: (dict) simulation parameters
-    :param return_columns: () variables that are to be written in the outputs file
-    :return: (pandas.DataFrame) result of the simulation
+    Parameters
+    ----------
+    config: dict
+        Configuration parameters.
+    model: pysd.Model
+        Model object.
+    run_params: dict
+        Simulation parameters.
+    return_columns: list
+        Name of the variables that are to be written in the outputs file.
+
+    Returns
+    -------
+    stocks: pandas.DataFrame
+        Result of the simulation.
+
     """
-
-    # create default file name for the results file (if the user didn't pass any)
+    # create default file name for the results file
+    # (if the user didn't pass any)
     if not config.get("fname"):
         config["fname"] = 'results_{}_{}_{}_{}'.format(
             config['scenario_sheet'],
@@ -455,10 +453,11 @@ def run(config, model, run_params, return_columns):
                                          round(run_params['final_time']),
                                          run_params['time_step'],
                                          round(run_params['time_step']*365),
-                                         os.path.join(config['out_folder'], config["fname"] + ".csv"))
+                                         os.path.join(config['out_folder'],
+                                                      config["fname"] + ".csv")
+                                        ))
 
-    )
-    if config['region'] != 'world':
+    if config['parent']:
         print("- External data file: {}\n".format(config['extDataFilePath']))
     else:
         print("\n")
@@ -469,14 +468,19 @@ def run(config, model, run_params, return_columns):
         return_columns = None
 
     if not config['return_timestep'] is None:
-        return_timestamps = np.arange(run_params['initial_time'], run_params['final_time'] + 0.01,
+        return_timestamps = np.arange(run_params['initial_time'],
+                                      run_params['final_time'] + 0.01,
                                       float(config['return_timestep']))
     else:
         return_timestamps = None
 
     print("Starting simulation.")
     sim_start_time = time.time()
-    stocks = model.run(run_params, return_columns=return_columns, return_timestamps=return_timestamps, progress=config['progress'])
+    stocks = model.run(
+        run_params,
+        return_columns=return_columns,
+        return_timestamps=return_timestamps,
+        progress=config['progress'])
     sim_time = time.time() - sim_start_time
     log.info(f"Total simulation time: {(sim_time/60.):.2f} minutes")
     stocks.index.name = 'time'
@@ -510,7 +514,6 @@ def user_select_data_file_gui(region):
 
 
 def user_select_data_file_headless(region):
-
     """
     Asks the user to select the csv file name from which to import data
     required to run the EU model in std output. It looks only in the
@@ -525,9 +528,8 @@ def user_select_data_file_headless(region):
     -------
     filename: str
         Filename of the file to load and extract data from
+
     """
-
-
     files_list = os.listdir(os.path.join(os.getcwd(), region))
 
     csv_list = [file for file in files_list if file.endswith('.csv')]
@@ -655,7 +657,7 @@ def from_provided_external_file(config, file_paths):
                 'The file {} cannot be found'.format(file_paths.get(path)))
 
 
-def load_external_data(config, subscript_dict):
+def load_external_data(config, subscript_dict, namespace):
     """
     Load outputs from parent models.
 
@@ -680,29 +682,41 @@ def load_external_data(config, subscript_dict):
     for parent in config['parent']:
         df = pd.read_csv(config['extDataFilePath'][parent['name']], index_col=0).T
         df.index = pd.to_numeric(df.index)
+
         imports = []
         for import_var, subs in parent['input_vars'].items():
+            vensim_var =\
+                list(namespace.keys())[list(namespace.values()).index(import_var)]
             if subs:
                 # find all columns with subscripts
-                imports += [col for col in df.columns
-                            if col.startswith(import_var+"[")]
+                cols = [(import_var, col) for col in df.columns
+                        if col.startswith(import_var+"[")]
+                if not cols:
+                    # try to find cols by vensim name
+                    cols = [(import_var, col) for col in df.columns
+                            if col.startswith(vensim_var+"[")]
+                if not cols:
+                    raise NameError(f"Variable {import_var} is not in the results file"
+                                    + f" of the {parent['name']} model")
+                imports += cols
                 # add to the dictionary with the dimensions to merge
                 xarrayDict[import_var] = [[], subs]
             else:
-                imports.append(import_var)
-
-        for var in imports:
-            try:
-                serie = df[var]
-            except:
-                raise NameError(f"Variable {var} is not in the results file"
-                                + f" of the {parent['name']} model")
-            else:
-                if '[' in var:
-                    names = re.split('\[|\]| , |, | ,|,', var)[:-1]
-                    xarrayDict[names[0]][0].append((series2lookup(serie), names[1:]))
+                if import_var in df.columns:
+                    imports.append((import_var, import_var))
+                elif vensim_var in df.columns:
+                    imports.append((import_var, vensim_var))
                 else:
-                    dataDict[var] = series2lookup(serie)
+                    raise NameError(f"Variable {import_var} is not in the results file"
+                                    + f" of the {parent['name']} model")
+
+        for py_var, df_var in imports:
+            if '[' in df_var:
+                xarrayDict[py_var][0].append(
+                    (series2lookup(df[df_var]),
+                    re.split('\[|\]| , |, | ,|,', df_var)[1:-1]))
+            else:
+                dataDict[py_var] = series2lookup(df[df_var])
 
     for var, value in xarrayDict.items():
         dataDict[var] = merge_series(value, subscript_dict)
@@ -725,6 +739,10 @@ def series2lookup(serie):
         Formatted series.
 
     """
+    if np.all(serie.values==serie.values[0]):
+        # if all values are equal no need to interpolate
+        return str(serie.values[0])
+
     dates = ", ".join(serie.index.astype(str))
     values = ", ".join(map(str, serie.values.tolist()))
     return "functions.lookup(x, [{}], [{}])".format(dates, values)

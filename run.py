@@ -33,11 +33,12 @@ def main(config, run_params):
     if config['region'] != 'world':
         create_external_data_files_paths(config)
         update_pars = load_external_data(config,
-                                         model.components._subscript_dict)
+                                         model.components._subscript_dict,
+                                         model.components._namespace)
         for key, val in update_pars.items():
             # update components from parents
             config['update_params'].update({key: val})
-            model = update_model_component(model, key, val)
+            update_model_component(model, key, val)
 
     # list of columns that need to be present in the output file
     return_columns = select_model_outputs(config, model)

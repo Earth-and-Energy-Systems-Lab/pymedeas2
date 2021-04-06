@@ -137,125 +137,41 @@ def get_initial_user_input(config, run_params):
     return
 
 
-def store_results_csv(result, config, return_cols):
+def store_results_csv(result, config):
 
     """
-    Separates between xarrays and pandas Series in the output of pysd
-    Transforms all xarrays into series, with names equal to the name of the
-    function and it's index
-    Concatenates all results in a dataframe (final_results) which is returned
-    Stores a pickle of the final results
+    Stores the final results as csv.
 
-    :param result: output from simulation
-    :return: final_results (pd.DataFrame)
+    Parameters
+    ----------
+    result: pandas.DataFrame
+        Output of the simulation
+    config: dict
+        Configuration parameters.
+
+    Returns
+    -------
+    results: pandas.DataFrame
+        Transposed result file.
+
     """
-
-    # separate between variables represented as pandas Series and those that are xarrays
-    xarrays_names = [name for name in result.columns
-                     if name in return_cols
-                     if any([isinstance(result[name].loc[i], xr.core.dataarray.DataArray) for i in result.index])]
-
-    series_names = [x for x in result.columns if x in return_cols if x not in xarrays_names]
-
-    # df_xarrays is a df that will contain all xarrays disaggregated by indexes, in the form of time-series
-    df_xarrays = convert_xarray_df_to_series_df(result[xarrays_names])
-
-    # results_df is a df with only the model outputs that are time series
-    results_df = result[series_names].astype(float)
-
-    # concatenating the original df containing only time-series with the new df created from disaggregated xarrays
-    final_results = pd.concat([results_df, df_xarrays], axis=1)
-
     file_path_csv = _results_naming(config, config["fname"], 'csv')
 
     # storing results to csv file
-    final_results.transpose().to_csv(file_path_csv)
+    result.transpose().to_csv(file_path_csv)
     log.info('Simulation results file is located in {}'.format(file_path_csv))
 
-    try:
-        with open(os.path.join(config['folder'], 'last_output_conf.txt'), 'w') as f:
-            f.write(';'.join(final_results.columns))
-    except FileNotFoundError:
-        raise
+    with open(os.path.join(config['folder'], 'last_output_conf.txt'), 'w') as f:
+        f.write(';'.join(result.columns))
 
-    if final_results.isna().any().any():
-        nan_vars = final_results.columns[final_results.isna().any()].tolist()
-        log.warning("There are NaN's in the timeseries of the following variables\n\n: {}\n\n, which might indicate convergence issues, try decreasing the time step".format("\n".join(nan_vars)))
+    if result.isna().any().any():
+        nan_vars = result.columns[result.isna().any()].tolist()
+        log.warning(
+            "There are NaN's in the timeseries of the following variables\n\n:"
+            + " {}\n\n, which might indicate convergence issues, try "
+            + "decreasing the time step".format("\n".join(nan_vars)))
 
-    return final_results
-
-
-def convert_xarray_df_to_series_df(results_xarrays):
-    """
-    This function accepts a dataframe which contains xarrays in each column and time, and converts it into another
-    dataframe with each column being a one-dimensional time-series of the original xarray
-    """
-
-    df_xarrays = pd.DataFrame(index=results_xarrays.index)
-
-    # converting each individual xarray into time series
-    for col in results_xarrays.columns:
-
-        # b is a dataframe that will be concatenated at each time with the preceeding times
-        b = pd.DataFrame()
-
-        dates_nans = {}
-
-        # it may be that for some dates it's an xarray and for some others a float or other. This happens when the
-        # initial condition is set as a int or float, but in the following dates it is an xarray. If that happens, a
-        # debug warning is sent
-        for date in results_xarrays.index:
-            a = results_xarrays[col].loc[date]
-            if isinstance(a, xr.core.dataarray.DataArray):
-                new_data = a.to_dataframe(name=str(date)).astype(float).T
-                b = pd.concat([b, new_data], axis=0)
-            elif isinstance(a, (int, np.ndarray)) or np.isnan(a):
-                log.debug(f"The initial condition for variable {col} should be an xarray instead of a float")
-                dates_nans[date] = a  # store the date and the value for
-                # later use
-            else:
-                log.warning("Unknown type {} for {}".format(type(a), a))
-
-        # fix the names of each column, separating subindexes with brackets and adding the name of the variable first
-        b = fix_subindex_names_in_xarrays_to_df(b, col)
-
-        if dates_nans:
-            for date, value in dates_nans.items():
-                b.loc[str(date)] = [value] * len(b.columns)
-                b.sort_index(inplace=True, ascending=True)
-
-        df_xarrays = pd.concat([df_xarrays, b], axis=1)
-
-    # removing nans
-    df_xarrays = df_xarrays.dropna()
-
-    # converting index values from strings to floats
-    df_xarrays.index = list(map(float, df_xarrays.index))
-
-    return df_xarrays
-
-
-def fix_subindex_names_in_xarrays_to_df(b, variable_name):
-    """
-    # this loop fixes the names of the columns, which are the sub-index or sub-indexes
-    returns the new dataframe with fixed column names
-    """
-
-    new_cols = []
-
-    for x in b.columns:
-        if isinstance(x, tuple):  # two or more sub-indexes are tuples. Here converted to comma separated strings
-            x = ', '.join(x)
-
-        if '[' not in x:  # adding the name of the original variable name plus the sub-indexes between brackets
-            new_cols.append(variable_name + '[' + x + ']')
-        else:
-            new_x = x.replace(']', ',') + x + ']'
-            new_cols.append(new_x)
-
-    b.columns = new_cols
-
-    return b
+    return result
 
 
 def _results_naming(config, base_name, fmt):
@@ -480,7 +396,8 @@ def run(config, model, run_params, return_columns):
         run_params,
         return_columns=return_columns,
         return_timestamps=return_timestamps,
-        progress=config['progress'])
+        progress=config['progress'],
+        flatten_output=True)
     sim_time = time.time() - sim_start_time
     log.info(f"Total simulation time: {(sim_time/60.):.2f} minutes")
     stocks.index.name = 'time'

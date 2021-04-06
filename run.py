@@ -46,7 +46,7 @@ def main(config, run_params):
     # run the simulation
     stock = run(config, model, run_params, return_columns)
 
-    result_df = store_results_csv(stock, config, return_columns)
+    result_df = store_results_csv(stock, config)
 
     # running the plot tool
     if config['plot']:

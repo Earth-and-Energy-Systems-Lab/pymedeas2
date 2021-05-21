@@ -13,24 +13,39 @@ import warnings
 from datetime import datetime
 
 import plot_tool
-from pytools.tools import *
+from pytools.tools import get_initial_user_input,\
+                          update_paths,\
+                          load_model,\
+                          select_scenario_sheet,\
+                          create_external_data_files_paths,\
+                          load_external_data,\
+                          update_model_component,\
+                          select_model_outputs,\
+                          run,\
+                          store_results_csv
 
 warnings.filterwarnings("ignore")
 
 
-def main(config, run_params):
+def main(config, run_params, model):
     """
     Main function for running the model
+
+    Parameters
+    ----------
+    config: dict
+        Configuration parameters.
+    run_params: dict
+        Simulation parameters.
+    model: pysd.Model
+        Model object.
+
     """
-
-    # loading the model object
-    model = load_model(os.path.join(config['folder'], config['model_py']))
-
     # select scenario sheet
     select_scenario_sheet(model, config['scenario_sheet'])
 
     # updating from World model and others, used in regional models
-    if config['region'] != 'world':
+    if config['region'] != 'pymedeas_w':
         create_external_data_files_paths(config)
         update_pars = load_external_data(config,
                                          model.components._subscript_dict,
@@ -68,7 +83,7 @@ if __name__ == "__main__":
                   'final_time': 2050}
 
     # default configuration parameters
-    config = {'region': 'world',
+    config = {'region': 'pymedeas_w',
               'datetime': datetime.now().strftime("%d_%m_%Y_%H_%M"),
               'silent': False,
               'verbose': False,
@@ -87,4 +102,7 @@ if __name__ == "__main__":
     get_initial_user_input(config, run_params)
     update_paths(config)
 
-    main(config, run_params)
+    # loading the model object
+    model = load_model(os.path.join(config['folder'], config['model_py']))
+
+    main(config, run_params, model)

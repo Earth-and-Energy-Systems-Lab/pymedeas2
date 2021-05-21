@@ -38664,15 +38664,15 @@ $192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|-1--1--1|96,96,5
 6:gas 4wheels
 6:gases
 6:geot heat
-6:Glass
-6:Glass reinforcing plastic
-6:gravel
 6:gray water
 6:green water
 6:heat
+6:hib 4wheels
+6:Glass
+6:Glass reinforcing plastic
+6:gravel
 6:Heavy equipment
 6:HFC134a
-6:hib 4wheels
 6:HV gas
 6:HV hib
 6:HV liq

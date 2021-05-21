@@ -302,6 +302,7 @@ class Plot_tool(tk.Frame):
         title = title + '\n({})'.format(self.column) if title else self.column
         self.subplot.set_title(title)
         self.subplot.set_xlabel('Year')
+        self.subplot.grid()
 
         ylabel = self.define_units(self.column)
 
@@ -317,8 +318,12 @@ class Plot_tool(tk.Frame):
                 nt = len(np.where(obj.time_updated < 2014)[0])
 
                 try:
-                    self.subplot.plot(obj.time_updated[0:nt], obj.py_dict[self.column][0:nt], marker=m, markersize=3, label='Historical ' + obj.scenario)
-                    self.subplot.plot(obj.time_updated[nt - 1:], obj.py_dict[self.column][nt - 1:], marker=m, markersize=5, label='Projected ' + obj.scenario)
+                    if any(obj.time_updated < 2014):
+                        nt = len(np.where(obj.time_updated < 2014)[0])
+                        self.subplot.plot(obj.time_updated[0:nt], obj.py_dict[self.column][0:nt], marker=m, markersize=3, label='Historical ' + obj.scenario)
+                        self.subplot.plot(obj.time_updated[nt - 1:], obj.py_dict[self.column][nt - 1:], marker=m, markersize=5, label='Projected ' + obj.scenario)
+                    else:
+                        self.subplot.plot(obj.time_updated, obj.py_dict[self.column], marker=m, markersize=5, label='Projected ' + obj.scenario)
                 except KeyError:
                     print('No data available for {}'.format(self.column))
                 else:
@@ -404,7 +409,7 @@ def main(folder, df, scenario=''):
 
 if __name__ == '__main__':
 
-    config = {'region': 'world'}
+    config = {'region': 'pymedeas_w'}
 
     # load configuration file
     if len(sys.argv) == 2:

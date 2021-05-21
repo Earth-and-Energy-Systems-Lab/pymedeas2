@@ -38,6 +38,9 @@ def update_paths(config):
     config: dict
         Configuration parameters. config['region'] must be defined.
 
+    Returns
+    -------
+    None
     """
     # load configuration file
     f = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
@@ -45,24 +48,24 @@ def update_paths(config):
     dict_models = json.load(f)
 
     if config['region'] not in dict_models:
-        raise ValueError("Invalid region name " + config['region'],
-                         "Available regions are:\n\t" + ", ".join([
-                         model['region'] for model in dict_models['models']
-                         ]))
+        raise ValueError(
+            "Invalid region name " + config['region']
+            + "\nAvailable regions are:\n\t" + ", ".join(
+                list(dict_models)))
+
     cwd = os.getcwd()
     model = dict_models[config['region']]
     config['model_py'] = model['model_py']
-    config['folder'] =  os.path.join(cwd, model['folder'])
+    config['folder'] = os.path.join(cwd, model['folder'])
     config['scenario_inputs'] = model['scenario inputs']
     config['historic_inputs'] = model['historic inputs']
-    config['out_folder'] =  os.path.join(cwd, model['out_folder'])
-    config['out_default'] =  model['out_default']
+    config['out_folder'] = os.path.join(cwd, model['out_folder'])
+    config['out_default'] = model['out_default']
     config['parent'] = [
         {'name': par['name'],
          'folder': dict_models[par['name']]['out_folder'],
          'input_vars': par['input_vars']}
         for par in model['parent']]
-
 
 
 def get_initial_user_input(config, run_params):
@@ -77,6 +80,9 @@ def get_initial_user_input(config, run_params):
     run_params: dict
         Simulation parameters.
 
+    Returns
+    -------
+    None
     """
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hspbt:f:r:x:u:n:e:m:")
@@ -84,19 +90,27 @@ def get_initial_user_input(config, run_params):
         for opt, arg in opts:
             if opt == '-h':
                 print(
-                    'Run run.py module followed by any of the following options:\n'
+                    'Run run.py module followed by any of the following '
+                    'options:\n'
                     '-h --> help menu \n'
                     '-m --> model to use\n'
                     '-f --> final year of simulation (default is 2050) \n'
-                    '-t --> time step of simulation (in years) (default is 0.03125 years) \n'
-                    '-r --> time step of simulation result (in years) (default is 1 value per year) \n'
+                    '-t --> time step of simulation (in years) (default '
+                    'is 0.03125 years) \n'
+                    '-r --> time step of simulation result (in years) '
+                    '(default is 1 value per year) \n'
                     '-s --> silent mode \n'
                     '-b --> headless mode  (only CLI, no GUI) \n'
                     '-p --> opens the plot gui after simulation \n'
-                    '-x --> scenario name (names should be the same as the input file tabs) \n'
-                    '-n --> name of the results file (default is results_{scenario name}_{initial date}_{final date}_{time-step}.csv)\n'
-                    '-e --> file from which to import external data (only applies for the EU model) \n\n'
-                    'Use keyword argunemts to set model parameter values, or use the inputs file (e.g. eroi=5)\n'
+                    '-x --> scenario name (names should be the same as '
+                    'the input file tabs) \n'
+                    '-n --> name of the results file (default is '
+                    'results_{scenario name}_{initial date}_{final date}'
+                    '_{time-step}.csv)\n'
+                    '-e --> file from which to import external data (only'
+                    ' applies for the EU model) \n\n'
+                    'Use keyword argunemts to set model parameter values,'
+                    ' or use the inputs file (e.g. eroi=5)\n'
                       )
 
                 sys.exit()
@@ -134,11 +148,8 @@ def get_initial_user_input(config, run_params):
                   + "to see the description of available parameters)")
         sys.exit()
 
-    return
-
 
 def store_results_csv(result, config):
-
     """
     Stores the final results as csv.
 
@@ -161,7 +172,8 @@ def store_results_csv(result, config):
     result.transpose().to_csv(file_path_csv)
     log.info('Simulation results file is located in {}'.format(file_path_csv))
 
-    with open(os.path.join(config['folder'], 'last_output_conf.txt'), 'w') as f:
+    with open(os.path.join(config['folder'], 'last_output_conf.txt'),
+              'w') as f:
         f.write(';'.join(result.columns))
 
     if result.isna().any().any():
@@ -201,27 +213,60 @@ def _results_naming(config, base_name, fmt):
 
 
 def select_model_outputs(config, model):
+    """
+    Select model outputs. If the simulation was call using silent mode
+    the outputs from the last simulation will be used. Otherwise, the user
+    will be asked via terminal the outputs to include.
 
+    Some default outputs will be always returned by the model, see the
+    models.json for the list.
 
-    # default outputs are plot by default in the plot tool or required
-    # by nested models. They depend on the choosen region see the list
-    # in models.json
+    Parameters
+    ----------
+    config: dict
+        Configuration parameters.
+    model: pysd.Model
+        Model object.
+
+    Returns
+    -------
+    return_columns: list
+        List of columns to return by the simulation.
+
+    """
+    # avoid variables containing this words
+    avoid_vars = ["historic", "delay", "next", "variation", "leontief",
+                  "ia_matrix", "year", "initial", "aux", "policy",
+                  "future",
+                  ] + config['out_default']
 
     # returning cache.step objects
-    sorted_list = sorted(list(set(model._default_return_columns(run=False))))
+    var_list = sorted([
+        model.components._namespace[var_name]
+        for var_name in model._default_return_columns(run=False)
+        if all([a_var not in model.components._namespace[var_name]
+                for a_var in avoid_vars])
+        ])
 
     if config['silent']:
         col_ind = 'r'
     else:
-        for num, var_name in enumerate(sorted_list, 1):
+        for num, var_name in enumerate(var_list, 1):
             print('{}: {}'.format(num, var_name))
 
-        message ="\n\nPlease select the desired output variables:" \
-                 "\n - 0 for all model variables" \
-                 "\n - comma separated numbers from the list above for individual variables (e.g.: 1,4,5)" \
-                 "\n - r for the same variables of the last simulation" \
-                 "\n - + followed by the variable number to add individual variables to the last simulation output (e.g. +5,+19,+21)" \
-                 "\n\n Write your choice here:"
+        print('\nDefault saved variables:')
+        for var_name in config['out_default']:
+            print('\t{}'.format(var_name))
+
+        message =\
+            "\n\nPlease select the desired output variables:" \
+            "\n - 0 for all model variables" \
+            "\n - comma separated numbers from the list above for "\
+            "individual variables (e.g.: 1,4,5)" \
+            "\n - r for the same variables of the last simulation" \
+            "\n - + followed by the variable number to add individual "\
+            "variables to the last simulation output (e.g. +5,+19,+21)" \
+            "\n\n Write your choice here:"
 
         while True:
             col_ind = input(message)
@@ -237,13 +282,14 @@ def select_model_outputs(config, model):
             col_vars = [x for x in col_ind_split if not x.isdigit()]
 
             try:
-                return_columns_set = set(list(map(sorted_list.__getitem__, col_indices)) + col_vars)
+                return_columns_set = set(list(map(var_list.__getitem__,
+                                                  col_indices)) + col_vars)
             except IndexError:
                 log.warning('\t\tWrong numerical index, try again...')
                 continue
 
             # check if the variable names are correct
-            if return_columns_set.issubset(sorted_list):
+            if return_columns_set.issubset(var_list):
                 break
             else:
                 log.warning('Wrong variable name, try again...')
@@ -251,30 +297,37 @@ def select_model_outputs(config, model):
     col_indices = [int(x) - 1 for x in col_ind_split if x.isdigit()]
     col_vars = [x for x in col_ind_split if not x.isdigit()]
 
-    return_columns_set = set(list(map(sorted_list.__getitem__, col_indices)) + col_vars)
+    return_columns_set = set(list(map(var_list.__getitem__, col_indices))
+                             + col_vars)
 
     if -1 in col_indices:
-        return_columns = sorted_list
+        return_columns = var_list
 
     elif 'r' in col_vars:
         try:
-            with open(os.path.join(config['folder'], 'last_output_conf.txt'), 'r', encoding='utf-8') as f:
-                return_columns = sorted([x.strip().split('[')[0] for x in f.readline().split(";")])
-        except:
+            with open(os.path.join(config['folder'], 'last_output_conf.txt'),
+                      'r', encoding='utf-8') as f:
+                return_columns = sorted([x.strip().split('[')[0]
+                                         for x in f.readline().split(";")])
+        except FileNotFoundError:
             log.warning("no last configuration, take all vars")
-            return_columns = sorted_list
+            return_columns = var_list
         else:
             log.info('The number and type of output variables of the current '
-                     'simulation will be the same as in the previous one.\nIf '
-                     'you want to change the number of outputs please remove the'
-                     ' "-s" (silent mode) from the options when you run a simulation')
+                     'simulation will be the same as in the previous one.'
+                     '\nIf you want to change the number of outputs please'
+                     ' remove the "-s" (silent mode) from the options when'
+                     ' you run a simulation')
 
     elif col_ind.lstrip().startswith('+'):
         try:
-            with open(os.path.join(config['folder'], 'last_output_conf.txt'), 'r', encoding='utf-8') as f:
-                return_columns_set.update([x.strip().split('[')[0] for x in f.readline().split(";")])
-        except:
-            log.warning("There is no previous simulation available, taking only the given variables instead")
+            with open(os.path.join(config['folder'], 'last_output_conf.txt'),
+                      'r', encoding='utf-8') as f:
+                return_columns_set.update([x.strip().split('[')[0]
+                                           for x in f.readline().split(";")])
+        except FileNotFoundError:
+            log.warning("There is no previous simulation available, "
+                        "taking only the given variables instead")
         return_columns = sorted(list(return_columns_set))
 
     else:
@@ -283,7 +336,8 @@ def select_model_outputs(config, model):
     # adding the default variables to the choice of the user
     return_columns = list(set(return_columns + config['out_default']))
 
-    with open(os.path.join(config['folder'], 'last_output_conf.txt'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(config['folder'], 'last_output_conf.txt'),
+              'w', encoding='utf-8') as f:
         f.write(";".join(return_columns))
 
     return return_columns
@@ -303,9 +357,25 @@ def update_model_component(model, comp, value):
     value: pd.series, str
         Value to return by the function.
 
+    Returns
+    -------
+    None
+
     """
-    exec("def {}(x): return {}".format(comp, value))
-    exec("model.components.{} = {}".format(comp, comp))
+    if isinstance(value, pd.Series):
+        value = series2lookup(value)
+
+    if isinstance(value, str):
+        # execution of the new function
+        if "lookup" in value:
+            exec("def {}(x): return {}".format(comp, value))
+        else:
+            exec("def {}(): return {}".format(comp, value))
+
+        exec("model.components.{} = {}".format(comp, comp))
+
+    elif isinstance(value, (int, float, xr.DataArray)):
+        setattr(model.components, comp, lambda: value)
 
 
 def load_model(model_py):
@@ -371,7 +441,7 @@ def run(config, model, run_params, return_columns):
                                          round(run_params['time_step']*365),
                                          os.path.join(config['out_folder'],
                                                       config["fname"] + ".csv")
-                                        ))
+                                         ))
 
     if config['parent']:
         print("- External data file: {}\n".format(config['extDataFilePath']))
@@ -454,7 +524,7 @@ def user_select_data_file_headless(region):
     if csv_list:
         val = input(
             "\nPlease write the number associated with the results file of the"
-            + " {} model from which you  wish to import  data:\n\t".format(region)
+            + f" {region} model from which you  wish to import data:\n\t"
             + "\n\t".join("{}: {}".format(i, j)
                           for i, j in enumerate(csv_list, 0))
             + "\n\n here ->")
@@ -520,10 +590,10 @@ def create_external_data_files_paths(config):
                 # it won't open a graphical window to select the file
                 # but let you chose the file from CLI
                 for parent in config['parent']:
-                    file_paths[parent['name']] =\
-                    os.path.join(
+                    file_paths[parent['name']] = os.path.join(
                         os.getcwd(), parent['folder'],
-                        user_select_data_file_headless(parent['folder']))
+                        user_select_data_file_headless(parent['folder'])
+                        )
 
         else:
             if config['extDataFname']:
@@ -597,7 +667,8 @@ def load_external_data(config, subscript_dict, namespace):
     xarrayDict = {}
 
     for parent in config['parent']:
-        df = pd.read_csv(config['extDataFilePath'][parent['name']], index_col=0).T
+        df = pd.read_csv(config['extDataFilePath'][parent['name']],
+                         index_col=0).T
         df.index = pd.to_numeric(df.index)
 
         imports = []
@@ -613,8 +684,9 @@ def load_external_data(config, subscript_dict, namespace):
                     cols = [(import_var, col) for col in df.columns
                             if col.startswith(vensim_var+"[")]
                 if not cols:
-                    raise NameError(f"Variable {import_var} is not in the results file"
-                                    + f" of the {parent['name']} model")
+                    raise NameError(
+                        f"Variable {import_var} is not in the results file"
+                        + f" of the {parent['name']} model")
                 imports += cols
                 # add to the dictionary with the dimensions to merge
                 xarrayDict[import_var] = [[], subs]
@@ -624,14 +696,16 @@ def load_external_data(config, subscript_dict, namespace):
                 elif vensim_var in df.columns:
                     imports.append((import_var, vensim_var))
                 else:
-                    raise NameError(f"Variable {import_var} is not in the results file"
-                                    + f" of the {parent['name']} model")
+                    raise NameError(
+                        f"Variable {import_var} is not in the results file"
+                        + f" of the {parent['name']} model")
 
         for py_var, df_var in imports:
             if '[' in df_var:
-                xarrayDict[py_var][0].append(
-                    (series2lookup(df[df_var]),
-                    re.split('\[|\]| , |, | ,|,', df_var)[1:-1]))
+                xarrayDict[py_var][0].append((
+                    series2lookup(df[df_var]),
+                    re.split('\[|\]| , |, | ,|,', df_var)[1:-1]
+                    ))
             else:
                 dataDict[py_var] = series2lookup(df[df_var])
 
@@ -656,10 +730,6 @@ def series2lookup(serie):
         Formatted series.
 
     """
-    if np.all(serie.values==serie.values[0]):
-        # if all values are equal no need to interpolate
-        return str(serie.values[0])
-
     dates = ", ".join(serie.index.astype(str))
     values = ", ".join(map(str, serie.values.tolist()))
     return "functions.lookup(x, [{}], [{}])".format(dates, values)
@@ -683,6 +753,7 @@ def merge_series(series, subscript_dict):
     -------
     str
         Merged series.
+
     """
     subs = [serie[1] for serie in series[0]]
     values = [serie[0] for serie in series[0]]
@@ -690,7 +761,8 @@ def merge_series(series, subscript_dict):
 
     # merge series, similar to what pysd builder does
     for i, subs_i in enumerate(subs):
-        coords = pysd.utils.make_coord_dict(subs_i, subscript_dict, terse=False)
+        coords = pysd.utils.make_coord_dict(subs_i, subscript_dict,
+                                            terse=False)
         coords = {new_dim: coords[dim] for new_dim, dim in zip(dims, coords)}
         values[i] = f"xr.DataArray({values[i]}, {coords}, {list(coords)})"
     return 'xrmerge([%s])' % (', '.join(values))

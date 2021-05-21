@@ -55,25 +55,30 @@ def main(config, run_params, model):
             config['update_params'].update({key: val})
             update_model_component(model, key, val)
 
-    # list of columns that need to be present in the output file
-    return_columns = select_model_outputs(config, model)
+    if config['type'] != 'make_hist':
+        # list of columns that need to be present in the output file
+        return_columns = select_model_outputs(config, model)
+        # run the simulation
+        stock = run(config, model, run_params, return_columns)
 
-    # run the simulation
-    stock = run(config, model, run_params, return_columns)
+        result_df = store_results_csv(stock, config)
 
-    result_df = store_results_csv(stock, config)
-
-    # running the plot tool
-    if config['plot']:
-        if not config['headless']:
-            plot_tool.main(config['folder'], result_df,
-                           config['scenario_sheet'])
-        else:
-            print(
-                '\nWe prevented the plot GUI from popping up, since you are in '
-                'headless mode. To prevent this message from showing up again,'
-                ' please either remove the -p (plot) or -b (headless) from the'
-                ' simulation options.\n')
+        # running the plot tool
+        if config['plot']:
+            if not config['headless']:
+                plot_tool.main(config['folder'], result_df,
+                               config['scenario_sheet'])
+            else:
+                print(
+                    '\nWe prevented the plot GUI from popping up, since'
+                    ' you are in headless mode. To prevent this message'
+                    ' from showing up again, please either remove the '
+                    '-p (plot) or -b (headless) from the simulation '
+                    'options.\n')
+    else:
+        return_columns = select_model_outputs(config, model, select_all=True)
+        stock = run(config, model, run_params, return_columns)
+        stock.transpose().to_csv((config['folder'], 'initial.csv'))
 
 
 if __name__ == "__main__":
@@ -96,6 +101,7 @@ if __name__ == "__main__":
               'plot': False,
               'run_params': run_params,
               'update_params': {},
+              'type': 'load_hist',
               'fname': None}
 
     # get command line parameters and update paths

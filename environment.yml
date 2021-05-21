@@ -6,7 +6,7 @@ dependencies:
   - numpy
   - pandas
   - scipy
-  - xarray
+  - xarray=0.17.0
   - regex
   - openpyxl
   - matplotlib

@@ -6333,7 +6333,7 @@ def max_yearly_change_h():
     return _ext_constant_max_yearly_change_h()
 
 
-@cache.step
+@cache.run
 def year_energy_intensity_target():
     """
     Real Name: year energy intensity target
@@ -6347,9 +6347,23 @@ def year_energy_intensity_target():
     """
     return if_then_else(
         choose_energy_intensity_target_method() == 1,
-        lambda: 2020,
+        lambda: start_year_modification_ei(),
         lambda: year_change_pct_energy_intensity_target(),
     )
+
+@cache.run
+def start_year_modification_ei():
+    """
+    Real Name: start year modification ei
+    Original Eqn: 2020
+    Units: Year
+    Limits: (None, None)
+    Type: constant
+    Subs: None
+
+    Year over which the energy intensities target is calculated
+    """
+    return 2020
 
 
 @cache.step
@@ -58297,6 +58311,7 @@ _sample_if_true_effective_radiative_forcing = SampleIfTrue(
     lambda: time() <= time_to_commit_rf(),
     lambda: total_radiative_forcing(),
     lambda: total_radiative_forcing(),
+    "_sample_if_true_effective_radiative_forcing"
 )
 
 

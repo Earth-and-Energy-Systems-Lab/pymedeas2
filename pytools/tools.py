@@ -8,6 +8,7 @@ import sys
 import time
 
 import re
+import pickle
 import json
 import pandas as pd
 import numpy as np
@@ -85,7 +86,7 @@ def get_initial_user_input(config, run_params):
     None
     """
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hspbt:f:r:x:u:n:e:m:")
+        opts, args = getopt.getopt(sys.argv[1:], "hspbt:f:r:x:u:n:e:m:T:")
 
         for opt, arg in opts:
             if opt == '-h':
@@ -104,6 +105,8 @@ def get_initial_user_input(config, run_params):
                     '-p --> opens the plot gui after simulation \n'
                     '-x --> scenario name (names should be the same as '
                     'the input file tabs) \n'
+                    '-T --> simulation type, if hist is passed historical'
+                    ' values will be also simulated \n'
                     '-n --> name of the results file (default is '
                     'results_{scenario name}_{initial date}_{final date}'
                     '_{time-step}.csv)\n'
@@ -133,6 +136,8 @@ def get_initial_user_input(config, run_params):
                 config["extDataFname"] = arg.split(",")
             elif opt in ("-n", "--fname"):
                 config["fname"] = arg.split(".")[0]
+            elif opt in ("-T", "--type"):
+                config["type"] = arg
             elif opt in ("-b"):
                 config["headless"] = True
             else:
@@ -212,7 +217,7 @@ def _results_naming(config, base_name, fmt):
     return new_path
 
 
-def select_model_outputs(config, model):
+def select_model_outputs(config, model, select_all=False):
     """
     Select model outputs. If the simulation was call using silent mode
     the outputs from the last simulation will be used. Otherwise, the user
@@ -250,6 +255,8 @@ def select_model_outputs(config, model):
 
     if config['silent']:
         col_ind = 'r'
+    elif select_all:
+        col_ind = '0'
     else:
         for num, var_name in enumerate(var_list, 1):
             print('{}: {}'.format(num, var_name))
@@ -417,6 +424,16 @@ def run(config, model, run_params, return_columns):
         Result of the simulation.
 
     """
+    if config['type'] == 'make_hist':
+        config['run_params']['final_time'] = 2019
+        initial_file = os.path.join(config['folder'], 'initial.pickle')
+        result_file_name = initial_file + ', '\
+            + os.path.join(config['folder'], 'initial.csv')
+
+    elif config['type'] == 'load_hist':
+        initial_file = os.path.join(config['folder'], 'initial.pickle')
+        config['run_params']['initial_time'] = 2019
+
     # create default file name for the results file
     # (if the user didn't pass any)
     if not config.get("fname"):
@@ -425,6 +442,10 @@ def run(config, model, run_params, return_columns):
             config['run_params']['initial_time'],
             config['run_params']['final_time'],
             config['run_params']['time_step'])
+
+    if config['type'] != 'make_hist':
+        result_file_name = os.path.join(config['out_folder'],
+                                        config["fname"] + ".csv")
 
     print(
         "\n\nSimulation parameters:\n"
@@ -439,8 +460,7 @@ def run(config, model, run_params, return_columns):
                                          round(run_params['final_time']),
                                          run_params['time_step'],
                                          round(run_params['time_step']*365),
-                                         os.path.join(config['out_folder'],
-                                                      config["fname"] + ".csv")
+                                         result_file_name
                                          ))
 
     if config['parent']:
@@ -460,17 +480,54 @@ def run(config, model, run_params, return_columns):
     else:
         return_timestamps = None
 
+    print("Initializing the model.")
+    model.initialize()
+
+    if config['type'] == 'load_hist':
+        # load starting point
+        timem, load_elements = pickle.load(open(initial_file, "rb"))
+        model.time.update(timem)
+        for element, vals in load_elements.items():
+            getattr(model.components, element).state = vals['state']
+            if 'pipe' in vals:
+                getattr(model.components, element).pointer = vals['pointer']
+                getattr(model.components, element).pipe = vals['pipe']
+
     print("Starting simulation.")
     sim_start_time = time.time()
     stocks = model.run(
         run_params,
         return_columns=return_columns,
         return_timestamps=return_timestamps,
+        initial_condition='current',
         progress=config['progress'],
         flatten_output=True)
     sim_time = time.time() - sim_start_time
     log.info(f"Total simulation time: {(sim_time/60.):.2f} minutes")
+
     stocks.index.name = 'time'
+
+    if config['type'] == 'make_hist':
+        # create pickle
+        elements = {}
+        for element in model._stateful_elements:
+            if hasattr(element, 'pipe'):
+                elements[element.py_name] = {'state': element.state,
+                                             'pipe': element.pipe,
+                                             'pointer': element.pointer}
+            else:
+                elements[element.py_name] = {'state': element.state}
+        pickle.dump((model.time(), elements),
+                    open(initial_file, "wb"))
+
+    elif config['type'] == 'load_hist':
+        hist_df = pd.read_csv(
+            os.path.join(config['folder'], 'initial.csv'),
+            index_col=0).transpose()
+        hist_df = hist_df[stocks.columns]
+        for year in list(hist_df.index)[:-1]:
+            stocks.loc[float(year)] = hist_df.loc[year]
+        stocks.sort_index(inplace=True)
 
     return stocks
 

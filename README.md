@@ -39,17 +39,17 @@ NOTE: If you already had Anaconda installed on your Mac and then upgraded the OS
 3. At this point, you should be able to run a default simulation with the following command:
 
     ```console
-    python run.py -x bau -f 2050 -p
+    python run.py -x BAU -p
     ```
 4. By default world model will be run, you can use *-m* option to select another model:
 
     ```console
-    python run.py -m pymedeas_eu -x bau -f 2050 -p
+    python run.py -m pymedeas_eu -x BAU -p
     ```
     or
 
     ```console
-    python run.py -m pymedeas_aut -x bau -f 2050 -p
+    python run.py -m pymedeas_aut -x BAU -p
     ```
 NOTE: to see all user options and default parameter values, run:
 

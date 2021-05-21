@@ -22,6 +22,7 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
+from matplotlib.ticker import MultipleLocator
 from tkinter.filedialog import askopenfilename
 from tkinter import messagebox, Button
 import numpy as np
@@ -64,6 +65,7 @@ class Plot_tool(tk.Frame):
          ]))
 
     markers = ["o", "v", "<", "^", "1", "s", "p", "P", "h", "X", "D"]
+    line_styles = ['--', '-.', ':']
 
     def __init__(self, master, data=None, results_folder=None, scenario=''):
         tk.Frame.__init__(self, master)  # esto define self.master
@@ -210,7 +212,7 @@ class Plot_tool(tk.Frame):
 
     def open_file(self):
         ext = (("csv", "*.*csv"), ("all files", "*.*"))
-        filename = askopenfilename(initialdir="./", title="Open file", filetypes=ext)
+        filename = askopenfilename(initialdir="./outputs", title="Open file", filetypes=ext)
 
         if filename.split('.')[-1] == "csv":
             datafile = Data(self.config, filename=filename)
@@ -293,6 +295,7 @@ class Plot_tool(tk.Frame):
     def draw(self):
 
         self.subplot.clear()
+        self.historical = False
         self.canvas.draw()
 
         # image name will be named after the plotted variable name
@@ -301,8 +304,10 @@ class Plot_tool(tk.Frame):
         title = self.define_title(self.column)
         title = title + '\n({})'.format(self.column) if title else self.column
         self.subplot.set_title(title)
+        self.subplot.xaxis.set_minor_locator(MultipleLocator(5))
         self.subplot.set_xlabel('Year')
-        self.subplot.grid()
+        self.subplot.grid(which='major')
+        self.subplot.grid(which='minor', linestyle=':', alpha=0.5)
 
         ylabel = self.define_units(self.column)
 
@@ -310,20 +315,37 @@ class Plot_tool(tk.Frame):
             self.subplot.set_ylabel(ylabel, rotation='vertical')
 
         mark = cycle(Plot_tool.markers)
+        n_sim = len(self.data_container)
+        mark_size = cycle(np.linspace(7, 4, n_sim))
+        k = -1
 
         if not self.column.lower().startswith('-'):
 
             for obj in self.data_container:
+                k +=1
                 m = next(mark)  # updates the line marker
-                nt = len(np.where(obj.time_updated < 2014)[0])
+                ms = next(mark_size)
+                mark_on = obj.time_updated[np.mod(obj.time_updated, n_sim) == k ] 
 
                 try:
-                    if any(obj.time_updated < 2014):
-                        nt = len(np.where(obj.time_updated < 2014)[0])
-                        self.subplot.plot(obj.time_updated[0:nt], obj.py_dict[self.column][0:nt], marker=m, markersize=3, label='Historical ' + obj.scenario)
-                        self.subplot.plot(obj.time_updated[nt - 1:], obj.py_dict[self.column][nt - 1:], marker=m, markersize=5, label='Projected ' + obj.scenario)
+                    if any(obj.time_updated < 2019):
+                        nt = len(np.where(obj.time_updated < 2019)[0])
+                        if not self.historical:
+                            self.subplot.plot(obj.time_updated[0:nt],
+                                              obj.py_dict[self.column][0:nt],
+                                              label='Historical', color='black')
+                            self.historical = True
+                        self.subplot.plot(obj.time_updated[nt-1:],
+                                          obj.py_dict[self.column][nt-1:],
+                                          marker=m, markersize=ms,
+                                          markevery=(k, n_sim),
+                                          label=obj.scenario, alpha=0.8)
                     else:
-                        self.subplot.plot(obj.time_updated, obj.py_dict[self.column], marker=m, markersize=5, label='Projected ' + obj.scenario)
+                        self.subplot.plot(obj.time_updated,
+                                          obj.py_dict[self.column],
+                                          marker=m, markersize=ms,
+                                          markevery=(k, n_sim),
+                                          label=obj.scenario, alpha=0.8)
                 except KeyError:
                     print('No data available for {}'.format(self.column))
                 else:
@@ -359,7 +381,7 @@ class Data:
             self._load_data_file()
 
         if isinstance(self.df, pd.DataFrame) and not self.filename:
-            self.scenario = scenario.capitalize()
+            self.scenario = scenario
             self._df_to_dict()
 
         print('Data loaded for scenario {}'.format(self.scenario))
@@ -386,7 +408,7 @@ class Data:
 
         self.py_dict = self.df.to_dict(orient='list')
         self.time_updated = self.df.index.values
-        self.scenario = scen_name.capitalize()
+        self.scenario = scen_name
 
     def _df_to_dict(self):
         """convert a pandas dataframe to a dictionary"""

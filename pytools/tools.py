@@ -25,7 +25,6 @@ from tkinter.filedialog import askopenfilename
 from pytools.logger.logger import log
 
 # PySD imports for replaced functions
-from pysd.py_backend import functions
 from pysd.py_backend.utils import xrmerge
 
 
@@ -86,7 +85,7 @@ def get_initial_user_input(config, run_params):
     None
     """
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hspbt:f:r:x:u:n:e:m:T:")
+        opts, args = getopt.getopt(sys.argv[1:], "hspbt:f:r:x:u:n:e:m:")
 
         for opt, arg in opts:
             if opt == '-h':
@@ -105,8 +104,6 @@ def get_initial_user_input(config, run_params):
                     '-p --> opens the plot gui after simulation \n'
                     '-x --> scenario name (names should be the same as '
                     'the input file tabs) \n'
-                    '-T --> simulation type, if hist is passed historical'
-                    ' values will be also simulated \n'
                     '-n --> name of the results file (default is '
                     'results_{scenario name}_{initial date}_{final date}'
                     '_{time-step}.csv)\n'
@@ -136,8 +133,6 @@ def get_initial_user_input(config, run_params):
                 config["extDataFname"] = arg.split(",")
             elif opt in ("-n", "--fname"):
                 config["fname"] = arg.split(".")[0]
-            elif opt in ("-T", "--type"):
-                config["type"] = arg
             elif opt in ("-b"):
                 config["headless"] = True
             else:
@@ -248,7 +243,7 @@ def select_model_outputs(config, model, select_all=False):
     # returning cache.step objects
     var_list = sorted([
         model.components._namespace[var_name]
-        for var_name in model._default_return_columns(run=False)
+        for var_name in model._default_return_columns(which='step')
         if all([a_var not in model.components._namespace[var_name]
                 for a_var in avoid_vars])
         ])
@@ -350,41 +345,6 @@ def select_model_outputs(config, model, select_all=False):
     return return_columns
 
 
-def update_model_component(model, comp, value):
-    """
-    Creates a new function to add to the model.components
-    method from pysd
-
-    Parameters
-    ----------
-    model: pysd.Model
-        Model object.
-    comp: str
-        Name of the component that needs to be changed.
-    value: pd.series, str
-        Value to return by the function.
-
-    Returns
-    -------
-    None
-
-    """
-    if isinstance(value, pd.Series):
-        value = series2lookup(value)
-
-    if isinstance(value, str):
-        # execution of the new function
-        if "lookup" in value:
-            exec("def {}(x): return {}".format(comp, value))
-        else:
-            exec("def {}(): return {}".format(comp, value))
-
-        exec("model.components.{} = {}".format(comp, comp))
-
-    elif isinstance(value, (int, float, xr.DataArray)):
-        setattr(model.components, comp, lambda: value)
-
-
 def load_model(model_py):
     """
     Load model with PySD
@@ -424,16 +384,6 @@ def run(config, model, run_params, return_columns):
         Result of the simulation.
 
     """
-    if config['type'] == 'make_hist':
-        config['run_params']['final_time'] = 2019
-        initial_file = os.path.join(config['folder'], 'initial.pickle')
-        result_file_name = initial_file + ', '\
-            + os.path.join(config['folder'], 'initial.csv')
-
-    elif config['type'] == 'load_hist':
-        initial_file = os.path.join(config['folder'], 'initial.pickle')
-        config['run_params']['initial_time'] = 2019
-
     # create default file name for the results file
     # (if the user didn't pass any)
     if not config.get("fname"):
@@ -443,9 +393,8 @@ def run(config, model, run_params, return_columns):
             config['run_params']['final_time'],
             config['run_params']['time_step'])
 
-    if config['type'] != 'make_hist':
-        result_file_name = os.path.join(config['out_folder'],
-                                        config["fname"] + ".csv")
+    result_file_name = os.path.join(config['out_folder'],
+                                    config["fname"] + ".csv")
 
     print(
         "\n\nSimulation parameters:\n"
@@ -480,54 +429,18 @@ def run(config, model, run_params, return_columns):
     else:
         return_timestamps = None
 
-    print("Initializing the model.")
-    model.initialize()
-
-    if config['type'] == 'load_hist':
-        # load starting point
-        timem, load_elements = pickle.load(open(initial_file, "rb"))
-        model.time.update(timem)
-        for element, vals in load_elements.items():
-            getattr(model.components, element).state = vals['state']
-            if 'pipe' in vals:
-                getattr(model.components, element).pointer = vals['pointer']
-                getattr(model.components, element).pipe = vals['pipe']
-
     print("Starting simulation.")
     sim_start_time = time.time()
     stocks = model.run(
         run_params,
         return_columns=return_columns,
         return_timestamps=return_timestamps,
-        initial_condition='current',
         progress=config['progress'],
         flatten_output=True)
     sim_time = time.time() - sim_start_time
     log.info(f"Total simulation time: {(sim_time/60.):.2f} minutes")
 
     stocks.index.name = 'time'
-
-    if config['type'] == 'make_hist':
-        # create pickle
-        elements = {}
-        for element in model._stateful_elements:
-            if hasattr(element, 'pipe'):
-                elements[element.py_name] = {'state': element.state,
-                                             'pipe': element.pipe,
-                                             'pointer': element.pointer}
-            else:
-                elements[element.py_name] = {'state': element.state}
-        pickle.dump((model.time(), elements),
-                    open(initial_file, "wb"))
-
-    elif config['type'] == 'load_hist':
-        hist_df = pd.read_csv(
-            os.path.join(config['folder'], 'initial.csv'),
-            index_col=0).transpose()
-        hist_df = hist_df[stocks.columns]
-        for year in list(hist_df.index)[:-1]:
-            stocks.loc[float(year)] = hist_df.loc[year]
-        stocks.sort_index(inplace=True)
 
     return stocks
 
@@ -746,7 +659,7 @@ def load_external_data(config, subscript_dict, namespace):
                         + f" of the {parent['name']} model")
                 imports += cols
                 # add to the dictionary with the dimensions to merge
-                xarrayDict[import_var] = [[], subs]
+                xarrayDict[import_var] = {'subs': subs, 'cols': []}
             else:
                 if import_var in df.columns:
                     imports.append((import_var, import_var))
@@ -759,70 +672,21 @@ def load_external_data(config, subscript_dict, namespace):
 
         for py_var, df_var in imports:
             if '[' in df_var:
-                xarrayDict[py_var][0].append((
-                    series2lookup(df[df_var]),
-                    re.split('\[|\]| , |, | ,|,', df_var)[1:-1]
-                    ))
+                # Create 0 dims xarrays
+                dims = xarrayDict[py_var]['subs']
+                coords = re.split('\[|\]| , |, | ,|,', df_var)[1:-1]
+                coords = {dim:[coord] for (dim, coord) in zip(dims, coords)}
+                df[df_var] = df[df_var].apply(xr.DataArray, args=(coords, dims))
+                xarrayDict[py_var]['cols'].append(df_var)
             else:
-                dataDict[py_var] = series2lookup(df[df_var])
+                dataDict[py_var] = df[df_var]
 
-    for var, value in xarrayDict.items():
-        dataDict[var] = merge_series(value, subscript_dict)
+        for py_var in xarrayDict:
+            # merge xarrays to create a pandas.Series of xarray.DataArray
+            dataDict[py_var] = df[xarrayDict[py_var]['cols']].apply(
+                xrmerge, axis=1)
 
     return dataDict
-
-
-def series2lookup(serie):
-    """
-    Transformas a pandas DataFrame to a formatted lookup.
-
-    Parameters
-    ----------
-    serie: pd.DataFrame
-        Series to convert to a lookup.
-
-    Returns
-    -------
-    str
-        Formatted series.
-
-    """
-    dates = ", ".join(serie.index.astype(str))
-    values = ", ".join(map(str, serie.values.tolist()))
-    return "functions.lookup(x, [{}], [{}])".format(dates, values)
-
-
-def merge_series(series, subscript_dict):
-    """
-    Merge series of subscripted variables.
-
-    Parameters
-    ----------
-    series: list
-        List of tuuple with the series lookup expression and the
-        subscripts list.
-
-    subscript_dict: dict
-        Dictionary describing the possible dimensions of the
-        variable's subscripts
-
-    Returns
-    -------
-    str
-        Merged series.
-
-    """
-    subs = [serie[1] for serie in series[0]]
-    values = [serie[0] for serie in series[0]]
-    dims = series[1]
-
-    # merge series, similar to what pysd builder does
-    for i, subs_i in enumerate(subs):
-        coords = pysd.utils.make_coord_dict(subs_i, subscript_dict,
-                                            terse=False)
-        coords = {new_dim: coords[dim] for new_dim, dim in zip(dims, coords)}
-        values[i] = f"xr.DataArray({values[i]}, {coords}, {list(coords)})"
-    return 'xrmerge([%s])' % (', '.join(values))
 
 
 def select_scenario_sheet(model, scen_sheet_name):

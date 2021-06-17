@@ -19,7 +19,6 @@ from pytools.tools import get_initial_user_input,\
                           select_scenario_sheet,\
                           create_external_data_files_paths,\
                           load_external_data,\
-                          update_model_component,\
                           select_model_outputs,\
                           run,\
                           store_results_csv
@@ -53,32 +52,29 @@ def main(config, run_params, model):
         for key, val in update_pars.items():
             # update components from parents
             config['update_params'].update({key: val})
-            update_model_component(model, key, val)
+            # TODO pass this dict to run and let PySD update the values
 
-    if config['type'] != 'make_hist':
-        # list of columns that need to be present in the output file
-        return_columns = select_model_outputs(config, model)
-        # run the simulation
-        stock = run(config, model, run_params, return_columns)
+    config['update_params'].update(run_params)
 
-        result_df = store_results_csv(stock, config)
+    # list of columns that need to be present in the output file
+    return_columns = select_model_outputs(config, model)
+    # run the simulation
+    stock = run(config, model, config['update_params'], return_columns)
 
-        # running the plot tool
-        if config['plot']:
-            if not config['headless']:
-                plot_tool.main(config['folder'], result_df,
-                               config['scenario_sheet'])
-            else:
-                print(
-                    '\nWe prevented the plot GUI from popping up, since'
-                    ' you are in headless mode. To prevent this message'
-                    ' from showing up again, please either remove the '
-                    '-p (plot) or -b (headless) from the simulation '
-                    'options.\n')
-    else:
-        return_columns = select_model_outputs(config, model, select_all=True)
-        stock = run(config, model, run_params, return_columns)
-        stock.transpose().to_csv((config['folder'], 'initial.csv'))
+    result_df = store_results_csv(stock, config)
+
+    # running the plot tool
+    if config['plot']:
+        if not config['headless']:
+            plot_tool.main(config['folder'], result_df,
+                           config['scenario_sheet'])
+        else:
+            print(
+                '\nWe prevented the plot GUI from popping up, since'
+                ' you are in headless mode. To prevent this message'
+                ' from showing up again, please either remove the '
+                '-p (plot) or -b (headless) from the simulation '
+                'options.\n')
 
 
 if __name__ == "__main__":
@@ -101,7 +97,6 @@ if __name__ == "__main__":
               'plot': False,
               'run_params': run_params,
               'update_params': {},
-              'type': 'load_hist',
               'fname': None}
 
     # get command line parameters and update paths

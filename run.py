@@ -56,10 +56,20 @@ def main(config, run_params, model):
 
     config['update_params'].update(run_params)
 
-    # list of columns that need to be present in the output file
-    return_columns = select_model_outputs(config, model)
+    if not config['return_columns']:
+        # list of columns that need to be present in the output file
+        config['return_columns'] = select_model_outputs(config, model)
+    elif config['return_columns'][0] in ['all', 'default']:
+        config['return_columns'] = select_model_outputs(
+            config, model, config['return_columns'][0])
+
     # run the simulation
-    stock = run(config, model, config['update_params'], return_columns)
+    stock = run(
+        config,
+        model,
+        config['update_params'],
+        config['return_columns']
+        )
 
     result_df = store_results_csv(stock, config)
 
@@ -79,25 +89,24 @@ def main(config, run_params, model):
 
 if __name__ == "__main__":
     # default simulation parameters
-    run_params = {'time_step': 0.03125,
-                  'initial_time': 1995,
-                  'final_time': 2050}
+    # None values are given in argparser.py
+    run_params = {'initial_time': 1995,
+                  'time_step': None,
+                  'final_time': None}
 
     # default configuration parameters
-    config = {'region': 'pymedeas_w',
-              'datetime': datetime.now().strftime("%d_%m_%Y_%H_%M"),
-              'silent': False,
-              'verbose': False,
-              'headless': False,
-              'extDataFname': '',
-              'extDataFilePath': '',
-              'return_timestep': 1.0,  # results will be stored every year
-              'scenario_sheet': 'BAU',
-              'progress': True,
-              'plot': False,
+    config = {'region': None,
+              'silent': None,
+              'headless': None,
+              'extDataFname': None,
+              'return_timestep': None,
+              'scenario_sheet': None,
+              'plot': None,
+              'fname': None,
+              'return_columns': None,
               'run_params': run_params,
-              'update_params': {},
-              'fname': None}
+              'progress': True,
+              'datetime': datetime.now().strftime("%d_%m_%Y_%H_%M")}
 
     # get command line parameters and update paths
     get_initial_user_input(config, run_params)

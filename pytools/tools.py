@@ -8,7 +8,6 @@ import sys
 import time
 
 import re
-import pickle
 import json
 import pandas as pd
 import numpy as np
@@ -16,7 +15,7 @@ import xarray as xr
 import pysd
 
 # imports to read command line
-import getopt
+from .argparser import parser
 
 # imports for GUI
 from tkinter import Tk
@@ -41,6 +40,7 @@ def update_paths(config):
     Returns
     -------
     None
+
     """
     # load configuration file
     f = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
@@ -83,70 +83,19 @@ def get_initial_user_input(config, run_params):
     Returns
     -------
     None
+
     """
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "hspbt:f:r:x:u:n:e:m:")
+    options = parser.parse_args(sys.argv[1:])
 
-        for opt, arg in opts:
-            if opt == '-h':
-                print(
-                    'Run run.py module followed by any of the following '
-                    'options:\n'
-                    '-h --> help menu \n'
-                    '-m --> model to use\n'
-                    '-f --> final year of simulation (default is 2050) \n'
-                    '-t --> time step of simulation (in years) (default '
-                    'is 0.03125 years) \n'
-                    '-r --> time step of simulation result (in years) '
-                    '(default is 1 value per year) \n'
-                    '-s --> silent mode \n'
-                    '-b --> headless mode  (only CLI, no GUI) \n'
-                    '-p --> opens the plot gui after simulation \n'
-                    '-x --> scenario name (names should be the same as '
-                    'the input file tabs) \n'
-                    '-n --> name of the results file (default is '
-                    'results_{scenario name}_{initial date}_{final date}'
-                    '_{time-step}.csv)\n'
-                    '-e --> file from which to import external data (only'
-                    ' applies for the EU model) \n\n'
-                    'Use keyword argunemts to set model parameter values,'
-                    ' or use the inputs file (e.g. eroi=5)\n'
-                      )
+    for param in ['time_step', 'final_time']:
+        run_params[param] = getattr(options, param)
 
-                sys.exit()
+    for param in config:
+        if config[param] is None:
+            config[param] = getattr(options, param)
 
-            elif opt in ("-s", "--silent"):
-                config["silent"] = True
-            elif opt in ("-m", "--model", "--region"):
-                config["region"] = arg
-            elif opt in ("-f", "--final_time"):
-                run_params["final_time"] = int(arg)
-            elif opt in ("-t", "--time_step"):
-                run_params["time_step"] = float(arg)
-            elif opt in ("-r", "--return_timestep"):
-                config["return_timestep"] = arg
-            elif opt in ("-p", "--plot"):
-                config["plot"] = True
-            elif opt in ("-x", "--scen"):
-                config["scenario_sheet"] = arg
-            elif opt in ("-e", "--ext"):
-                config["extDataFname"] = arg.split(",")
-            elif opt in ("-n", "--fname"):
-                config["fname"] = arg.split(".")[0]
-            elif opt in ("-b"):
-                config["headless"] = True
-            else:
-                pass
-
-        for arg in args:
-            par = arg.split('=')
-            d = {par[0]: par[1]}
-            config["update_params"].update(d)
-
-    except getopt.GetoptError:
-        log.error("Wrong parameter definition (run 'python run.py -h'"
-                  + "to see the description of available parameters)")
-        sys.exit()
+    config['update_params'] = options.new_values['param']
+    config['update_initials'] = options.new_values['initial']
 
 
 def store_results_csv(result, config):
@@ -212,7 +161,7 @@ def _results_naming(config, base_name, fmt):
     return new_path
 
 
-def select_model_outputs(config, model, select_all=False):
+def select_model_outputs(config, model, select=None):
     """
     Select model outputs. If the simulation was call using silent mode
     the outputs from the last simulation will be used. Otherwise, the user
@@ -227,6 +176,10 @@ def select_model_outputs(config, model, select_all=False):
         Configuration parameters.
     model: pysd.Model
         Model object.
+    selsect: 'all', 'default' or None
+        If 'all', select directly all columns. If 'default' select only default
+        columns. Else print in stdin the message to select columns.
+        Default is None.
 
     Returns
     -------
@@ -250,8 +203,10 @@ def select_model_outputs(config, model, select_all=False):
 
     if config['silent']:
         col_ind = 'r'
-    elif select_all:
+    elif select == 'all':
         col_ind = '0'
+    elif select == 'default':
+        return config['out_default']
     else:
         for num, var_name in enumerate(var_list, 1):
             print('{}: {}'.format(num, var_name))
@@ -544,7 +499,7 @@ def create_external_data_files_paths(config):
                   'of the results file/s from which you want to '
                   'import data. Examples below:\n'
                   '-e filename.csv (the file must be in the pymedeas_w folder)'
-                  '\n-e filename1.csv,filename2.csv (the first file must be '
+                  '\n-e filename1.csv filename2.csv (the first file must be '
                   'in the pymedeas_w folder and the second in the '
                   'pymedeas_eu folder)\n')
             sys.exit(0)
@@ -555,7 +510,7 @@ def create_external_data_files_paths(config):
             # no graphical interface can be displayed, only CLI
             if config['extDataFname']:
                 # external data files names provided
-                file_paths = from_provided_external_file(config, file_paths)
+                from_provided_external_file(config, file_paths)
             else:
                 # it won't open a graphical window to select the file
                 # but let you chose the file from CLI
@@ -599,9 +554,7 @@ def from_provided_external_file(config, file_paths):
         raise TypeError(
             "Invalid number of results files  provided to run the model,"
             + f" need to provide {len(config['parent'])} files, but "
-            + f" {len(config['extDataFname'])} files where provided.\n"
-            + "If you gave two or more file names, make sure to not "
-            + "leave any blank space between them (e.g. file1.csv,file2.cv).")
+            + f" {len(config['extDataFname'])} files where provided.")
 
     for parent, filename in zip(config['parent'], config['extDataFname']):
         file_paths[parent['name']] =\

@@ -7,21 +7,25 @@ from ast import literal_eval
 import pandas as pd
 from argparse import ArgumentParser, Action
 
+from .config import read_config
 from ._version import __version__
 
 
 dict_models = json.load(open(
-    Path(__file__).parent.joinpath('models.json')
-    ))
+    Path(__file__).parent.joinpath('models.json')))
 
 parser = ArgumentParser(
-    description='MEDEAS model in in Python',
+    description='MEDEAS models in Python',
     prog='pymedeas')
+
+# getting the default values from the 'config.json' file
+config = read_config()
 
 
 #########################
 # functions and actions #
 #########################
+
 
 def check_output(string):
     """
@@ -62,34 +66,66 @@ def split_vars(string):
         if '=' in string:
             # new variable value
             var, value = string.split('=')
-            type = 'param'
+            type_ = 'param'
 
         if ':' in string:
             # initial time value
             var, value = string.split(':')
-            type = 'initial'
+            type_ = 'initial'
 
-        if value.strip().isnumeric():
+        if all(char.isdigit() or char in [".", ","] for char in value.strip()):
             # value is float
-            return {var.strip(): (type, float(value))}
+            return {var.strip(): (type_, float(value))}
 
         # value is series
-        assert type == 'param'
+        assert type_ == 'param'
         value = literal_eval(value)
         assert len(value) == 2
         assert len(value[0]) == len(value[1])
-        return {var.strip(): (type,
+        return {var.strip(): (type_,
                               pd.Series(index=value[0], data=value[1]))}
 
     except Exception:
         # error
         parser.error(
+                f'when parsing {string}'
+                '\nYou must use variable=new_value to redefine values or '
+                'variable:initial_value to define initial value.'
+                'variable must be a model component, new_value can be a '
+                'float or a list of two list, initial_value must be a float'
+                '...\n')
+
+
+def check_output_file_paths(string):
+    """
+    check if the file path is a valid pathlib.Path
+    returns a dictionary with parent model names as keys and paths to the
+    results files as values
+    """
+    string = string.replace(" ", "")
+    file_list = string.split(",")
+    try:
+        output_dict = {}
+        for model_and_path in file_list:
+            if '=' in model_and_path:
+                # new variable value
+                model_name, results_path = model_and_path.split('=')
+
+            if ':' in model_and_path:
+                # initial time value
+                model_name, results_path = model_and_path.split(':')
+
+            output_dict[model_name] = results_path
+
+        return output_dict
+
+    except ValueError:
+        # error
+        parser.error(
             f'when parsing {string}'
-            '\nYou must use variable=new_value to redefine values or '
-            'variable:initial_value to define initial value.'
-            'variable must be a model component, new_value can be a '
-            'float or a list of two list, initial_value must be a float'
-            '...\n')
+            '\nYou must use model1:results_path1, model2:results_path2 to'
+            ' set custom paths for the outputs of the specified models. '
+            'You may also use "=" instead of ":"...\n')
 
 
 class SplitVarsAction(Action):
@@ -118,16 +154,16 @@ parser.add_argument(
     action='version', version=f'pymedeas models {__version__}')
 
 parser.add_argument(
-    '-m', '--model', dest='region', default='pymedeas_w',
+    '-m', '--model', dest='region', default=config.region,
     choices=list(dict_models),
     help='select the model to use')
 
 parser.add_argument(
-    '-n', '--fname', dest='fname',
+    '-n', '--fname', dest='results_fname',
     type=check_output, metavar='FILE',
     help='name of the results file, default is '
-         'results_{scenario name}_{initial date}_{final date}'
-         '_{time-step}.csv')
+         'results_{scenario sheet}_{initial time}_{final time}'
+         '_{time step}.csv')
 
 parser.add_argument(
     '-r', '--return-columns', dest='return_columns',
@@ -140,19 +176,27 @@ parser.add_argument(
 
 parser.add_argument(
     '-p', '--plot', dest='plot',
-    action='store_true', default=False,
+    action='store_true', default=config.plot,
     help='opens the plot gui after simulation')
 
+
 parser.add_argument(
-    '-e', '--ext', dest='extDataFname',
-    type=str, metavar='FILE', nargs='+',
-    help='file from which to import external data')
+    '-f', '--ext', dest='results_file_path',
+    type=check_output_file_paths, metavar='FILE', nargs='+',
+    help='path/s of the file/s from which to import results from parent models'
+    'e.g. pymedeas_w: outputs/results_world.csv')
 
 parser.add_argument(
     '-x', '--scen', dest='scenario_sheet',
-    type=str, metavar='SHEET', default='BAU',
+    type=str, metavar='SHEET', default=config.scenario_sheet,
     help='scenario name (names should be the same as the input file tabs),'
          ' default is \'BAU\'')
+
+parser.add_argument(
+    '-e', '--export', dest='export_file',
+    type=str, metavar='FILE',
+    help='export to a pickle stateful objects states at the end of the '
+         'simulation')
 
 parser.add_argument(
     '-i', '--import-initial', dest='import_file',
@@ -162,13 +206,14 @@ parser.add_argument(
 
 parser.add_argument(
     '-b', '--headless', dest='headless',
-    action='store_true', default=False,
+    action='store_true', default=config.headless,
     help='headless mode  (only CLI, no GUI)')
 
 parser.add_argument(
     '-s', '--silent', dest='silent',
-    action='store_true', default=False,
-    help='silent mode')
+    action='store_true', default=config.silent,
+    help='silent mode. No user input will be required during execution. Useful'
+          'when running batch simulations')
 
 
 ###################
@@ -180,19 +225,25 @@ model_arguments = parser.add_argument_group(
     'Modify model control variables.')
 
 model_arguments.add_argument(
-    '-F', '--final-time', dest='final_time', default=2050.,
+    '-F', '--final-time', dest='final_time',
+    default=config.model_arguments.final_time,
     action='store', type=float, metavar='VALUE',
-    help='modify final year of the simulation, default is 2050')
+    help='modify final year of the simulation, default is {}'.format(
+        config.model_arguments.final_time))
 
 model_arguments.add_argument(
-    '-T', '--time-step', dest='time_step', default=0.03125,
+    '-T', '--time-step', dest='time_step',
+    default=config.model_arguments.time_step,
     action='store', type=float, metavar='VALUE',
-    help='modify time step (in years) of the simulation')
+    help='modify time step (in years) of the simulation, default is {}'.format(
+        config.model_arguments.time_step))
 
 model_arguments.add_argument(
-    '-S', '--saveper', dest='return_timestep', default=1.,
+    '-S', '--saveper', dest='return_timestamp',
+    default=config.model_arguments.return_timestamp,
     action='store', type=float, metavar='VALUE',
-    help='modify time step (in years) of the output, default is 1 year')
+    help='modify time step (in years) of the output, default is '
+         '{} year'.format(config.model_arguments.return_timestamp))
 
 
 #######################
@@ -204,7 +255,7 @@ warn_err_arguments = parser.add_argument_group(
     'Modify warning and errors management.')
 
 warn_err_arguments.add_argument(
-    '--missing-values', dest='missing_values', default="warning",
+    '--missing-values', dest='missing_values', default=config.missing_values,
     action='store', type=str, choices=['warning', 'raise', 'ignore', 'keep'],
     help='exception with missing values, \'warning\' (default) shows a '
          'warning message and interpolates the values, \'raise\' raises '

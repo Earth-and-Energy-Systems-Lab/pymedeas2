@@ -1,9 +1,8 @@
 {
     "pymedeas_w": {
-        "model_py": "pymedeas_w.py",
-        "folder": "models/pymedeas_w",
-        "scenario inputs": "scen_w.xlsx",
-        "historic inputs": "inputs_w.xlsx",
+        "model_file": "models/pymedeas_w/pymedeas_w.py",
+        "scenario_inputs": "scenarios/scen_w.xlsx",
+        "historic_inputs": "models/pymedeas_w/inputs_w.xlsx",
         "out_folder": "outputs/pymedeas_w",
         "out_default": [
             "tpe_from_res_ej",
@@ -36,10 +35,9 @@
         "parent": []
         },
     "pymedeas_eu": {
-            "model_py": "pymedeas_eu.py",
-            "folder": "models/pymedeas_eu",
-            "scenario inputs": "scen_eu.xlsx",
-            "historic inputs": "inputs_eu.xlsx",
+            "model_file": "models/pymedeas_eu/pymedeas_eu.py",
+            "scenario_inputs": "scenarios/scen_eu.xlsx",
+            "historic_inputs": "models/pymedeas_eu/inputs_eu.xlsx",
             "out_folder": "outputs/pymedeas_eu",
             "out_default": [
                 "gdp_eu",
@@ -52,65 +50,67 @@
             "parent": [
                 {
                     "name": "pymedeas_w",
+                    "default_results_folder": "outputs/pymedeas_w",
                     "input_vars": {
-                        "temperature_change": [],
-                        "share_e_losses_cc": [],
-                        "total_extraction_nre_ej": [],
-                        "pes_oil_ej": [],
-                        "pes_nat_gas": [],
-                        "share_conv_vs_total_gas_extraction": [],
-                        "share_conv_vs_total_oil_extraction": [],
-                        "annual_gdp_growth_rate": [],
-                        "abundance_total_nat_gas": [],
-                        "abundance_coal": [],
-                        "abundance_total_oil": [],
-                        "extraction_coal_ej": [],
-                        "extraction_uranium_ej": [],
-                        "real_demand_by_sector": ["sectors"],
-                        "real_total_output_by_sector": ["sectors"],
-                        "real_final_energy_by_sector_and_fuel": ["final sources",        "sectors"]
+                        "temperature_change": {"name_in_parent": "temperature_change", "subs": []},
+                        "share_e_losses_cc": {"name_in_parent": "share_e_losses_cc", "subs": []},
+                        "total_extraction_nre_ej_world": {"name_in_parent": "total_extraction_nre_ej", "subs": []},
+                        "extraction_oil_ej_world": {"name_in_parent": "pes_oil_ej", "subs": []},
+                        "extraction_nat_gas_ej_world": {"name_in_parent": "pes_nat_gas", "subs": []},
+                        "share_conv_vs_total_gas_extraction_world": {"name_in_parent": "share_conv_vs_total_gas_extraction", "subs": []},
+                        "share_conv_vs_total_oil_extraction_world": {"name_in_parent": "share_conv_vs_total_oil_extraction", "subs": []},
+                        "annual_gdp_growth_rate_world": {"name_in_parent": "annual_gdp_growth_rate", "subs": []},
+                        "abundance_total_nat_gas_world": {"name_in_parent": "abundance_total_nat_gas", "subs": []},
+                        "abundance_coal_world": {"name_in_parent": "abundance_coal", "subs": []},
+                        "abundance_total_oil_world": {"name_in_parent": "abundance_total_oil", "subs": []},
+                        "extraction_coal_ej_world": {"name_in_parent": "extraction_coal_ej", "subs": []},
+                        "extraction_uranium_ej_world": {"name_in_parent": "extraction_uranium_ej", "subs": []},
+                        "real_demand_by_sector_world": {"name_in_parent": "real_demand_by_sector", "subs": ["sectors"]},
+                        "real_total_output_by_sector_world": {"name_in_parent": "real_total_output_by_sector", "subs": ["sectors"]},
+                        "real_final_energy_by_sector_and_fuel_world": {"name_in_parent": "real_final_energy_by_sector_and_fuel", "subs": ["final sources", "sectors"]}
                         }
                     }
                 ]
         },
     "pymedeas_aut": {
-            "model_py": "pymedeas_aut.py",
-            "folder": "models/pymedeas_aut",
-            "scenario inputs": "scen_aut.xlsx",
-            "historic inputs": "inputs_aut.xlsx",
+            "model_file": "models/pymedeas_aut/pymedeas_aut.py",
+            "scenario_inputs": "scenarios/scen_aut.xlsx",
+            "historic_inputs": "models/pymedeas_aut/inputs_aut.xlsx",
             "out_folder": "outputs/pymedeas_aut",
             "out_default": [],
             "parent": [
                 {
                     "name": "pymedeas_w",
+                    "default_results_folder": "outputs/pymedeas_w",
                     "input_vars": {
-                        "temperature_change": [],
-                        "share_e_losses_cc": [],
-                        "total_extraction_nre_ej": [],
-                        "pes_oil_ej": [],
-                        "pes_nat_gas": [],
-                        "share_conv_vs_total_gas_extraction": [],
-                        "share_conv_vs_total_oil_extraction": [],
-                        "annual_gdp_growth_rate": [],
-                        "abundance_total_nat_gas": [],
-                        "abundance_coal": [],
-                        "abundance_total_oil": [],
-                        "extraction_coal_ej": [],
-                        "extraction_uranium_ej": [],
-                        "real_demand_by_sector": ["sectors"],
-                        "real_total_output_by_sector": ["sectors"],
-                        "real_final_energy_by_sector_and_fuel": ["final sources", "sectors"]
+                        "temperature_change": {"name_in_parent": "temperature_change", "subs": []},
+                        "share_e_losses_cc": {"name_in_parent": "share_e_losses_cc", "subs": []},
+                        "total_extraction_nre_ej_world": {"name_in_parent": "total_extraction_nre_ej", "subs": []},
+                        "extraction_oil_ej_world": {"name_in_parent": "pes_oil_ej", "subs": []},
+                        "pes_nat_gas_world": {"name_in_parent": "pes_nat_gas", "subs": []},
+                        "share_conv_vs_total_gas_extraction_world": {"name_in_parent": "share_conv_vs_total_gas_extraction", "subs": []},
+                        "share_conv_vs_total_oil_extraction_world": {"name_in_parent": "share_conv_vs_total_oil_extraction", "subs": []},
+                        "annual_gdp_growth_rate_world": {"name_in_parent": "annual_gdp_growth_rate", "subs": []},
+                        "abundance_total_nat_gas_world": {"name_in_parent": "abundance_total_nat_gas", "subs": []},
+                        "abundance_coal_world": {"name_in_parent": "abundance_coal", "subs": []},
+                        "abundance_total_oil_world": {"name_in_parent": "abundance_total_oil", "subs": []},
+                        "extraction_coal_ej_world": {"name_in_parent": "extraction_coal_ej", "subs": []},
+                        "extraction_uranium_ej_world": {"name_in_parent": "extraction_uranium_ej", "subs": []},
+                        "real_demand_by_sector_world": {"name_in_parent": "real_demand_by_sector", "subs": ["sectors"]},
+                        "real_total_output_by_sector_world": {"name_in_parent": "real_total_output_by_sector", "subs": ["sectors"]},
+                        "real_final_energy_by_sector_and_fuel_world": {"name_in_parent": "real_final_energy_by_sector_and_fuel", "subs": ["final sources", "sectors"]}
                         }
                     },
                     {
                         "name": "pymedeas_eu",
+                        "default_results_folder": "outputs/pymedeas_eu",
                         "input_vars": {
-                            "gdp_eu": [],
-                            "total_fe_elec_generation_twh_eu": [],
-                            "annual_gdp_growth_rate_eu": [],
-                            "real_final_demand_by_sector_eu": ["sectors"],
-                            "real_total_output_by_sector_eu": ["sectors"],
-                            "real_final_energy_by_sector_and_fuel_eu": ["final sources", "sectors"]
+                            "gdp_eu28": {"name_in_parent": "gdp_eu", "subs": []},
+                            "total_fe_elec_generation_twh_eu28": {"name_in_parent": "total_fe_elec_generation_twh_eu", "subs": []},
+                            "annual_gdp_growth_rate_eu28": {"name_in_parent": "annual_gdp_growth_rate_eu", "subs": []},
+                            "real_demand_by_sector_eu28": {"name_in_parent": "real_final_demand_by_sector_eu", "subs": ["sectors"]},
+                            "real_total_output_by_sector_eu28": {"name_in_parent": "real_total_output_by_sector_eu", "subs": ["sectors"]},
+                            "real_final_energy_by_sector_and_fuel_eu28": {"name_in_parent": "real_final_energy_by_sector_and_fuel_eu", "subs": ["final sources", "sectors"]}
                             }
                         }
                 ]

@@ -1,74 +1,39 @@
 #!/usr/bin/env python
-__author__ = "Oleg Osychenko, Roger Samsó, Eneko Martin"
-__maintainer__ = "Eneko Martin"
+__author__ = "Roger Samsó, Eneko Martin"
+__maintainer__ = "Eneko Martin, Roger Samsó"
 __status__ = "Development"
 
-import os
+from pytools.config import read_model_config
 import sys
 import time
+from datetime import datetime
 
 import re
-import json
 import pandas as pd
 import numpy as np
 import xarray as xr
-import pysd
+import pathlib
 
-# imports to read command line
-from .argparser import parser
+import argparse
+from .argparser import parser, config
+from .config import Params, ParentModel
 
 # imports for GUI
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
-from pytools.logger.logger import log
+from .logger.logger import log
 
 # PySD imports for replaced functions
 from pysd.py_backend.utils import xrmerge
+from pysd.py_backend.functions import Model
+
+# these imports will not be needed in Python 3.9
+from typing import Union, Dict, List
+from . import PROJ_FOLDER
 
 
-def update_paths(config):
-    """
-    Updates config dictionary with the paths to the model folder,
-    names of the model and inputs files.
-
-    Parameters
-    ----------
-    config: dict
-        Configuration parameters. config['region'] must be defined.
-
-    Returns
-    -------
-    None
-
-    """
-    # load configuration file
-    f = open(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                          'models.json'),)
-    dict_models = json.load(f)
-
-    if config['region'] not in dict_models:
-        raise ValueError(
-            "Invalid region name " + config['region']
-            + "\nAvailable regions are:\n\t" + ", ".join(
-                list(dict_models)))
-
-    cwd = os.getcwd()
-    model = dict_models[config['region']]
-    config['model_py'] = model['model_py']
-    config['folder'] = os.path.join(cwd, model['folder'])
-    config['scenario_inputs'] = model['scenario inputs']
-    config['historic_inputs'] = model['historic inputs']
-    config['out_folder'] = os.path.join(cwd, model['out_folder'])
-    config['out_default'] = model['out_default']
-    config['parent'] = [
-        {'name': par['name'],
-         'folder': dict_models[par['name']]['out_folder'],
-         'input_vars': par['input_vars']}
-        for par in model['parent']]
-
-
-def get_initial_user_input(config, run_params):
+def get_initial_user_input(args=None) -> argparse.Namespace:
     """
     Ask for user input to update simulation parameters.
     Get user input and updates the config and run_params dictionaries.
@@ -83,22 +48,113 @@ def get_initial_user_input(config, run_params):
     Returns
     -------
     None
+    # TODO review the documentation cause this function has changed
 
     """
-    options = parser.parse_args(sys.argv[1:])
+    # this is only used for testing purposes
+    if args is None:
+        args = sys.argv[1:]
 
-    for param in ['time_step', 'final_time']:
-        run_params[param] = getattr(options, param)
-
-    for param in config:
-        if config[param] is None:
-            config[param] = getattr(options, param)
-
-    config['update_params'] = options.new_values['param']
-    config['update_initials'] = options.new_values['initial']
+    return parser.parse_args(args)
 
 
-def store_results_csv(result, config):
+def update_config_from_user_input(options: argparse.Namespace,
+                                  base_path: pathlib.Path =
+                                  PROJ_FOLDER) -> Params:
+
+    """
+    This function takes user inputs and updates the config class attributes
+    accordingly.
+    The base_path argument is for testing purposes only
+    """
+    # update configurations based on user input
+    for att in options.__dict__.keys():
+        # only if there's a default or the user adds input for that attribute
+        if hasattr(config, att) and getattr(options, att):
+            setattr(config, att, getattr(options, att))
+
+    # adding the configurations of the specific model selected by the user
+    read_model_config(config)
+
+    # TODO make for loop
+
+    if getattr(options, 'export_file'):
+        export_file_raw = getattr(options, 'export_file')
+        if pathlib.Path(export_file_raw).is_absolute():
+            if pathlib.Path(export_file_raw).parent.is_dir():
+                config.model_arguments.export = pathlib.Path(
+                    export_file_raw).resolve()
+            else:
+                raise(ValueError, "Invalid pickle export path {}".format(
+                    str(pathlib.Path(export_file_raw))))
+        else:
+            pickle_path = base_path.joinpath(export_file_raw).resolve()
+            if pickle_path.parent.is_dir():
+                config.model_arguments.export = pickle_path
+            else:
+                raise("Invalid pickle export path {}".format(
+                    str(pathlib.Path(export_file_raw).resolve())))
+
+    config.model_arguments.time_step = getattr(options, 'time_step')
+    config.model_arguments.final_time = getattr(options, 'final_time')
+    config.model_arguments.return_timestamp = getattr(options,
+                                                      'return_timestamp')
+    config.model_arguments.results_fname = getattr(options, 'results_fname')
+
+    if getattr(options, 'return_columns'):
+        config.model_arguments.return_columns = getattr(options,
+                                                        'return_columns')
+    if options.new_values['param']:
+        config.model_arguments.update_params = options.new_values['param']
+
+    if options.new_values['initial']:
+        config.model_arguments.update_initials = options.new_values['initial']
+
+    if options.results_file_path:  # should be a dictionary
+        # in models with two parents, if the user provides the results for one
+        # they should also provide the resutls for the other.
+        parents_names = [dic.name for dic in config.model.parent]
+        difference = list(set(parents_names).difference(set(
+            options.results_file_path[0])))
+        if difference:
+            raise ValueError(difference[0] + ". Please provide results "
+                             "file paths for " + " and ".join(
+                                        parents_names) + " models")
+        for mod_name, res_path in options.results_file_path[0].items():
+            mod_name, res_path = mod_name.strip(), res_path.strip()
+            if mod_name in parents_names:
+                idx = parents_names.index(mod_name)
+                if pathlib.Path(res_path).is_absolute():
+                    if pathlib.Path(res_path).is_file():
+                        config.model.parent[idx].results_file_path = \
+                            pathlib.Path(res_path).resolve()
+                    else:
+                        raise FileNotFoundError(str(
+                            pathlib.Path(res_path).resolve()) +
+                            " is not a valid path for the " +
+                            "results file of the " + mod_name +
+                            " model")
+                else:
+                    results_path = base_path.joinpath(res_path).resolve()
+                    if results_path.is_file():
+                        config.model.parent[idx].results_file_path = \
+                            results_path
+                    else:
+                        raise FileNotFoundError(
+                            str(results_path) + " is not a valid path for " +
+                            "the results file of the " + mod_name + " model")
+
+            else:
+                raise ValueError(
+                        "Invalid parent model name when importing parent model"
+                        " outputs: " + mod_name + ". Valid names for parent"
+                        "models of the " + config.region + " model are: " +
+                        ", ".join(parents_names))
+
+    return config
+
+
+def store_results_csv(result: pd.DataFrame, config: Params) -> pd.DataFrame:
     """
     Stores the final results as csv.
 
@@ -115,55 +171,57 @@ def store_results_csv(result, config):
         Transposed result file.
 
     """
-    file_path_csv = _results_naming(config, config["fname"], 'csv')
+    _rename_old_simulation_results(config)
 
     # storing results to csv file
-    result.transpose().to_csv(file_path_csv)
-    log.info('Simulation results file is located in {}'.format(file_path_csv))
+    result.transpose().to_csv(config.model_arguments.results_fpath)
+    log.info('Simulation results file is located in {}'.format(str(
+        config.model_arguments.results_fpath)))
 
-    with open(os.path.join(config['folder'], 'last_output_conf.txt'),
-              'w') as f:
-        f.write(';'.join(result.columns))
+    # recording the output variables in a file, in case the user wants to
+    # output the same variables in the next simulations
+    with open(config.model.out_folder.joinpath('last_output.txt'),
+              mode='w') as f:
+        f.write('\n'.join(sorted(result.columns)))
 
     if result.isna().any().any():
         nan_vars = result.columns[result.isna().any()].tolist()
         log.warning(
             "There are NaN's in the timeseries of the following variables\n\n:"
-            + " {}\n\n, which might indicate convergence issues, try "
-            + "decreasing the time step".format("\n".join(nan_vars)))
+            + " {}\n\n, which might indicate ".format("\n".join(nan_vars)) +
+            "convergence issues, try decreasing the time step")
 
     return result
 
 
-def _results_naming(config, base_name, fmt):
-    """This function renames old simulation results with the same name but adding
-    _old in the end, or old_old if _old also exists
+def _rename_old_simulation_results(config: Params) -> None:
+    """
+    This function renames old simulation results with the same name but
+    adding date and time at the end of the file name
 
     :return (str) new file path
     """
 
-    folder = config['out_folder']
+    file_path = config.model_arguments.results_fpath
+    folder = file_path.parent
+    fname = file_path.stem
+    extension = file_path.suffix
 
-    new_path = os.path.join(folder, '{}.{}'.format(base_name, fmt))
-    old_path = os.path.join(folder, '{}_old.{}'.format(base_name, fmt))
-    old_old_path = os.path.join(folder, '{}_old_old.{}'.format(base_name, fmt))
-
-    if os.path.isfile(new_path):
-        if os.path.isfile(old_path):
-            if os.path.isfile(old_old_path):
-                os.remove(old_old_path)
-                log.info('File {0}_old_old.{1} has been removed'.format(base_name, fmt))
-            os.rename(old_path, old_old_path)
-            log.info('File {0}_old.{1} has been moved to {0}_old_old.{1}'.format(base_name, fmt))
-        os.rename(new_path, old_path)
-        log.info('File {0}.{1} has been moved to {0}_old.{1}'.format(base_name, fmt))
-
-    return new_path
+    if file_path.is_file():
+        creation_time: str = datetime.fromtimestamp(
+            file_path.stat().st_ctime).strftime("%Y%m%d__%H%M%S")
+        old_file_new_path = folder.joinpath(fname + "_{}".format(creation_time)
+                                            + extension)
+        file_path.rename(old_file_new_path)
+        log.info(
+            'File {} has been renamed as {}'.format(fname + extension,
+                                                    old_file_new_path.name))
 
 
-def select_model_outputs(config, model, select=None):
+def select_model_outputs(config: Params, model: Model,
+                         select: Union[str, None] = None) -> list:
     """
-    Select model outputs. If the simulation was call using silent mode
+    Select model outputs. If the simulation was called using silent mode,
     the outputs from the last simulation will be used. Otherwise, the user
     will be asked via terminal the outputs to include.
 
@@ -187,11 +245,12 @@ def select_model_outputs(config, model, select=None):
         List of columns to return by the simulation.
 
     """
-    # avoid variables containing this words
+    # avoid variables containing these words
+    # TODO this list should not be hardcoded
     avoid_vars = ["historic", "delay", "next", "variation", "leontief",
                   "ia_matrix", "year", "initial", "aux", "policy",
                   "future",
-                  ] + config['out_default']
+                  ] + config.model.out_default
 
     # returning cache.step objects
     var_list = sorted([
@@ -201,18 +260,18 @@ def select_model_outputs(config, model, select=None):
                 for a_var in avoid_vars])
         ])
 
-    if config['silent']:
+    if config.silent:
         col_ind = 'r'
     elif select == 'all':
         col_ind = '0'
     elif select == 'default':
-        return config['out_default']
+        return config.model.out_default
     else:
         for num, var_name in enumerate(var_list, 1):
             print('{}: {}'.format(num, var_name))
 
-        print('\nDefault saved variables:')
-        for var_name in config['out_default']:
+        print('\n\nDefault output variables:')
+        for var_name in config.model.out_default:
             print('\t{}'.format(var_name))
 
         message =\
@@ -262,26 +321,26 @@ def select_model_outputs(config, model, select=None):
 
     elif 'r' in col_vars:
         try:
-            with open(os.path.join(config['folder'], 'last_output_conf.txt'),
+            with open(config.model.out_folder.joinpath('last_output.txt'),
                       'r', encoding='utf-8') as f:
-                return_columns = sorted([x.strip().split('[')[0]
-                                         for x in f.readline().split(";")])
+                return_columns = [x.strip() for x in f.readlines()]
         except FileNotFoundError:
-            log.warning("no last configuration, take all vars")
+            log.warning("The list of output variables from the last"
+                        " simulation. All model outputs will be returned.")
             return_columns = var_list
         else:
-            log.info('The number and type of output variables of the current '
-                     'simulation will be the same as in the previous one.'
-                     '\nIf you want to change the number of outputs please'
-                     ' remove the "-s" (silent mode) from the options when'
-                     ' you run a simulation')
+            log.info("The number and type of output variables of the current "
+                     "simulation will be the same as in the previous one.")
+            if config.silent:
+                log.info("\nIf you want to change the number of outputs please"
+                         " remove the '-s' (silent mode) from the options when"
+                         " you run a simulation")
 
     elif col_ind.lstrip().startswith('+'):
         try:
-            with open(os.path.join(config['folder'], 'last_output_conf.txt'),
-                      'r', encoding='utf-8') as f:
-                return_columns_set.update([x.strip().split('[')[0]
-                                           for x in f.readline().split(";")])
+            with open(config.model.out_folder.joinpath('last_output.txt'),
+                      mode='r', encoding='utf-8') as f:
+                return_columns_set.update([x.strip() for x in f.readlines()])
         except FileNotFoundError:
             log.warning("There is no previous simulation available, "
                         "taking only the given variables instead")
@@ -291,34 +350,16 @@ def select_model_outputs(config, model, select=None):
         return_columns = sorted(list(return_columns_set))
 
     # adding the default variables to the choice of the user
-    return_columns = list(set(return_columns + config['out_default']))
+    return_columns = list(set(return_columns + config.model.out_default))
 
-    with open(os.path.join(config['folder'], 'last_output_conf.txt'),
-              'w', encoding='utf-8') as f:
-        f.write(";".join(return_columns))
+    with open(config.model.out_folder.joinpath('last_output.txt'),
+              mode='w', encoding='utf-8') as f:
+        f.write("\n".join(sorted(return_columns)))
 
     return return_columns
 
 
-def load_model(model_py):
-    """
-    Load model with PySD
-
-    Parameters
-    ----------
-    model_py: str
-        Model to load.
-
-    Returs
-    ------
-    model: pysd.Model
-        Model object.
-
-    """
-    return pysd.load(os.path.join(model_py), initialize=False)
-
-
-def run(config, model, run_params, return_columns):
+def run(config: Params, model: Model) -> pd.DataFrame:
     """
     Runs the model
 
@@ -328,8 +369,6 @@ def run(config, model, run_params, return_columns):
         Configuration parameters.
     model: pysd.Model
         Model object.
-    run_params: dict
-        Simulation parameters.
     return_columns: list
         Name of the variables that are to be written in the outputs file.
 
@@ -339,59 +378,62 @@ def run(config, model, run_params, return_columns):
         Result of the simulation.
 
     """
-    # create default file name for the results file
-    # (if the user didn't pass any)
-    if not config.get("fname"):
-        config["fname"] = 'results_{}_{}_{}_{}'.format(
-            config['scenario_sheet'],
-            config['run_params']['initial_time'],
-            config['run_params']['final_time'],
-            config['run_params']['time_step'])
+    # generating the output file name
+    if not config.model_arguments.results_fname:
+        config.model_arguments.results_fname = \
+            "results_{}_{}_{}_{}.csv".format(
+                config.scenario_sheet,
+                config.model_arguments.initial_time,
+                config.model_arguments.final_time,
+                config.model_arguments.time_step
+                )
 
-    result_file_name = os.path.join(config['out_folder'],
-                                    config["fname"] + ".csv")
+    config.model_arguments.results_fpath = config.model.out_folder.joinpath(
+        config.model_arguments.results_fname)
 
     print(
         "\n\nSimulation parameters:\n"
-        "- Model name: {}\n"
-        "- Scenario: {}\n"
-        "- Initial time: {}\n"
-        "- Final time: {}\n"
-        "- Time step: {} years ({} days)\n"
-        "- Results file name: {}".format(config['region'],
-                                         config['scenario_sheet'].upper(),
-                                         round(run_params['initial_time']),
-                                         round(run_params['final_time']),
-                                         run_params['time_step'],
-                                         round(run_params['time_step']*365),
-                                         result_file_name
-                                         ))
+        "- Model name: {name}\n"
+        "- Scenario: {scenario}\n"
+        "- Initial time: {initial}\n"
+        "- Final time: {final}\n"
+        "- Simulation time step: {tstep} years ({tstep_days} days)\n"
+        "- Results file path: {fpath}".format(
+            name=config.region,
+            scenario=config.scenario_sheet.upper(),
+            initial=config.model_arguments.initial_time,
+            final=config.model_arguments.final_time,
+            tstep=config.model_arguments.time_step,
+            tstep_days=config.model_arguments.time_step*365,
+            fpath=str(config.model_arguments.results_fpath)))
 
-    if config['parent']:
-        print("- External data file: {}\n".format(config['extDataFilePath']))
-    else:
-        print("\n")
+    if config.model.parent:
+        for parent in config.model.parent:
+            print("- External data file for {}: {}".format(
+                parent.name,
+                str(parent.results_file_path)))
 
-    if return_columns[0] != '':
-        return_columns = return_columns
-    else:
-        return_columns = None
+    if isinstance(config.model_arguments.update_initials, dict):
+        print("- Updated initial conditions:\n\t" + "\n\t".join(
+            [par + ": " + str(val) for par, val in
+             config.model_arguments.update_initials.items()]))
 
-    if not config['return_timestep'] is None:
-        return_timestamps = np.arange(run_params['initial_time'],
-                                      run_params['final_time'] + 0.01,
-                                      float(config['return_timestep']))
-    else:
-        return_timestamps = None
-
-    print("Starting simulation.")
     sim_start_time = time.time()
+
     stocks = model.run(
-        run_params,
-        return_columns=return_columns,
-        return_timestamps=return_timestamps,
-        progress=config['progress'],
+        params=config.model_arguments.update_params,
+        initial_condition=(config.model_arguments.initial_time,
+                           config.model_arguments.update_initials),
+        return_columns=config.model_arguments.return_columns,
+        return_timestamps=np.arange(
+            config.model_arguments.initial_time,
+            config.model_arguments.final_time + 0.01,
+            float(config.model_arguments.return_timestamp)),
+        progress=config.progress,
+        final_time=config.model_arguments.final_time,
+        time_step=config.model_arguments.time_step,
         flatten_output=True)
+
     sim_time = time.time() - sim_start_time
     log.info(f"Total simulation time: {(sim_time/60.):.2f} minutes")
 
@@ -400,7 +442,7 @@ def run(config, model, run_params, return_columns):
     return stocks
 
 
-def user_select_data_file_gui(region):
+def user_select_data_file_gui(parent: ParentModel) -> str:
     """
     Creates a GUI from which the use will be able to select the file f
     rom which to import external data for the EU model.
@@ -416,16 +458,17 @@ def user_select_data_file_gui(region):
         Name of the selected file.
 
     """
-    defaultDir = os.path.join(os.getcwd(), region)
+    dir_path = parent.default_results_folder
+
     Tk().withdraw()  # keep the root window from appearing
     return askopenfilename(
-        initialdir=defaultDir,
+        initialdir=dir_path,
         title="Select external data file",
         filetypes=(('.csv files', '*.csv'), ("All files", '*'))
         )
 
 
-def user_select_data_file_headless(region):
+def user_select_data_file_headless(parent: ParentModel) -> pathlib.Path:
     """
     Asks the user to select the csv file name from which to import data
     required to run the EU model in std output. It looks only in the
@@ -442,33 +485,36 @@ def user_select_data_file_headless(region):
         Filename of the file to load and extract data from
 
     """
-    files_list = os.listdir(os.path.join(os.getcwd(), region))
+    dir_path = parent.default_results_folder
 
-    csv_list = [file for file in files_list if file.endswith('.csv')]
+    files_list = list(filter(lambda x: x.is_file() and x.suffix == ".csv",
+                             dir_path.iterdir()))
+    files_list.sort()
 
-    if csv_list:
-        val = input(
-            "\nPlease write the number associated with the results file of the"
-            + f" {region} model from which you  wish to import data:\n\t"
-            + "\n\t".join("{}: {}".format(i, j)
-                          for i, j in enumerate(csv_list, 0))
-            + "\n\n here ->")
-        try:
-            val = int(val)
-        except TypeError:
-            raise TypeError('Only integer numbers allowed')
-
-        if (val >= 0) and (val < len(csv_list)):
-            return csv_list[val]
-        else:
-            raise ValueError("Please provide a number between 0 and "
-                             "{}".format(len(csv_list)-1))
+    if files_list:  # there are csv files in the folder
+        while True:
+            val_ = input(
+             "\nPlease write the number associated with the results file of"
+             + f" {parent.name} model from which you wish to import data:\n\t"
+             + "\n\t".join("{}: {}".format(i, j.name)
+                           for i, j in enumerate(files_list, 0))
+             + "\n\n here ->")
+            try:
+                val = int(val_)
+            except ValueError:
+                print('Only integer numbers allowed')
+                sys.exit(0)
+            if (val >= 0) and (val < len(files_list)):
+                return files_list[val]
+            else:
+                raise ValueError("Please provide a number between 0 and "
+                                 "{}".format(len(files_list)-1))
     else:
         raise ValueError('There are no csv files to import data from.\n'
                          'Please run the parent model/s first')
 
 
-def create_external_data_files_paths(config):
+def create_parent_models_data_file_paths(config: Params) -> None:
     """
     This function lists all csv (results) files in the pymedeas_w and/or
     pymedeas_eu folder/s and asks the user to choose one, so that all the
@@ -485,89 +531,48 @@ def create_external_data_files_paths(config):
     None
 
     """
-    file_paths = {}
 
-    if config['silent']:
+    # if the user passed the file paths from the CLI, they should be here
+    paths_from_user_input = all([dic.results_file_path for dic in
+                                 config.model.parent])
+
+    if config.silent:
         # no user input asked during execution, hence external files must
         # be provided beforehand
-        if config['extDataFname']:
-            # external data files names provided
-            from_provided_external_file(config, file_paths)
-        else:
+        if not paths_from_user_input:
             # silent mode and file names not provided -> error
             print('If you want to run in silent mode, please provide the name '
                   'of the results file/s from which you want to '
                   'import data. Examples below:\n'
-                  '-e filename.csv (the file must be in the pymedeas_w folder)'
-                  '\n-e filename1.csv filename2.csv (the first file must be '
-                  'in the pymedeas_w folder and the second in the '
-                  'pymedeas_eu folder)\n')
+                  '\t-f pymedeas_w: outputs/results_w.csv\n'
+                  '\t-f pymedeas_w: outputs/results_w.csv, pymedeas_eu: '
+                  'outputs/results_eu.csv\n')
             sys.exit(0)
 
     else:
         # not silent, user may be asked for input
-        if config['headless']:
+        if config.headless:
             # no graphical interface can be displayed, only CLI
-            if config['extDataFname']:
-                # external data files names provided
-                from_provided_external_file(config, file_paths)
-            else:
+            if not paths_from_user_input:
                 # it won't open a graphical window to select the file
                 # but let you chose the file from CLI
-                for parent in config['parent']:
-                    file_paths[parent['name']] = os.path.join(
-                        os.getcwd(), parent['folder'],
-                        user_select_data_file_headless(parent['folder'])
-                        )
+                for num, _ in enumerate(config.model.parent):
+                    config.model.parent[num].results_file_path = \
+                        user_select_data_file_headless(
+                            config.model.parent[num])
 
         else:
-            if config['extDataFname']:
-                # external data files names provided
-                from_provided_external_file(config, file_paths)
-            else:
+            if not paths_from_user_input:
                 # the user will be asked for input and can be graphical
-                for parent in config['parent']:
-                    file_paths[parent['name']] =\
-                        user_select_data_file_gui(parent['folder'])
-
-    config['extDataFilePath'] = file_paths
-
-
-def from_provided_external_file(config, file_paths):
-    """
-    This creates the file paths of the folders where the external data
-    files to be imported are located.
-
-    Parameters
-    ----------
-    config: dict
-        Configuration parameters.
-    file_paths: dict
-        Dictionary to save the paths to the files where the outputs are.
-
-    Returns
-    -------
-    None
-
-    """
-    if len(config['parent']) != len(config['extDataFname']):
-        raise TypeError(
-            "Invalid number of results files  provided to run the model,"
-            + f" need to provide {len(config['parent'])} files, but "
-            + f" {len(config['extDataFname'])} files where provided.")
-
-    for parent, filename in zip(config['parent'], config['extDataFname']):
-        file_paths[parent['name']] =\
-            os.path.join(os.getcwd(), parent['folder'], filename)
-
-    # if any of the file paths generated does not exist, kill the execution
-    for path in file_paths:
-        if not os.path.exists(file_paths.get(path)):
-            raise FileNotFoundError(
-                'The file {} cannot be found'.format(file_paths.get(path)))
+                for num, _ in enumerate(config.model.parent):
+                    config.model.parent[num].results_file_path = \
+                        pathlib.Path(user_select_data_file_gui(
+                            config.model.parent[num]))
 
 
-def load_external_data(config, subscript_dict, namespace):
+def load_external_data(config: Params,
+                       subscripts: dict,
+                       namespace: dict) -> dict:  # TODO subscripts not used
     """
     Load outputs from parent models.
 
@@ -587,54 +592,60 @@ def load_external_data(config, subscript_dict, namespace):
 
     """
     dataDict = {}
-    xarrayDict = {}
+    xarrayDict: Dict[str, Dict[str, List]] = {}
 
-    for parent in config['parent']:
-        df = pd.read_csv(config['extDataFilePath'][parent['name']],
-                         index_col=0).T
+    for parent in config.model.parent:
+        df = pd.read_csv(parent.results_file_path, index_col=0).T
         df.index = pd.to_numeric(df.index)
 
         imports = []
-        for import_var, subs in parent['input_vars'].items():
+        vars_with_subs = []
+        for _, vals in parent.input_vars.items():
             vensim_var =\
-                list(namespace.keys())[list(namespace.values()).index(import_var)]
-            if subs:
+                list(namespace.keys())[list(namespace.values()).index(
+                    vals["name_in_parent"])]
+            if vals["subs"]:
                 # find all columns with subscripts
-                cols = [(import_var, col) for col in df.columns
-                        if col.startswith(import_var+"[")]
-                if not cols:
+                cols_in_df = [(vals["name_in_parent"], col) for col in
+                              df.columns if col.startswith(
+                                  vals["name_in_parent"]+"[")]
+                if not cols_in_df:
                     # try to find cols by vensim name
-                    cols = [(import_var, col) for col in df.columns
-                            if col.startswith(vensim_var+"[")]
-                if not cols:
-                    raise NameError(
-                        f"Variable {import_var} is not in the results file"
-                        + f" of the {parent['name']} model")
-                imports += cols
+                    cols_in_df = [(vals["name_in_parent"], col) for col
+                                  in df.columns if col.startswith(
+                                      vensim_var+"[")]
+                if not cols_in_df:
+                    raise NameError("Variable {}".format(
+                        vals["name_in_parent"]) + " is not in the results file"
+                        + " of the {} model".format(parent.name))
+                imports += cols_in_df
                 # add to the dictionary with the dimensions to merge
-                xarrayDict[import_var] = {'subs': subs, 'cols': []}
+                xarrayDict[vals["name_in_parent"]] = {'subs': vals["subs"],
+                                                      'cols': []}
+                vars_with_subs.append(vals["name_in_parent"])
             else:
-                if import_var in df.columns:
-                    imports.append((import_var, import_var))
+                if vals["name_in_parent"] in df.columns:
+                    imports.append((vals["name_in_parent"],
+                                    vals["name_in_parent"]))
                 elif vensim_var in df.columns:
-                    imports.append((import_var, vensim_var))
+                    imports.append((vals["name_in_parent"], vensim_var))
                 else:
-                    raise NameError(
-                        f"Variable {import_var} is not in the results file"
-                        + f" of the {parent['name']} model")
+                    raise NameError("Variable {} ".format(
+                        vals["name_in_parent"]) + "is not in the results file"
+                        + " of the {} model".format(parent.name))
 
         for py_var, df_var in imports:
             if '[' in df_var:
                 # Create 0 dims xarrays
                 dims = xarrayDict[py_var]['subs']
-                coords = re.split('\[|\]| , |, | ,|,', df_var)[1:-1]
-                coords = {dim:[coord] for (dim, coord) in zip(dims, coords)}
-                df[df_var] = df[df_var].apply(xr.DataArray, args=(coords, dims))
+                coords_ = re.split('\[|\]| , |, | ,|,', df_var)[1:-1]
+                coords = {dim: [coord] for (dim, coord) in zip(dims, coords_)}
+                df[df_var] = df[df_var].apply(xr.DataArray, args=(coords,
+                                                                  dims))
                 xarrayDict[py_var]['cols'].append(df_var)
             else:
                 dataDict[py_var] = df[df_var]
-
-        for py_var in xarrayDict:
+        for py_var in vars_with_subs:  # only xarrays (inputs with subscripts)
             # merge xarrays to create a pandas.Series of xarray.DataArray
             dataDict[py_var] = df[xarrayDict[py_var]['cols']].apply(
                 xrmerge, axis=1)
@@ -642,7 +653,7 @@ def load_external_data(config, subscript_dict, namespace):
     return dataDict
 
 
-def select_scenario_sheet(model, scen_sheet_name):
+def select_scenario_sheet(model: Model, scen_sheet_name: str) -> None:
     """
     Selects scenario sheet to load
 
@@ -663,3 +674,5 @@ def select_scenario_sheet(model, scen_sheet_name):
         element.sheets = [scen_sheet_name if sheet == 'User scenario'
                           else sheet
                           for sheet in element.sheets]
+
+    return None

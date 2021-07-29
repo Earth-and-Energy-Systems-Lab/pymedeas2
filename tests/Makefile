@@ -15,9 +15,9 @@ clean:
 
 tests: clean
         ifeq ($(NUM_PROC), 1)
-		pytest *.py
+		pytest
         else
-		pytest *.py -n $(NUM_PROC)
+		pytest -n $(NUM_PROC)
 endif
 
 cover: clean

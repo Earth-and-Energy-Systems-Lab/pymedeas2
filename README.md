@@ -1,5 +1,7 @@
 # pymedeas models
 
+[![coverage report](https://gitlab.com/gencat_creaf/pymedeas2/badges/master/coverage.svg)](https://gitlab.com/gencat_creaf/pymedeas2/-/commits/master) 
+
 This is the official repo for the models of the European MEDEAS project (www.medeas.eu). Please register to the mailing list in order to receive the most recent news about the project.
 
 The available models are the result of translating the original MEDEAS Vensim models into Python using [PySD](https://github.com/JamesPHoughton/pysd) library. This same library is used to load and run the simulations.

@@ -114,5 +114,50 @@
                             }
                         }
                 ]
+        },
+    "wiliam": {
+        "model_file": "models/wiliam/wiliam.py",
+        "scenario_inputs": "scenarios/scenario_parameters.xlsx",
+        "historic_inputs": ["models/wiliam/model_parameters/climate/climate.xlsx",
+                            "models/wiliam/model_parameters/demography/demography.xlsx",
+                            "models/wiliam/model_parameters/economy/economy.xlsx",
+                            "models/wiliam/model_parameters/energy/energy.xlsx",
+                            "models/wiliam/model_parameters/finance/finance.xlsx",
+                            "models/wiliam/model_parameters/intermodule_consistency/intermodule_consistency.xlsx",
+                            "models/wiliam/model_parameters/land_and_water/land_and_water.xlsx",
+                            "models/wiliam/model_parameters/materials/materials.xlsx",
+                            "models/wiliam/model_parameters/society/society.xlsx",
+                            "models/wiliam/model_parameters/constants.xlsx"
+                        ],
+        "out_folder": "outputs/wiliam",
+        "out_default": [
+            "tpe_from_res_ej",
+            "total_extraction_nre_ej",
+            "pes_oil_ej",
+            "pes_nat_gas",
+            "extraction_coal_ej",
+            "extraction_uranium_ej",
+            "share_e_losses_cc",
+            "share_conv_vs_total_gas_extraction",
+            "share_conv_vs_total_oil_extraction",
+            "real_demand_by_sector",
+            "real_total_output_by_sector",
+            "real_final_energy_by_sector_and_fuel",
+            "annual_gdp_growth_rate",
+            "abundance_coal",
+            "abundance_total_nat_gas",
+            "abundance_total_oil",
+            "percent_res_vs_tpes",
+            "temperature_change",
+            "total_land_requirements_renew_mha",
+            "share_blue_water_use_vs_ar",
+            "gdppc",
+            "eroist_system",
+            "tfes_intensity_ej_t",
+            "real_tfec",
+            "gdp",
+            "population"
+            ],
+        "parent": []
         }
 }

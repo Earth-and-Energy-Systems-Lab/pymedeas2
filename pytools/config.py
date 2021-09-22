@@ -33,7 +33,7 @@ class ParentModel:
 class Model:
     model_file: pathlib.Path
     scenario_inputs: pathlib.Path
-    historic_inputs: pathlib.Path
+    historic_inputs: Union[pathlib.Path, List[pathlib.Path]]  # this is not used (the paths are hardcoded in the model)
     out_folder: pathlib.Path
     out_default: List[str]
     parent: Optional[List[ParentModel]]

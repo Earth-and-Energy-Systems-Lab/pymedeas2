@@ -12,4 +12,5 @@ LOG_FORMAT = "%(levelname)s - %(asctime)s, %(lineno)d: %(message)s"
 logging.basicConfig(format=LOG_FORMAT,
                     level=logging.INFO,
                     datefmt='%a, %d %b %Y %H:%M:%S')
+
 log = logging.getLogger(__name__)

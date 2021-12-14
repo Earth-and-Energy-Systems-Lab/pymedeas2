@@ -4,7 +4,7 @@
         "time_step": 0.03125,
         "final_time": 2050.0,
         "return_timestamp": 1.0,
-        "update_initials": "original"
+        "update_initials": {}
     },
     "region": "pymedeas_w",
     "silent": false,

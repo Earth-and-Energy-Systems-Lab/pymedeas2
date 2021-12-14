@@ -33,7 +33,6 @@ import warnings
 import pathlib
 import matplotlib
 from pandas.core.indexing import IndexingError
-matplotlib.use("TkAgg")
 
 # from pytools.tools import update_paths
 

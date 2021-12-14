@@ -11,20 +11,33 @@ from pytools.config import Params
 import warnings
 import pysd
 import argparse
-import pathlib
+from pathlib import Path
+from typing import List
+from pandas import DataFrame
 
 import plot_tool
 from pytools.tools import get_initial_user_input,\
                           update_config_from_user_input, \
                           select_scenario_sheet,\
                           create_parent_models_data_file_paths,\
-                          load_external_data,\
                           select_model_outputs,\
                           run,\
                           store_results_csv
-from pysd.py_backend.functions import Model
+
+from pysd.py_backend.statefuls import Model
 
 warnings.filterwarnings("ignore")
+
+# check PySD version
+if tuple(int(i) for i in pysd.__version__.split(".")) < (2, 1, 0):
+    raise RuntimeError(
+        "\n\n"
+        + "The current version of pymedeas models needs at least PySD 2.1.0"
+        + " You are running:\n\tPySD "
+        + pysd.__version__
+        + "\nPlease update PySD library with your package manager, "
+        + "via PyPI or conda-forge."
+    )
 
 
 def main(config: Params, model: Model) -> None:
@@ -44,18 +57,6 @@ def main(config: Params, model: Model) -> None:
     # select scenario sheet
     select_scenario_sheet(model, config.scenario_sheet)
 
-    # updating from World model and others, used in regional models
-    if config.model.parent:  # only pymedeas_w does not have a parent model
-        create_parent_models_data_file_paths(config)
-        update_pars = load_external_data(config,
-                                         model.components._subscript_dict,
-                                         model.components._namespace)
-
-        if config.model_arguments.update_params:
-            config.model_arguments.update_params.update(update_pars)
-        else:
-            config.model_arguments.update_params = update_pars
-
     if not config.model_arguments.return_columns:
         # list of columns that need to be present in the output file
         config.model_arguments.return_columns = select_model_outputs(config,
@@ -65,9 +66,9 @@ def main(config: Params, model: Model) -> None:
             config, model, config.model_arguments.return_columns[0])
 
     # run the simulation
-    stock = run(config, model)
+    stock: DataFrame = run(config, model)
 
-    result_df = store_results_csv(stock, config)
+    result_df: DataFrame = store_results_csv(stock, config)
 
     # running the plot tool
     if config.plot:
@@ -91,10 +92,16 @@ if __name__ == "__main__":
     # read user input and update config
     config: Params = update_config_from_user_input(options)
 
+    # get the data_file paths to load parent outputs
+    data_files: List[Path] = create_parent_models_data_file_paths(config)\
+        if config.model.parent else []
+
     # loading the model object
-    model: Model = pysd.load(str(config.model.model_file), initialize=False)
+    model: Model = pysd.load(
+        str(config.model.model_file), initialize=False,
+        data_files=data_files)
 
     # create results directory if it does not exist
-    pathlib.Path(config.model.out_folder).mkdir(parents=True, exist_ok=True)
+    Path(config.model.out_folder).mkdir(parents=True, exist_ok=True)
 
     main(config, model)

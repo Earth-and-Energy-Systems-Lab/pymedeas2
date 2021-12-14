@@ -1,10 +1,8 @@
 import logging
-from typing import Dict
 import pytest
 from datetime import datetime
 import numpy as np
 import pandas as pd
-import pathlib
 
 import pytools.tools as tools
 
@@ -21,9 +19,9 @@ def test_update_config_from_user_input_defaults_eu(default_eu):
     assert tools.update_config_from_user_input(options) == default_eu
 
 
-def test_update_config_from_user_input_defaults_aut(default_aut):
-    options = tools.get_initial_user_input(["-m", "pymedeas_aut"])
-    assert tools.update_config_from_user_input(options) == default_aut
+def test_update_config_from_user_input_defaults_cat(default_cat):
+    options = tools.get_initial_user_input(["-m", "pymedeas_cat"])
+    assert tools.update_config_from_user_input(options) == default_cat
 
 
 def test_update_config_from_user_input_not_raising(
@@ -250,46 +248,6 @@ def test_select_model_outputs_all_outputs_select_all(all_outputs,
                   select="all")) == all_outputs
 
 
-def test_load_external_data(default_config_eu, eu_model):
-
-    namespace = eu_model.components._namespace
-    subscripts = eu_model.components._subscript_dict
-
-    default_config_eu.model.parent[0].results_file_path = \
-        default_config_eu.model.parent[0].default_results_folder.joinpath(
-            "results_parent.csv")
-
-    # creating a dummy results csv file for the parent model
-    fake_data = {"time": [1995.0, 1996.0]}
-    for dic in default_config_eu.model.parent[0].input_vars.values():
-        if dic["subs"]:
-            if dic["subs"] == ["sectors"]:
-                for i in range(1, 10):
-                    subs = "[sector_" + str(i) + "]"
-                    fake_data.update({dic["name_in_parent"] + subs: [1, 2]})
-            if dic["subs"] == ["final sources", "sectors"]:
-                for j in range(1, 3):
-                    for k in range(1, 10):
-                        subs = "[source_" + str(j) + ",sector_" + str(k) + "]"
-                        fake_data.update(
-                            {dic["name_in_parent"] + subs: [1, 2]})
-        else:
-            fake_data.update({dic["name_in_parent"]: [1, 2]})
-
-    df = pd.DataFrame(data=fake_data).set_index("time").T
-    df.to_csv(default_config_eu.model.parent[0].results_file_path)
-
-    result = tools.load_external_data(config=default_config_eu,
-                                      subscripts=subscripts,
-                                      namespace=namespace)
-
-    required_vars = [val["name_in_parent"] for val in
-                     default_config_eu.model.parent[0].input_vars.values()]
-
-    assert isinstance(result, Dict)
-    assert list(set(required_vars) - set(result.keys())) == []
-
-
 def test_select_scenario_sheet(world_model, default_config_world):
 
     sheet = default_config_world.scenario_sheet
@@ -297,9 +255,24 @@ def test_select_scenario_sheet(world_model, default_config_world):
     # does not return
     assert tools.select_scenario_sheet(world_model, sheet) is None
 
-    assert all(filter(lambda x: x == "Materials",
-                      world_model._external_elements[0].sheets))
-    assert world_model._external_elements[100].sheets == ["Parameters"]
+    assert getattr(
+        world_model.components,
+        "_ext_constant_current_mineral_reserves_mt"
+        ).sheets == ["Global"]
+    assert getattr(
+        world_model.components,
+        "_ext_constant_start_policy_leave_in_ground_coal"
+        ).sheets == [sheet]
+
+    tools.select_scenario_sheet(world_model, "GND")
+    assert getattr(
+        world_model.components,
+        "_ext_constant_current_mineral_reserves_mt"
+        ).sheets == ["Global"]
+    assert getattr(
+        world_model.components,
+        "_ext_constant_start_policy_leave_in_ground_coal"
+        ).sheets == ["GND"]
 
 
 def test_user_select_data_file_headless(mocker, default_config_eu):
@@ -370,23 +343,23 @@ def test_create_parent_models_data_file_paths_silent_no_paths_from_user(
 
 
 def test_create_parent_models_data_file_paths_no_silent_paths_from_user(
-     default_aut):
+     default_cat):
     """
     If running country model and the results file paths of the
     parent are passed from cli. Basically, under this configuration, this
     function should do nothing
     """
 
-    path1 = default_aut.model.parent[0].default_results_folder / "file1.csv"
-    path2 = default_aut.model.parent[1].default_results_folder / "file2.csv"
+    path1 = default_cat.model.parent[0].default_results_folder / "file1.csv"
+    path2 = default_cat.model.parent[1].default_results_folder / "file2.csv"
 
-    default_aut.model.parent[0].results_file_path = path1
-    default_aut.model.parent[1].results_file_path = path2
+    default_cat.model.parent[0].results_file_path = path1
+    default_cat.model.parent[1].results_file_path = path2
 
-    tools.create_parent_models_data_file_paths(default_aut)
+    tools.create_parent_models_data_file_paths(default_cat)
 
-    assert default_aut.model.parent[0].results_file_path == path1
-    assert default_aut.model.parent[1].results_file_path == path2
+    assert default_cat.model.parent[0].results_file_path == path1
+    assert default_cat.model.parent[1].results_file_path == path2
 
 
 def test_create_parent_models_data_file_paths_not_silent_headless(mocker,
@@ -400,7 +373,8 @@ def test_create_parent_models_data_file_paths_not_silent_headless(mocker,
                  return_value=return_path)
 
     default_eu.headless = True
-    assert tools.create_parent_models_data_file_paths(default_eu) is None
+    assert tools.create_parent_models_data_file_paths(default_eu)\
+        == [return_path]
     assert default_eu.model.parent[0].results_file_path == return_path
 
 
@@ -415,38 +389,39 @@ def test_create_parent_models_data_file_paths_not_silent_not_headless(
      'pytools.tools.user_select_data_file_gui', return_value=return_path)
 
     default_eu.headless = False
-    assert tools.create_parent_models_data_file_paths(default_eu) is None
+    assert tools.create_parent_models_data_file_paths(default_eu)\
+        == [return_path]
     assert default_eu.model.parent[0].results_file_path == return_path
 
 
 def test_run_no_file_path_from_user(
-     mocker, capsys, default_aut, aut_model):
+     mocker, capsys, default_cat, cat_model):
 
     # mocking the return of the run method of the pysd Model class
     return_df = pd.DataFrame(data={"a": [1, 2, 3], "b": [4, 5, 6]})
-    mocker.patch("pysd.py_backend.functions.Model.run", return_value=return_df)
+    mocker.patch("pysd.py_backend.statefuls.Model.run", return_value=return_df)
 
     # configuring parents file paths
-    default_aut.model.parent[0].results_file_path = \
-        default_aut.model.parent[0].default_results_folder.joinpath(
+    default_cat.model.parent[0].results_file_path = \
+        default_cat.model.parent[0].default_results_folder.joinpath(
             "result1.csv")
 
-    default_aut.model.parent[1].results_file_path = \
-        default_aut.model.parent[1].default_results_folder.joinpath(
+    default_cat.model.parent[1].results_file_path = \
+        default_cat.model.parent[1].default_results_folder.joinpath(
             "result1.csv")
 
-    _ = tools.run(default_aut, aut_model)
+    tools.run(default_cat, cat_model)
 
-    out, err = capsys.readouterr()
+    out = capsys.readouterr()[0]
 
     assert "External data file for pymedeas_eu:" in out
 
-    assert default_aut.model_arguments.results_fname == \
+    assert default_cat.model_arguments.results_fname == \
         "results_{}_{}_{}_{}.csv".format(
-                default_aut.scenario_sheet,
-                default_aut.model_arguments.initial_time,
-                default_aut.model_arguments.final_time,
-                default_aut.model_arguments.time_step
+                default_cat.scenario_sheet,
+                int(default_cat.model_arguments.initial_time),
+                int(default_cat.model_arguments.final_time),
+                default_cat.model_arguments.time_step
                 )
 
 
@@ -454,11 +429,11 @@ def test_run_file_path_from_user(mocker, default_world, world_model):
 
     # mocking the return of the run method of the pysd Model class
     return_df = pd.DataFrame(data={"a": [1, 2, 3], "b": [4, 5, 6]})
-    mocker.patch("pysd.py_backend.functions.Model.run", return_value=return_df)
+    mocker.patch("pysd.py_backend.statefuls.Model.run", return_value=return_df)
 
     default_world.model_arguments.results_fname = "results.csv"
 
-    _ = tools.run(default_world, world_model)
+    tools.run(default_world, world_model)
 
     assert default_world.model_arguments.results_fpath == \
         default_world.model.out_folder.joinpath(

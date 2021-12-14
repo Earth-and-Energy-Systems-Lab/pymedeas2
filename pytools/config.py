@@ -1,5 +1,5 @@
 import pathlib
-from typing import Optional, List, Dict, Union
+from typing import Optional, List, Union
 from dataclasses import dataclass
 import json
 import dacite
@@ -26,14 +26,11 @@ class ParentModel:
     name: str
     default_results_folder: pathlib.Path
     results_file_path: Optional[pathlib.Path]  # if user provides it
-    input_vars: Dict[str, dict]
 
 
 @dataclass
 class Model:
     model_file: pathlib.Path
-    scenario_inputs: pathlib.Path
-    historic_inputs: pathlib.Path
     out_folder: pathlib.Path
     out_default: List[str]
     parent: Optional[List[ParentModel]]

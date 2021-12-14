@@ -2,6 +2,7 @@
 cmdline parser
 """
 import json
+import re
 from pathlib import Path
 from ast import literal_eval
 import pandas as pd
@@ -107,14 +108,7 @@ def check_output_file_paths(string):
     try:
         output_dict = {}
         for model_and_path in file_list:
-            if '=' in model_and_path:
-                # new variable value
-                model_name, results_path = model_and_path.split('=')
-
-            if ':' in model_and_path:
-                # initial time value
-                model_name, results_path = model_and_path.split(':')
-
+            model_name, results_path = re.split(r":|=", model_and_path)
             output_dict[model_name] = results_path
 
         return output_dict

@@ -1,9 +1,16 @@
 import pytest
-import pysd
-from pytools.config import read_config, read_model_config
-import pandas as pd
+from pathlib import Path
+
 from copy import deepcopy
-from . import PROJ_FOLDER
+import pandas as pd
+import pysd
+
+from pytools.config import read_config, read_model_config
+
+
+@pytest.fixture(scope="session")
+def proj_folder():
+    return Path(__file__).parent.parent.resolve()
 
 
 @pytest.fixture()
@@ -37,10 +44,10 @@ def default_eu(config):
 
 
 @pytest.fixture()
-def default_aut(config):
+def default_cat(config):
     _new_conf = deepcopy(config)
-    # changing default region to pymedeas_aut
-    _new_conf.region = "pymedeas_aut"
+    # changing default region to pymedeas_cat
+    _new_conf.region = "pymedeas_cat"
     # loading default model configurations for austria
     _new_conf = read_model_config(_new_conf)
     return _new_conf
@@ -82,8 +89,8 @@ def default_config_eu(tmp_path, default_eu):
 
 
 @pytest.fixture()
-def default_config_aut(tmp_path, default_aut):
-    _new_conf = deepcopy(default_aut)
+def default_config_cat(tmp_path, default_cat):
+    _new_conf = deepcopy(default_cat)
     # setting path to the results file of the parent model (pymedeas_w)
     _new_conf.model.parent[0].default_results_folder = tmp_path.joinpath(
         "outputs", "pymedeas_w")
@@ -99,7 +106,7 @@ def default_config_aut(tmp_path, default_aut):
 
     # setting the default results folder to the tests main folder
     _new_conf.model.out_folder = tmp_path.joinpath(
-        "outputs", "pymedeas_aut")
+        "outputs", "pymedeas_cat")
     # creating the temporary results folder directory
     _new_conf.model.out_folder.mkdir(parents=True, exist_ok=True)
 
@@ -109,25 +116,25 @@ def default_config_aut(tmp_path, default_aut):
 ###############################################################################
 #                     PySD MODEL OBJECTS                                      #
 ###############################################################################
-# TODO Path objects are transformed to strings cause pysd expects a string
+
 @pytest.fixture()
-def world_model():
-    model_path = str(PROJ_FOLDER.joinpath(
-        "models", "pymedeas_w", "pymedeas_w.py").resolve())
+def world_model(proj_folder):
+    model_path = proj_folder.joinpath(
+        "models", "pymedeas_w", "pymedeas_w.py").resolve()
     return pysd.load(model_path, initialize=False)
 
 
 @pytest.fixture()
-def eu_model():
-    model_path = str(PROJ_FOLDER.joinpath(
-        "models", "pymedeas_eu", "pymedeas_eu.py").resolve())
+def eu_model(proj_folder):
+    model_path = proj_folder.joinpath(
+        "models", "pymedeas_eu", "pymedeas_eu.py").resolve()
     return pysd.load(model_path, initialize=False)
 
 
 @pytest.fixture()
-def aut_model():
-    model_path = str(PROJ_FOLDER.joinpath(
-        "models", "pymedeas_aut", "pymedeas_aut.py").resolve())
+def cat_model(proj_folder):
+    model_path = proj_folder.joinpath(
+        "models", "pymedeas_cat", "pymedeas_cat.py").resolve()
     return pysd.load(model_path, initialize=False)
 
 
@@ -155,8 +162,8 @@ def default_results_eu(default_config_eu):
 
 
 @pytest.fixture()
-def default_results_aut(default_config_aut):
-    df = pd.read_csv(default_config_aut.model.out_folder.joinpath(
+def default_results_cat(default_config_cat):
+    df = pd.read_csv(default_config_cat.model.out_folder.joinpath(
         "results_BAU_1995.0_1996.0_0.03125.csv"), index_col=0).T
     df.index = pd.to_numeric(df.index)
     yield df
@@ -269,7 +276,7 @@ def cli_input_missing_parent_results_file_path():
     # MissingValueError is raised
     # In this configuration the pymedeas_eu results path is not provided.
     cli_args = ["--model",
-                "pymedeas_aut",
+                "pymedeas_cat",
                 "--silent",
                 "--ext",
                 "pymedeas_w: tests/test_data/outputs/pymedeas_w/" +
@@ -355,12 +362,12 @@ def expected_conf_cli_input_long_and_short(tmp_path, default_eu):
 
 @pytest.fixture(params=["default_config_world",
                         "default_config_eu",
-                        "default_config_aut"])
+                        "default_config_cat"])
 def config_all_models(
-     request, default_config_world, default_config_eu, default_config_aut):
+     request, default_config_world, default_config_eu, default_config_cat):
     return {"default_config_world": default_config_world,
             "default_config_eu": default_config_eu,
-            "default_config_aut": default_config_aut}[request.param]
+            "default_config_cat": default_config_cat}[request.param]
 
 
 @pytest.fixture()

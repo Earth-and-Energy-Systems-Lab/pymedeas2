@@ -8,13 +8,10 @@ import sys
 import time
 from datetime import datetime
 
-import re
 import pandas as pd
-import numpy as np
-import xarray as xr
-import pathlib
+from pathlib import Path
+from argparse import Namespace
 
-import argparse
 from .argparser import parser, config
 from .config import Params, ParentModel
 
@@ -25,42 +22,37 @@ from tkinter.filedialog import askopenfilename
 from .logger.logger import log
 
 # PySD imports for replaced functions
-from pysd.py_backend.utils import xrmerge
-from pysd.py_backend.functions import Model
+from pysd.py_backend.statefuls import Model
 
 # these imports will not be needed in Python 3.9
-from typing import Union, Dict, List
+from typing import Union, List
 from . import PROJ_FOLDER
 
 
-def get_initial_user_input(args=None) -> argparse.Namespace:
+def get_initial_user_input(args: Union[List, None] = None) -> Namespace:
     """
-    Ask for user input to update simulation parameters.
-    Get user input and updates the config and run_params dictionaries.
+    Get user input to create the config object.
 
     Parameters
     ----------
-    config: dict
-        Configuration parameters.
-    run_params: dict
-        Simulation parameters.
+    args: list or None (optional)
+        List of user arguments to run the model. If None the arguments
+        will be taken from the taken from the system input. Default is None.
 
     Returns
     -------
-    None
-    # TODO review the documentation cause this function has changed
+    config: argparse.Namespace
+        Configuration data object.
 
     """
-    # this is only used for testing purposes
     if args is None:
         args = sys.argv[1:]
 
     return parser.parse_args(args)
 
 
-def update_config_from_user_input(options: argparse.Namespace,
-                                  base_path: pathlib.Path =
-                                  PROJ_FOLDER) -> Params:
+def update_config_from_user_input(options: Namespace,
+                                  base_path: Path = PROJ_FOLDER) -> Params:
 
     """
     This function takes user inputs and updates the config class attributes
@@ -80,20 +72,19 @@ def update_config_from_user_input(options: argparse.Namespace,
 
     if getattr(options, 'export_file'):
         export_file_raw = getattr(options, 'export_file')
-        if pathlib.Path(export_file_raw).is_absolute():
-            if pathlib.Path(export_file_raw).parent.is_dir():
-                config.model_arguments.export = pathlib.Path(
-                    export_file_raw).resolve()
+        if Path(export_file_raw).is_absolute():
+            if Path(export_file_raw).parent.is_dir():
+                config.model_arguments.export = Path(export_file_raw).resolve()
             else:
-                raise(ValueError, "Invalid pickle export path {}".format(
-                    str(pathlib.Path(export_file_raw))))
+                raise ValueError("Invalid pickle export path {}".format(
+                    str(Path(export_file_raw))))
         else:
             pickle_path = base_path.joinpath(export_file_raw).resolve()
             if pickle_path.parent.is_dir():
                 config.model_arguments.export = pickle_path
             else:
-                raise("Invalid pickle export path {}".format(
-                    str(pathlib.Path(export_file_raw).resolve())))
+                raise ValueError("Invalid pickle export path {}".format(
+                    str(Path(export_file_raw).resolve())))
 
     config.model_arguments.time_step = getattr(options, 'time_step')
     config.model_arguments.final_time = getattr(options, 'final_time')
@@ -124,13 +115,13 @@ def update_config_from_user_input(options: argparse.Namespace,
             mod_name, res_path = mod_name.strip(), res_path.strip()
             if mod_name in parents_names:
                 idx = parents_names.index(mod_name)
-                if pathlib.Path(res_path).is_absolute():
-                    if pathlib.Path(res_path).is_file():
+                if Path(res_path).is_absolute():
+                    if Path(res_path).is_file():
                         config.model.parent[idx].results_file_path = \
-                            pathlib.Path(res_path).resolve()
+                            Path(res_path).resolve()
                     else:
                         raise FileNotFoundError(str(
-                            pathlib.Path(res_path).resolve()) +
+                            Path(res_path).resolve()) +
                             " is not a valid path for the " +
                             "results file of the " + mod_name +
                             " model")
@@ -260,12 +251,12 @@ def select_model_outputs(config: Params, model: Model,
                 for a_var in avoid_vars])
         ])
 
-    if config.silent:
-        col_ind = 'r'
-    elif select == 'all':
-        col_ind = '0'
-    elif select == 'default':
+    if select == "all":
+        col_ind = "0"
+    elif select == "default":
         return config.model.out_default
+    elif config.silent:
+        col_ind = "r"
     else:
         for num, var_name in enumerate(var_list, 1):
             print('{}: {}'.format(num, var_name))
@@ -309,6 +300,7 @@ def select_model_outputs(config: Params, model: Model,
                 break
             else:
                 log.warning('Wrong variable name, try again...')
+
     col_ind_split = [x.strip(' \t\n\b+') for x in col_ind.split(',')]
     col_indices = [int(x) - 1 for x in col_ind_split if x.isdigit()]
     col_vars = [x for x in col_ind_split if not x.isdigit()]
@@ -383,13 +375,15 @@ def run(config: Params, model: Model) -> pd.DataFrame:
         config.model_arguments.results_fname = \
             "results_{}_{}_{}_{}.csv".format(
                 config.scenario_sheet,
-                config.model_arguments.initial_time,
-                config.model_arguments.final_time,
+                int(config.model_arguments.initial_time),
+                int(config.model_arguments.final_time),
                 config.model_arguments.time_step
                 )
 
-    config.model_arguments.results_fpath = config.model.out_folder.joinpath(
-        config.model_arguments.results_fname)
+    if not config.model_arguments.results_fpath:
+        config.model_arguments.results_fpath =\
+            config.model.out_folder.joinpath(
+                config.model_arguments.results_fname)
 
     print(
         "\n\nSimulation parameters:\n"
@@ -413,7 +407,7 @@ def run(config: Params, model: Model) -> pd.DataFrame:
                 parent.name,
                 str(parent.results_file_path)))
 
-    if isinstance(config.model_arguments.update_initials, dict):
+    if config.model_arguments.update_initials:
         print("- Updated initial conditions:\n\t" + "\n\t".join(
             [par + ": " + str(val) for par, val in
              config.model_arguments.update_initials.items()]))
@@ -425,13 +419,10 @@ def run(config: Params, model: Model) -> pd.DataFrame:
         initial_condition=(config.model_arguments.initial_time,
                            config.model_arguments.update_initials),
         return_columns=config.model_arguments.return_columns,
-        return_timestamps=np.arange(
-            config.model_arguments.initial_time,
-            config.model_arguments.final_time + 0.01,
-            float(config.model_arguments.return_timestamp)),
         progress=config.progress,
         final_time=config.model_arguments.final_time,
         time_step=config.model_arguments.time_step,
+        saveper=config.model_arguments.return_timestamp,
         flatten_output=True)
 
     sim_time = time.time() - sim_start_time
@@ -468,7 +459,7 @@ def user_select_data_file_gui(parent: ParentModel) -> str:
         )
 
 
-def user_select_data_file_headless(parent: ParentModel) -> pathlib.Path:
+def user_select_data_file_headless(parent: ParentModel) -> Path:
     """
     Asks the user to select the csv file name from which to import data
     required to run the EU model in std output. It looks only in the
@@ -514,7 +505,7 @@ def user_select_data_file_headless(parent: ParentModel) -> pathlib.Path:
                          'Please run the parent model/s first')
 
 
-def create_parent_models_data_file_paths(config: Params) -> None:
+def create_parent_models_data_file_paths(config: Params) -> List[Path]:
     """
     This function lists all csv (results) files in the pymedeas_w and/or
     pymedeas_eu folder/s and asks the user to choose one, so that all the
@@ -528,10 +519,10 @@ def create_parent_models_data_file_paths(config: Params) -> None:
 
     Returns
     -------
-    None
+    file_path: list
+        List of parent output file paths.
 
     """
-
     # if the user passed the file paths from the CLI, they should be here
     paths_from_user_input = all([dic.results_file_path for dic in
                                  config.model.parent])
@@ -566,91 +557,10 @@ def create_parent_models_data_file_paths(config: Params) -> None:
                 # the user will be asked for input and can be graphical
                 for num, _ in enumerate(config.model.parent):
                     config.model.parent[num].results_file_path = \
-                        pathlib.Path(user_select_data_file_gui(
+                        Path(user_select_data_file_gui(
                             config.model.parent[num]))
 
-
-def load_external_data(config: Params,
-                       subscripts: dict,
-                       namespace: dict) -> dict:  # TODO subscripts not used
-    """
-    Load outputs from parent models.
-
-    Parameters
-    ----------
-    config: dict
-        Configuration parameters.
-
-    subscript_dict: dict
-        Dictionary describing the possible dimensions of the
-        variable's subscripts
-
-    Returns
-    -------
-    dataDict: dict
-        Dictionary with the names of the functions and their return.
-
-    """
-    dataDict = {}
-    xarrayDict: Dict[str, Dict[str, List]] = {}
-
-    for parent in config.model.parent:
-        df = pd.read_csv(parent.results_file_path, index_col=0).T
-        df.index = pd.to_numeric(df.index)
-
-        imports = []
-        vars_with_subs = []
-        for _, vals in parent.input_vars.items():
-            vensim_var =\
-                list(namespace.keys())[list(namespace.values()).index(
-                    vals["name_in_parent"])]
-            if vals["subs"]:
-                # find all columns with subscripts
-                cols_in_df = [(vals["name_in_parent"], col) for col in
-                              df.columns if col.startswith(
-                                  vals["name_in_parent"]+"[")]
-                if not cols_in_df:
-                    # try to find cols by vensim name
-                    cols_in_df = [(vals["name_in_parent"], col) for col
-                                  in df.columns if col.startswith(
-                                      vensim_var+"[")]
-                if not cols_in_df:
-                    raise NameError("Variable {}".format(
-                        vals["name_in_parent"]) + " is not in the results file"
-                        + " of the {} model".format(parent.name))
-                imports += cols_in_df
-                # add to the dictionary with the dimensions to merge
-                xarrayDict[vals["name_in_parent"]] = {'subs': vals["subs"],
-                                                      'cols': []}
-                vars_with_subs.append(vals["name_in_parent"])
-            else:
-                if vals["name_in_parent"] in df.columns:
-                    imports.append((vals["name_in_parent"],
-                                    vals["name_in_parent"]))
-                elif vensim_var in df.columns:
-                    imports.append((vals["name_in_parent"], vensim_var))
-                else:
-                    raise NameError("Variable {} ".format(
-                        vals["name_in_parent"]) + "is not in the results file"
-                        + " of the {} model".format(parent.name))
-
-        for py_var, df_var in imports:
-            if '[' in df_var:
-                # Create 0 dims xarrays
-                dims = xarrayDict[py_var]['subs']
-                coords_ = re.split('\[|\]| , |, | ,|,', df_var)[1:-1]
-                coords = {dim: [coord] for (dim, coord) in zip(dims, coords_)}
-                df[df_var] = df[df_var].apply(xr.DataArray, args=(coords,
-                                                                  dims))
-                xarrayDict[py_var]['cols'].append(df_var)
-            else:
-                dataDict[py_var] = df[df_var]
-        for py_var in vars_with_subs:  # only xarrays (inputs with subscripts)
-            # merge xarrays to create a pandas.Series of xarray.DataArray
-            dataDict[py_var] = df[xarrayDict[py_var]['cols']].apply(
-                xrmerge, axis=1)
-
-    return dataDict
+    return [parent.results_file_path for parent in config.model.parent]
 
 
 def select_scenario_sheet(model: Model, scen_sheet_name: str) -> None:
@@ -670,9 +580,9 @@ def select_scenario_sheet(model: Model, scen_sheet_name: str) -> None:
 
     """
     for element in model._external_elements:
-        # Replace only user scenario
-        element.sheets = [scen_sheet_name if sheet == 'User scenario'
-                          else sheet
-                          for sheet in element.sheets]
-
-    return None
+        # Replace only scenario sheets
+        element.sheets = [
+            scen_sheet_name if "../../scenarios/scen" in file_name
+            else sheet_name
+            for sheet_name, file_name in zip(element.sheets, element.files)
+        ]

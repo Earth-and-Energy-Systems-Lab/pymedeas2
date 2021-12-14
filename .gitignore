@@ -13,3 +13,4 @@ model_updated.py
 .~lock*
 *.txt
 *.csv
+.coverage

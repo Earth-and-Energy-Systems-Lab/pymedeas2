@@ -1,6 +1,6 @@
 """
 Module grid_allocation_res_elec
-Translated using PySD version 2.1.0
+Translated using PySD version 2.2.0
 """
 
 

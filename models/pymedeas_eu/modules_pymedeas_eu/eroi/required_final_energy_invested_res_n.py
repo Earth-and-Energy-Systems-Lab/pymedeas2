@@ -1,6 +1,6 @@
 """
 Module required_final_energy_invested_res_n
-Translated using PySD version 2.1.0
+Translated using PySD version 2.2.0
 """
 
 

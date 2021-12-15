@@ -1,6 +1,6 @@
 """
 Module other_ghg_emissions_and_total_eq_c
-Translated using PySD version 2.1.0
+Translated using PySD version 2.2.0
 """
 
 

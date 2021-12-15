@@ -29,10 +29,10 @@ from pysd.py_backend.statefuls import Model
 warnings.filterwarnings("ignore")
 
 # check PySD version
-if tuple(int(i) for i in pysd.__version__.split(".")) < (2, 1, 0):
+if tuple(int(i) for i in pysd.__version__.split(".")) < (2, 2, 0):
     raise RuntimeError(
         "\n\n"
-        + "The current version of pymedeas models needs at least PySD 2.1.0"
+        + "The current version of pymedeas models needs at least PySD 2.2.0"
         + " You are running:\n\tPySD "
         + pysd.__version__
         + "\nPlease update PySD library with your package manager, "

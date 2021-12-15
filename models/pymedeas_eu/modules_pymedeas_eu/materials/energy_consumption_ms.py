@@ -1,6 +1,6 @@
 """
 Module energy_consumption_ms
-Translated using PySD version 2.1.0
+Translated using PySD version 2.2.0
 """
 
 
@@ -221,7 +221,7 @@ def total_energy_required_for_material_consumption_for_res_elec():
     """
     return sum(
         energy_required_for_material_consumption_per_res_elec(),
-        dim=("RES elec", "materials"),
+        dim=("materials", "RES elec"),
     )
 
 

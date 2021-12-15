@@ -1,6 +1,6 @@
 """
 Module econ_demand_exports_by_regions
-Translated using PySD version 2.1.0
+Translated using PySD version 2.2.0
 """
 
 

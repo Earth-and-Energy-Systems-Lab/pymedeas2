@@ -3,33 +3,33 @@ Python model 'pymedeas_cat.py'
 Translated using PySD
 """
 
-from os import path
+from pathlib import Path
 import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
     if_then_else,
-    logical_or,
-    lookup,
-    logical_and,
-    integer,
-    invert_matrix,
-    step,
-    sum,
-    zidz,
     xidz,
+    integer,
+    lookup,
+    zidz,
+    invert_matrix,
+    sum,
+    logical_and,
+    step,
+    logical_or,
 )
-from pysd.py_backend.statefuls import Integ, SampleIfTrue, Smooth, DelayFixed, Initial
+from pysd.py_backend.statefuls import SampleIfTrue, Integ, DelayFixed, Initial, Smooth
 from pysd.py_backend.external import ExtConstant, ExtData, ExtLookup
 from pysd.py_backend.data import TabData
-from pysd.py_backend.utils import rearrange, xrmerge, load_model_data, load_modules
+from pysd.py_backend.utils import load_modules, xrmerge, rearrange, load_model_data
 from pysd import subs
 
-__pysd_version__ = "2.1.0"
+__pysd_version__ = "2.2.0"
 
 __data = {"scope": None, "time": lambda: 0}
 
-_root = path.dirname(__file__)
+_root = Path(__file__).parent
 
 _namespace, _subscript_dict, _dependencies, _modules = load_model_data(
     _root, "pymedeas_cat"

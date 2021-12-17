@@ -1,6 +1,6 @@
 """
 Module recyclingmaterial_extraction_dem
-Translated using PySD version 2.1.0
+Translated using PySD version 2.2.0
 """
 
 

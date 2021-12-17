@@ -1,6 +1,6 @@
 """
 Module total_co2_emissions_c
-Translated using PySD version 2.1.0
+Translated using PySD version 2.2.0
 """
 
 

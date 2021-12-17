@@ -1,6 +1,6 @@
 """
 Module uranium_extraction_ean
-Translated using PySD version 2.1.0
+Translated using PySD version 2.2.0
 """
 
 

@@ -3,33 +3,33 @@ Python model 'pymedeas_eu.py'
 Translated using PySD
 """
 
-from os import path
+from pathlib import Path
 import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
-    logical_or,
-    integer,
-    if_then_else,
-    step,
-    sum,
     logical_and,
-    xidz,
-    lookup,
-    zidz,
     invert_matrix,
+    xidz,
+    sum,
+    if_then_else,
+    logical_or,
+    step,
+    zidz,
+    integer,
+    lookup,
 )
-from pysd.py_backend.statefuls import Initial, SampleIfTrue, Smooth, DelayFixed, Integ
-from pysd.py_backend.external import ExtConstant, ExtLookup, ExtData
+from pysd.py_backend.statefuls import Initial, Smooth, Integ, SampleIfTrue, DelayFixed
+from pysd.py_backend.external import ExtData, ExtConstant, ExtLookup
 from pysd.py_backend.data import TabData
-from pysd.py_backend.utils import rearrange, load_modules, xrmerge, load_model_data
+from pysd.py_backend.utils import rearrange, load_model_data, load_modules, xrmerge
 from pysd import subs
 
-__pysd_version__ = "2.1.0"
+__pysd_version__ = "2.2.0"
 
 __data = {"scope": None, "time": lambda: 0}
 
-_root = path.dirname(__file__)
+_root = Path(__file__).parent
 
 _namespace, _subscript_dict, _dependencies, _modules = load_model_data(
     _root, "pymedeas_eu"

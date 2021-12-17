@@ -1,6 +1,6 @@
 """
 Module supply_by_techn_eer
-Translated using PySD version 2.1.0
+Translated using PySD version 2.2.0
 """
 
 

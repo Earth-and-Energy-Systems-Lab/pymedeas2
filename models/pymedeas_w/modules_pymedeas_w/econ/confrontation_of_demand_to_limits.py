@@ -1,6 +1,6 @@
 """
 Module confrontation_of_demand_to_limits
-Translated using PySD version 2.1.0
+Translated using PySD version 2.2.0
 """
 
 
@@ -635,7 +635,7 @@ def tfei_sectors():
     Total final energy intensity of the 35 WIOD sectors.
     """
     return sum(
-        final_energy_intensity_by_sector_and_fuel(), dim=("sectors", "final sources")
+        final_energy_intensity_by_sector_and_fuel(), dim=("final sources", "sectors")
     )
 
 

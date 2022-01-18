@@ -1,4 +1,15 @@
 {
+    "_active_initial_buffer_factor": {
+        "initial": {
+            "ref_buffer_factor": 1
+        },
+        "step": {
+            "buffer_c_coeff": 1,
+            "c_in_mixed_layer": 1,
+            "preindustrial_c_in_mixed_layer": 1,
+            "ref_buffer_factor": 1
+        }
+    },
     "_delayfixed_abundance_unconv_oil_delayed_1yr": {
         "initial": {},
         "step": {
@@ -1818,10 +1829,7 @@
         "__external__": null
     },
     "buffer_factor": {
-        "buffer_c_coeff": 1,
-        "c_in_mixed_layer": 1,
-        "preindustrial_c_in_mixed_layer": 1,
-        "ref_buffer_factor": 2,
+        "_active_initial_buffer_factor": 1,
         "time": 1
     },
     "by_mineral_rr_alt_techn": {
@@ -8653,7 +8661,7 @@
         "beta_0_gfcf": 1,
         "beta_1_gfcf": 2,
         "cc_sectoral": 2,
-        "time": 2,
+        "time": 1,
         "variation_cc_sectoral": 1,
         "variation_historic_gfcf": 1
     },

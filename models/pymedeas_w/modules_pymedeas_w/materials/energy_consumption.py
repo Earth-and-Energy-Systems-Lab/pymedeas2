@@ -221,7 +221,7 @@ def total_energy_required_for_material_consumption_for_res_elec():
     """
     return sum(
         energy_required_for_material_consumption_per_res_elec(),
-        dim=("materials", "RES elec"),
+        dim=("RES elec", "materials"),
     )
 
 

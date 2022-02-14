@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; pymedeas2 2.0.0-dev documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Usage" href="usage.html" />
+    <link rel="prev" title="Welcome pymedeas2 models documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> pymedeas2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installing-using-conda">Installing using conda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#alternative-installation">Alternative installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#required-dependencies">Required Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development/development_index.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="navigating.html">Using the terminal or Anaconda Prompt Powershell</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pymedeas2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>For installing <em>pymedeas2</em> models you need to first clone or download and unzip the <a class="reference external" href="https://gitlab.com/gencat_creaf/pymedeas2">pymedeas2 repository</a>.</p>
+<section id="installing-using-conda">
+<h2>Installing using conda<a class="headerlink" href="#installing-using-conda" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>If not installed yet, <a class="reference external" href="https://conda.io/projects/conda/en/latest/user-guide/install/index.html">download and install Miniconda or Anaconda</a> on your computer.</p></li>
+<li><p>Open a terminal or Anaconda Prompt Powershell and navigate to the project folder (see <a class="reference internal" href="navigating.html"><span class="doc">using the terminal or Anaconda Prompt Powershell</span></a> for more information).</p></li>
+<li><p><a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file">Create a conda environement using the provided environment.yml file</a>, e.g.:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(base) user@host:~/pymedeas2$ conda env create -f environment.yml
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you already had Anaconda installed on your Mac and then upgraded the OS to Catalina, If you are running MacOS Catalina, make sure your read <a class="reference external" href="https://www.anaconda.com/how-to-restore-anaconda-after-macos-catalina-update/">this</a></p>
+</div>
+</section>
+<section id="alternative-installation">
+<h2>Alternative installation<a class="headerlink" href="#alternative-installation" title="Permalink to this headline">¶</a></h2>
+<p>The models can be also run if the needed dependencies (found in the <em>environment.yml</em> file) are required. Alternative package manages such as <em>pip</em> can be used to install these dependencies.</p>
+</section>
+<section id="required-dependencies">
+<h2>Required Dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline">¶</a></h2>
+<p><em>pymedeas2</em> models need <a class="reference external" href="https://pysd.readthedocs.io">PySD</a> library for running. It requires at least <strong>Python 3.7</strong> and <strong>PySD 2.2.0</strong>. Moreover <strong>matplotlib</strong> and <strong>dacite</strong> are required.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome pymedeas2 models documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Roger Samsó, Eneko Martin Martinez, Enric Alcover.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

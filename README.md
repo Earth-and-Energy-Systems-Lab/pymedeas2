@@ -1,5 +1,5 @@
 # temporary_name models
-[![coverage report](https://gitlab.com/gencat_creaf/pymedeas2/badges/master/coverage.svg)](https://gitlab.com/gencat_creaf/pymedeas2/-/commits/master) 
+[![coverage report](https://gitlab.com/gencat_creaf/pymedeas2/badges/master/coverage.svg)](https://gitlab.com/gencat_creaf/pymedeas2/-/commits/master)
 
 The models in this repository are loaded and run using the [PySD](https://github.com/JamesPHoughton/pysd) library.
 
@@ -45,7 +45,7 @@ NOTE: If you already had Anaconda installed on your Mac and then upgraded the OS
     or
 
     ```console
-    python run.py -m pymedeas_aut -x BAU -p
+    python run.py -m pymedeas_cat -x BAU -p
     ```
 NOTE: to see all user options and default parameter values, run:
 

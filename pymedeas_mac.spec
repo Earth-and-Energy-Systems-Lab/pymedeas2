@@ -3,17 +3,17 @@ import os
 import matplotlib as mpl
                                  
 specpath = os.path.dirname(os.path.abspath(SPEC))
-matplotlibrc_path = os.path.dirname(mpl.matplotlib_fname())
+matplotlibrc_path = os.path.join(os.path.dirname(mpl.matplotlib_fname()), 'matplotlibrc')
 
 block_cipher = None
 
-added_files = [(matplotlibrc_path, './matplotlib/mpl-data/'),
-               ('./models/', './models/'),
-               ('./README.md', './'),
-               ('./LICENSE', './'),
-               ('./scenarios/', './scenarios'),
-               ('./pytools/models.json', './pytools/'),
-	       ('./pytools/config.json', './pytools/')
+added_files = [(matplotlibrc_path, 'matplotlib/mpl-data'),
+               ('./models/', 'models'),
+               ('./README.md', '.'),
+               ('./LICENSE', '.'),
+               ('./scenarios/', 'scenarios'),
+               ('./pytools/models.json', 'pytools'),
+	       ('./pytools/config.json', 'pytools')
 	       ]
 
 

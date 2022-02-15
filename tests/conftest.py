@@ -10,11 +10,13 @@ from pytools.config import read_config, read_model_config
 
 @pytest.fixture(scope="session")
 def proj_folder():
+    """main folder"""
     return Path(__file__).parent.parent.resolve()
 
 
 @pytest.fixture()
 def config():
+    """read model configuration"""
     # NOTE : it does not have the model configuration loaded at this point
     # (i.e. config.model = None)
     config = read_config()

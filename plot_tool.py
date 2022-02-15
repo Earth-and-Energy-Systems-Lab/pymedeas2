@@ -1,84 +1,66 @@
 #!/usr/bin/python
 # coding: utf-8
-
-__author__ = "Emilio Ramon Garcia Ladona"
-__maintainer__ = "Roger Samsó, Eneko Martín"
-__status__ = "Development"
-
-
-"""
-This tool allows plotting the model simulation results. When running run.py
-with the option -p, it shows up at the end of the simulation and displays the
-simulation results. It can also run independently, in which case the results
-must be imported from a csv file. In both cases, only two curves can be
-represetnted at the same time.
-"""
-import pandas as pd
+import sys
+from tkinter.messagebox import YES
+import warnings
 import tkinter as tk
+from tkinter.filedialog import askopenfilename
+
+from itertools import cycle
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
+from pandas.core.indexing import IndexingError
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg,\
      NavigationToolbar2Tk
 from matplotlib.figure import Figure
 from matplotlib.ticker import MultipleLocator
-from tkinter.filedialog import askopenfilename
-from tkinter import Button
-from itertools import cycle
+import pysd
+
 from pytools.config import read_config, read_model_config
+from pytools.data_manager import DataContainer, DataFile, DataLoaded
 
-import re
-import sys
-import warnings
-import pathlib
-import matplotlib
-from pandas.core.indexing import IndexingError
+__author__ = "Eneko Martin, Emilio Ramon Garcia Ladona"
+__maintainer__ = "Roger Samsó, Eneko Martin"
+__status__ = "Development"
 
-# from pytools.tools import update_paths
 
 warnings.filterwarnings("ignore")
 
 
-class Plot_tool(tk.Frame):
+class PlotTool(tk.Frame):
+    """
+    Main plotting class with tkinter
+    """
 
     last_col = ''
-
-    # default list of variables
-    default_list = list(sorted(
-        ['tpe_from_res_ej',  # total primary energy supply from RES (MToe/Year)
-         'total_extraction_nre_ej',
-         # Annual total extraction of non-renewable energy resources (EJ/Year)
-         'percent_res_vs_tpes',
-         # Percent of primary energy from RES in the TPES (%)
-         'temperature_change',
-         # Temperature of the Atmosphere and Upper Ocean, relative to
-         # preindustrial reference period (degreesC)
-         'total_land_requirements_renew_mha',
-         # Land required for RES power plants and total bioenergy (land
-         # competition + marginal lands (MHa)
-         'share_blue_water_use_vs_ar',
-         # Share of blue water used vs accessible runoff water (Dmnl)
-         'gdppc',  # GDP per capita (1995T$ per capita) ($/people)
-         'eroist_system',  # EROI standard of the system (Dmnl)
-         'tfes_intensity_ej_t',  # Total final energy intensity (EJ/T$)
-         'real_tfec',  # Real total final energy consumption (EJ)
-         'gdp',  # Global GDP in T1995T$ (T$)
-         'population',  # Population projection (people)
-         'total_co2_emissions_gtco2'
-         ]))
 
     markers = ["o", "v", "<", "^", "1", "s", "p", "P", "h", "X", "D"]
     line_styles = ['--', '-.', ':']
 
-    def __init__(self, master, data=None, results_folder=None, scenario=''):
-        tk.Frame.__init__(self, master)  # esto define self.master
+    def __init__(self, master, data=None, config=None, scenario="Current"):
+        tk.Frame.__init__(self, master)
         self.master = master
         self.master.option_add('*tearOff', 'FALSE')  # menus no detaching
         self.master.title("MEDEAS Plotting tool")
-        self.results_folder = results_folder
-        self.column = ''
-        self.data_container = []  # list that will contain all data objects
-        self.scenario = scenario
+
+        if not config:
+            # Ask user for config
+            config = self.get_config()
+
+        # Default folder and variables
+        self.results_folder = config.model.out_folder
+        self.default_list = config.model.out_default
+
+        # Get model information (documentation, units, namespace)
+        model = pysd.load(config.model.model_file, initialize=False)
+        self.doc = model.doc()
+        self.title, self.units, self.description = "", None, None
+
+        # current variable and data container
+        self.column = ""
+        self.data_container = DataContainer()
 
         # attributes of the window
         self.toolbar = None
@@ -89,39 +71,26 @@ class Plot_tool(tk.Frame):
         self.subplot = None     # axis canvas
         self.canvas = None  # canvas
         self.button = None  # button to clear data
+        self.var_dim = []  # dimensions of the variable
 
         # setting the default folder to store saved plots
         matplotlib.rcParams['savefig.directory'] = self.results_folder
 
         #  Data
         if data is not None:
-            pdDF = Data(self.scenario, dataframe=data)
-            self.data_container.append(pdDF)
-            self.all_vars = [
-                var for var in self.default_list if var in pdDF.df.columns] + \
-                ['--------'] + pdDF.variables_list
+            self.data_container.add(DataLoaded(scenario, data))
+            self.all_vars = self.data_container.variable_list
         else:
             self.all_vars = []
 
-        # generate funcname: (unit, legend) dictionary from file
-        self.legend_by_name = {}
-
-        try:
-            with open(pathlib.Path(__file__).parent.joinpath(
-                'pytools', 'plotting', 'legend_by_name.txt'),
-                      'r', encoding='utf-8') as f:
-                legend_by_name_list = f.readlines()
-        except FileNotFoundError:
-            print('legend_by_name.txt cannot be read correctly\n No legends '
-                  'and units generated')
-        else:
-            for line in legend_by_name_list:
-                funcname, unit, legend = [x.strip() for x in line.split('@@')]
-                self.legend_by_name[funcname] = (unit, legend)
-
         self.init_window()
 
+    def get_config(self):
+        #TODO
+        return None
+
     def init_window(self):
+        """Main window"""
 
         self.pack(fill=tk.BOTH, expand=1)
 
@@ -129,59 +98,108 @@ class Plot_tool(tk.Frame):
         self.master.config(menu=menubar)
 
         filemenu = tk.Menu(menubar)
-        filemenu.add_command(label="Load data", command=self.open_file)
+        filemenu.add_command(label="Load data", command=self.load_file)
+        # TODO allow vensim data
+        # filemenu.add_command(label="Load Vensim data", command=self.load_file)
+        filemenu.add_command(label="Clear data", command=self.clear_data)
         filemenu.add_command(label="Exit", command=lambda: on_closing(self))
         menubar.add_cascade(label="File", menu=filemenu)
+        # TODO add help cascade and or about the models
 
-        p = tk.PanedWindow(self, orient=tk.HORIZONTAL)
-        p.pack(side="left", fill=tk.BOTH, expand=1)
+        # Main window
+        paned_win = tk.PanedWindow(self, orient=tk.HORIZONTAL)
+        paned_win.pack(side="left", fill=tk.BOTH, expand=1)
 
-        f1 = tk.LabelFrame(p, text='Variables', width=100, height=100)
-        f2 = tk.Frame(p, width=100, height=100)
+        left_frame = tk.LabelFrame(paned_win, text='Variables', width=100, height=100)
+        right_frame = tk.Frame(paned_win, width=100, height=100)
 
-        p.add(f1)
-        p.add(f2)
+        paned_win.add(left_frame)
+        paned_win.add(right_frame)
 
-        f3 = tk.Frame(f1)
-        f3.pack(side=tk.TOP)
+        # Left frames
+        self.scenarios_frame = tk.Frame(left_frame)
+        self.scenarios_frame.pack(side=tk.BOTTOM)
 
-        right_scrollbar = tk.Scrollbar(f1, orient=tk.VERTICAL)
+        search_frame = tk.Frame(left_frame)
+        search_frame.pack(side=tk.TOP)
+
+        right_scrollbar = tk.Scrollbar(left_frame, orient=tk.VERTICAL)
         right_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.lstbox = tk.Listbox(f1, yscrollcommand=right_scrollbar.set,
-                                 width=80)
+        self.lstbox = tk.Listbox(
+            left_frame, yscrollcommand=right_scrollbar.set, width=80)
         self.lstbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         right_scrollbar.config(command=self.lstbox.yview)
         self.lstbox.bind('<<ListboxSelect>>', self.on_click)
 
         self.populate_list()
 
-        self.search_tit = tk.Label(f3, text="Search")
+        self.search_tit = tk.Label(search_frame, text="Search")
         self.search_tit.pack(side=tk.LEFT, expand=0)
 
         self.search_var = tk.StringVar()
         self.search_var.trace("w", lambda name, index, mode:
                               self.update_list(self.all_vars))
 
-        self.entry = tk.Entry(f3, textvariable=self.search_var, width=50)
+        self.entry = tk.Entry(
+            search_frame, textvariable=self.search_var, width=50)
         self.entry.pack(side=tk.LEFT, expand=0)
 
+        # Right frames
+        self.dimension_frame = tk.Frame(right_frame, width=100, height=30)
+        self.dimension_frame.pack(side=tk.TOP)
+        lower_right_frame = tk.Frame(right_frame, width=100, height=70)
+        lower_right_frame.pack(side=tk.BOTTOM)
+
+        # Plot frame
         fig = Figure(figsize=(200, 100))
         plt.rc('legend', fontsize='medium')
         self.subplot = fig.add_subplot(111)
 
-        self.canvas = FigureCanvasTkAgg(fig, master=f2)
+        self.canvas = FigureCanvasTkAgg(fig, master=lower_right_frame)
 
-        self.toolbar = NavigationToolbar2Tk(self.canvas, f2)
+        self.toolbar = NavigationToolbar2Tk(self.canvas, lower_right_frame)
         self.canvas.get_tk_widget().pack()
 
-        self.button = Button(self.toolbar, text="Clear data",
-                             command=self.clear_plots)
+        # info buttom for variable description
+        info_icon = tk.PhotoImage(file='pytools/info-logo.png')
+        info_icon = info_icon.subsample(8, 8)
+        self.button = tk.Button(
+            self.toolbar, image=info_icon, width=25, height=20,
+            text="Show variable information",
+            command=self.show_description)
+        self.button.image = info_icon
         self.button.pack(side=tk.LEFT, fill=tk.BOTH, expand=0)
 
         self.toolbar.pack(side=tk.TOP, fill=tk.BOTH, expand=0)
         self.toolbar.update()
         self.canvas.draw()
+
+    def dimension_dropdown(self, dimensions):
+        """Create dimensions dropdowns"""
+        tk.Label(self.dimension_frame, text="Dimensions").grid(
+            row=0, column=0)
+
+        self.var_dim = []
+        for i, dims in enumerate(dimensions):
+            # create variables and dropdowns
+            self.var_dim.append(tk.StringVar())
+            self.var_dim[i].trace(
+                "w", lambda name, index, mode: self.draw_dimensions())
+            op_menu = tk.OptionMenu(
+                self.dimension_frame, self.var_dim[i], *dims)
+            op_menu.grid(
+                row=1+i, column=0, padx=5)
+
+    def clear_frames(self):
+        """Clear plot and dimensions frames"""
+        # clear the plot
+        self.subplot.clear()
+        self.canvas.draw()
+        for widgets in self.dimension_frame.winfo_children():
+            # remove dimensions widgets
+            widgets.destroy()
+        self.dimension_frame.config(height=0)  # update height
 
     def populate_list(self):
         """
@@ -207,241 +225,151 @@ class Plot_tool(tk.Frame):
             if search_term.lower() in item.lower():
                 self.lstbox.insert(tk.END, item)
 
-    def clear_plots(self):
+    def clear_data(self):
         """Clear plot displayed and imported data"""
-        self.subplot.clear()
-        self.canvas.draw()
-        self.data_container = []
-        self.scenario = ''
+        self.clear_frames()
+        self.data_container.clear()
         self.lstbox.delete(0, last=len(self.all_vars))
 
-    @staticmethod
-    def replace_let_by_x(stri):
-        for let in '\"\'-+\%?&\/=\(\)':
-            stri = stri.replace(let, 'x')
-        return stri
+    def load_file(self):
+        """Create Data object with columns information"""
+        filename = askopenfilename(
+            initialdir=self.results_folder,
+            title="Open file",
+            filetypes=(
+                ("csv files", "*.csv"),
+                ("tab file", "*.tab"),
+                ("All files", "*")
+            )
+        )
 
-    def open_file(self):
-        ext = (("csv", "*.*csv"), ("all files", "*.*"))
-        filename = askopenfilename(initialdir="./outputs", title="Open file",
-                                   filetypes=ext)
-
-        if filename.split('.')[-1] == "csv":
-            datafile = Data(self.config, filename=filename)
-            self.data_container.append(datafile)
-            if len(self.data_container) < 2:
-                self.all_vars = [var for var in self.default_list if
-                                 var in datafile.df.columns] + [
-                                    '--------'] + datafile.variables_list
-                self.populate_list()
+        if filename.endswith(".csv") or filename.endswith(".tab"):
+            self.data_container.add(DataFile(filename))
+            self.all_vars = self.data_container.variable_list
+            self.populate_list()
         else:
-            print("Incompatible file format. Compatible file formats are 'csv'"
-                  " and... 'csv' (for now)")
-
-    dict_correct = {
-        'year': 'Year',
-        'ej': 'EJ',
-        'tw': 'TW',
-        'mdollar': 'M Dollar',
-        'pj': 'PJ', 'gj': 'GJ',
-        'beTWeen': 'between',
-        'DegreesC': u'Temperature (\u00B0C)',
-        'degrees Celsius': u'\u00B0C',
-        'degree C': u'\u00B0C',
-        'degrees C': u'\u00B0C',
-        'yr': 'Year',
-        'Dmnl': 'Dimensionless'
-        }
-
-    def define_units(self, varname):
-        def adjust_format(name):
-            for wrong in self.dict_correct:
-                name = name.replace(wrong, self.dict_correct[wrong])
-            return name
-        dicti = {'ej': 'EJ', 'mtoe': 'mtoe', 'tw': 'TW', 'twh': 'TWh',
-                 'mt': 'Mt', 'DegreesC': u'Temperature (\u00B0C)'}
-        clean_name = varname.split('[')[0].strip(' x')
-        ret = None
-        for unit in dicti:
-            if clean_name.endswith(unit):
-                ret = dicti[unit]
-                break
-        else:
-            for name in self.legend_by_name:
-                if varname.startswith(name):
-                    ret = adjust_format(self.legend_by_name[name][0])
-        return ret
-
-    def define_title(self, varname):
-        # specific update of the legend
-        def adjust_format(name):
-            for wrong in self.dict_correct:
-                name = name.replace(wrong, self.dict_correct[wrong])
-            name = name.replace('\\', '\n').replace('\t', ' ')
-            return name.split('.')[0].strip()
-        dicti = {}
-        clean_name = varname.split('[')[0].strip(' x')
-        ret = ''
-        for unit in dicti:
-            if clean_name.startswith(unit):
-                ret = dicti[unit]
-                break
-        else:
-            for name in self.legend_by_name:
-                if varname.startswith(name):
-                    ret = adjust_format(self.legend_by_name[name][1].split(
-                        '[')[0])
-        return ret
+            tk.messagebox.showerror(
+                title="Incompatible file format",
+                message=f"Incompatible file format '{filename}'.\n"
+                        "Compatible file formats are '.csv' and '.tab'")
 
     def on_click(self, event):
-
-        w = event.widget
+        """Select a variable"""
         try:
-            index = w.curselection()[0]
+            index = event.widget.curselection()[0]
         except IndexingError:
-            self.column = Plot_tool.last_col
+            self.column = PlotTool.last_col
         else:
-            self.column = w.get(index)
-            Plot_tool.last_col = self.column
+            self.column = event.widget.get(index)
+            PlotTool.last_col = self.column
 
-        self.draw()
+        self.select_variable()
 
-    def draw(self):
+    def show_description(self):
+        """Show current variable description if available"""
+        if not self.description:
+            tk.messagebox.showwarning(
+                title=self.title, message="No description available...")
+        else:
+            tk.messagebox.showinfo(
+                title=self.title, message=self.description)
 
+    def set_variable_info(self):
+        """Set variable info from model documentation"""
+        index = self.doc["Py Name"] == self.column
+        self.title = self.doc[index]["Real Name"].iloc[0] or self.column
+        self.units = self.doc[index]["Unit"].iloc[0] or ""
+        self.description = self.doc[index]["Comment"].iloc[0] or None
+
+    def select_variable(self):
+        """Load the selected variable information and add dropdowns"""
+        # Set the current var in the objects to the selected one
+        self.clear_frames()
+        self.data_container.set_var(self.column)
+        self.set_variable_info()
+
+        if self.data_container.dimensions is None:
+            self.draw(self.data_container.get_values(None))
+        else:
+            self.dimension_dropdown(self.data_container.dimensions)
+            self.plot_info()
+
+    def draw_dimensions(self):
+        """Draw the plot when changing dimensions"""
+        dimensions = tuple(var.get() for var in self.var_dim)
+        if all(dimensions):
+            self.draw(self.data_container.get_values(dimensions))
+
+    def draw(self, values):
+        """Draw the plot of the selected variable"""
+        self.plot_info()
+        historical = False
+        historic_year = 2014
+        markers = cycle(PlotTool.markers)
+        n_sim = len(self.data_container)
+        markersizes = cycle(np.linspace(7, 4, n_sim))
+        k = -1
+
+        for scenario, results in values.items():
+            k += 1
+            marker = next(markers)  # updates the line marker
+            markersize = next(markersizes)
+
+            if results is None:
+                continue
+
+            if not historical and any(results.index < historic_year):
+
+                self.subplot.plot(results.loc[:historic_year],
+                                  label='Historical',
+                                  color='black')
+                historical = True
+
+            self.subplot.plot(results.loc[historic_year:],
+                              marker=marker, markersize=markersize,
+                              markevery=(k, n_sim),
+                              label=scenario, alpha=0.8)
+
+            print(f"Plotting {self.column}")
+
+            self.subplot.legend()
+            self.canvas.draw()
+
+    def plot_info(self):
+        """Include plot info, variable title and units"""
         self.subplot.clear()
-        self.historical = False
         self.canvas.draw()
-
         # image name will be named after the plotted variable name
         self.canvas.get_default_filename = lambda: self.column
 
-        title = self.define_title(self.column)
-        title = title + '\n({})'.format(self.column) if title else self.column
-        self.subplot.set_title(title)
+        self.subplot.set_title(self.title)
         self.subplot.xaxis.set_minor_locator(MultipleLocator(5))
         self.subplot.set_xlabel('Year')
         self.subplot.grid(which='major')
         self.subplot.grid(which='minor', linestyle=':', alpha=0.5)
 
-        ylabel = self.define_units(self.column)
-
-        if ylabel:
-            self.subplot.set_ylabel(ylabel, rotation='vertical')
-
-        mark = cycle(Plot_tool.markers)
-        n_sim = len(self.data_container)
-        mark_size = cycle(np.linspace(7, 4, n_sim))
-        k = -1
-
-        if not self.column.lower().startswith('-'):
-
-            for obj in self.data_container:
-                k += 1
-                m = next(mark)  # updates the line marker
-                ms = next(mark_size)
-
-                try:
-                    if any(obj.time_updated < 2019):
-                        nt = len(np.where(obj.time_updated < 2019)[0])
-                        if not self.historical:
-                            self.subplot.plot(obj.time_updated[0:nt],
-                                              obj.py_dict[self.column][0:nt],
-                                              label='Historical',
-                                              color='black')
-                            self.historical = True
-                        self.subplot.plot(obj.time_updated[nt-1:],
-                                          obj.py_dict[self.column][nt-1:],
-                                          marker=m, markersize=ms,
-                                          markevery=(k, n_sim),
-                                          label=obj.scenario, alpha=0.8)
-                    else:
-                        self.subplot.plot(obj.time_updated,
-                                          obj.py_dict[self.column],
-                                          marker=m, markersize=ms,
-                                          markevery=(k, n_sim),
-                                          label=obj.scenario, alpha=0.8)
-                except KeyError:
-                    print('No data available for {}'.format(self.column))
-                else:
-                    print('Plotting ' + self.column)
-
-                self.subplot.legend()
-                self.canvas.draw()
+        if self.units:
+            self.subplot.set_ylabel(self.units, rotation='vertical')
 
 
 def on_closing(root):
-    """behaviour when the window is closed"""
+    """Behaviour when the window is closed"""
     # if messagebox.askokcancel("Quit", "Do you want to quit?"):
     root.destroy()
     sys.exit()
 
 
-class Data:
-
-    """class that holds the data to be plotted. It can either be loaded from
-    a csv or from a pandas DataFrame"""
-
-    def __init__(self, scenario='', filename=None, dataframe=None):
-
-        self.filename = filename
-        self.df = dataframe
-
-        # these attributes will be used by the Plot_tool
-        self.time_updated = []
-        self.py_dict = {}
-        self.variables_list = []
-
-        if self.filename and not isinstance(self.df, pd.DataFrame):
-            self._load_data_file()
-
-        if isinstance(self.df, pd.DataFrame) and not self.filename:
-            self.scenario = scenario
-            self._df_to_dict()
-
-        print('Data loaded for scenario {}'.format(self.scenario))
-
-        self.variables_list = [var for var in sorted(self.df.columns) if
-                               var not in Plot_tool.default_list]
-
-    def _load_data_file(self):
-        """loads data from a csv file"""
-
-        print("Reading csv file {}".format(self.filename))
-        self.df = pd.read_csv(self.filename, index_col=0).T
-        self.df.index = pd.to_numeric(self.df.index)
-        pattern = re.compile(
-            r'results_(.*)(?=_[\d]{4}_[\d]{4}_[\d.]*(_old)*.csv)', re.I)
-        try:
-            scen_name = pattern.match(pathlib.PurePath(self.filename).name
-                                      ).group(1)
-        except ValueError:
-            print("To be able to import the scenario name, the output file "
-                  "name should be the default one (e.g. results_ScenName_"
-                  "InitDate_FinalDate_TimeStep.csv)")
-            scen_name = input('Unknown Scenario. Please provide a name for the'
-                              ' imported scenario: ')
-            if scen_name == "":
-                scen_name = 'Unknown Scenario'
-
-        self.py_dict = self.df.to_dict(orient='list')
-        self.time_updated = self.df.index.values
-        self.scenario = scen_name
-
-    def _df_to_dict(self):
-        """convert a pandas dataframe to a dictionary"""
-        self.py_dict = self.df.to_dict(orient='list')
-        self.time_updated = self.df.index.values
-
-
-def main(folder, df, scenario=''):
-
-    if __name__ == '__main__':
+def main(config=None, data=None, scenario=None):
+    """
+    Main loop
+    """
+    if __name__ == "__main__":
         root = tk.Tk()
     else:
         root = tk.Toplevel()
 
     root.geometry("1200x600")
-    Plot_tool(root, data=df, results_folder=folder, scenario=scenario)
+    PlotTool(root, data=data, config=config, scenario=scenario)
     root.protocol("WM_DELETE_WINDOW", lambda: on_closing(root))
     root.mainloop()
 
@@ -452,21 +380,12 @@ if __name__ == '__main__':
 
     # load configuration file
     if len(sys.argv) == 1:
-        user_inp = input("\nProvide the region of the results you want to plot"
-                         " (i.e. pymedeas_w | pymedeas_eu | pymedeas_aut:")
-        if user_inp in ["pymedeas_w", "pymedeas_eu", "pymedeas_aut"]:
-            config.region = user_inp
-        else:
-            print("The only available regions are pymedeas_w, pymedeas_eu and"
-                  " pymedeas_aut, please input one of those three.")
-            sys.exit(0)
+        main()
     elif len(sys.argv) == 2:
+        config = read_config()
         config.region = sys.argv[1]
+        main(read_model_config(config))
     else:
         raise ValueError(
             "python plot_tool.py only accepts 1 argument, corresponding"
-            " to the region (e.g.: python plot_tool.py europe)")
-
-    # read the model configuration for the region selected by the user
-    config = read_model_config(config)
-    main(config.model.out_folder, None)
+            " to the region (e.g.: python plot_tool.py pymedeas_eu)")

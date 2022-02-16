@@ -64,7 +64,6 @@ class Data:
     def __init__(self):
         self.scenario = ""
         self._variable_list = []
-        # TODO: convert cached_values in a FIFO
         self.cached_values = {}
         self.current_var = None
         self.data = pd.DataFrame()
@@ -86,9 +85,11 @@ class Data:
 
     def _add_to_cache(self):
         """Add variable to cache """
-
-        if len(self.columns) == 1:
-            self.cached_values[self.current_var] = self.current_var
+        if not self.columns:
+            self.cached_values[self.current_var] = None
+            self.dimensions[self.current_var] = None
+        elif len(self.columns) == 1:
+            (self.cached_values[self.current_var],) = self.columns
             self.dimensions[self.current_var] = None
         elif len(self.columns) > 1:
             self.cached_values[self.current_var] = {}
@@ -100,22 +101,49 @@ class Data:
             self.dimensions[self.current_var] = [
                 sorted(set(dim))
                 for dim in
-                np.array(list(self.cached_values[self.current_var])
-                        ).transpose()]
+                np.array(
+                    list(self.cached_values[self.current_var])
+                ).transpose()
+            ]
 
     def get_values(self, dimensions=None):
         """Get values for a given combination of dimensions"""
-        if self.current_var not in self.cached_values:
-            # variable not in this experiment
+        column = self.cached_values[self.current_var]
+        if not column:
             return None
-        if dimensions:
-            return self.data[self.cached_values[self.current_var][dimensions]]
+        elif dimensions:
+            return self.data[column[dimensions]]
         else:
-            return self.data[self.cached_values[self.current_var]]
+            return self.data[column]
 
     def clear(self):
         """Delete data"""
         del self.data, self.cached_values
+
+
+class DataLoaded(Data):
+
+    """class that holds the data to be plotted. It can either be loaded from
+    a csv or from a pandas DataFrame"""
+
+    def __init__(self, scenario, dataframe):
+        super().__init__()
+        self.scenario = scenario
+        self.data = dataframe
+
+        # Fake read of the columns to be able to use class methods
+        Columns._files[pathlib.Path(self.scenario)] =\
+            (self.data.columns, False)
+        self.variable_list = Columns.get_columns(self.scenario)[0]
+
+    def set_var(self, var_name):
+        """Set current variable"""
+        self.current_var = var_name
+        self.columns = None
+
+        if self.current_var not in self.cached_values:
+            self.columns = Columns.get_columns(self.scenario, [var_name])[0]
+            self._add_to_cache()
 
 
 class DataFile(Data):
@@ -129,12 +157,6 @@ class DataFile(Data):
         self.scenario = self._get_scen_name()
         self.variable_list, self.transpose = Columns.get_columns(self.filename)
 
-        if self.transpose:
-            self.time = pd.read_csv(
-                self.filename, nrows=1, header=None).values[0, 1:]
-        else:
-            self.time = pd.read_csv(self.filename, usecols=[0]).values
-
     def _get_scen_name(self):
         """get scenario name from filename"""
         pattern = re.compile(
@@ -143,42 +165,23 @@ class DataFile(Data):
             return pattern.match(
                 pathlib.PurePath(self.filename).name).group(1)
         except ValueError:
-            print("To be able to import the scenario name, the output file "
-                  "name should be the default one (e.g. results_ScenName_"
-                  "InitDate_FinalDate_TimeStep.csv)")
-            return input('Unknown Scenario. Please provide a name for the'
-                              ' imported scenario: ')
+            return "Unknown"
 
     def set_var(self, var_name):
         """Set current variable and get it from file if necessary"""
         self.current_var = var_name
-        self.columns = Columns.get_columns(self.filename, [var_name])[0]
+        self.columns = None
 
         if self.current_var not in self.cached_values:
-            self.data = self.data.join(
-                load_outputs(
-                    self.filename, self.transpose, columns=self.columns),
-                how="outer")
+            self.columns = Columns.get_columns(self.filename, [var_name])[0]
+            if self.columns:
+                # selected variable is not in this dataset
+                self.data = self.data.join(
+                    load_outputs(
+                        self.filename, self.transpose, columns=self.columns),
+                    how="outer")
+
             self._add_to_cache()
-
-
-class DataLoaded(Data):
-
-    """class that holds the data to be plotted. It can either be loaded from
-    a csv or from a pandas DataFrame"""
-
-    def __init__(self, scenario, dataframe):
-        super().__init__()
-        self.scenario = scenario
-        self.data = dataframe
-
-        Columns._files[self.scenario] = (self.data.columns, False)
-
-        self.variable_list = Columns.get_columns(self.scenario)[0]
-        self.time = self.data.index.values
-
-    def get_var(self, var_name):
-        print(Columns.get_columns(self.scenario, var_name))
 
 
 class DataVensim(Data):
@@ -186,10 +189,56 @@ class DataVensim(Data):
     """class that holds the data to be plotted. It can either be loaded from
     a csv or from a pandas DataFrame"""
 
-    def __init__(self, scenario, dataframe):
+    def __init__(self, filename, doc):
         super().__init__()
-        self.scenario = scenario
-        self.data = dataframe
+        self.filename = filename
+        self.scenario = "Vensim output"
+        self.doc = doc[["Py Name", "Real Name"]]
+        self.namespace = {}
+        self.variable_list, self.transpose = Columns.get_columns(self.filename)
 
+    def set_var(self, var_name):
+        """Set current variable and get it from file if necessary"""
+        self.current_var = var_name
+        self.columns = None
 
+        if self.current_var not in self.cached_values:
+            if var_name in self.namespace:
+                self.columns = Columns.get_columns(
+                    self.filename,
+                    [self.namespace[var_name]])[0]
 
+                new_data = load_outputs(
+                        self.filename, self.transpose, columns=self.columns)
+
+                # remove nan from constant values
+                nan_cols = np.isnan(new_data.iloc[1:, :]).all()
+                new_data.loc[:, nan_cols] =\
+                    new_data.loc[:, nan_cols].iloc[0].values
+
+                self.data = self.data.join(new_data, how="outer")
+
+            self._add_to_cache()
+
+    @property
+    def variable_list(self):
+        """holds the sorted list of variables without dimensions"""
+        return self._variable_list
+
+    @variable_list.setter
+    def variable_list(self, columns):
+        """save only variable names not suscripts"""
+        inverse_space = {
+            original.replace("\"", ""): py_name
+            for py_name, original in
+            zip(self.doc["Py Name"], self.doc["Real Name"])
+        }
+
+        self.namespace = {}
+
+        for column in columns:
+            file_name = ("[".join(column.split("[")[:-1]) or column)
+            sub_name = file_name.replace("\"", "")
+            self.namespace[inverse_space[sub_name]] = file_name
+
+        self._variable_list = set(self.namespace)

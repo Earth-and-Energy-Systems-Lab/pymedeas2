@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # coding: utf-8
 import sys
-from tkinter.messagebox import YES
 import warnings
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
 
+import json
 from itertools import cycle
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,7 +19,8 @@ from matplotlib.ticker import MultipleLocator
 import pysd
 
 from pytools.config import read_config, read_model_config
-from pytools.data_manager import DataContainer, DataFile, DataLoaded
+from pytools.data_manager import DataContainer, DataFile, DataLoaded,\
+                                 DataVensim
 
 __author__ = "Eneko Martin, Emilio Ramon Garcia Ladona"
 __maintainer__ = "Roger Samsó, Eneko Martin"
@@ -43,26 +44,13 @@ class PlotTool(tk.Frame):
         tk.Frame.__init__(self, master)
         self.master = master
         self.master.option_add('*tearOff', 'FALSE')  # menus no detaching
-        self.master.title("MEDEAS Plotting tool")
-
-        if not config:
-            # Ask user for config
-            config = self.get_config()
-
-        # Default folder and variables
-        self.results_folder = config.model.out_folder
-        self.default_list = config.model.out_default
-
-        # Get model information (documentation, units, namespace)
-        model = pysd.load(config.model.model_file, initialize=False)
-        self.doc = model.doc()
-        self.title, self.units, self.description = "", None, None
+        self.master.title("pymedeas plotting tool")
 
         # current variable and data container
         self.column = ""
         self.data_container = DataContainer()
 
-        # attributes of the window
+        # attributes of the main window
         self.toolbar = None
         self.search_tit = None  # title of the search bar
         self.search_var = None  # gets the value input by user
@@ -73,9 +61,6 @@ class PlotTool(tk.Frame):
         self.button = None  # button to clear data
         self.var_dim = []  # dimensions of the variable
 
-        # setting the default folder to store saved plots
-        matplotlib.rcParams['savefig.directory'] = self.results_folder
-
         #  Data
         if data is not None:
             self.data_container.add(DataLoaded(scenario, data))
@@ -83,15 +68,71 @@ class PlotTool(tk.Frame):
         else:
             self.all_vars = []
 
-        self.init_window()
+        if not config:
+            # Ask user for config
+            self.get_config()
+        else:
+            self.configure_data(config)
+            self.init_window()
+
+    def configure_data(self, config):
+        """Configure metadate for the variables and default folders"""
+        # Default folder and variables
+        self.results_folder = config.model.out_folder
+        self.default_list = config.model.out_default
+
+        # Get model information (documentation, units, namespace)
+        model = pysd.load(config.model.model_file, initialize=False)
+        self.doc = model.doc()
+        self.doc["Clean Name"] = self.doc["Real Name"].apply(self.clean_name)
+        self.title, self.units, self.description = "", None, None
+
+        # setting the default folder to store saved plots
+        matplotlib.rcParams['savefig.directory'] = self.results_folder
+
+    @staticmethod
+    def clean_name(name):
+        """Remove outside commas from variables"""
+        if name.startswith('"') and name.endswith('"'):
+            return name[1:-1]
+        else:
+            return name
 
     def get_config(self):
-        #TODO
-        return None
+        """Popup window for selecting configuration"""
+        with open("pytools/models.json") as mod_pars:
+            model_pars = json.load(mod_pars)
+
+        self.popup = tk.Toplevel()
+        self.popup.wm_title("Select configuration")
+
+        tk.Label(self.popup, text="Select origin model to load outputs").grid(
+            column=0, row=0, padx=20, pady=20)
+
+        self.config = tk.StringVar()
+        tk.OptionMenu(self.popup, self.config, *model_pars.keys()).grid(
+            column=0, row=1, padx=20, pady=10)
+
+        tk.Button(self.popup, text="Okay", command=self.set_config).grid(
+            column=0, row=2, padx=20, pady=10)
+
+        self.master.update()
+
+    def set_config(self):
+        """Set model configuration from popup resukts"""
+        if self.config.get():
+            config = read_config()
+            config.region = self.config.get()
+            self.popup.destroy()
+            self.configure_data(read_model_config(config))
+            self.init_window()
+        else:
+            tk.messagebox.showwarning(
+                title="Select configuration",
+                message="Please select a configuration in the dropdown.")
 
     def init_window(self):
         """Main window"""
-
         self.pack(fill=tk.BOTH, expand=1)
 
         menubar = tk.Menu(self.master)
@@ -99,8 +140,9 @@ class PlotTool(tk.Frame):
 
         filemenu = tk.Menu(menubar)
         filemenu.add_command(label="Load data", command=self.load_file)
-        # TODO allow vensim data
-        # filemenu.add_command(label="Load Vensim data", command=self.load_file)
+        filemenu.add_command(
+            label="Load Vensim data",
+            command=lambda: self.load_file(lambda x: DataVensim(x, self.doc)))
         filemenu.add_command(label="Clear data", command=self.clear_data)
         filemenu.add_command(label="Exit", command=lambda: on_closing(self))
         menubar.add_cascade(label="File", menu=filemenu)
@@ -110,7 +152,8 @@ class PlotTool(tk.Frame):
         paned_win = tk.PanedWindow(self, orient=tk.HORIZONTAL)
         paned_win.pack(side="left", fill=tk.BOTH, expand=1)
 
-        left_frame = tk.LabelFrame(paned_win, text='Variables', width=100, height=100)
+        left_frame = tk.LabelFrame(
+            paned_win, text='Variables', width=100, height=100)
         right_frame = tk.Frame(paned_win, width=100, height=100)
 
         paned_win.add(left_frame)
@@ -231,20 +274,23 @@ class PlotTool(tk.Frame):
         self.data_container.clear()
         self.lstbox.delete(0, last=len(self.all_vars))
 
-    def load_file(self):
+    def load_file(self, DataType=DataFile):
         """Create Data object with columns information"""
         filename = askopenfilename(
             initialdir=self.results_folder,
             title="Open file",
             filetypes=(
+                ("csv, tab files", "*.csv *.tab"),
                 ("csv files", "*.csv"),
-                ("tab file", "*.tab"),
+                ("tab files", "*.tab"),
                 ("All files", "*")
             )
         )
 
-        if filename.endswith(".csv") or filename.endswith(".tab"):
-            self.data_container.add(DataFile(filename))
+        if not filename:
+            pass
+        elif filename.endswith(".csv") or filename.endswith(".tab"):
+            self.data_container.add(DataType(filename))
             self.all_vars = self.data_container.variable_list
             self.populate_list()
         else:
@@ -277,9 +323,10 @@ class PlotTool(tk.Frame):
     def set_variable_info(self):
         """Set variable info from model documentation"""
         index = self.doc["Py Name"] == self.column
-        self.title = self.doc[index]["Real Name"].iloc[0] or self.column
+        self.title = self.doc[index]["Clean Name"].iloc[0] or self.column
         self.units = self.doc[index]["Unit"].iloc[0] or ""
         self.description = self.doc[index]["Comment"].iloc[0] or None
+        self.plot_info()
 
     def select_variable(self):
         """Load the selected variable information and add dropdowns"""
@@ -292,7 +339,6 @@ class PlotTool(tk.Frame):
             self.draw(self.data_container.get_values(None))
         else:
             self.dimension_dropdown(self.data_container.dimensions)
-            self.plot_info()
 
     def draw_dimensions(self):
         """Draw the plot when changing dimensions"""
@@ -330,15 +376,12 @@ class PlotTool(tk.Frame):
                               markevery=(k, n_sim),
                               label=scenario, alpha=0.8)
 
-            print(f"Plotting {self.column}")
-
-            self.subplot.legend()
-            self.canvas.draw()
+        self.subplot.legend()
+        self.canvas.draw()
 
     def plot_info(self):
         """Include plot info, variable title and units"""
         self.subplot.clear()
-        self.canvas.draw()
         # image name will be named after the plotted variable name
         self.canvas.get_default_filename = lambda: self.column
 
@@ -350,6 +393,8 @@ class PlotTool(tk.Frame):
 
         if self.units:
             self.subplot.set_ylabel(self.units, rotation='vertical')
+
+        self.canvas.draw()
 
 
 def on_closing(root):
@@ -375,8 +420,6 @@ def main(config=None, data=None, scenario=None):
 
 
 if __name__ == '__main__':
-
-    config = read_config()
 
     # load configuration file
     if len(sys.argv) == 1:

@@ -1,5 +1,9 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+"""
+For this script to work, we need to create an environmental variable named KEY, which is the path to the key file used to sign the code
+"""
+
 block_cipher = None
 
 import os
@@ -40,6 +44,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
+          codesign_identity=os.environ.get('KEY'),
           icon= os.path.join(specpath, 'MEDEAS.ico'),
           console=True )
 coll = COLLECT(exe,

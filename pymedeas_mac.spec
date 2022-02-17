@@ -1,4 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
+
+"""
+For this script to work, we need to create an environmental variable named KEY, which is the path to the key file used to sign the code
+"""
 import os
 import matplotlib as mpl
                                  
@@ -46,7 +50,7 @@ exe = EXE(pyz,
 	  icon= os.path.join(specpath, 'MEDEAS.ico'),
           disable_windowed_traceback=False,
           target_arch=None,
-          codesign_identity=None,
+          codesign_identity=os.environ.get('KEY'),
           entitlements_file=None )
 coll = COLLECT(exe,
                a.binaries,

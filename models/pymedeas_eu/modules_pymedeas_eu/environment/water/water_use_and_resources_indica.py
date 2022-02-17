@@ -1,6 +1,6 @@
 """
 Module water_use_and_resources_indica
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -58,7 +58,7 @@ def historic_water_by_type_intensities_by_sector():
 def historic_water_by_type_intensities_for_households():
     """
     Real Name: Historic water by type intensities for households
-    Original Eqn: IF THEN ELSE( Time<2009, Historic water use[H,water](Time)/Household demand total, 0)
+    Original Eqn: IF THEN ELSE( Time<2009, Historic water use[Households,water](Time)/Household demand total, 0)
     Units: dam3/Mdollars
     Limits: (None, None)
     Type: component
@@ -69,7 +69,7 @@ def historic_water_by_type_intensities_for_households():
     return if_then_else(
         time() < 2009,
         lambda: rearrange(
-            historic_water_use(time()).loc["H", :].reset_coords(drop=True),
+            historic_water_use(time()).loc["Households", :].reset_coords(drop=True),
             ["water"],
             _subscript_dict,
         )
@@ -118,7 +118,7 @@ def historic_water_use(x):
     Units: dam3/$
     Limits: (None, None)
     Type: lookup
-    Subs: ['SECTORS H', 'water']
+    Subs: ['SECTORS and HOUSEHOLDS', 'water']
 
     Historic water use by type for 35 WIOD sectors and households.
     """
@@ -438,7 +438,10 @@ _ext_lookup_historic_water_use = ExtLookup(
     "Europe",
     "year",
     "historic_water_use_blue_water",
-    {"SECTORS H": _subscript_dict["SECTORS H"], "water": ["blue water"]},
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "water": ["blue water"],
+    },
     _root,
     "_ext_lookup_historic_water_use",
 )
@@ -449,7 +452,10 @@ _ext_lookup_historic_water_use.add(
     "Europe",
     "year",
     "historic_water_use_green_water",
-    {"SECTORS H": _subscript_dict["SECTORS H"], "water": ["green water"]},
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "water": ["green water"],
+    },
 )
 
 
@@ -458,7 +464,10 @@ _ext_lookup_historic_water_use.add(
     "Europe",
     "year",
     "historic_water_use_gray_water",
-    {"SECTORS H": _subscript_dict["SECTORS H"], "water": ["gray water"]},
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "water": ["gray water"],
+    },
 )
 
 

@@ -1,6 +1,6 @@
 """
 Module uranium_extraction
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -302,7 +302,7 @@ def tonnes_per_kt():
 def unlimited_uranium():
     """
     Real Name: "unlimited uranium?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'E104')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'unlimited_uranium')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -422,7 +422,7 @@ _ext_lookup_table_max_extraction_uranium = ExtLookup(
 _ext_constant_unlimited_uranium = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "E104",
+    "unlimited_uranium",
     {},
     _root,
     "_ext_constant_unlimited_uranium",

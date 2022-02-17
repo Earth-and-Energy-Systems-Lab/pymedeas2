@@ -1,6 +1,6 @@
 """
 Module res_elec_supply_by_technology
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -37,118 +37,6 @@ def efficiency_conversion_bioe_to_elec():
         electricity plants and CHPs (estimation for 2014 from the IEA balances).
     """
     return _ext_constant_efficiency_conversion_bioe_to_elec()
-
-
-def fe_elec_generation_from_bioe_twh():
-    """
-    Real Name: FE Elec generation from bioE TWh
-    Original Eqn: real generation RES elec TWh[solid bioE elec]
-    Units: TWh/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual electricity generation.
-    """
-    return float(real_generation_res_elec_twh().loc["solid bioE elec"])
-
-
-def fe_elec_generation_from_csp_twh():
-    """
-    Real Name: FE Elec generation from CSP TWh
-    Original Eqn: real generation RES elec TWh[CSP]
-    Units: TWh
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual electricity generation.
-    """
-    return float(real_generation_res_elec_twh().loc["CSP"])
-
-
-def fe_elec_generation_from_geotelec_twh():
-    """
-    Real Name: "FE Elec generation from geot-elec TWh"
-    Original Eqn: real generation RES elec TWh[geot elec]
-    Units: TWh/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual electricity generation.
-    """
-    return float(real_generation_res_elec_twh().loc["geot elec"])
-
-
-def fe_elec_generation_from_hydro_twh():
-    """
-    Real Name: FE Elec generation from hydro TWh
-    Original Eqn: real generation RES elec TWh[hydro]
-    Units: TWh/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual electricity generation.
-    """
-    return float(real_generation_res_elec_twh().loc["hydro"])
-
-
-def fe_elec_generation_from_oceanic_twh():
-    """
-    Real Name: FE Elec generation from oceanic TWh
-    Original Eqn: real generation RES elec TWh[oceanic]
-    Units: TWh/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual electricity generation.
-    """
-    return float(real_generation_res_elec_twh().loc["oceanic"])
-
-
-def fe_elec_generation_from_offshore_wind_twh():
-    """
-    Real Name: FE Elec generation from offshore wind TWh
-    Original Eqn: real generation RES elec TWh[wind offshore]
-    Units: TWh/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual electricity generation.
-    """
-    return float(real_generation_res_elec_twh().loc["wind offshore"])
-
-
-def fe_elec_generation_from_onshore_wind_twh():
-    """
-    Real Name: FE Elec generation from onshore wind TWh
-    Original Eqn: real generation RES elec TWh[wind onshore]
-    Units: TWh/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual electricity generation.
-    """
-    return float(real_generation_res_elec_twh().loc["wind onshore"])
-
-
-def fe_elec_generation_from_solar_pv_twh():
-    """
-    Real Name: FE Elec generation from solar PV TWh
-    Original Eqn: real generation RES elec TWh[solar PV]
-    Units: TWh/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual electricity generation.
-    """
-    return float(real_generation_res_elec_twh().loc["solar PV"])
 
 
 def fe_tot_generation_all_res_elec_twh():
@@ -193,20 +81,6 @@ def mtoe_per_ej():
     return 23.8846
 
 
-def pe_bioe_for_elec_generation_ej():
-    """
-    Real Name: PE bioE for Elec generation EJ
-    Original Eqn: PE real generation RES elec[solid bioE elec]
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual primary energy to generate electricity (Direct Equivalent Method).
-    """
-    return float(pe_real_generation_res_elec().loc["solid bioE elec"])
-
-
 def pe_biow_for_elec_generation_mtoe():
     """
     Real Name: PE BioW for Elec generation Mtoe
@@ -221,24 +95,10 @@ def pe_biow_for_elec_generation_mtoe():
     return float(pe_real_generation_res_elec().loc["solid bioE elec"]) * mtoe_per_ej()
 
 
-def pe_csp_for_elec_generation_ej():
-    """
-    Real Name: PE CSP for Elec generation EJ
-    Original Eqn: PE real generation RES elec[CSP]
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual primary energy to generate electricity (Direct Equivalent Method).
-    """
-    return float(pe_real_generation_res_elec().loc["CSP"])
-
-
 def pe_elec_generation_from_res_ej():
     """
     Real Name: PE Elec generation from RES EJ
-    Original Eqn: PE bioE for Elec generation EJ+"PE geot-elec for Elec generation EJ" +PE hydro for Elec generation EJ +PE oceanic for Elec generation EJ+PE solar PV for Elec generation EJ+PE CSP for Elec generation EJ +PE onshore wind for Elec generation EJ+PE offshore wind for Elec generation EJ+PES tot biogas for elec
+    Original Eqn: SUM(PE real generation RES elec[RES elec!])+PES tot biogas for elec
     Units: EJ/Year
     Limits: (None, None)
     Type: component
@@ -249,50 +109,15 @@ def pe_elec_generation_from_res_ej():
         primary energy.
     """
     return (
-        pe_bioe_for_elec_generation_ej()
-        + pe_geotelec_for_elec_generation_ej()
-        + pe_hydro_for_elec_generation_ej()
-        + pe_oceanic_for_elec_generation_ej()
-        + pe_solar_pv_for_elec_generation_ej()
-        + pe_csp_for_elec_generation_ej()
-        + pe_onshore_wind_for_elec_generation_ej()
-        + pe_offshore_wind_for_elec_generation_ej()
+        sum(pe_real_generation_res_elec(), dim=("RES elec",))
         + pes_tot_biogas_for_elec()
     )
-
-
-def pe_geotelec_for_elec_generation_ej():
-    """
-    Real Name: "PE geot-elec for Elec generation EJ"
-    Original Eqn: PE real generation RES elec[geot elec]
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual primary energy to generate electricity (Direct Equivalent Method).
-    """
-    return float(pe_real_generation_res_elec().loc["geot elec"])
-
-
-def pe_hydro_for_elec_generation_ej():
-    """
-    Real Name: PE hydro for Elec generation EJ
-    Original Eqn: PE real generation RES elec[hydro]
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual primary energy to generate electricity (Direct Equivalent Method).
-    """
-    return float(pe_real_generation_res_elec().loc["hydro"])
 
 
 def pe_losses_bioe_for_elec_ej():
     """
     Real Name: PE losses BioE for Elec EJ
-    Original Eqn: PE real generation RES elec[solid bioE elec]-FE Elec generation from bioE TWh*EJ per TWh
+    Original Eqn: PE real generation RES elec[solid bioE elec]-real generation RES elec TWh[solid bioE elec]*EJ per TWh
     Units: EJ/Year
     Limits: (None, None)
     Type: component
@@ -303,50 +128,8 @@ def pe_losses_bioe_for_elec_ej():
     """
     return (
         float(pe_real_generation_res_elec().loc["solid bioE elec"])
-        - fe_elec_generation_from_bioe_twh() * ej_per_twh()
+        - float(real_generation_res_elec_twh().loc["solid bioE elec"]) * ej_per_twh()
     )
-
-
-def pe_oceanic_for_elec_generation_ej():
-    """
-    Real Name: PE oceanic for Elec generation EJ
-    Original Eqn: PE real generation RES elec[oceanic]
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual primary energy to generate electricity (Direct Equivalent Method).
-    """
-    return float(pe_real_generation_res_elec().loc["oceanic"])
-
-
-def pe_offshore_wind_for_elec_generation_ej():
-    """
-    Real Name: PE offshore wind for Elec generation EJ
-    Original Eqn: PE real generation RES elec[wind offshore]
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual primary energy to generate electricity (Direct Equivalent Method).
-    """
-    return float(pe_real_generation_res_elec().loc["wind offshore"])
-
-
-def pe_onshore_wind_for_elec_generation_ej():
-    """
-    Real Name: PE onshore wind for Elec generation EJ
-    Original Eqn: PE real generation RES elec[wind onshore]
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual primary energy to generate electricity (Direct Equivalent Method).
-    """
-    return float(pe_real_generation_res_elec().loc["wind onshore"])
 
 
 @subs(["RES elec"], _subscript_dict)
@@ -426,20 +209,6 @@ def pe_real_generation_res_elec():
             {"RES elec": ["CSP"]},
         ),
     )
-
-
-def pe_solar_pv_for_elec_generation_ej():
-    """
-    Real Name: PE solar PV for Elec generation EJ
-    Original Eqn: PE real generation RES elec[solar PV]
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual primary energy to generate electricity (Direct Equivalent Method).
-    """
-    return float(pe_real_generation_res_elec().loc["solar PV"])
 
 
 def res_to_fossil_accounting():

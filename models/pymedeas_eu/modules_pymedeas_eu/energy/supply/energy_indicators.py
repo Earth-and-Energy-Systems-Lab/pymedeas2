@@ -1,63 +1,7 @@
 """
 Module energy_indicators
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
-
-
-def annual_share_res_vs_tfec_growth_rate():
-    """
-    Real Name: Annual share RES vs TFEC growth rate
-    Original Eqn: -1+share RES vs TFEC/share RES vs TFEC delayed 1yr
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return -1 + share_res_vs_tfec() / share_res_vs_tfec_delayed_1yr()
-
-
-def annual_share_res_vs_tpes_growth_rate():
-    """
-    Real Name: Annual share RES vs TPES growth rate
-    Original Eqn: -1+share RES vs TPES/share RES vs TPES delayed 1yr
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return -1 + share_res_vs_tpes() / share_res_vs_tpes_delayed_1yr()
-
-
-def annual_tfec_res_growth_rate():
-    """
-    Real Name: Annual TFEC RES growth rate
-    Original Eqn: -1+TFEC RES EJ/TFEC RES delayed 1yr
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return -1 + tfec_res_ej() / tfec_res_delayed_1yr()
-
-
-def annual_tpes_res_growth_rate():
-    """
-    Real Name: Annual TPES RES growth rate
-    Original Eqn: -1+TPE from RES EJ/TPES RES delayed 1yr
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return -1 + tpe_from_res_ej() / tpes_res_delayed_1yr()
 
 
 def average_elec_consumption_per_capita():
@@ -206,50 +150,6 @@ def pop_not_dependent_on_trad_biomass():
     return population() - population_dependent_on_trad_biomass()
 
 
-def share_res_vs_tfec_delayed_1yr():
-    """
-    Real Name: share RES vs TFEC delayed 1yr
-    Original Eqn: DELAY FIXED ( share RES vs TFEC, 1, 0.1614)
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return _delayfixed_share_res_vs_tfec_delayed_1yr()
-
-
-def share_res_vs_tpes_delayed_1yr():
-    """
-    Real Name: share RES vs TPES delayed 1yr
-    Original Eqn: DELAY FIXED ( share RES vs TPES, 1, 0.123)
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return _delayfixed_share_res_vs_tpes_delayed_1yr()
-
-
-def share_tfec_before_heat_dem_corr_vs_real_tfec():
-    """
-    Real Name: share TFEC before heat dem corr vs real TFEC
-    Original Eqn: Real TFEC/Real TFEC before heat dem corr
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Share of total final energy consumption before heat demand correction vs.
-        real TFEC as estimated in MEDEAS correcting for heat demand for
-        non-commercial sectors.
-    """
-    return real_tfec() / real_tfec_before_heat_dem_corr()
-
-
 def share_total_net_energy_vs_tpes():
     """
     Real Name: share total net energy vs TPES
@@ -307,18 +207,24 @@ def tfec_per_capita_before_heat_dem_corr():
     return zidz(real_tfec_before_heat_dem_corr() * gj_per_ej(), population())
 
 
-def tfec_res_delayed_1yr():
+def tfec_res_ej():
     """
-    Real Name: TFEC RES delayed 1yr
-    Original Eqn: DELAY FIXED ( TFEC RES EJ, 1, 4.209)
+    Real Name: TFEC RES EJ
+    Original Eqn: FE tot generation all RES elec EJ+FES RES for heat EJ+PE traditional biomass consum EJ+FES total biofuels+FES total biogas
     Units: EJ
     Limits: (None, None)
     Type: component
     Subs: None
 
-
+    Total final energy consumption from RES.
     """
-    return _delayfixed_tfec_res_delayed_1yr()
+    return (
+        fe_tot_generation_all_res_elec_ej()
+        + fes_res_for_heat_ej()
+        + pe_traditional_biomass_consum_ej()
+        + fes_total_biofuels()
+        + fes_total_biogas()
+    )
 
 
 def tpes_without_trad_biomass():
@@ -333,53 +239,3 @@ def tpes_without_trad_biomass():
     TPES without accounting for traditional biomass.
     """
     return tpes_ej() - pe_traditional_biomass_ej_delayed_1yr()
-
-
-def tpes_res_delayed_1yr():
-    """
-    Real Name: TPES RES delayed 1yr
-    Original Eqn: DELAY FIXED ( TPE from RES EJ, 1, 5.301)
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return _delayfixed_tpes_res_delayed_1yr()
-
-
-_delayfixed_share_res_vs_tfec_delayed_1yr = DelayFixed(
-    lambda: share_res_vs_tfec(),
-    lambda: 1,
-    lambda: 0.1614,
-    time_step,
-    "_delayfixed_share_res_vs_tfec_delayed_1yr",
-)
-
-
-_delayfixed_share_res_vs_tpes_delayed_1yr = DelayFixed(
-    lambda: share_res_vs_tpes(),
-    lambda: 1,
-    lambda: 0.123,
-    time_step,
-    "_delayfixed_share_res_vs_tpes_delayed_1yr",
-)
-
-
-_delayfixed_tfec_res_delayed_1yr = DelayFixed(
-    lambda: tfec_res_ej(),
-    lambda: 1,
-    lambda: 4.209,
-    time_step,
-    "_delayfixed_tfec_res_delayed_1yr",
-)
-
-
-_delayfixed_tpes_res_delayed_1yr = DelayFixed(
-    lambda: tpe_from_res_ej(),
-    lambda: 1,
-    lambda: 5.301,
-    time_step,
-    "_delayfixed_tpes_res_delayed_1yr",
-)

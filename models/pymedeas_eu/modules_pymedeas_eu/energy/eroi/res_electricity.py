@@ -1,6 +1,6 @@
 """
 Module res_electricity
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -388,21 +388,6 @@ def cedtot_solar_pv():
 
 
 @subs(["RES elec"], _subscript_dict)
-def eptb_dynamic():
-    """
-    Real Name: EPTB dynamic
-    Original Eqn: ZIDZ( lifetime RES elec[RES elec], "'dynamic' EROI RES elec var"[RES elec] )
-    Units: Year
-    Limits: (None, None)
-    Type: component
-    Subs: ['RES elec']
-
-
-    """
-    return zidz(lifetime_res_elec(), dynamic_eroi_res_elec_var())
-
-
-@subs(["RES elec"], _subscript_dict)
 def eroiini_res_elec_dispatch():
     """
     Real Name: "EROI-ini RES elec dispatch"
@@ -562,7 +547,7 @@ def grid_correction_factor_res_elec():
     """
     return xrmerge(
         xr.DataArray(
-            0, {"RES elec": _subscript_dict["RES ELEC NO MAINTENANCE"]}, ["RES elec"]
+            0, {"RES elec": _subscript_dict["RES ELEC DISPATCHABLE"]}, ["RES elec"]
         ),
         _ext_constant_grid_correction_factor_res_elec(),
     )
@@ -642,7 +627,7 @@ def selfelectricity_consumption_res_elec():
     """
     return xrmerge(
         xr.DataArray(
-            0, {"RES elec": _subscript_dict["RES ELEC NO MAINTENANCE"]}, ["RES elec"]
+            0, {"RES elec": _subscript_dict["RES ELEC DISPATCHABLE"]}, ["RES elec"]
         ),
         _ext_constant_selfelectricity_consumption_res_elec(),
     )
@@ -665,25 +650,10 @@ def share_energy_requirements_for_decom_res_elec():
     """
     return xrmerge(
         xr.DataArray(
-            0, {"RES elec": _subscript_dict["RES ELEC NO MAINTENANCE"]}, ["RES elec"]
+            0, {"RES elec": _subscript_dict["RES ELEC DISPATCHABLE"]}, ["RES elec"]
         ),
         _ext_constant_share_energy_requirements_for_decom_res_elec(),
     )
-
-
-def total_final_energy_invested_res_elec_var():
-    """
-    Real Name: Total final energy invested RES elec var
-    Original Eqn: SUM(FEI RES elec var[RES elec!])
-    Units: EJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Final energy invested is equivalent to the denominator of the EROI
-        (=CED*g).
-    """
-    return sum(fei_res_elec_var(), dim=("RES elec",))
 
 
 _ext_constant_eroiini_res_elec_dispatch = ExtConstant(
@@ -700,7 +670,7 @@ _ext_constant_grid_correction_factor_res_elec = ExtConstant(
     "../materials.xlsx",
     "Global",
     "grid_correction_factor_res_elec",
-    {"RES elec": _subscript_dict["RES ELEC MAINTENANCE"]},
+    {"RES elec": _subscript_dict["RES ELEC VARIABLE"]},
     _root,
     "_ext_constant_grid_correction_factor_res_elec",
 )
@@ -710,7 +680,7 @@ _ext_constant_selfelectricity_consumption_res_elec = ExtConstant(
     "../materials.xlsx",
     "Global",
     "self_electricity_consumption_res_elec",
-    {"RES elec": _subscript_dict["RES ELEC MAINTENANCE"]},
+    {"RES elec": _subscript_dict["RES ELEC VARIABLE"]},
     _root,
     "_ext_constant_selfelectricity_consumption_res_elec",
 )
@@ -720,7 +690,7 @@ _ext_constant_share_energy_requirements_for_decom_res_elec = ExtConstant(
     "../materials.xlsx",
     "Global",
     "share_energy_requirements_for_decom_res_elec",
-    {"RES elec": _subscript_dict["RES ELEC MAINTENANCE"]},
+    {"RES elec": _subscript_dict["RES ELEC VARIABLE"]},
     _root,
     "_ext_constant_share_energy_requirements_for_decom_res_elec",
 )

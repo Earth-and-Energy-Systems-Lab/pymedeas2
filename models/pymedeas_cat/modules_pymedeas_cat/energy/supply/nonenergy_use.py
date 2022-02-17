@@ -1,14 +1,14 @@
 """
 Module nonenergy_use
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
 @subs(["final sources"], _subscript_dict)
 def annual_variation_nonenergy_use():
     """
-    Real Name: Annual variation nonenergy use
-    Original Eqn: IF THEN ELSE(Time>2009, variation nonenergy use[final sources], historic nonenergy use[final sources](Time+1)-historic nonenergy use[final sources](Time))
+    Real Name: "Annual variation non-energy use"
+    Original Eqn: IF THEN ELSE(Time>2009, "variation non-energy use"[final sources], historic nonenergy use[final sources](INTEGER(Time+1))-historic nonenergy use[final sources](INTEGER(Time)))
     Units: EJ
     Limits: (None, None)
     Type: component
@@ -19,14 +19,15 @@ def annual_variation_nonenergy_use():
     return if_then_else(
         time() > 2009,
         lambda: variation_nonenergy_use(),
-        lambda: historic_nonenergy_use(time() + 1) - historic_nonenergy_use(time()),
+        lambda: historic_nonenergy_use(integer(time() + 1))
+        - historic_nonenergy_use(integer(time())),
     )
 
 
 def historic_nonenergy_use(x):
     """
     Real Name: historic nonenergy use
-    Original Eqn: GET DIRECT LOOKUPS('../energy.xlsx', 'World', 'time_historic_data', 'historic_non_energy_use')
+    Original Eqn: GET DIRECT LOOKUPS('../energy.xlsx', 'Austria', 'time_historic_data', 'historic_non_energy_use')
     Units: EJ
     Limits: (None, None)
     Type: lookup
@@ -41,7 +42,7 @@ def historic_nonenergy_use(x):
 def initial_nonenergy_use():
     """
     Real Name: initial nonenergy use
-    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'World', 'initial_non_energy_use*')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Austria', 'initial_non_energy_use*')
     Units: EJ
     Limits: (None, None)
     Type: constant
@@ -56,7 +57,7 @@ def initial_nonenergy_use():
 def nonenergy_use_demand_by_final_fuel_ej():
     """
     Real Name: "Non-energy use demand by final fuel EJ"
-    Original Eqn: INTEG ( Annual variation nonenergy use[final sources], initial nonenergy use[final sources])
+    Original Eqn: INTEG ( "Annual variation non-energy use"[final sources], initial nonenergy use[final sources])
     Units: EJ
     Limits: (None, None)
     Type: component
@@ -69,7 +70,7 @@ def nonenergy_use_demand_by_final_fuel_ej():
 
 def total_real_nonenergy_use_consumption_ej():
     """
-    Real Name: Total real nonenergy use consumption EJ
+    Real Name: "Total real non-energy use consumption EJ"
     Original Eqn: SUM("Non-energy use demand by final fuel EJ"[final sources!])
     Units: EJ
     Limits: (None, None)
@@ -84,13 +85,13 @@ def total_real_nonenergy_use_consumption_ej():
 @subs(["final sources"], _subscript_dict)
 def variation_nonenergy_use():
     """
-    Real Name: variation nonenergy use
+    Real Name: "variation non-energy use"
     Original Eqn:
       0
       0
-      IF THEN ELSE("Non-energy use demand by final fuel EJ"[liquids]>0.01,0.461414*(GDP-GDP delayed 1yr),0)
-      IF THEN ELSE("Non-energy use demand by final fuel EJ"[gases]>0.01,0.123925*(GDP-GDP delayed 1yr),0)
-      IF THEN ELSE("Non-energy use demand by final fuel EJ"[solids]>0.01,0.0797511*(GDP-GDP delayed 1yr),0)
+      IF THEN ELSE("Non-energy use demand by final fuel EJ"[liquids]>0.01,0.461414*(GDP AUT-GDP delayed 1yr),0)
+      IF THEN ELSE("Non-energy use demand by final fuel EJ"[gases]>0.01,0.123925*(GDP AUT-GDP delayed 1yr),0)
+      IF THEN ELSE("Non-energy use demand by final fuel EJ"[solids]>0.01,0.0797511*(GDP AUT-GDP delayed 1yr),0)
     Units: EJ
     Limits: (None, None)
     Type: constant
@@ -104,7 +105,7 @@ def variation_nonenergy_use():
         rearrange(
             if_then_else(
                 float(nonenergy_use_demand_by_final_fuel_ej().loc["liquids"]) > 0.01,
-                lambda: 0.461414 * (gdp() - gdp_delayed_1yr()),
+                lambda: 0.461414 * (gdp_aut() - gdp_delayed_1yr()),
                 lambda: 0,
             ),
             ["final sources"],
@@ -113,7 +114,7 @@ def variation_nonenergy_use():
         rearrange(
             if_then_else(
                 float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"]) > 0.01,
-                lambda: 0.123925 * (gdp() - gdp_delayed_1yr()),
+                lambda: 0.123925 * (gdp_aut() - gdp_delayed_1yr()),
                 lambda: 0,
             ),
             ["final sources"],
@@ -122,7 +123,7 @@ def variation_nonenergy_use():
         rearrange(
             if_then_else(
                 float(nonenergy_use_demand_by_final_fuel_ej().loc["solids"]) > 0.01,
-                lambda: 0.0797511 * (gdp() - gdp_delayed_1yr()),
+                lambda: 0.0797511 * (gdp_aut() - gdp_delayed_1yr()),
                 lambda: 0,
             ),
             ["final sources"],
@@ -133,7 +134,7 @@ def variation_nonenergy_use():
 
 _ext_lookup_historic_nonenergy_use = ExtLookup(
     "../energy.xlsx",
-    "World",
+    "Austria",
     "time_historic_data",
     "historic_non_energy_use",
     {"final sources": _subscript_dict["final sources"]},
@@ -144,7 +145,7 @@ _ext_lookup_historic_nonenergy_use = ExtLookup(
 
 _ext_constant_initial_nonenergy_use = ExtConstant(
     "../energy.xlsx",
-    "World",
+    "Austria",
     "initial_non_energy_use*",
     {"final sources": _subscript_dict["final sources"]},
     _root,

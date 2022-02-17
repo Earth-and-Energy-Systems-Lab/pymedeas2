@@ -1,6 +1,6 @@
 """
 Module biomass_for_electricity_and_heat
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -26,7 +26,7 @@ def available_pe_potential_solid_bioe_for_elec_ej():
 def available_pe_potential_solid_bioe_for_heat_ej():
     """
     Real Name: available PE potential solid bioE for heat EJ
-    Original Eqn: MAX(0, "Total PE solid bioE potential heat+elec EJ"-PE bioE for Elec generation EJ)
+    Original Eqn: MAX(0, "Total PE solid bioE potential heat+elec EJ"-PE real generation RES elec[solid bioE elec])
     Units: EJ
     Limits: (None, None)
     Type: component
@@ -36,7 +36,8 @@ def available_pe_potential_solid_bioe_for_heat_ej():
     """
     return np.maximum(
         0,
-        total_pe_solid_bioe_potential_heatelec_ej() - pe_bioe_for_elec_generation_ej(),
+        total_pe_solid_bioe_potential_heatelec_ej()
+        - float(pe_real_generation_res_elec().loc["solid bioE elec"]),
     )
 
 
@@ -60,7 +61,7 @@ def available_potential_fe_solid_bioe_for_elec_ej():
 def max_potential_npp_bioe_conventional_for_heatelec():
     """
     Real Name: "Max potential NPP bioE conventional for heat+elec"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'G42')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'max_pot_NPP_bioe_conv')
     Units: EJ/year
     Limits: (None, None)
     Type: constant
@@ -93,7 +94,7 @@ def total_pe_solid_bioe_potential_heatelec_ej():
 _ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "G42",
+    "max_pot_NPP_bioe_conv",
     {},
     _root,
     "_ext_constant_max_potential_npp_bioe_conventional_for_heatelec",

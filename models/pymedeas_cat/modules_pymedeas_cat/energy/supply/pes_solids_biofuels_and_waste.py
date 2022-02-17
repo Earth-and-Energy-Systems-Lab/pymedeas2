@@ -1,6 +1,6 @@
 """
 Module pes_solids_biofuels_and_waste
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -35,7 +35,7 @@ def pes_solids_bioe__waste_ej():
 def pes_solids_bioe_ej():
     """
     Real Name: PES solids bioE EJ
-    Original Eqn: Losses in charcoal plants EJ+PE bioE for Elec generation EJ+PE traditional biomass EJ delayed 1yr +modern solids BioE demand households+PES RES for heat by techn[solid bioE heat]
+    Original Eqn: Losses in charcoal plants EJ+PE real generation RES elec[solid bioE elec]+PE traditional biomass EJ delayed 1yr +modern solids BioE demand households+PES RES for heat by techn[solid bioE heat]
     Units: EJ/Year
     Limits: (None, None)
     Type: component
@@ -46,7 +46,7 @@ def pes_solids_bioe_ej():
     """
     return (
         losses_in_charcoal_plants_ej()
-        + pe_bioe_for_elec_generation_ej()
+        + float(pe_real_generation_res_elec().loc["solid bioE elec"])
         + pe_traditional_biomass_ej_delayed_1yr()
         + modern_solids_bioe_demand_households()
         + float(pes_res_for_heat_by_techn().loc["solid bioE heat"])
@@ -56,7 +56,7 @@ def pes_solids_bioe_ej():
 def solid_bioe_emissions_relevant_ej():
     """
     Real Name: solid bioE emissions relevant EJ
-    Original Eqn: PE bioE for Elec generation EJ+PES RES for heat by techn[solid bioE heat]+modern solids BioE demand households
+    Original Eqn: PE real generation RES elec[solid bioE elec]+PES RES for heat by techn[solid bioE heat]+modern solids BioE demand households
     Units: EJ
     Limits: (None, None)
     Type: component
@@ -67,7 +67,7 @@ def solid_bioe_emissions_relevant_ej():
         in land-use change emissions).
     """
     return (
-        pe_bioe_for_elec_generation_ej()
+        float(pe_real_generation_res_elec().loc["solid bioE elec"])
         + float(pes_res_for_heat_by_techn().loc["solid bioE heat"])
         + modern_solids_bioe_demand_households()
     )

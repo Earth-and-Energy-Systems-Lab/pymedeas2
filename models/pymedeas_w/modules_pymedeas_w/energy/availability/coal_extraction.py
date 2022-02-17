@@ -1,6 +1,6 @@
 """
 Module coal_extraction
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -251,7 +251,7 @@ def rurr_coal_start_year_plg():
 def share_rurr_coal_to_leave_underground():
     """
     Real Name: share RURR coal to leave underground
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C131')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'share_RURR_coal_underground')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -266,7 +266,7 @@ def share_rurr_coal_to_leave_underground():
 def start_policy_leave_in_ground_coal():
     """
     Real Name: Start policy leave in ground coal
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C130')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'start_policy_year_coal_underground')
     Units: year
     Limits: (None, None)
     Type: constant
@@ -324,7 +324,7 @@ def total_coal_left_in_ground():
 def unlimited_coal():
     """
     Real Name: "unlimited coal?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'E99')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'unlimited_coal')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -419,7 +419,7 @@ _sample_if_true_rurr_coal_start_year_plg = SampleIfTrue(
 _ext_constant_share_rurr_coal_to_leave_underground = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C131",
+    "share_RURR_coal_underground",
     {},
     _root,
     "_ext_constant_share_rurr_coal_to_leave_underground",
@@ -429,7 +429,7 @@ _ext_constant_share_rurr_coal_to_leave_underground = ExtConstant(
 _ext_constant_start_policy_leave_in_ground_coal = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C130",
+    "start_policy_year_coal_underground",
     {},
     _root,
     "_ext_constant_start_policy_leave_in_ground_coal",
@@ -455,7 +455,7 @@ _integ_total_coal_left_in_ground = Integ(
 _ext_constant_unlimited_coal = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "E99",
+    "unlimited_coal",
     {},
     _root,
     "_ext_constant_unlimited_coal",

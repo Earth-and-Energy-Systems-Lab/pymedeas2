@@ -1,13 +1,13 @@
 """
 Module solar_potential_in_urban_areas
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
 def av_solar_i():
     """
     Real Name: av solar I
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'K24')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'average_solar_irradiance')
     Units: We/m2
     Limits: (None, None)
     Type: constant
@@ -21,7 +21,7 @@ def av_solar_i():
 def f1_pv_solar_in_target_year():
     """
     Real Name: f1 PV solar in target year
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'G24')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'cell_efficiency_PV_target_year')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -323,7 +323,7 @@ def power_density_solar_thermal_in_urban_twemha():
 def share_available_roof():
     """
     Real Name: share available roof
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'G28')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'share_available_roof')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -337,7 +337,7 @@ def share_available_roof():
 def share_available_roof_for_rooftop_pv():
     """
     Real Name: share available roof for rooftop PV
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'G29')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'share_available_roof_for_rooftop_PV')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -351,7 +351,7 @@ def share_available_roof_for_rooftop_pv():
 def share_available_roof_for_solar_thermal():
     """
     Real Name: share available roof for solar thermal
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'G30')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'share_roof_solar_thermal')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -365,7 +365,7 @@ def share_available_roof_for_solar_thermal():
 def start_year_p_f1_solar_pv():
     """
     Real Name: Start year P f1 solar PV
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'G25')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'start_year_cell_efficency_PV')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -379,7 +379,7 @@ def start_year_p_f1_solar_pv():
 def target_year_f1_solar_pv():
     """
     Real Name: Target year f1 solar PV
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'G26')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'targ_year_cell_efficiency_PV')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -405,14 +405,19 @@ def twhmha_per_wem2():
 
 
 _ext_constant_av_solar_i = ExtConstant(
-    "../../scenarios/scen_aut.xlsx", "BAU", "K24", {}, _root, "_ext_constant_av_solar_i"
+    "../../scenarios/scen_aut.xlsx",
+    "BAU",
+    "average_solar_irradiance",
+    {},
+    _root,
+    "_ext_constant_av_solar_i",
 )
 
 
 _ext_constant_f1_pv_solar_in_target_year = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "G24",
+    "cell_efficiency_PV_target_year",
     {},
     _root,
     "_ext_constant_f1_pv_solar_in_target_year",
@@ -462,7 +467,7 @@ _ext_constant_power_density_initial_res_elec_twemha = ExtConstant(
 _ext_constant_share_available_roof = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "G28",
+    "share_available_roof",
     {},
     _root,
     "_ext_constant_share_available_roof",
@@ -472,7 +477,7 @@ _ext_constant_share_available_roof = ExtConstant(
 _ext_constant_share_available_roof_for_rooftop_pv = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "G29",
+    "share_available_roof_for_rooftop_PV",
     {},
     _root,
     "_ext_constant_share_available_roof_for_rooftop_pv",
@@ -482,7 +487,7 @@ _ext_constant_share_available_roof_for_rooftop_pv = ExtConstant(
 _ext_constant_share_available_roof_for_solar_thermal = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "G30",
+    "share_roof_solar_thermal",
     {},
     _root,
     "_ext_constant_share_available_roof_for_solar_thermal",
@@ -492,7 +497,7 @@ _ext_constant_share_available_roof_for_solar_thermal = ExtConstant(
 _ext_constant_start_year_p_f1_solar_pv = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "G25",
+    "start_year_cell_efficency_PV",
     {},
     _root,
     "_ext_constant_start_year_p_f1_solar_pv",
@@ -502,7 +507,7 @@ _ext_constant_start_year_p_f1_solar_pv = ExtConstant(
 _ext_constant_target_year_f1_solar_pv = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "G26",
+    "targ_year_cell_efficiency_PV",
     {},
     _root,
     "_ext_constant_target_year_f1_solar_pv",

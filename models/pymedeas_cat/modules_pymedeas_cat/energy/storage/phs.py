@@ -1,6 +1,6 @@
 """
 Module phs
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -143,7 +143,7 @@ def max_capacity_potential_phs():
 def max_potential_phs_twe():
     """
     Real Name: max potential PHS TWe
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C26')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Austria', 'max_PHS_potential')
     Units: TWe
     Limits: (None, None)
     Type: constant
@@ -230,7 +230,7 @@ def output_phs_over_lifetime():
 def p_phs_growth():
     """
     Real Name: P PHS growth
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'F37')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'p_PHS_growth')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -441,9 +441,9 @@ _integ_installed_capacity_phs_tw = Integ(
 
 
 _ext_constant_max_potential_phs_twe = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "C26",
+    "../energy.xlsx",
+    "Austria",
+    "max_PHS_potential",
     {},
     _root,
     "_ext_constant_max_potential_phs_twe",
@@ -453,7 +453,7 @@ _ext_constant_max_potential_phs_twe = ExtConstant(
 _ext_constant_p_phs_growth = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "F37",
+    "p_PHS_growth",
     {},
     _root,
     "_ext_constant_p_phs_growth",

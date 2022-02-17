@@ -1,6 +1,6 @@
 """
 Module population
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -75,7 +75,7 @@ def input_population(x):
 def p_customized_cte_pop_variation():
     """
     Real Name: P customized cte pop variation
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'G14')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'p_constant_pop_variation')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -89,7 +89,7 @@ def p_customized_cte_pop_variation():
 def p_customized_year_pop_evolution():
     """
     Real Name: P customized year pop evolution
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'E14')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'year_customized_pop_evol')
     Units: 1/Year
     Limits: (None, None)
     Type: constant
@@ -103,7 +103,7 @@ def p_customized_year_pop_evolution():
 def p_pop_asymptote_millions():
     """
     Real Name: P pop asymptote millions
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'G15' )
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'p_pop_asymptote' )
     Units: Mpeople
     Limits: (None, None)
     Type: constant
@@ -118,7 +118,7 @@ def p_pop_asymptote_millions():
 def p_timeseries_pop_growth_rate():
     """
     Real Name: P timeseries pop growth rate
-    Original Eqn: GET DIRECT DATA('../../scenarios/scen_eu.xlsx', 'BAU', '12', 'E13')
+    Original Eqn: GET DIRECT DATA('../../scenarios/scen_eu.xlsx', 'BAU', 'year_pop_timeseries', 'p_timeseries_pop_growth')
     Units: 1/Year
     Limits: (None, None)
     Type: component_ext_data
@@ -339,7 +339,7 @@ def population():
 def select_population_evolution_input():
     """
     Real Name: select Population evolution input
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'B11')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'select_pop_evolution')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -399,7 +399,7 @@ def t_asymptote_pop():
 def target_year_pop_asymptote():
     """
     Real Name: Target year pop asymptote
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'I15')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'target_year_asymptote_pop')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -482,7 +482,7 @@ _ext_lookup_input_population = ExtLookup(
 _ext_constant_p_customized_cte_pop_variation = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "G14",
+    "p_constant_pop_variation",
     {},
     _root,
     "_ext_constant_p_customized_cte_pop_variation",
@@ -492,7 +492,7 @@ _ext_constant_p_customized_cte_pop_variation = ExtConstant(
 _ext_constant_p_customized_year_pop_evolution = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "E14",
+    "year_customized_pop_evol",
     {},
     _root,
     "_ext_constant_p_customized_year_pop_evolution",
@@ -502,7 +502,7 @@ _ext_constant_p_customized_year_pop_evolution = ExtConstant(
 _ext_constant_p_pop_asymptote_millions = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "G15",
+    "p_pop_asymptote",
     {},
     _root,
     "_ext_constant_p_pop_asymptote_millions",
@@ -512,8 +512,8 @@ _ext_constant_p_pop_asymptote_millions = ExtConstant(
 _ext_data_p_timeseries_pop_growth_rate = ExtData(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "12",
-    "E13",
+    "year_pop_timeseries",
+    "p_timeseries_pop_growth",
     "interpolate",
     {},
     _root,
@@ -591,7 +591,7 @@ _integ_population = Integ(
 _ext_constant_select_population_evolution_input = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "B11",
+    "select_pop_evolution",
     {},
     _root,
     "_ext_constant_select_population_evolution_input",
@@ -610,7 +610,7 @@ _smooth_smooth_pop = Smooth(
 _ext_constant_target_year_pop_asymptote = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "I15",
+    "target_year_asymptote_pop",
     {},
     _root,
     "_ext_constant_target_year_pop_asymptote",

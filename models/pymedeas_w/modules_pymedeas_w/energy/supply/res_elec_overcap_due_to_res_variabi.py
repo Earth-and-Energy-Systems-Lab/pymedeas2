@@ -1,6 +1,6 @@
 """
 Module res_elec_overcap_due_to_res_variabi
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -107,7 +107,7 @@ def cp_exogenous_res_elec_var_reduction():
 def elec_generation_dispatch_from_res_twh():
     """
     Real Name: Elec generation dispatch from RES TWh
-    Original Eqn: FE Elec generation from bioE TWh+"FE Elec generation from geot-elec TWh" +FE Elec generation from hydro TWh +FE Elec generation from oceanic TWh+FES elec from biogas TWh
+    Original Eqn: SUM(real generation RES elec TWh[RES ELEC DISPATCHABLE!])+FES elec from biogas TWh
     Units: TWh
     Limits: (None, None)
     Type: component
@@ -116,10 +116,14 @@ def elec_generation_dispatch_from_res_twh():
     Base-load electricity generation from RES.
     """
     return (
-        fe_elec_generation_from_bioe_twh()
-        + fe_elec_generation_from_geotelec_twh()
-        + fe_elec_generation_from_hydro_twh()
-        + fe_elec_generation_from_oceanic_twh()
+        sum(
+            rearrange(
+                real_generation_res_elec_twh(),
+                ["RES ELEC DISPATCHABLE"],
+                _subscript_dict,
+            ),
+            dim=("RES ELEC DISPATCHABLE",),
+        )
         + fes_elec_from_biogas_twh()
     )
 
@@ -127,7 +131,7 @@ def elec_generation_dispatch_from_res_twh():
 def elec_generation_variable_from_res_twh():
     """
     Real Name: Elec generation variable from RES TWh
-    Original Eqn: FE Elec generation from solar PV TWh+FE Elec generation from CSP TWh +FE Elec generation from onshore wind TWh+FE Elec generation from offshore wind TWh
+    Original Eqn: SUM(real generation RES elec TWh[RES ELEC VARIABLE!])
     Units: TWh/year
     Limits: (None, None)
     Type: component
@@ -135,11 +139,11 @@ def elec_generation_variable_from_res_twh():
 
     Variable electricity generation from RES.
     """
-    return (
-        fe_elec_generation_from_solar_pv_twh()
-        + fe_elec_generation_from_csp_twh()
-        + fe_elec_generation_from_onshore_wind_twh()
-        + fe_elec_generation_from_offshore_wind_twh()
+    return sum(
+        rearrange(
+            real_generation_res_elec_twh(), ["RES ELEC VARIABLE"], _subscript_dict
+        ),
+        dim=("RES ELEC VARIABLE",),
     )
 
 

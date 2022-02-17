@@ -1,6 +1,6 @@
 """
 Module land_use
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -1148,6 +1148,20 @@ def shortage_bioe_non_trad():
     )
 
 
+def start_year_p_variation_primary_forest():
+    """
+    Real Name: Start year P variation primary forest
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'start_year_variation_primary_forest')
+    Units: Year
+    Limits: (None, None)
+    Type: constant
+    Subs: None
+
+    Start year of the policy target to increase primary forests area.
+    """
+    return _ext_constant_start_year_p_variation_primary_forest()
+
+
 def shortage_bioe_non_trad_delayed_1yr():
     """
     Real Name: shortage BioE non trad delayed 1yr
@@ -1175,20 +1189,6 @@ def start_year_p_urban_land_density():
     Start year of the policy target to modify urban land density.
     """
     return _ext_constant_start_year_p_urban_land_density()
-
-
-def start_year_p_variation_primary_forest():
-    """
-    Real Name: Start year P variation primary forest
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'start_year_variation_primary_forest')
-    Units: Year
-    Limits: (None, None)
-    Type: constant
-    Subs: None
-
-    Start year of the policy target to increase primary forests area.
-    """
-    return _ext_constant_start_year_p_variation_primary_forest()
 
 
 def target_year_p_urban_land_density():
@@ -1686,6 +1686,16 @@ _integ_primary_forests_area = Integ(
 )
 
 
+_ext_constant_start_year_p_variation_primary_forest = ExtConstant(
+    "../../scenarios/scen_aut.xlsx",
+    "BAU",
+    "start_year_variation_primary_forest",
+    {},
+    _root,
+    "_ext_constant_start_year_p_variation_primary_forest",
+)
+
+
 _delayfixed_shortage_bioe_non_trad_delayed_1yr = DelayFixed(
     lambda: shortage_bioe_non_trad(),
     lambda: 1,
@@ -1702,16 +1712,6 @@ _ext_constant_start_year_p_urban_land_density = ExtConstant(
     {},
     _root,
     "_ext_constant_start_year_p_urban_land_density",
-)
-
-
-_ext_constant_start_year_p_variation_primary_forest = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "start_year_variation_primary_forest",
-    {},
-    _root,
-    "_ext_constant_start_year_p_variation_primary_forest",
 )
 
 

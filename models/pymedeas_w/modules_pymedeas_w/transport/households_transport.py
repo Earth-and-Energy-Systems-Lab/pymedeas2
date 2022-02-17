@@ -1,6 +1,6 @@
 """
 Module households_transport
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -41,7 +41,7 @@ def a2_coef_th():
 def activate_policy_h_transp():
     """
     Real Name: Activate policy H transp
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C170')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'activate_policy_Households_trans')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -609,7 +609,7 @@ def number_vehicles_h():
 def p_2we():
     """
     Real Name: P 2wE
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C180')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_electric_2w_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -624,7 +624,7 @@ def p_2we():
 def p_elec():
     """
     Real Name: P elec
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C177')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_electric_household_4w_veh_transp')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -639,7 +639,7 @@ def p_elec():
 def p_gas():
     """
     Real Name: P gas
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C179')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_gas_hh_veh_4w_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -706,7 +706,7 @@ def p_h_vehicle():
 def p_hyb():
     """
     Real Name: P hyb
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C178')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_hybrid_household_4w_veh_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -721,7 +721,7 @@ def p_hyb():
 def p_share_2_wheelers():
     """
     Real Name: P share 2 wheelers
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C181')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_change_2w_h_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1114,7 +1114,7 @@ def sum_4w_shares():
 def t_fin_h_veh():
     """
     Real Name: T fin H veh
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C173')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'tfin_H_veh')
     Units: year
     Limits: (None, None)
     Type: constant
@@ -1142,7 +1142,7 @@ def t_hist_h_transp():
 def t_ini_h_veh():
     """
     Real Name: T ini H veh
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C172')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'tini_H_veh')
     Units: year
     Limits: (None, None)
     Type: constant
@@ -1333,7 +1333,7 @@ def variation_energy_intensity_of_households_transport():
 _ext_constant_activate_policy_h_transp = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C170",
+    "activate_policy_Households_trans",
     {},
     _root,
     "_ext_constant_activate_policy_h_transp",
@@ -1430,29 +1430,49 @@ _ext_constant_n_vehicles_h = ExtConstant(
 
 
 _ext_constant_p_2we = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C180", {}, _root, "_ext_constant_p_2we"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "policy_electric_2w_tfin",
+    {},
+    _root,
+    "_ext_constant_p_2we",
 )
 
 
 _ext_constant_p_elec = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C177", {}, _root, "_ext_constant_p_elec"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "policy_electric_household_4w_veh_transp",
+    {},
+    _root,
+    "_ext_constant_p_elec",
 )
 
 
 _ext_constant_p_gas = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C179", {}, _root, "_ext_constant_p_gas"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "policy_gas_hh_veh_4w_tfin",
+    {},
+    _root,
+    "_ext_constant_p_gas",
 )
 
 
 _ext_constant_p_hyb = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C178", {}, _root, "_ext_constant_p_hyb"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "policy_hybrid_household_4w_veh_tfin",
+    {},
+    _root,
+    "_ext_constant_p_hyb",
 )
 
 
 _ext_constant_p_share_2_wheelers = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C181",
+    "policy_change_2w_h_tfin",
     {},
     _root,
     "_ext_constant_p_share_2_wheelers",
@@ -1577,10 +1597,20 @@ _ext_constant_saving_ratio_2we = ExtConstant(
 
 
 _ext_constant_t_fin_h_veh = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C173", {}, _root, "_ext_constant_t_fin_h_veh"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "tfin_H_veh",
+    {},
+    _root,
+    "_ext_constant_t_fin_h_veh",
 )
 
 
 _ext_constant_t_ini_h_veh = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C172", {}, _root, "_ext_constant_t_ini_h_veh"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "tini_H_veh",
+    {},
+    _root,
+    "_ext_constant_t_ini_h_veh",
 )

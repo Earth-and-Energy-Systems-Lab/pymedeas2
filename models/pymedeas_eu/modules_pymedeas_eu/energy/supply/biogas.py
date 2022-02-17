@@ -1,6 +1,6 @@
 """
 Module biogas
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -245,7 +245,7 @@ def max_biogas_for_tfc():
 def max_pe_biogas_ej():
     """
     Real Name: max PE biogas EJ
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C52')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'max_PE_biogas')
     Units: EJ
     Limits: (None, None)
     Type: constant
@@ -282,7 +282,7 @@ def new_pes_biogas():
 def p_biogas():
     """
     Real Name: P biogas
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C53')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'p_biogas_growth')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -587,7 +587,7 @@ _ext_lookup_historic_biogas_pes = ExtLookup(
 _ext_constant_max_pe_biogas_ej = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C52",
+    "max_PE_biogas",
     {},
     _root,
     "_ext_constant_max_pe_biogas_ej",
@@ -595,7 +595,12 @@ _ext_constant_max_pe_biogas_ej = ExtConstant(
 
 
 _ext_constant_p_biogas = ExtConstant(
-    "../../scenarios/scen_eu.xlsx", "BAU", "C53", {}, _root, "_ext_constant_p_biogas"
+    "../../scenarios/scen_eu.xlsx",
+    "BAU",
+    "p_biogas_growth",
+    {},
+    _root,
+    "_ext_constant_p_biogas",
 )
 
 

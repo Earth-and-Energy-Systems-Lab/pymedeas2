@@ -1,6 +1,6 @@
 """
 Module res_commercial_heat_capacities
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -282,7 +282,7 @@ def new_res_capacity_for_heatcom_tw():
 def p_geothermal_for_heat():
     """
     Real Name: P geothermal for heat
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'F58')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_geothermal_heat_growth')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -321,7 +321,7 @@ def p_res_for_heat():
 def p_solar_for_heat():
     """
     Real Name: P solar for heat
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'F57')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_solar_heat_growth')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -335,7 +335,7 @@ def p_solar_for_heat():
 def p_solid_bioe_for_heat():
     """
     Real Name: P solid bioE for heat
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'F59')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_solid_bioe_heat_growth')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -559,7 +559,7 @@ def res_heatcom_tot_overcapacity():
 def start_year_p_growth_res_heat():
     """
     Real Name: Start year P growth RES heat
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C58')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'start_year_P_growth_RES_heat')
     Units: year
     Limits: (None, None)
     Type: constant
@@ -700,7 +700,7 @@ _ext_constant_losses_solar_for_heat = ExtConstant(
 _ext_constant_p_geothermal_for_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "F58",
+    "p_geothermal_heat_growth",
     {},
     _root,
     "_ext_constant_p_geothermal_for_heat",
@@ -710,7 +710,7 @@ _ext_constant_p_geothermal_for_heat = ExtConstant(
 _ext_constant_p_solar_for_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "F57",
+    "p_solar_heat_growth",
     {},
     _root,
     "_ext_constant_p_solar_for_heat",
@@ -720,7 +720,7 @@ _ext_constant_p_solar_for_heat = ExtConstant(
 _ext_constant_p_solid_bioe_for_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "F59",
+    "p_solid_bioe_heat_growth",
     {},
     _root,
     "_ext_constant_p_solid_bioe_for_heat",
@@ -750,7 +750,7 @@ _ext_constant_replacement_res_for_heatcom = ExtConstant(
 _ext_constant_start_year_p_growth_res_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C58",
+    "start_year_P_growth_RES_heat",
     {},
     _root,
     "_ext_constant_start_year_p_growth_res_heat",

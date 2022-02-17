@@ -1,6 +1,6 @@
 """
 Module tpes
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -41,20 +41,6 @@ def gquality_of_electricity():
         lambda: quality_of_electricity_2015(),
         lambda: share_total_final_energy_vs_tpes(),
     )
-
-
-def percent_res_vs_tpes():
-    """
-    Real Name: Percent RES vs TPES
-    Original Eqn: share RES vs TPES*100
-    Units: percent
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Percent of primary energy from RES in the TPES.
-    """
-    return share_res_vs_tpes() * 100
 
 
 def quality_of_electricity_2015():
@@ -101,20 +87,6 @@ def share_imports_eu_nre_vs_tpec():
 
     """
     return total_imports_eu_nre_from_row() / tpes_ej()
-
-
-def share_res_vs_tpes():
-    """
-    Real Name: share RES vs TPES
-    Original Eqn: TPE from RES EJ/TPES EJ
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Share of primary energy from RES in the TPES.
-    """
-    return tpe_from_res_ej() / tpes_ej()
 
 
 def share_total_final_energy_vs_tpes():
@@ -193,6 +165,42 @@ def total_imports_eu_nre_from_row():
     )
 
 
+def tpe_from_res_ej():
+    """
+    Real Name: TPE from RES EJ
+    Original Eqn: PE Elec generation from RES EJ+"PE supply RES non-Elec EJ"
+    Units: EJ/Year
+    Limits: (None, None)
+    Type: component
+    Subs: None
+
+    Total primary energy supply from all RES.
+    """
+    return pe_elec_generation_from_res_ej() + pe_supply_res_nonelec_ej()
+
+
+def tped_by_fuel():
+    """
+    Real Name: TPED by fuel
+    Original Eqn: extraction uranium EJ EU+"PE supply RES non-Elec EJ"+PE Elec generation from RES EJ+PED total oil EJ +PED coal EJ+"PED nat. gas EJ"+PES waste EJ
+    Units: EJ/Year
+    Limits: (None, None)
+    Type: component
+    Subs: None
+
+    Total primary energy demand by fuel.
+    """
+    return (
+        extraction_uranium_ej_eu()
+        + pe_supply_res_nonelec_ej()
+        + pe_elec_generation_from_res_ej()
+        + ped_total_oil_ej()
+        + ped_coal_ej()
+        + ped_nat_gas_ej()
+        + pes_waste_ej()
+    )
+
+
 def tpes_ej():
     """
     Real Name: TPES EJ
@@ -205,20 +213,6 @@ def tpes_ej():
     Total Primary Energy Supply.
     """
     return total_consumption_nre_ej() + tpe_from_res_ej() + pes_waste_ej()
-
-
-def tpes_mtoe():
-    """
-    Real Name: TPES Mtoe
-    Original Eqn: TPES EJ*MToe per EJ
-    Units: MToe/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Total Primary Energy Supply.
-    """
-    return tpes_ej() * mtoe_per_ej()
 
 
 def year_scarcity_tpe():

@@ -1,6 +1,6 @@
 """
 Module crop_and_forest_residues
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -64,7 +64,7 @@ def efficiency_bioe_residues_to_cellulosic_liquids():
 def max_npp_potential_bioe_residues():
     """
     Real Name: Max NPP potential bioE residues
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C41')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'max_NPP_pot_bioe_residues')
     Units: EJ/Year
     Limits: (None, None)
     Type: constant
@@ -198,7 +198,7 @@ def new_cellulosic_biofuels():
 def p_bioe_residues():
     """
     Real Name: P bioE residues
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C50')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'p_bioe_residues_growth')
     Units: 1/Year
     Limits: (None, None)
     Type: constant
@@ -297,7 +297,7 @@ def potential_peavail_cellulosic_biofuel_ej():
 def share_cellulosic_biofuels_vs_bioe_residues():
     """
     Real Name: share cellulosic biofuels vs BioE residues
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C49')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'share_cellulosic_biof_vs_bioe_res')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -312,7 +312,7 @@ def share_cellulosic_biofuels_vs_bioe_residues():
 def start_year_bioe_residues_for_nonbiofuels():
     """
     Real Name: "start year BioE residues for non-biofuels"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C48')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'start_year_bioe_residues_non_biofuels')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -326,7 +326,7 @@ def start_year_bioe_residues_for_nonbiofuels():
 _ext_constant_max_npp_potential_bioe_residues = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C41",
+    "max_NPP_pot_bioe_residues",
     {},
     _root,
     "_ext_constant_max_npp_potential_bioe_residues",
@@ -336,7 +336,7 @@ _ext_constant_max_npp_potential_bioe_residues = ExtConstant(
 _ext_constant_p_bioe_residues = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C50",
+    "p_bioe_residues_growth",
     {},
     _root,
     "_ext_constant_p_bioe_residues",
@@ -360,7 +360,7 @@ _integ_potential_pe_cellulosic_biofuel_ej = Integ(
 _ext_constant_share_cellulosic_biofuels_vs_bioe_residues = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C49",
+    "share_cellulosic_biof_vs_bioe_res",
     {},
     _root,
     "_ext_constant_share_cellulosic_biofuels_vs_bioe_residues",
@@ -370,7 +370,7 @@ _ext_constant_share_cellulosic_biofuels_vs_bioe_residues = ExtConstant(
 _ext_constant_start_year_bioe_residues_for_nonbiofuels = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C48",
+    "start_year_bioe_residues_non_biofuels",
     {},
     _root,
     "_ext_constant_start_year_bioe_residues_for_nonbiofuels",

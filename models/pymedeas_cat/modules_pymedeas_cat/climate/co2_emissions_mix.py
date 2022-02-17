@@ -1,6 +1,6 @@
 """
 Module co2_emissions_mix
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -551,7 +551,7 @@ def total_co2_gases_emissoin_test():
 def total_elec_co2_emissions():
     """
     Real Name: Total Elec CO2 emissions
-    Original Eqn: Total Elec NRES CO2 emisions+ PE bioE for Elec generation EJ*MJ per EJ*gCO2 per MJ conv gas/g per Gt
+    Original Eqn: Total Elec NRES CO2 emisions+PE real generation RES elec[solid bioE elec]*MJ per EJ*gCO2 per MJ conv gas/g per Gt
     Units: GtCO2/Year
     Limits: (None, None)
     Type: component
@@ -561,7 +561,7 @@ def total_elec_co2_emissions():
     """
     return (
         total_elec_nres_co2_emisions()
-        + pe_bioe_for_elec_generation_ej()
+        + float(pe_real_generation_res_elec().loc["solid bioE elec"])
         * mj_per_ej()
         * gco2_per_mj_conv_gas()
         / g_per_gt()

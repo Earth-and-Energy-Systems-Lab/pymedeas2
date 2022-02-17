@@ -1,6 +1,6 @@
 """
 Module demand_for_res_elec
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -114,7 +114,7 @@ def materials_for_new_res_elec_per_capacity_installed():
     Real Name: materials for new RES elec per capacity installed
     Original Eqn:
       0
-      materials per new capacity installed RES[RES ELEC MAINTENANCE, materials]+(materials per new RES elec capacity installed HVDCs[materials ]+materials per new RES elec capacity installed material overgrid high power[materials])*"include materials for overgrids?"
+      materials per new capacity installed RES[RES ELEC VARIABLE, materials]+(materials per new RES elec capacity installed HVDCs[materials ]+materials per new RES elec capacity installed material overgrid high power[materials])*"include materials for overgrids?"
     Units: kg/MW
     Limits: (None, None)
     Type: constant
@@ -126,7 +126,7 @@ def materials_for_new_res_elec_per_capacity_installed():
         xr.DataArray(
             0,
             {
-                "RES elec": _subscript_dict["RES ELEC NO MAINTENANCE"],
+                "RES elec": _subscript_dict["RES ELEC DISPATCHABLE"],
                 "materials": _subscript_dict["materials"],
             },
             ["RES elec", "materials"],
@@ -225,7 +225,7 @@ def materials_for_om_per_capacity_installed_res_elec():
         xr.DataArray(
             0,
             {
-                "RES elec": _subscript_dict["RES ELEC NO MAINTENANCE"],
+                "RES elec": _subscript_dict["RES ELEC DISPATCHABLE"],
                 "materials": _subscript_dict["materials"],
             },
             ["RES elec", "materials"],
@@ -234,7 +234,7 @@ def materials_for_om_per_capacity_installed_res_elec():
     )
 
 
-@subs(["RES ELEC MAINTENANCE", "materials"], _subscript_dict)
+@subs(["RES ELEC VARIABLE", "materials"], _subscript_dict)
 def materials_per_new_capacity_installed_res():
     """
     Real Name: materials per new capacity installed RES
@@ -242,7 +242,7 @@ def materials_per_new_capacity_installed_res():
     Units: kg/MW
     Limits: (None, None)
     Type: constant
-    Subs: ['RES ELEC MAINTENANCE', 'materials']
+    Subs: ['RES ELEC VARIABLE', 'materials']
 
     Materials requirements per unit of new installed capacity of RES.
     """
@@ -547,7 +547,7 @@ _ext_constant_materials_for_om_per_capacity_installed_res_elec = ExtConstant(
     "Global",
     "materials_for_om_per_capacity_installed_res_elec*",
     {
-        "RES elec": _subscript_dict["RES ELEC MAINTENANCE"],
+        "RES elec": _subscript_dict["RES ELEC VARIABLE"],
         "materials": _subscript_dict["materials"],
     },
     _root,
@@ -560,7 +560,7 @@ _ext_constant_materials_per_new_capacity_installed_res = ExtConstant(
     "Global",
     "materials_per_new_capacity_installed_res*",
     {
-        "RES ELEC MAINTENANCE": _subscript_dict["RES ELEC MAINTENANCE"],
+        "RES ELEC VARIABLE": _subscript_dict["RES ELEC VARIABLE"],
         "materials": _subscript_dict["materials"],
     },
     _root,

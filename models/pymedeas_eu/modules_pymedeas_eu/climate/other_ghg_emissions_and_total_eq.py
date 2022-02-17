@@ -1,6 +1,6 @@
 """
 Module other_ghg_emissions_and_total_eq
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -55,7 +55,7 @@ def ch4_anthro_emissions_rcp():
 def choose_rcp():
     """
     Real Name: Choose RCP
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'G116')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'RCP_GHG_emissions_select')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -287,7 +287,12 @@ _ext_data_ch4_anthro_emissions_rcp = ExtData(
 
 
 _ext_constant_choose_rcp = ExtConstant(
-    "../../scenarios/scen_eu.xlsx", "BAU", "G116", {}, _root, "_ext_constant_choose_rcp"
+    "../../scenarios/scen_eu.xlsx",
+    "BAU",
+    "RCP_GHG_emissions_select",
+    {},
+    _root,
+    "_ext_constant_choose_rcp",
 )
 
 

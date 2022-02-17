@@ -1,6 +1,6 @@
 """
 Module land_use
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -368,6 +368,25 @@ def forest_consumption_ej():
     return forest_extraction_ej() + eu_forest_energy_imports_from_row()
 
 
+def forest_loss_to_sustain_agriculture():
+    """
+    Real Name: Forest loss to sustain agriculture
+    Original Eqn: IF THEN ELSE(aux reach available land<1, agricultural land until 2015 -Agricultural land, 0)
+    Units: MHa/Year
+    Limits: (None, None)
+    Type: component
+    Subs: None
+
+    Forest loss rate to maintain the area dedicated to agriculture in EU in
+        the year 2015.
+    """
+    return if_then_else(
+        aux_reach_available_land() < 1,
+        lambda: agricultural_land_until_2015() - agricultural_land(),
+        lambda: 0,
+    )
+
+
 def forest_extraction_ej():
     """
     Real Name: forest extraction EJ
@@ -407,25 +426,6 @@ def forest_extraction_per_ha():
         average last years
     """
     return _ext_constant_forest_extraction_per_ha()
-
-
-def forest_loss_to_sustain_agriculture():
-    """
-    Real Name: Forest loss to sustain agriculture
-    Original Eqn: IF THEN ELSE(aux reach available land<1, agricultural land until 2015 -Agricultural land, 0)
-    Units: MHa/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Forest loss rate to maintain the area dedicated to agriculture in EU in
-        the year 2015.
-    """
-    return if_then_else(
-        aux_reach_available_land() < 1,
-        lambda: agricultural_land_until_2015() - agricultural_land(),
-        lambda: 0,
-    )
 
 
 def forest_stock_ratio():

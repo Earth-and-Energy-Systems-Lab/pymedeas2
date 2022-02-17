@@ -1,6 +1,6 @@
 """
 Module ctl_and_gtl_supply
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -62,7 +62,7 @@ def additional_pe_production_of_ctlgtl_for_liquids():
 def crash_programme_ctl():
     """
     Real Name: "Crash programme CTL?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'D110')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'crash_programme_CTL')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -76,7 +76,7 @@ def crash_programme_ctl():
 def crash_programme_gtl():
     """
     Real Name: "Crash programme GTL?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'D112')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'crash_programme_GTL')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -382,7 +382,7 @@ def lifetime_gtl():
 def p_ctl():
     """
     Real Name: P CTL
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C110')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_CTL_annual_growth')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -397,7 +397,7 @@ def p_ctl():
 def p_gtl():
     """
     Real Name: P GTL
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C112')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_gtl_growth')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -654,7 +654,7 @@ def wear_gtl():
 _ext_constant_crash_programme_ctl = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "D110",
+    "crash_programme_CTL",
     {},
     _root,
     "_ext_constant_crash_programme_ctl",
@@ -664,7 +664,7 @@ _ext_constant_crash_programme_ctl = ExtConstant(
 _ext_constant_crash_programme_gtl = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "D112",
+    "crash_programme_GTL",
     {},
     _root,
     "_ext_constant_crash_programme_gtl",
@@ -778,10 +778,20 @@ _ext_constant_lifetime_gtl = ExtConstant(
 
 
 _ext_constant_p_ctl = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C110", {}, _root, "_ext_constant_p_ctl"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "p_CTL_annual_growth",
+    {},
+    _root,
+    "_ext_constant_p_ctl",
 )
 
 
 _ext_constant_p_gtl = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C112", {}, _root, "_ext_constant_p_gtl"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "p_gtl_growth",
+    {},
+    _root,
+    "_ext_constant_p_gtl",
 )

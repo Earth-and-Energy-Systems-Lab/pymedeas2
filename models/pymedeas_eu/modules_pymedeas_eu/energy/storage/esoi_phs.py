@@ -1,6 +1,6 @@
 """
 Module esoi_phs
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -72,23 +72,6 @@ def cedtot_over_lifetime_phs():
     return phs_capacity_under_construction() * ced_per_tw_over_lifetime_phs()
 
 
-def esoi_phs():
-    """
-    Real Name: ESOI PHS
-    Original Eqn: ZIDZ( output PHS over lifetime, CEDtot over lifetime PHS*"g=quality of electricity" )
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    ESOI of pumped hydro storage.        *lifetime RES elec[hydro]
-    """
-    return zidz(
-        output_phs_over_lifetime(),
-        cedtot_over_lifetime_phs() * gquality_of_electricity(),
-    )
-
-
 def esoi_phs_depleted_potential():
     """
     Real Name: ESOI PHS depleted potential
@@ -149,6 +132,23 @@ def final_energy_invested_phs():
         (=CED*g).
     """
     return real_fe_elec_stored_phs_twh() * ej_per_twh() / esoi_phs()
+
+
+def esoi_phs():
+    """
+    Real Name: ESOI PHS
+    Original Eqn: ZIDZ( output PHS over lifetime, CEDtot over lifetime PHS*"g=quality of electricity" )
+    Units: Dmnl
+    Limits: (None, None)
+    Type: component
+    Subs: None
+
+    ESOI of pumped hydro storage.        *lifetime RES elec[hydro]
+    """
+    return zidz(
+        output_phs_over_lifetime(),
+        cedtot_over_lifetime_phs() * gquality_of_electricity(),
+    )
 
 
 _ext_constant_esoi_phs_depleted_potential = ExtConstant(

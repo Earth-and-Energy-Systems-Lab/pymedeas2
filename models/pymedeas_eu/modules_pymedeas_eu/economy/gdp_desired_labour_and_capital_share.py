@@ -1,6 +1,6 @@
 """
 Module gdp_desired_labour_and_capital_share
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -660,7 +660,7 @@ def lc_not_covered():
 def p_capital_share():
     """
     Real Name: P capital share
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'F3')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'p_capital_share')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -674,7 +674,7 @@ def p_capital_share():
 def p_customized_cte_gdppc_variation():
     """
     Real Name: P customized cte GDPpc variation
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'G7')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'p_constant_gdp_variation')
     Units: 1/Year
     Limits: (None, None)
     Type: constant
@@ -688,7 +688,7 @@ def p_customized_cte_gdppc_variation():
 def p_customized_year_gdppc_evolution():
     """
     Real Name: P customized year GDPpc evolution
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'E7')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'year_customized_gdp_evol')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -702,7 +702,7 @@ def p_customized_year_gdppc_evolution():
 def p_gdppc_asymptote():
     """
     Real Name: P GDPpc asymptote
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'G8')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'asymptote_GDPpc')
     Units: $/person
     Limits: (None, None)
     Type: constant
@@ -717,7 +717,7 @@ def p_gdppc_asymptote():
 def p_labour_share():
     """
     Real Name: P labour share
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C3')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'p_labour_share')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -731,7 +731,7 @@ def p_labour_share():
 def p_timeseries_gdppc_growth_rate():
     """
     Real Name: P timeseries GDPpc growth rate
-    Original Eqn: GET DIRECT DATA('../../scenarios/scen_eu.xlsx', 'BAU', '5', 'E6')
+    Original Eqn: GET DIRECT DATA('../../scenarios/scen_eu.xlsx', 'BAU', 'year_gdp_timeseries', 'p_timeseries_gdp_growth')
     Units: 1/Year
     Limits: (None, None)
     Type: component_ext_data
@@ -745,7 +745,7 @@ def p_timeseries_gdppc_growth_rate():
 def select_gdppc_evolution_input():
     """
     Real Name: select GDPpc evolution input
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'B4')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'select_gdp_evolution')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -805,7 +805,7 @@ def t_asymptote_gdppc():
 def target_year_gdppc_asymptote():
     """
     Real Name: Target year GDPpc asymptote
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'I8')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'target_year_asymptote_gdp')
     Units:
     Limits: (None, None)
     Type: constant
@@ -1065,7 +1065,7 @@ _integ_lc = Integ(
 _ext_constant_p_capital_share = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "F3",
+    "p_capital_share",
     {},
     _root,
     "_ext_constant_p_capital_share",
@@ -1075,7 +1075,7 @@ _ext_constant_p_capital_share = ExtConstant(
 _ext_constant_p_customized_cte_gdppc_variation = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "G7",
+    "p_constant_gdp_variation",
     {},
     _root,
     "_ext_constant_p_customized_cte_gdppc_variation",
@@ -1085,7 +1085,7 @@ _ext_constant_p_customized_cte_gdppc_variation = ExtConstant(
 _ext_constant_p_customized_year_gdppc_evolution = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "E7",
+    "year_customized_gdp_evol",
     {},
     _root,
     "_ext_constant_p_customized_year_gdppc_evolution",
@@ -1095,7 +1095,7 @@ _ext_constant_p_customized_year_gdppc_evolution = ExtConstant(
 _ext_constant_p_gdppc_asymptote = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "G8",
+    "asymptote_GDPpc",
     {},
     _root,
     "_ext_constant_p_gdppc_asymptote",
@@ -1105,7 +1105,7 @@ _ext_constant_p_gdppc_asymptote = ExtConstant(
 _ext_constant_p_labour_share = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C3",
+    "p_labour_share",
     {},
     _root,
     "_ext_constant_p_labour_share",
@@ -1115,8 +1115,8 @@ _ext_constant_p_labour_share = ExtConstant(
 _ext_data_p_timeseries_gdppc_growth_rate = ExtData(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "5",
-    "E6",
+    "year_gdp_timeseries",
+    "p_timeseries_gdp_growth",
     "interpolate",
     {},
     _root,
@@ -1127,7 +1127,7 @@ _ext_data_p_timeseries_gdppc_growth_rate = ExtData(
 _ext_constant_select_gdppc_evolution_input = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "B4",
+    "select_gdp_evolution",
     {},
     _root,
     "_ext_constant_select_gdppc_evolution_input",
@@ -1146,7 +1146,7 @@ _smooth_smooth_desired_gdppc = Smooth(
 _ext_constant_target_year_gdppc_asymptote = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "I8",
+    "target_year_asymptote_gdp",
     {},
     _root,
     "_ext_constant_target_year_gdppc_asymptote",

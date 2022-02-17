@@ -1,6 +1,6 @@
 """
 Module crops_for_biofuels
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -187,7 +187,7 @@ def new_land_marg_for_biofuels():
 def p_biofuels_marg_lands():
     """
     Real Name: P biofuels marg lands
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'F46')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'p_biofuels_land_marg_growth')
     Units: 1/Year
     Limits: (None, None)
     Type: constant
@@ -233,7 +233,7 @@ def peavail_biofuels_land_marg_ej():
 def potential_marginal_lands_mha():
     """
     Real Name: Potential marginal lands MHa
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C43')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'pot_marg_land_biofuels')
     Units: MHa
     Limits: (None, None)
     Type: constant
@@ -332,7 +332,7 @@ def start_production_biofuels(x):
 def start_year_biofuels_land_marg():
     """
     Real Name: start year biofuels land marg
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'F45')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'start_year_biofuels_land_marg')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -376,7 +376,7 @@ _ext_constant_land_productivity_biofuels_marg_ej_mha = ExtConstant(
 _ext_constant_p_biofuels_marg_lands = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "F46",
+    "p_biofuels_land_marg_growth",
     {},
     _root,
     "_ext_constant_p_biofuels_marg_lands",
@@ -386,7 +386,7 @@ _ext_constant_p_biofuels_marg_lands = ExtConstant(
 _ext_constant_potential_marginal_lands_mha = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C43",
+    "pot_marg_land_biofuels",
     {},
     _root,
     "_ext_constant_potential_marginal_lands_mha",
@@ -415,7 +415,7 @@ _ext_lookup_start_production_biofuels = ExtLookup(
 _ext_constant_start_year_biofuels_land_marg = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "F45",
+    "start_year_biofuels_land_marg",
     {},
     _root,
     "_ext_constant_start_year_biofuels_land_marg",

@@ -1,13 +1,13 @@
 """
 Module res_heat_potential
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
 def fe_solar_potential_for_heat():
     """
     Real Name: FE solar potential for heat
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C55')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'solar_thermal_pot_FE')
     Units: EJ/year
     Limits: (None, None)
     Type: constant
@@ -36,7 +36,7 @@ def geot_pe_potential_for_heat_ej():
 def geot_pe_potential_for_heat_twth():
     """
     Real Name: Geot PE potential for heat TWth
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C56')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'geothermal_PE_pot_heat')
     Units: TWth
     Limits: (None, None)
     Type: constant
@@ -202,7 +202,7 @@ def remaining_potential_tot_res_heat():
 _ext_constant_fe_solar_potential_for_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C55",
+    "solar_thermal_pot_FE",
     {},
     _root,
     "_ext_constant_fe_solar_potential_for_heat",
@@ -212,7 +212,7 @@ _ext_constant_fe_solar_potential_for_heat = ExtConstant(
 _ext_constant_geot_pe_potential_for_heat_twth = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C56",
+    "geothermal_PE_pot_heat",
     {},
     _root,
     "_ext_constant_geot_pe_potential_for_heat_twth",

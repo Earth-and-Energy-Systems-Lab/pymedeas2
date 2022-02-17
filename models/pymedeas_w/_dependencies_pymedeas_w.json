@@ -158,52 +158,10 @@
             "scarcity_conv_oil": 1
         }
     },
-    "_delayfixed_share_res_vs_tfec_delayed_1yr": {
-        "initial": {},
-        "step": {
-            "share_res_vs_tfec": 1
-        }
-    },
-    "_delayfixed_share_res_vs_tpes_delayed_1yr": {
-        "initial": {},
-        "step": {
-            "share_res_vs_tpes": 1
-        }
-    },
     "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr": {
         "initial": {},
         "step": {
             "share_variable_res_elec_generation_vs_total": 1
-        }
-    },
-    "_delayfixed_tfec_res_delayed_1yr": {
-        "initial": {},
-        "step": {
-            "tfec_res_ej": 1
-        }
-    },
-    "_delayfixed_tfes_intensity_ej_t_delayed_1yr": {
-        "initial": {},
-        "step": {
-            "tfes_intensity_ej_t": 1
-        }
-    },
-    "_delayfixed_tfes_intensity_without_eroi_delayed_1yr": {
-        "initial": {},
-        "step": {
-            "tfes_intensity_ej_t_without_eroi": 1
-        }
-    },
-    "_delayfixed_tpes_intensity_ej_t_delayed_1yr": {
-        "initial": {},
-        "step": {
-            "tpes_intensity_ej_t": 1
-        }
-    },
-    "_delayfixed_tpes_res_delayed_1yr": {
-        "initial": {},
-        "step": {
-            "tpe_from_res_ej": 1
         }
     },
     "_initial_initial_demand": {
@@ -1256,33 +1214,6 @@
             "time": 1
         }
     },
-    "_sample_if_true_tfec_intensity_until_2009": {
-        "initial": {
-            "tfes_intensity_ej_t": 1
-        },
-        "step": {
-            "tfes_intensity_ej_t": 1,
-            "time": 1
-        }
-    },
-    "_sample_if_true_tfec_intensity_until_2009_without_eroi": {
-        "initial": {
-            "tfes_intensity_ej_t_without_eroi": 1
-        },
-        "step": {
-            "tfes_intensity_ej_t_without_eroi": 1,
-            "time": 1
-        }
-    },
-    "_sample_if_true_tpes_intensity_until_2009": {
-        "initial": {
-            "tpes_intensity_ej_t": 1
-        },
-        "step": {
-            "time": 1,
-            "tpes_intensity_ej_t": 1
-        }
-    },
     "a1_coef_th": {
         "a2_coef_th": 1,
         "demand_h": 1,
@@ -1604,45 +1535,13 @@
         "time": 1,
         "variation_input_pop": 1
     },
-    "annual_share_res_vs_tfec_growth_rate": {
-        "share_res_vs_tfec": 1,
-        "share_res_vs_tfec_delayed_1yr": 1
-    },
-    "annual_share_res_vs_tpes_growth_rate": {
-        "share_res_vs_tpes": 1,
-        "share_res_vs_tpes_delayed_1yr": 1
-    },
     "annual_shift_from_2gen_to_3gen": {
         "__external__": null
-    },
-    "annual_tfec_res_growth_rate": {
-        "tfec_res_delayed_1yr": 1,
-        "tfec_res_ej": 1
-    },
-    "annual_tfes_intensity_growth_rate": {
-        "tfes_intensity_ej_t": 1,
-        "tfes_intensity_ej_t_delayed_1yr": 1
-    },
-    "annual_tfes_intensity_growth_rate_without_eroi": {
-        "tfes_intensity_ej_t_without_eroi": 1,
-        "tfes_intensity_without_eroi_delayed_1yr": 1
-    },
-    "annual_tpes_intensity_growth_rate": {
-        "tpes_intensity_ej_t": 1,
-        "tpes_intensity_ej_t_delayed_1yr": 1
-    },
-    "annual_tpes_res_growth_rate": {
-        "tpe_from_res_ej": 1,
-        "tpes_res_delayed_1yr": 1
     },
     "annual_variation_nonenergy_use": {
         "historic_nonenergy_use": 2,
         "time": 3,
         "variation_nonenergy_use": 1
-    },
-    "annual_work_hours_for_res": {
-        "total_jobs_res": 1,
-        "working_hours_per_year": 1
     },
     "ar_water": {
         "__external__": null
@@ -1676,7 +1575,7 @@
         "total_pe_solid_bioe_potential_heatelec_ej": 1
     },
     "available_pe_potential_solid_bioe_for_heat_ej": {
-        "pe_bioe_for_elec_generation_ej": 1,
+        "pe_real_generation_res_elec": 1,
         "total_pe_solid_bioe_potential_heatelec_ej": 1
     },
     "available_potential_fe_solid_bioe_for_elec_ej": {
@@ -2136,10 +2035,6 @@
     "check_liquids_delayed_1yr": {
         "_delayfixed_check_liquids_delayed_1yr": 1
     },
-    "check_tpe": {
-        "tped_by_fuel": 1,
-        "tpes_ej": 2
-    },
     "choose_energy_intensity_target_method": {
         "__external__": null
     },
@@ -2460,21 +2355,6 @@
     "cumulative_emissions_to_1995": {
         "__external__": null
     },
-    "cumulative_tfec_intensity_change_from_2009": {
-        "tfec_intensity_until_2009": 1,
-        "tfes_intensity_ej_t": 1,
-        "time": 1
-    },
-    "cumulative_tfec_intensity_change_from_2009_without_eroi": {
-        "tfec_intensity_until_2009_without_eroi": 1,
-        "tfes_intensity_ej_t_without_eroi": 1,
-        "time": 1
-    },
-    "cumulative_tpes_intensity_change_from_2009": {
-        "time": 1,
-        "tpes_intensity_ej_t": 1,
-        "tpes_intensity_until_2009": 1
-    },
     "current_mineral_reserves_mt": {
         "__external__": null
     },
@@ -2506,7 +2386,6 @@
         "replacement_res_for_heatnc_tw": 1
     },
     "dam3_per_km3": {},
-    "days_per_year": {},
     "decrease_of_intensity_due_to_change_energy_technology_h_top_down": {
         "evol_final_energy_intensity_h": 2,
         "global_energy_intensity_h": 1,
@@ -2619,10 +2498,6 @@
         "desired_gdppc": 1,
         "time": 1,
         "variation_historic_gdppc": 1
-    },
-    "diff_annual_gdp_growth_rate": {
-        "annual_gdp_growth_rate": 1,
-        "desired_annual_gdp_growth_rate": 2
     },
     "diff_demand": {
         "desired_annual_gdp_growth_rate": 1,
@@ -2815,17 +2690,11 @@
         "pe_losses_res_for_elec": 1
     },
     "elec_generation_dispatch_from_res_twh": {
-        "fe_elec_generation_from_bioe_twh": 1,
-        "fe_elec_generation_from_geotelec_twh": 1,
-        "fe_elec_generation_from_hydro_twh": 1,
-        "fe_elec_generation_from_oceanic_twh": 1,
-        "fes_elec_from_biogas_twh": 1
+        "fes_elec_from_biogas_twh": 1,
+        "real_generation_res_elec_twh": 1
     },
     "elec_generation_variable_from_res_twh": {
-        "fe_elec_generation_from_csp_twh": 1,
-        "fe_elec_generation_from_offshore_wind_twh": 1,
-        "fe_elec_generation_from_onshore_wind_twh": 1,
-        "fe_elec_generation_from_solar_pv_twh": 1
+        "real_generation_res_elec_twh": 1
     },
     "electrical_distribution_losses_ej": {
         "ej_per_twh": 1,
@@ -2961,10 +2830,6 @@
     "eolrr_minerals_alt_techn_res_vs_total_economy": {
         "__external__": null
     },
-    "eptb_dynamic": {
-        "dynamic_eroi_res_elec_var": 1,
-        "lifetime_res_elec": 1
-    },
     "equil_c_in_mixed_layer": {
         "buffer_factor": 1,
         "c_in_atmosphere": 1,
@@ -3062,9 +2927,8 @@
     "exponent_availability_conv_oil": {},
     "extra_monet_invest_to_cope_with_variable_elec_res": {
         "balancing_costs": 1,
-        "fe_elec_generation_from_offshore_wind_twh": 1,
-        "fe_elec_generation_from_onshore_wind_twh": 1,
-        "grid_reinforcement_costs_tdollar": 1
+        "grid_reinforcement_costs_tdollar": 1,
+        "real_generation_res_elec_twh": 2
     },
     "extraction_coal_ej": {
         "max_extraction_coal_ej": 1,
@@ -3178,14 +3042,11 @@
         "share_gascoal_gas_for_elec": 1
     },
     "fe_demand_oil_elec_plants_twh": {
-        "share_oil_for_elec": 1,
-        "total_fe_elec_demand_twh": 1
+        "demand_elec_plants_fossil_fuels_twh": 1,
+        "share_oil_for_elec": 1
     },
     "fe_elec_demand_consum_ej": {
         "required_fed_by_fuel": 1
-    },
-    "fe_elec_generation_from_bioe_twh": {
-        "real_generation_res_elec_twh": 1
     },
     "fe_elec_generation_from_coal_twh": {
         "efficiency_coal_for_electricity": 1,
@@ -3199,9 +3060,6 @@
         "real_extraction_conv_gas_ej": 1,
         "share_nat_gas_dem_for_elec": 1
     },
-    "fe_elec_generation_from_csp_twh": {
-        "real_generation_res_elec_twh": 1
-    },
     "fe_elec_generation_from_fossil_fuels_twh": {
         "fe_elec_generation_from_coal_twh": 1,
         "fe_elec_generation_from_conv_gas_twh": 1,
@@ -3209,27 +3067,9 @@
         "fe_elec_generation_from_unconv_gas_twh": 1,
         "fes_elec_fossil_fuel_chp_plants_twh": 1
     },
-    "fe_elec_generation_from_geotelec_twh": {
-        "real_generation_res_elec_twh": 1
-    },
-    "fe_elec_generation_from_hydro_twh": {
-        "real_generation_res_elec_twh": 1
-    },
     "fe_elec_generation_from_nre_twh": {
         "fe_elec_generation_from_fossil_fuels_twh": 1,
         "fe_nuclear_elec_generation_twh": 1
-    },
-    "fe_elec_generation_from_oceanic_twh": {
-        "real_generation_res_elec_twh": 1
-    },
-    "fe_elec_generation_from_offshore_wind_twh": {
-        "real_generation_res_elec_twh": 1
-    },
-    "fe_elec_generation_from_onshore_wind_twh": {
-        "real_generation_res_elec_twh": 1
-    },
-    "fe_elec_generation_from_solar_pv_twh": {
-        "real_generation_res_elec_twh": 1
     },
     "fe_elec_generation_from_total_oil_twh": {
         "efficiency_liquids_for_electricity": 1,
@@ -4203,11 +4043,6 @@
         "historical_extraction_minerals_rest": 2,
         "time": 2
     },
-    "hours_work_per_gj_res_delivered": {
-        "annual_work_hours_for_res": 1,
-        "gj_per_ej": 1,
-        "tfec_res_ej": 1
-    },
     "household_demand": {
         "_integ_household_demand": 1
     },
@@ -4222,9 +4057,6 @@
     "households_final_energy_demand": {
         "energy_intensity_of_households": 1,
         "household_demand_total": 1
-    },
-    "households_total_final_energy_demand": {
-        "households_final_energy_demand": 1
     },
     "i_matrix": {},
     "ia_matrix": {
@@ -4594,9 +4426,6 @@
         "perception_of_interfuel_final_energy_scarcities_h": 1,
         "scarcity_feedback_final_fuel_replacement_flag": 1
     },
-    "invest_biow_tdolar": {
-        "invest_res_elec_tdolar": 1
-    },
     "invest_cost_nuclear": {
         "__external__": null,
         "time": 1
@@ -4605,45 +4434,14 @@
         "__external__": null,
         "time": 1
     },
-    "invest_csp_tdolar": {
-        "invest_res_elec_tdolar": 1
-    },
-    "invest_geotelec_tdolar": {
-        "invest_res_elec_tdolar": 1
-    },
-    "invest_hydro_tdolar": {
-        "invest_res_elec_tdolar": 1
-    },
     "invest_nuclear_tdolar": {
         "invest_cost_nuclear": 1,
         "nuclear_capacity_under_construction": 2,
         "replacement_nuclear_capacity": 1
     },
-    "invest_oceanic_tdolar": {
-        "invest_res_elec_tdolar": 1
-    },
-    "invest_offshore_wind_tdolar": {
-        "invest_res_elec_tdolar": 1
-    },
-    "invest_onshore_wind_tdolar": {
-        "invest_res_elec_tdolar": 1
-    },
     "invest_res_elec_tdolar": {
         "invest_cost_res_elec": 1,
         "res_elec_capacity_under_construction_tw": 1
-    },
-    "invest_res_for_elec": {
-        "invest_biow_tdolar": 1,
-        "invest_csp_tdolar": 1,
-        "invest_geotelec_tdolar": 1,
-        "invest_hydro_tdolar": 1,
-        "invest_oceanic_tdolar": 1,
-        "invest_offshore_wind_tdolar": 1,
-        "invest_onshore_wind_tdolar": 1,
-        "invest_solar_tdolar": 1
-    },
-    "invest_solar_tdolar": {
-        "invest_res_elec_tdolar": 1
     },
     "jobs_om_res_elec_per_techn": {
         "employment_factors_om_res_elec": 1,
@@ -5695,9 +5493,6 @@
         "gross_fixed_capital_formation": 2,
         "household_demand": 1
     },
-    "pe_bioe_for_elec_generation_ej": {
-        "pe_real_generation_res_elec": 1
-    },
     "pe_bioe_residues_for_heatelec_ej": {
         "_integ_pe_bioe_residues_for_heatelec_ej": 1
     },
@@ -5726,9 +5521,6 @@
     "pe_consumption_trad_biomass_ref": {
         "__external__": null
     },
-    "pe_csp_for_elec_generation_ej": {
-        "pe_real_generation_res_elec": 1
-    },
     "pe_demand_coal_elec_plants_ej": {
         "efficiency_coal_for_electricity": 1,
         "ej_per_twh": 1,
@@ -5750,26 +5542,13 @@
         "potential_generation_nuclear_elec_twh": 1
     },
     "pe_elec_generation_from_res_ej": {
-        "pe_bioe_for_elec_generation_ej": 1,
-        "pe_csp_for_elec_generation_ej": 1,
-        "pe_geotelec_for_elec_generation_ej": 1,
-        "pe_hydro_for_elec_generation_ej": 1,
-        "pe_oceanic_for_elec_generation_ej": 1,
-        "pe_offshore_wind_for_elec_generation_ej": 1,
-        "pe_onshore_wind_for_elec_generation_ej": 1,
-        "pe_solar_pv_for_elec_generation_ej": 1,
+        "pe_real_generation_res_elec": 1,
         "pes_tot_biogas_for_elec": 1
-    },
-    "pe_geotelec_for_elec_generation_ej": {
-        "pe_real_generation_res_elec": 1
-    },
-    "pe_hydro_for_elec_generation_ej": {
-        "pe_real_generation_res_elec": 1
     },
     "pe_losses_bioe_for_elec_ej": {
         "ej_per_twh": 1,
-        "fe_elec_generation_from_bioe_twh": 1,
-        "pe_real_generation_res_elec": 1
+        "pe_real_generation_res_elec": 1,
+        "real_generation_res_elec_twh": 1
     },
     "pe_losses_biogas_for_elec": {
         "fes_elec_from_biogas_ej": 1,
@@ -5815,23 +5594,11 @@
         "fes_elec_from_waste_ej": 1,
         "pes_tot_waste_for_elec": 1
     },
-    "pe_oceanic_for_elec_generation_ej": {
-        "pe_real_generation_res_elec": 1
-    },
-    "pe_offshore_wind_for_elec_generation_ej": {
-        "pe_real_generation_res_elec": 1
-    },
-    "pe_onshore_wind_for_elec_generation_ej": {
-        "pe_real_generation_res_elec": 1
-    },
     "pe_real_generation_res_elec": {
         "efficiency_conversion_bioe_to_elec": 1,
         "ej_per_twh": 8,
         "real_generation_res_elec_twh": 8,
         "res_to_fossil_accounting": 7
-    },
-    "pe_solar_pv_for_elec_generation_ej": {
-        "pe_real_generation_res_elec": 1
     },
     "pe_supply_from_res_nonelec_without_trad_bioe_ej": {
         "fes_total_biofuels_production_ej": 1,
@@ -5997,9 +5764,6 @@
     },
     "percent_remaining_potential_tot_res_heat": {
         "remaining_potential_tot_res_heat": 1
-    },
-    "percent_res_vs_tpes": {
-        "share_res_vs_tpes": 1
     },
     "percent_t_vehicles": {
         "_integ_percent_t_vehicles": 1
@@ -6192,7 +5956,7 @@
     },
     "pes_solids_bioe_ej": {
         "losses_in_charcoal_plants_ej": 1,
-        "pe_bioe_for_elec_generation_ej": 1,
+        "pe_real_generation_res_elec": 1,
         "pe_traditional_biomass_ej_delayed_1yr": 1,
         "pes_res_for_heatcom_by_techn": 1,
         "pes_res_for_heatnc_by_techn": 1
@@ -6537,10 +6301,6 @@
     "ratio_fed_for_heatnc_vs_fed_for_heatcom": {
         "fed_by_fuel_for_heatnc": 1,
         "required_fed_by_fuel_before_heat_correction": 1
-    },
-    "ratio_fed_households_vs_sectors": {
-        "households_total_final_energy_demand": 1,
-        "required_tfed_sectors": 1
     },
     "ratio_gain_gas_vs_lose_solids_in_tranf_processes": {
         "__external__": null,
@@ -6954,15 +6714,6 @@
         "bat_number_ev": 1,
         "bat_number_hib": 1
     },
-    "required_tfed": {
-        "required_fed_by_fuel": 1
-    },
-    "required_tfed_before_heat_dem_corr": {
-        "required_fed_by_fuel_before_heat_correction": 1
-    },
-    "required_tfed_sectors": {
-        "required_fed_sectors_by_fuel": 1
-    },
     "required_total_output_by_sector": {
         "demand_by_sector": 1,
         "leontief_matrix": 1
@@ -7303,10 +7054,6 @@
         "total_transport_fed_by_fuel": 1,
         "transport_tfed": 1
     },
-    "share_dyn_fei_for_res_vs_tfec": {
-        "real_tfec": 1,
-        "total_dyn_fei_res": 1
-    },
     "share_e_industry_ownuse_vs_tfec_in_2015": {
         "_sample_if_true_share_e_industry_ownuse_vs_tfec_in_2015": 1
     },
@@ -7330,9 +7077,6 @@
         "total_number_elec_light_vehicles": 1,
         "total_number_hybrid_light_vehicles": 1,
         "total_number_light_vehicles": 1
-    },
-    "share_electricity_vs_tfes": {
-        "real_fe_consumption_by_fuel": 2
     },
     "share_energy_for_material_consumption_for_alt_techn_vs_tfec": {
         "real_tfec": 1,
@@ -7409,18 +7153,12 @@
         "ped_nat_gas_for_gtl_ej": 1,
         "required_fed_by_gas": 1
     },
-    "share_gases_vs_tfes": {
-        "real_fe_consumption_by_fuel": 2
-    },
     "share_global_pop_dependent_on_trad_biomass": {
         "population": 1,
         "population_dependent_on_trad_biomass": 1
     },
     "share_heat_distribution_losses": {
         "__external__": null
-    },
-    "share_heat_vs_tfes": {
-        "real_fe_consumption_by_fuel": 2
     },
     "share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation": {
         "__external__": null,
@@ -7464,9 +7202,6 @@
         "phaseout_oil_for_heat": 1,
         "start_year_policy_phaseout_oil_for_heat": 1,
         "time": 2
-    },
-    "share_liquids_vs_tfes": {
-        "real_fe_consumption_by_fuel": 2
     },
     "share_materials_cum_demand_to_extract_vs_reserves_for_res_elec": {
         "cum_materials_to_extract_for_alt_techn_from_2015": 1,
@@ -7560,27 +7295,9 @@
         "fe_tot_generation_all_res_elec_twh": 1,
         "total_fe_elec_generation_twh": 1
     },
-    "share_res_for_elec_vs_tpe_res": {
-        "pe_elec_generation_from_res_ej": 2,
-        "pe_supply_res_nonelec_ej": 1
-    },
     "share_res_heat_generation": {
         "fes_res_for_heat_ej": 1,
         "total_fe_heat_generation_ej": 1
-    },
-    "share_res_vs_tfec": {
-        "real_tfec": 1,
-        "tfec_res_ej": 1
-    },
-    "share_res_vs_tfec_delayed_1yr": {
-        "_delayfixed_share_res_vs_tfec_delayed_1yr": 1
-    },
-    "share_res_vs_tpes": {
-        "tpe_from_res_ej": 1,
-        "tpes_ej": 1
-    },
-    "share_res_vs_tpes_delayed_1yr": {
-        "_delayfixed_share_res_vs_tpes_delayed_1yr": 1
     },
     "share_rurr_coal_to_leave_underground": {
         "__external__": null
@@ -7609,9 +7326,6 @@
         "ped_solids": 1,
         "required_fed_solids": 1
     },
-    "share_solids_vs_tfes": {
-        "real_fe_consumption_by_fuel": 2
-    },
     "share_tech_change_fuel": {
         "pressure_to_change_energy_technology_by_fuel": 2
     },
@@ -7625,10 +7339,6 @@
     "share_tot_cum_dem_vs_resources_materials": {
         "current_mineral_resources_mt": 2,
         "total_cumulative_demand_materials_to_extract_from_2015": 1
-    },
-    "share_tot_fei_res_elec_var": {
-        "total_dyn_fei_res": 1,
-        "total_final_energy_invested_res_elec_var": 1
     },
     "share_tot_monet_invest_elec_res_vs_gdp": {
         "gdp": 1,
@@ -7686,7 +7396,7 @@
         "percent_t_vehicles": 32
     },
     "solid_biofuels_emissions_relevant_ej": {
-        "pe_bioe_for_elec_generation_ej": 1,
+        "pe_real_generation_res_elec": 1,
         "pes_res_for_heatcom_by_techn": 1,
         "pes_res_for_heatnc_by_techn": 1
     },
@@ -7892,19 +7602,10 @@
         "population": 1,
         "tfec_res_ej": 1
     },
-    "tfec_intensity_until_2009": {
-        "_sample_if_true_tfec_intensity_until_2009": 1
-    },
-    "tfec_intensity_until_2009_without_eroi": {
-        "_sample_if_true_tfec_intensity_until_2009_without_eroi": 1
-    },
     "tfec_per_capita": {
         "gj_per_ej": 1,
         "population": 1,
         "real_tfec": 1
-    },
-    "tfec_res_delayed_1yr": {
-        "_delayfixed_tfec_res_delayed_1yr": 1
     },
     "tfec_res_ej": {
         "fe_tot_generation_all_res_elec_ej": 1,
@@ -7915,20 +7616,6 @@
     },
     "tfei_sectors": {
         "final_energy_intensity_by_sector_and_fuel": 1
-    },
-    "tfes_intensity_ej_t": {
-        "gdp": 1,
-        "real_tfec": 1
-    },
-    "tfes_intensity_ej_t_delayed_1yr": {
-        "_delayfixed_tfes_intensity_ej_t_delayed_1yr": 1
-    },
-    "tfes_intensity_ej_t_without_eroi": {
-        "gdp": 1,
-        "real_tfec": 1
-    },
-    "tfes_intensity_without_eroi_delayed_1yr": {
-        "_delayfixed_tfes_intensity_without_eroi_delayed_1yr": 1
     },
     "threshold_remaining_potential_new_capacity": {},
     "time_95pc_ts_potential_res_elec": {
@@ -8110,9 +7797,9 @@
     },
     "total_dyn_fei_res": {
         "fei_ev_batteries": 1,
-        "final_energy_invested_phs": 1,
-        "total_fei_over_lifetime_res_elec_dispatch": 1,
-        "total_final_energy_invested_res_elec_var": 1
+        "fei_over_lifetime_res_elec_dispatch": 1,
+        "fei_res_elec_var": 1,
+        "final_energy_invested_phs": 1
     },
     "total_electrical_losses_ej": {
         "elec_gen_related_losses_ej": 1,
@@ -8196,12 +7883,6 @@
     },
     "total_fed_trasnport_households": {
         "transport_households_final_energy_demand": 1
-    },
-    "total_fei_over_lifetime_res_elec_dispatch": {
-        "fei_over_lifetime_res_elec_dispatch": 1
-    },
-    "total_final_energy_invested_res_elec_var": {
-        "fei_res_elec_var": 1
     },
     "total_gen_losses_demand_for_chp_plants_ej": {
         "efficiency_elec_coal_chp_plants": 1,
@@ -8299,7 +7980,7 @@
     },
     "total_monet_invest_res_for_elec_tdolar": {
         "extra_monet_invest_to_cope_with_variable_elec_res": 1,
-        "invest_res_for_elec": 1
+        "invest_res_elec_tdolar": 1
     },
     "total_number_elec_light_vehicles": {
         "number_vehicles_h": 1,
@@ -8386,10 +8067,6 @@
         "pe_elec_generation_from_res_ej": 1,
         "pe_supply_res_nonelec_ej": 1
     },
-    "tpe_from_res_mtoe": {
-        "mtoe_per_ej": 1,
-        "tpe_from_res_ej": 1
-    },
     "tped_by_fuel": {
         "extraction_uranium_ej": 1,
         "pe_elec_generation_from_res_ej": 1,
@@ -8408,23 +8085,6 @@
         "pes_heat_res": 1,
         "pes_nre_heat": 1,
         "pes_tot_waste_for_heatcom": 1
-    },
-    "tpes_intensity_ej_t": {
-        "gdp": 1,
-        "tpes_ej": 1
-    },
-    "tpes_intensity_ej_t_delayed_1yr": {
-        "_delayfixed_tpes_intensity_ej_t_delayed_1yr": 1
-    },
-    "tpes_intensity_until_2009": {
-        "_sample_if_true_tpes_intensity_until_2009": 1
-    },
-    "tpes_mtoe": {
-        "mtoe_per_ej": 1,
-        "tpes_ej": 1
-    },
-    "tpes_res_delayed_1yr": {
-        "_delayfixed_tpes_res_delayed_1yr": 1
     },
     "tpes_without_trad_biomass": {
         "pe_traditional_biomass_ej_delayed_1yr": 1,
@@ -8820,13 +8480,6 @@
         "ch4_and_n2o_radiative_forcing": 1,
         "co2_radiative_forcing": 1,
         "halocarbon_rf": 1
-    },
-    "working_hours_per_day": {
-        "__external__": null
-    },
-    "working_hours_per_year": {
-        "days_per_year": 1,
-        "working_hours_per_day": 1
     },
     "year_change_pct_energy_intensity_target": {
         "__external__": null

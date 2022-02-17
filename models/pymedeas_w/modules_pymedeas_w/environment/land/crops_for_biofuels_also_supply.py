@@ -1,6 +1,6 @@
 """
 Module crops_for_biofuels_also_supply
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -32,7 +32,7 @@ def adapt_growth_biofuels_2gen():
 def additional_land_compet_available_for_biofuels():
     """
     Real Name: Additional land compet available for biofuels
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C41')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'additional_land_available_biofuels')
     Units: MHa/year
     Limits: (None, None)
     Type: constant
@@ -85,7 +85,7 @@ def annual_additional_historic_product_biofuels_2gen():
 def annual_shift_from_2gen_to_3gen():
     """
     Real Name: Annual shift from 2gen to 3gen
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C44')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'annual_shift_2_3_gen_biofuels')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -400,7 +400,7 @@ def new_biofuels_2gen_land_compet():
 def p_biofuels_2gen():
     """
     Real Name: P biofuels 2gen
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C40')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_biofuels_2gen')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -415,7 +415,7 @@ def p_biofuels_2gen():
 def p_biofuels_3gen():
     """
     Real Name: P biofuels 3gen
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C42')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_biofuels_3g')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -527,7 +527,7 @@ def potential_peavail_biofuels_prod_3gen_ej():
 def start_year_3gen():
     """
     Real Name: start year 3gen
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C43')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'start_year_3gen')
     Units: year
     Limits: (None, None)
     Type: constant
@@ -541,7 +541,7 @@ def start_year_3gen():
 _ext_constant_additional_land_compet_available_for_biofuels = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C41",
+    "additional_land_available_biofuels",
     {},
     _root,
     "_ext_constant_additional_land_compet_available_for_biofuels",
@@ -551,7 +551,7 @@ _ext_constant_additional_land_compet_available_for_biofuels = ExtConstant(
 _ext_constant_annual_shift_from_2gen_to_3gen = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C44",
+    "annual_shift_2_3_gen_biofuels",
     {},
     _root,
     "_ext_constant_annual_shift_from_2gen_to_3gen",
@@ -617,7 +617,7 @@ _ext_constant_land_productivity_biofuels_2gen_ej_mha = ExtConstant(
 _ext_constant_p_biofuels_2gen = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C40",
+    "p_biofuels_2gen",
     {},
     _root,
     "_ext_constant_p_biofuels_2gen",
@@ -627,7 +627,7 @@ _ext_constant_p_biofuels_2gen = ExtConstant(
 _ext_constant_p_biofuels_3gen = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C42",
+    "p_biofuels_3g",
     {},
     _root,
     "_ext_constant_p_biofuels_3gen",
@@ -647,7 +647,7 @@ _ext_constant_past_biofuels_2gen = ExtConstant(
 _ext_constant_start_year_3gen = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C43",
+    "start_year_3gen",
     {},
     _root,
     "_ext_constant_start_year_3gen",

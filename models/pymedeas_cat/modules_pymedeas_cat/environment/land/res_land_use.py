@@ -1,6 +1,6 @@
 """
 Module res_land_use
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -145,6 +145,20 @@ def surface_hydro_mha():
     return float(surface_res_elec().loc["hydro"])
 
 
+def surface_solar_pv_on_land_mha():
+    """
+    Real Name: surface solar PV on land Mha
+    Original Eqn: surface RES elec[solar PV]
+    Units: MHa
+    Limits: (None, None)
+    Type: component
+    Subs: None
+
+    Area required for solar PV plants on land.
+    """
+    return float(surface_res_elec().loc["solar PV"])
+
+
 def surface_onshore_wind_mha():
     """
     Real Name: surface onshore wind Mha
@@ -258,20 +272,6 @@ def surface_res_elec():
             {"RES elec": ["CSP"]},
         ),
     )
-
-
-def surface_solar_pv_on_land_mha():
-    """
-    Real Name: surface solar PV on land Mha
-    Original Eqn: surface RES elec[solar PV]
-    Units: MHa
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Area required for solar PV plants on land.
-    """
-    return float(surface_res_elec().loc["solar PV"])
 
 
 def total_land_requirements_renew_mha():

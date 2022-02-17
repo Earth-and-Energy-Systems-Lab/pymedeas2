@@ -1,6 +1,6 @@
 """
 Module sectors_and_households
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -833,7 +833,7 @@ def lc_not_covered():
 def p_customized_cte_gdppc_variation():
     """
     Real Name: P customized cte GDPpc variation
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'G7')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'constant_GDP_variation')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -847,7 +847,7 @@ def p_customized_cte_gdppc_variation():
 def p_customized_year_gdppc_evolution():
     """
     Real Name: P customized year GDPpc evolution
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'E7')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'start_year_gdp_variation')
     Units: year
     Limits: (None, None)
     Type: constant
@@ -861,7 +861,7 @@ def p_customized_year_gdppc_evolution():
 def p_labour_share_2050():
     """
     Real Name: P labour share 2050
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C3')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_labor_share_2050')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -875,7 +875,7 @@ def p_labour_share_2050():
 def p_timeseries_gdppc_growth_rate():
     """
     Real Name: P timeseries GDPpc growth rate
-    Original Eqn: GET DIRECT DATA('../../scenarios/scen_w.xlsx', 'BAU', '5', 'E6')
+    Original Eqn: GET DIRECT DATA('../../scenarios/scen_w.xlsx', 'BAU', 'years_gdp_growth', 'gdp_growth_timeseries')
     Units: 1/year
     Limits: (None, None)
     Type: component_ext_data
@@ -945,7 +945,7 @@ def real_household_demand():
 def select_gdppc_evolution_input():
     """
     Real Name: select GDPpc evolution input
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'B4')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'gdp_evolution_input')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1575,7 +1575,7 @@ _integ_lc = Integ(
 _ext_constant_p_customized_cte_gdppc_variation = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "G7",
+    "constant_GDP_variation",
     {},
     _root,
     "_ext_constant_p_customized_cte_gdppc_variation",
@@ -1585,7 +1585,7 @@ _ext_constant_p_customized_cte_gdppc_variation = ExtConstant(
 _ext_constant_p_customized_year_gdppc_evolution = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "E7",
+    "start_year_gdp_variation",
     {},
     _root,
     "_ext_constant_p_customized_year_gdppc_evolution",
@@ -1595,7 +1595,7 @@ _ext_constant_p_customized_year_gdppc_evolution = ExtConstant(
 _ext_constant_p_labour_share_2050 = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C3",
+    "p_labor_share_2050",
     {},
     _root,
     "_ext_constant_p_labour_share_2050",
@@ -1605,8 +1605,8 @@ _ext_constant_p_labour_share_2050 = ExtConstant(
 _ext_data_p_timeseries_gdppc_growth_rate = ExtData(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "5",
-    "E6",
+    "years_gdp_growth",
+    "gdp_growth_timeseries",
     "interpolate",
     {},
     _root,
@@ -1617,7 +1617,7 @@ _ext_data_p_timeseries_gdppc_growth_rate = ExtData(
 _ext_constant_select_gdppc_evolution_input = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "B4",
+    "gdp_evolution_input",
     {},
     _root,
     "_ext_constant_select_gdppc_evolution_input",

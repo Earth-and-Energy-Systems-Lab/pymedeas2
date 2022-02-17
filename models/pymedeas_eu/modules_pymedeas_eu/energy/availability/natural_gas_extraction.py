@@ -1,6 +1,6 @@
 """
 Module natural_gas_extraction
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -357,6 +357,30 @@ def extraction_unconv_gas_ej():
     )
 
 
+def flow_unconv_gas_left_in_ground():
+    """
+    Real Name: Flow unconv gas left in ground
+    Original Eqn: IF THEN ELSE(Time<Start policy leave in ground unconv gas,0, IF THEN ELSE(Time>=Start policy leave in ground unconv gas+1,0, unconv gas to leave underground))
+    Units: EJ
+    Limits: (None, None)
+    Type: component
+    Subs: None
+
+    Flow of unconventional natural gas left in the ground. We assume that this
+        amount is removed from the stock of unconventional natural gas available
+        in 1 year.
+    """
+    return if_then_else(
+        time() < start_policy_leave_in_ground_unconv_gas(),
+        lambda: 0,
+        lambda: if_then_else(
+            time() >= start_policy_leave_in_ground_unconv_gas() + 1,
+            lambda: 0,
+            lambda: unconv_gas_to_leave_underground(),
+        ),
+    )
+
+
 def flow_conv_gas_left_in_ground():
     """
     Real Name: Flow conv gas left in ground
@@ -401,30 +425,6 @@ def flow_tot_agg_gas_left_in_ground():
             time() >= start_policy_leave_in_ground_tot_agg_gas() + 1,
             lambda: 0,
             lambda: tot_agg_gas_to_leave_underground(),
-        ),
-    )
-
-
-def flow_unconv_gas_left_in_ground():
-    """
-    Real Name: Flow unconv gas left in ground
-    Original Eqn: IF THEN ELSE(Time<Start policy leave in ground unconv gas,0, IF THEN ELSE(Time>=Start policy leave in ground unconv gas+1,0, unconv gas to leave underground))
-    Units: EJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Flow of unconventional natural gas left in the ground. We assume that this
-        amount is removed from the stock of unconventional natural gas available
-        in 1 year.
-    """
-    return if_then_else(
-        time() < start_policy_leave_in_ground_unconv_gas(),
-        lambda: 0,
-        lambda: if_then_else(
-            time() >= start_policy_leave_in_ground_unconv_gas() + 1,
-            lambda: 0,
-            lambda: unconv_gas_to_leave_underground(),
         ),
     )
 
@@ -553,7 +553,7 @@ def max_unconv_gas_growth_extraction_ej():
 def p_constraint_growth_extraction_unconv_gas():
     """
     Real Name: P constraint growth extraction unconv gas
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C96')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'p_constraint_growth_unconv_gas')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -891,7 +891,7 @@ def scarcity_conv_gas_stock():
 def separate_conv_and_unconv_gas():
     """
     Real Name: "separate conv and unconv gas?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C83')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'separate_conv_and_unconv_gas')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -959,7 +959,7 @@ def share_gas_for_oil_refinery_gains():
 def share_rurr_conv_gas_to_leave_underground():
     """
     Real Name: share RURR conv gas to leave underground
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C127')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'share_RURR_conv_gas_underground')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -974,7 +974,7 @@ def share_rurr_conv_gas_to_leave_underground():
 def share_rurr_tot_agg_gas_to_leave_underground():
     """
     Real Name: share RURR tot agg gas to leave underground
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'F128')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'share_RURR_agg_gas_underground')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -989,7 +989,7 @@ def share_rurr_tot_agg_gas_to_leave_underground():
 def share_rurr_unconv_gas_to_leave_underground():
     """
     Real Name: share RURR unconv gas to leave underground
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C129')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'share_RURR_unconv_gas_underground')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1037,7 +1037,7 @@ def share_unconv_gas_vs_tot_agg_in_2050():
 def start_policy_leave_in_ground_conv_gas():
     """
     Real Name: Start policy leave in ground conv gas
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C126')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'start_policy_year_conv_gas_underground')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -1052,7 +1052,7 @@ def start_policy_leave_in_ground_conv_gas():
 def start_policy_leave_in_ground_tot_agg_gas():
     """
     Real Name: Start policy leave in ground tot agg gas
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'F126')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'start_policy_year_agg_gas_underground')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -1067,7 +1067,7 @@ def start_policy_leave_in_ground_tot_agg_gas():
 def start_policy_leave_in_ground_unconv_gas():
     """
     Real Name: Start policy leave in ground unconv gas
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C128')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'start_policy_year_unconv_gas_underground')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -1253,7 +1253,7 @@ def unconv_gas_to_leave_underground():
 def unlimited_gas():
     """
     Real Name: "unlimited gas?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'E83')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'unlimited_gas')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1477,7 +1477,7 @@ _ext_data_historic_unconv_gas = ExtData(
 _ext_constant_p_constraint_growth_extraction_unconv_gas = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C96",
+    "p_constraint_growth_unconv_gas",
     {},
     _root,
     "_ext_constant_p_constraint_growth_extraction_unconv_gas",
@@ -1552,7 +1552,7 @@ _integ_scarcity_conv_gas_stock = Integ(
 _ext_constant_separate_conv_and_unconv_gas = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C83",
+    "separate_conv_and_unconv_gas",
     {},
     _root,
     "_ext_constant_separate_conv_and_unconv_gas",
@@ -1562,7 +1562,7 @@ _ext_constant_separate_conv_and_unconv_gas = ExtConstant(
 _ext_constant_share_rurr_conv_gas_to_leave_underground = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C127",
+    "share_RURR_conv_gas_underground",
     {},
     _root,
     "_ext_constant_share_rurr_conv_gas_to_leave_underground",
@@ -1572,7 +1572,7 @@ _ext_constant_share_rurr_conv_gas_to_leave_underground = ExtConstant(
 _ext_constant_share_rurr_tot_agg_gas_to_leave_underground = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "F128",
+    "share_RURR_agg_gas_underground",
     {},
     _root,
     "_ext_constant_share_rurr_tot_agg_gas_to_leave_underground",
@@ -1582,7 +1582,7 @@ _ext_constant_share_rurr_tot_agg_gas_to_leave_underground = ExtConstant(
 _ext_constant_share_rurr_unconv_gas_to_leave_underground = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C129",
+    "share_RURR_unconv_gas_underground",
     {},
     _root,
     "_ext_constant_share_rurr_unconv_gas_to_leave_underground",
@@ -1602,7 +1602,7 @@ _ext_constant_share_unconv_gas_vs_tot_agg_in_2050 = ExtConstant(
 _ext_constant_start_policy_leave_in_ground_conv_gas = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C126",
+    "start_policy_year_conv_gas_underground",
     {},
     _root,
     "_ext_constant_start_policy_leave_in_ground_conv_gas",
@@ -1612,7 +1612,7 @@ _ext_constant_start_policy_leave_in_ground_conv_gas = ExtConstant(
 _ext_constant_start_policy_leave_in_ground_tot_agg_gas = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "F126",
+    "start_policy_year_agg_gas_underground",
     {},
     _root,
     "_ext_constant_start_policy_leave_in_ground_tot_agg_gas",
@@ -1622,7 +1622,7 @@ _ext_constant_start_policy_leave_in_ground_tot_agg_gas = ExtConstant(
 _ext_constant_start_policy_leave_in_ground_unconv_gas = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C128",
+    "start_policy_year_unconv_gas_underground",
     {},
     _root,
     "_ext_constant_start_policy_leave_in_ground_unconv_gas",
@@ -1686,7 +1686,7 @@ _integ_total_unconv_gas_left_in_ground = Integ(
 _ext_constant_unlimited_gas = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "E83",
+    "unlimited_gas",
     {},
     _root,
     "_ext_constant_unlimited_gas",

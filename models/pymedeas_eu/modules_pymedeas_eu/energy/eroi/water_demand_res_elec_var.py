@@ -1,6 +1,6 @@
 """
 Module water_demand_res_elec_var
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -27,6 +27,22 @@ def ced_om_over_lifetime_per_water_res_elec_var():
     )
 
 
+@subs(["water0"], _subscript_dict)
+def energy_requirements_per_unit_of_water_consumption():
+    """
+    Real Name: Energy requirements per unit of water consumption
+    Original Eqn: GET DIRECT CONSTANTS('../materials.xlsx', 'Global', 'energy_requirements_per_unit_of_water_consumption*')
+    Units: MJ/kg
+    Limits: (None, None)
+    Type: constant
+    Subs: ['water0']
+
+    Energy requirements for water consumption in RES plants for generation of
+        electricity.
+    """
+    return _ext_constant_energy_requirements_per_unit_of_water_consumption()
+
+
 @subs(["RES elec", "water0"], _subscript_dict)
 def energy_requirements_for_om_for_water_consumption_res_elec():
     """
@@ -46,22 +62,6 @@ def energy_requirements_for_om_for_water_consumption_res_elec():
         * kg_per_mt()
         / mj_per_ej()
     )
-
-
-@subs(["water0"], _subscript_dict)
-def energy_requirements_per_unit_of_water_consumption():
-    """
-    Real Name: Energy requirements per unit of water consumption
-    Original Eqn: GET DIRECT CONSTANTS('../materials.xlsx', 'Global', 'energy_requirements_per_unit_of_water_consumption*')
-    Units: MJ/kg
-    Limits: (None, None)
-    Type: constant
-    Subs: ['water0']
-
-    Energy requirements for water consumption in RES plants for generation of
-        electricity.
-    """
-    return _ext_constant_energy_requirements_per_unit_of_water_consumption()
 
 
 @subs(["RES elec"], _subscript_dict)
@@ -141,7 +141,7 @@ def water_for_om__res_elec():
         xr.DataArray(
             0,
             {
-                "RES elec": _subscript_dict["RES ELEC NO MAINTENANCE"],
+                "RES elec": _subscript_dict["RES ELEC DISPATCHABLE"],
                 "water0": _subscript_dict["water0"],
             },
             ["RES elec", "water0"],
@@ -186,7 +186,7 @@ _ext_constant_water_for_om__res_elec = ExtConstant(
     "Global",
     "water_for_om_res_elec*",
     {
-        "RES elec": _subscript_dict["RES ELEC MAINTENANCE"],
+        "RES elec": _subscript_dict["RES ELEC VARIABLE"],
         "water0": _subscript_dict["water0"],
     },
     _root,

@@ -73,8 +73,8 @@ def main(config: Params, model: Model) -> None:
     # running the plot tool
     if config.plot:
         if not config.headless:
-            plot_tool.main(config.model.out_folder, result_df,
-                           config.scenario_sheet)
+            plot_tool.main(config, result_df,
+                           f"Current ({config.scenario_sheet})")
         else:
             print(
                 '\nWe prevented the plot GUI from popping up, since'

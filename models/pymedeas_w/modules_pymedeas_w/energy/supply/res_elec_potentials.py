@@ -1,6 +1,6 @@
 """
 Module res_elec_potentials
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -85,7 +85,7 @@ def max_geotelec_twe():
 def max_hydro_twe():
     """
     Real Name: max hydro TWe
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C24')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'World', 'max_hydro_potential')
     Units: TWe
     Limits: (None, None)
     Type: constant
@@ -99,7 +99,7 @@ def max_hydro_twe():
 def max_oceanic_twe():
     """
     Real Name: max oceanic TWe
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C27')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'World', 'max_oceanic_potential')
     Units: TWe
     Limits: (None, None)
     Type: constant
@@ -113,7 +113,7 @@ def max_oceanic_twe():
 def max_offshore_wind_twe():
     """
     Real Name: max offshore wind TWe
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C29')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'World', 'max_offshore_wind_potential')
     Units: TWe
     Limits: (None, None)
     Type: constant
@@ -128,7 +128,7 @@ def max_offshore_wind_twe():
 def max_onshore_wind_twe():
     """
     Real Name: max onshore wind TWe
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C28')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'World', 'max_onshore_wind_potential')
     Units: TWe
     Limits: (None, None)
     Type: constant
@@ -142,7 +142,7 @@ def max_onshore_wind_twe():
 def max_pe_geotelec_twth():
     """
     Real Name: "max PE geot-elec TWth"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C25')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'World', 'max_PE_geot_elect_potential')
     Units: TWe
     Limits: (None, None)
     Type: constant
@@ -222,7 +222,7 @@ def max_potential_tot_res_elec_twh():
 def max_solar_on_land_mha():
     """
     Real Name: max solar on land Mha
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C30')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'World', 'max_solar_on_land_potential')
     Units: MHa
     Limits: (None, None)
     Type: constant
@@ -496,9 +496,9 @@ _ext_constant_efficiency_conversion_geot_pe_to_elec = ExtConstant(
 
 
 _ext_constant_max_hydro_twe = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "C24",
+    "../energy.xlsx",
+    "World",
+    "max_hydro_potential",
     {},
     _root,
     "_ext_constant_max_hydro_twe",
@@ -506,9 +506,9 @@ _ext_constant_max_hydro_twe = ExtConstant(
 
 
 _ext_constant_max_oceanic_twe = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "C27",
+    "../energy.xlsx",
+    "World",
+    "max_oceanic_potential",
     {},
     _root,
     "_ext_constant_max_oceanic_twe",
@@ -516,9 +516,9 @@ _ext_constant_max_oceanic_twe = ExtConstant(
 
 
 _ext_constant_max_offshore_wind_twe = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "C29",
+    "../energy.xlsx",
+    "World",
+    "max_offshore_wind_potential",
     {},
     _root,
     "_ext_constant_max_offshore_wind_twe",
@@ -526,9 +526,9 @@ _ext_constant_max_offshore_wind_twe = ExtConstant(
 
 
 _ext_constant_max_onshore_wind_twe = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "C28",
+    "../energy.xlsx",
+    "World",
+    "max_onshore_wind_potential",
     {},
     _root,
     "_ext_constant_max_onshore_wind_twe",
@@ -536,9 +536,9 @@ _ext_constant_max_onshore_wind_twe = ExtConstant(
 
 
 _ext_constant_max_pe_geotelec_twth = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "C25",
+    "../energy.xlsx",
+    "World",
+    "max_PE_geot_elect_potential",
     {},
     _root,
     "_ext_constant_max_pe_geotelec_twth",
@@ -546,9 +546,9 @@ _ext_constant_max_pe_geotelec_twth = ExtConstant(
 
 
 _ext_constant_max_solar_on_land_mha = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "C30",
+    "../energy.xlsx",
+    "World",
+    "max_solar_on_land_potential",
     {},
     _root,
     "_ext_constant_max_solar_on_land_mha",

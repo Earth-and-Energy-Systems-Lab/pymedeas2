@@ -1,6 +1,6 @@
 """
 Module commercial_heat_demand_covered
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -222,7 +222,7 @@ def ped_oil_for_heat_plants_ej():
 def phaseout_oil_for_heat():
     """
     Real Name: "phase-out oil for heat?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C168')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'phase_out_oil_heat')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -266,7 +266,7 @@ def share_gascoalgas_for_heat_plants():
 def share_in_target_year_oil_for_heat():
     """
     Real Name: share in target year oil for heat
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'I168')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'share_target_year_oil_for_heat')
     Units: 1/Year
     Limits: (None, None)
     Type: constant
@@ -306,7 +306,7 @@ def share_liquids_for_heat_plants():
 def start_year_policy_phaseout_oil_for_heat():
     """
     Real Name: "start year policy phase-out oil for heat"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'E168')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'start_year_policy_phase_out_oil_for_heat')
     Units: 1/Year
     Limits: (None, None)
     Type: constant
@@ -320,7 +320,7 @@ def start_year_policy_phaseout_oil_for_heat():
 def target_year_policy_phaseout_oil_for_heat():
     """
     Real Name: "target year policy phase-out oil for heat"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'G168')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'target_year_policy_phase_out_oil_heat')
     Units: 1/Year
     Limits: (None, None)
     Type: constant
@@ -400,7 +400,7 @@ _ext_data_historic_share_liquids_for_heat_plants = ExtData(
 _ext_constant_phaseout_oil_for_heat = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C168",
+    "phase_out_oil_heat",
     {},
     _root,
     "_ext_constant_phaseout_oil_for_heat",
@@ -422,7 +422,7 @@ _ext_data_share_gascoalgas_for_heat_plants = ExtData(
 _ext_constant_share_in_target_year_oil_for_heat = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "I168",
+    "share_target_year_oil_for_heat",
     {},
     _root,
     "_ext_constant_share_in_target_year_oil_for_heat",
@@ -432,7 +432,7 @@ _ext_constant_share_in_target_year_oil_for_heat = ExtConstant(
 _ext_constant_start_year_policy_phaseout_oil_for_heat = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "E168",
+    "start_year_policy_phase_out_oil_for_heat",
     {},
     _root,
     "_ext_constant_start_year_policy_phaseout_oil_for_heat",
@@ -442,7 +442,7 @@ _ext_constant_start_year_policy_phaseout_oil_for_heat = ExtConstant(
 _ext_constant_target_year_policy_phaseout_oil_for_heat = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "G168",
+    "target_year_policy_phase_out_oil_heat",
     {},
     _root,
     "_ext_constant_target_year_policy_phaseout_oil_for_heat",

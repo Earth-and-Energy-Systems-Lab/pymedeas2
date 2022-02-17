@@ -1,7 +1,25 @@
 """
 Module eroi_system
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
+
+
+def fe_tot_generation_all_res_elec_ej():
+    """
+    Real Name: FE tot generation all RES elec EJ
+    Original Eqn: FE tot generation all RES elec TWh*EJ per TWh*(1-"share transm&distr elec losses")
+    Units: EJ
+    Limits: (None, None)
+    Type: component
+    Subs: None
+
+    Electricity generation from all RES technologies.
+    """
+    return (
+        fe_tot_generation_all_res_elec_twh()
+        * ej_per_twh()
+        * (1 - share_transmdistr_elec_losses())
+    )
 
 
 def eroist_system():
@@ -82,6 +100,25 @@ def share_e_industry_ownuse_vs_tfec_in_2015():
 
     """
     return _sample_if_true_share_e_industry_ownuse_vs_tfec_in_2015()
+
+
+def total_dyn_fei_res():
+    """
+    Real Name: Total dyn FEI RES
+    Original Eqn: SUM(FEI RES elec var[RES elec!])+SUM(FEI over lifetime RES elec dispatch[RES elec!])+FEI EV batteries+Final energy invested PHS
+    Units: EJ
+    Limits: (None, None)
+    Type: component
+    Subs: None
+
+    Total (dynamic) final energy investment for RES.
+    """
+    return (
+        sum(fei_res_elec_var(), dim=("RES elec",))
+        + sum(fei_over_lifetime_res_elec_dispatch(), dim=("RES elec",))
+        + fei_ev_batteries()
+        + final_energy_invested_phs()
+    )
 
 
 _ext_lookup_historic_energy_industry_ownuse = ExtLookup(

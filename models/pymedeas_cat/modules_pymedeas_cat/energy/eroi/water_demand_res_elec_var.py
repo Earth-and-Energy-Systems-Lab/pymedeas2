@@ -1,6 +1,6 @@
 """
 Module water_demand_res_elec_var
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -141,7 +141,7 @@ def water_for_om__res_elec():
         xr.DataArray(
             0,
             {
-                "RES elec": _subscript_dict["RES ELEC NO MAINTENANCE"],
+                "RES elec": _subscript_dict["RES ELEC DISPATCHABLE"],
                 "water0": _subscript_dict["water0"],
             },
             ["RES elec", "water0"],
@@ -186,7 +186,7 @@ _ext_constant_water_for_om__res_elec = ExtConstant(
     "Global",
     "water_for_om_res_elec*",
     {
-        "RES elec": _subscript_dict["RES ELEC MAINTENANCE"],
+        "RES elec": _subscript_dict["RES ELEC VARIABLE"],
         "water0": _subscript_dict["water0"],
     },
     _root,

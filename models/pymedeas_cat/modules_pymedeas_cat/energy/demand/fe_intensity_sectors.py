@@ -1,10 +1,10 @@
 """
 Module fe_intensity_sectors
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
-@subs(["SECTORS H"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS"], _subscript_dict)
 def activate_bottom_up_method():
     """
     Real Name: Activate BOTTOM UP method
@@ -12,12 +12,16 @@ def activate_bottom_up_method():
     Units: Dmnl
     Limits: (None, None)
     Type: constant
-    Subs: ['SECTORS H']
+    Subs: ['SECTORS and HOUSEHOLDS']
 
     Activate BOTTOM UP method or maintain TOP DOWN method. Activate for each sector (by
         default, only inland transport sector)        0. Bottom-up NOT activated        1. Bottom-up activated
     """
-    return xr.DataArray(0, {"SECTORS H": _subscript_dict["SECTORS H"]}, ["SECTORS H"])
+    return xr.DataArray(
+        0,
+        {"SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"]},
+        ["SECTORS and HOUSEHOLDS"],
+    )
 
 
 @subs(["sectors"], _subscript_dict)
@@ -61,7 +65,7 @@ def available_improvement_efficiency():
 def choose_final_sectoral_energy_intensities_evolution_method():
     """
     Real Name: Choose final sectoral energy intensities evolution method
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C195')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'sectoral_FEI_evolution_method')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -117,15 +121,15 @@ def decrease_of_intensity_due_to_energy_a_technology_change_top_down():
     )
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def efficiency_energy_acceleration():
     """
     Real Name: Efficiency energy acceleration
-    Original Eqn: -Maximum yearly acceleration of intensity improvement[SECTORS H,final sources]*(1+Percentage of change over the historic maximun variation of energy intensities)*Pressure to improve energy intensity efficiency[SECTORS H,final sources]
+    Original Eqn: -Maximum yearly acceleration of intensity improvement[SECTORS and HOUSEHOLDS,final sources]*(1+Percentage of change over the historic maximun variation of energy intensities)*Pressure to improve energy intensity efficiency[SECTORS and HOUSEHOLDS,final sources]
     Units: Dmnl
     Limits: (None, None)
     Type: component
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     This variable represents the acceleration of the process of variation of
         the energy intensity that can be produced by polítcas or scarcity
@@ -141,7 +145,7 @@ def efficiency_energy_acceleration():
     )
 
 
-@subs(["SECTORS H", "final sources", "final sources1"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources", "final sources1"], _subscript_dict)
 def efficiency_rate_of_substitution():
     """
     Real Name: efficiency rate of substitution
@@ -154,7 +158,7 @@ def efficiency_rate_of_substitution():
     Units: Dmnl
     Limits: (None, None)
     Type: constant
-    Subs: ['SECTORS H', 'final sources', 'final sources1']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources', 'final sources1']
 
     It is necessary to take into account that the energy efficiencies of the
         two technologies exchanged do not necessarily have to be the same. In
@@ -165,22 +169,22 @@ def efficiency_rate_of_substitution():
     return _ext_constant_efficiency_rate_of_substitution()
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def energy_intensity_target():
     """
     Real Name: Energy intensity target
-    Original Eqn: energy intensity target Mdollar[SECTORS H,final sources]*Mdollar per Tdollar
+    Original Eqn: energy intensity target Mdollar[SECTORS and HOUSEHOLDS,final sources]*Mdollar per Tdollar
     Units: EJ/Tdollars
     Limits: (None, None)
     Type: component
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     Energy intensity targets by sector and final energy defined by user
     """
     return energy_intensity_target_mdollar() * mdollar_per_tdollar()
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def energy_intensity_target_mdollar():
     """
     Real Name: energy intensity target Mdollar
@@ -188,7 +192,7 @@ def energy_intensity_target_mdollar():
     Units:
     Limits: (None, None)
     Type: constant
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
 
     """
@@ -353,7 +357,7 @@ def historic_final_energy_intensity(x):
     Units: EJ/Mdollars
     Limits: (None, None)
     Type: lookup
-    Subs: ['final sources', 'SECTORS H']
+    Subs: ['final sources', 'SECTORS and HOUSEHOLDS']
 
     Historic final energy intensity, households + 14 sectors & final sources.
         US$1995.
@@ -361,7 +365,7 @@ def historic_final_energy_intensity(x):
     return _ext_lookup_historic_final_energy_intensity(x)
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def historic_mean_rate_energy_intensity():
     """
     Real Name: historic mean rate energy intensity
@@ -374,22 +378,22 @@ def historic_mean_rate_energy_intensity():
     Units: Dmnl
     Limits: (None, None)
     Type: constant
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     Historic trend of sectors energy intensity by final source.
     """
     return _ext_constant_historic_mean_rate_energy_intensity()
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def historic_rate_final_energy_intensity():
     """
     Real Name: historic rate final energy intensity
-    Original Eqn: (historic final energy intensity[final sources,SECTORS H](INTEGER(Time+1))-historic final energy intensity [final sources,SECTORS H](INTEGER(Time)))*Mdollar per Tdollar
+    Original Eqn: (historic final energy intensity[final sources,SECTORS and HOUSEHOLDS](INTEGER(Time+1))-historic final energy intensity [final sources,SECTORS and HOUSEHOLDS](INTEGER(Time)))*Mdollar per Tdollar
     Units: EJ/Tdollars
     Limits: (None, None)
     Type: component
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     Historic variation of final energy intensity by final source (WIOD data)
     """
@@ -399,15 +403,15 @@ def historic_rate_final_energy_intensity():
     ) * mdollar_per_tdollar()
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def implementation_policy_to_change_final_energy():
     """
     Real Name: Implementation policy to change final energy
-    Original Eqn: IF THEN ELSE(Choose final sectoral energy intensities evolution method<>2:OR:Year policy change energy[SECTORS H,final sources]<2015:OR:Year policy change energy[SECTORS H,final sources]>Year to finish energy intensity policies[SECTORS H,final sources]:OR:Time<Year policy change energy[SECTORS H,final sources], 0, IF THEN ELSE(Time>Year to finish energy intensity policies[SECTORS H,final sources], 1, IF THEN ELSE(Policy change energy speed[SECTORS H,final sources]=1, ((Time-Year policy change energy[SECTORS H,final sources])/(Year to finish energy intensity policies[SECTORS H,final sources]-Year policy change energy[SECTORS H,final sources]))^exp rapid evol change energy, IF THEN ELSE(Policy change energy speed[SECTORS H,final sources]=2, ((Time-Year policy change energy[SECTORS H,final sources])/(Year to finish energy intensity policies[SECTORS H,final sources]-Year policy change energy[SECTORS H,final sources])), IF THEN ELSE(Policy change energy speed[SECTORS H,final sources]=3, ((Time-Year policy change energy[SECTORS H,final sources])/(Year to finish energy intensity policies[SECTORS H,final sources]-Year policy change energy[SECTORS H,final sources]))^exp slow evol change energy, 0 )))))
+    Original Eqn: IF THEN ELSE(Choose final sectoral energy intensities evolution method<>2:OR:Year policy change energy[SECTORS and HOUSEHOLDS,final sources]<2015:OR:Year policy change energy[SECTORS and HOUSEHOLDS,final sources]>Year to finish energy intensity policies[SECTORS and HOUSEHOLDS,final sources]:OR:Time<Year policy change energy[SECTORS and HOUSEHOLDS,final sources], 0, IF THEN ELSE(Time>Year to finish energy intensity policies[SECTORS and HOUSEHOLDS,final sources], 1, IF THEN ELSE(Policy change energy speed[SECTORS and HOUSEHOLDS,final sources]=1, ((Time-Year policy change energy[SECTORS and HOUSEHOLDS,final sources])/(Year to finish energy intensity policies[SECTORS and HOUSEHOLDS,final sources]-Year policy change energy[SECTORS and HOUSEHOLDS,final sources]))^exp rapid evol change energy, IF THEN ELSE(Policy change energy speed[SECTORS and HOUSEHOLDS,final sources]=2, ((Time-Year policy change energy[SECTORS and HOUSEHOLDS,final sources])/(Year to finish energy intensity policies[SECTORS and HOUSEHOLDS,final sources]-Year policy change energy[SECTORS and HOUSEHOLDS,final sources])), IF THEN ELSE(Policy change energy speed[SECTORS and HOUSEHOLDS,final sources]=3, ((Time-Year policy change energy[SECTORS and HOUSEHOLDS,final sources])/(Year to finish energy intensity policies[SECTORS and HOUSEHOLDS,final sources]-Year policy change energy[SECTORS and HOUSEHOLDS,final sources]))^exp slow evol change energy, 0 )))))
     Units: Dmnl
     Limits: (None, None)
     Type: component
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     Pressure due to energy policies, eg incentives for change the final energy
     """
@@ -459,15 +463,15 @@ def implementation_policy_to_change_final_energy():
     )
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def implementation_policy_to_improve_energy_intensity_efficiency():
     """
     Real Name: Implementation policy to improve energy intensity efficiency
-    Original Eqn: IF THEN ELSE(Choose final sectoral energy intensities evolution method<>2:OR:Year policy to improve efficiency[SECTORS H,final sources]<2015:OR:Year policy to improve efficiency[SECTORS H,final sources]>Year to finish energy intensity policies[SECTORS H,final sources]:OR:Time<Year policy to improve efficiency[SECTORS H,final sources], 0, IF THEN ELSE(Time>Year to finish energy intensity policies[SECTORS H,final sources], 1, IF THEN ELSE(Policy to improve efficiency speed[SECTORS H,final sources]=1, ((Time-Year policy to improve efficiency[SECTORS H,final sources])/(Year to finish energy intensity policies[SECTORS H,final sources]-Year policy to improve efficiency[SECTORS H,final sources]))^exp rapid evol improve efficiency, IF THEN ELSE(Policy to improve efficiency speed[SECTORS H,final sources]=2, ((Time-Year policy to improve efficiency[SECTORS H,final sources])/(Year to finish energy intensity policies[SECTORS H,final sources]-Year policy to improve efficiency[SECTORS H,final sources])), IF THEN ELSE(Policy to improve efficiency speed[SECTORS H,final sources]=3, ((Time-Year policy to improve efficiency[SECTORS H,final sources])/(Year to finish energy intensity policies[SECTORS H,final sources]-Year policy to improve efficiency[SECTORS H,final sources]))^exp slow evol improve efficiency, 0 )))))
+    Original Eqn: IF THEN ELSE(Choose final sectoral energy intensities evolution method<>2:OR:Year policy to improve efficiency[SECTORS and HOUSEHOLDS,final sources]<2015:OR:Year policy to improve efficiency[SECTORS and HOUSEHOLDS,final sources]>Year to finish energy intensity policies[SECTORS and HOUSEHOLDS,final sources]:OR:Time<Year policy to improve efficiency[SECTORS and HOUSEHOLDS,final sources], 0, IF THEN ELSE(Time>Year to finish energy intensity policies[SECTORS and HOUSEHOLDS,final sources], 1, IF THEN ELSE(Policy to improve efficiency speed[SECTORS and HOUSEHOLDS,final sources]=1, ((Time-Year policy to improve efficiency[SECTORS and HOUSEHOLDS,final sources])/(Year to finish energy intensity policies[SECTORS and HOUSEHOLDS,final sources]-Year policy to improve efficiency[SECTORS and HOUSEHOLDS,final sources]))^exp rapid evol improve efficiency, IF THEN ELSE(Policy to improve efficiency speed[SECTORS and HOUSEHOLDS,final sources]=2, ((Time-Year policy to improve efficiency[SECTORS and HOUSEHOLDS,final sources])/(Year to finish energy intensity policies[SECTORS and HOUSEHOLDS,final sources]-Year policy to improve efficiency[SECTORS and HOUSEHOLDS,final sources])), IF THEN ELSE(Policy to improve efficiency speed[SECTORS and HOUSEHOLDS,final sources]=3, ((Time-Year policy to improve efficiency[SECTORS and HOUSEHOLDS,final sources])/(Year to finish energy intensity policies[SECTORS and HOUSEHOLDS,final sources]-Year policy to improve efficiency[SECTORS and HOUSEHOLDS,final sources]))^exp slow evol improve efficiency, 0 )))))
     Units: Dmnl
     Limits: (None, None)
     Type: component
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     Pressure due to energy policies, eg incentives for energy efficiency,
     """
@@ -824,30 +828,30 @@ def inertial_rate_energy_intensity_top_down():
     )
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def initial_energy_intensity_1995():
     """
     Real Name: Initial energy intensity 1995
-    Original Eqn: historic final energy intensity[final sources,SECTORS H](1995)*Mdollar per Tdollar
+    Original Eqn: historic final energy intensity[final sources,SECTORS and HOUSEHOLDS](1995)*Mdollar per Tdollar
     Units: EJ/Tdollars
     Limits: (None, None)
     Type: component
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     Initial energy intensity by sector and fuel in 1995
     """
     return historic_final_energy_intensity(1995) * mdollar_per_tdollar()
 
 
-@subs(["SECTORS H"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS"], _subscript_dict)
 def initial_global_energy_intensity_2009():
     """
     Real Name: Initial global energy intensity 2009
-    Original Eqn: SUM(historic final energy intensity[final sources!, SECTORS H](2009))*Mdollar per Tdollar
+    Original Eqn: SUM(historic final energy intensity[final sources!, SECTORS and HOUSEHOLDS](2009))*Mdollar per Tdollar
     Units:
     Limits: (None, None)
     Type: component
-    Subs: ['SECTORS H']
+    Subs: ['SECTORS and HOUSEHOLDS']
 
     Initial global energy intensity by sector 2009
     """
@@ -876,7 +880,7 @@ def interfuel_scarcity_pressure():
     )
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def max_yearly_change_between_sources():
     """
     Real Name: max yearly change between sources
@@ -884,14 +888,14 @@ def max_yearly_change_between_sources():
     Units: Dmnl
     Limits: (None, None)
     Type: constant
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     maximum annual change for one type of energy in a sector.
     """
     return _ext_constant_max_yearly_change_between_sources()
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def maximum_yearly_acceleration_of_intensity_improvement():
     """
     Real Name: Maximum yearly acceleration of intensity improvement
@@ -899,7 +903,7 @@ def maximum_yearly_acceleration_of_intensity_improvement():
     Units: Dmnl
     Limits: (None, None)
     Type: constant
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     Maximum feasible annual changes that could be sustained in the future in
         the energy intensity of each economic sector have been estimated based on
@@ -925,7 +929,7 @@ def mdollar_per_tdollar():
 def min_energy_intensity_vs_intial():
     """
     Real Name: min energy intensity vs intial
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C199')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'min_FEI_vs_initial')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -939,7 +943,7 @@ def min_energy_intensity_vs_intial():
     return _ext_constant_min_energy_intensity_vs_intial()
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def minimum_fraction_source():
     """
     Real Name: minimum fraction source
@@ -947,7 +951,7 @@ def minimum_fraction_source():
     Units: Dmnl
     Limits: (None, None)
     Type: constant
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     minimum energy of each type of energy that should be used in each sector
         because it is irreplaceable
@@ -955,7 +959,7 @@ def minimum_fraction_source():
     return _ext_constant_minimum_fraction_source()
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def policy_change_energy_speed():
     """
     Real Name: Policy change energy speed
@@ -963,7 +967,7 @@ def policy_change_energy_speed():
     Units: Dmnl
     Limits: (None, None)
     Type: constant
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     Selection of the speed of application of the different policies to change
         the final energy
@@ -971,7 +975,7 @@ def policy_change_energy_speed():
     return _ext_constant_policy_change_energy_speed()
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def policy_to_improve_efficiency_speed():
     """
     Real Name: Policy to improve efficiency speed
@@ -979,7 +983,7 @@ def policy_to_improve_efficiency_speed():
     Units: Dmnl
     Limits: (None, None)
     Type: constant
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     Selection of the speed of application of the different policies to improve
         the efficiency.
@@ -1053,15 +1057,15 @@ def pressure_to_change_energy_technology_by_fuel():
     )
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def pressure_to_improve_energy_intensity_efficiency():
     """
     Real Name: Pressure to improve energy intensity efficiency
-    Original Eqn: MIN(1,Fuel scarcity pressure[final sources]+Implementation policy to improve energy intensity efficiency[SECTORS H,final sources])
+    Original Eqn: MIN(1,Fuel scarcity pressure[final sources]+Implementation policy to improve energy intensity efficiency[SECTORS and HOUSEHOLDS,final sources])
     Units: Dmnl
     Limits: (None, None)
     Type: component
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     This variable represents the pressure in each economic sector to improve
         energy efficiency in the technology used. This change according to the
@@ -1193,7 +1197,7 @@ def variation_energy_intensity_target():
     )
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def year_policy_change_energy():
     """
     Real Name: Year policy change energy
@@ -1201,7 +1205,7 @@ def year_policy_change_energy():
     Units: Year
     Limits: (None, None)
     Type: constant
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     Year when the policy to change final energy in the sectors start. For each
         of five final energies.
@@ -1209,7 +1213,7 @@ def year_policy_change_energy():
     return _ext_constant_year_policy_change_energy()
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def year_policy_to_improve_efficiency():
     """
     Real Name: Year policy to improve efficiency
@@ -1217,7 +1221,7 @@ def year_policy_to_improve_efficiency():
     Units:
     Limits: (None, None)
     Type: constant
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     Year when the policy to improve efficiency in sectors start. For each of
         five final energies.
@@ -1225,7 +1229,7 @@ def year_policy_to_improve_efficiency():
     return _ext_constant_year_policy_to_improve_efficiency()
 
 
-@subs(["SECTORS H", "final sources"], _subscript_dict)
+@subs(["SECTORS and HOUSEHOLDS", "final sources"], _subscript_dict)
 def year_to_finish_energy_intensity_policies():
     """
     Real Name: Year to finish energy intensity policies
@@ -1233,7 +1237,7 @@ def year_to_finish_energy_intensity_policies():
     Units: Year
     Limits: (None, None)
     Type: constant
-    Subs: ['SECTORS H', 'final sources']
+    Subs: ['SECTORS and HOUSEHOLDS', 'final sources']
 
     Year when the policy to improve efficiency in sectors finish.
     """
@@ -1257,7 +1261,7 @@ def year_to_finish_policy_change_energy():
 _ext_constant_choose_final_sectoral_energy_intensities_evolution_method = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C195",
+    "sectoral_FEI_evolution_method",
     {},
     _root,
     "_ext_constant_choose_final_sectoral_energy_intensities_evolution_method",
@@ -1269,7 +1273,7 @@ _ext_constant_efficiency_rate_of_substitution = ExtConstant(
     "BAU",
     "efficiency_rate_of_substitution_electricity*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
         "final sources1": ["electricity"],
     },
@@ -1283,7 +1287,7 @@ _ext_constant_efficiency_rate_of_substitution.add(
     "BAU",
     "efficiency_rate_of_substitution_heat*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
         "final sources1": ["heat"],
     },
@@ -1295,7 +1299,7 @@ _ext_constant_efficiency_rate_of_substitution.add(
     "BAU",
     "efficiency_rate_of_substitution_liquids*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
         "final sources1": ["liquids"],
     },
@@ -1307,7 +1311,7 @@ _ext_constant_efficiency_rate_of_substitution.add(
     "BAU",
     "efficiency_rate_of_substitution_gases*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
         "final sources1": ["gases"],
     },
@@ -1319,7 +1323,7 @@ _ext_constant_efficiency_rate_of_substitution.add(
     "BAU",
     "efficiency_rate_of_substitution_solids*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
         "final sources1": ["solids"],
     },
@@ -1331,7 +1335,7 @@ _ext_constant_energy_intensity_target_mdollar = ExtConstant(
     "BAU",
     "energy_intensity_target*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
     },
     _root,
@@ -1421,7 +1425,10 @@ _ext_lookup_historic_final_energy_intensity = ExtLookup(
     "Catalonia",
     "time_index2009",
     "historic_final_energy_intensity_electricity",
-    {"final sources": ["electricity"], "SECTORS H": _subscript_dict["SECTORS H"]},
+    {
+        "final sources": ["electricity"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+    },
     _root,
     "_ext_lookup_historic_final_energy_intensity",
 )
@@ -1432,7 +1439,10 @@ _ext_lookup_historic_final_energy_intensity.add(
     "Catalonia",
     "time_index2009",
     "historic_final_energy_intensity_heat",
-    {"final sources": ["heat"], "SECTORS H": _subscript_dict["SECTORS H"]},
+    {
+        "final sources": ["heat"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+    },
 )
 
 
@@ -1441,7 +1451,10 @@ _ext_lookup_historic_final_energy_intensity.add(
     "Catalonia",
     "time_index2009",
     "historic_final_energy_intensity_liquids",
-    {"final sources": ["liquids"], "SECTORS H": _subscript_dict["SECTORS H"]},
+    {
+        "final sources": ["liquids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+    },
 )
 
 
@@ -1450,7 +1463,10 @@ _ext_lookup_historic_final_energy_intensity.add(
     "Catalonia",
     "time_index2009",
     "historic_final_energy_intensity_gases",
-    {"final sources": ["gases"], "SECTORS H": _subscript_dict["SECTORS H"]},
+    {
+        "final sources": ["gases"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+    },
 )
 
 
@@ -1459,7 +1475,10 @@ _ext_lookup_historic_final_energy_intensity.add(
     "Catalonia",
     "time_index2009",
     "historic_final_energy_intensity_solids",
-    {"final sources": ["solids"], "SECTORS H": _subscript_dict["SECTORS H"]},
+    {
+        "final sources": ["solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+    },
 )
 
 
@@ -1467,7 +1486,10 @@ _ext_constant_historic_mean_rate_energy_intensity = ExtConstant(
     "../economy.xlsx",
     "Catalonia",
     "historic_mean_rate_energy_intensity_electricity*",
-    {"SECTORS H": _subscript_dict["SECTORS H"], "final sources": ["electricity"]},
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": ["electricity"],
+    },
     _root,
     "_ext_constant_historic_mean_rate_energy_intensity",
 )
@@ -1477,7 +1499,10 @@ _ext_constant_historic_mean_rate_energy_intensity.add(
     "../economy.xlsx",
     "Catalonia",
     "historic_mean_rate_energy_intensity_heat*",
-    {"SECTORS H": _subscript_dict["SECTORS H"], "final sources": ["heat"]},
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": ["heat"],
+    },
 )
 
 
@@ -1485,7 +1510,10 @@ _ext_constant_historic_mean_rate_energy_intensity.add(
     "../economy.xlsx",
     "Catalonia",
     "historic_mean_rate_energy_intensity_liquids*",
-    {"SECTORS H": _subscript_dict["SECTORS H"], "final sources": ["liquids"]},
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": ["liquids"],
+    },
 )
 
 
@@ -1493,7 +1521,10 @@ _ext_constant_historic_mean_rate_energy_intensity.add(
     "../economy.xlsx",
     "Catalonia",
     "historic_mean_rate_energy_intensity_gases*",
-    {"SECTORS H": _subscript_dict["SECTORS H"], "final sources": ["gases"]},
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": ["gases"],
+    },
 )
 
 
@@ -1501,7 +1532,10 @@ _ext_constant_historic_mean_rate_energy_intensity.add(
     "../economy.xlsx",
     "Catalonia",
     "historic_mean_rate_energy_intensity_solids*",
-    {"SECTORS H": _subscript_dict["SECTORS H"], "final sources": ["solids"]},
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": ["solids"],
+    },
 )
 
 
@@ -1510,7 +1544,7 @@ _ext_constant_max_yearly_change_between_sources = ExtConstant(
     "Austria",
     "max_yearly_change_between_sources*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
     },
     _root,
@@ -1523,7 +1557,7 @@ _ext_constant_maximum_yearly_acceleration_of_intensity_improvement = ExtConstant
     "Austria",
     "maximum_yearly_acceleration_of_intensity_improvement*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
     },
     _root,
@@ -1534,7 +1568,7 @@ _ext_constant_maximum_yearly_acceleration_of_intensity_improvement = ExtConstant
 _ext_constant_min_energy_intensity_vs_intial = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C199",
+    "min_FEI_vs_initial",
     {},
     _root,
     "_ext_constant_min_energy_intensity_vs_intial",
@@ -1546,7 +1580,7 @@ _ext_constant_minimum_fraction_source = ExtConstant(
     "Austria",
     "minimum_fraction_source*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
     },
     _root,
@@ -1559,7 +1593,7 @@ _ext_constant_policy_change_energy_speed = ExtConstant(
     "BAU",
     "policy_change_energy_speed*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
     },
     _root,
@@ -1572,7 +1606,7 @@ _ext_constant_policy_to_improve_efficiency_speed = ExtConstant(
     "BAU",
     "policy_to_improve_efficiency_speed*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
     },
     _root,
@@ -1595,7 +1629,7 @@ _ext_constant_year_policy_change_energy = ExtConstant(
     "BAU",
     "year_policy_change_energy*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
     },
     _root,
@@ -1608,7 +1642,7 @@ _ext_constant_year_policy_to_improve_efficiency = ExtConstant(
     "BAU",
     "year_policy_to_improve_efficiency*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
     },
     _root,
@@ -1621,7 +1655,7 @@ _ext_constant_year_to_finish_energy_intensity_policies = ExtConstant(
     "BAU",
     "year_to_finish_energy_intensity_policies*",
     {
-        "SECTORS H": _subscript_dict["SECTORS H"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
         "final sources": _subscript_dict["final sources"],
     },
     _root,

@@ -1,6 +1,6 @@
 """
 Module res_elec_capacities_and_generation
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -516,7 +516,7 @@ def new_res_elec_capacity_under_planning():
 def p_csp_growth():
     """
     Real Name: P CSP growth
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'G38')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_CSP_growth')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -530,7 +530,7 @@ def p_csp_growth():
 def p_geot_growth():
     """
     Real Name: P geot growth
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C33')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_geot_elect_growth')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -544,7 +544,7 @@ def p_geot_growth():
 def p_hydro_growth():
     """
     Real Name: P hydro growth
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C32')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_hydro_growth')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -558,7 +558,7 @@ def p_hydro_growth():
 def p_oceanic_growth():
     """
     Real Name: P oceanic growth
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C35')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_oceanic_growth_2020')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -610,7 +610,7 @@ def p_res_elec_growth():
 def p_solar_pv_growth():
     """
     Real Name: P solar PV growth
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C38')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_solar_pv_growth')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -624,7 +624,7 @@ def p_solar_pv_growth():
 def p_solid_bioeelec_growth():
     """
     Real Name: "P solid bioE-elec growth"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C34')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_solid_bioe_elect_growth')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -638,7 +638,7 @@ def p_solid_bioeelec_growth():
 def p_wind_offshore_growth():
     """
     Real Name: P wind offshore growth
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C37')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_wind_offshore_growth')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -652,7 +652,7 @@ def p_wind_offshore_growth():
 def p_wind_onshore_growth():
     """
     Real Name: P wind onshore growth
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C36')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_onshore_wind_growth')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -971,7 +971,7 @@ def res_elec_tot_overcapacity():
 def start_year_p_growth_res_elec():
     """
     Real Name: Start year P growth RES elec
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'E32')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'start_year_P_growth_RES_elec')
     Units: year
     Limits: (None, None)
     Type: constant
@@ -1189,14 +1189,19 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
 
 
 _ext_constant_p_csp_growth = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "G38", {}, _root, "_ext_constant_p_csp_growth"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "p_CSP_growth",
+    {},
+    _root,
+    "_ext_constant_p_csp_growth",
 )
 
 
 _ext_constant_p_geot_growth = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C33",
+    "p_geot_elect_growth",
     {},
     _root,
     "_ext_constant_p_geot_growth",
@@ -1206,7 +1211,7 @@ _ext_constant_p_geot_growth = ExtConstant(
 _ext_constant_p_hydro_growth = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C32",
+    "p_hydro_growth",
     {},
     _root,
     "_ext_constant_p_hydro_growth",
@@ -1216,7 +1221,7 @@ _ext_constant_p_hydro_growth = ExtConstant(
 _ext_constant_p_oceanic_growth = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C35",
+    "p_oceanic_growth_2020",
     {},
     _root,
     "_ext_constant_p_oceanic_growth",
@@ -1226,7 +1231,7 @@ _ext_constant_p_oceanic_growth = ExtConstant(
 _ext_constant_p_solar_pv_growth = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C38",
+    "p_solar_pv_growth",
     {},
     _root,
     "_ext_constant_p_solar_pv_growth",
@@ -1236,7 +1241,7 @@ _ext_constant_p_solar_pv_growth = ExtConstant(
 _ext_constant_p_solid_bioeelec_growth = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C34",
+    "p_solid_bioe_elect_growth",
     {},
     _root,
     "_ext_constant_p_solid_bioeelec_growth",
@@ -1246,7 +1251,7 @@ _ext_constant_p_solid_bioeelec_growth = ExtConstant(
 _ext_constant_p_wind_offshore_growth = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C37",
+    "p_wind_offshore_growth",
     {},
     _root,
     "_ext_constant_p_wind_offshore_growth",
@@ -1256,7 +1261,7 @@ _ext_constant_p_wind_offshore_growth = ExtConstant(
 _ext_constant_p_wind_onshore_growth = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C36",
+    "p_onshore_wind_growth",
     {},
     _root,
     "_ext_constant_p_wind_onshore_growth",
@@ -1354,7 +1359,7 @@ _integ_res_elec_planned_capacity_tw = Integ(
 _ext_constant_start_year_p_growth_res_elec = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "E32",
+    "start_year_P_growth_RES_elec",
     {},
     _root,
     "_ext_constant_start_year_p_growth_res_elec",

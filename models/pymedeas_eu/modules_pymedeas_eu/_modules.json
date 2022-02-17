@@ -245,7 +245,6 @@
             "historic_demand_row",
             "domestic_output_required_for_exports_by_sector",
             "demand_by_sector_row",
-            "required_total_output",
             "real_demand_by_sector_row",
             "real_total_output_by_sector_row",
             "real_final_demand_of_exports",
@@ -268,7 +267,6 @@
             "real_total_output",
             "gdp_eu",
             "real_tfec",
-            "required_tfed",
             "gdppc",
             "dollars_to_tdollars",
             "gdp_delayed_1yr",
@@ -279,18 +277,12 @@
             "required_fed_by_fuel",
             "required_fed_sectors_by_fuel",
             "shortage_coef_without_min_without_elosses",
-            "required_tfed_before_heat_dem_corr",
             "real_fe_consumption_by_fuel_before_heat_correction",
-            "diff_annual_gdp_growth_rate",
             "energy_scarcity_feedback_shortage_coeff_eu",
             "cc_impacts_feedback_shortage_coeff",
             "activate_energy_scarcity_feedback",
-            "households_total_final_energy_demand",
-            "required_tfed_sectors",
-            "ratio_fed_households_vs_sectors",
             "real_fec_before_heat_dem_corr",
             "real_tfec_before_heat_dem_corr",
-            "share_tfed_before_heat_dem_corr_vs_real_tfec",
             "activate_elf_by_scen",
             "share_e_losses_cc_world",
             "total_output_required_by_sector",
@@ -571,28 +563,6 @@
                 "pec_uranium_eu_kt",
                 "historic_uranium_domestic_eu_extracted_t",
                 "tonnes_per_kt"
-            ]
-        },
-        "consumption": {
-            "nonenergy_use": [
-                "nonenergy_use_demand_by_final_fuel_ej",
-                "annual_variation_nonenergy_use",
-                "historic_nonenergy_use",
-                "initial_nonenergy_use",
-                "total_real_nonenergy_use_consumption_ej",
-                "variation_nonenergy_use"
-            ],
-            "tfes_by_final_fuel_delete": [
-                "share_liquids_vs_tfes",
-                "share_electricity_vs_tfes",
-                "share_heat_vs_tfes",
-                "share_solids_vs_tfes",
-                "share_gases_vs_tfes"
-            ],
-            "tfes_by_fuel": [
-                "share_res_vs_tfec",
-                "fe_tot_generation_all_res_elec_ej",
-                "tfec_res_ej"
             ]
         },
         "demand": {
@@ -910,37 +880,17 @@
                 "limit_coal_imports_from_row",
                 "max_share_imports_coal",
                 "adapt_max_share_imports_coal"
-            ],
-            "tped_by_fuel": [
-                "tped_by_fuel"
-            ]
-        },
-        "e_intensities": {
-            "aggregated_indicators_delet": [
-                "tpes_intensity_ej_t",
-                "tpes_intensity_ej_t_delayed_1yr",
-                "tfes_intensity_ej_t",
-                "tfes_intensity_ej_t_delayed_1yr",
-                "annual_tfes_intensity_change_rate",
-                "annual_tpes_intensity_change_rate",
-                "tfes_intensity_ej_t_without_eroi",
-                "annual_tfes_intensity_change_rate_without_eroi",
-                "cumulative_tfec_intensity_change_from_2009_without_eroi",
-                "tfes_intensity_without_eroi_delayed_1yr",
-                "tfec_intensity_until_2009_without_eroi",
-                "cumulative_tpes_intensity_change_from_2009",
-                "tpes_intensity_until_2009",
-                "cumulative_tfec_intensity_change_from_2009",
-                "tfec_intensity_until_2009"
             ]
         },
         "eroi": {
             "eroi_system": [
                 "eroist_system",
                 "feist_system",
+                "total_dyn_fei_res",
                 "historic_energy_industry_ownuse",
                 "historic_share_e_industry_ownuse_vs_tfec",
-                "share_e_industry_ownuse_vs_tfec_in_2015"
+                "share_e_industry_ownuse_vs_tfec_in_2015",
+                "fe_tot_generation_all_res_elec_ej"
             ],
             "grid_allocation_res_elec": [
                 "eroi_allocation_rule_per_res_elec",
@@ -954,12 +904,6 @@
                 "static_eroigrid_toteffective_for_allocation_res_elec",
                 "output_elec_over_lifetime_res_elec_for_allocation2",
                 "ratio_eroigrid_vs_eroi_static"
-            ],
-            "required_final_energy_invested_res": [
-                "total_dyn_fei_res",
-                "total_fei_over_lifetime_res_elec_dispatch",
-                "share_dyn_fei_for_res_vs_tfec",
-                "share_tot_fei_res_elec_var"
             ],
             "res_electricity": [
                 "dynamic_eroi_res_elec_var",
@@ -987,9 +931,7 @@
                 "res_elec_variables",
                 "cedtot_per_material_res_elec_var",
                 "cedtot_per_tw_per_material_res_elec_var",
-                "cedtot_per_tw_res_elec_var",
-                "total_final_energy_invested_res_elec_var",
-                "eptb_dynamic"
+                "cedtot_per_tw_res_elec_var"
             ],
             "water_demand_res_elec_var": [
                 "energy_requirements_per_unit_of_water_consumption",
@@ -1279,19 +1221,11 @@
                 "tpes_without_trad_biomass",
                 "average_tpespc_without_trad_biomass",
                 "net_tfec_per_capita",
+                "tfec_res_ej",
                 "tfec_from_res_per_capita",
-                "share_res_vs_tfec_delayed_1yr",
-                "annual_share_res_vs_tfec_growth_rate",
-                "share_res_vs_tpes_delayed_1yr",
-                "annual_share_res_vs_tpes_growth_rate",
-                "tfec_res_delayed_1yr",
-                "annual_tfec_res_growth_rate",
-                "tpes_res_delayed_1yr",
-                "annual_tpes_res_growth_rate",
                 "tfec_per_capita",
                 "net_tfec",
                 "share_total_net_energy_vs_tpes",
-                "share_tfec_before_heat_dem_corr_vs_real_tfec",
                 "tfec_per_capita_before_heat_dem_corr",
                 "physical_energy_intensity_tpes_vs_final",
                 "physical_energy_intensity_tpes_vs_net"
@@ -1318,6 +1252,14 @@
                 "historic_share_pipeline_transport",
                 "share_pipeline_transport_fecgl_in_2015",
                 "fec_gasesliquids"
+            ],
+            "nonenergy_use": [
+                "nonenergy_use_demand_by_final_fuel_ej",
+                "annual_variation_nonenergy_use",
+                "historic_nonenergy_use",
+                "initial_nonenergy_use",
+                "total_real_nonenergy_use_consumption_ej",
+                "variation_nonenergy_use"
             ],
             "nuclear": [
                 "invest_nuclear_tdolar",
@@ -1508,50 +1450,25 @@
             ],
             "res_elec_supply_by_technology": [
                 "pe_elec_generation_from_res_ej",
-                "fe_elec_generation_from_geotelec_twh",
-                "fe_elec_generation_from_hydro_twh",
-                "fe_elec_generation_from_onshore_wind_twh",
-                "fe_elec_generation_from_oceanic_twh",
-                "fe_elec_generation_from_bioe_twh",
-                "fe_elec_generation_from_solar_pv_twh",
                 "share_elec_demand_covered_by_res",
                 "demand_elec_nre_twh",
-                "fe_elec_generation_from_offshore_wind_twh",
-                "pe_geotelec_for_elec_generation_ej",
-                "pe_hydro_for_elec_generation_ej",
-                "pe_oceanic_for_elec_generation_ej",
-                "pe_offshore_wind_for_elec_generation_ej",
-                "pe_onshore_wind_for_elec_generation_ej",
-                "pe_solar_pv_for_elec_generation_ej",
-                "pe_bioe_for_elec_generation_ej",
                 "pe_real_generation_res_elec",
                 "res_to_fossil_accounting",
                 "efficiency_conversion_bioe_to_elec",
                 "pe_biow_for_elec_generation_mtoe",
                 "mtoe_per_ej",
-                "fe_elec_generation_from_csp_twh",
-                "pe_csp_for_elec_generation_ej",
                 "pe_losses_bioe_for_elec_ej",
                 "total_fe_elec_demand_after_priorities_twh",
                 "fes_elec_from_res_with_priority_twh",
                 "fe_tot_generation_all_res_elec_twh"
             ],
             "res_elec_total_monetary_investment": [
-                "invest_biow_tdolar",
-                "invest_geotelec_tdolar",
-                "invest_hydro_tdolar",
-                "invest_oceanic_tdolar",
-                "invest_solar_tdolar",
-                "invest_onshore_wind_tdolar",
-                "invest_res_for_elec",
                 "share_tot_monet_invest_elec_res_vs_gdp",
                 "cumulated_total_monet_invest_res_for_elec",
                 "total_monet_invest_res_for_elec_tdolar",
-                "invest_offshore_wind_tdolar",
                 "share_extra_monet_invest_to_cope_with_variable_elec_res",
                 "invest_res_elec_tdolar",
                 "invest_cost_res_elec",
-                "invest_csp_tdolar",
                 "balancing_costs",
                 "balancing_costs_ref",
                 "cumulated_invest_e_grid",
@@ -1598,11 +1515,6 @@
                 "cpini_res_for_heat",
                 "cp_res_for_heat",
                 "pes_dem_res_for_heatnc_by_techn"
-            ],
-            "res_pes": [
-                "share_res_for_elec_vs_tpe_res",
-                "tpe_from_res_mtoe",
-                "tpe_from_res_ej"
             ],
             "solar_potential_in_urban_areas": [
                 "power_density_solar_pv_on_land_twemha",
@@ -1678,16 +1590,15 @@
             ],
             "tpes": [
                 "tpes_ej",
-                "tpes_mtoe",
-                "share_res_vs_tpes",
                 "abundance_tpe",
                 "year_scarcity_tpe",
                 "total_consumption_nre_ej",
+                "tpe_from_res_ej",
                 "gquality_of_electricity",
                 "staticdynamic_quality_of_electricity",
+                "tped_by_fuel",
                 "quality_of_electricity_2015",
                 "share_total_final_energy_vs_tpes",
-                "percent_res_vs_tpes",
                 "total_imports_eu_nre_from_row",
                 "share_imports_eu_nre_from_row_vs_world_extraction",
                 "share_imports_eu_nre_vs_tpec"
@@ -2076,11 +1987,6 @@
             "carbon_footprint_tco2person",
             "t_per_gt",
             "co2_emissions_per_value_added",
-            "days_per_year",
-            "working_hours_per_day",
-            "working_hours_per_year",
-            "annual_work_hours_for_res",
-            "hours_work_per_gj_res_delivered",
             "water_use_per_type_per_capita",
             "total_water_use_per_capita"
         ]

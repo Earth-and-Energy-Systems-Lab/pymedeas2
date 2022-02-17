@@ -1,6 +1,6 @@
 """
 Module other_ghg_cycles
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -131,7 +131,7 @@ def ch4_uptake():
 def choose_rcp():
     """
     Real Name: Choose RCP
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'G116')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'select_RCP')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1360,7 +1360,12 @@ _integ_ch4_in_atm = Integ(
 
 
 _ext_constant_choose_rcp = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "G116", {}, _root, "_ext_constant_choose_rcp"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "select_RCP",
+    {},
+    _root,
+    "_ext_constant_choose_rcp",
 )
 
 

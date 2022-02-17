@@ -1,6 +1,6 @@
 """
 Module households_transport
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -84,7 +84,7 @@ def aaux_hveh_t():
 def activate_policy_h_transp():
     """
     Real Name: Activate policy H transp
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C170')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'activate_poicy_hh_transp')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -739,7 +739,7 @@ def p_h_vehicle():
 def p_percent_2w_elec():
     """
     Real Name: P percent 2w elec
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C180')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_electric_2w_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -754,7 +754,7 @@ def p_percent_2w_elec():
 def p_percent_elec_hveh():
     """
     Real Name: P percent elec Hveh
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C177')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_electr_hh_4w_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -769,7 +769,7 @@ def p_percent_elec_hveh():
 def p_percent_gas_hveh():
     """
     Real Name: P percent gas Hveh
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C179')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_gas_hh_veh_4w_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -784,7 +784,7 @@ def p_percent_gas_hveh():
 def p_percent_hyb_hveh():
     """
     Real Name: P percent hyb Hveh
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C178')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_hybrid_hh_4w_veh_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -799,7 +799,7 @@ def p_percent_hyb_hveh():
 def p_share_2wheelers():
     """
     Real Name: P share 2wheelers
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C181')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_2w_tfin_over_hh_veh')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1120,7 +1120,7 @@ def saving_ratio_2we():
 def t_fin_hveh():
     """
     Real Name: T fin Hveh
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C173')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'tfin_policy_hh_veh')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -1148,7 +1148,7 @@ def t_hist_h_transp():
 def t_ini_hveh():
     """
     Real Name: T ini Hveh
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C172')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'tini_policy_hh_veh')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -1352,7 +1352,7 @@ _delayfixed_aaux_hveh_t = DelayFixed(
 _ext_constant_activate_policy_h_transp = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C170",
+    "activate_poicy_hh_transp",
     {},
     _root,
     "_ext_constant_activate_policy_h_transp",
@@ -1439,7 +1439,7 @@ _ext_constant_n_vehicles_h = ExtConstant(
 _ext_constant_p_percent_2w_elec = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C180",
+    "percent_electric_2w_tfin",
     {},
     _root,
     "_ext_constant_p_percent_2w_elec",
@@ -1449,7 +1449,7 @@ _ext_constant_p_percent_2w_elec = ExtConstant(
 _ext_constant_p_percent_elec_hveh = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C177",
+    "percent_electr_hh_4w_tfin",
     {},
     _root,
     "_ext_constant_p_percent_elec_hveh",
@@ -1459,7 +1459,7 @@ _ext_constant_p_percent_elec_hveh = ExtConstant(
 _ext_constant_p_percent_gas_hveh = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C179",
+    "percent_gas_hh_veh_4w_tfin",
     {},
     _root,
     "_ext_constant_p_percent_gas_hveh",
@@ -1469,7 +1469,7 @@ _ext_constant_p_percent_gas_hveh = ExtConstant(
 _ext_constant_p_percent_hyb_hveh = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C178",
+    "percent_hybrid_hh_4w_veh_tfin",
     {},
     _root,
     "_ext_constant_p_percent_hyb_hveh",
@@ -1479,7 +1479,7 @@ _ext_constant_p_percent_hyb_hveh = ExtConstant(
 _ext_constant_p_share_2wheelers = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C181",
+    "percent_2w_tfin_over_hh_veh",
     {},
     _root,
     "_ext_constant_p_share_2wheelers",
@@ -1606,7 +1606,7 @@ _ext_constant_saving_ratio_2we = ExtConstant(
 _ext_constant_t_fin_hveh = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C173",
+    "tfin_policy_hh_veh",
     {},
     _root,
     "_ext_constant_t_fin_hveh",
@@ -1616,7 +1616,7 @@ _ext_constant_t_fin_hveh = ExtConstant(
 _ext_constant_t_ini_hveh = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C172",
+    "tini_policy_hh_veh",
     {},
     _root,
     "_ext_constant_t_ini_hveh",

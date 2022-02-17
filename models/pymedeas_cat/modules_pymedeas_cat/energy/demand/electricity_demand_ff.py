@@ -1,6 +1,6 @@
 """
 Module electricity_demand_ff
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -664,7 +664,7 @@ def perception_of_interfuel_ps_scarcity_oilnatgas():
 def phaseout_oil_for_electricity():
     """
     Real Name: "phase-out oil for electricity?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C167')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'phase_out_oil_electr')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -746,7 +746,7 @@ def share_gascoalgas_for_elec_in_2014():
 def share_in_target_year_ff_for_elec():
     """
     Real Name: share in target year FF for elec
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'I167')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'share_target_year_oil_for_elec')
     Units: 1/Year
     Limits: (None, None)
     Type: constant
@@ -804,7 +804,7 @@ def share_oilff_for_elec_in_2015():
 def start_year_policy_phaseout_oil_for_elec():
     """
     Real Name: "start year policy phase-out oil for elec"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'E167')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'start_year_policy_phase_out_oil_for_electricity')
     Units: 1/Year
     Limits: (None, None)
     Type: constant
@@ -833,7 +833,7 @@ def switch_scarcityps_elec_substit():
 def target_year_policy_phaseout_ff_for_elec():
     """
     Real Name: "target year policy phase-out FF for elec"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'G167')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'target_year_policy_phase_out_oil_electricity')
     Units: 1/Year
     Limits: (None, None)
     Type: constant
@@ -973,7 +973,7 @@ _ext_constant_max_efficiency_gas_power_plants = ExtConstant(
 _ext_constant_phaseout_oil_for_electricity = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C167",
+    "phase_out_oil_electr",
     {},
     _root,
     "_ext_constant_phaseout_oil_for_electricity",
@@ -993,7 +993,7 @@ _ext_constant_share_gascoalgas_for_elec_in_2014 = ExtConstant(
 _ext_constant_share_in_target_year_ff_for_elec = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "I167",
+    "share_target_year_oil_for_elec",
     {},
     _root,
     "_ext_constant_share_in_target_year_ff_for_elec",
@@ -1013,7 +1013,7 @@ _ext_constant_share_oilff_for_elec_in_2015 = ExtConstant(
 _ext_constant_start_year_policy_phaseout_oil_for_elec = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "E167",
+    "start_year_policy_phase_out_oil_for_electricity",
     {},
     _root,
     "_ext_constant_start_year_policy_phaseout_oil_for_elec",
@@ -1023,7 +1023,7 @@ _ext_constant_start_year_policy_phaseout_oil_for_elec = ExtConstant(
 _ext_constant_target_year_policy_phaseout_ff_for_elec = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "G167",
+    "target_year_policy_phase_out_oil_electricity",
     {},
     _root,
     "_ext_constant_target_year_policy_phaseout_ff_for_elec",

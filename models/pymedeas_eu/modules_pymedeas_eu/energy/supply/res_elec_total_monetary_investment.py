@@ -1,6 +1,6 @@
 """
 Module res_elec_total_monetary_investment
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -67,7 +67,7 @@ def cumulated_total_monet_invest_res_for_elec():
 def extra_monet_invest_to_cope_with_variable_elec_res():
     """
     Real Name: extra monet invest to cope with variable Elec RES
-    Original Eqn: (FE Elec generation from onshore wind TWh+FE Elec generation from offshore wind TWh)*Balancing costs +Grid reinforcement costs Tdollar
+    Original Eqn: (real generation RES elec TWh[wind onshore]+real generation RES elec TWh[wind offshore])*Balancing costs +Grid reinforcement costs Tdollar
     Units: Tdollars/Year
     Limits: (None, None)
     Type: component
@@ -78,8 +78,8 @@ def extra_monet_invest_to_cope_with_variable_elec_res():
         costs (1995 US$).
     """
     return (
-        fe_elec_generation_from_onshore_wind_twh()
-        + fe_elec_generation_from_offshore_wind_twh()
+        float(real_generation_res_elec_twh().loc["wind onshore"])
+        + float(real_generation_res_elec_twh().loc["wind offshore"])
     ) * balancing_costs() + grid_reinforcement_costs_tdollar()
 
 
@@ -130,20 +130,6 @@ def grid_reinforcement_costs_tdollar():
     )
 
 
-def invest_biow_tdolar():
-    """
-    Real Name: invest bioW Tdolar
-    Original Eqn: invest RES elec Tdolar[solid bioE elec]
-    Units: Tdollars/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Investment costs.
-    """
-    return float(invest_res_elec_tdolar().loc["solid bioE elec"])
-
-
 @subs(["RES elec"], _subscript_dict)
 def invest_cost_res_elec():
     """
@@ -159,95 +145,11 @@ def invest_cost_res_elec():
     return _ext_data_invest_cost_res_elec(time())
 
 
-def invest_csp_tdolar():
-    """
-    Real Name: invest CSP Tdolar
-    Original Eqn: invest RES elec Tdolar[CSP]
-    Units: Tdollars/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Investment costs.
-    """
-    return float(invest_res_elec_tdolar().loc["CSP"])
-
-
-def invest_geotelec_tdolar():
-    """
-    Real Name: "invest geot-elec Tdolar"
-    Original Eqn: invest RES elec Tdolar[geot elec]
-    Units: Tdollars/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Investment costs.
-    """
-    return float(invest_res_elec_tdolar().loc["geot elec"])
-
-
-def invest_hydro_tdolar():
-    """
-    Real Name: invest hydro Tdolar
-    Original Eqn: invest RES elec Tdolar[hydro]
-    Units: Tdollars/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Investment costs.
-    """
-    return float(invest_res_elec_tdolar().loc["hydro"])
-
-
-def invest_oceanic_tdolar():
-    """
-    Real Name: invest oceanic Tdolar
-    Original Eqn: invest RES elec Tdolar[oceanic]
-    Units: Tdollars/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Investment costs.
-    """
-    return float(invest_res_elec_tdolar().loc["oceanic"])
-
-
-def invest_offshore_wind_tdolar():
-    """
-    Real Name: invest offshore wind Tdolar
-    Original Eqn: invest RES elec Tdolar[wind offshore]
-    Units: Tdollars/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Investment costs.
-    """
-    return float(invest_res_elec_tdolar().loc["wind offshore"])
-
-
-def invest_onshore_wind_tdolar():
-    """
-    Real Name: invest onshore wind Tdolar
-    Original Eqn: invest RES elec Tdolar[wind onshore]
-    Units: Tdollars/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Investment costs.
-    """
-    return float(invest_res_elec_tdolar().loc["wind onshore"])
-
-
 @subs(["RES elec"], _subscript_dict)
 def invest_res_elec_tdolar():
     """
     Real Name: invest RES elec Tdolar
-    Original Eqn: MAX(0, RES elec capacity under construction TW[RES elec]*invest cost RES elec[RES elec])
+    Original Eqn: RES elec capacity under construction TW[RES elec]*invest cost RES elec[RES elec]
     Units:
     Limits: (None, None)
     Type: component
@@ -255,47 +157,7 @@ def invest_res_elec_tdolar():
 
 
     """
-    return np.maximum(
-        0, res_elec_capacity_under_construction_tw() * invest_cost_res_elec()
-    )
-
-
-def invest_res_for_elec():
-    """
-    Real Name: Invest RES for Elec
-    Original Eqn: MAX(invest bioW Tdolar+"invest geot-elec Tdolar"+invest hydro Tdolar+invest oceanic Tdolar+invest solar Tdolar+invest onshore wind Tdolar+invest offshore wind Tdolar+invest CSP Tdolar, 0)
-    Units: Tdollars/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Annual investment for the installation of RES capacity for electricity .
-    """
-    return np.maximum(
-        invest_biow_tdolar()
-        + invest_geotelec_tdolar()
-        + invest_hydro_tdolar()
-        + invest_oceanic_tdolar()
-        + invest_solar_tdolar()
-        + invest_onshore_wind_tdolar()
-        + invest_offshore_wind_tdolar()
-        + invest_csp_tdolar(),
-        0,
-    )
-
-
-def invest_solar_tdolar():
-    """
-    Real Name: invest solar Tdolar
-    Original Eqn: invest RES elec Tdolar[solar PV]
-    Units: Tdollars/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Investment costs.
-    """
-    return float(invest_res_elec_tdolar().loc["solar PV"])
+    return res_elec_capacity_under_construction_tw() * invest_cost_res_elec()
 
 
 def new_capacity_installed_onshore_wind_tw():
@@ -364,7 +226,7 @@ def share_tot_monet_invest_elec_res_vs_gdp():
 def total_monet_invest_res_for_elec_tdolar():
     """
     Real Name: Total monet invest RES for elec Tdolar
-    Original Eqn: Invest RES for Elec+extra monet invest to cope with variable Elec RES
+    Original Eqn: SUM(invest RES elec Tdolar[RES elec!])+extra monet invest to cope with variable Elec RES
     Units: Tdollars/Year
     Limits: (None, None)
     Type: component
@@ -373,7 +235,10 @@ def total_monet_invest_res_for_elec_tdolar():
     Annual total monetary investment for RES for electricity: capacity,
         balancing costs and grid improvements to cope with variability (1995 US$).
     """
-    return invest_res_for_elec() + extra_monet_invest_to_cope_with_variable_elec_res()
+    return (
+        sum(invest_res_elec_tdolar(), dim=("RES elec",))
+        + extra_monet_invest_to_cope_with_variable_elec_res()
+    )
 
 
 _ext_lookup_balancing_costs_ref = ExtLookup(

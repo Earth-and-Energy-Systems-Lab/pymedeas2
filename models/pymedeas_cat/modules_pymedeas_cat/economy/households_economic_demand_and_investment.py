@@ -1,6 +1,6 @@
 """
 Module households_economic_demand_and_investment
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 

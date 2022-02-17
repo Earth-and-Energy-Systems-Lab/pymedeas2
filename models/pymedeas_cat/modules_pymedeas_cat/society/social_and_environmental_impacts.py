@@ -1,21 +1,7 @@
 """
 Module social_and_environmental_impacts
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
-
-
-def annual_work_hours_for_res():
-    """
-    Real Name: Annual work hours for RES
-    Original Eqn: Total jobs RES*Working hours per year
-    Units: Hours/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return total_jobs_res() * working_hours_per_year()
 
 
 def carbon_footprint_tco2person():
@@ -58,34 +44,6 @@ def co2_emissions_per_value_added():
     CO2 emissions per value added (GDP).
     """
     return zidz(total_co2_emissions_gtco2(), gdp_aut())
-
-
-def days_per_year():
-    """
-    Real Name: days per year
-    Original Eqn: 365
-    Units: days/Year
-    Limits: (None, None)
-    Type: constant
-    Subs: None
-
-    Constant: 365 days in a year.
-    """
-    return 365
-
-
-def hours_work_per_gj_res_delivered():
-    """
-    Real Name: Hours work per GJ RES delivered
-    Original Eqn: ZIDZ( Annual work hours for RES, (TFEC RES EJ*GJ per EJ) )
-    Units: Hours/GJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Hours of work per GJ of RES delivered (final energy).
-    """
-    return zidz(annual_work_hours_for_res(), (tfec_res_ej() * gj_per_ej()))
 
 
 def potential_max_hdi():
@@ -148,41 +106,3 @@ def water_use_per_type_per_capita():
     Water use per type per capita.
     """
     return total_water_use_by_type() / population()
-
-
-def working_hours_per_day():
-    """
-    Real Name: Working hours per day
-    Original Eqn: GET DIRECT CONSTANTS('../parameters.xlsx', 'Austria', 'daily_working_hours')
-    Units: Hour*people
-    Limits: (None, None)
-    Type: constant
-    Subs: None
-
-    Working hours per day.
-    """
-    return _ext_constant_working_hours_per_day()
-
-
-def working_hours_per_year():
-    """
-    Real Name: Working hours per year
-    Original Eqn: Working hours per day*days per year
-    Units: Hour*person/Year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return working_hours_per_day() * days_per_year()
-
-
-_ext_constant_working_hours_per_day = ExtConstant(
-    "../parameters.xlsx",
-    "Austria",
-    "daily_working_hours",
-    {},
-    _root,
-    "_ext_constant_working_hours_per_day",
-)

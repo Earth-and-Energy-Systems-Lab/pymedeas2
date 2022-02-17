@@ -9,23 +9,23 @@ import xarray as xr
 
 from pysd.py_backend.functions import (
     sum,
+    invert_matrix,
+    lookup,
+    integer,
     logical_and,
     if_then_else,
-    integer,
-    lookup,
-    zidz,
-    logical_or,
     xidz,
     step,
-    invert_matrix,
+    zidz,
+    logical_or,
 )
-from pysd.py_backend.statefuls import Smooth, Initial, Integ, DelayFixed, SampleIfTrue
-from pysd.py_backend.external import ExtConstant, ExtLookup, ExtData
+from pysd.py_backend.statefuls import Initial, DelayFixed, SampleIfTrue, Smooth, Integ
+from pysd.py_backend.external import ExtLookup, ExtConstant, ExtData
 from pysd.py_backend.data import TabData
-from pysd.py_backend.utils import load_modules, rearrange, xrmerge, load_model_data
+from pysd.py_backend.utils import load_model_data, load_modules, xrmerge, rearrange
 from pysd import subs
 
-__pysd_version__ = "2.2.0"
+__pysd_version__ = "2.2.1"
 
 __data = {"scope": None, "time": lambda: 0}
 

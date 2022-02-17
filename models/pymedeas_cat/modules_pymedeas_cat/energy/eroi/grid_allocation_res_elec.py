@@ -1,6 +1,6 @@
 """
 Module grid_allocation_res_elec
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -185,25 +185,6 @@ def ratio_eroigrid_vs_eroi_static():
     )
 
 
-def real_generation_res_elec_var_twh():
-    """
-    Real Name: real generation RES elec var TWh
-    Original Eqn: real generation RES elec TWh[wind onshore]+real generation RES elec TWh[wind offshore]+real generation RES elec TWh[solar PV]+real generation RES elec TWh[CSP]
-    Units: TWh
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return (
-        float(real_generation_res_elec_twh().loc["wind onshore"])
-        + float(real_generation_res_elec_twh().loc["wind offshore"])
-        + float(real_generation_res_elec_twh().loc["solar PV"])
-        + float(real_generation_res_elec_twh().loc["CSP"])
-    )
-
-
 @subs(["RES elec"], _subscript_dict)
 def remaining_potential_res_elec_switch():
     """
@@ -251,21 +232,4 @@ def share_res_elec_generation_curtailedstored():
         xr.DataArray(0.2, {"RES elec": ["wind offshore"]}, ["RES elec"]),
         xr.DataArray(0.2, {"RES elec": ["solar PV"]}, ["RES elec"]),
         xr.DataArray(0.2, {"RES elec": ["CSP"]}, ["RES elec"]),
-    )
-
-
-def share_res_elec_generation_stored_endogenous():
-    """
-    Real Name: share RES elec generation stored ENDOGENOUS
-    Original Eqn: ZIDZ((real FE elec stored EV batteries TWh+real FE elec stored PHS TWh ), real generation RES elec var TWh )
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return zidz(
-        (real_fe_elec_stored_ev_batteries_twh() + real_fe_elec_stored_phs_twh()),
-        real_generation_res_elec_var_twh(),
     )

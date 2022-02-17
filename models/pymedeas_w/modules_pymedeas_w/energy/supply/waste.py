@@ -1,6 +1,6 @@
 """
 Module waste
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -231,7 +231,7 @@ def losses_chp_waste():
 def max_waste():
     """
     Real Name: max waste
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C52')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'max_waste_pot')
     Units: EJ
     Limits: (None, None)
     Type: constant
@@ -269,7 +269,7 @@ def new_waste_supply_ej():
 def p_waste_change():
     """
     Real Name: P waste change
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C53')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'pes_waste_growth')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -555,14 +555,19 @@ _ext_constant_initial_pes_waste = ExtConstant(
 
 
 _ext_constant_max_waste = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C52", {}, _root, "_ext_constant_max_waste"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "max_waste_pot",
+    {},
+    _root,
+    "_ext_constant_max_waste",
 )
 
 
 _ext_constant_p_waste_change = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C53",
+    "pes_waste_growth",
     {},
     _root,
     "_ext_constant_p_waste_change",

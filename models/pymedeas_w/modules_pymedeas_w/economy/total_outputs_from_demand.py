@@ -1,6 +1,6 @@
 """
 Module total_outputs_from_demand
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -60,24 +60,6 @@ def demand_by_sector():
 
     """
     return demand_by_sector_fd_adjusted()
-
-
-def diff_annual_gdp_growth_rate():
-    """
-    Real Name: diff annual GDP growth rate
-    Original Eqn: ZIDZ( (Annual GDP growth rate-Desired annual GDP growth rate) , Desired annual GDP growth rate)
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Difference between the annual GDP growth rate desired and the real
-        obtained.
-    """
-    return zidz(
-        (annual_gdp_growth_rate() - desired_annual_gdp_growth_rate()),
-        desired_annual_gdp_growth_rate(),
-    )
 
 
 def dollars_to_tdollars():
@@ -180,34 +162,6 @@ def gdppc():
     GDP per capita (1995T$ per capita).
     """
     return gdp() * dollars_to_tdollars() / population()
-
-
-def households_total_final_energy_demand():
-    """
-    Real Name: Households total final energy demand
-    Original Eqn: SUM(Households final energy demand[final sources!])
-    Units: EJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Total final energy demand of households.
-    """
-    return sum(households_final_energy_demand(), dim=("final sources",))
-
-
-def ratio_fed_households_vs_sectors():
-    """
-    Real Name: ratio FED households vs sectors
-    Original Eqn: ZIDZ( Households total final energy demand, required TFED sectors )
-    Units:
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Ratio of final energy demand of households vs 35 WIOD sectors.
-    """
-    return zidz(households_total_final_energy_demand(), required_tfed_sectors())
 
 
 def real_demand():
@@ -556,52 +510,6 @@ def required_final_energy_by_sector_and_fuel():
         * final_energy_intensity_by_sector_and_fuel()
         / 1e06
     )
-
-
-def required_tfed():
-    """
-    Real Name: Required TFED
-    Original Eqn: SUM(Required FED by fuel[final sources!])
-    Units: EJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Required total final energy demand after heat demand correction.
-        Non-commercial heat is accounted as heat, i.e. not following the data from
-        the IEA Balances.
-    """
-    return sum(required_fed_by_fuel(), dim=("final sources",))
-
-
-def required_tfed_before_heat_dem_corr():
-    """
-    Real Name: Required TFED before heat dem corr
-    Original Eqn: SUM(Required FED by fuel before heat correction[final sources!])
-    Units: EJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Total final energy demand before heat demand correction, i.e. following
-        the data from the IEA Balances (Non-commercial heat is not accounted as
-        heat).
-    """
-    return sum(required_fed_by_fuel_before_heat_correction(), dim=("final sources",))
-
-
-def required_tfed_sectors():
-    """
-    Real Name: required TFED sectors
-    Original Eqn: SUM(required FED sectors by fuel[final sources!])
-    Units: EJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return sum(required_fed_sectors_by_fuel(), dim=("final sources",))
 
 
 @subs(["sectors"], _subscript_dict)

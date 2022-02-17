@@ -1,6 +1,6 @@
 """
 Module coefficient_matrices
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -74,6 +74,7 @@ def i_matrix():
         },
         ["sectors A matrix", "sectors A matrix1"]
     )
+
 
 
 @subs(["sectors", "sectors1"], _subscript_dict)

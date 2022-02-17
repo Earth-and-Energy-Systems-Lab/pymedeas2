@@ -1,6 +1,6 @@
 """
 Module population
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -75,7 +75,7 @@ def input_population(x):
 def p_customized_cte_pop_variation():
     """
     Real Name: P customized cte pop variation
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'G12')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'Constant_population_variation')
     Units: year
     Limits: (None, None)
     Type: constant
@@ -89,7 +89,7 @@ def p_customized_cte_pop_variation():
 def p_customized_year_pop_evolution():
     """
     Real Name: P customized year pop evolution
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'E12')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'start_year_population_variation')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -103,7 +103,7 @@ def p_customized_year_pop_evolution():
 def p_timeseries_pop_growth_rate():
     """
     Real Name: P timeseries pop growth rate
-    Original Eqn: GET DIRECT DATA('../../scenarios/scen_w.xlsx', 'BAU', '10', 'E11')
+    Original Eqn: GET DIRECT DATA('../../scenarios/scen_w.xlsx', 'BAU', 'years_pop_growth', 'pop_growth_timeseries')
     Units: 1/year
     Limits: (None, None)
     Type: component_ext_data
@@ -151,7 +151,7 @@ def population():
 def select_population_evolution_input():
     """
     Real Name: select Population evolution input
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'B9')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'pop_evolution_input')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -233,7 +233,7 @@ _ext_lookup_input_population = ExtLookup(
 _ext_constant_p_customized_cte_pop_variation = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "G12",
+    "Constant_population_variation",
     {},
     _root,
     "_ext_constant_p_customized_cte_pop_variation",
@@ -243,7 +243,7 @@ _ext_constant_p_customized_cte_pop_variation = ExtConstant(
 _ext_constant_p_customized_year_pop_evolution = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "E12",
+    "start_year_population_variation",
     {},
     _root,
     "_ext_constant_p_customized_year_pop_evolution",
@@ -253,8 +253,8 @@ _ext_constant_p_customized_year_pop_evolution = ExtConstant(
 _ext_data_p_timeseries_pop_growth_rate = ExtData(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "10",
-    "E11",
+    "years_pop_growth",
+    "pop_growth_timeseries",
     "interpolate",
     {},
     _root,
@@ -270,7 +270,7 @@ _integ_population = Integ(
 _ext_constant_select_population_evolution_input = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "B9",
+    "pop_evolution_input",
     {},
     _root,
     "_ext_constant_select_population_evolution_input",

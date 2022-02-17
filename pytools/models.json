@@ -19,13 +19,10 @@
             "abundance_coal",
             "abundance_total_nat_gas",
             "abundance_total_oil",
-            "percent_res_vs_tpes",
             "temperature_change",
             "total_land_requirements_renew_mha",
-            "share_blue_water_use_vs_ar",
             "gdppc",
             "eroist_system",
-            "tfes_intensity_ej_t",
             "real_tfec",
             "gdp",
             "population"

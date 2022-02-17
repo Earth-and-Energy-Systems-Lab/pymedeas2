@@ -50,6 +50,7 @@ class Params:
 
 
 def read_config() -> Params:
+    """Read main configuration"""
     # default simulation parameters
     # None values are given in argparser.py
     with open(PROJ_FOLDER.joinpath('pytools', 'config.json')) as params:
@@ -62,7 +63,7 @@ def read_config() -> Params:
 
 
 def read_model_config(config) -> Params:
-
+    """Read model configuration"""
     with open(PROJ_FOLDER.joinpath('pytools', 'models.json')) as mod_pars:
         model_pars = json.load(mod_pars)
 
@@ -76,6 +77,5 @@ def read_model_config(config) -> Params:
     config.model = dacite.from_dict(data_class=Model,
                                     data=model_pars[config.region],
                                     config=Config(type_hooks={
-                                        pathlib.Path:
-                                        lambda x: pathlib.Path(x).resolve()}))
+                                        pathlib.Path: PROJ_FOLDER.joinpath}))
     return config

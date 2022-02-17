@@ -487,7 +487,7 @@ def user_select_data_file_headless(parent: ParentModel) -> Path:
             val_ = input(
              "\nPlease write the number associated with the results file of"
              + f" {parent.name} model from which you wish to import data:\n\t"
-             + "\n\t".join("{}: {}".format(i, j.name)
+             + "\n\t".join(f"{i}: {j.name}"
                            for i, j in enumerate(files_list, 0))
              + "\n\n here ->")
             try:
@@ -499,7 +499,7 @@ def user_select_data_file_headless(parent: ParentModel) -> Path:
                 return files_list[val]
             else:
                 raise ValueError("Please provide a number between 0 and "
-                                 "{}".format(len(files_list)-1))
+                                 f"{len(files_list)-1}")
     else:
         raise ValueError('There are no csv files to import data from.\n'
                          'Please run the parent model/s first')

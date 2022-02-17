@@ -1,6 +1,7 @@
 *.pyc
 .ipynb_checkpoints/
 build/
+_build/
 *.vdf
 *.2mdl
 .idea/workspace.xml

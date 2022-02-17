@@ -8,6 +8,7 @@ from run import main
 
 @pytest.fixture(scope="session")
 def default_vars(proj_folder):
+    """Get default vars from each model"""
     with open(proj_folder.joinpath("pytools/models.json")) as json_file:
         data = json.load(json_file)
 
@@ -17,7 +18,9 @@ def default_vars(proj_folder):
 
     return new_dict
 
+
 def select_model(tmp_dir, proj_folder, model, default_vars):
+    """Select model configuration"""
     config = Params(
         model_arguments=ModelArguments(
             initial_time=1995.0,
@@ -106,6 +109,7 @@ def select_model(tmp_dir, proj_folder, model, default_vars):
 
 @pytest.mark.filterwarnings("ignore")
 def test_run_three_levels(tmp_path, proj_folder, default_vars):
+    """Run of the 3 models in cascade"""
 
     model, config = select_model(
         tmp_path, proj_folder, "pymedeas_w", default_vars)

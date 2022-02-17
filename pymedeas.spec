@@ -5,12 +5,11 @@ specpath = os.path.dirname(os.path.abspath(SPEC))
 
 block_cipher = None
 
-added_files = [('./models/', './models/'),
-               ('./README.md', './'),
-               ('./LICENSE', './'),
-               ('./scenarios/', './scenarios'),
-               ('./pytools/models.json', './pytools/'),
-	       ('./pytools/config.json', './pytools/')
+added_files = [('./models/', 'models'),
+               ('./README.md', '.'),
+               ('./LICENSE', '.'),
+               ('./scenarios/', 'scenarios'),
+               ('./pytools/*.json', 'pytools')
 	       ]
 
 
@@ -44,8 +43,9 @@ exe = EXE(pyz,
 	  icon= os.path.join(specpath, 'MEDEAS.ico'),
           disable_windowed_traceback=False,
           target_arch=None,
-          codesign_identity=None,
+          codesign_identity=os.environ.get("KEY"),
           entitlements_file=None )
+
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

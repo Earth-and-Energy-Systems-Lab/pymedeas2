@@ -1,6 +1,6 @@
 """
 Module oil_extraction
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -402,29 +402,6 @@ def extraction_unconv_oil_ej():
     )
 
 
-def flow_conv_oil_left_in_ground():
-    """
-    Real Name: Flow conv oil left in ground
-    Original Eqn: IF THEN ELSE(Time<Start policy leave in ground conv oil,0, IF THEN ELSE(Time>=Start policy leave in ground conv oil+1,0, conv oil to leave underground))
-    Units: EJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Flow of conventional oil left in the ground. We assume that this amount is
-        removed from the stock of conventional oil available in 1 year.
-    """
-    return if_then_else(
-        time() < start_policy_leave_in_ground_conv_oil(),
-        lambda: 0,
-        lambda: if_then_else(
-            time() >= start_policy_leave_in_ground_conv_oil() + 1,
-            lambda: 0,
-            lambda: conv_oil_to_leave_underground(),
-        ),
-    )
-
-
 def flow_tot_agg_oil_left_in_ground():
     """
     Real Name: Flow tot agg oil left in ground
@@ -468,6 +445,29 @@ def flow_unconv_oil_left_in_ground():
             time() >= start_policy_leave_in_ground_unconv_oil() + 1,
             lambda: 0,
             lambda: unconv_oil_to_leave_underground(),
+        ),
+    )
+
+
+def flow_conv_oil_left_in_ground():
+    """
+    Real Name: Flow conv oil left in ground
+    Original Eqn: IF THEN ELSE(Time<Start policy leave in ground conv oil,0, IF THEN ELSE(Time>=Start policy leave in ground conv oil+1,0, conv oil to leave underground))
+    Units: EJ
+    Limits: (None, None)
+    Type: component
+    Subs: None
+
+    Flow of conventional oil left in the ground. We assume that this amount is
+        removed from the stock of conventional oil available in 1 year.
+    """
+    return if_then_else(
+        time() < start_policy_leave_in_ground_conv_oil(),
+        lambda: 0,
+        lambda: if_then_else(
+            time() >= start_policy_leave_in_ground_conv_oil() + 1,
+            lambda: 0,
+            lambda: conv_oil_to_leave_underground(),
         ),
     )
 
@@ -657,7 +657,7 @@ def oil_refinery_gains_share():
 def p_constraint_growth_extraction_unconv_oil():
     """
     Real Name: P constraint growth extraction unconv oil
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C80')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'p_constraint_growth_unconv_oil')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1027,7 +1027,7 @@ def scarcity_conv_oil_stock():
 def separate_conv_and_unconv_oil():
     """
     Real Name: "separate conv and unconv oil?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C67')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'separate_conv_and_unconv_oil')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1075,7 +1075,7 @@ def share_conv_vs_total_oil_extraction_eu():
 def share_rurr_conv_oil_to_leave_underground():
     """
     Real Name: share RURR conv oil to leave underground
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C123')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'share_RURR_conv_oil_underground')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1090,7 +1090,7 @@ def share_rurr_conv_oil_to_leave_underground():
 def share_rurr_tot_agg_oil_to_leave_underground():
     """
     Real Name: share RURR tot agg oil to leave underground
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'F124')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'share_RURR_agg_oil_underground')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1105,7 +1105,7 @@ def share_rurr_tot_agg_oil_to_leave_underground():
 def share_rurr_unconv_oil_to_leave_underground():
     """
     Real Name: share RURR unconv oil to leave underground
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C125')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'share_RURR_unconv_oil_underground')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1153,7 +1153,7 @@ def share_unconv_oil_vs_tot_agg_in_2050():
 def start_policy_leave_in_ground_conv_oil():
     """
     Real Name: Start policy leave in ground conv oil
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C122')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'start_policy_year_conv_oil_underground')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -1168,7 +1168,7 @@ def start_policy_leave_in_ground_conv_oil():
 def start_policy_leave_in_ground_tot_agg_oil():
     """
     Real Name: Start policy leave in ground tot agg oil
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'F122')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'start_policy_year_agg_oil_underground')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -1183,7 +1183,7 @@ def start_policy_leave_in_ground_tot_agg_oil():
 def start_policy_leave_in_ground_unconv_oil():
     """
     Real Name: Start policy leave in ground unconv oil
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'C124')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'start_policy_year_unconv_oil_underground')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -1367,7 +1367,7 @@ def unconv_oil_to_leave_underground():
 def unlimited_nre():
     """
     Real Name: "unlimited NRE?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'E66')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'unlimited_NRE')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1383,7 +1383,7 @@ def unlimited_nre():
 def unlimited_oil():
     """
     Real Name: "unlimited oil?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'E67')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'unlimited_oil')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1623,7 +1623,7 @@ _ext_constant_oil_refinery_gains_share = ExtConstant(
 _ext_constant_p_constraint_growth_extraction_unconv_oil = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C80",
+    "p_constraint_growth_unconv_oil",
     {},
     _root,
     "_ext_constant_p_constraint_growth_extraction_unconv_oil",
@@ -1707,7 +1707,7 @@ _integ_scarcity_conv_oil_stock = Integ(
 _ext_constant_separate_conv_and_unconv_oil = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C67",
+    "separate_conv_and_unconv_oil",
     {},
     _root,
     "_ext_constant_separate_conv_and_unconv_oil",
@@ -1717,7 +1717,7 @@ _ext_constant_separate_conv_and_unconv_oil = ExtConstant(
 _ext_constant_share_rurr_conv_oil_to_leave_underground = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C123",
+    "share_RURR_conv_oil_underground",
     {},
     _root,
     "_ext_constant_share_rurr_conv_oil_to_leave_underground",
@@ -1727,7 +1727,7 @@ _ext_constant_share_rurr_conv_oil_to_leave_underground = ExtConstant(
 _ext_constant_share_rurr_tot_agg_oil_to_leave_underground = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "F124",
+    "share_RURR_agg_oil_underground",
     {},
     _root,
     "_ext_constant_share_rurr_tot_agg_oil_to_leave_underground",
@@ -1737,7 +1737,7 @@ _ext_constant_share_rurr_tot_agg_oil_to_leave_underground = ExtConstant(
 _ext_constant_share_rurr_unconv_oil_to_leave_underground = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C125",
+    "share_RURR_unconv_oil_underground",
     {},
     _root,
     "_ext_constant_share_rurr_unconv_oil_to_leave_underground",
@@ -1757,7 +1757,7 @@ _ext_constant_share_unconv_oil_vs_tot_agg_in_2050 = ExtConstant(
 _ext_constant_start_policy_leave_in_ground_conv_oil = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C122",
+    "start_policy_year_conv_oil_underground",
     {},
     _root,
     "_ext_constant_start_policy_leave_in_ground_conv_oil",
@@ -1767,7 +1767,7 @@ _ext_constant_start_policy_leave_in_ground_conv_oil = ExtConstant(
 _ext_constant_start_policy_leave_in_ground_tot_agg_oil = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "F122",
+    "start_policy_year_agg_oil_underground",
     {},
     _root,
     "_ext_constant_start_policy_leave_in_ground_tot_agg_oil",
@@ -1777,7 +1777,7 @@ _ext_constant_start_policy_leave_in_ground_tot_agg_oil = ExtConstant(
 _ext_constant_start_policy_leave_in_ground_unconv_oil = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "C124",
+    "start_policy_year_unconv_oil_underground",
     {},
     _root,
     "_ext_constant_start_policy_leave_in_ground_unconv_oil",
@@ -1841,7 +1841,7 @@ _integ_total_unconv_oil_left_in_ground = Integ(
 _ext_constant_unlimited_nre = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "E66",
+    "unlimited_NRE",
     {},
     _root,
     "_ext_constant_unlimited_nre",
@@ -1851,7 +1851,7 @@ _ext_constant_unlimited_nre = ExtConstant(
 _ext_constant_unlimited_oil = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "E67",
+    "unlimited_oil",
     {},
     _root,
     "_ext_constant_unlimited_oil",

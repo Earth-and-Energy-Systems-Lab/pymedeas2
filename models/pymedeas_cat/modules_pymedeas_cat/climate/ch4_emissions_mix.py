@@ -1,6 +1,6 @@
 """
 Module ch4_emissions_mix
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -569,6 +569,20 @@ def total_fe_ch4_emissions():
 
     """
     return sum(total_per_fe_ch4_emissions(), dim=("final sources",))
+
+
+def total_fec_liquids():
+    """
+    Real Name: Total FEC liquids
+    Original Eqn: real FE consumption liquids EJ+CTL production+GTL production
+    Units: EJ
+    Limits: (None, None)
+    Type: component
+    Subs: None
+
+
+    """
+    return real_fe_consumption_liquids_ej() + ctl_production() + gtl_production()
 
 
 def total_heat_ch4_emissions():

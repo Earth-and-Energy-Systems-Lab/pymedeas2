@@ -1,6 +1,6 @@
 """
 Module esoi_ev_batteries
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -16,25 +16,6 @@ def cp_ev_batteries_for_transp():
 
     """
     return 0.0055
-
-
-def energy_intensity_construction_ev_batteries_mjmw():
-    """
-    Real Name: "Energy intensity construction EV batteries MJ/MW"
-    Original Eqn: ZIDZ( Total energy required for total material consumption for EV batteries *MJ per EJ, "new+replaced batteries TW"*M per T )
-    Units: MJ/MW
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Energy intensity of the construction of EV batteries. Dynamic variable
-        affected by recycling policies.
-    """
-    return zidz(
-        total_energy_required_for_total_material_consumption_for_ev_batteries()
-        * mj_per_ej(),
-        newreplaced_batteries_tw() * m_per_t(),
-    )
 
 
 def esoi_ev_batteries():
@@ -76,6 +57,25 @@ def fei_ev_batteries():
     Final energy invested (equivalent to the denominator of the EROI (=CED*g).
     """
     return zidz(output_ev_bateries_for_storage_over_lifetime(), esoi_ev_batteries())
+
+
+def energy_intensity_construction_ev_batteries_mjmw():
+    """
+    Real Name: "Energy intensity construction EV batteries MJ/MW"
+    Original Eqn: ZIDZ( Total energy required for total material consumption for EV batteries *MJ per EJ, "new+replaced batteries TW"*M per T )
+    Units: MJ/MW
+    Limits: (None, None)
+    Type: component
+    Subs: None
+
+    Energy intensity of the construction of EV batteries. Dynamic variable
+        affected by recycling policies.
+    """
+    return zidz(
+        total_energy_required_for_total_material_consumption_for_ev_batteries()
+        * mj_per_ej(),
+        newreplaced_batteries_tw() * m_per_t(),
+    )
 
 
 def grid_correction_factor_ev_batteries():

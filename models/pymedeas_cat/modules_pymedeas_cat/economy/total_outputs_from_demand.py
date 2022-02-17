@@ -1,13 +1,13 @@
 """
 Module total_outputs_from_demand
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
 def activate_elf_by_scen():
     """
     Real Name: "activate ELF by scen?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C119')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'activate_ELF')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -59,24 +59,6 @@ def cc_impacts_feedback_shortage_coeff():
         economic sectors taking into account climate change impacts.
     """
     return 1 - share_e_losses_cc_world()
-
-
-def diff_annual_gdp_growth_rate():
-    """
-    Real Name: diff annual GDP growth rate
-    Original Eqn: ZIDZ( (Annual GDP growth rate AUT-Desired annual GDP growth rate ), Desired annual GDP growth rate )
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Difference between the annual GDP growth rate desired and the real
-        obtained.
-    """
-    return zidz(
-        (annual_gdp_growth_rate_aut() - desired_annual_gdp_growth_rate()),
-        desired_annual_gdp_growth_rate(),
-    )
 
 
 def dollars_to_tdollars():
@@ -235,34 +217,6 @@ def gdppc():
     GDP per capita (1995T$ per capita).
     """
     return gdp_aut() * dollars_to_tdollars() / population()
-
-
-def households_total_final_energy_demand():
-    """
-    Real Name: Households total final energy demand
-    Original Eqn: SUM(Households final energy demand[final sources!])
-    Units: EJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Total final energy demand of households.
-    """
-    return sum(households_final_energy_demand(), dim=("final sources",))
-
-
-def ratio_fed_households_vs_sectors():
-    """
-    Real Name: ratio FED households vs sectors
-    Original Eqn: ZIDZ( Households total final energy demand, required TFED sectors )
-    Units:
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Ratio of final energy demand of households vs 35 WIOD sectors.
-    """
-    return zidz(households_total_final_energy_demand(), required_tfed_sectors())
 
 
 def real_demand():
@@ -754,52 +708,6 @@ def required_final_energy_by_sector_and_fuel_aut():
     )
 
 
-def required_tfed():
-    """
-    Real Name: Required TFED
-    Original Eqn: SUM(Required FED by fuel[final sources!])
-    Units: EJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Required total final energy demand after heat demand correction.
-        Non-commercial heat is accounted as heat, i.e. not following the data from
-        the IEA Balances.
-    """
-    return sum(required_fed_by_fuel(), dim=("final sources",))
-
-
-def required_tfed_before_heat_dem_corr():
-    """
-    Real Name: Required TFED before heat dem corr
-    Original Eqn: SUM(Required FED by fuel before heat correction[final sources!])
-    Units: EJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Total final energy demand before heat demand correction, i.e. following
-        the data from the IEA Balances (Non-commercial heat is not accounted as
-        heat).
-    """
-    return sum(required_fed_by_fuel_before_heat_correction(), dim=("final sources",))
-
-
-def required_tfed_sectors():
-    """
-    Real Name: required TFED sectors
-    Original Eqn: SUM(required FED sectors by fuel[final sources!])
-    Units: EJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return sum(required_fed_sectors_by_fuel(), dim=("final sources",))
-
-
 def share_e_losses_cc_world():
     """
     Real Name: share E losses CC world
@@ -814,22 +722,6 @@ def share_e_losses_cc_world():
     return if_then_else(
         activate_elf_by_scen() == 1, lambda: share_e_losses_cc(), lambda: 0
     )
-
-
-def share_tfed_before_heat_dem_corr_vs_real_tfec():
-    """
-    Real Name: share TFED before heat dem corr vs real TFEC
-    Original Eqn: Required TFED/Required TFED before heat dem corr
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Share of total final energy demand before heat demand correction vs. real
-        TFEC as estimated in MEDEAS correcting for heat demand for non-commercial
-        sectors.
-    """
-    return required_tfed() / required_tfed_before_heat_dem_corr()
 
 
 @subs(["final sources"], _subscript_dict)
@@ -890,7 +782,7 @@ def total_output_required_by_sector():
 _ext_constant_activate_elf_by_scen = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C119",
+    "activate_ELF",
     {},
     _root,
     "_ext_constant_activate_elf_by_scen",

@@ -1,6 +1,6 @@
 """
 Module nuclear
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -387,7 +387,7 @@ def p_nuclear_elec_gen():
 def p_nuclear_scen34():
     """
     Real Name: "P nuclear scen3-4"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'F22')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'p_nuclear_variation_scen_3_4')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -516,7 +516,7 @@ def required_capacity_nuclear_tw():
 def selection_of_nuclear_scenario():
     """
     Real Name: selection of nuclear scenario
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'D19')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'nuclear_scenario_select')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -530,7 +530,7 @@ def selection_of_nuclear_scenario():
 def start_year_nuclear_growth_scen34():
     """
     Real Name: "start year nuclear growth scen3-4"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'H22')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'start_year_nuclear_variation_scen3_4')
     Units: year
     Limits: (None, None)
     Type: constant
@@ -687,7 +687,7 @@ _ext_constant_min_cp_nuclear = ExtConstant(
 _ext_constant_p_nuclear_scen34 = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "F22",
+    "p_nuclear_variation_scen_3_4",
     {},
     _root,
     "_ext_constant_p_nuclear_scen34",
@@ -723,7 +723,7 @@ _integ_required_capacity_nuclear_tw = Integ(
 _ext_constant_selection_of_nuclear_scenario = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "D19",
+    "nuclear_scenario_select",
     {},
     _root,
     "_ext_constant_selection_of_nuclear_scenario",
@@ -733,7 +733,7 @@ _ext_constant_selection_of_nuclear_scenario = ExtConstant(
 _ext_constant_start_year_nuclear_growth_scen34 = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "H22",
+    "start_year_nuclear_variation_scen3_4",
     {},
     _root,
     "_ext_constant_start_year_nuclear_growth_scen34",

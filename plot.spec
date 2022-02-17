@@ -5,8 +5,7 @@ specpath = os.path.dirname(os.path.abspath(SPEC))
 
 block_cipher = None
 
-added_files = [('./pytools/config.json', './pytools'),
-               ('./pytools/models.json', './pytools')]
+added_files = [('./pytools/*.json', 'pytools')]
 
 a = Analysis(['plot_tool.py'],
              pathex=[],
@@ -41,5 +40,5 @@ exe = EXE(pyz,
 	  icon= os.path.join(specpath, 'MEDEAS.ico'),
           disable_windowed_traceback=False,
           target_arch=None,
-          codesign_identity=None,
+          codesign_identity=os.environ.get("KEY"),
           entitlements_file=None )

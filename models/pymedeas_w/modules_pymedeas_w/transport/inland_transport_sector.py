@@ -1,13 +1,13 @@
 """
 Module inland_transport_sector
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
 def activate_policy_inlandt():
     """
     Real Name: Activate policy inlandT
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C171')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'activate_policy_inland_trans')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -524,7 +524,7 @@ def nx0_vehicles_per_xinland_t():
 def p_bus_elec():
     """
     Real Name: P bus elec
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C188')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_electric_bus_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -539,7 +539,7 @@ def p_bus_elec():
 def p_bus_gas():
     """
     Real Name: P bus gas
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C190')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_gas_bus_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -554,7 +554,7 @@ def p_bus_gas():
 def p_bus_hyb():
     """
     Real Name: P bus hyb
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C189')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_hibrid_bus_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -569,7 +569,7 @@ def p_bus_hyb():
 def p_hv_gas():
     """
     Real Name: P HV gas
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C184')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_gas_HV_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -584,7 +584,7 @@ def p_hv_gas():
 def p_hv_hyb():
     """
     Real Name: P HV hyb
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C183')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_hybrid_HV_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -643,7 +643,7 @@ def p_inlandt():
 def p_lv_elec():
     """
     Real Name: P LV elec
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C185')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_electric_LV_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -658,7 +658,7 @@ def p_lv_elec():
 def p_lv_gas():
     """
     Real Name: P LV gas
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C187')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_gas_LV_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -673,7 +673,7 @@ def p_lv_gas():
 def p_lv_hyb():
     """
     Real Name: P LV hyb
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C186')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_hybrid_LV_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -688,7 +688,7 @@ def p_lv_hyb():
 def p_train_elec():
     """
     Real Name: P train elec
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C191')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'policy_electric_train_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -897,7 +897,7 @@ def shares_available_t():
 def t_fin_inlandt():
     """
     Real Name: T fin inlandT
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C175')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'tfin_H_inlandT')
     Units: year
     Limits: (None, None)
     Type: constant
@@ -911,7 +911,7 @@ def t_fin_inlandt():
 def t_ini_inlandt():
     """
     Real Name: T ini inlandT
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C174')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'tini_inlandT_veh')
     Units: year
     Limits: (None, None)
     Type: constant
@@ -1115,7 +1115,7 @@ def vehicles_inlandt():
 _ext_constant_activate_policy_inlandt = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C171",
+    "activate_policy_inland_trans",
     {},
     _root,
     "_ext_constant_activate_policy_inlandt",
@@ -1183,49 +1183,89 @@ _ext_constant_inland_transport_fraction = ExtConstant(
 
 
 _ext_constant_p_bus_elec = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C188", {}, _root, "_ext_constant_p_bus_elec"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "policy_electric_bus_tfin",
+    {},
+    _root,
+    "_ext_constant_p_bus_elec",
 )
 
 
 _ext_constant_p_bus_gas = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C190", {}, _root, "_ext_constant_p_bus_gas"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "policy_gas_bus_tfin",
+    {},
+    _root,
+    "_ext_constant_p_bus_gas",
 )
 
 
 _ext_constant_p_bus_hyb = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C189", {}, _root, "_ext_constant_p_bus_hyb"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "policy_hibrid_bus_tfin",
+    {},
+    _root,
+    "_ext_constant_p_bus_hyb",
 )
 
 
 _ext_constant_p_hv_gas = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C184", {}, _root, "_ext_constant_p_hv_gas"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "policy_gas_HV_tfin",
+    {},
+    _root,
+    "_ext_constant_p_hv_gas",
 )
 
 
 _ext_constant_p_hv_hyb = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C183", {}, _root, "_ext_constant_p_hv_hyb"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "policy_hybrid_HV_tfin",
+    {},
+    _root,
+    "_ext_constant_p_hv_hyb",
 )
 
 
 _ext_constant_p_lv_elec = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C185", {}, _root, "_ext_constant_p_lv_elec"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "policy_electric_LV_tfin",
+    {},
+    _root,
+    "_ext_constant_p_lv_elec",
 )
 
 
 _ext_constant_p_lv_gas = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C187", {}, _root, "_ext_constant_p_lv_gas"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "policy_gas_LV_tfin",
+    {},
+    _root,
+    "_ext_constant_p_lv_gas",
 )
 
 
 _ext_constant_p_lv_hyb = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C186", {}, _root, "_ext_constant_p_lv_hyb"
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "policy_hybrid_LV_tfin",
+    {},
+    _root,
+    "_ext_constant_p_lv_hyb",
 )
 
 
 _ext_constant_p_train_elec = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C191",
+    "policy_electric_train_tfin",
     {},
     _root,
     "_ext_constant_p_train_elec",
@@ -1282,7 +1322,7 @@ _ext_constant_saving_ratios_vehicles = ExtConstant(
 _ext_constant_t_fin_inlandt = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C175",
+    "tfin_H_inlandT",
     {},
     _root,
     "_ext_constant_t_fin_inlandt",
@@ -1292,7 +1332,7 @@ _ext_constant_t_fin_inlandt = ExtConstant(
 _ext_constant_t_ini_inlandt = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C174",
+    "tini_inlandT_veh",
     {},
     _root,
     "_ext_constant_t_ini_inlandt",

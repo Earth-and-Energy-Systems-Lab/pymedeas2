@@ -1,6 +1,6 @@
 """
 Module res_land_use
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 

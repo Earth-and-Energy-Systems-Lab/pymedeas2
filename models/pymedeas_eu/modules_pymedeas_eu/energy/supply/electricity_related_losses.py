@@ -1,6 +1,6 @@
 """
 Module electricity_related_losses
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 

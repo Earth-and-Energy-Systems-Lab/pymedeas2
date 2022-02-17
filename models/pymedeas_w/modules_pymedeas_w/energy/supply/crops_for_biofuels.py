@@ -1,6 +1,6 @@
 """
 Module crops_for_biofuels
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -232,7 +232,7 @@ def start_production_biofuels(x):
 def start_year_biofuels_land_marg():
     """
     Real Name: start year biofuels land marg
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C45')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'start_year_biofuels_land_marg')
     Units: year
     Limits: (None, None)
     Type: constant
@@ -304,7 +304,7 @@ _ext_lookup_start_production_biofuels = ExtLookup(
 _ext_constant_start_year_biofuels_land_marg = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C45",
+    "start_year_biofuels_land_marg",
     {},
     _root,
     "_ext_constant_start_year_biofuels_land_marg",

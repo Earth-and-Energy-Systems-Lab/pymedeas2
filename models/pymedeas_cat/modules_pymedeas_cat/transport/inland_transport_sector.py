@@ -1,6 +1,6 @@
 """
 Module inland_transport_sector
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -56,7 +56,7 @@ def aaux_tveh_t():
 def activate_policy_inlandt():
     """
     Real Name: Activate policy inlandT
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C171')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'activate_inland_transp')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -775,7 +775,7 @@ def p_inlandt():
 def p_percent_bus_elec():
     """
     Real Name: P percent bus elec
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C188')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_electr_bus_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -790,7 +790,7 @@ def p_percent_bus_elec():
 def p_percent_bus_gas():
     """
     Real Name: P percent bus gas
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C190')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_natgas_bus_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -805,7 +805,7 @@ def p_percent_bus_gas():
 def p_percent_bus_hyb():
     """
     Real Name: P percent bus hyb
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C189')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_hybrid_bus_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -820,7 +820,7 @@ def p_percent_bus_hyb():
 def p_percent_hv_gas():
     """
     Real Name: P percent HV gas
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C184')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_gas_heavy_veh_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -835,7 +835,7 @@ def p_percent_hv_gas():
 def p_percent_hv_hyb():
     """
     Real Name: P percent HV hyb
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C183')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_hybrid_heavy_veh_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -850,7 +850,7 @@ def p_percent_hv_hyb():
 def p_percent_lv_elec():
     """
     Real Name: P percent LV elec
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C185')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_electric_light_cargo_veh_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -865,7 +865,7 @@ def p_percent_lv_elec():
 def p_percent_lv_gas():
     """
     Real Name: P percent LV gas
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C187')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_natgas_light_cargo_veh_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -880,7 +880,7 @@ def p_percent_lv_gas():
 def p_percent_lv_hyb():
     """
     Real Name: P percent LV hyb
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C186')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_hybrid_light_cargo_veh_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -895,7 +895,7 @@ def p_percent_lv_hyb():
 def p_percent_train_elec():
     """
     Real Name: P percent train elec
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C191')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'percent_electric_train_tfin')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -1041,7 +1041,7 @@ def saving_ratios_vehicles():
 def t_fin_inlandt():
     """
     Real Name: T fin inlandT
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C175')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'tfin_policy_inland_transp_veh')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -1069,7 +1069,7 @@ def t_hist_inlandt():
 def t_ini_inlandt():
     """
     Real Name: T ini inlandT
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C174')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'tini_policy_inland_transp_veh')
     Units: Year
     Limits: (None, None)
     Type: constant
@@ -1330,7 +1330,7 @@ _delayfixed_aaux_tveh_t = DelayFixed(
 _ext_constant_activate_policy_inlandt = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C171",
+    "activate_inland_transp",
     {},
     _root,
     "_ext_constant_activate_policy_inlandt",
@@ -1400,7 +1400,7 @@ _ext_constant_inland_transport_fraction = ExtConstant(
 _ext_constant_p_percent_bus_elec = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C188",
+    "percent_electr_bus_tfin",
     {},
     _root,
     "_ext_constant_p_percent_bus_elec",
@@ -1410,7 +1410,7 @@ _ext_constant_p_percent_bus_elec = ExtConstant(
 _ext_constant_p_percent_bus_gas = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C190",
+    "percent_natgas_bus_tfin",
     {},
     _root,
     "_ext_constant_p_percent_bus_gas",
@@ -1420,7 +1420,7 @@ _ext_constant_p_percent_bus_gas = ExtConstant(
 _ext_constant_p_percent_bus_hyb = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C189",
+    "percent_hybrid_bus_tfin",
     {},
     _root,
     "_ext_constant_p_percent_bus_hyb",
@@ -1430,7 +1430,7 @@ _ext_constant_p_percent_bus_hyb = ExtConstant(
 _ext_constant_p_percent_hv_gas = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C184",
+    "percent_gas_heavy_veh_tfin",
     {},
     _root,
     "_ext_constant_p_percent_hv_gas",
@@ -1440,7 +1440,7 @@ _ext_constant_p_percent_hv_gas = ExtConstant(
 _ext_constant_p_percent_hv_hyb = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C183",
+    "percent_hybrid_heavy_veh_tfin",
     {},
     _root,
     "_ext_constant_p_percent_hv_hyb",
@@ -1450,7 +1450,7 @@ _ext_constant_p_percent_hv_hyb = ExtConstant(
 _ext_constant_p_percent_lv_elec = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C185",
+    "percent_electric_light_cargo_veh_tfin",
     {},
     _root,
     "_ext_constant_p_percent_lv_elec",
@@ -1460,7 +1460,7 @@ _ext_constant_p_percent_lv_elec = ExtConstant(
 _ext_constant_p_percent_lv_gas = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C187",
+    "percent_natgas_light_cargo_veh_tfin",
     {},
     _root,
     "_ext_constant_p_percent_lv_gas",
@@ -1470,7 +1470,7 @@ _ext_constant_p_percent_lv_gas = ExtConstant(
 _ext_constant_p_percent_lv_hyb = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C186",
+    "percent_hybrid_light_cargo_veh_tfin",
     {},
     _root,
     "_ext_constant_p_percent_lv_hyb",
@@ -1480,7 +1480,7 @@ _ext_constant_p_percent_lv_hyb = ExtConstant(
 _ext_constant_p_percent_train_elec = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C191",
+    "percent_electric_train_tfin",
     {},
     _root,
     "_ext_constant_p_percent_train_elec",
@@ -1537,7 +1537,7 @@ _ext_constant_saving_ratios_vehicles = ExtConstant(
 _ext_constant_t_fin_inlandt = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C175",
+    "tfin_policy_inland_transp_veh",
     {},
     _root,
     "_ext_constant_t_fin_inlandt",
@@ -1547,7 +1547,7 @@ _ext_constant_t_fin_inlandt = ExtConstant(
 _ext_constant_t_ini_inlandt = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "C174",
+    "tini_policy_inland_transp_veh",
     {},
     _root,
     "_ext_constant_t_ini_inlandt",

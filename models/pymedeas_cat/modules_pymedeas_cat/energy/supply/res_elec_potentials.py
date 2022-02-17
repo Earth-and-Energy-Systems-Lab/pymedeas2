@@ -1,6 +1,6 @@
 """
 Module res_elec_potentials
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -70,7 +70,7 @@ def efficiency_conversion_geot_pe_to_elec():
 def fe_elec_gen_from_solar_pv_on_land_twh():
     """
     Real Name: FE Elec gen from solar PV on land TWh
-    Original Eqn: FE Elec generation from solar PV TWh*(1-real share PV urban vs total PV )
+    Original Eqn: real generation RES elec TWh[solar PV]*(1-real share PV urban vs total PV)
     Units: TWh
     Limits: (None, None)
     Type: component
@@ -78,7 +78,7 @@ def fe_elec_gen_from_solar_pv_on_land_twh():
 
     Electricity generation from solar PV on land.
     """
-    return fe_elec_generation_from_solar_pv_twh() * (
+    return float(real_generation_res_elec_twh().loc["solar PV"]) * (
         1 - real_share_pv_urban_vs_total_pv()
     )
 
@@ -180,7 +180,7 @@ def max_geotelec_twe():
 def max_hydro_twe():
     """
     Real Name: max hydro TWe
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C24')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Austria', 'max_hydro_potential')
     Units: TWe
     Limits: (None, None)
     Type: constant
@@ -194,7 +194,7 @@ def max_hydro_twe():
 def max_oceanic_twe():
     """
     Real Name: max oceanic TWe
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C27')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Austria', 'max_oceanic_potential')
     Units: TWe
     Limits: (None, None)
     Type: constant
@@ -208,7 +208,7 @@ def max_oceanic_twe():
 def max_offshore_wind_twe():
     """
     Real Name: max offshore wind TWe
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C29')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Austria', 'max_offshore_wind_potential')
     Units: TWe
     Limits: (None, None)
     Type: constant
@@ -223,7 +223,7 @@ def max_offshore_wind_twe():
 def max_onshore_wind_twe():
     """
     Real Name: max onshore wind TWe
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C28')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Austria', 'max_onshore_wind_potential')
     Units: TWe
     Limits: (None, None)
     Type: constant
@@ -237,7 +237,7 @@ def max_onshore_wind_twe():
 def max_pe_geotelec_twth():
     """
     Real Name: "max PE geot-elec TWth"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C25')
+    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Austria', 'max_PE_geot_elec_potential')
     Units: TWe
     Limits: (None, None)
     Type: constant
@@ -464,7 +464,7 @@ def max_tot_solar_pv_twe():
 def p_share_installed_pv_urban_vs_tot_pv():
     """
     Real Name: P share installed PV urban vs tot PV
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'F35')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'share_PV_urban_tot_PV')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -555,7 +555,7 @@ def power_density_csp():
 def real_share_pv_urban_vs_total_pv():
     """
     Real Name: real share PV urban vs total PV
-    Original Eqn: MIN(1, ZIDZ( Potential elec gen from solar PV urban TWh, FE Elec generation from solar PV TWh))
+    Original Eqn: MIN(1, ZIDZ(Potential elec gen from solar PV urban TWh, real generation RES elec TWh[solar PV]))
     Units: Dmnl
     Limits: (None, None)
     Type: component
@@ -567,7 +567,7 @@ def real_share_pv_urban_vs_total_pv():
         1,
         zidz(
             potential_elec_gen_from_solar_pv_urban_twh(),
-            fe_elec_generation_from_solar_pv_twh(),
+            float(real_generation_res_elec_twh().loc["solar PV"]),
         ),
     )
 
@@ -638,7 +638,7 @@ def remaining_potential_tot_res_elec():
 def share_solar_pv_vs_tot_solar_gen():
     """
     Real Name: share solar PV vs tot solar gen
-    Original Eqn: XIDZ( FE Elec gen from solar PV on land TWh, FE Elec generation from CSP TWh+FE Elec gen from solar PV on land TWh, 1 )
+    Original Eqn: XIDZ( FE Elec gen from solar PV on land TWh, real generation RES elec TWh[CSP]+FE Elec gen from solar PV on land TWh, 1 )
     Units: Dmnl
     Limits: (None, None)
     Type: component
@@ -648,7 +648,8 @@ def share_solar_pv_vs_tot_solar_gen():
     """
     return xidz(
         fe_elec_gen_from_solar_pv_on_land_twh(),
-        fe_elec_generation_from_csp_twh() + fe_elec_gen_from_solar_pv_on_land_twh(),
+        float(real_generation_res_elec_twh().loc["CSP"])
+        + fe_elec_gen_from_solar_pv_on_land_twh(),
         1,
     )
 
@@ -676,9 +677,9 @@ _ext_data_historic_share_installed_pv_urban_vs_tot_pv = ExtData(
 
 
 _ext_constant_max_hydro_twe = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "C24",
+    "../energy.xlsx",
+    "Austria",
+    "max_hydro_potential",
     {},
     _root,
     "_ext_constant_max_hydro_twe",
@@ -686,9 +687,9 @@ _ext_constant_max_hydro_twe = ExtConstant(
 
 
 _ext_constant_max_oceanic_twe = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "C27",
+    "../energy.xlsx",
+    "Austria",
+    "max_oceanic_potential",
     {},
     _root,
     "_ext_constant_max_oceanic_twe",
@@ -696,9 +697,9 @@ _ext_constant_max_oceanic_twe = ExtConstant(
 
 
 _ext_constant_max_offshore_wind_twe = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "C29",
+    "../energy.xlsx",
+    "Austria",
+    "max_offshore_wind_potential",
     {},
     _root,
     "_ext_constant_max_offshore_wind_twe",
@@ -706,9 +707,9 @@ _ext_constant_max_offshore_wind_twe = ExtConstant(
 
 
 _ext_constant_max_onshore_wind_twe = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "C28",
+    "../energy.xlsx",
+    "Austria",
+    "max_onshore_wind_potential",
     {},
     _root,
     "_ext_constant_max_onshore_wind_twe",
@@ -716,9 +717,9 @@ _ext_constant_max_onshore_wind_twe = ExtConstant(
 
 
 _ext_constant_max_pe_geotelec_twth = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "C25",
+    "../energy.xlsx",
+    "Austria",
+    "max_PE_geot_elec_potential",
     {},
     _root,
     "_ext_constant_max_pe_geotelec_twth",
@@ -728,7 +729,7 @@ _ext_constant_max_pe_geotelec_twth = ExtConstant(
 _ext_constant_p_share_installed_pv_urban_vs_tot_pv = ExtConstant(
     "../../scenarios/scen_aut.xlsx",
     "BAU",
-    "F35",
+    "share_PV_urban_tot_PV",
     {},
     _root,
     "_ext_constant_p_share_installed_pv_urban_vs_tot_pv",

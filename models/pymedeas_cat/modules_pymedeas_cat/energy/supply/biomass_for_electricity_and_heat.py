@@ -1,6 +1,6 @@
 """
 Module biomass_for_electricity_and_heat
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -25,7 +25,7 @@ def available_max_pe_solid_bioe_for_elec_ej():
 def available_max_pe_solid_bioe_for_heat_ej():
     """
     Real Name: available max PE solid bioE for heat EJ
-    Original Eqn: MAX(0, "Total PE solid bioE potential heat+elec EJ"-PE bioE for Elec generation EJ)
+    Original Eqn: MAX(0, "Total PE solid bioE potential heat+elec EJ"-PE real generation RES elec[solid bioE elec])
     Units: EJ
     Limits: (None, None)
     Type: component
@@ -35,7 +35,8 @@ def available_max_pe_solid_bioe_for_heat_ej():
     """
     return np.maximum(
         0,
-        total_pe_solid_bioe_potential_heatelec_ej() - pe_bioe_for_elec_generation_ej(),
+        total_pe_solid_bioe_potential_heatelec_ej()
+        - float(pe_real_generation_res_elec().loc["solid bioE elec"]),
     )
 
 
@@ -76,7 +77,7 @@ def max_pe_potential_solid_bioe_for_heat_ej():
 def share_solids_bioe_for_elec_vs_heat():
     """
     Real Name: share solids bioE for elec vs heat
-    Original Eqn: ZIDZ( PE bioE for Elec generation EJ, (PE bioE for Elec generation EJ +PES RES for heat by techn[solid bioE heat]) )
+    Original Eqn: ZIDZ(PE real generation RES elec[solid bioE elec], (PE real generation RES elec[solid bioE elec]+PES RES for heat by techn[solid bioE heat]) )
     Units: Dmnl
     Limits: (None, None)
     Type: component
@@ -85,9 +86,9 @@ def share_solids_bioe_for_elec_vs_heat():
     Share of solids bioenergy for electricity vs electricity+heat.
     """
     return zidz(
-        pe_bioe_for_elec_generation_ej(),
+        float(pe_real_generation_res_elec().loc["solid bioE elec"]),
         (
-            pe_bioe_for_elec_generation_ej()
+            float(pe_real_generation_res_elec().loc["solid bioE elec"])
             + float(pes_res_for_heat_by_techn().loc["solid bioE heat"])
         ),
     )

@@ -1,6 +1,6 @@
 """
 Module electricity_demand_ff
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -245,7 +245,7 @@ def fe_demand_gas_elec_plants_twh():
 def fe_demand_oil_elec_plants_twh():
     """
     Real Name: FE demand oil Elec plants TWh
-    Original Eqn: share oil for Elec*Total FE Elec demand TWh
+    Original Eqn: share oil for Elec*demand Elec plants fossil fuels TWh
     Units: TWh/year
     Limits: (None, None)
     Type: component
@@ -253,7 +253,7 @@ def fe_demand_oil_elec_plants_twh():
 
     Final energy demand of oil to produce electricity.
     """
-    return share_oil_for_elec() * total_fe_elec_demand_twh()
+    return share_oil_for_elec() * demand_elec_plants_fossil_fuels_twh()
 
 
 def fes_elec_fossil_fuel_chp_plants_twh():
@@ -821,7 +821,7 @@ def perception_of_interfuel_ps_scarcity_oilnatgas():
 def phaseout_oil_for_electricity():
     """
     Real Name: "phase-out oil for electricity?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C167')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'phase_out_oil_electr')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -935,7 +935,7 @@ def share_gascoalgas_for_elec_in_2014():
 def share_in_target_year_oil_for_elec():
     """
     Real Name: share in target year oil for elec
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'I167')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'share_target_year_oil_for_elec')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -993,7 +993,7 @@ def share_oilff_for_elec_in_2015():
 def start_year_policy_phaseout_oil_for_elec():
     """
     Real Name: "start year policy phase-out oil for elec"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'E167')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'start_year_policy_phase_out_oil_for_electricity')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -1022,7 +1022,7 @@ def switch_scarcityps_elec_substit():
 def target_year_policy_phaseout_oil_for_elec():
     """
     Real Name: "target year policy phase-out oil for elec"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'G167')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'target_year_policy_phase_out_oil_for_electricity')
     Units: 1/year
     Limits: (None, None)
     Type: constant
@@ -1199,7 +1199,7 @@ _integ_perception_in_primary_sources_scarcity = Integ(
 _ext_constant_phaseout_oil_for_electricity = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "C167",
+    "phase_out_oil_electr",
     {},
     _root,
     "_ext_constant_phaseout_oil_for_electricity",
@@ -1219,7 +1219,7 @@ _ext_constant_share_gascoalgas_for_elec_in_2014 = ExtConstant(
 _ext_constant_share_in_target_year_oil_for_elec = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "I167",
+    "share_target_year_oil_for_elec",
     {},
     _root,
     "_ext_constant_share_in_target_year_oil_for_elec",
@@ -1239,7 +1239,7 @@ _ext_constant_share_oilff_for_elec_in_2015 = ExtConstant(
 _ext_constant_start_year_policy_phaseout_oil_for_elec = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "E167",
+    "start_year_policy_phase_out_oil_for_electricity",
     {},
     _root,
     "_ext_constant_start_year_policy_phaseout_oil_for_elec",
@@ -1249,7 +1249,7 @@ _ext_constant_start_year_policy_phaseout_oil_for_elec = ExtConstant(
 _ext_constant_target_year_policy_phaseout_oil_for_elec = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "G167",
+    "target_year_policy_phase_out_oil_for_electricity",
     {},
     _root,
     "_ext_constant_target_year_policy_phaseout_oil_for_elec",

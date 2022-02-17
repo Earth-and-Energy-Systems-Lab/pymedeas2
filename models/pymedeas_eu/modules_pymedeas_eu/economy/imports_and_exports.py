@@ -1,6 +1,6 @@
 """
 Module imports_and_exports
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -172,24 +172,6 @@ def real_total_output_by_sector_row():
     Sectoral real total production by Rest of the World.
     """
     return real_total_output_by_sector_world() - real_total_output_by_sector_eu()
-
-
-@subs(["sectors"], _subscript_dict)
-def required_total_output():
-    """
-    Real Name: Required total output
-    Original Eqn: Domestic output required for exports by sector[sectors]+Total domestic output required by sector[sectors]
-    Units: Mdollars
-    Limits: (None, None)
-    Type: component
-    Subs: ['sectors']
-
-    Required total output (domestic+foreign)
-    """
-    return (
-        domestic_output_required_for_exports_by_sector()
-        + total_domestic_output_required_by_sector()
-    )
 
 
 @subs(["sectors"], _subscript_dict)

@@ -1,6 +1,6 @@
 """
 Module total_co2_emissions
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
@@ -21,7 +21,7 @@ def nvs_1_to_g():
 def activate_affores_program():
     """
     Real Name: activate Affores program
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'B65')
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'activate_afforestation_program')
     Units: Dmnl
     Limits: (None, None)
     Type: constant
@@ -279,7 +279,7 @@ def ch4_emissions_unconv_gas():
 def choose_gwp_time_frame():
     """
     Real Name: Choose GWP time frame
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'J116' )
+    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'GWP_time_frame' )
     Units:
     Limits: (None, None)
     Type: constant
@@ -1009,7 +1009,7 @@ def total_cumulative_emissions_gtco2():
 _ext_constant_activate_affores_program = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "B65",
+    "activate_afforestation_program",
     {},
     _root,
     "_ext_constant_activate_affores_program",
@@ -1031,7 +1031,7 @@ _ext_data_afforestation_program_2020 = ExtData(
 _ext_constant_choose_gwp_time_frame = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "BAU",
-    "J116",
+    "GWP_time_frame",
     {},
     _root,
     "_ext_constant_choose_gwp_time_frame",

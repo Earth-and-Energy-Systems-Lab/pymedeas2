@@ -1,5 +1,5 @@
 import re
-import pathlib
+from pathlib import Path
 import numpy as np
 import pandas as pd
 
@@ -87,7 +87,6 @@ class Data:
         """Add variable to cache """
         if not self.columns:
             self.cached_values[self.current_var] = None
-            self.dimensions[self.current_var] = None
         elif len(self.columns) == 1:
             (self.cached_values[self.current_var],) = self.columns
             self.dimensions[self.current_var] = None
@@ -109,7 +108,7 @@ class Data:
     def get_values(self, dimensions=None):
         """Get values for a given combination of dimensions"""
         column = self.cached_values[self.current_var]
-        if not column:
+        if not column or (dimensions and dimensions not in column):
             return None
         elif dimensions:
             return self.data[column[dimensions]]
@@ -132,7 +131,7 @@ class DataLoaded(Data):
         self.data = dataframe
 
         # Fake read of the columns to be able to use class methods
-        Columns._files[pathlib.Path(self.scenario)] =\
+        Columns._files[Path(self.scenario)] =\
             (self.data.columns, False)
         self.variable_list = Columns.get_columns(self.scenario)[0]
 
@@ -162,9 +161,8 @@ class DataFile(Data):
         pattern = re.compile(
             r'results_(.*)(?=_[\d]{4}_[\d]{4}_[\d.]*(_old)*.csv)', re.I)
         try:
-            return pattern.match(
-                pathlib.PurePath(self.filename).name).group(1)
-        except ValueError:
+            return pattern.match(self.filename.name).group(1)
+        except Exception:
             return "Unknown"
 
     def set_var(self, var_name):

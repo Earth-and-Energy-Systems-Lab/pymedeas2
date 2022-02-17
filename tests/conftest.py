@@ -14,7 +14,7 @@ def proj_folder():
     return Path(__file__).parent.parent.resolve()
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def config():
     """read model configuration"""
     # NOTE : it does not have the model configuration loaded at this point
@@ -23,121 +23,56 @@ def config():
     return config
 
 
-###############################################################################
-#           DEFAULT CONFIGURATIONS FOR THE THREE REGIONS                      #
-###############################################################################
-
-@pytest.fixture()
-def default_world(config):
+@pytest.fixture(scope="function")
+def default_config(config, region):
+    """create the default config"""
     _new_conf = deepcopy(config)
+    # changing default region
+    _new_conf.region = region
     # loading default model configurations
-    _new_conf = read_model_config(_new_conf)
-    return _new_conf
+    return read_model_config(_new_conf)
 
 
-@pytest.fixture()
-def default_eu(config):
-    _new_conf = deepcopy(config)
-    # changing default region to pymedeas_eu
-    _new_conf.region = "pymedeas_eu"
-    # loading default model configurations for eu
-    _new_conf = read_model_config(_new_conf)
-    return _new_conf
-
-
-@pytest.fixture()
-def default_cat(config):
-    _new_conf = deepcopy(config)
-    # changing default region to pymedeas_cat
-    _new_conf.region = "pymedeas_cat"
-    # loading default model configurations for austria
-    _new_conf = read_model_config(_new_conf)
-    return _new_conf
-
-
-###############################################################################
-#       DEFAULT CONFIGURATIONS FOR THE THREE REGIONS CHANGING PATHS           #
-###############################################################################
-
-
-@pytest.fixture()
-def default_config_world(tmp_path, default_world):
-    _new_conf = deepcopy(default_world)
-    # setting the default results folder to the tests main folder
-    _new_conf.model.out_folder = tmp_path.joinpath(
-        "outputs", "pymedeas_w")
-    # creating the temporary directory
-    _new_conf.model.out_folder.mkdir(parents=True, exist_ok=True)
-    return _new_conf
-
-
-@pytest.fixture()
-def default_config_eu(tmp_path, default_eu):
-    _new_conf = deepcopy(default_eu)
+@pytest.fixture(scope="function")
+def default_config_tmp(tmp_path, default_config, region):
+    """create the default config with tmp_paths"""
 
     # setting the default results folder to the tests main folder
-    _new_conf.model.out_folder = tmp_path.joinpath(
-        "outputs", "pymedeas_eu")
+    default_config.model.out_folder = tmp_path.joinpath(
+        "outputs", region)
     # creating the temporary results folder directory
-    _new_conf.model.out_folder.mkdir(parents=True, exist_ok=True)
+    default_config.model.out_folder.mkdir(parents=True, exist_ok=True)
 
     # setting path to the results file of the parent model (pymedeas_w)
-    _new_conf.model.parent[0].default_results_folder = tmp_path.joinpath(
-        "outputs", "pymedeas_w")
-    # creating the temporary folder for the parent model
-    _new_conf.model.parent[0].default_results_folder.mkdir(parents=True,
-                                                           exist_ok=True)
-    return _new_conf
+    for parent in default_config.model.parent:
+        parent.default_results_folder = tmp_path.joinpath(
+        "outputs", parent.name)
+        parent.default_results_folder.mkdir(parents=True, exist_ok=True)
+
+    return default_config
 
 
 @pytest.fixture()
-def default_config_cat(tmp_path, default_cat):
-    _new_conf = deepcopy(default_cat)
-    # setting path to the results file of the parent model (pymedeas_w)
-    _new_conf.model.parent[0].default_results_folder = tmp_path.joinpath(
-        "outputs", "pymedeas_w")
-    # creating the temporary folder for the parent model
-    _new_conf.model.parent[0].default_results_folder.mkdir(parents=True,
-                                                           exist_ok=True)
-    # setting path to the results file of the parent model (pymedeas_eu)
-    _new_conf.model.parent[1].default_results_folder = tmp_path.joinpath(
-        "outputs", "pymedeas_eu")
-    # creating the temporary folder for the parent model
-    _new_conf.model.parent[1].default_results_folder.mkdir(parents=True,
-                                                           exist_ok=True)
-
-    # setting the default results folder to the tests main folder
-    _new_conf.model.out_folder = tmp_path.joinpath(
-        "outputs", "pymedeas_cat")
-    # creating the temporary results folder directory
-    _new_conf.model.out_folder.mkdir(parents=True, exist_ok=True)
-
-    return _new_conf
-
-
-###############################################################################
-#                     PySD MODEL OBJECTS                                      #
-###############################################################################
-
-@pytest.fixture()
-def world_model(proj_folder):
-    model_path = proj_folder.joinpath(
-        "models", "pymedeas_w", "pymedeas_w.py").resolve()
-    return pysd.load(model_path, initialize=False)
+def model(proj_folder, default_config):
+    """pysd model object"""
+    return pysd.load(proj_folder.joinpath(default_config.model.model_file),
+                     initialize=False)
 
 
 @pytest.fixture()
-def eu_model(proj_folder):
-    model_path = proj_folder.joinpath(
-        "models", "pymedeas_eu", "pymedeas_eu.py").resolve()
-    return pysd.load(model_path, initialize=False)
+def doc(model):
+    """return model documentation"""
+    def clean_name(name):
+        """Remove outside commas from variables"""
+        if name.startswith('"') and name.endswith('"'):
+            return name[1:-1]
+        else:
+            return name
 
+    doc = model.doc()
+    doc["Clean Name"] = doc["Real Name"].apply(clean_name)
 
-@pytest.fixture()
-def cat_model(proj_folder):
-    model_path = proj_folder.joinpath(
-        "models", "pymedeas_cat", "pymedeas_cat.py").resolve()
-    return pysd.load(model_path, initialize=False)
+    return doc
 
 
 ###############################################################################
@@ -152,24 +87,6 @@ def default_results():
         data={"time": [1995.0, 1996.0, 1997.0, 1998.0],
               "a": [1, 2, 3, 4], "b": [5, 6, 7, 8]}).set_index("time")
     yield df
-
-"""
-@pytest.fixture()
-def default_results_eu(default_config_eu):
-    df = pd.read_csv(default_config_eu.model.out_folder.joinpath(
-        "results_BAU_1995.0_1996.0_0.03125.csv"), index_col=0).T
-    df.index = pd.to_numeric(df.index)
-
-    yield df
-
-
-@pytest.fixture()
-def default_results_cat(default_config_cat):
-    df = pd.read_csv(default_config_cat.model.out_folder.joinpath(
-        "results_BAU_1995.0_1996.0_0.03125.csv"), index_col=0).T
-    df.index = pd.to_numeric(df.index)
-    yield df
-"""
 
 ###############################################################################
 #                 PREDEFINED CLI PARAMETERS                                   #
@@ -315,24 +232,17 @@ def cli_input_invalid_parent_results_file_path():
     return cli_args
 
 
-@pytest.fixture()
-def config_silent_no_parent_results_paths(default_eu):
-    conf = deepcopy(default_eu)
-    conf.silent = True
-    return conf
-
-
 ###############################################################################
 #           EXPECTED CONFIG AFTER CLI INPUT                                   #
 ###############################################################################
 
 
 @pytest.fixture()
-def expected_conf_cli_input_long_and_short(tmp_path, default_eu):
+def expected_conf_cli_input_long_and_short(tmp_path, default_config):
     # this one should crash the update of the config class, cause the path
     # does not exist
 
-    updated_conf = deepcopy(default_eu)
+    updated_conf = deepcopy(default_config)
     updated_conf.scenario_sheet = "test_scenario"
     updated_conf.silent = True
     updated_conf.headless = True
@@ -362,17 +272,7 @@ def expected_conf_cli_input_long_and_short(tmp_path, default_eu):
 ###############################################################################
 
 
-@pytest.fixture(params=["default_config_world",
-                        "default_config_eu",
-                        "default_config_cat"])
-def config_all_models(
-     request, default_config_world, default_config_eu, default_config_cat):
-    return {"default_config_world": default_config_world,
-            "default_config_eu": default_config_eu,
-            "default_config_cat": default_config_cat}[request.param]
-
-
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def avoid_output_vars():
     """vars to avoid in the outputs"""
     return ["historic", "delay", "next", "variation", "leontief",
@@ -380,14 +280,15 @@ def avoid_output_vars():
 
 
 @pytest.fixture()
-def all_outputs(default_config_world, avoid_output_vars, world_model):
-    avoid_vars = avoid_output_vars + default_config_world.model.out_default
+def all_outputs(default_config, avoid_output_vars, model):
+    """Get all possible output list from a model"""
+    avoid_vars = avoid_output_vars + default_config.model.out_default
     expected_ = sorted([
-        world_model.components._namespace[var_name]
-        for var_name in world_model._default_return_columns(which='step')
-        if all([a_var not in world_model.components._namespace[var_name]
+        model.components._namespace[var_name]
+        for var_name in model._default_return_columns(which='step')
+        if all([a_var not in model.components._namespace[var_name]
                 for a_var in avoid_vars])])
 
-    expected = list(set(expected_ + default_config_world.model.out_default))
+    expected = list(set(expected_ + default_config.model.out_default))
 
     return sorted(expected)

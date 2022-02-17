@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter.filedialog import askopenfilename
 
 import json
+from pathlib import Path
 from itertools import cycle
 import numpy as np
 import matplotlib.pyplot as plt
@@ -35,8 +36,6 @@ class PlotTool(tk.Frame):
     Main plotting class with tkinter
     """
 
-    last_col = ''
-
     markers = ["o", "v", "<", "^", "1", "s", "p", "P", "h", "X", "D"]
     line_styles = ['--', '-.', ':']
 
@@ -49,6 +48,8 @@ class PlotTool(tk.Frame):
         # current variable and data container
         self.column = ""
         self.data_container = DataContainer()
+        self.title, self.units, self.description = "", None, None
+        self.doc = None
 
         # attributes of the main window
         self.toolbar = None
@@ -85,7 +86,6 @@ class PlotTool(tk.Frame):
         model = pysd.load(config.model.model_file, initialize=False)
         self.doc = model.doc()
         self.doc["Clean Name"] = self.doc["Real Name"].apply(self.clean_name)
-        self.title, self.units, self.description = "", None, None
 
         # setting the default folder to store saved plots
         matplotlib.rcParams['savefig.directory'] = self.results_folder
@@ -276,7 +276,7 @@ class PlotTool(tk.Frame):
 
     def load_file(self, DataType=DataFile):
         """Create Data object with columns information"""
-        filename = askopenfilename(
+        filename = Path(askopenfilename(
             initialdir=self.results_folder,
             title="Open file",
             filetypes=(
@@ -285,14 +285,17 @@ class PlotTool(tk.Frame):
                 ("tab files", "*.tab"),
                 ("All files", "*")
             )
-        )
+        ) or "")
 
-        if not filename:
+        if not filename.name:
             pass
-        elif filename.endswith(".csv") or filename.endswith(".tab"):
+        elif filename.suffix in [".csv", ".tab"]:
             self.data_container.add(DataType(filename))
             self.all_vars = self.data_container.variable_list
             self.populate_list()
+            if self.column:
+                # update plots when loading new data
+                self.select_variable()
         else:
             tk.messagebox.showerror(
                 title="Incompatible file format",
@@ -303,13 +306,11 @@ class PlotTool(tk.Frame):
         """Select a variable"""
         try:
             index = event.widget.curselection()[0]
-        except IndexingError:
-            self.column = PlotTool.last_col
+        except (IndexingError, IndexError):
+            pass
         else:
             self.column = event.widget.get(index)
-            PlotTool.last_col = self.column
-
-        self.select_variable()
+            self.select_variable()
 
     def show_description(self):
         """Show current variable description if available"""
@@ -323,9 +324,18 @@ class PlotTool(tk.Frame):
     def set_variable_info(self):
         """Set variable info from model documentation"""
         index = self.doc["Py Name"] == self.column
-        self.title = self.doc[index]["Clean Name"].iloc[0] or self.column
-        self.units = self.doc[index]["Unit"].iloc[0] or ""
-        self.description = self.doc[index]["Comment"].iloc[0] or None
+        if any(index):
+            # set the metadata using model doc
+            self.title = self.doc[index]["Clean Name"].iloc[0]
+            self.units = self.doc[index]["Unit"].iloc[0]
+            self.description = self.doc[index]["Comment"].iloc[0]
+        else:
+            # if the variable comes from another version we may not have
+            # information in the doc
+            self.title = self.column
+            self.units = ""
+            self.description = None
+
         self.plot_info()
 
     def select_variable(self):

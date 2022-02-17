@@ -6,24 +6,19 @@ import pandas as pd
 
 import pytools.tools as tools
 
-
-def test_update_config_from_user_input_defaults_world(default_world):
-    # user does not pass any input
-    # I could have mocked the get_initial_user_input function
-    options = tools.get_initial_user_input([])
-    assert tools.update_config_from_user_input(options) == default_world
+world = ["pymedeas_w"]
+all_regions = ["pymedeas_w", "pymedeas_eu", "pymedeas_cat"]
+sub_regions = ["pymedeas_eu", "pymedeas_cat"]
 
 
-def test_update_config_from_user_input_defaults_eu(default_eu):
-    options = tools.get_initial_user_input(["-m", "pymedeas_eu"])
-    assert tools.update_config_from_user_input(options) == default_eu
+@pytest.mark.parametrize("region", all_regions, ids=all_regions)
+def test_update_config_from_user_input_defaults(region, default_config):
+    """Update config from user imput"""
+    options = tools.get_initial_user_input(["-m", region])
+    assert tools.update_config_from_user_input(options) == default_config
 
 
-def test_update_config_from_user_input_defaults_cat(default_cat):
-    options = tools.get_initial_user_input(["-m", "pymedeas_cat"])
-    assert tools.update_config_from_user_input(options) == default_cat
-
-
+@pytest.mark.parametrize("region", ["pymedeas_eu"])
 def test_update_config_from_user_input_not_raising(
       cli_input_not_raises, expected_conf_cli_input_long_and_short):
 
@@ -83,9 +78,10 @@ def test_update_config_from_user_input_raises_filenotfounderror(
         tools.update_config_from_user_input(options)
 
 
-def test__rename_old_simulation_results_file_exists(config_all_models):
-
-    file_path = config_all_models.model.out_folder.joinpath(
+@pytest.mark.parametrize("region", all_regions, ids=all_regions)
+def test__rename_old_simulation_results_file_exists(default_config_tmp):
+    """Rename old simulations results"""
+    file_path = default_config_tmp.model.out_folder.joinpath(
         "results_BAU_1995.0_1996.0_0.03125.csv")
     folder = file_path.parent
     fname = file_path.stem
@@ -95,104 +91,110 @@ def test__rename_old_simulation_results_file_exists(config_all_models):
     file_path.touch()
 
     # updating the config with the file path
-    config_all_models.model_arguments.results_fpath = file_path
+    default_config_tmp.model_arguments.results_fpath = file_path
 
     # storing the creation time of the file
     creation_time: str = datetime.fromtimestamp(
         file_path.stat().st_ctime).strftime("%Y%m%d__%H%M%S")
 
-    tools._rename_old_simulation_results(config_all_models)
+    tools._rename_old_simulation_results(default_config_tmp)
 
     new_file_path = folder.joinpath(fname + "_{}".format(creation_time) +
                                     extension)
     # the path in the config remains unchanged
-    assert config_all_models.model_arguments.results_fpath == file_path
+    assert default_config_tmp.model_arguments.results_fpath == file_path
     assert new_file_path.is_file()
 
 
-def test__rename_old_simulation_results_file_not_exists(config_all_models):
+@pytest.mark.parametrize("region", all_regions, ids=all_regions)
+def test__rename_old_simulation_results_file_not_exists(default_config_tmp):
+    """Do not rename old simulations results"""
+    original_path = default_config_tmp.model_arguments.results_fpath = \
+        default_config_tmp.model.out_folder.joinpath("new_file.csv")
 
-    original_path = config_all_models.model_arguments.results_fpath = \
-        config_all_models.model.out_folder.joinpath("new_file.csv")
-
-    tools._rename_old_simulation_results(config_all_models)
+    tools._rename_old_simulation_results(default_config_tmp)
 
     is_empty = not any(original_path.parent.iterdir())
 
     # no file was written
     assert is_empty
     # the path in the config remains unchanged
-    assert config_all_models.model_arguments.results_fpath == original_path
+    assert default_config_tmp.model_arguments.results_fpath == original_path
 
 
-def test_store_results_csv(mocker, caplog, default_config_world,
-                           default_results):
+@pytest.mark.parametrize("region", world, ids=world)
+def test_store_results_csv(mocker, caplog, default_config_tmp,
+                        default_results):
 
     # set the path of the results file to a tmp_path
-    default_config_world.model_arguments.results_fpath = \
-        default_config_world.model.out_folder.joinpath(
+    default_config_tmp.model_arguments.results_fpath = \
+        default_config_tmp.model.out_folder.joinpath(
             "test_random_results.csv")
 
     # mock the function so it just returns the default results file path
     mocker.patch('pytools.tools._rename_old_simulation_results',
-                 return_value=default_config_world)
+                return_value=default_config_tmp)
 
     with caplog.at_level(logging.INFO):
-        tools.store_results_csv(default_results, default_config_world)
+        tools.store_results_csv(default_results, default_config_tmp)
         assert caplog.messages[0].startswith('Simulation results file is')
 
-    assert default_config_world.model.out_folder.joinpath(
+    assert default_config_tmp.model.out_folder.joinpath(
         'last_output.txt').is_file()
-    assert default_config_world.model_arguments.results_fpath.is_file()
+    assert default_config_tmp.model_arguments.results_fpath.is_file()
 
 
+@pytest.mark.parametrize("region", world, ids=world)
 def test_store_results_csv_df_has_nans(
-     mocker, caplog, default_config_world):
+     mocker, caplog, default_config_tmp):
 
     df = pd.DataFrame(data={"a": [1, 2, 3, np.nan], "b": [5, 6, 7, 8]})
 
     # creating a temporary results file path
-    results_file_path = default_config_world.model.out_folder.joinpath(
+    results_file_path = default_config_tmp.model.out_folder.joinpath(
             "test_random_results.csv")
 
     # set the path of the results file to a tmp_path
-    default_config_world.model_arguments.results_fpath = results_file_path
+    default_config_tmp.model_arguments.results_fpath = results_file_path
 
     # mock the function so it just returns the default results file path
     mocker.patch('pytools.tools._rename_old_simulation_results',
-                 return_value=default_config_world)
+                 return_value=default_config_tmp)
 
     with caplog.at_level(logging.WARNING):
-        tools.store_results_csv(df, default_config_world)
+        tools.store_results_csv(df, default_config_tmp)
         assert caplog.messages[0].startswith("There are NaN's in the")
 
 
-def test_select_model_outputs_silent(default_config_world,
-                                     world_model):
+@pytest.mark.parametrize("region", world, ids=world)
+def test_select_model_outputs_silent(default_config_tmp,
+                                     model):
 
     # when silent, it should get the out vars from the last_output.txt file
-    default_config_world.silent = True
+    default_config_tmp.silent = True
 
     # creating the last_output.txt file and writing the defaults on it
-    p = default_config_world.model.out_folder / "last_output.txt"
-    p.write_text("\n".join(default_config_world.model.out_default))
+    p = default_config_tmp.model.out_folder / "last_output.txt"
+    p.write_text("\n".join(default_config_tmp.model.out_default))
 
     assert sorted(tools.select_model_outputs(
-                  default_config_world, world_model)) == \
-        sorted(default_config_world.model.out_default)
+                  default_config_tmp, model)) == \
+        sorted(default_config_tmp.model.out_default)
 
 
-def test_select_model_outputs_select_default(default_config_world,
-                                             world_model):
+@pytest.mark.parametrize("region", world, ids=world)
+def test_select_model_outputs_select_default(default_config_tmp,
+                                             model):
 
     assert sorted(tools.select_model_outputs(
-                  default_config_world, world_model, select="default")) == \
-        sorted(default_config_world.model.out_default)
+                  default_config_tmp, model, select="default")) == \
+        sorted(default_config_tmp.model.out_default)
 
 
+@pytest.mark.parametrize("region", world, ids=world)
 def test_select_model_outputs_comma_separated_variables(mocker,
-                                                        default_config_world,
-                                                        world_model):
+                                                        default_config_tmp,
+                                                        model):
     # when the user passes the list of vars they want in the output as
     # comma separated variabl names
     return_vars = ["ch4_emissions_ctl", "cc_total", "cc_sectoral"]
@@ -201,12 +203,13 @@ def test_select_model_outputs_comma_separated_variables(mocker,
     mocker.patch('builtins.input', return_value=", ".join(return_vars))
 
     assert sorted(tools.select_model_outputs(
-                  default_config_world, world_model)) == \
-        sorted(return_vars + default_config_world.model.out_default)
+                  default_config_tmp, model)) == \
+        sorted(return_vars + default_config_tmp.model.out_default)
 
 
+@pytest.mark.parametrize("region", world, ids=world)
 def test_select_model_outputs_comma_separated_variables_with_plus(
-     mocker, default_config_world, world_model):
+     mocker, default_config_tmp, model):
 
     # when the user passes the list of vars they want in the output as
     # comma separated variabl names with the plus sign
@@ -216,68 +219,72 @@ def test_select_model_outputs_comma_separated_variables_with_plus(
     mocker.patch('builtins.input', return_value=", +".join(return_vars))
 
     # creating the last_output.txt file and writing the defaults on it
-    p = default_config_world.model.out_folder / "last_output.txt"
-    p.write_text("\n".join(default_config_world.model.out_default))
+    p = default_config_tmp.model.out_folder / "last_output.txt"
+    p.write_text("\n".join(default_config_tmp.model.out_default))
 
     assert sorted(tools.select_model_outputs(
-                  default_config_world, world_model)) == sorted(
-                      default_config_world.model.out_default + return_vars)
+                  default_config_tmp, model)) == sorted(
+                      default_config_tmp.model.out_default + return_vars)
 
 
+@pytest.mark.parametrize("region", world, ids=world)
 def test_select_model_outputs_all_outputs_input(mocker,
                                                 all_outputs,
-                                                default_config_world,
-                                                world_model):
+                                                default_config_tmp,
+                                                model):
 
     # when the user passes a 0 is that they expect all outputs
     # overriding the builtin input function, to make it return 0
     mocker.patch('builtins.input', return_value="0")
 
     assert sorted(tools.select_model_outputs(
-                  default_config_world, world_model)) == all_outputs
+                  default_config_tmp, model)) == all_outputs
 
 
+@pytest.mark.parametrize("region", world, ids=world)
 def test_select_model_outputs_all_outputs_select_all(all_outputs,
-                                                     default_config_world,
-                                                     world_model):
+                                                     default_config_tmp,
+                                                     model):
 
     assert sorted(
         tools.select_model_outputs(
-                  default_config_world,
-                  world_model,
+                  default_config_tmp,
+                  model,
                   select="all")) == all_outputs
 
 
-def test_select_scenario_sheet(world_model, default_config_world):
+@pytest.mark.parametrize("region", world, ids=world)
+def test_select_scenario_sheet(model, default_config_tmp):
 
-    sheet = default_config_world.scenario_sheet
+    sheet = default_config_tmp.scenario_sheet
 
     # does not return
-    assert tools.select_scenario_sheet(world_model, sheet) is None
+    assert tools.select_scenario_sheet(model, sheet) is None
 
     assert getattr(
-        world_model.components,
+        model.components,
         "_ext_constant_current_mineral_reserves_mt"
         ).sheets == ["Global"]
     assert getattr(
-        world_model.components,
+        model.components,
         "_ext_constant_start_policy_leave_in_ground_coal"
         ).sheets == [sheet]
 
-    tools.select_scenario_sheet(world_model, "GND")
+    tools.select_scenario_sheet(model, "GND")
     assert getattr(
-        world_model.components,
+        model.components,
         "_ext_constant_current_mineral_reserves_mt"
         ).sheets == ["Global"]
     assert getattr(
-        world_model.components,
+        model.components,
         "_ext_constant_start_policy_leave_in_ground_coal"
         ).sheets == ["GND"]
 
 
-def test_user_select_data_file_headless(mocker, default_config_eu):
+@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
+def test_user_select_data_file_headless(mocker, default_config_tmp):
 
-    files = [default_config_eu.model.parent[0].default_results_folder.joinpath(
+    files = [default_config_tmp.model.parent[0].default_results_folder.joinpath(
              file_name) for file_name in ["f1.csv", "f2.csv", "f3.csv"]]
     # creating 3 files
     for val in files:
@@ -285,33 +292,36 @@ def test_user_select_data_file_headless(mocker, default_config_eu):
 
     # overriding the builtin input function, to make it return 0
     mocker.patch('builtins.input', return_value="2")
-    parent = default_config_eu.model.parent[0]
+    parent = default_config_tmp.model.parent[0]
 
     assert tools.user_select_data_file_headless(parent) == files[2]
 
 
+@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
 def test_user_select_data_file_headless_input_number_outside_bounds(
-     mocker, default_config_eu):
+     mocker, default_config_tmp):
 
     # overriding the builtin input function, to make it return 0
     mocker.patch('builtins.input', return_value="1500")
-    parent = default_config_eu.model.parent[0]
+    parent = default_config_tmp.model.parent[0]
 
     with pytest.raises(ValueError):
         tools.user_select_data_file_headless(parent)
 
 
+@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
 def test_user_select_data_file_headless_invalid_input_type(
-     mocker, default_config_eu):
+     mocker, default_config_tmp):
+    """Error when invalid input type for parent files"""
 
     # overriding the builtin input function, to make it return 0
     mocker.patch('builtins.input', return_value="hello world")
-    parent = default_config_eu.model.parent[0]
+    parent = default_config_tmp.model.parent[0]
 
     # create results file so it does not raises for missing results files
-    file1 = default_config_eu.model.parent[0].default_results_folder.joinpath(
+    file1 = default_config_tmp.model.parent[0].default_results_folder.joinpath(
         "file1.csv")
-    file2 = default_config_eu.model.parent[0].default_results_folder.joinpath(
+    file2 = default_config_tmp.model.parent[0].default_results_folder.joinpath(
         "file2.csv")
     file1.touch()
     file2.touch()
@@ -322,122 +332,121 @@ def test_user_select_data_file_headless_invalid_input_type(
     assert e.value.code == 0
 
 
+@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
 def test_user_select_data_file_headless_missing_results_files(
-     default_config_eu):
-
+     default_config_tmp):
+    """Error when missing results for parent models"""
     with pytest.raises(ValueError):
-        tools.user_select_data_file_headless(default_config_eu.model.parent[0])
+        tools.user_select_data_file_headless(
+            default_config_tmp.model.parent[0])
 
 
+@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
 def test_create_parent_models_data_file_paths_silent_no_paths_from_user(
-     config_silent_no_parent_results_paths):
+     default_config_tmp):
     """
     If running country model in silent mode, the results file paths of the
     parent must be passed from cli, otherwise a SystemExit occurs
     """
+    default_config_tmp.silent = True
     with pytest.raises(SystemExit) as e:
         tools.create_parent_models_data_file_paths(
-            config_silent_no_parent_results_paths)
+            default_config_tmp)
     assert e.type == SystemExit
     assert e.value.code == 0
 
 
+@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
 def test_create_parent_models_data_file_paths_no_silent_paths_from_user(
-     default_cat):
+     default_config_tmp):
     """
     If running country model and the results file paths of the
     parent are passed from cli. Basically, under this configuration, this
     function should do nothing
     """
+    paths = {}
+    for parent in default_config_tmp.model.parent:
+        paths[parent.name] =\
+            parent.default_results_folder / f"file{parent.name}.csv"
+        parent.results_file_path = paths[parent.name]
 
-    path1 = default_cat.model.parent[0].default_results_folder / "file1.csv"
-    path2 = default_cat.model.parent[1].default_results_folder / "file2.csv"
+    tools.create_parent_models_data_file_paths(default_config_tmp)
 
-    default_cat.model.parent[0].results_file_path = path1
-    default_cat.model.parent[1].results_file_path = path2
-
-    tools.create_parent_models_data_file_paths(default_cat)
-
-    assert default_cat.model.parent[0].results_file_path == path1
-    assert default_cat.model.parent[1].results_file_path == path2
-
-
-def test_create_parent_models_data_file_paths_not_silent_headless(mocker,
-                                                                  default_eu):
-    # here we test the case were the user did not provide paths through CLI
-
-    return_path = default_eu.model.parent[0].default_results_folder.joinpath(
-                  "file.csv")
-    # mock the user_select_data_file_headless function
-    mocker.patch('pytools.tools.user_select_data_file_headless',
-                 return_value=return_path)
-
-    default_eu.headless = True
-    assert tools.create_parent_models_data_file_paths(default_eu)\
-        == [return_path]
-    assert default_eu.model.parent[0].results_file_path == return_path
+    for parent in default_config_tmp.model.parent:
+        assert parent.results_file_path == paths[parent.name]
 
 
-def test_create_parent_models_data_file_paths_not_silent_not_headless(
-     mocker, default_eu):
-    # here we test the case were the user did not provide paths through CLI
+@pytest.mark.parametrize("headless", [True, False], ids=["headless", "no-headless"])
+@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
+def test_create_parent_models_data_file_paths_not_silent(mocker,
+                                                         headless,
+                                                         default_config_tmp):
+    """test the case were the user did not provide paths through CLI"""
+    default_config_tmp.headless = headless
+    for parent in default_config_tmp.model.parent:
+        filename = f"file_{parent.name}.csv"
+        return_path = parent.default_results_folder.joinpath(filename)
 
-    return_path = default_eu.model.parent[0].default_results_folder.joinpath(
-                  "file.csv")
-    # mock the user_select_data_file_headless function
-    mocker.patch(
-     'pytools.tools.user_select_data_file_gui', return_value=return_path)
+        if headless:
+            # mock the user_select_data_file_headless function
+            mocker.patch('pytools.tools.user_select_data_file_headless',
+                         return_value=return_path)
+        else:
+            # mock the user_select_data_file_gui function
+            mocker.patch('pytools.tools.user_select_data_file_gui',
+                         return_value=return_path)
 
-    default_eu.headless = False
-    assert tools.create_parent_models_data_file_paths(default_eu)\
-        == [return_path]
-    assert default_eu.model.parent[0].results_file_path == return_path
+        assert set(tools.create_parent_models_data_file_paths(default_config_tmp))\
+            == {return_path}
+        assert parent.results_file_path == return_path
+
+        # as we are using a mocker we cannot do more that one return from
+        # user_select_data_file_headless
+        break
 
 
-def test_run_no_file_path_from_user(
-     mocker, capsys, default_cat, cat_model):
+@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
+def test_run_no_file_path_from_user(mocker, capsys, default_config_tmp, model):
 
     # mocking the return of the run method of the pysd Model class
     return_df = pd.DataFrame(data={"a": [1, 2, 3], "b": [4, 5, 6]})
     mocker.patch("pysd.py_backend.statefuls.Model.run", return_value=return_df)
 
     # configuring parents file paths
-    default_cat.model.parent[0].results_file_path = \
-        default_cat.model.parent[0].default_results_folder.joinpath(
+    for parent in default_config_tmp.model.parent:
+        parent.results_file_path = parent.default_results_folder.joinpath(
             "result1.csv")
 
-    default_cat.model.parent[1].results_file_path = \
-        default_cat.model.parent[1].default_results_folder.joinpath(
-            "result1.csv")
-
-    tools.run(default_cat, cat_model)
+    tools.run(default_config_tmp, model)
 
     out = capsys.readouterr()[0]
 
-    assert "External data file for pymedeas_eu:" in out
+    for parent in default_config_tmp.model.parent:
+        assert f"External data file for {parent.name}:" in out
 
-    assert default_cat.model_arguments.results_fname == \
+    assert default_config_tmp.model_arguments.results_fname == \
         "results_{}_{}_{}_{}.csv".format(
-                default_cat.scenario_sheet,
-                int(default_cat.model_arguments.initial_time),
-                int(default_cat.model_arguments.final_time),
-                default_cat.model_arguments.time_step
+                default_config_tmp.scenario_sheet,
+                int(default_config_tmp.model_arguments.initial_time),
+                int(default_config_tmp.model_arguments.final_time),
+                default_config_tmp.model_arguments.time_step
                 )
 
 
-def test_run_file_path_from_user(mocker, default_world, world_model):
+@pytest.mark.parametrize("region", world, ids=world)
+def test_run_file_path_from_user(mocker, default_config_tmp, model):
 
     # mocking the return of the run method of the pysd Model class
     return_df = pd.DataFrame(data={"a": [1, 2, 3], "b": [4, 5, 6]})
     mocker.patch("pysd.py_backend.statefuls.Model.run", return_value=return_df)
 
-    default_world.model_arguments.results_fname = "results.csv"
+    default_config_tmp.model_arguments.results_fname = "results.csv"
 
-    tools.run(default_world, world_model)
+    tools.run(default_config_tmp, model)
 
-    assert default_world.model_arguments.results_fpath == \
-        default_world.model.out_folder.joinpath(
-            default_world.model_arguments.results_fname)
+    assert default_config_tmp.model_arguments.results_fpath == \
+        default_config_tmp.model.out_folder.joinpath(
+            default_config_tmp.model_arguments.results_fname)
 
 
 @pytest.mark.skip(reason="not implemented")

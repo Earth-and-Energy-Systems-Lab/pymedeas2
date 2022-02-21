@@ -1,13 +1,22 @@
 # -*- mode: python ; coding: utf-8 -*-
 import os
-
+                                 
 specpath = os.path.dirname(os.path.abspath(SPEC))
+main_path = os.path.dirname(specpath)
 
 block_cipher = None
 
-added_files = [('./pytools/*.json', 'pytools')]
+added_files = [(os.path.join(main_path, 'models'), 'models'),
+               (os.path.join(main_path, 'README.md'), '.'),
+               (os.path.join(main_path, 'LICENSE'), '.'),
+               (os.path.join(main_path, 'scenarios'), 'scenarios'),
+               (os.path.join(main_path, 'pytools', '*.json'), 'pytools')
+	       ]
 
-a = Analysis(['plot_tool.py'],
+
+
+a = Analysis([os.path.join(main_path, 'run.py'),
+              os.path.join(main_path, 'plot_tool.py')],
              pathex=[],
              binaries=[],
              datas=added_files,
@@ -24,21 +33,25 @@ pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 
 exe = EXE(pyz,
-          a.scripts,
-          a.binaries,
-          a.zipfiles,
-          a.datas,  
+          a.scripts, 
           [],
-          name='plot',
+          exclude_binaries=True,
+          name='pymedeas',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          upx_exclude=[],
-          runtime_tmpdir=None,
           console=True,
-	  icon= os.path.join(specpath, 'MEDEAS.ico'),
+	      icon= os.path.join(specpath, 'MEDEAS.ico'),
           disable_windowed_traceback=False,
           target_arch=None,
-          codesign_identity=os.environ.get("KEY"),
           entitlements_file=None )
+
+coll = COLLECT(exe,
+               a.binaries,
+               a.zipfiles,
+               a.datas, 
+               strip=False,
+               upx=True,
+               upx_exclude=[],
+               name='run')

@@ -7,22 +7,21 @@ import os
 import matplotlib as mpl
                                  
 specpath = os.path.dirname(os.path.abspath(SPEC))
+main_path = os.path.dirname(specpath)
+
 matplotlibrc_path = os.path.join(os.path.dirname(mpl.matplotlib_fname()), 'matplotlibrc')
 
 block_cipher = None
 
 added_files = [(matplotlibrc_path, 'matplotlib/mpl-data'),
-               ('./models/', 'models'),
-               ('./README.md', '.'),
-               ('./LICENSE', '.'),
-               ('./scenarios/', 'scenarios'),
-               ('./pytools/models.json', 'pytools'),
-	       ('./pytools/config.json', 'pytools')
-	       ]
+               (os.path.join(main_path, 'models'), 'models'),
+               (os.path.join(main_path, 'README.md'), '.'),
+               (os.path.join(main_path, 'LICENSE'), '.'),
+               (os.path.join(main_path, 'scenarios'), 'scenarios'),
+               (os.path.join(main_path, 'pytools', '*.json'), 'pytools')
+	        ]
 
-
-
-a = Analysis(['run.py', 'plot_tool.py'],
+a = Analysis([os.path.join(main_path, 'run.py'), os.path.join(main_path, 'plot_tool.py')],
              pathex=[],
              binaries=[],
              datas=added_files,
@@ -34,8 +33,9 @@ a = Analysis(['run.py', 'plot_tool.py'],
              win_private_assemblies=False,
              cipher=block_cipher,
              noarchive=False)
+
 pyz = PYZ(a.pure, a.zipped_data,
-             cipher=block_cipher)
+          cipher=block_cipher)
 
 exe = EXE(pyz,
           a.scripts, 
@@ -47,11 +47,12 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           console=True,
-	  icon= os.path.join(specpath, 'MEDEAS.ico'),
+	      icon= os.path.join(specpath, 'MEDEAS.icns'),
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=os.environ.get('KEY'),
-          entitlements_file=None )
+          entitlements_file=None)
+
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

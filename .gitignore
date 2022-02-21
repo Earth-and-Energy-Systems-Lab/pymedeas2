@@ -1,6 +1,7 @@
 *.pyc
 .ipynb_checkpoints/
 build/
+dist/
 _build/
 *.vdf
 *.2mdl

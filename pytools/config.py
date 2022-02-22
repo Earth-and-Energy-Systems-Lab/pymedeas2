@@ -1,4 +1,5 @@
 import pathlib
+import sys
 from typing import Optional, List, Union
 from dataclasses import dataclass
 import json
@@ -78,4 +79,12 @@ def read_model_config(config) -> Params:
                                     data=model_pars[config.region],
                                     config=Config(type_hooks={
                                         pathlib.Path: PROJ_FOLDER.joinpath}))
+
+    # if running in a bundle, write outputs in the user's home directory
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        config.model.out_folder = pathlib.Path.home().joinpath(
+            'pymedeas',
+            'outputs',
+            pathlib.Path(config.model.out_folder).name)
+
     return config

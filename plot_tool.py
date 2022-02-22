@@ -77,7 +77,7 @@ class PlotTool(tk.Frame):
             self.init_window()
 
     def configure_data(self, config):
-        """Configure metadate for the variables and default folders"""
+        """Configure metadata for the variables and default folders"""
         # Default folder and variables
         self.results_folder = config.model.out_folder
         self.default_list = config.model.out_default
@@ -113,13 +113,13 @@ class PlotTool(tk.Frame):
         tk.OptionMenu(self.popup, self.config, *model_pars.keys()).grid(
             column=0, row=1, padx=20, pady=10)
 
-        tk.Button(self.popup, text="Okay", command=self.set_config).grid(
+        tk.Button(self.popup, text="Continue", command=self.set_config).grid(
             column=0, row=2, padx=20, pady=10)
 
         self.master.update()
 
     def set_config(self):
-        """Set model configuration from popup resukts"""
+        """Set model configuration from popup results"""
         if self.config.get():
             config = read_config()
             config.region = self.config.get()

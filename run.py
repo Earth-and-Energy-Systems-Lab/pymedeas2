@@ -12,6 +12,9 @@ import warnings
 import pysd
 import argparse
 from pathlib import Path
+import sys
+import shutil
+import os  # TODO remove this import and use patlib
 from typing import List
 from pandas import DataFrame
 
@@ -64,6 +67,23 @@ def main(config: Params, model: Model) -> None:
     elif config.model_arguments.return_columns[0] in ['all', 'default']:
         config.model_arguments.return_columns = select_model_outputs(
             config, model, config.model_arguments.return_columns[0])
+
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        # TODO this only copies the scenario files, we should also copy the parameter and data files
+
+        # this is the path of the temporary dir (/tmp/_MEILiKPxz)
+        bundle_dir = Path(__file__).parent
+        # this is the path from which the pymedeas was called
+        curr_dir = Path.cwd()
+        if not Path(curr_dir, "scenarios").is_dir():
+            print("Please run the executable from its main directory")
+            sys.exit(1)
+
+        for file_name in Path(curr_dir, "scenarios").iterdir():
+            destination = Path(bundle_dir, "scenarios").joinpath(file_name.name)
+            # copy scenario files
+            if file_name.is_file():
+                shutil.copy(file_name, destination)
 
     # run the simulation
     stock: DataFrame = run(config, model)

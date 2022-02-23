@@ -83,7 +83,7 @@ MERGE( (shared_a,
         ),
         (run_a,
          'run',
-        os.path.join('pymedeas', 'pymedeas')
+        'pymedeas'
         ),
         (plot_a,
         'plot_tool',
@@ -100,24 +100,16 @@ shared_pyz = PYZ(shared_a.pure,
 
 shared_exe = EXE(shared_pyz,
                  shared_a.scripts,
-                 shared_a.dependencies, 
+                 shared_a.dependencies,
                  [],
                  exclude_binaries=True,
                  name='shared',
-                 debug=False,
+                 debug=True,
                  bootloader_ignore_signals=False,
                  strip=False,
                  upx=True,
 	             icon= os.path.join(specpath, 'MEDEAS.ico'))
 
-shared_coll = COLLECT(shared_exe,
-                      shared_a.binaries,
-                      shared_a.zipfiles,
-                      shared_a.datas, 
-                      strip=False,
-                      upx=True,
-                      upx_exclude=[],
-                      name=os.path.join('dist', 'shared')) # The name of the directory to be built
 
 
 run_pyz = PYZ(run_a.pure,
@@ -131,7 +123,7 @@ run_exe = EXE(run_pyz,
               [],
               exclude_binaries=True,
               name='pymedeas', # The filename for the executable. On Windows suffix '.exe' is appended.
-              debug=False,
+              debug=True,
               bootloader_ignore_signals=False,
               strip=False,
               upx=True,
@@ -144,11 +136,11 @@ run_exe = EXE(run_pyz,
 run_coll = COLLECT(run_exe,
                    run_a.binaries,
                    run_a.zipfiles,
-                   run_a.datas, 
+                   run_a.datas,
                    strip=False,
                    upx=True,
                    upx_exclude=[],
-                   name=os.path.join('dist', 'pymedeas')) # The name of the directory to be built
+                   name='')
 
 
 plot_pyz = PYZ(plot_a.pure,
@@ -160,10 +152,10 @@ plot_exe = EXE(plot_pyz,
                plot_a.binaries,
                plot_a.zipfiles,
                plot_a.datas,
-               plot_a.dependencies,  
+               plot_a.dependencies,
                [],
                name='plot', # The filename for the executable. On Windows suffix '.exe' is appended.
-               debug=False,
+               debug=True,
                bootloader_ignore_signals=False,
                strip=False,
                upx=True,
@@ -176,3 +168,11 @@ plot_exe = EXE(plot_pyz,
                entitlements_file=None )
 
 
+shared_coll = COLLECT(#shared_exe,
+                      shared_a.binaries,
+                      shared_a.zipfiles,
+                      shared_a.datas,
+                      strip=False,
+                      upx=True,
+                      upx_exclude=[],
+                      name=os.path.join('dist', 'shared')) # The name of the directory to be built

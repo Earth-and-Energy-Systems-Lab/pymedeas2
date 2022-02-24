@@ -148,9 +148,10 @@ shared_exe = EXE(shared_pyz,
                  debug=False,
                  bootloader_ignore_signals=False,
                  strip=False,
+                 target_arch="x86_64",
                  upx=True,
-	             icon= os.path.join(specpath, 'MEDEAS.icns'),
-                 codesign_identity=os.environ.get('KEY'),
+	         icon= os.path.join(specpath, 'MEDEAS.icns'),
+                # codesign_identity=os.environ.get('KEY'),
                  entitlements_file=None)
 
 
@@ -169,11 +170,12 @@ run_exe = EXE(run_pyz,
               debug=False,
               bootloader_ignore_signals=False,
               strip=False,
+              target_arch="x86_64",
               upx=True,
               console=True, # this must be True
 	          icon= os.path.join(specpath, 'MEDEAS.icns'),
               disable_windowed_traceback=False,
-              codesign_identity=os.environ.get('KEY'),
+             # codesign_identity=os.environ.get('KEY'),
               entitlements_file=None)
 
 run_coll = COLLECT(run_exe,
@@ -201,12 +203,13 @@ plot_exe = EXE(plot_pyz,
                debug=False,
                bootloader_ignore_signals=False,
                strip=False,
+               target_arch="x86_64",
                console=False,
                upx=True,
                upx_exclude=[],
 	           icon= os.path.join(specpath, 'MEDEAS.icns'),
                disable_windowed_traceback=False,
-               codesign_identity=os.environ.get('KEY'),
+               #codesign_identity=os.environ.get('KEY'),
                entitlements_file=None)
 
 

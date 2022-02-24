@@ -13,6 +13,7 @@ To run this, we need to first create a copy of run.py and save it as shared.py
 
 import os
 import sys
+import platform
 
 block_cipher = None
 
@@ -102,25 +103,35 @@ MERGE( (shared_a,
         'plot'
         ))
 
+if platform.system() == "Windows":
+    to_remove = ["libbz2.dll",
+                 "msvcp140.dll",
+                 "vcruntime140.dll",
+                 "vcruntime140_1.dll"]
+    for dep in plot_a.dependencies:
+        for duplicate in to_remove:
+            if duplicate in dep[1]:
+                plot_a.dependencies.remove(dep)
 
-to_remove = ["libbz2.dll",
-             "msvcp140.dll",
-             "vcruntime140.dll",
-             "vcruntime140_1.dll"]
-for dep in plot_a.dependencies:
-    for duplicate in to_remove:
-        if duplicate in dep[1]:
-            plot_a.dependencies.remove(dep)
+    for dep in run_a.dependencies:
+        for duplicate in to_remove:
+            if duplicate in dep[1]:
+                run_a.dependencies.remove(dep)
 
-for dep in run_a.dependencies:
-    for duplicate in to_remove:
-        if duplicate in dep[1]:
-            run_a.dependencies.remove(dep)
+    shared_pyz = PYZ(shared_a.pure,
+                     shared_a.zipped_data,
+                     cipher=block_cipher)
 
-shared_pyz = PYZ(shared_a.pure,
-                 shared_a.zipped_data,
-                 cipher=block_cipher)
-
+if platform.system() == "Linux":
+    to_remove = ["_struct.cpython-39-x86_64-linux-gnu.so",
+                 "zlib.cpython-39-x86_64-linux-gnu.so",
+                 "libgfortran.so.5",
+                 "libquadmath.so.0"]
+    
+    for dep in plot_a.dependencies:
+        for duplicate in to_remove:
+            if duplicate in dep[1]:
+                plot_a.dependencies.remove(dep)
 
 # The EXE object creates the executable file.
 

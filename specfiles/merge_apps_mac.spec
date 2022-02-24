@@ -172,7 +172,6 @@ run_exe = EXE(run_pyz,
               console=True, # this must be True
 	          icon= os.path.join(specpath, 'MEDEAS.icns'),
               disable_windowed_traceback=False,
-              target_arch=None,
               codesign_identity=os.environ.get('KEY'),
               entitlements_file=None)
 
@@ -206,7 +205,6 @@ plot_exe = EXE(plot_pyz,
                upx_exclude=[],
 	           icon= os.path.join(specpath, 'MEDEAS.icns'),
                disable_windowed_traceback=False,
-               target_arch=None,
                codesign_identity=os.environ.get('KEY'),
                entitlements_file=None)
 

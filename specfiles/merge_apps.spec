@@ -1,4 +1,16 @@
 # -*- mode: python ; coding: utf-8 -*-
+
+"""
+This creates a folder dist that contains the executables for the plot_tool and
+for the pymedeas, as well as all the folders and files that the user should be
+able to modify to parametrise the model. The libraries shared between the
+pymedeas and plots executables will be placed in the shared directory.
+ 
+To run this, we need to first create a copy of run.py and save it as shared.py
+
+"""
+
+
 import os
 import sys
 
@@ -91,6 +103,20 @@ MERGE( (shared_a,
         ))
 
 
+to_remove = ["libbz2.dll",
+             "msvcp140.dll",
+             "vcruntime140.dll",
+             "vcruntime140_1.dll"]
+for dep in plot_a.dependencies:
+    for duplicate in to_remove:
+        if duplicate in dep[1]:
+            plot_a.dependencies.remove(dep)
+
+for dep in run_a.dependencies:
+    for duplicate in to_remove:
+        if duplicate in dep[1]:
+            run_a.dependencies.remove(dep)
+
 shared_pyz = PYZ(shared_a.pure,
                  shared_a.zipped_data,
                  cipher=block_cipher)
@@ -127,7 +153,7 @@ run_exe = EXE(run_pyz,
               bootloader_ignore_signals=False,
               strip=False,
               upx=True,
-              console=True,
+              console=True, # this must be True
 	          icon= os.path.join(specpath, 'MEDEAS.ico'),
               disable_windowed_traceback=False,
               target_arch=None,
@@ -158,6 +184,7 @@ plot_exe = EXE(plot_pyz,
                debug=False,
                bootloader_ignore_signals=False,
                strip=False,
+               console=False,
                upx=True,
                upx_exclude=[],
 	           icon= os.path.join(specpath, 'MEDEAS.ico'),

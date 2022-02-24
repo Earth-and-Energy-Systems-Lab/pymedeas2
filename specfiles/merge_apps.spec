@@ -103,6 +103,7 @@ MERGE( (shared_a,
         'plot'
         ))
 
+# If we do not remove these binaries, we get this file shouldn't be here warnings
 if platform.system() == "Windows":
     to_remove = ["libbz2.dll",
                  "msvcp140.dll",
@@ -118,9 +119,6 @@ if platform.system() == "Windows":
             if duplicate in dep[1]:
                 run_a.dependencies.remove(dep)
 
-    shared_pyz = PYZ(shared_a.pure,
-                     shared_a.zipped_data,
-                     cipher=block_cipher)
 
 if platform.system() == "Linux":
     to_remove = ["_struct.cpython-39-x86_64-linux-gnu.so",
@@ -132,6 +130,11 @@ if platform.system() == "Linux":
         for duplicate in to_remove:
             if duplicate in dep[1]:
                 plot_a.dependencies.remove(dep)
+
+
+shared_pyz = PYZ(shared_a.pure,
+                     shared_a.zipped_data,
+                     cipher=block_cipher)
 
 # The EXE object creates the executable file.
 

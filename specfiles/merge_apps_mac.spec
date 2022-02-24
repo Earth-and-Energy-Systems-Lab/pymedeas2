@@ -14,6 +14,7 @@ To run this, we need to first create a copy of run.py and save it as shared.py
 import os
 import sys
 import platform
+import matplotlib as mpl
 
 block_cipher = None
 

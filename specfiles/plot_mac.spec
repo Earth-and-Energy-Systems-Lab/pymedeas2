@@ -18,7 +18,8 @@ mtpl_path = os.path.dirname(mpl.matplotlib_fname())
 matplotlibrc_path = os.path.join(mtpl_path, 'matplotlibrc')
 mtplt_images_path = os.path.join(mtpl_path, 'images')
 
-added_files = [(matplotlibrc_path, 'matplotlib/mpl-data'),
+added_files = [(os.path.join(main_path, 'models'), 'models'),
+               (matplotlibrc_path, 'matplotlib/mpl-data'),
                (mtplt_images_path, 'matplotlib/mpl-data/images'),
                (os.path.join(main_path, 'pytools', '*.json'), 'pytools')]
 
@@ -42,7 +43,7 @@ exe = EXE(pyz,
           a.scripts,
           [],
           exclude_binaries=True,
-          name='plot_tool',
+          name='plot',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
@@ -51,23 +52,11 @@ exe = EXE(pyz,
           icon= os.path.join(specpath, 'MEDEAS.icns'),
           console=True )
 
-# if this does not work, replace it with what is below (coll)
-app = BUNDLE(exe,
-         a.binaries, # copied from coll
-         a.zipfiles, # copied from coll
-         a.datas, # copied from coll
-         strip=False, # copied from coll
-         upx=True, # copied from coll
-         upx_exclude=[], # copied from coll
-         name='plot.app',
-         icon=os.path.join(specpath, 'MEDEAS.icns'),
-         bundle_identifier=None)
-
-#coll = COLLECT(exe,
-#               a.binaries,
-#               a.zipfiles,
-#               a.datas,
-#               strip=False,
-#               upx=True,
-#               upx_exclude=[],
-#               name='plot_tool')
+coll = COLLECT(exe,
+               a.binaries,
+               a.zipfiles,
+               a.datas,
+               strip=False,
+               upx=True,
+               upx_exclude=[],
+               name='plot')

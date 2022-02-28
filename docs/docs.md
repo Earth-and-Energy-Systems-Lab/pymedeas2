@@ -66,12 +66,17 @@ This module does.....
 This module does.....
 ### Society
 This module does.....
-#### Population
+**Population**
 This submodule calculates the evolution of the population from exogenous drivers. There are three different ways to obtain the population evolution: From SSPs, from timeseries introduced manually or from annual constant variation. In this way, the population growth follows an independent evolution from other variables. 
 
 ```diff
 - The population submodule has to be revised introducing some limitation on the population growth, that can depend on the GDP, the damage function, etc. 
 ```
+**Social and environmental impacts**
+
+This submodule relates the biophysicals results with social and environmental indexes. There is a need of indetifying factors that influence social welfare by covering more aspects than only income levels. Thios social welfare indicators are influenced byeconomic variables such as population and GDP, but also connected to climate module.
+
+The first calculated index is the Human Development Index 
 
 ### Transport
 This module does.....

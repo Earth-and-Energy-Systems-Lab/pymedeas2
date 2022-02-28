@@ -35,7 +35,7 @@ bibliography: references.bib
 
 The MEDEAS models dynamically operate as follows: for each
 period, a sectoral economic demand is estimated from exogenous
-pathways of expected Gross Domestic Product per capita  (GDPpc) and population evolution. The final energy demand required to fulfil pro duction is obtained using energy-economy hybrid input-output analysis, and energy intensities by type of final energy. The energy sub-module computes the available final energy supply, which may or may not satisfy demand, adapting the economic production to the available energy. The materials required by the economy, with emphasis on those
+pathways of expected Gross Domestic Product per capita  (GDPpc) and population evolution. The final energy demand required to fulfil production is obtained using energy-economy hybrid input-output analysis, and energy intensities by type of final energy. The energy sub-module computes the available final energy supply, which may or may not satisfy demand, adapting the economic production to the available energy. The materials required by the economy, with emphasis on those
 required by alternative green technologies, are estimated; this allows to
 assess eventual future mineral bottlenecks. The new energy infrastructure requires energy investments, whose computation allows to estimate
 the variation of the EROI (Energy Return over Energy Invested) of the
@@ -66,6 +66,13 @@ This module does.....
 This module does.....
 ### Society
 This module does.....
+### Population
+This submodule calculates the evolution of the population from exogenous drivers. There are three different ways to obtain the population evolution: From SSPs, from timeseries introduced manually or from annual constant variation. In this way, the population growth follows an independent evolution from other variables. 
+
+```diff
+- The population submodule has to be revised introducing some limitation on the population growth, that can depend on the GDP, the damage function, etc. 
+```
+
 ### Transport
 This module does.....
 

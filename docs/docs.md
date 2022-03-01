@@ -64,7 +64,7 @@ This module is in charge of the estimation of energy demand, the enrgy supply, t
 - Storage
 - EROI
 
-#### Availabiliy
+##### Availabiliy
 
 ### Economy
 This module does.....

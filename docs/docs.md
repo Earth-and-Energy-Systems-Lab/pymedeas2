@@ -55,7 +55,17 @@ blah blah blah
 The pymedeas models are structured in the following modules.
 
 ### Energy
-This module does.....
+This module is in charge of the estimation of energy demand, the enrgy supply, the energy resource availability, the modelling of electricity and heat generation and the modelling of non-energy use. The module is diveded in 6 submodules:
+
+- Availability
+- Supply
+- Demand
+- Consumption
+- Storage
+- EROI
+
+#### Availabiliy
+
 ### Economy
 This module does.....
 ### Climate
@@ -67,18 +77,23 @@ This module does.....
 ### Society
 This module does.....
 **Population**
-This submodule calculates the evolution of the population from exogenous drivers. There are three different ways to obtain the population evolution: From SSPs, from timeseries introduced manually or from annual constant variation. In this way, the population growth follows an independent evolution from other variables. 
+This view calculates the evolution of the population from exogenous drivers. There are three different ways to obtain the population evolution: From SSPs, from timeseries introduced manually or from annual constant variation. In this way, the population growth follows an independent evolution from other variables. 
 
 ```diff
 - The population submodule has to be revised introducing some limitation on the population growth, that can depend on the GDP, the damage function, etc. 
 ```
 **Social and environmental impacts**
 
-This submodule relates the biophysicals results with social and environmental indexes. There is a need of indetifying factors that influence social welfare by covering more aspects than only income levels. Thios social welfare indicators are influenced byeconomic variables such as population and GDP, but also connected to climate module.
+This view relates the biophysicals results with social and environmental indexes. There is a need of indetifying factors that influence social welfare by covering more aspects than only income levels. Thios social welfare indicators are influenced byeconomic variables such as population and GDP, but also connected to climate module.
 
 The first calculated index is the Human Development Index. It has been observed that above certain level of GDP, the HDI decouples from income. Therefore it is important to consider other relations that may explain the HDI evolution. Among these, energy consumption is found to have an importnat relation, so it is used by the model, following the next equation:
 
 ![HDI_equation](https://latex.codecogs.com/gif.latex?HDI%20%3D%200.1508&plus;0.1395%20%5Ccdot%20ln%28TFECpc%29)
+
+```diff
+- The correlation of the HDI with the TFEC is not the best approax, it can be approximated by the relation with the Final Energy Footprint per capita (FEFpc) (Deliverable 4.1)
+```
+Then the carbon footprint per capita and the water use per capita are calculated dividing the total ammounts by the population. Finally, the CO2 emissions per value added is opbtained dividing the total CO2 emissions by the GDP.
 
 ### Transport
 This module does.....

@@ -65,7 +65,9 @@ This module is in charge of the estimation of energy demand, the enrgy supply, t
 - EROI
 
 ##### Availabiliy
-
+This submodule calculates the availability of non-renewable energy sources: oil, natural gas, coal and uranium.
+**Oil Extraction**
+This view takes into account the limitation of the oil resources, and models availability of oil depending on two constraints: the stock (EJ) and the flows (Watts).  
 ### Economy
 This module does.....
 ### Climate
@@ -76,6 +78,7 @@ This module does.....
 This module does.....
 ### Society
 This module does.....
+
 **Population**
 This view calculates the evolution of the population from exogenous drivers. There are three different ways to obtain the population evolution: From SSPs, from timeseries introduced manually or from annual constant variation. In this way, the population growth follows an independent evolution from other variables. 
 

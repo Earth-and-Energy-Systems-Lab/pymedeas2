@@ -76,7 +76,9 @@ This submodule calculates the evolution of the population from exogenous drivers
 
 This submodule relates the biophysicals results with social and environmental indexes. There is a need of indetifying factors that influence social welfare by covering more aspects than only income levels. Thios social welfare indicators are influenced byeconomic variables such as population and GDP, but also connected to climate module.
 
-The first calculated index is the Human Development Index 
+The first calculated index is the Human Development Index. It has been observed that above certain level of GDP, the HDI decouples from income. Therefore it is important to consider other relations that may explain the HDI evolution. Among these, energy consumption is found to have an importnat relation, so it is used by the model, following the next equation:
+
+![HDI_equation](https://latex.codecogs.com/gif.latex?HDI%20%3D%200.1508&plus;0.1395%20%5Ccdot%20ln%28TFECpc%29)
 
 ### Transport
 This module does.....

@@ -66,8 +66,39 @@ This module is in charge of the estimation of energy demand, the enrgy supply, t
 
 ##### Availabiliy
 This submodule calculates the availability of non-renewable energy sources: oil, natural gas, coal and uranium.
+
 **Oil Extraction**
-This view takes into account the limitation of the oil resources, and models availability of oil depending on two constraints: the stock (EJ) and the flows (Watts).  
+
+This view takes into account the limitation of the oil resources, and models availability of oil depending on two constraints: the stock (EJ) and the flows (Watts). The model priorizes the others NRE liquids fuels, then the oil demand is obtained as follows:
+
+```math
+Oil\_demand=PED\_NRE\_Liquids-FES_{CTL}- FES_{GTL}- ORF
+```
+Where PED_NRE_Liquieds is the Primary energy demand of non-renewable eneregy liquids (EJ), FES_GTL is the final energy demand of GTL (Gas-to-liquids) (EJ),  FES_CTL is the final energy demand of GTL (Coal-to-liquids) (EJ) and ORF is the oil refinery gains. 
+
+
+**Coal extraction**
+
+This view is in charge of obtaining the coal extraction taking into account the limitations of the coal resources. The model priorizes other solid NRE sources for satisfying the primary energy demand.
+
+```math
+Coal_{demand}=PED_{solids}-PE_{trad\_bio}-PES_{peat}-PES_{waste}-LCP
+```
+Where, PED_solids is the primary energy demand of the solids (EJ), PE_trad_bio is the primary energy of the traditional biomass (EJ), PES_peat is the Primary energy suplly of peat (EJ), PES_waste is the primary energy obtained from waste (EJ) and LCP are the losses in charcoal plants (EJ).
+
+The amount of coal that can be extracted is limited by the Hubbert curves if the parameters *unlimited coal?* and *unlimited NRE?* are desactivated. Then, the extraction of coal is limited by the maximum extraction limit as:
+
+```math
+Coal_{extraction}=min(PED_{coal}, max\_extract\_coal))
+```
+**Uranium extraction**
+
+This view is in charge of calculating the uranium extraction, taking into account the Hubbert curve of maxim extraction of the uranium. The demand of uranium is obtained from the potential generation of nuclear electricity divided by the efficiency of uranium for electricity. If the parameters *unlimited uranium?* and *unlimited NRE?* are desactivated, the extraction of uranium is limited by the maximum extraction limit as:
+
+```math
+Uranium_{extraction}=min(PED_{uranium}, max\_extract\_uranium))
+```
+
 ### Economy
 This module does.....
 ### Climate
@@ -80,6 +111,7 @@ This module does.....
 This module does.....
 
 **Population**
+
 This view calculates the evolution of the population from exogenous drivers. There are three different ways to obtain the population evolution: From SSPs, from timeseries introduced manually or from annual constant variation. In this way, the population growth follows an independent evolution from other variables. 
 
 ```diff
@@ -96,7 +128,7 @@ The first calculated index is the Human Development Index. It has been observed 
 ```diff
 - The correlation of the HDI with the TFEC is not the best approax, it can be approximated by the relation with the Final Energy Footprint per capita (FEFpc) (Deliverable 4.1)
 ```
-Then the carbon footprint per capita and the water use per capita are calculated dividing the total ammounts by the population. Finally, the CO2 emissions per value added is opbtained dividing the total CO2 emissions by the GDP.
+Then the carbon footprint per capita and the water use per capita are calculated dividing the total ammounts by the population. Finally, the CO2 emissions per value added is obtained dividing the total CO2 emissions by the GDP.
 
 ### Transport
 This module does.....

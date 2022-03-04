@@ -166,8 +166,17 @@ def store_results_csv(result: pd.DataFrame, config: Params) -> pd.DataFrame:
 
     # storing results to csv file
     result.transpose().to_csv(config.model_arguments.results_fpath)
-    log.info('Simulation results file is located in {}'.format(str(
-        config.model_arguments.results_fpath)))
+    log.info("Simulation results file is located in %s" %
+             str(config.model_arguments.results_fpath))
+
+    col_empty = []
+    for column in result.columns:
+        if result[column].isna().all():
+            # remove columns with all na values (unexistent dimensions)
+            col_empty.append(column)
+
+    for column in col_empty:
+        result.drop(column, inplace=True, axis=1)
 
     # recording the output variables in a file, in case the user wants to
     # output the same variables in the next simulations
@@ -179,8 +188,8 @@ def store_results_csv(result: pd.DataFrame, config: Params) -> pd.DataFrame:
         nan_vars = result.columns[result.isna().any()].tolist()
         log.warning(
             "There are NaN's in the timeseries of the following variables\n\n:"
-            + " {}\n\n, which might indicate ".format("\n".join(nan_vars)) +
-            "convergence issues, try decreasing the time step")
+            "\t%s\n\n, which might indicate convergence issues, try"
+            "decreasing the time step" % '\n'.join(nan_vars))
 
     return result
 

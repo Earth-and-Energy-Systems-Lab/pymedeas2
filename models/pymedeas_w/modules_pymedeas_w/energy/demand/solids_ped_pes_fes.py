@@ -7,15 +7,13 @@ Translated using PySD version 2.2.1
 def abundance_solids():
     """
     Real Name: abundance solids
-    Original Eqn: IF THEN ELSE(PES solids>PED solids, 1, 1 - ZIDZ(PED solids -PES solids, PED solids ))
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    The parameter abundance varies between (1;0). Abundance=1 while the supply
-        covers the demand; the closest to 0 indicates a higher divergence between
-        supply and demand.
+    The parameter abundance varies between (1;0). Abundance=1 while the supply covers the demand; the closest to 0 indicates a higher divergence between supply and demand.
     """
     return if_then_else(
         pes_solids() > ped_solids(),
@@ -27,25 +25,37 @@ def abundance_solids():
 def historic_pes_peat_ej():
     """
     Real Name: Historic PES peat EJ
-    Original Eqn: GET DIRECT DATA('../energy.xlsx', 'World', 'time_efficiencies', 'historic_primary_energy_supply_peat')
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component_ext_data
-    Subs: None
+    Type: Data
+    Subs: []
 
     Historic primary energy supply of peat.
     """
     return _ext_data_historic_pes_peat_ej(time())
 
 
+_ext_data_historic_pes_peat_ej = ExtData(
+    "../energy.xlsx",
+    "World",
+    "time_efficiencies",
+    "historic_primary_energy_supply_peat",
+    "interpolate",
+    {},
+    _root,
+    "_ext_data_historic_pes_peat_ej",
+)
+
+
 def other_solids_required():
     """
     Real Name: Other solids required
-    Original Eqn: Transformation FF losses EJ[solids]+Energy distr losses FF EJ[solids]+"Non-energy use demand by final fuel EJ"[solids]
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -59,11 +69,11 @@ def other_solids_required():
 def ped_coal_ej():
     """
     Real Name: PED coal EJ
-    Original Eqn: MAX(0, PED solids-(PE traditional biomass EJ delayed 1yr+PES peat EJ+PES waste for TFC+Losses in charcoal plants EJ))
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -82,11 +92,11 @@ def ped_coal_ej():
 def ped_solids():
     """
     Real Name: PED solids
-    Original Eqn: MAX(0, Required FED solids+PED coal for CTL EJ+PE demand coal Elec plants EJ+PED coal for Heat plants EJ +PED coal for CHP plants EJ+"PED coal Heat-nc"+Other solids required)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Primary energy demand of solids.
     """
@@ -105,18 +115,18 @@ def ped_solids():
 def pes_peat_ej():
     """
     Real Name: PES peat EJ
-    Original Eqn: MAX(IF THEN ELSE(Time>2014, -0.0125*(Time)+25.3125, Historic PES peat EJ),0)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
     return np.maximum(
         if_then_else(
             time() > 2014,
-            lambda: -0.0125 * (time()) + 25.3125,
+            lambda: -0.0125 * time() + 25.3125,
             lambda: historic_pes_peat_ej(),
         ),
         0,
@@ -126,11 +136,11 @@ def pes_peat_ej():
 def pes_solids():
     """
     Real Name: PES solids
-    Original Eqn: extraction coal EJ+PE traditional biomass EJ delayed 1yr+PES peat EJ+PES waste for TFC+Losses in charcoal plants EJ
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Primary energy supply solids.
     """
@@ -146,11 +156,11 @@ def pes_solids():
 def required_fed_solids():
     """
     Real Name: Required FED solids
-    Original Eqn: Required FED by fuel[solids]
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Required final energy demand solids.
     """
@@ -160,11 +170,11 @@ def required_fed_solids():
 def share_coal_dem_for_elec():
     """
     Real Name: share coal dem for Elec
-    Original Eqn: IF THEN ELSE(PED coal EJ>0, PE demand coal Elec plants EJ/PED coal EJ, 0)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Share of coal demand to cover electricity consumption in Elec plants.
     """
@@ -178,11 +188,11 @@ def share_coal_dem_for_elec():
 def share_coal_dem_for_heatcom():
     """
     Real Name: "share coal dem for Heat-com"
-    Original Eqn: IF THEN ELSE(PED coal EJ>0, PED coal for Heat plants EJ/PED coal EJ, 0)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Share of coal demand to cover commercial heat consumption in Heat plants.
     """
@@ -196,14 +206,13 @@ def share_coal_dem_for_heatcom():
 def share_coal_dem_for_heatnc():
     """
     Real Name: "share coal dem for Heat-nc"
-    Original Eqn: ZIDZ("PED coal Heat-nc", PED coal EJ )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Share of coal demand to cover non-commercial heat consumption in Heat
-        plants.
+    Share of coal demand to cover non-commercial heat consumption in Heat plants.
     """
     return zidz(ped_coal_heatnc(), ped_coal_ej())
 
@@ -211,27 +220,15 @@ def share_coal_dem_for_heatnc():
 def share_solids_for_final_energy():
     """
     Real Name: share solids for final energy
-    Original Eqn: ZIDZ( Required FED solids, (PED solids-PED coal for CTL EJ -Other solids required) )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Share of final energy vs primary energy for solids.
     """
     return zidz(
         required_fed_solids(),
-        (ped_solids() - ped_coal_for_ctl_ej() - other_solids_required()),
+        ped_solids() - ped_coal_for_ctl_ej() - other_solids_required(),
     )
-
-
-_ext_data_historic_pes_peat_ej = ExtData(
-    "../energy.xlsx",
-    "World",
-    "time_efficiencies",
-    "historic_primary_energy_supply_peat",
-    "interpolate",
-    {},
-    _root,
-    "_ext_data_historic_pes_peat_ej",
-)

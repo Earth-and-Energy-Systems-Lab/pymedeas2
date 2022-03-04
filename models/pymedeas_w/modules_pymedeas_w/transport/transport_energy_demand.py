@@ -8,10 +8,10 @@ Translated using PySD version 2.2.1
 def share_demand_by_fuel_in_transport():
     """
     Real Name: Share demand by fuel in transport
-    Original Eqn: Total transport FED by fuel[final sources]/Transport TFED
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['final sources']
 
     Share demand by fuel in transport
@@ -23,19 +23,29 @@ def share_demand_by_fuel_in_transport():
 def total_transport_fed_by_fuel():
     """
     Real Name: Total transport FED by fuel
-    Original Eqn: SUM(Required final energy by sector and fuel[final sources,sectors!]*transport fraction[sectors!])+Transport households final energy demand [ final sources]
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['final sources']
 
-    Total energy in transport. This model considers transport the four sector
-        in WIOD related with transport and households transport.
+    Total energy in transport. This model considers transport the four sector in WIOD related with transport and households transport.
     """
     return (
         sum(
-            required_final_energy_by_sector_and_fuel() * transport_fraction(),
-            dim=("sectors",),
+            required_final_energy_by_sector_and_fuel().rename({"sectors": "sectors!"})
+            * (
+                xr.DataArray(
+                    0,
+                    {
+                        "final sources": _subscript_dict["final sources"],
+                        "sectors!": _subscript_dict["sectors"],
+                    },
+                    ["final sources", "sectors!"],
+                )
+                + transport_fraction().rename({"sectors": "sectors!"})
+            ),
+            dim=["sectors!"],
         )
         + transport_households_final_energy_demand()
     )
@@ -45,43 +55,15 @@ def total_transport_fed_by_fuel():
 def transport_fraction():
     """
     Real Name: transport fraction
-    Original Eqn: GET DIRECT CONSTANTS('../economy.xlsx', 'Global', 'transport_fraction')
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
+    Type: Constant
     Subs: ['sectors']
 
     Sectors of fraction of the sector that are part of transport.
     """
     return _ext_constant_transport_fraction()
-
-
-def transport_tfed():
-    """
-    Real Name: Transport TFED
-    Original Eqn: SUM(Total transport FED by fuel[final sources!])
-    Units: EJ/year
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Total Final Energy demand in transport
-    """
-    return sum(total_transport_fed_by_fuel(), dim=("final sources",))
-
-
-def transport_tfed_energy_intensity():
-    """
-    Real Name: Transport TFED energy intensity
-    Original Eqn: ZIDZ( Transport TFED, GDP )
-    Units: EJ/Tdollars
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return zidz(transport_tfed(), gdp())
 
 
 _ext_constant_transport_fraction = ExtConstant(
@@ -92,3 +74,34 @@ _ext_constant_transport_fraction = ExtConstant(
     _root,
     "_ext_constant_transport_fraction",
 )
+
+
+def transport_tfed():
+    """
+    Real Name: Transport TFED
+    Original Eqn:
+    Units: EJ/year
+    Limits: (None, None)
+    Type: Auxiliary
+    Subs: []
+
+    Total Final Energy demand in transport
+    """
+    return sum(
+        total_transport_fed_by_fuel().rename({"final sources": "final sources!"}),
+        dim=["final sources!"],
+    )
+
+
+def transport_tfed_energy_intensity():
+    """
+    Real Name: Transport TFED energy intensity
+    Original Eqn:
+    Units: EJ/Tdollars
+    Limits: (None, None)
+    Type: Auxiliary
+    Subs: []
+
+
+    """
+    return zidz(transport_tfed(), gdp())

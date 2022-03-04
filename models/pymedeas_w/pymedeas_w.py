@@ -8,21 +8,19 @@ import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
-    if_then_else,
-    logical_or,
     zidz,
     sum,
-    invert_matrix,
-    logical_and,
-    vmin,
-    integer,
-    active_initial,
-    step,
     xidz,
+    step,
+    vmin,
+    active_initial,
+    invert_matrix,
+    if_then_else,
+    integer,
 )
-from pysd.py_backend.statefuls import Integ, SampleIfTrue, DelayFixed, Initial
-from pysd.py_backend.external import ExtData, ExtConstant, ExtLookup
-from pysd.py_backend.utils import rearrange, xrmerge, load_model_data, load_modules
+from pysd.py_backend.statefuls import SampleIfTrue, Integ, Initial, DelayFixed
+from pysd.py_backend.external import ExtConstant, ExtData, ExtLookup
+from pysd.py_backend.utils import load_modules, load_model_data
 from pysd import subs
 
 __pysd_version__ = "2.2.1"
@@ -35,9 +33,9 @@ _namespace, _subscript_dict, _dependencies, _modules = load_model_data(
     _root, "pymedeas_w"
 )
 
-##########################################################################
-#                            CONTROL VARIABLES                           #
-##########################################################################
+#######################################################################
+#                          CONTROL VARIABLES                          #
+#######################################################################
 
 _control_vars = {
     "initial_time": lambda: 1995,
@@ -59,11 +57,11 @@ def time():
 def final_time():
     """
     Real Name: FINAL TIME
-    Original Eqn: 2050
+    Original Eqn:
     Units: year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     The final time for the simulation.
     """
@@ -73,11 +71,11 @@ def final_time():
 def initial_time():
     """
     Real Name: INITIAL TIME
-    Original Eqn: 1995
+    Original Eqn:
     Units: year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     The initial time for the simulation.
     """
@@ -87,11 +85,11 @@ def initial_time():
 def saveper():
     """
     Real Name: SAVEPER
-    Original Eqn: 1
+    Original Eqn:
     Units: year
     Limits: (0.0, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     The frequency with which output is stored.
     """
@@ -101,20 +99,20 @@ def saveper():
 def time_step():
     """
     Real Name: TIME STEP
-    Original Eqn: 0.03125
+    Original Eqn:
     Units: year
     Limits: (0.0, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     The time step for the simulation.
     """
     return __data["time"].time_step()
 
 
-##########################################################################
-#                             MODEL VARIABLES                            #
-##########################################################################
+#######################################################################
+#                           MODEL VARIABLES                           #
+#######################################################################
 
 # load modules from modules_pymedeas_w directory
 exec(load_modules("modules_pymedeas_w", _modules, _root, []))

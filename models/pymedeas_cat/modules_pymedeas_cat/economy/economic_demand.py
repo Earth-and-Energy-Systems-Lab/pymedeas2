@@ -8,10 +8,10 @@ Translated using PySD version 2.2.1
 def demand_by_sector_fd_adjusted():
     """
     Real Name: demand by sector FD adjusted
-    Original Eqn: Demand by sector FD EU[sectors]*diff demand EU
+    Original Eqn:
     Units: Mdollars
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
     Demand by sector after adjustment to match the desired GDP level.
@@ -23,10 +23,10 @@ def demand_by_sector_fd_adjusted():
 def demand_by_sector_fd_eu():
     """
     Real Name: Demand by sector FD EU
-    Original Eqn: INTEG ( variation demand flow FD EU[sectors]-demand not covered by sector FD EU[ sectors], initial demand[sectors])
+    Original Eqn:
     Units: Mdollars
     Limits: (None, None)
-    Type: component
+    Type: Stateful
     Subs: ['sectors']
 
     Final demand by EU28 35 industrial sectors
@@ -34,22 +34,28 @@ def demand_by_sector_fd_eu():
     return _integ_demand_by_sector_fd_eu()
 
 
+_integ_demand_by_sector_fd_eu = Integ(
+    lambda: variation_demand_flow_fd_eu() - demand_not_covered_by_sector_fd_eu(),
+    lambda: initial_demand(),
+    "_integ_demand_by_sector_fd_eu",
+)
+
+
 @subs(["sectors"], _subscript_dict)
 def demand_not_covered_by_sector_fd_eu():
     """
     Real Name: demand not covered by sector FD EU
-    Original Eqn: IF THEN ELSE(Time<2009,0,Demand by sector FD EU[sectors]-Real final demand by sector AUT[sectors])
+    Original Eqn:
     Units: Mdollars/Year
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
-    Gap between final demand required and real final demand (after
-        energy-economy feedback)
+    Gap between final demand required and real final demand (after energy-economy feedback)
     """
     return if_then_else(
         time() < 2009,
-        lambda: 0,
+        lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
         lambda: demand_by_sector_fd_eu() - real_final_demand_by_sector_aut(),
     )
 
@@ -57,28 +63,30 @@ def demand_not_covered_by_sector_fd_eu():
 def demand_not_covered_total_fd():
     """
     Real Name: demand not covered total FD
-    Original Eqn: SUM(demand not covered by sector FD EU[sectors!])
+    Original Eqn:
     Units: Mdollars/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
-    return sum(demand_not_covered_by_sector_fd_eu(), dim=("sectors",))
+    return sum(
+        demand_not_covered_by_sector_fd_eu().rename({"sectors": "sectors!"}),
+        dim=["sectors!"],
+    )
 
 
 def diff_demand_eu():
     """
     Real Name: diff demand EU
-    Original Eqn: IF THEN ELSE(Time<2009, 1, (Real demand delayed 1yr*(1+Desired annual total demand growth rate delayed 1 yr ))/total demand)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Ratio between the desired GDP and the real GDP level after applying the
-        demand function.
+    Ratio between the desired GDP and the real GDP level after applying the demand function.
     """
     return if_then_else(
         time() < 2009,
@@ -91,13 +99,14 @@ def diff_demand_eu():
     )
 
 
+@subs(["sectors"], _subscript_dict)
 def historic_change_in_inventories(x):
     """
     Real Name: historic change in inventories
-    Original Eqn: GET DIRECT LOOKUPS('../economy.xlsx', 'Catalonia', 'time_index2009', 'historic_change_in_inventories')
+    Original Eqn:
     Units: Mdollars
     Limits: (None, None)
-    Type: lookup
+    Type: Lookup
     Subs: ['sectors']
 
     Historical change in inventories (14 sectors).
@@ -105,14 +114,25 @@ def historic_change_in_inventories(x):
     return _ext_lookup_historic_change_in_inventories(x)
 
 
+_ext_lookup_historic_change_in_inventories = ExtLookup(
+    "../economy.xlsx",
+    "Catalonia",
+    "time_index2009",
+    "historic_change_in_inventories",
+    {"sectors": _subscript_dict["sectors"]},
+    _root,
+    "_ext_lookup_historic_change_in_inventories",
+)
+
+
 @subs(["sectors"], _subscript_dict)
 def historic_demand():
     """
     Real Name: historic demand
-    Original Eqn: historic GFCF[sectors](Time)+historic HD[sectors](Time)+historic goverment expenditures[sectors](Time)+historic change in inventories[sectors](Time)+historic exports demand 0[sectors](Time)+historic exports demand 1[sectors](Time)
+    Original Eqn:
     Units: Mdollars
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
     Historic demand (35 WIOD sectors). US$1995
@@ -131,10 +151,10 @@ def historic_demand():
 def historic_demand_next_year():
     """
     Real Name: historic demand next year
-    Original Eqn: historic GFCF[sectors](Time+1)+historic HD[sectors](Time+1)+historic goverment expenditures[sectors](Time+1)+historic change in inventories [sectors](Time+1)+historic exports demand 0[sectors](Time+1)+historic exports demand 1[sectors](Time+1)
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
 
@@ -149,13 +169,14 @@ def historic_demand_next_year():
     )
 
 
+@subs(["sectors"], _subscript_dict)
 def historic_goverment_expenditures(x):
     """
     Real Name: historic goverment expenditures
-    Original Eqn: GET DIRECT LOOKUPS('../economy.xlsx', 'Catalonia', 'time_index2009', 'historic_goverment_expenditures')
+    Original Eqn:
     Units: Mdollars
     Limits: (None, None)
-    Type: lookup
+    Type: Lookup
     Subs: ['sectors']
 
     Historical capital compensation (14 sectors).
@@ -163,14 +184,25 @@ def historic_goverment_expenditures(x):
     return _ext_lookup_historic_goverment_expenditures(x)
 
 
+_ext_lookup_historic_goverment_expenditures = ExtLookup(
+    "../economy.xlsx",
+    "Catalonia",
+    "time_index2009",
+    "historic_goverment_expenditures",
+    {"sectors": _subscript_dict["sectors"]},
+    _root,
+    "_ext_lookup_historic_goverment_expenditures",
+)
+
+
 @subs(["sectors"], _subscript_dict)
 def historic_variation_demand():
     """
     Real Name: historic variation demand
-    Original Eqn: historic demand next year[sectors]-historic demand[sectors]
+    Original Eqn:
     Units: Mdollars
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
     Historic variation of demand (35 WIOD sectors). US$1995
@@ -182,10 +214,10 @@ def historic_variation_demand():
 def initial_demand():
     """
     Real Name: initial demand
-    Original Eqn: INITIAL(historic demand[sectors])
+    Original Eqn:
     Units: Mdollars
     Limits: (None, None)
-    Type: component
+    Type: Stateful
     Subs: ['sectors']
 
 
@@ -193,14 +225,17 @@ def initial_demand():
     return _initial_initial_demand()
 
 
+_initial_initial_demand = Initial(lambda: historic_demand(), "_initial_initial_demand")
+
+
 @subs(["sectors"], _subscript_dict)
 def real_exports_demand_to_roeu_by_sector():
     """
     Real Name: Real Exports demand to RoEU by sector
-    Original Eqn: Real final demand by sector AUT[sectors]*(1-share consum goverment and inventories[sectors])*"share Exp RoEU vs GFCF+HD+Exp"[sectors]
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
 
@@ -216,10 +251,10 @@ def real_exports_demand_to_roeu_by_sector():
 def real_exports_demand_to_row_by_sector():
     """
     Real Name: Real Exports demand to RoW by sector
-    Original Eqn: Real final demand by sector AUT[sectors]*(1-share consum goverment and inventories[sectors])*"share Exp RoW vs GFCF+HD+Exp" [sectors]
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
     Real exports after energy feedback.
@@ -235,10 +270,10 @@ def real_exports_demand_to_row_by_sector():
 def real_gfcf_by_sector():
     """
     Real Name: Real GFCF by sector
-    Original Eqn: Real final demand by sector AUT[sectors]*(1-share consum goverment and inventories[sectors])*"share GFCF vs GFCF+HD+Exp" [sectors]
+    Original Eqn:
     Units: Mdollars
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
     Real Gross Fixed Capital Formation after energy feedback
@@ -254,10 +289,10 @@ def real_gfcf_by_sector():
 def real_household_demand_by_sector():
     """
     Real Name: Real Household demand by sector
-    Original Eqn: Real final demand by sector AUT[sectors]*(1-share consum goverment and inventories[sectors] )*(1-"share GFCF vs GFCF+HD+Exp" [sectors]-"share Exp RoW vs GFCF+HD+Exp"[sectors]-"share Exp RoEU vs GFCF+HD+Exp"[sectors])
+    Original Eqn:
     Units: Mdollars
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
     Real Households demand after energy feedback.
@@ -278,14 +313,13 @@ def real_household_demand_by_sector():
 def share_consum_goverment_and_inventories():
     """
     Real Name: share consum goverment and inventories
-    Original Eqn: (historic goverment expenditures[sectors](Time)+historic change in inventories[sectors](Time))/historic demand[sectors]
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
-    Government expenditure share in total sectoral final demand and changes in
-        inventories share in total sectoral final demand.
+    Government expenditure share in total sectoral final demand and changes in inventories share in total sectoral final demand.
     """
     return (
         historic_goverment_expenditures(time()) + historic_change_in_inventories(time())
@@ -296,10 +330,10 @@ def share_consum_goverment_and_inventories():
 def share_consum_goverment_and_inventories_next_year():
     """
     Real Name: share consum goverment and inventories next year
-    Original Eqn: (historic goverment expenditures[sectors](Time+1)+historic change in inventories[sectors](Time+1))/historic demand next year[sectors]
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
     Sum of share of Public expenditures and changes in inventories.
@@ -314,10 +348,10 @@ def share_consum_goverment_and_inventories_next_year():
 def share_exp_roeu_vs_gfcfhdexp():
     """
     Real Name: "share Exp RoEU vs GFCF+HD+Exp"
-    Original Eqn: Exports demand to RoEU[sectors]/(Gross fixed capital formation[sectors]+Household demand[ sectors]+Exports demand to RoW[sectors]+Exports demand to RoEU[sectors])
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
 
@@ -334,10 +368,10 @@ def share_exp_roeu_vs_gfcfhdexp():
 def share_exp_row_vs_gfcfhdexp():
     """
     Real Name: "share Exp RoW vs GFCF+HD+Exp"
-    Original Eqn: Exports demand to RoW[sectors]/(Gross fixed capital formation[sectors]+Household demand[ sectors]+Exports demand to RoW[sectors]+Exports demand to RoEU[sectors])
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
     Ratio 'Exports/GFCF+Exports+Households demand'.
@@ -354,10 +388,10 @@ def share_exp_row_vs_gfcfhdexp():
 def share_gfcf_vs_gfcfhdexp():
     """
     Real Name: "share GFCF vs GFCF+HD+Exp"
-    Original Eqn: Gross fixed capital formation[sectors]/(Gross fixed capital formation[ sectors]+Household demand[ sectors]+Exports demand to RoW[sectors]+Exports demand to RoEU[sectors])
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
     Ratio 'GFCF/GFCF+Exports+Households demand'.
@@ -373,53 +407,64 @@ def share_gfcf_vs_gfcfhdexp():
 def sum_variation():
     """
     Real Name: sum variation
-    Original Eqn: SUM(variation demand flow FD EU[sectors!])
+    Original Eqn:
     Units: Mdollars/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Variation of total final demand
     """
-    return sum(variation_demand_flow_fd_eu(), dim=("sectors",))
+    return sum(
+        variation_demand_flow_fd_eu().rename({"sectors": "sectors!"}), dim=["sectors!"]
+    )
 
 
 def total_demand():
     """
     Real Name: total demand
-    Original Eqn: SUM(Demand by sector FD EU[sectors!])/1e+06
+    Original Eqn:
     Units: Tdollars
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Total final demand
     """
-    return sum(demand_by_sector_fd_eu(), dim=("sectors",)) / 1e06
+    return (
+        sum(demand_by_sector_fd_eu().rename({"sectors": "sectors!"}), dim=["sectors!"])
+        / 1000000.0
+    )
 
 
 def total_demand_adjusted():
     """
     Real Name: total demand adjusted
-    Original Eqn: SUM(demand by sector FD adjusted[sectors!])/1e+06
+    Original Eqn:
     Units: Tdollars
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Total demand after adjustment of the demand function.
     """
-    return sum(demand_by_sector_fd_adjusted(), dim=("sectors",)) / 1e06
+    return (
+        sum(
+            demand_by_sector_fd_adjusted().rename({"sectors": "sectors!"}),
+            dim=["sectors!"],
+        )
+        / 1000000.0
+    )
 
 
 @subs(["sectors"], _subscript_dict)
 def variation_demand_flow_fd_eu():
     """
     Real Name: variation demand flow FD EU
-    Original Eqn: IF THEN ELSE(Time<2009,historic variation demand[sectors],(Gross fixed capital formation[sectors]* (1-((1-share consum goverment and inventories next year[sectors])/(1-share consum goverment and inventories[sectors])) )+Exports demand to RoW[sectors]* (1-((1-share consum goverment and inventories next year[sectors])/(1-share consum goverment and inventories[sectors])) ) +Household demand[sectors]*(1-((1-share consum goverment and inventories next year[sectors])/(1-share consum goverment and inventories [sectors])))+variation GFCF[sectors]+variation household demand[sectors]+variation exports demand to RoW[ sectors])/(1-share consum goverment and inventories next year [sectors]))
+    Original Eqn:
     Units: Mdollars/Year
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
     variation of final demand by EU28 industrial sectors
@@ -431,26 +476,20 @@ def variation_demand_flow_fd_eu():
             gross_fixed_capital_formation()
             * (
                 1
-                - (
-                    (1 - share_consum_goverment_and_inventories_next_year())
-                    / (1 - share_consum_goverment_and_inventories())
-                )
+                - (1 - share_consum_goverment_and_inventories_next_year())
+                / (1 - share_consum_goverment_and_inventories())
             )
             + exports_demand_to_row()
             * (
                 1
-                - (
-                    (1 - share_consum_goverment_and_inventories_next_year())
-                    / (1 - share_consum_goverment_and_inventories())
-                )
+                - (1 - share_consum_goverment_and_inventories_next_year())
+                / (1 - share_consum_goverment_and_inventories())
             )
             + household_demand()
             * (
                 1
-                - (
-                    (1 - share_consum_goverment_and_inventories_next_year())
-                    / (1 - share_consum_goverment_and_inventories())
-                )
+                - (1 - share_consum_goverment_and_inventories_next_year())
+                / (1 - share_consum_goverment_and_inventories())
             )
             + variation_gfcf()
             + variation_household_demand()
@@ -458,65 +497,3 @@ def variation_demand_flow_fd_eu():
         )
         / (1 - share_consum_goverment_and_inventories_next_year()),
     )
-
-
-@subs(["sectors"], _subscript_dict)
-def _integ_init_demand_by_sector_fd_eu():
-    """
-    Real Name: Implicit
-    Original Eqn: None
-    Units: See docs for demand_by_sector_fd_eu
-    Limits: None
-    Type: setup
-    Subs: ['sectors']
-
-    Provides initial conditions for demand_by_sector_fd_eu function
-    """
-    return initial_demand()
-
-
-@subs(["sectors"], _subscript_dict)
-def _integ_input_demand_by_sector_fd_eu():
-    """
-    Real Name: Implicit
-    Original Eqn: None
-    Units: See docs for demand_by_sector_fd_eu
-    Limits: None
-    Type: component
-    Subs: ['sectors']
-
-    Provides derivative for demand_by_sector_fd_eu function
-    """
-    return variation_demand_flow_fd_eu() - demand_not_covered_by_sector_fd_eu()
-
-
-_integ_demand_by_sector_fd_eu = Integ(
-    _integ_input_demand_by_sector_fd_eu,
-    _integ_init_demand_by_sector_fd_eu,
-    "_integ_demand_by_sector_fd_eu",
-)
-
-
-_ext_lookup_historic_change_in_inventories = ExtLookup(
-    "../economy.xlsx",
-    "Catalonia",
-    "time_index2009",
-    "historic_change_in_inventories",
-    {"sectors": _subscript_dict["sectors"]},
-    _root,
-    "_ext_lookup_historic_change_in_inventories",
-)
-
-
-_ext_lookup_historic_goverment_expenditures = ExtLookup(
-    "../economy.xlsx",
-    "Catalonia",
-    "time_index2009",
-    "historic_goverment_expenditures",
-    {"sectors": _subscript_dict["sectors"]},
-    _root,
-    "_ext_lookup_historic_goverment_expenditures",
-)
-
-
-_initial_initial_demand = Initial(lambda: historic_demand(), "_initial_initial_demand")

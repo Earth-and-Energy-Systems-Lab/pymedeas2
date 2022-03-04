@@ -7,11 +7,11 @@ Translated using PySD version 2.2.1
 def coal_in_fec_aut():
     """
     Real Name: Coal in FEC AUT
-    Original Eqn: PEC coal-Total coal consumption
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -21,11 +21,11 @@ def coal_in_fec_aut():
 def ped_totat_solids():
     """
     Real Name: PED totat solids
-    Original Eqn: Other solids required+PE demand coal Elec plants EJ+PED coal for CHP plants EJ+PED coal for CTL EJ +PED coal for Heat plants EJ+"PED coal Heat-nc"+Required FED solids
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -43,11 +43,11 @@ def ped_totat_solids():
 def share_coal_total_fed():
     """
     Real Name: share coal total FED
-    Original Eqn: ZIDZ(PEC coal, Total solids EJ )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -57,11 +57,11 @@ def share_coal_total_fed():
 def share_modern_solids_bioe_demand_households():
     """
     Real Name: share modern solids BioE demand households
-    Original Eqn: ZIDZ(modern solids BioE demand households, Total solids EJ )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -71,11 +71,11 @@ def share_modern_solids_bioe_demand_households():
 def share_traditional_biomass():
     """
     Real Name: share traditional biomass
-    Original Eqn: ZIDZ(PE traditional biomass EJ delayed 1yr, Total solids EJ )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -85,11 +85,11 @@ def share_traditional_biomass():
 def solids_co2_emissions():
     """
     Real Name: Solids CO2 emissions
-    Original Eqn: Required FED solids*gCO2 per MJ coal*MJ per EJ/g per Gt
+    Original Eqn:
     Units: GtCO2/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -99,11 +99,11 @@ def solids_co2_emissions():
 def total_coal_consumption():
     """
     Real Name: Total coal consumption
-    Original Eqn: PE demand coal Elec plants EJ+PED coal for CHP plants EJ+PED coal for CTL EJ+PED coal for Heat plants EJ +"PED coal Heat-nc"+Other solids required
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -120,11 +120,11 @@ def total_coal_consumption():
 def total_solids_ej():
     """
     Real Name: Total solids EJ
-    Original Eqn: PES waste for TFC+PES peat EJ+PEC coal+PE traditional biomass EJ delayed 1yr+modern solids BioE demand households+Losses in charcoal plants EJ
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -141,11 +141,11 @@ def total_solids_ej():
 def total_solids_fec():
     """
     Real Name: Total solids FEC
-    Original Eqn: modern solids BioE demand households+Coal in FEC AUT+Losses in charcoal plants EJ+PES peat EJ+PES waste for TFC
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """

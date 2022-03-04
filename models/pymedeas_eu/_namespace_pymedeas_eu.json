@@ -1013,7 +1013,6 @@
     "TFEC from RES per capita": "tfec_from_res_per_capita",
     "TFEC per capita": "tfec_per_capita",
     "TFEC per capita before heat dem corr": "tfec_per_capita_before_heat_dem_corr",
-    "TIME": "time",
     "TIME STEP": "time_step",
     "TPE from RES EJ": "tpe_from_res_ej",
     "TPED by fuel": "tped_by_fuel",

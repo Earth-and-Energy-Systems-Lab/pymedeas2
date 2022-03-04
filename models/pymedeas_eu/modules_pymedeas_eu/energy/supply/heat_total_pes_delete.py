@@ -7,11 +7,11 @@ Translated using PySD version 2.2.1
 def pes_nre_heat():
     """
     Real Name: PES NRE heat
-    Original Eqn: "PES NRE Heat-com"+"PES NRE Heat-nc"
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -21,11 +21,11 @@ def pes_nre_heat():
 def pes_nre_heatcom():
     """
     Real Name: "PES NRE Heat-com"
-    Original Eqn: "PES coal for Heat-com plants"+"PES nat. gas for Heat-com plants" +"PES oil for Heat-com plants"
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -39,11 +39,11 @@ def pes_nre_heatcom():
 def pes_nre_heatnc():
     """
     Real Name: "PES NRE Heat-nc"
-    Original Eqn: "PES coal for Heat-nc plants"+"PES nat. gas for Heat-nc plants" +"PES oil for Heat-nc plants"
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -58,10 +58,10 @@ def pes_nre_heatnc():
 def pes_res_for_heat_by_techn():
     """
     Real Name: PES RES for heat by techn
-    Original Eqn: "PES DEM RES for heat-com by techn"[RES heat]+"PES DEM RES for heat-nc by techn"[RES heat]
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['RES heat']
 
     Primary energy supply of heat from renewable energy sources.
@@ -72,28 +72,27 @@ def pes_res_for_heat_by_techn():
 def pes_tot_res_for_heat():
     """
     Real Name: PES tot RES for heat
-    Original Eqn: "PES tot biogas for heat-com"+SUM(PES RES for heat by techn[RES heat!] )
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Total primary energy of RES for heat (all technologies: biogas, solids
-        bioenergy, solar and geothermal).
+    Total primary energy of RES for heat (all technologies: biogas, solids bioenergy, solar and geothermal).
     """
     return pes_tot_biogas_for_heatcom() + sum(
-        pes_res_for_heat_by_techn(), dim=("RES heat",)
+        pes_res_for_heat_by_techn().rename({"RES heat": "RES heat!"}), dim=["RES heat!"]
     )
 
 
 def tpes_heat():
     """
     Real Name: TPES heat
-    Original Eqn: PES NRE heat+PES tot RES for heat+"PES tot waste for heat-com"
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """

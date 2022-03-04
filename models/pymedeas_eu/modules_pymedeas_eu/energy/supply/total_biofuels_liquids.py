@@ -7,15 +7,13 @@ Translated using PySD version 2.2.1
 def additional_pe_production_of_bioenergy_for_biofuels():
     """
     Real Name: Additional PE production of bioenergy for biofuels
-    Original Eqn: PE biomass for biofuels production EJ-Oil liquids saved by biofuels EJ
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Additional primary energy demand of bioenergy (NPP) for biofuels in
-        relation to the PEavail. We assume than 1 unit of energy of biofuels
-        substitutes 1 unit of energy of oil.
+    Additional primary energy demand of bioenergy (NPP) for biofuels in relation to the PEavail. We assume than 1 unit of energy of biofuels substitutes 1 unit of energy of oil.
     """
     return pe_biomass_for_biofuels_production_ej() - oil_liquids_saved_by_biofuels_ej()
 
@@ -23,14 +21,13 @@ def additional_pe_production_of_bioenergy_for_biofuels():
 def fes_total_biofuels_production_ej():
     """
     Real Name: FES total biofuels production EJ
-    Original Eqn: PEavail tot biofuels land compet EJ+PEavail biofuels land marg EJ +PEavail cellulosic biofuel EJ
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Final energy supply total biofuels liquids production. Equivalent to "FES
-        total biofuels production EJ 2" but obtained disaggregately.
+    Final energy supply total biofuels liquids production. Equivalent to "FES total biofuels production EJ 2" but obtained disaggregately.
     """
     return (
         peavail_tot_biofuels_land_compet_ej()
@@ -42,15 +39,13 @@ def fes_total_biofuels_production_ej():
 def fes_total_biofuels_production_ej_2():
     """
     Real Name: FES total biofuels production EJ 2
-    Original Eqn: MIN(PED liquids EJ, Potential PEavail total biofuels)
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Final energy supply total biofuels liquids production. Equivalent to "FES
-        total biofuels production EJ" but obtained aggregately to estimate the
-        "share biofuels overcapacity".
+    Final energy supply total biofuels liquids production. Equivalent to "FES total biofuels production EJ" but obtained aggregately to estimate the "share biofuels overcapacity".
     """
     return np.minimum(ped_liquids_ej(), potential_peavail_total_biofuels())
 
@@ -58,11 +53,11 @@ def fes_total_biofuels_production_ej_2():
 def fes_total_biofuels_production_mbd():
     """
     Real Name: "FES total biofuels production Mb/d"
-    Original Eqn: FES total biofuels production EJ*"Mb/d per EJ/year"
+    Original Eqn:
     Units: Mb/d
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Final energy supply total biofuels liquids production.
     """
@@ -72,11 +67,11 @@ def fes_total_biofuels_production_mbd():
 def max_peavail_biofuels_potential():
     """
     Real Name: Max PEavail biofuels potential
-    Original Eqn: Max PEavail potential bioE residues for cellulosic biofuels+Max PEavail potential biofuels land compet +Max PEavail potential biofuels marginal lands
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Maximum biofuels potential (primary energy) available.
     """
@@ -90,11 +85,11 @@ def max_peavail_biofuels_potential():
 def oil_liquids_saved_by_biofuels_ej():
     """
     Real Name: Oil liquids saved by biofuels EJ
-    Original Eqn: FES total biofuels production EJ
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Oil liquids saved by biofuels.
     """
@@ -104,11 +99,11 @@ def oil_liquids_saved_by_biofuels_ej():
 def pe_biomass_for_biofuels_production_ej():
     """
     Real Name: PE biomass for biofuels production EJ
-    Original Eqn: PE biofuels land marg EJ+PE cellulosic biofuel EJ+"PE biofuels prod 2gen+3gen EJ"
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Primary energy of biomass for biofuels production.
     """
@@ -122,11 +117,11 @@ def pe_biomass_for_biofuels_production_ej():
 def potential_peavail_total_biofuels():
     """
     Real Name: Potential PEavail total biofuels
-    Original Eqn: Potential PEavail biofuels 2gen land compet EJ+Potential PEavail biofuels prod 3gen EJ+Potential PEavail biofuels land marg EJ+Potential PEavail cellulosic biofuel EJ
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -141,11 +136,11 @@ def potential_peavail_total_biofuels():
 def remaining_potential_biofuels():
     """
     Real Name: remaining potential biofuels
-    Original Eqn: IF THEN ELSE(Max PEavail biofuels potential > FES total biofuels production EJ, (Max PEavail biofuels potential-FES total biofuels production EJ)/Max PEavail biofuels potential, 0)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Remaining potential available as a fraction of unity.
     """
@@ -160,15 +155,15 @@ def remaining_potential_biofuels():
 def share_biofuels_overcapacity():
     """
     Real Name: share biofuels overcapacity
-    Original Eqn: ZIDZ( (Potential PEavail total biofuels-FES total biofuels production EJ 2), Potential PEavail total biofuels)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
     return zidz(
-        (potential_peavail_total_biofuels() - fes_total_biofuels_production_ej_2()),
+        potential_peavail_total_biofuels() - fes_total_biofuels_production_ej_2(),
         potential_peavail_total_biofuels(),
     )

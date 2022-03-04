@@ -7,15 +7,13 @@ Translated using PySD version 2.2.1
 def abundance_liquids():
     """
     Real Name: abundance liquids
-    Original Eqn: IF THEN ELSE(PED liquids EJ<PES Liquids EJ, 1, 1- ZIDZ( PED liquids EJ -PES Liquids EJ , PED liquids EJ))
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    The parameter abundance varies between (1;0). Abundance=1 while the supply
-        covers the demand; the closest to 0 indicates a higher divergence between
-        supply and demand.
+    The parameter abundance varies between (1;0). Abundance=1 while the supply covers the demand; the closest to 0 indicates a higher divergence between supply and demand.
     """
     return if_then_else(
         ped_liquids_ej() < pes_liquids_ej(),
@@ -27,11 +25,11 @@ def abundance_liquids():
 def adapt_max_share_imports_oil():
     """
     Real Name: adapt max share imports oil
-    Original Eqn: IF THEN ELSE(Time<2016,Historic share net imports oil until 2016,IF THEN ELSE(Time<2021,Historic share net imports oil until 2016+(max share imports oil-Historic share net imports oil until 2016)*((Time-2016)/(2021-2016)),max share imports oil))
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -51,30 +49,27 @@ def adapt_max_share_imports_oil():
 def check_liquids():
     """
     Real Name: check liquids
-    Original Eqn: ZIDZ( (PED liquids EJ-PES Liquids EJ), PES Liquids EJ )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    If=0, demand=supply. If>0, demand>supply (liquids scarcity). If<0,
-        demand<supply (oversupply). Variable to avoid energy oversupply caused by
-        exogenously driven policies.
+    If=0, demand=supply. If>0, demand>supply (liquids scarcity). If<0, demand<supply (oversupply). Variable to avoid energy oversupply caused by exogenously driven policies.
     """
-    return zidz((ped_liquids_ej() - pes_liquids_ej()), pes_liquids_ej())
+    return zidz(ped_liquids_ej() - pes_liquids_ej(), pes_liquids_ej())
 
 
 def constrain_liquids_exogenous_growth():
     """
     Real Name: "constrain liquids exogenous growth?"
-    Original Eqn: IF THEN ELSE(check liquids>0,1,check liquids)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    If negative, there is oversupply of liquids. This variable is used to
-        constrain the exogenous growth of exogenously-driven policies.
+    If negative, there is oversupply of liquids. This variable is used to constrain the exogenous growth of exogenously-driven policies.
     """
     return if_then_else(check_liquids() > 0, lambda: 1, lambda: check_liquids())
 
@@ -82,11 +77,11 @@ def constrain_liquids_exogenous_growth():
 def fes_total_biofuels():
     """
     Real Name: FES total biofuels
-    Original Eqn: Share biofuel in PES*real FE consumption liquids EJ
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -96,25 +91,37 @@ def fes_total_biofuels():
 def historic_conv_oil_domestic_aut_extracted_ej():
     """
     Real Name: Historic conv oil domestic AUT extracted EJ
-    Original Eqn: GET DIRECT DATA('../energy.xlsx', 'Austria', 'time_historic_data', 'historic_domestic_conventional_oil_extraction')
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component_ext_data
-    Subs: None
+    Type: Data
+    Subs: []
 
 
     """
     return _ext_data_historic_conv_oil_domestic_aut_extracted_ej(time())
 
 
+_ext_data_historic_conv_oil_domestic_aut_extracted_ej = ExtData(
+    "../energy.xlsx",
+    "Austria",
+    "time_historic_data",
+    "historic_domestic_conventional_oil_extraction",
+    "interpolate",
+    {},
+    _root,
+    "_ext_data_historic_conv_oil_domestic_aut_extracted_ej",
+)
+
+
 def historic_net_imports_oil_aut():
     """
     Real Name: Historic net imports oil AUT
-    Original Eqn: PED liquids EJ-Historic conv oil domestic AUT extracted EJ-Historic unconv oil domestic AUT extracted EJ
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -128,11 +135,11 @@ def historic_net_imports_oil_aut():
 def historic_share_conv_oil_domestic_aut_extraction():
     """
     Real Name: "Historic share conv. oil domestic AUT extraction"
-    Original Eqn: ZIDZ(Historic conv oil domestic AUT extracted EJ,PED liquids EJ)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -142,55 +149,79 @@ def historic_share_conv_oil_domestic_aut_extraction():
 def historic_share_conv_oil_domestic_aut_extraction_until_2016():
     """
     Real Name: "Historic share conv. oil domestic AUT extraction\" until 2016"
-    Original Eqn: SAMPLE IF TRUE(Time<2016, "Historic share conv. oil domestic AUT extraction", "Historic share conv. oil domestic AUT extraction")
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
 
     """
-    return _sample_if_true_historic_share_conv_oil_domestic_aut_extraction_until_2016()
+    return _sampleiftrue_historic_share_conv_oil_domestic_aut_extraction_until_2016()
+
+
+_sampleiftrue_historic_share_conv_oil_domestic_aut_extraction_until_2016 = SampleIfTrue(
+    lambda: time() < 2016,
+    lambda: historic_share_conv_oil_domestic_aut_extraction(),
+    lambda: historic_share_conv_oil_domestic_aut_extraction(),
+    "_sampleiftrue_historic_share_conv_oil_domestic_aut_extraction_until_2016",
+)
 
 
 def historic_share_net_imports_oil_until_2016():
     """
     Real Name: Historic share net imports oil until 2016
-    Original Eqn: SAMPLE IF TRUE(Time<2016, ZIDZ(Historic net imports oil AUT, Extraction oil EJ World), ZIDZ(Historic net imports oil AUT, Extraction oil EJ World))
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
 
     """
-    return _sample_if_true_historic_share_net_imports_oil_until_2016()
+    return _sampleiftrue_historic_share_net_imports_oil_until_2016()
+
+
+_sampleiftrue_historic_share_net_imports_oil_until_2016 = SampleIfTrue(
+    lambda: time() < 2016,
+    lambda: zidz(historic_net_imports_oil_aut(), extraction_oil_ej_world()),
+    lambda: zidz(historic_net_imports_oil_aut(), extraction_oil_ej_world()),
+    "_sampleiftrue_historic_share_net_imports_oil_until_2016",
+)
 
 
 def historic_share_unconv_oil_domestric_aut_extraction_until_2016():
     """
     Real Name: "Historic share unconv. oil domestric AUT extraction until 2016"
-    Original Eqn: SAMPLE IF TRUE(Time<2016, "Historic share unconv. oil domestric AUT extraction", "Historic share unconv. oil domestric AUT extraction")
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
 
     """
-    return (
-        _sample_if_true_historic_share_unconv_oil_domestric_aut_extraction_until_2016()
+    return _sampleiftrue_historic_share_unconv_oil_domestric_aut_extraction_until_2016()
+
+
+_sampleiftrue_historic_share_unconv_oil_domestric_aut_extraction_until_2016 = (
+    SampleIfTrue(
+        lambda: time() < 2016,
+        lambda: historic_share_unconv_oil_domestric_aut_extraction(),
+        lambda: historic_share_unconv_oil_domestric_aut_extraction(),
+        "_sampleiftrue_historic_share_unconv_oil_domestric_aut_extraction_until_2016",
     )
+)
 
 
 def historic_share_unconv_oil_domestric_aut_extraction():
     """
     Real Name: "Historic share unconv. oil domestric AUT extraction"
-    Original Eqn: ZIDZ(Historic unconv oil domestic AUT extracted EJ,PED liquids EJ)
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -200,25 +231,37 @@ def historic_share_unconv_oil_domestric_aut_extraction():
 def historic_unconv_oil_domestic_aut_extracted_ej():
     """
     Real Name: Historic unconv oil domestic AUT extracted EJ
-    Original Eqn: GET DIRECT DATA('../energy.xlsx', 'Austria', 'time_historic_data', 'historic_domestic_unconventional_oil_extraction')
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component_ext_data
-    Subs: None
+    Type: Data
+    Subs: []
 
 
     """
     return _ext_data_historic_unconv_oil_domestic_aut_extracted_ej(time())
 
 
+_ext_data_historic_unconv_oil_domestic_aut_extracted_ej = ExtData(
+    "../energy.xlsx",
+    "Austria",
+    "time_historic_data",
+    "historic_domestic_unconventional_oil_extraction",
+    "interpolate",
+    {},
+    _root,
+    "_ext_data_historic_unconv_oil_domestic_aut_extracted_ej",
+)
+
+
 def imports_aut_conv_oil_from_row_ej():
     """
     Real Name: imports AUT conv oil from RoW EJ
-    Original Eqn: imports AUT total oil from RoW EJ*share conv vs total oil extraction World
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -230,11 +273,11 @@ def imports_aut_conv_oil_from_row_ej():
 def imports_aut_total_oil_from_row_ej():
     """
     Real Name: imports AUT total oil from RoW EJ
-    Original Eqn: IF THEN ELSE(Time<2016, PED AUT total oil from RoW, IF THEN ELSE(limit oil imports from RoW=1, PED AUT total oil from RoW, IF THEN ELSE (limit oil imports from RoW=2, MIN(PED AUT total oil from RoW,Historic share net imports oil until 2016 *Extraction oil EJ World), IF THEN ELSE(limit oil imports from RoW=3, MIN(PED AUT total oil from RoW,adapt max share imports oil*Extraction oil EJ World ), PED AUT total oil from RoW))))
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -267,11 +310,11 @@ def imports_aut_total_oil_from_row_ej():
 def imports_aut_unconv_oil_from_row_ej():
     """
     Real Name: imports AUT unconv oil from RoW EJ
-    Original Eqn: imports AUT total oil from RoW EJ*(1-share conv vs total oil extraction World)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -283,40 +326,59 @@ def imports_aut_unconv_oil_from_row_ej():
 def limit_oil_imports_from_row():
     """
     Real Name: limit oil imports from RoW
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'limit_oil_imports_from_RoW')
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    1: Unlimited coal imports share from RoW (constrained by total global production)        2: Limited imports coal of UE from RoW (at 2016 share of EU imports vs global
-        production)        3: Limited imports coal of UE from Row (user defined)
+    1: Unlimited coal imports share from RoW (constrained by total global production) 2: Limited imports coal of UE from RoW (at 2016 share of EU imports vs global production) 3: Limited imports coal of UE from Row (user defined)
     """
     return _ext_constant_limit_oil_imports_from_row()
+
+
+_ext_constant_limit_oil_imports_from_row = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "limit_oil_imports_from_RoW",
+    {},
+    _root,
+    "_ext_constant_limit_oil_imports_from_row",
+)
 
 
 def max_share_imports_oil():
     """
     Real Name: max share imports oil
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'max_share_imports_oil')
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
 
     """
     return _ext_constant_max_share_imports_oil()
 
 
+_ext_constant_max_share_imports_oil = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "max_share_imports_oil",
+    {},
+    _root,
+    "_ext_constant_max_share_imports_oil",
+)
+
+
 def other_liquids_required_ej():
     """
     Real Name: Other liquids required EJ
-    Original Eqn: Energy distr losses FF EJ[liquids]+Transformation FF losses EJ[liquids]+"Non-energy use demand by final fuel EJ"[liquids]
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -330,11 +392,11 @@ def other_liquids_required_ej():
 def other_liquids_supply_ej():
     """
     Real Name: Other liquids supply EJ
-    Original Eqn: Oil refinery gains EJ+"FES CTL+GTL EJ"+FES total biofuels production EJ
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Other liquids refer to: refinery gains, CTL, GTL and biofuels.
     """
@@ -346,11 +408,11 @@ def other_liquids_supply_ej():
 def pec_total_oil():
     """
     Real Name: PEC total oil
-    Original Eqn: PES total oil EJ AUT+imports AUT total oil from RoW EJ
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -360,11 +422,11 @@ def pec_total_oil():
 def ped_aut_total_oil_from_row():
     """
     Real Name: PED AUT total oil from RoW
-    Original Eqn: MAX(0, PED total oil EJ-PES total oil EJ AUT)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -374,11 +436,11 @@ def ped_aut_total_oil_from_row():
 def ped_domestic_aut_conv_oil_ej():
     """
     Real Name: "PED domestic AUT conv. oil EJ"
-    Original Eqn: PED total oil EJ*"Historic share conv. oil domestic AUT extraction\" until 2016"
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -391,11 +453,11 @@ def ped_domestic_aut_conv_oil_ej():
 def ped_domestic_aut_total_oil_ej():
     """
     Real Name: PED domestic AUT total oil EJ
-    Original Eqn: PED total oil EJ*("Historic share conv. oil domestic AUT extraction\" until 2016"+"Historic share unconv. oil domestric AUT extraction until 2016" )
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -408,11 +470,11 @@ def ped_domestic_aut_total_oil_ej():
 def ped_liquids_ej():
     """
     Real Name: PED liquids EJ
-    Original Eqn: MAX(0,Required FED by liquids EJ+Other liquids required EJ+PE demand oil Elec plants EJ +PED oil for Heat plants EJ+PED oil for CHP plants EJ+"PED liquids Heat-nc")
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Primary energy demand of total liquids.
     """
@@ -430,14 +492,13 @@ def ped_liquids_ej():
 def ped_nre_liquids():
     """
     Real Name: PED NRE Liquids
-    Original Eqn: MAX(0, PED liquids EJ-FES total biofuels production EJ)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Primary energy demand of non-renewable energy for the production of
-        liquids.
+    Primary energy demand of non-renewable energy for the production of liquids.
     """
     return np.maximum(0, ped_liquids_ej() - fes_total_biofuels_production_ej())
 
@@ -445,11 +506,11 @@ def ped_nre_liquids():
 def ped_total_oil_ej():
     """
     Real Name: PED total oil EJ
-    Original Eqn: MAX(0,PED NRE Liquids-"FES CTL+GTL EJ"-Oil refinery gains EJ )
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Primary energy demand of total oil (conventional and unconventional).
     """
@@ -459,11 +520,11 @@ def ped_total_oil_ej():
 def pes_liquids_ej():
     """
     Real Name: PES Liquids EJ
-    Original Eqn: PEC total oil+Other liquids supply EJ
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Total primary supply of liquids.
     """
@@ -473,14 +534,13 @@ def pes_liquids_ej():
 def real_fe_consumption_liquids_ej():
     """
     Real Name: real FE consumption liquids EJ
-    Original Eqn: (PES Liquids EJ-Other liquids required EJ)*share liquids for final energy
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Real final energy consumption by liquids after accounting for energy
-        availability.
+    Real final energy consumption by liquids after accounting for energy availability.
     """
     return (
         pes_liquids_ej() - other_liquids_required_ej()
@@ -490,11 +550,11 @@ def real_fe_consumption_liquids_ej():
 def required_fed_by_liquids_ej():
     """
     Real Name: Required FED by liquids EJ
-    Original Eqn: Required FED by fuel[liquids]
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Required final energy demand by liquids.
     """
@@ -504,11 +564,11 @@ def required_fed_by_liquids_ej():
 def share_biofuel_in_pes():
     """
     Real Name: Share biofuel in PES
-    Original Eqn: ZIDZ (FES total biofuels production EJ, PES Liquids EJ)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -518,11 +578,11 @@ def share_biofuel_in_pes():
 def share_imports_aut_tot_oil_from_row_vs_extraction_world():
     """
     Real Name: share imports AUT tot oil from RoW vs extraction World
-    Original Eqn: ZIDZ(imports AUT total oil from RoW EJ, Extraction oil EJ World )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Share of EU total oil imports vs global oil extraction.
     """
@@ -532,14 +592,13 @@ def share_imports_aut_tot_oil_from_row_vs_extraction_world():
 def share_liquids_dem_for_heatnc():
     """
     Real Name: "share liquids dem for Heat-nc"
-    Original Eqn: ZIDZ("PED liquids Heat-nc", PES Liquids EJ)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Share of liquids demand for non-commercial Heat plants in relation to the
-        total demand of liquids.
+    Share of liquids demand for non-commercial Heat plants in relation to the total demand of liquids.
     """
     return zidz(ped_liquids_heatnc(), pes_liquids_ej())
 
@@ -547,27 +606,27 @@ def share_liquids_dem_for_heatnc():
 def share_liquids_for_final_energy():
     """
     Real Name: share liquids for final energy
-    Original Eqn: ZIDZ( Required FED by liquids EJ, (PED liquids EJ-Other liquids required EJ) )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Share of final energy vs primary energy for liquids.
     """
     return zidz(
-        required_fed_by_liquids_ej(), (ped_liquids_ej() - other_liquids_required_ej())
+        required_fed_by_liquids_ej(), ped_liquids_ej() - other_liquids_required_ej()
     )
 
 
 def share_oil_dem_for_elec():
     """
     Real Name: share oil dem for Elec
-    Original Eqn: IF THEN ELSE(PED total oil EJ>0, PE demand oil Elec plants EJ/PED total oil EJ, 0)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Share of oil demand to cover electricity consumption.
     """
@@ -581,14 +640,13 @@ def share_oil_dem_for_elec():
 def share_oil_dem_for_heatcom():
     """
     Real Name: "share oil dem for Heat-com"
-    Original Eqn: IF THEN ELSE(PED total oil EJ>0, PED oil for Heat plants EJ/PED total oil EJ,0)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Share of oil demand for commercial Heat plants in relation to the total
-        demand of oil.
+    Share of oil demand for commercial Heat plants in relation to the total demand of oil.
     """
     return if_then_else(
         ped_total_oil_ej() > 0,
@@ -600,11 +658,11 @@ def share_oil_dem_for_heatcom():
 def total_demand_liquids_mbd():
     """
     Real Name: "Total demand liquids mb/d"
-    Original Eqn: PED liquids EJ*"Mb/d per EJ/year"
+    Original Eqn:
     Units: Mb/d
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Total demand of liquids.
     """
@@ -614,85 +672,12 @@ def total_demand_liquids_mbd():
 def year_scarcity_liquids():
     """
     Real Name: Year scarcity liquids
-    Original Eqn: IF THEN ELSE(abundance liquids>0.95, 0, Time)
+    Original Eqn:
     Units: Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Year when the parameter abundance falls below 0.95, i.e. year when
-        scarcity starts.
+    Year when the parameter abundance falls below 0.95, i.e. year when scarcity starts.
     """
     return if_then_else(abundance_liquids() > 0.95, lambda: 0, lambda: time())
-
-
-_ext_data_historic_conv_oil_domestic_aut_extracted_ej = ExtData(
-    "../energy.xlsx",
-    "Austria",
-    "time_historic_data",
-    "historic_domestic_conventional_oil_extraction",
-    "interpolate",
-    {},
-    _root,
-    "_ext_data_historic_conv_oil_domestic_aut_extracted_ej",
-)
-
-
-_sample_if_true_historic_share_conv_oil_domestic_aut_extraction_until_2016 = (
-    SampleIfTrue(
-        lambda: time() < 2016,
-        lambda: historic_share_conv_oil_domestic_aut_extraction(),
-        lambda: historic_share_conv_oil_domestic_aut_extraction(),
-        "_sample_if_true_historic_share_conv_oil_domestic_aut_extraction_until_2016",
-    )
-)
-
-
-_sample_if_true_historic_share_net_imports_oil_until_2016 = SampleIfTrue(
-    lambda: time() < 2016,
-    lambda: zidz(historic_net_imports_oil_aut(), extraction_oil_ej_world()),
-    lambda: zidz(historic_net_imports_oil_aut(), extraction_oil_ej_world()),
-    "_sample_if_true_historic_share_net_imports_oil_until_2016",
-)
-
-
-_sample_if_true_historic_share_unconv_oil_domestric_aut_extraction_until_2016 = (
-    SampleIfTrue(
-        lambda: time() < 2016,
-        lambda: historic_share_unconv_oil_domestric_aut_extraction(),
-        lambda: historic_share_unconv_oil_domestric_aut_extraction(),
-        "_sample_if_true_historic_share_unconv_oil_domestric_aut_extraction_until_2016",
-    )
-)
-
-
-_ext_data_historic_unconv_oil_domestic_aut_extracted_ej = ExtData(
-    "../energy.xlsx",
-    "Austria",
-    "time_historic_data",
-    "historic_domestic_unconventional_oil_extraction",
-    "interpolate",
-    {},
-    _root,
-    "_ext_data_historic_unconv_oil_domestic_aut_extracted_ej",
-)
-
-
-_ext_constant_limit_oil_imports_from_row = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "limit_oil_imports_from_RoW",
-    {},
-    _root,
-    "_ext_constant_limit_oil_imports_from_row",
-)
-
-
-_ext_constant_max_share_imports_oil = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "max_share_imports_oil",
-    {},
-    _root,
-    "_ext_constant_max_share_imports_oil",
-)

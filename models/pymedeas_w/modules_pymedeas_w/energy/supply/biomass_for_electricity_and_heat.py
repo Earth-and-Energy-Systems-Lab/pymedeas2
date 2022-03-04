@@ -7,11 +7,11 @@ Translated using PySD version 2.2.1
 def available_pe_potential_solid_bioe_for_elec_ej():
     """
     Real Name: available PE potential solid bioE for elec EJ
-    Original Eqn: MAX(0, "Total PE solid bioE potential heat+elec EJ"-"PES RES for heat-com by techn"[solid bioE heat]-"PES RES for heat-nc by techn"[solid bioE heat] )
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Available (primary energy) potential solid bioenergy for electricity.
     """
@@ -26,11 +26,11 @@ def available_pe_potential_solid_bioe_for_elec_ej():
 def available_pe_potential_solid_bioe_for_heat_ej():
     """
     Real Name: available PE potential solid bioE for heat EJ
-    Original Eqn: MAX(0, "Total PE solid bioE potential heat+elec EJ"-PE real generation RES elec[solid bioE elec])
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Available (primary energy) potential solid bioenergy for heat.
     """
@@ -44,11 +44,11 @@ def available_pe_potential_solid_bioe_for_heat_ej():
 def available_potential_fe_solid_bioe_for_elec_ej():
     """
     Real Name: available potential FE solid bioE for elec EJ
-    Original Eqn: available PE potential solid bioE for elec EJ*efficiency conversion bioE to Elec
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Available (final energy) potential solid bioenergy for electricity.
     """
@@ -61,41 +61,39 @@ def available_potential_fe_solid_bioe_for_elec_ej():
 def max_potential_npp_bioe_conventional_for_heatelec():
     """
     Real Name: "Max potential NPP bioE conventional for heat+elec"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'max_pot_NPP_bioe_conv')
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    Sustainable potential NPP of conventional bioenergy for heat and
-        electricity. Source: Technical Report.
+    Sustainable potential NPP of conventional bioenergy for heat and electricity. Source: Technical Report.
     """
     return _ext_constant_max_potential_npp_bioe_conventional_for_heatelec()
 
 
-def total_pe_solid_bioe_potential_heatelec_ej():
-    """
-    Real Name: "Total PE solid bioE potential heat+elec EJ"
-    Original Eqn: "Max potential NPP bioE conventional for heat+elec"+"PE bioE residues for heat+elec EJ"
-    Units: EJ
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    If switch land 1 =1 the land restrictions are used, otherwise a fixed
-        potential is used
-    """
-    return (
-        max_potential_npp_bioe_conventional_for_heatelec()
-        + pe_bioe_residues_for_heatelec_ej()
-    )
-
-
 _ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "../energy.xlsx",
+    "World",
     "max_pot_NPP_bioe_conv",
     {},
     _root,
     "_ext_constant_max_potential_npp_bioe_conventional_for_heatelec",
 )
+
+
+def total_pe_solid_bioe_potential_heatelec_ej():
+    """
+    Real Name: "Total PE solid bioE potential heat+elec EJ"
+    Original Eqn:
+    Units: EJ
+    Limits: (None, None)
+    Type: Auxiliary
+    Subs: []
+
+    If switch land 1 =1 the land restrictions are used, otherwise a fixed potential is used
+    """
+    return (
+        max_potential_npp_bioe_conventional_for_heatelec()
+        + pe_bioe_residues_for_heatelec_ej()
+    )

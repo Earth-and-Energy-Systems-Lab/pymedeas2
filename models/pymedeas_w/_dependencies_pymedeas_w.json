@@ -126,10 +126,26 @@
     },
     "_delayfixed_pes_fossil_fuel_extraction_delayed": {
         "initial": {
-            "time_step": 3
+            "time_step": 1
         },
         "step": {
-            "pes_fossil_fuel_extraction": 3
+            "pes_fossil_fuel_extraction": 1
+        }
+    },
+    "_delayfixed_pes_fossil_fuel_extraction_delayed_1": {
+        "initial": {
+            "time_step": 1
+        },
+        "step": {
+            "pes_fossil_fuel_extraction": 1
+        }
+    },
+    "_delayfixed_pes_fossil_fuel_extraction_delayed_2": {
+        "initial": {
+            "time_step": 1
+        },
+        "step": {
+            "pes_fossil_fuel_extraction": 1
         }
     },
     "_delayfixed_pes_oil_ej_delayed": {
@@ -223,11 +239,20 @@
     },
     "_integ_c_in_deep_ocean": {
         "initial": {
-            "init_c_in_deep_ocean": 2,
-            "layer_depth": 2
+            "init_c_in_deep_ocean": 1,
+            "layer_depth": 1
         },
         "step": {
-            "diffusion_flux": 3
+            "diffusion_flux": 2
+        }
+    },
+    "_integ_c_in_deep_ocean_1": {
+        "initial": {
+            "init_c_in_deep_ocean": 1,
+            "layer_depth": 1
+        },
+        "step": {
+            "diffusion_flux": 1
         }
     },
     "_integ_c_in_humus": {
@@ -530,11 +555,20 @@
     },
     "_integ_heat_in_deep_ocean": {
         "initial": {
-            "deep_ocean_heat_cap": 2,
-            "init_deep_ocean_temperature": 2
+            "deep_ocean_heat_cap": 1,
+            "init_deep_ocean_temperature": 1
         },
         "step": {
-            "heat_transfer": 3
+            "heat_transfer": 2
+        }
+    },
+    "_integ_heat_in_deep_ocean_1": {
+        "initial": {
+            "deep_ocean_heat_cap": 1,
+            "init_deep_ocean_temperature": 1
+        },
+        "step": {
+            "heat_transfer": 1
         }
     },
     "_integ_hfc_in_atm": {
@@ -692,10 +726,42 @@
     },
     "_integ_percents_h_vehicles": {
         "initial": {
-            "initial_2w_percent": 2
+            "initial_2w_percent": 1
         },
         "step": {
-            "var_percents_h_vehicles": 6
+            "var_percents_h_vehicles": 1
+        }
+    },
+    "_integ_percents_h_vehicles_1": {
+        "initial": {},
+        "step": {
+            "var_percents_h_vehicles": 1
+        }
+    },
+    "_integ_percents_h_vehicles_2": {
+        "initial": {},
+        "step": {
+            "var_percents_h_vehicles": 1
+        }
+    },
+    "_integ_percents_h_vehicles_3": {
+        "initial": {},
+        "step": {
+            "var_percents_h_vehicles": 1
+        }
+    },
+    "_integ_percents_h_vehicles_4": {
+        "initial": {
+            "initial_2w_percent": 1
+        },
+        "step": {
+            "var_percents_h_vehicles": 1
+        }
+    },
+    "_integ_percents_h_vehicles_5": {
+        "initial": {},
+        "step": {
+            "var_percents_h_vehicles": 1
         }
     },
     "_integ_perception_in_primary_sources_scarcity": {
@@ -1087,7 +1153,7 @@
             "time_step": 1
         }
     },
-    "_sample_if_true_effective_radiative_forcing": {
+    "_sampleiftrue_effective_radiative_forcing": {
         "initial": {
             "total_radiative_forcing": 1
         },
@@ -1097,7 +1163,7 @@
             "total_radiative_forcing": 1
         }
     },
-    "_sample_if_true_elf_2015": {
+    "_sampleiftrue_elf_2015": {
         "initial": {
             "elf": 1
         },
@@ -1106,7 +1172,7 @@
             "time": 1
         }
     },
-    "_sample_if_true_final_energy_intensity_2020": {
+    "_sampleiftrue_final_energy_intensity_2020": {
         "initial": {
             "evol_final_energy_intensity_by_sector_and_fuel": 1
         },
@@ -1116,7 +1182,7 @@
             "year_energy_intensity_target": 1
         }
     },
-    "_sample_if_true_final_energy_intensity_2020_h": {
+    "_sampleiftrue_final_energy_intensity_2020_h": {
         "initial": {
             "evol_final_energy_intensity_h": 1
         },
@@ -1126,7 +1192,7 @@
             "year_energy_intensity_target": 1
         }
     },
-    "_sample_if_true_quality_of_electricity_2015": {
+    "_sampleiftrue_quality_of_electricity_2015": {
         "initial": {
             "dynamic_quality_of_electricity": 1
         },
@@ -1135,7 +1201,7 @@
             "time": 1
         }
     },
-    "_sample_if_true_rurr_coal_start_year_plg": {
+    "_sampleiftrue_rurr_coal_start_year_plg": {
         "initial": {
             "rurr_coal": 1
         },
@@ -1145,7 +1211,7 @@
             "time": 1
         }
     },
-    "_sample_if_true_rurr_conv_gas_until_start_year_plg": {
+    "_sampleiftrue_rurr_conv_gas_until_start_year_plg": {
         "initial": {
             "rurr_conv_gas": 1
         },
@@ -1155,7 +1221,7 @@
             "time": 1
         }
     },
-    "_sample_if_true_rurr_conv_oil_until_start_year_plg": {
+    "_sampleiftrue_rurr_conv_oil_until_start_year_plg": {
         "initial": {
             "rurr_conv_oil": 1
         },
@@ -1165,7 +1231,7 @@
             "time": 1
         }
     },
-    "_sample_if_true_rurr_tot_gas_until_start_year_plg": {
+    "_sampleiftrue_rurr_tot_gas_until_start_year_plg": {
         "initial": {
             "rurr_tot_agg_gas": 1
         },
@@ -1175,7 +1241,7 @@
             "time": 1
         }
     },
-    "_sample_if_true_rurr_tot_oil_until_start_year_plg": {
+    "_sampleiftrue_rurr_tot_oil_until_start_year_plg": {
         "initial": {
             "rurr_tot_agg_oil": 1
         },
@@ -1185,7 +1251,7 @@
             "time": 1
         }
     },
-    "_sample_if_true_rurr_unconv_gas_until_start_year_plg": {
+    "_sampleiftrue_rurr_unconv_gas_until_start_year_plg": {
         "initial": {
             "rurr_unconv_gas": 1
         },
@@ -1195,7 +1261,7 @@
             "time": 1
         }
     },
-    "_sample_if_true_rurr_unconv_oil_until_start_year_plg": {
+    "_sampleiftrue_rurr_unconv_oil_until_start_year_plg": {
         "initial": {
             "rurr_unconv_oil_ej": 1
         },
@@ -1205,7 +1271,7 @@
             "time": 1
         }
     },
-    "_sample_if_true_share_e_industry_ownuse_vs_tfec_in_2015": {
+    "_sampleiftrue_share_e_industry_ownuse_vs_tfec_in_2015": {
         "initial": {
             "historic_share_e_industry_ownuse_vs_tfec": 1
         },
@@ -1728,8 +1794,8 @@
         "__external__": null
     },
     "buffer_factor": {
-        "_active_initial_buffer_factor": 1,
-        "time": 1
+        "time": 1,
+        "_active_initial_buffer_factor": 1
     },
     "by_mineral_rr_alt_techn": {
         "a_lineal_regr_rr_alt_techn": 1,
@@ -1779,7 +1845,8 @@
         "_integ_c_in_biomass": 1
     },
     "c_in_deep_ocean": {
-        "_integ_c_in_deep_ocean": 2
+        "_integ_c_in_deep_ocean": 1,
+        "_integ_c_in_deep_ocean_1": 1
     },
     "c_in_deep_ocean_per_meter": {
         "c_in_deep_ocean": 1,
@@ -2555,7 +2622,7 @@
         "temperature_change": 1
     },
     "effective_radiative_forcing": {
-        "_sample_if_true_effective_radiative_forcing": 1
+        "_sampleiftrue_effective_radiative_forcing": 1
     },
     "effects_shortage_elec_on_ev": {
         "abundance_electricity": 2
@@ -2714,7 +2781,7 @@
         "co2_ppm_concentrations": 1
     },
     "elf_2015": {
-        "_sample_if_true_elf_2015": 1
+        "_sampleiftrue_elf_2015": 1
     },
     "employment_factor_biofuels": {
         "__external__": null
@@ -3406,10 +3473,10 @@
         "pes_waste_for_heatcom_plants": 1
     },
     "final_energy_intensity_2020": {
-        "_sample_if_true_final_energy_intensity_2020": 1
+        "_sampleiftrue_final_energy_intensity_2020": 1
     },
     "final_energy_intensity_2020_h": {
-        "_sample_if_true_final_energy_intensity_2020_h": 1
+        "_sampleiftrue_final_energy_intensity_2020_h": 1
     },
     "final_energy_intensity_by_sector_and_fuel": {
         "evol_final_energy_intensity_by_sector_and_fuel": 1
@@ -3630,7 +3697,7 @@
     },
     "global_hfc_emissions_rcp": {
         "__external__": null,
-        "time": 9
+        "time": 1
     },
     "global_n2o_anthro_emissions": {
         "choose_rcp": 3,
@@ -3768,7 +3835,8 @@
         "_integ_heat_in_atmosphere_and_upper_ocean": 1
     },
     "heat_in_deep_ocean": {
-        "_integ_heat_in_deep_ocean": 2
+        "_integ_heat_in_deep_ocean": 1,
+        "_integ_heat_in_deep_ocean_1": 1
     },
     "heat_transfer": {
         "heat_transfer_coeff": 2,
@@ -3997,11 +4065,11 @@
     },
     "historic_share_of_losses_vs_extraction": {
         "__external__": null,
-        "time": 3
+        "time": 1
     },
     "historic_share_of_transformation_losses_vs_extraction": {
         "__external__": null,
-        "time": 2
+        "time": 1
     },
     "historic_unconv_gas": {
         "__external__": null,
@@ -5782,7 +5850,12 @@
         "percents_h_vehicles": 20
     },
     "percents_h_vehicles": {
-        "_integ_percents_h_vehicles": 6
+        "_integ_percents_h_vehicles": 1,
+        "_integ_percents_h_vehicles_1": 1,
+        "_integ_percents_h_vehicles_2": 1,
+        "_integ_percents_h_vehicles_3": 1,
+        "_integ_percents_h_vehicles_4": 1,
+        "_integ_percents_h_vehicles_5": 1
     },
     "perception_in_primary_sources_scarcity": {
         "_integ_perception_in_primary_sources_scarcity": 1
@@ -5864,7 +5937,9 @@
         "pes_oil_ej": 1
     },
     "pes_fossil_fuel_extraction_delayed": {
-        "_delayfixed_pes_fossil_fuel_extraction_delayed": 3
+        "_delayfixed_pes_fossil_fuel_extraction_delayed": 1,
+        "_delayfixed_pes_fossil_fuel_extraction_delayed_1": 1,
+        "_delayfixed_pes_fossil_fuel_extraction_delayed_2": 1
     },
     "pes_gases": {
         "pes_biogas_for_tfc": 1,
@@ -6281,7 +6356,7 @@
         "staticdynamic_quality_of_electricity": 1
     },
     "quality_of_electricity_2015": {
-        "_sample_if_true_quality_of_electricity_2015": 1
+        "_sampleiftrue_quality_of_electricity_2015": 1
     },
     "rate_4w_to_2w": {
         "policy_2wheels": 1
@@ -6761,19 +6836,19 @@
         "_integ_rurr_coal": 1
     },
     "rurr_coal_start_year_plg": {
-        "_sample_if_true_rurr_coal_start_year_plg": 1
+        "_sampleiftrue_rurr_coal_start_year_plg": 1
     },
     "rurr_conv_gas": {
         "_integ_rurr_conv_gas": 1
     },
     "rurr_conv_gas_until_start_year_plg": {
-        "_sample_if_true_rurr_conv_gas_until_start_year_plg": 1
+        "_sampleiftrue_rurr_conv_gas_until_start_year_plg": 1
     },
     "rurr_conv_oil": {
         "_integ_rurr_conv_oil": 1
     },
     "rurr_conv_oil_until_start_year_plg": {
-        "_sample_if_true_rurr_conv_oil_until_start_year_plg": 1
+        "_sampleiftrue_rurr_conv_oil_until_start_year_plg": 1
     },
     "rurr_tot_agg_gas": {
         "_integ_rurr_tot_agg_gas": 1
@@ -6782,22 +6857,22 @@
         "_integ_rurr_tot_agg_oil": 1
     },
     "rurr_tot_gas_until_start_year_plg": {
-        "_sample_if_true_rurr_tot_gas_until_start_year_plg": 1
+        "_sampleiftrue_rurr_tot_gas_until_start_year_plg": 1
     },
     "rurr_tot_oil_until_start_year_plg": {
-        "_sample_if_true_rurr_tot_oil_until_start_year_plg": 1
+        "_sampleiftrue_rurr_tot_oil_until_start_year_plg": 1
     },
     "rurr_unconv_gas": {
         "_integ_rurr_unconv_gas": 1
     },
     "rurr_unconv_gas_until_start_year_plg": {
-        "_sample_if_true_rurr_unconv_gas_until_start_year_plg": 1
+        "_sampleiftrue_rurr_unconv_gas_until_start_year_plg": 1
     },
     "rurr_unconv_oil_ej": {
         "_integ_rurr_unconv_oil_ej": 1
     },
     "rurr_unconv_oil_until_start_year_plg": {
-        "_sample_if_true_rurr_unconv_oil_until_start_year_plg": 1
+        "_sampleiftrue_rurr_unconv_oil_until_start_year_plg": 1
     },
     "rurr_uranium": {
         "_integ_rurr_uranium": 1
@@ -7055,7 +7130,7 @@
         "transport_tfed": 1
     },
     "share_e_industry_ownuse_vs_tfec_in_2015": {
-        "_sample_if_true_share_e_industry_ownuse_vs_tfec_in_2015": 1
+        "_sampleiftrue_share_e_industry_ownuse_vs_tfec_in_2015": 1
     },
     "share_e_losses_cc": {
         "elf": 1,

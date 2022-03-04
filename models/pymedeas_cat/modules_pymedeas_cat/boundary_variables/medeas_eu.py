@@ -10,22 +10,27 @@ def annual_gdp_growth_rate_eu():
     Original Eqn:
     Units:
     Limits: (None, None)
-    Type: data
-    Subs: None
+    Type: Data
+    Subs: []
 
 
     """
     return _data_annual_gdp_growth_rate_eu(time())
 
 
+_data_annual_gdp_growth_rate_eu = TabData(
+    "Annual GDP growth rate EU", "annual_gdp_growth_rate_eu", {}, "interpolate"
+)
+
+
 def annual_gdp_growth_rate_eu28():
     """
     Real Name: Annual GDP growth rate EU28
-    Original Eqn: Annual GDP growth rate EU
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -38,22 +43,25 @@ def gdp_eu():
     Original Eqn:
     Units: Tdollar
     Limits: (None, None)
-    Type: data
-    Subs: None
+    Type: Data
+    Subs: []
 
 
     """
     return _data_gdp_eu(time())
 
 
+_data_gdp_eu = TabData("GDP EU", "gdp_eu", {}, "interpolate")
+
+
 def gdp_eu28():
     """
     Real Name: GDP EU28
-    Original Eqn: GDP EU*Mdollar per Tdollar
+    Original Eqn:
     Units: Mdollar
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -64,10 +72,10 @@ def gdp_eu28():
 def real_demand_by_sector_eu28():
     """
     Real Name: Real demand by sector EU28
-    Original Eqn: Real final demand by sector EU[sectors]
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
 
@@ -78,15 +86,17 @@ def real_demand_by_sector_eu28():
 def real_demand_eu28():
     """
     Real Name: Real demand EU28
-    Original Eqn: SUM(Real demand by sector EU28[sectors!])
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
-    return sum(real_demand_by_sector_eu28(), dim=("sectors",))
+    return sum(
+        real_demand_by_sector_eu28().rename({"sectors": "sectors!"}), dim=["sectors!"]
+    )
 
 
 @subs(["sectors"], _subscript_dict)
@@ -96,12 +106,37 @@ def real_final_demand_by_sector_eu():
     Original Eqn:
     Units:
     Limits: (None, None)
-    Type: data
+    Type: Data
     Subs: ['sectors']
 
 
     """
     return _data_real_final_demand_by_sector_eu(time())
+
+
+_data_real_final_demand_by_sector_eu = TabData(
+    "Real final demand by sector EU",
+    "real_final_demand_by_sector_eu",
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
+    "interpolate",
+)
 
 
 @subs(["final sources", "sectors"], _subscript_dict)
@@ -111,7 +146,7 @@ def real_final_energy_by_sector_and_fuel_eu():
     Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: data
+    Type: Data
     Subs: ['final sources', 'sectors']
 
 
@@ -119,14 +154,40 @@ def real_final_energy_by_sector_and_fuel_eu():
     return _data_real_final_energy_by_sector_and_fuel_eu(time())
 
 
+_data_real_final_energy_by_sector_and_fuel_eu = TabData(
+    "Real final energy by sector and fuel EU",
+    "real_final_energy_by_sector_and_fuel_eu",
+    {
+        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ],
+    },
+    "interpolate",
+)
+
+
 @subs(["final sources", "sectors"], _subscript_dict)
 def real_final_energy_by_sector_and_fuel_eu28():
     """
     Real Name: Real final energy by sector and fuel EU28
-    Original Eqn: Real final energy by sector and fuel EU[final sources,sectors]
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['final sources', 'sectors']
 
     LOAD FROM EU-MODEL
@@ -141,7 +202,7 @@ def real_total_output_by_sector_eu():
     Original Eqn:
     Units:
     Limits: (None, None)
-    Type: data
+    Type: Data
     Subs: ['sectors']
 
 
@@ -149,14 +210,39 @@ def real_total_output_by_sector_eu():
     return _data_real_total_output_by_sector_eu(time())
 
 
+_data_real_total_output_by_sector_eu = TabData(
+    "Real total output by sector EU",
+    "real_total_output_by_sector_eu",
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
+    "interpolate",
+)
+
+
 @subs(["sectors"], _subscript_dict)
 def real_total_output_by_sector_eu28():
     """
     Real Name: Real total output by sector EU28
-    Original Eqn: Real total output by sector EU[sectors]
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
     LOAD EU-MODEL RESULTS
@@ -170,61 +256,12 @@ def total_fe_elec_generation_twh_eu():
     Original Eqn:
     Units:
     Limits: (None, None)
-    Type: data
-    Subs: None
+    Type: Data
+    Subs: []
 
 
     """
     return _data_total_fe_elec_generation_twh_eu(time())
-
-
-def total_fe_elec_generation_twh_eu28():
-    """
-    Real Name: Total FE Elec generation TWh EU28
-    Original Eqn: Total FE Elec generation TWh EU
-    Units:
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-
-    """
-    return total_fe_elec_generation_twh_eu()
-
-
-_data_annual_gdp_growth_rate_eu = TabData(
-    "Annual GDP growth rate EU", "annual_gdp_growth_rate_eu", {}, "interpolate"
-)
-
-
-_data_gdp_eu = TabData("GDP EU", "gdp_eu", {}, "interpolate")
-
-
-_data_real_final_demand_by_sector_eu = TabData(
-    "Real final demand by sector EU",
-    "real_final_demand_by_sector_eu",
-    {"sectors": _subscript_dict["sectors"]},
-    "interpolate",
-)
-
-
-_data_real_final_energy_by_sector_and_fuel_eu = TabData(
-    "Real final energy by sector and fuel EU",
-    "real_final_energy_by_sector_and_fuel_eu",
-    {
-        "final sources": _subscript_dict["final sources"],
-        "sectors": _subscript_dict["sectors"],
-    },
-    "interpolate",
-)
-
-
-_data_real_total_output_by_sector_eu = TabData(
-    "Real total output by sector EU",
-    "real_total_output_by_sector_eu",
-    {"sectors": _subscript_dict["sectors"]},
-    "interpolate",
-)
 
 
 _data_total_fe_elec_generation_twh_eu = TabData(
@@ -233,3 +270,17 @@ _data_total_fe_elec_generation_twh_eu = TabData(
     {},
     "interpolate",
 )
+
+
+def total_fe_elec_generation_twh_eu28():
+    """
+    Real Name: Total FE Elec generation TWh EU28
+    Original Eqn:
+    Units:
+    Limits: (None, None)
+    Type: Auxiliary
+    Subs: []
+
+
+    """
+    return total_fe_elec_generation_twh_eu()

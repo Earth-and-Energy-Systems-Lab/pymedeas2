@@ -7,11 +7,11 @@ Translated using PySD version 2.2.1
 def carbon_footprint_tco2person():
     """
     Real Name: "Carbon footprint tCO2/person"
-    Original Eqn: Total CO2 emissions GTCO2*t per Gt/Population
+    Original Eqn:
     Units: tCO2/person
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     CO2 emissions per capita.
     """
@@ -21,11 +21,11 @@ def carbon_footprint_tco2person():
 def carbon_footprint_tonnescperson():
     """
     Real Name: "Carbon footprint tonnesC/person"
-    Original Eqn: "Carbon footprint tCO2/person"*C per CO2
+    Original Eqn:
     Units: tonnesC/person
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Carbon footprint.
     """
@@ -35,11 +35,11 @@ def carbon_footprint_tonnescperson():
 def co2_emissions_per_value_added():
     """
     Real Name: CO2 emissions per value added
-    Original Eqn: ZIDZ( Total CO2 emissions GTCO2, GDP EU )
+    Original Eqn:
     Units: GtCO2/(Year*T$)
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     CO2 emissions per value added (GDP).
     """
@@ -49,14 +49,13 @@ def co2_emissions_per_value_added():
 def potential_max_hdi():
     """
     Real Name: Potential max HDI
-    Original Eqn: IF THEN ELSE(Net TFEC per capita<=0, 0, MIN(1, 0.1395*LN(Net TFEC per capita)+0.1508))
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Potential HDI that can be reached by a society given its final energy use
-        per capita.
+    Potential HDI that can be reached by a society given its final energy use per capita.
     """
     return if_then_else(
         net_tfec_per_capita() <= 0,
@@ -68,25 +67,25 @@ def potential_max_hdi():
 def t_per_gt():
     """
     Real Name: t per Gt
-    Original Eqn: 1e+09
+    Original Eqn:
     Units: TonC/GtC
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Conversion from tones to Gigatonnes of carbon.
     """
-    return 1e09
+    return 1000000000.0
 
 
 def total_water_use_per_capita():
     """
     Real Name: Total water use per capita
-    Original Eqn: Total water use/Population
+    Original Eqn:
     Units: dam3/person
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Total water use (all types aggregated) per capita.
     """
@@ -97,10 +96,10 @@ def total_water_use_per_capita():
 def water_use_per_type_per_capita():
     """
     Real Name: Water use per type per capita
-    Original Eqn: Total water use by type[water]/Population
+    Original Eqn:
     Units: dam3/person
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['water']
 
     Water use per type per capita.

@@ -7,11 +7,11 @@ Translated using PySD version 2.2.1
 def coverage_energy_rate():
     """
     Real Name: Coverage energy rate
-    Original Eqn: Total final energy footprint/Real TFEC-1
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     EU28 energy consumption covering total energy carriers of EU28 economy.
     """
@@ -22,18 +22,27 @@ def coverage_energy_rate():
 def energy_embedded_in_eu_exports_by_sector_and_fuel():
     """
     Real Name: Energy embedded in EU exports by sector and fuel
-    Original Eqn: Final energy intensity by sector and fuel EU[final sources,sectors]*Total domestic output required for exports by sector[sectors]/M per T
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['final sources', 'sectors']
 
-    Final energy embedded in EU28 exports.Energy required to produce the
-        output necessary to satisfy Rest of the World demand of EU28 products
+    Final energy embedded in EU28 exports.Energy required to produce the output necessary to satisfy Rest of the World demand of EU28 products
     """
     return (
         final_energy_intensity_by_sector_and_fuel_eu()
-        * total_domestic_output_required_for_exports_by_sector()
+        * (
+            xr.DataArray(
+                0,
+                {
+                    "final sources": _subscript_dict["final sources"],
+                    "sectors": _subscript_dict["sectors"],
+                },
+                ["final sources", "sectors"],
+            )
+            + total_domestic_output_required_for_exports_by_sector()
+        )
         / m_per_t()
     )
 
@@ -42,18 +51,27 @@ def energy_embedded_in_eu_exports_by_sector_and_fuel():
 def energy_embedded_in_eu_imports_by_sector_and_fuel():
     """
     Real Name: Energy embedded in EU imports by sector and fuel
-    Original Eqn: Final energy intensity by sector and fuel RoW[final sources,sectors]*RoW output required for EU28 imports by sector[sectors]/M per T
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['final sources', 'sectors']
 
-    Energy embedded in EU28 final products imports. Energy required to
-        produced to output necessary to satisfy EU28 imports.
+    Energy embedded in EU28 final products imports. Energy required to produced to output necessary to satisfy EU28 imports.
     """
     return (
         final_energy_intensity_by_sector_and_fuel_row()
-        * row_output_required_for_eu28_imports_by_sector()
+        * (
+            xr.DataArray(
+                0,
+                {
+                    "final sources": _subscript_dict["final sources"],
+                    "sectors": _subscript_dict["sectors"],
+                },
+                ["final sources", "sectors"],
+            )
+            + row_output_required_for_eu28_imports_by_sector()
+        )
         / m_per_t()
     )
 
@@ -62,10 +80,10 @@ def energy_embedded_in_eu_imports_by_sector_and_fuel():
 def final_energy_footprint_by_fuel():
     """
     Real Name: Final energy footprint by fuel
-    Original Eqn: Households final energy demand[final sources]+required FED sectors by fuel[final sources]+Total energy embedded in EU28 imports [final sources]-Total energy embedded in EU28 exports[final sources]
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['final sources']
 
     Final energy consumption to satisfy EU28 domestic final demand by sector
@@ -82,19 +100,28 @@ def final_energy_footprint_by_fuel():
 def final_energy_intensity_by_sector_and_fuel_row():
     """
     Real Name: Final energy intensity by sector and fuel RoW
-    Original Eqn: Real final energy by sector and fuel RoW[final sources,sectors]/Real total output by sector RoW[sectors]*1e+06
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['final sources', 'sectors']
 
-    Final energy intensity of Rest of the World sectors. (Energy consumed by
-        RoW/Value of output in RoW).
+    Final energy intensity of Rest of the World sectors. (Energy consumed by RoW/Value of output in RoW).
     """
     return (
         real_final_energy_by_sector_and_fuel_row()
-        / real_total_output_by_sector_row()
-        * 1e06
+        / (
+            xr.DataArray(
+                0,
+                {
+                    "final sources": _subscript_dict["final sources"],
+                    "sectors": _subscript_dict["sectors"],
+                },
+                ["final sources", "sectors"],
+            )
+            + real_total_output_by_sector_row()
+        )
+        * 1000000.0
     )
 
 
@@ -102,10 +129,10 @@ def final_energy_intensity_by_sector_and_fuel_row():
 def real_final_energy_by_sector_and_fuel_row():
     """
     Real Name: Real final energy by sector and fuel RoW
-    Original Eqn: Real final energy by sector and fuel World[final sources,sectors]-Real final energy by sector and fuel EU[final sources,sectors]
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['final sources', 'sectors']
 
     Real final energy consumption made by Rest of the World.
@@ -120,19 +147,28 @@ def real_final_energy_by_sector_and_fuel_row():
 def row_output_required_for_eu28_imports_by_sector():
     """
     Real Name: RoW output required for EU28 imports by sector
-    Original Eqn: SUM(Leontief Matrix Imports[sectors,sectors1!]*Real final demand by sector EU[sectors1!])
+    Original Eqn:
     Units: Mdollars
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['sectors']
 
-    Value of Rest of the World output (production) required to satisfy EU28
-        demand of RoW producs (imports).
+    Value of Rest of the World output (production) required to satisfy EU28 demand of RoW producs (imports).
     """
     return sum(
-        leontief_matrix_imports()
-        * rearrange(real_final_demand_by_sector_eu(), ["sectors1"], _subscript_dict),
-        dim=("sectors1",),
+        leontief_matrix_imports().rename({"sectors1": "sectors1!"})
+        * (
+            xr.DataArray(
+                0,
+                {
+                    "sectors": _subscript_dict["sectors"],
+                    "sectors1!": _subscript_dict["sectors1"],
+                },
+                ["sectors", "sectors1!"],
+            )
+            + real_final_demand_by_sector_eu().rename({"sectors": "sectors1!"})
+        ),
+        dim=["sectors1!"],
     )
 
 
@@ -140,43 +176,54 @@ def row_output_required_for_eu28_imports_by_sector():
 def total_energy_embedded_in_eu28_exports():
     """
     Real Name: Total energy embedded in EU28 exports
-    Original Eqn: SUM(Energy embedded in EU exports by sector and fuel[final sources,sectors!])
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['final sources']
 
     Whole economy energy requirements to export.
     """
-    return sum(energy_embedded_in_eu_exports_by_sector_and_fuel(), dim=("sectors",))
+    return sum(
+        energy_embedded_in_eu_exports_by_sector_and_fuel().rename(
+            {"sectors": "sectors!"}
+        ),
+        dim=["sectors!"],
+    )
 
 
 @subs(["final sources"], _subscript_dict)
 def total_energy_embedded_in_eu28_imports():
     """
     Real Name: Total energy embedded in EU28 imports
-    Original Eqn: SUM(Energy embedded in EU imports by sector and fuel[final sources,sectors!])
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['final sources']
 
-    Whole economy (Rest of the World) energy requirements to satisfy EU28
-        imports.
+    Whole economy (Rest of the World) energy requirements to satisfy EU28 imports.
     """
-    return sum(energy_embedded_in_eu_imports_by_sector_and_fuel(), dim=("sectors",))
+    return sum(
+        energy_embedded_in_eu_imports_by_sector_and_fuel().rename(
+            {"sectors": "sectors!"}
+        ),
+        dim=["sectors!"],
+    )
 
 
 def total_final_energy_footprint():
     """
     Real Name: Total final energy footprint
-    Original Eqn: SUM(Final energy footprint by fuel[final sources!])
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Whole economy final energy consumption to satisfy EU28 domestic final
-        demand
+    Whole economy final energy consumption to satisfy EU28 domestic final demand
     """
-    return sum(final_energy_footprint_by_fuel(), dim=("final sources",))
+    return sum(
+        final_energy_footprint_by_fuel().rename({"final sources": "final sources!"}),
+        dim=["final sources!"],
+    )

@@ -92,17 +92,17 @@
         "RCP60",
         "RCP85"
     ],
-    "RES ELEC MAINTENANCE": [
-        "wind onshore",
-        "wind offshore",
-        "solar PV",
-        "CSP"
-    ],
-    "RES ELEC NO MAINTENANCE": [
+    "RES ELEC DISPATCHABLE": [
         "hydro",
         "geot elec",
         "solid bioE elec",
         "oceanic"
+    ],
+    "RES ELEC VARIABLE": [
+        "wind onshore",
+        "wind offshore",
+        "solar PV",
+        "CSP"
     ],
     "RES elec": [
         "hydro",
@@ -119,8 +119,8 @@
         "geot heat",
         "solid bioE heat"
     ],
-    "SECTORS H": [
-        "H",
+    "SECTORS and HOUSEHOLDS": [
+        "Households",
         "Agriculture",
         "Mining quarrying and energy supply",
         "Food Beverages and Tobacco",

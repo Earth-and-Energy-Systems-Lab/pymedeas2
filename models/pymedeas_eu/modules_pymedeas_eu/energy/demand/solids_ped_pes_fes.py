@@ -1,21 +1,19 @@
 """
 Module solids_ped_pes_fes
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
 def abundance_solids():
     """
     Real Name: abundance solids
-    Original Eqn: IF THEN ELSE(PES solids>PED solids, 1, 1 - ZIDZ(PED solids -PES solids, PED solids ))
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    The parameter abundance varies between (1;0). Abundance=1 while the supply
-        covers the demand; the closest to 0 indicates a higher divergence between
-        supply and demand.
+    The parameter abundance varies between (1;0). Abundance=1 while the supply covers the demand; the closest to 0 indicates a higher divergence between supply and demand.
     """
     return if_then_else(
         pes_solids() > ped_solids(),
@@ -27,11 +25,11 @@ def abundance_solids():
 def adapt_max_share_imports_coal():
     """
     Real Name: adapt max share imports coal
-    Original Eqn: IF THEN ELSE(Time<2016,Historic share net imports coal EU until 2016,IF THEN ELSE(Time<2021,Historic share net imports coal EU until 2016+(max share imports coal-Historic share net imports coal EU until 2016)*((Time-2016)/(2021-2016)),max share imports coal))
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -54,11 +52,11 @@ def adapt_max_share_imports_coal():
 def extraction_coal_ej_row():
     """
     Real Name: extraction coal EJ RoW
-    Original Eqn: extraction coal EJ World-extraction coal EJ EU
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -68,25 +66,37 @@ def extraction_coal_ej_row():
 def historic_coal_domestic_eu_extracted_ej():
     """
     Real Name: Historic coal domestic EU extracted EJ
-    Original Eqn: GET DIRECT DATA('../energy.xlsx', 'Europe', 'time_historic_data', 'historic_domestic_coal_extraction')
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component_ext_data
-    Subs: None
+    Type: Data
+    Subs: []
 
 
     """
     return _ext_data_historic_coal_domestic_eu_extracted_ej(time())
 
 
+_ext_data_historic_coal_domestic_eu_extracted_ej = ExtData(
+    "../energy.xlsx",
+    "Europe",
+    "time_historic_data",
+    "historic_domestic_coal_extraction",
+    "interpolate",
+    {},
+    _root,
+    "_ext_data_historic_coal_domestic_eu_extracted_ej",
+)
+
+
 def historic_net_imports_coal_eu():
     """
     Real Name: Historic net imports coal EU
-    Original Eqn: PED coal EJ-Historic coal domestic EU extracted EJ
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -96,25 +106,37 @@ def historic_net_imports_coal_eu():
 def historic_pes_peat_ej():
     """
     Real Name: Historic PES peat EJ
-    Original Eqn: GET DIRECT DATA('../energy.xlsx', 'Europe', 'time_efficiencies', 'historic_primary_energy_supply_peat')
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component_ext_data
-    Subs: None
+    Type: Data
+    Subs: []
 
     Historic primary energy supply of peat.
     """
     return _ext_data_historic_pes_peat_ej(time())
 
 
+_ext_data_historic_pes_peat_ej = ExtData(
+    "../energy.xlsx",
+    "Europe",
+    "time_efficiencies",
+    "historic_primary_energy_supply_peat",
+    "interpolate",
+    {},
+    _root,
+    "_ext_data_historic_pes_peat_ej",
+)
+
+
 def historic_share_coal_domestic_ue_extraction():
     """
     Real Name: Historic share coal domestic UE extraction
-    Original Eqn: ZIDZ(Historic coal domestic EU extracted EJ, PED coal EJ)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -124,46 +146,57 @@ def historic_share_coal_domestic_ue_extraction():
 def historic_share_coal_domestic_ue_extraction_until_2016():
     """
     Real Name: Historic share coal domestic UE extraction until 2016
-    Original Eqn: SAMPLE IF TRUE(Time<2016, Historic share coal domestic UE extraction, Historic share coal domestic UE extraction)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
 
     """
-    return _sample_if_true_historic_share_coal_domestic_ue_extraction_until_2016()
+    return _sampleiftrue_historic_share_coal_domestic_ue_extraction_until_2016()
+
+
+_sampleiftrue_historic_share_coal_domestic_ue_extraction_until_2016 = SampleIfTrue(
+    lambda: time() < 2016,
+    lambda: historic_share_coal_domestic_ue_extraction(),
+    lambda: historic_share_coal_domestic_ue_extraction(),
+    "_sampleiftrue_historic_share_coal_domestic_ue_extraction_until_2016",
+)
 
 
 def historic_share_net_imports_coal_eu_until_2016():
     """
     Real Name: Historic share net imports coal EU until 2016
-    Original Eqn: SAMPLE IF TRUE(Time<2016, ZIDZ(Historic net imports coal EU, extraction coal EJ World), ZIDZ(Historic net imports coal EU, extraction coal EJ World ))
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
 
     """
-    return _sample_if_true_historic_share_net_imports_coal_eu_until_2016()
+    return _sampleiftrue_historic_share_net_imports_coal_eu_until_2016()
+
+
+_sampleiftrue_historic_share_net_imports_coal_eu_until_2016 = SampleIfTrue(
+    lambda: time() < 2016,
+    lambda: zidz(historic_net_imports_coal_eu(), extraction_coal_ej_world()),
+    lambda: zidz(historic_net_imports_coal_eu(), extraction_coal_ej_world()),
+    "_sampleiftrue_historic_share_net_imports_coal_eu_until_2016",
+)
 
 
 def imports_eu_coal_from_row_ej():
     """
     Real Name: imports EU coal from RoW EJ
-    Original Eqn: IF THEN ELSE(Time<2016, PED EU coal from RoW, IF THEN ELSE(limit coal imports from RoW=1, PED EU coal from RoW , IF THEN ELSE (limit coal imports from RoW=2, MIN(PED EU coal from RoW,Historic share net imports coal EU until 2016 *extraction coal EJ World), IF THEN ELSE(limit coal imports from RoW=3, MIN(PED EU coal from RoW, adapt max share imports coal*extraction coal EJ World ), PED EU coal from RoW))))
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    IF THEN ELSE(Time<2016, Historic share net imports coal EU until 2016*extraction
-        coal EJ World,        IF THEN ELSE(limit coal imports from RoW=0, PED EU coal from RoW,        IF THEN ELSE (limit coal imports from RoW=1, MIN(PED EU coal from RoW, Historic
-        share net imports coal EU until 2016*extraction coal EJ World), PED EU
-        coal from RoW)))        IF THEN ELSE(Time<2016, PED EU coal from RoW,        IF THEN ELSE(limit coal imports from RoW=0, PED EU coal from RoW,        IF THEN ELSE (limit coal imports from RoW=1, MIN(PED EU coal from RoW,
-        Historic share net imports coal EU until 2016*extraction coal EJ World),
-        PED EU coal from RoW)))
+    IF THEN ELSE(Time<2016, Historic share net imports coal EU until 2016*extraction coal EJ World, IF THEN ELSE(limit coal imports from RoW=0, PED EU coal from RoW, IF THEN ELSE (limit coal imports from RoW=1, MIN(PED EU coal from RoW, Historic share net imports coal EU until 2016*extraction coal EJ World), PED EU coal from RoW))) IF THEN ELSE(Time<2016, PED EU coal from RoW, IF THEN ELSE(limit coal imports from RoW=0, PED EU coal from RoW, IF THEN ELSE (limit coal imports from RoW=1, MIN(PED EU coal from RoW, Historic share net imports coal EU until 2016*extraction coal EJ World), PED EU coal from RoW)))
     """
     return if_then_else(
         time() < 2016,
@@ -194,40 +227,59 @@ def imports_eu_coal_from_row_ej():
 def limit_coal_imports_from_row():
     """
     Real Name: limit coal imports from RoW
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'limit_coal_imports_from_RoW')
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    1: Unlimited coal imports share from RoW (constrained by total global production)        2: Limited imports coal of UE from RoW (at 2016 share of EU imports vs global
-        production)        3: Limited imports coal of UE from Row (user defined)
+    1: Unlimited coal imports share from RoW (constrained by total global production) 2: Limited imports coal of UE from RoW (at 2016 share of EU imports vs global production) 3: Limited imports coal of UE from Row (user defined)
     """
     return _ext_constant_limit_coal_imports_from_row()
+
+
+_ext_constant_limit_coal_imports_from_row = ExtConstant(
+    "../../scenarios/scen_eu.xlsx",
+    "BAU",
+    "limit_coal_imports_from_RoW",
+    {},
+    _root,
+    "_ext_constant_limit_coal_imports_from_row",
+)
 
 
 def max_share_imports_coal():
     """
     Real Name: max share imports coal
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_eu.xlsx', 'BAU', 'max_share_imports_coal')
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
 
     """
     return _ext_constant_max_share_imports_coal()
 
 
+_ext_constant_max_share_imports_coal = ExtConstant(
+    "../../scenarios/scen_eu.xlsx",
+    "BAU",
+    "max_share_imports_coal",
+    {},
+    _root,
+    "_ext_constant_max_share_imports_coal",
+)
+
+
 def other_solids_required():
     """
     Real Name: Other solids required
-    Original Eqn: Transformation FF losses EJ[solids]+Energy distr losses FF EJ[solids]+"Non-energy use demand by final fuel EJ"[solids]
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -241,11 +293,11 @@ def other_solids_required():
 def pec_coal():
     """
     Real Name: PEC coal
-    Original Eqn: extraction coal EJ EU+imports EU coal from RoW EJ
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -255,11 +307,11 @@ def pec_coal():
 def ped_coal_ej():
     """
     Real Name: PED coal EJ
-    Original Eqn: MAX(0, PED solids-(PE traditional biomass EJ delayed 1yr+modern solids BioE demand households+PES peat EJ+PES waste for TFC +Losses in charcoal plants EJ))
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -279,11 +331,11 @@ def ped_coal_ej():
 def ped_domestic_eu_coal_ej():
     """
     Real Name: PED domestic EU coal EJ
-    Original Eqn: PED coal EJ*Historic share coal domestic UE extraction until 2016
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -293,11 +345,11 @@ def ped_domestic_eu_coal_ej():
 def ped_eu_coal_from_row():
     """
     Real Name: PED EU coal from RoW
-    Original Eqn: MAX(0, PED coal EJ-extraction coal EJ EU)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -307,11 +359,11 @@ def ped_eu_coal_from_row():
 def ped_solids():
     """
     Real Name: PED solids
-    Original Eqn: MAX(0, Required FED solids+PED coal for CTL EJ+PE demand coal Elec plants EJ+PED coal for Heat plants EJ +PED coal for CHP plants EJ+"PED coal Heat-nc"+Other solids required)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Primary energy demand of solids.
     """
@@ -330,11 +382,11 @@ def ped_solids():
 def ped2():
     """
     Real Name: PED2
-    Original Eqn: PED solids-Transformation FF losses EJ[solids]
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -344,18 +396,18 @@ def ped2():
 def pes_peat_ej():
     """
     Real Name: PES peat EJ
-    Original Eqn: MAX(IF THEN ELSE(Time>2014, -0.0125*(Time)+25.3125, Historic PES peat EJ),0)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
     return np.maximum(
         if_then_else(
             time() > 2014,
-            lambda: -0.0125 * (time()) + 25.3125,
+            lambda: -0.0125 * time() + 25.3125,
             lambda: historic_pes_peat_ej(),
         ),
         0,
@@ -365,11 +417,11 @@ def pes_peat_ej():
 def pes_solids():
     """
     Real Name: PES solids
-    Original Eqn: PEC coal+PE traditional biomass EJ delayed 1yr+PES peat EJ+PES waste for TFC +Losses in charcoal plants EJ+modern solids BioE demand households
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Primary energy supply solids.
     """
@@ -386,14 +438,13 @@ def pes_solids():
 def real_fe_consumption_solids_ej():
     """
     Real Name: real FE consumption solids EJ
-    Original Eqn: (extraction coal EJ EU+imports EU coal from RoW EJ+(modern solids BioE demand households+PE traditional biomass EJ delayed 1yr +PES waste for TFC +PES peat EJ+Losses in charcoal plants EJ)-PED coal for CTL EJ-Other solids required)*share solids for final energy
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Real final energy consumption by solids after accounting for energy
-        availability.
+    Real final energy consumption by solids after accounting for energy availability.
     """
     return (
         extraction_coal_ej_eu()
@@ -413,11 +464,11 @@ def real_fe_consumption_solids_ej():
 def required_fed_solids():
     """
     Real Name: Required FED solids
-    Original Eqn: Required FED by fuel[solids]
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Required final energy demand solids.
     """
@@ -427,11 +478,11 @@ def required_fed_solids():
 def share_coal_dem_for_elec():
     """
     Real Name: share coal dem for Elec
-    Original Eqn: IF THEN ELSE(PED coal EJ>0, PE demand coal Elec plants EJ/PED coal EJ, 0)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Share of coal demand to cover electricity consumption in Elec plants.
     """
@@ -445,11 +496,11 @@ def share_coal_dem_for_elec():
 def share_coal_dem_for_heatcom():
     """
     Real Name: "share coal dem for Heat-com"
-    Original Eqn: IF THEN ELSE(PED coal EJ>0, PED coal for Heat plants EJ/PED coal EJ, 0)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Share of coal demand to cover commercial heat consumption in Heat plants.
     """
@@ -463,14 +514,13 @@ def share_coal_dem_for_heatcom():
 def share_coal_dem_for_heatnc():
     """
     Real Name: "share coal dem for Heat-nc"
-    Original Eqn: ZIDZ("PED coal Heat-nc", PED coal EJ )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Share of coal demand to cover non-commercial heat consumption in Heat
-        plants.
+    Share of coal demand to cover non-commercial heat consumption in Heat plants.
     """
     return zidz(ped_coal_heatnc(), ped_coal_ej())
 
@@ -478,11 +528,11 @@ def share_coal_dem_for_heatnc():
 def share_imports_eu_coal_from_row_vs_extraction_world():
     """
     Real Name: share imports EU coal from RoW vs extraction World
-    Original Eqn: ZIDZ(imports EU coal from RoW EJ, extraction coal EJ World )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Share of EU coal imports vs global coal extraction.
     """
@@ -492,75 +542,15 @@ def share_imports_eu_coal_from_row_vs_extraction_world():
 def share_solids_for_final_energy():
     """
     Real Name: share solids for final energy
-    Original Eqn: ZIDZ( Required FED solids, (PED solids-PED coal for CTL EJ -Other solids required) )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Share of final energy vs primary energy for solids.
     """
     return zidz(
         required_fed_solids(),
-        (ped_solids() - ped_coal_for_ctl_ej() - other_solids_required()),
+        ped_solids() - ped_coal_for_ctl_ej() - other_solids_required(),
     )
-
-
-_ext_data_historic_coal_domestic_eu_extracted_ej = ExtData(
-    "../energy.xlsx",
-    "Europe",
-    "time_historic_data",
-    "historic_domestic_coal_extraction",
-    "interpolate",
-    {},
-    _root,
-    "_ext_data_historic_coal_domestic_eu_extracted_ej",
-)
-
-
-_ext_data_historic_pes_peat_ej = ExtData(
-    "../energy.xlsx",
-    "Europe",
-    "time_efficiencies",
-    "historic_primary_energy_supply_peat",
-    "interpolate",
-    {},
-    _root,
-    "_ext_data_historic_pes_peat_ej",
-)
-
-
-_sample_if_true_historic_share_coal_domestic_ue_extraction_until_2016 = SampleIfTrue(
-    lambda: time() < 2016,
-    lambda: historic_share_coal_domestic_ue_extraction(),
-    lambda: historic_share_coal_domestic_ue_extraction(),
-    "_sample_if_true_historic_share_coal_domestic_ue_extraction_until_2016",
-)
-
-
-_sample_if_true_historic_share_net_imports_coal_eu_until_2016 = SampleIfTrue(
-    lambda: time() < 2016,
-    lambda: zidz(historic_net_imports_coal_eu(), extraction_coal_ej_world()),
-    lambda: zidz(historic_net_imports_coal_eu(), extraction_coal_ej_world()),
-    "_sample_if_true_historic_share_net_imports_coal_eu_until_2016",
-)
-
-
-_ext_constant_limit_coal_imports_from_row = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
-    "limit_coal_imports_from_RoW",
-    {},
-    _root,
-    "_ext_constant_limit_coal_imports_from_row",
-)
-
-
-_ext_constant_max_share_imports_coal = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
-    "max_share_imports_coal",
-    {},
-    _root,
-    "_ext_constant_max_share_imports_coal",
-)

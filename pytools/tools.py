@@ -166,8 +166,17 @@ def store_results_csv(result: pd.DataFrame, config: Params) -> pd.DataFrame:
 
     # storing results to csv file
     result.transpose().to_csv(config.model_arguments.results_fpath)
-    log.info('Simulation results file is located in {}'.format(str(
-        config.model_arguments.results_fpath)))
+    log.info("Simulation results file is located in %s" %
+             str(config.model_arguments.results_fpath))
+
+    col_empty = []
+    for column in result.columns:
+        if result[column].isna().all():
+            # remove columns with all na values (unexistent dimensions)
+            col_empty.append(column)
+
+    for column in col_empty:
+        result.drop(column, inplace=True, axis=1)
 
     # recording the output variables in a file, in case the user wants to
     # output the same variables in the next simulations
@@ -179,8 +188,8 @@ def store_results_csv(result: pd.DataFrame, config: Params) -> pd.DataFrame:
         nan_vars = result.columns[result.isna().any()].tolist()
         log.warning(
             "There are NaN's in the timeseries of the following variables\n\n:"
-            + " {}\n\n, which might indicate ".format("\n".join(nan_vars)) +
-            "convergence issues, try decreasing the time step")
+            "\t%s\n\n, which might indicate convergence issues, try"
+            "decreasing the time step" % '\n'.join(nan_vars))
 
     return result
 
@@ -487,7 +496,7 @@ def user_select_data_file_headless(parent: ParentModel) -> Path:
             val_ = input(
              "\nPlease write the number associated with the results file of"
              + f" {parent.name} model from which you wish to import data:\n\t"
-             + "\n\t".join("{}: {}".format(i, j.name)
+             + "\n\t".join(f"{i}: {j.name}"
                            for i, j in enumerate(files_list, 0))
              + "\n\n here ->")
             try:
@@ -499,7 +508,7 @@ def user_select_data_file_headless(parent: ParentModel) -> Path:
                 return files_list[val]
             else:
                 raise ValueError("Please provide a number between 0 and "
-                                 "{}".format(len(files_list)-1))
+                                 f"{len(files_list)-1}")
     else:
         raise ValueError('There are no csv files to import data from.\n'
                          'Please run the parent model/s first')

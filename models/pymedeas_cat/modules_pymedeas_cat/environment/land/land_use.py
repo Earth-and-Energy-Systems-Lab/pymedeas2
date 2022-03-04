@@ -1,50 +1,63 @@
 """
 Module land_use
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
 def available_land():
     """
     Real Name: "'Available land'"
-    Original Eqn: INTEG ( -Land for RES elec rate-increase agricultural land-Marginal land for biofuels rate, initial 'available land')
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
-    "Available land" as defined in MEDEAS-EU framework, representing the
-        terrestrial land that is currently neither being used by the primary
-        sector (arable land, permanent crops, permanent meadows and pastures and
-        productive forest area) nor built-up, nor occupied by permanent
-        snows&glaciers.
+    "Available land" as defined in MEDEAS-EU framework, representing the terrestrial land that is currently neither being used by the primary sector (arable land, permanent crops, permanent meadows and pastures and productive forest area) nor built-up, nor occupied by permanent snows&glaciers.
     """
     return _integ_available_land()
+
+
+_integ_available_land = Integ(
+    lambda: -land_for_res_elec_rate()
+    - increase_agricultural_land()
+    - marginal_land_for_biofuels_rate(),
+    lambda: initial_available_land(),
+    "_integ_available_land",
+)
 
 
 def available_forest_area():
     """
     Real Name: "'Available' forest area"
-    Original Eqn: INTEG ( -Deforestation rate-Forest loss to sustain agriculture-"'Available' to primary forest rate", initial 'available' forest area)
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
-    Used forests, removing primary forest which are not used for wood
-        extraction
+    Used forests, removing primary forest which are not used for wood extraction
     """
     return _integ_available_forest_area()
+
+
+_integ_available_forest_area = Integ(
+    lambda: -deforestation_rate()
+    - forest_loss_to_sustain_agriculture()
+    - available_to_primary_forest_rate(),
+    lambda: initial_available_forest_area(),
+    "_integ_available_forest_area",
+)
 
 
 def available_to_primary_forest_rate():
     """
     Real Name: "'Available' to primary forest rate"
-    Original Eqn: IF THEN ELSE(Time<2014, hist variation primary forest, IF THEN ELSE(Time<Start year P variation primary forest, Historic av variation primary forests area*Primary forests area , P variation primary forest*Primary forests area))*aux reach available forest
+    Original Eqn:
     Units: MHa/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Rate of variation of the area occupied by primary forests.
     """
@@ -66,40 +79,50 @@ def available_to_primary_forest_rate():
 def nvs_1_to_m():
     """
     Real Name: "1 to M"
-    Original Eqn: 1e+06
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
 
     """
-    return 1e06
+    return 1000000.0
 
 
 def agricultural_land():
     """
     Real Name: Agricultural land
-    Original Eqn: INTEG ( Deforestation rate+Forest loss to sustain agriculture+increase agricultural land-compet land for biofuels rate -urban land rate, initial agricultural area)
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
-    Agricultural land includes both categories from FAOSTAT: "Arable land and
-        Permanent crops" and "Permanent pastures".
+    Agricultural land includes both categories from FAOSTAT: "Arable land and Permanent crops" and "Permanent pastures".
     """
     return _integ_agricultural_land()
+
+
+_integ_agricultural_land = Integ(
+    lambda: deforestation_rate()
+    + forest_loss_to_sustain_agriculture()
+    + increase_agricultural_land()
+    - compet_land_for_biofuels_rate()
+    - urban_land_rate(),
+    lambda: initial_agricultural_area(),
+    "_integ_agricultural_land",
+)
 
 
 def agricultural_land_pc():
     """
     Real Name: agricultural land pc
-    Original Eqn: ZIDZ( Agricultural land*"1 to M", Population )
+    Original Eqn:
     Units: Ha/person
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Agricultural land per cápita.
     """
@@ -109,110 +132,132 @@ def agricultural_land_pc():
 def agricultural_land_pc_until_2015():
     """
     Real Name: agricultural land pc until 2015
-    Original Eqn: SAMPLE IF TRUE(Time<2015, agricultural land pc, agricultural land pc)
+    Original Eqn:
     Units: Ha/person
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
     Agricultural land per capita until the year 2015.
     """
-    return _sample_if_true_agricultural_land_pc_until_2015()
+    return _sampleiftrue_agricultural_land_pc_until_2015()
+
+
+_sampleiftrue_agricultural_land_pc_until_2015 = SampleIfTrue(
+    lambda: time() < 2015,
+    lambda: agricultural_land_pc(),
+    lambda: agricultural_land_pc(),
+    "_sampleiftrue_agricultural_land_pc_until_2015",
+)
 
 
 def agricultural_land_until_2015():
     """
     Real Name: agricultural land until 2015
-    Original Eqn: SAMPLE IF TRUE(Time<2015, Agricultural land, Agricultural land)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
-    Agricultural land in EU until the year 2015. From that year, this variable
-        reports the value of agricultural land in 2015.
+    Agricultural land in EU until the year 2015. From that year, this variable reports the value of agricultural land in 2015.
     """
-    return _sample_if_true_agricultural_land_until_2015()
+    return _sampleiftrue_agricultural_land_until_2015()
+
+
+_sampleiftrue_agricultural_land_until_2015 = SampleIfTrue(
+    lambda: time() < 2015,
+    lambda: agricultural_land(),
+    lambda: agricultural_land(),
+    "_sampleiftrue_agricultural_land_until_2015",
+)
 
 
 def aux_reach_ag_land():
     """
     Real Name: aux reach ag land
-    Original Eqn: WITH LOOKUP ( Agricultural land, ([(-0.01,0)-(100,10)],(-0.01,0),(0,0),(1e-08,0),(0.0001,1),(0.01,1),(1,1),(100,1) ))
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     This variable = 0 when there is no more agriculture land available.
     """
-    return lookup(
+    return np.interp(
         agricultural_land(),
-        [-0.01, 0, 1e-08, 0.0001, 0.01, 1, 100],
-        [0, 0, 0, 1, 1, 1, 1],
+        [-1.0e-02, 0.0e00, 1.0e-08, 1.0e-04, 1.0e-02, 1.0e00, 1.0e02],
+        [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0],
     )
 
 
 def aux_reach_available_forest():
     """
     Real Name: aux reach available forest
-    Original Eqn: WITH LOOKUP ( "'Available' forest area", ([(-0.01,0)-(100,10)],(-0.01,0),(0,0),(1e-08,0),(0.0001,1),(0.01,1),(1,1),(100,1) ))
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     This variable = 0 when there is no more forest area available.
     """
-    return lookup(
+    return np.interp(
         available_forest_area(),
-        [-0.01, 0, 1e-08, 0.0001, 0.01, 1, 100],
-        [0, 0, 0, 1, 1, 1, 1],
+        [-1.0e-02, 0.0e00, 1.0e-08, 1.0e-04, 1.0e-02, 1.0e00, 1.0e02],
+        [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0],
     )
 
 
 def aux_reach_available_land():
     """
     Real Name: aux reach available land
-    Original Eqn: WITH LOOKUP ( "'Available land'", ([(-0.01,0)-(100,10)],(-0.01,0),(0,0),(1e-08,0),(0.0001,1),(0.01,1),(1,1),(100,1) ))
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     This variable = 0 when there is no more land available.
     """
-    return lookup(
-        available_land(), [-0.01, 0, 1e-08, 0.0001, 0.01, 1, 100], [0, 0, 0, 1, 1, 1, 1]
+    return np.interp(
+        available_land(),
+        [-1.0e-02, 0.0e00, 1.0e-08, 1.0e-04, 1.0e-02, 1.0e00, 1.0e02],
+        [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0],
     )
 
 
 def compet_agricultural_land_for_biofuels():
     """
     Real Name: Compet agricultural land for biofuels
-    Original Eqn: INTEG ( compet land for biofuels rate, initial value land compet biofuels 2gen Mha)
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
-    Biofuels plantation on land subject to competition with other agricultural
-        uses.
+    Biofuels plantation on land subject to competition with other agricultural uses.
     """
     return _integ_compet_agricultural_land_for_biofuels()
+
+
+_integ_compet_agricultural_land_for_biofuels = Integ(
+    lambda: compet_land_for_biofuels_rate(),
+    lambda: initial_value_land_compet_biofuels_2gen_mha(),
+    "_integ_compet_agricultural_land_for_biofuels",
+)
 
 
 def compet_land_for_biofuels_rate():
     """
     Real Name: compet land for biofuels rate
-    Original Eqn: new biofuels 2gen land compet
+    Original Eqn:
     Units: MHa/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Biofuels plantation rate on land subject to competition with other
-        agricultural uses.
+    Biofuels plantation rate on land subject to competition with other agricultural uses.
     """
     return new_biofuels_2gen_land_compet()
 
@@ -220,38 +265,32 @@ def compet_land_for_biofuels_rate():
 def consum_forest_energy_non_traditional_ej():
     """
     Real Name: consum forest energy non traditional EJ
-    Original Eqn: MIN (demand forest energy non tradition EJ, (forest consumption EJ -consum forest energy traditional EJ-consum wood products EJ))
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Part of the forest biomass extration that goes into non energy uses. P
-        wood-energy uses divides the possible extration into the two uses.
-        Traditional biomass is not restricted
+    Part of the forest biomass extration that goes into non energy uses. P wood-energy uses divides the possible extration into the two uses. Traditional biomass is not restricted
     """
     return np.minimum(
         demand_forest_energy_non_tradition_ej(),
-        (
-            forest_consumption_ej()
-            - consum_forest_energy_traditional_ej()
-            - consum_wood_products_ej()
-        ),
+        forest_consumption_ej()
+        - consum_forest_energy_traditional_ej()
+        - consum_wood_products_ej(),
     )
 
 
 def consum_forest_energy_traditional_ej():
     """
     Real Name: consum forest energy traditional EJ
-    Original Eqn: MIN(forest consumption EJ, demand forest energy traditional EJ)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Consumption of traditional biomass. Traditional wood extraction is got
-        priority over other uses but is limited by forest extraction, which
-        depends on the stock and the policies taken to protect forests.
+    Consumption of traditional biomass. Traditional wood extraction is got priority over other uses but is limited by forest extraction, which depends on the stock and the policies taken to protect forests.
     """
     return np.minimum(forest_consumption_ej(), demand_forest_energy_traditional_ej())
 
@@ -259,33 +298,30 @@ def consum_forest_energy_traditional_ej():
 def consum_wood_products_ej():
     """
     Real Name: consum wood products EJ
-    Original Eqn: MIN( demand wood products EJ,(forest consumption EJ-consum forest energy traditional EJ))
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Priority to energy uses        Part of the forest biomass extration that goes into non energy uses. P
-        wood/energy uses divides the possible extration into the two uses.
-        Traditional uses are not restricted
+    Priority to energy uses Part of the forest biomass extration that goes into non energy uses. P wood/energy uses divides the possible extration into the two uses. Traditional uses are not restricted
     """
     return np.minimum(
         demand_wood_products_ej(),
-        (forest_consumption_ej() - consum_forest_energy_traditional_ej()),
+        forest_consumption_ej() - consum_forest_energy_traditional_ej(),
     )
 
 
 def deficit_forest_biomass():
     """
     Real Name: deficit forest biomass
-    Original Eqn: IF THEN ELSE( max sustainable forest extraction EJ>total demand forest biomass EJ, 0, (total demand forest biomass EJ -max sustainable forest extraction EJ)/total demand forest biomass EJ)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Percent of deficit of forest biomass, in terms of forest extraction
-        demand. If maximun extration is greater than demand it is 0
+    Percent of deficit of forest biomass, in terms of forest extraction demand. If maximun extration is greater than demand it is 0
     """
     return if_then_else(
         max_sustainable_forest_extraction_ej() > total_demand_forest_biomass_ej(),
@@ -300,14 +336,13 @@ def deficit_forest_biomass():
 def deficit_wood_products():
     """
     Real Name: deficit wood products
-    Original Eqn: (demand wood products EJ-consum wood products EJ)/demand wood products EJ
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Percent of the demand of wood products that cannot be met. I should
-        influence the corresponding economic sector  but it does not
+    Percent of the demand of wood products that cannot be met. I should influence the corresponding economic sector but it does not
     """
     return (
         demand_wood_products_ej() - consum_wood_products_ej()
@@ -317,14 +352,13 @@ def deficit_wood_products():
 def deforestation_rate():
     """
     Real Name: Deforestation rate
-    Original Eqn: IF THEN ELSE( "'Available' forest area">P minimum forest, unsustainable loggin,0)*aux reach available forest
+    Original Eqn:
     Units: MHa/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Forest land deforestation rate due to unsustainable loggin and converted
-        to agriculture uses.
+    Forest land deforestation rate due to unsustainable loggin and converted to agriculture uses.
     """
     return (
         if_then_else(
@@ -339,14 +373,13 @@ def deforestation_rate():
 def demand_forest_energy_non_tradition_ej():
     """
     Real Name: demand forest energy non tradition EJ
-    Original Eqn: MAX(0, solid bioE emissions relevant EJ-"PE bioE residues non-biofuels EJ")
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Demand of forest products for energy uses in non traditional uses, in
-        terms of energy. Residuals and traditional biomass not included.
+    Demand of forest products for energy uses in non traditional uses, in terms of energy. Residuals and traditional biomass not included.
     """
     return np.maximum(
         0, solid_bioe_emissions_relevant_ej() - pe_bioe_residues_nonbiofuels_ej()
@@ -356,11 +389,11 @@ def demand_forest_energy_non_tradition_ej():
 def demand_forest_energy_traditional_ej():
     """
     Real Name: demand forest energy traditional EJ
-    Original Eqn: PE traditional biomass demand EJ
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Demand of tradition biomass in terms of EJ
     """
@@ -370,28 +403,37 @@ def demand_forest_energy_traditional_ej():
 def demand_forest_wood_products_pc():
     """
     Real Name: demand forest wood products pc
-    Original Eqn: GET DIRECT CONSTANTS('../land.xlsx', 'Global', 'demand_forest_wood_products')
+    Original Eqn:
     Units: m3/people
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Demand of forest non energy products per capita, data FAO2016
     """
     return _ext_constant_demand_forest_wood_products_pc()
 
 
+_ext_constant_demand_forest_wood_products_pc = ExtConstant(
+    "../land.xlsx",
+    "Global",
+    "demand_forest_wood_products",
+    {},
+    _root,
+    "_ext_constant_demand_forest_wood_products_pc",
+)
+
+
 def demand_wood_products_ej():
     """
     Real Name: demand wood products EJ
-    Original Eqn: demand wood products m3*wood energy density
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Demand of non energy forest products expressed as energy (to compare with
-        other uses)
+    Demand of non energy forest products expressed as energy (to compare with other uses)
     """
     return demand_wood_products_m3() * wood_energy_density()
 
@@ -399,11 +441,11 @@ def demand_wood_products_ej():
 def demand_wood_products_m3():
     """
     Real Name: demand wood products m3
-    Original Eqn: demand forest wood products pc*Population
+    Original Eqn:
     Units: m3
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Demand of non-energy product forests
     """
@@ -413,11 +455,11 @@ def demand_wood_products_m3():
 def eu_forest_energy_imports_from_row():
     """
     Real Name: EU forest energy imports from RoW
-    Original Eqn: total demand forest biomass EJ-forest extraction EJ
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     EU imports of wood from RoW.
     """
@@ -427,11 +469,11 @@ def eu_forest_energy_imports_from_row():
 def forest_consumption_ej():
     """
     Real Name: forest consumption EJ
-    Original Eqn: forest extraction EJ+EU forest energy imports from RoW
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     EU forest consumption.
     """
@@ -441,17 +483,13 @@ def forest_consumption_ej():
 def forest_extraction_ej():
     """
     Real Name: forest extraction EJ
-    Original Eqn: IF THEN ELSE( "'Available' forest area">P minimum forest*forest extraction per Ha, MIN(total demand forest biomass EJ ,max sustainable forest extraction EJ *(1+P forest overexplotation )), 0)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Forest extration of all kinds of products. If the total demand of forest
-        is greater than sustainable potential multiplied by the overxplotation
-        accepted in policy P_forest_extraction the demand is cut to this amount.
-        If the demand is lower than the sustainable*P_forest_extraction the
-        extraction equals the demand
+    Forest extration of all kinds of products. If the total demand of forest is greater than sustainable potential multiplied by the overxplotation accepted in policy P_forest_extraction the demand is cut to this amount. If the demand is lower than the sustainable*P_forest_extraction the extraction equals the demand
     """
     return if_then_else(
         available_forest_area() > p_minimum_forest() * forest_extraction_per_ha(),
@@ -466,30 +504,37 @@ def forest_extraction_ej():
 def forest_extraction_per_ha():
     """
     Real Name: forest extraction per Ha
-    Original Eqn: GET DIRECT CONSTANTS('../land.xlsx', 'Global', 'forest_extraction')
+    Original Eqn:
     Units: EJ/MHa
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    Wood extration from forest in 2015, we assume this extraction is
-        sustainable and it might grow slightly 10% because of better management,
-        average last years
+    Wood extration from forest in 2015, we assume this extraction is sustainable and it might grow slightly 10% because of better management, average last years
     """
     return _ext_constant_forest_extraction_per_ha()
+
+
+_ext_constant_forest_extraction_per_ha = ExtConstant(
+    "../land.xlsx",
+    "Global",
+    "forest_extraction",
+    {},
+    _root,
+    "_ext_constant_forest_extraction_per_ha",
+)
 
 
 def forest_loss_to_sustain_agriculture():
     """
     Real Name: Forest loss to sustain agriculture
-    Original Eqn: IF THEN ELSE(aux reach available land<1, agricultural land until 2015 -Agricultural land, 0)*aux reach available forest
+    Original Eqn:
     Units: MHa/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Forest loss rate to maintain the area dedicated to agriculture in EU in
-        the year 2015.
+    Forest loss rate to maintain the area dedicated to agriculture in EU in the year 2015.
     """
     return (
         if_then_else(
@@ -504,11 +549,11 @@ def forest_loss_to_sustain_agriculture():
 def forest_stock_ratio():
     """
     Real Name: forest stock ratio
-    Original Eqn: 1/(Growing stock forest per Ha*"1 to M"*wood energy density)
+    Original Eqn:
     Units: MHa/EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Forest stock ratio.
     """
@@ -518,26 +563,35 @@ def forest_stock_ratio():
 def growing_stock_forest_per_ha():
     """
     Real Name: Growing stock forest per Ha
-    Original Eqn: GET DIRECT CONSTANTS('../land.xlsx', 'Global', 'growing_stock_forest')
+    Original Eqn:
     Units: m3/Ha
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    Hectares of forest lost per m3 of unsustainable wood extraction, based on
-        stock per extraction ratios, source FAO2015  129m3/Ha for the world.
+    Hectares of forest lost per m3 of unsustainable wood extraction, based on stock per extraction ratios, source FAO2015 129m3/Ha for the world.
     """
     return _ext_constant_growing_stock_forest_per_ha()
+
+
+_ext_constant_growing_stock_forest_per_ha = ExtConstant(
+    "../land.xlsx",
+    "Global",
+    "growing_stock_forest",
+    {},
+    _root,
+    "_ext_constant_growing_stock_forest_per_ha",
+)
 
 
 def hist_variation_primary_forest():
     """
     Real Name: hist variation primary forest
-    Original Eqn: IF THEN ELSE(Time<2014, Historic primary forest(INTEGER(Time+1))-Historic primary forest(INTEGER(Time)), 0)
+    Original Eqn:
     Units: MHa/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Primary forest area historic variation.
     """
@@ -552,11 +606,11 @@ def hist_variation_primary_forest():
 def hist_variation_urban_land():
     """
     Real Name: hist variation urban land
-    Original Eqn: IF THEN ELSE(Time<2014, Historic urban land(INTEGER(Time+1))-Historic urban land(INTEGER(Time)), 0)
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Annual variation of historic urban land.
     """
@@ -571,56 +625,87 @@ def hist_variation_urban_land():
 def historic_av_variation_primary_forests_area():
     """
     Real Name: Historic av variation primary forests area
-    Original Eqn: GET DIRECT CONSTANTS('../land.xlsx', 'Austria', 'variation_primary_forests_area')
+    Original Eqn:
     Units: MHa/Year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Historic average variation (1990-2015) of primary forests area.
     """
     return _ext_constant_historic_av_variation_primary_forests_area()
 
 
+_ext_constant_historic_av_variation_primary_forests_area = ExtConstant(
+    "../land.xlsx",
+    "Austria",
+    "variation_primary_forests_area",
+    {},
+    _root,
+    "_ext_constant_historic_av_variation_primary_forests_area",
+)
+
+
 def historic_primary_forest(x):
     """
     Real Name: Historic primary forest
-    Original Eqn: ( GET DIRECT LOOKUPS('../land.xlsx', 'Austria', 'time', 'primary_forest'))
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: lookup
-    Subs: None
+    Type: Lookup
+    Subs: []
 
     Historic primary forest evolution.
     """
     return _ext_lookup_historic_primary_forest(x)
 
 
+_ext_lookup_historic_primary_forest = ExtLookup(
+    "../land.xlsx",
+    "Austria",
+    "time",
+    "primary_forest",
+    {},
+    _root,
+    "_ext_lookup_historic_primary_forest",
+)
+
+
 def historic_urban_land(x):
     """
     Real Name: Historic urban land
-    Original Eqn: ( GET DIRECT LOOKUPS('../land.xlsx', 'Austria', 'time', 'urban_land'))
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: lookup
-    Subs: None
+    Type: Lookup
+    Subs: []
 
     Historic urban land.
     """
     return _ext_lookup_historic_urban_land(x)
 
 
+_ext_lookup_historic_urban_land = ExtLookup(
+    "../land.xlsx",
+    "Austria",
+    "time",
+    "urban_land",
+    {},
+    _root,
+    "_ext_lookup_historic_urban_land",
+)
+
+
 def historic_urban_land_density():
     """
     Real Name: Historic urban land density
-    Original Eqn: Historic urban land(Time)*Mha to m2/historic population(Time)
+    Original Eqn:
     Units: m2/people
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Historic urban land density evolution (defined as urban land vs total
-        population).
+    Historic urban land density evolution (defined as urban land vs total population).
     """
     return historic_urban_land(time()) * mha_to_m2() / historic_population(time())
 
@@ -628,11 +713,11 @@ def historic_urban_land_density():
 def increase_agricultural_land():
     """
     Real Name: increase agricultural land
-    Original Eqn: IF THEN ELSE(Time<2014,0, agricultural land until 2015-Agricultural land )*aux reach available land
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -649,29 +734,35 @@ def increase_agricultural_land():
 def initial_available_land():
     """
     Real Name: initial 'available land'
-    Original Eqn: GET DIRECT CONSTANTS('../land.xlsx', 'Austria', 'initial_available_land')
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    Initial "available land" as defined in MEDEAS-EU framework, representing
-        the terrestrial land that is currently neither being used by the primary
-        sector (arable land, permanent crops, permanent meadows and pastures and
-        productive forest area) nor built-up, nor occupied by permanent
-        snows&glaciers.
+    Initial "available land" as defined in MEDEAS-EU framework, representing the terrestrial land that is currently neither being used by the primary sector (arable land, permanent crops, permanent meadows and pastures and productive forest area) nor built-up, nor occupied by permanent snows&glaciers.
     """
     return _ext_constant_initial_available_land()
+
+
+_ext_constant_initial_available_land = ExtConstant(
+    "../land.xlsx",
+    "Austria",
+    "initial_available_land",
+    {},
+    _root,
+    "_ext_constant_initial_available_land",
+)
 
 
 def initial_available_forest_area():
     """
     Real Name: initial 'available' forest area
-    Original Eqn: initial planted forests+initial other naturally regen forest
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Initial "available" forest area.
     """
@@ -681,25 +772,35 @@ def initial_available_forest_area():
 def initial_agricultural_area():
     """
     Real Name: initial agricultural area
-    Original Eqn: GET DIRECT CONSTANTS('../land.xlsx', 'Austria', 'initial_agricultural_area')
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
 
     """
     return _ext_constant_initial_agricultural_area()
 
 
+_ext_constant_initial_agricultural_area = ExtConstant(
+    "../land.xlsx",
+    "Austria",
+    "initial_agricultural_area",
+    {},
+    _root,
+    "_ext_constant_initial_agricultural_area",
+)
+
+
 def initial_marginal_land_occupied_by_biofuels():
     """
     Real Name: initial marginal land occupied by biofuels
-    Original Eqn: 0
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Initial value of marginal land occupied by biofuels.
     """
@@ -709,84 +810,133 @@ def initial_marginal_land_occupied_by_biofuels():
 def initial_other_naturally_regen_forest():
     """
     Real Name: initial other naturally regen forest
-    Original Eqn: GET DIRECT CONSTANTS('../land.xlsx', 'Austria', 'initial_other_naturally_regen_forest')
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Initial "Other naturally regenerated forests" (FAOSTAT category).
     """
     return _ext_constant_initial_other_naturally_regen_forest()
 
 
+_ext_constant_initial_other_naturally_regen_forest = ExtConstant(
+    "../land.xlsx",
+    "Austria",
+    "initial_other_naturally_regen_forest",
+    {},
+    _root,
+    "_ext_constant_initial_other_naturally_regen_forest",
+)
+
+
 def initial_permanent_snowsglaciers_area():
     """
     Real Name: "initial permanent snows&glaciers area"
-    Original Eqn: GET DIRECT CONSTANTS('../land.xlsx', 'Austria', 'initial_permanent_snow_glaciers_area')
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Initial area occupied by permanent snows & glaciers.
     """
     return _ext_constant_initial_permanent_snowsglaciers_area()
 
 
+_ext_constant_initial_permanent_snowsglaciers_area = ExtConstant(
+    "../land.xlsx",
+    "Austria",
+    "initial_permanent_snow_glaciers_area",
+    {},
+    _root,
+    "_ext_constant_initial_permanent_snowsglaciers_area",
+)
+
+
 def initial_planted_forests():
     """
     Real Name: initial planted forests
-    Original Eqn: GET DIRECT CONSTANTS('../land.xlsx', 'Austria', 'initial_planted_forests')
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Initial "Planted Forests" (FAOSTAT category).
     """
     return _ext_constant_initial_planted_forests()
 
 
+_ext_constant_initial_planted_forests = ExtConstant(
+    "../land.xlsx",
+    "Austria",
+    "initial_planted_forests",
+    {},
+    _root,
+    "_ext_constant_initial_planted_forests",
+)
+
+
 def initial_primary_forest_area():
     """
     Real Name: initial primary forest area
-    Original Eqn: GET DIRECT CONSTANTS('../land.xlsx', 'Austria', 'initial_primary_forest')
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Initial primary forests area.
     """
     return _ext_constant_initial_primary_forest_area()
 
 
+_ext_constant_initial_primary_forest_area = ExtConstant(
+    "../land.xlsx",
+    "Austria",
+    "initial_primary_forest",
+    {},
+    _root,
+    "_ext_constant_initial_primary_forest_area",
+)
+
+
 def initial_urban_land():
     """
     Real Name: initial urban land
-    Original Eqn: GET DIRECT CONSTANTS('../land.xlsx', 'Austria', 'initial_urban')
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Artificial surfaces (including urban and associated areas).
     """
     return _ext_constant_initial_urban_land()
 
 
+_ext_constant_initial_urban_land = ExtConstant(
+    "../land.xlsx",
+    "Austria",
+    "initial_urban",
+    {},
+    _root,
+    "_ext_constant_initial_urban_land",
+)
+
+
 def land_availability_constraint():
     """
     Real Name: Land availability constraint
-    Original Eqn: aux reach available land
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Land availability constraint: when this variable is 0 it limits the
-        expansion of biofuel crops.
+    Land availability constraint: when this variable is 0 it limits the expansion of biofuel crops.
     """
     return aux_reach_available_land()
 
@@ -794,14 +944,13 @@ def land_availability_constraint():
 def land_for_res_elec_rate():
     """
     Real Name: Land for RES elec rate
-    Original Eqn: (Land requirements RES elec compet uses-"Land requirements RES elec compet uses t-1")*aux reach available land
+    Original Eqn:
     Units: MHa/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Land requirements for renewable technologies to generate electricity (PV
-        on land, CSP and hydro).
+    Land requirements for renewable technologies to generate electricity (PV on land, CSP and hydro).
     """
     return (
         land_requirements_res_elec_compet_uses()
@@ -812,55 +961,74 @@ def land_for_res_elec_rate():
 def land_for_solar_and_hydro_res():
     """
     Real Name: Land for solar and hydro RES
-    Original Eqn: INTEG ( Land for RES elec rate, 0.9)
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
     Land for solar on land and hydro power plants.
     """
     return _integ_land_for_solar_and_hydro_res()
 
 
+_integ_land_for_solar_and_hydro_res = Integ(
+    lambda: land_for_res_elec_rate(), lambda: 0.9, "_integ_land_for_solar_and_hydro_res"
+)
+
+
 def land_requirements_res_elec_compet_uses_t1():
     """
     Real Name: "Land requirements RES elec compet uses t-1"
-    Original Eqn: DELAY FIXED ( Land requirements RES elec compet uses, 1, 0.09)
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
-    Land requirements for renewable technologies to generate electricity (PV
-        on land, CSP and hydro) requiring land and not easily compatible with
-        double uses delayed 1 year.
+    Land requirements for renewable technologies to generate electricity (PV on land, CSP and hydro) requiring land and not easily compatible with double uses delayed 1 year.
     """
     return _delayfixed_land_requirements_res_elec_compet_uses_t1()
+
+
+_delayfixed_land_requirements_res_elec_compet_uses_t1 = DelayFixed(
+    lambda: land_requirements_res_elec_compet_uses(),
+    lambda: 1,
+    lambda: 0.09,
+    time_step,
+    "_delayfixed_land_requirements_res_elec_compet_uses_t1",
+)
 
 
 def marginal_land_for_biofuels():
     """
     Real Name: Marginal land for biofuels
-    Original Eqn: INTEG ( Marginal land for biofuels rate, initial marginal land occupied by biofuels)
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
     Marginal land dedicated to biofuels
     """
     return _integ_marginal_land_for_biofuels()
 
 
+_integ_marginal_land_for_biofuels = Integ(
+    lambda: marginal_land_for_biofuels_rate(),
+    lambda: initial_marginal_land_occupied_by_biofuels(),
+    "_integ_marginal_land_for_biofuels",
+)
+
+
 def marginal_land_for_biofuels_rate():
     """
     Real Name: Marginal land for biofuels rate
-    Original Eqn: new land marg for biofuels*aux reach available land
+    Original Eqn:
     Units: MHa/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Biofuels plantation rate on marginal lands.
     """
@@ -870,11 +1038,11 @@ def marginal_land_for_biofuels_rate():
 def max_e_forest_available_non_trad():
     """
     Real Name: max E forest available non trad
-    Original Eqn: MAX(0, max E tot forest available-demand forest energy traditional EJ )
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Maximum energy from forest available excluding traditional use of biomasss.
     """
@@ -886,14 +1054,13 @@ def max_e_forest_available_non_trad():
 def max_e_forest_energy_non_trad():
     """
     Real Name: max E forest energy non trad
-    Original Eqn: MAX(0, max E forest available non trad-consum wood products EJ)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Maximum energy (NPP) from forest available for modern energy uses (i.e.
-        excluding traditional use of biomasss).
+    Maximum energy (NPP) from forest available for modern energy uses (i.e. excluding traditional use of biomasss).
     """
     return np.maximum(0, max_e_forest_available_non_trad() - consum_wood_products_ej())
 
@@ -901,11 +1068,11 @@ def max_e_forest_energy_non_trad():
 def max_e_tot_forest_available():
     """
     Real Name: max E tot forest available
-    Original Eqn: "'Available' forest area"*forest extraction per Ha*(1+P forest overexplotation)
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Potential energy from total forest available (including overexploitation).
     """
@@ -919,11 +1086,11 @@ def max_e_tot_forest_available():
 def max_solar_on_land_mha():
     """
     Real Name: max solar on land Mha
-    Original Eqn: "'Available land'"+surface CSP Mha+surface solar PV on land Mha
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Maximum area potential to be occupied by solar power plants on land.
     """
@@ -933,14 +1100,13 @@ def max_solar_on_land_mha():
 def max_sustainable_forest_extraction_ej():
     """
     Real Name: max sustainable forest extraction EJ
-    Original Eqn: "'Available' forest area"*forest extraction per Ha
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Wood that might be extracted from forest according to usable foresta area
-        in terms of energy equivalent
+    Wood that might be extracted from forest according to usable foresta area in terms of energy equivalent
     """
     return available_forest_area() * forest_extraction_per_ha()
 
@@ -948,116 +1114,165 @@ def max_sustainable_forest_extraction_ej():
 def mha_to_m2():
     """
     Real Name: Mha to m2
-    Original Eqn: 1e+10
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Conversion from Mha to m2.
     """
-    return 1e10
+    return 10000000000.0
 
 
 def p_forest_overexplotation():
     """
     Real Name: P forest overexplotation
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'forest_overexplotation')
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    Policy of forest extraction for energy uses. Describes the percent of
-        deficit of forest biomass acepted. If gives the percent at which wood for
-        energy and non energy uses must adapt to sustainable potencial. If it's
-        greater than 0 means that overexplotaion of forest leads to forest stock
-        destruction.
+    Policy of forest extraction for energy uses. Describes the percent of deficit of forest biomass acepted. If gives the percent at which wood for energy and non energy uses must adapt to sustainable potencial. If it's greater than 0 means that overexplotaion of forest leads to forest stock destruction.
     """
     return _ext_constant_p_forest_overexplotation()
+
+
+_ext_constant_p_forest_overexplotation = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "forest_overexplotation",
+    {},
+    _root,
+    "_ext_constant_p_forest_overexplotation",
+)
 
 
 def p_minimum_forest():
     """
     Real Name: P minimum forest
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'minimum_forest')
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Minimum surface of forest land accepted.
     """
     return _ext_constant_p_minimum_forest()
 
 
+_ext_constant_p_minimum_forest = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "minimum_forest",
+    {},
+    _root,
+    "_ext_constant_p_minimum_forest",
+)
+
+
 def p_urban_land_density():
     """
     Real Name: P urban land density
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'urban_land_density')
+    Original Eqn:
     Units: m2/people
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Policy target to set urban land density in a target year.
     """
     return _ext_constant_p_urban_land_density()
 
 
+_ext_constant_p_urban_land_density = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "urban_land_density",
+    {},
+    _root,
+    "_ext_constant_p_urban_land_density",
+)
+
+
 def p_variation_primary_forest():
     """
     Real Name: P variation primary forest
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'variation_primary_forest')
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Policy target to increase/decrease the rate of expansion of primary forest.
     """
     return _ext_constant_p_variation_primary_forest()
 
 
+_ext_constant_p_variation_primary_forest = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "variation_primary_forest",
+    {},
+    _root,
+    "_ext_constant_p_variation_primary_forest",
+)
+
+
 def permanent_snowsglaciers_area():
     """
     Real Name: "permanent snows&glaciers area"
-    Original Eqn: INTEG ( 0, "initial permanent snows&glaciers area")
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
     Permanent snow & glaciers from FAOSTAT.
     """
     return _integ_permanent_snowsglaciers_area()
 
 
+_integ_permanent_snowsglaciers_area = Integ(
+    lambda: 0,
+    lambda: initial_permanent_snowsglaciers_area(),
+    "_integ_permanent_snowsglaciers_area",
+)
+
+
 def primary_forests_area():
     """
     Real Name: Primary forests area
-    Original Eqn: INTEG ( "'Available' to primary forest rate", initial primary forest area)
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
     Primary forests area.
     """
     return _integ_primary_forests_area()
 
 
+_integ_primary_forests_area = Integ(
+    lambda: available_to_primary_forest_rate(),
+    lambda: initial_primary_forest_area(),
+    "_integ_primary_forests_area",
+)
+
+
 def scarcity_agricultural_land():
     """
     Real Name: "scarcity agricultural land?"
-    Original Eqn: IF THEN ELSE(aux reach ag land=0, 0, IF THEN ELSE(agricultural land pc>agricultural land pc until 2015 *threshold scarcity ag land, 1, 0))
+    Original Eqn:
     Units: Ha/person
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    If the agricultural land per capita falls below a threshold, this variable
-        shifts to 0 (otherwise = 1).
+    If the agricultural land per capita falls below a threshold, this variable shifts to 0 (otherwise = 1).
     """
     return if_then_else(
         aux_reach_ag_land() == 0,
@@ -1076,33 +1291,25 @@ def shortage_bioe_for_elec():
     """
     Real Name: shortage BioE for elec
     Original Eqn:
-      1
-        .
-        .
-        .
-      1
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
+    Type: Auxiliary, Constant
     Subs: ['RES elec']
 
-    Shortage of bioenergy for supplying RES power plants for electricity
-        generation.
+    Shortage of bioenergy for supplying RES power plants for electricity generation.
     """
-    return xrmerge(
-        xr.DataArray(1, {"RES elec": ["hydro"]}, ["RES elec"]),
-        xr.DataArray(1, {"RES elec": ["geot elec"]}, ["RES elec"]),
-        rearrange(
-            shortage_bioe_non_trad_delayed_1yr(),
-            ["RES elec"],
-            {"RES elec": ["solid bioE elec"]},
-        ),
-        xr.DataArray(1, {"RES elec": ["oceanic"]}, ["RES elec"]),
-        xr.DataArray(1, {"RES elec": ["wind onshore"]}, ["RES elec"]),
-        xr.DataArray(1, {"RES elec": ["wind offshore"]}, ["RES elec"]),
-        xr.DataArray(1, {"RES elec": ["solar PV"]}, ["RES elec"]),
-        xr.DataArray(1, {"RES elec": ["CSP"]}, ["RES elec"]),
+    value = xr.DataArray(
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
+    value.loc[{"RES elec": ["hydro"]}] = 1
+    value.loc[{"RES elec": ["geot elec"]}] = 1
+    value.loc[{"RES elec": ["solid bioE elec"]}] = shortage_bioe_non_trad_delayed_1yr()
+    value.loc[{"RES elec": ["oceanic"]}] = 1
+    value.loc[{"RES elec": ["wind onshore"]}] = 1
+    value.loc[{"RES elec": ["wind offshore"]}] = 1
+    value.loc[{"RES elec": ["solar PV"]}] = 1
+    value.loc[{"RES elec": ["CSP"]}] = 1
+    return value
 
 
 @subs(["RES heat"], _subscript_dict)
@@ -1110,35 +1317,30 @@ def shortage_bioe_for_heat():
     """
     Real Name: shortage BioE for heat
     Original Eqn:
-      1
-      1
-      shortage BioE non trad delayed 1yr
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
+    Type: Auxiliary, Constant
     Subs: ['RES heat']
 
     Shortage of bioenergy for supplying RES power plants for heat generation.
     """
-    return xrmerge(
-        xr.DataArray(1, {"RES heat": ["solar heat"]}, ["RES heat"]),
-        xr.DataArray(1, {"RES heat": ["geot heat"]}, ["RES heat"]),
-        rearrange(
-            shortage_bioe_non_trad_delayed_1yr(),
-            ["RES heat"],
-            {"RES heat": ["solid bioE heat"]},
-        ),
+    value = xr.DataArray(
+        np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
+    value.loc[{"RES heat": ["solar heat"]}] = 1
+    value.loc[{"RES heat": ["geot heat"]}] = 1
+    value.loc[{"RES heat": ["solid bioE heat"]}] = shortage_bioe_non_trad_delayed_1yr()
+    return value
 
 
 def shortage_bioe_non_trad():
     """
     Real Name: shortage BioE non trad
-    Original Eqn: ZIDZ( consum forest energy non traditional EJ, demand forest energy non tradition EJ)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Shortage of bioenergy for modern energy uses (no traditional).
     """
@@ -1148,74 +1350,111 @@ def shortage_bioe_non_trad():
     )
 
 
-def shortage_bioe_non_trad_delayed_1yr():
-    """
-    Real Name: shortage BioE non trad delayed 1yr
-    Original Eqn: DELAY FIXED ( shortage BioE non trad, 1, 1)
-    Units: Dmnl
-    Limits: (None, None)
-    Type: component
-    Subs: None
-
-    Shortage of bioenergy for modern energy uses (no traditional) delayed 1
-        year.
-    """
-    return _delayfixed_shortage_bioe_non_trad_delayed_1yr()
-
-
-def start_year_p_urban_land_density():
-    """
-    Real Name: Start year P urban land density
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'start_year_P_urban_land_density')
-    Units: Year
-    Limits: (None, None)
-    Type: constant
-    Subs: None
-
-    Start year of the policy target to modify urban land density.
-    """
-    return _ext_constant_start_year_p_urban_land_density()
-
-
 def start_year_p_variation_primary_forest():
     """
     Real Name: Start year P variation primary forest
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'start_year_variation_primary_forest')
+    Original Eqn:
     Units: Year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Start year of the policy target to increase primary forests area.
     """
     return _ext_constant_start_year_p_variation_primary_forest()
 
 
+_ext_constant_start_year_p_variation_primary_forest = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "start_year_variation_primary_forest",
+    {},
+    _root,
+    "_ext_constant_start_year_p_variation_primary_forest",
+)
+
+
+def shortage_bioe_non_trad_delayed_1yr():
+    """
+    Real Name: shortage BioE non trad delayed 1yr
+    Original Eqn:
+    Units: Dmnl
+    Limits: (None, None)
+    Type: Stateful
+    Subs: []
+
+    Shortage of bioenergy for modern energy uses (no traditional) delayed 1 year.
+    """
+    return _delayfixed_shortage_bioe_non_trad_delayed_1yr()
+
+
+_delayfixed_shortage_bioe_non_trad_delayed_1yr = DelayFixed(
+    lambda: shortage_bioe_non_trad(),
+    lambda: 1,
+    lambda: 1,
+    time_step,
+    "_delayfixed_shortage_bioe_non_trad_delayed_1yr",
+)
+
+
+def start_year_p_urban_land_density():
+    """
+    Real Name: Start year P urban land density
+    Original Eqn:
+    Units: Year
+    Limits: (None, None)
+    Type: Constant
+    Subs: []
+
+    Start year of the policy target to modify urban land density.
+    """
+    return _ext_constant_start_year_p_urban_land_density()
+
+
+_ext_constant_start_year_p_urban_land_density = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "start_year_P_urban_land_density",
+    {},
+    _root,
+    "_ext_constant_start_year_p_urban_land_density",
+)
+
+
 def target_year_p_urban_land_density():
     """
     Real Name: Target year P urban land density
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'target_year_P_urban_land_density')
+    Original Eqn:
     Units: Year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Target year of the policy target to modify urban land density.
     """
     return _ext_constant_target_year_p_urban_land_density()
 
 
+_ext_constant_target_year_p_urban_land_density = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "target_year_P_urban_land_density",
+    {},
+    _root,
+    "_ext_constant_target_year_p_urban_land_density",
+)
+
+
 def threshold_scarcity_ag_land():
     """
     Real Name: threshold scarcity ag land
-    Original Eqn: 0.75
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    If agriculture land per capita es above this treshold, then it is assumed
-        that more land can be displaced from food production.
+    If agriculture land per capita es above this treshold, then it is assumed that more land can be displaced from food production.
     """
     return 0.75
 
@@ -1223,11 +1462,11 @@ def threshold_scarcity_ag_land():
 def total_aut_land_endogenous():
     """
     Real Name: Total AUT land endogenous
-    Original Eqn: Agricultural land+Compet agricultural land for biofuels+"'Available' forest area"+Land for solar and hydro RES +Marginal land for biofuels+"permanent snows&glaciers area"+Primary forests area+Urban land+"'Available land'"
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -1247,11 +1486,11 @@ def total_aut_land_endogenous():
 def total_demand_energy_forest_ej():
     """
     Real Name: total demand energy forest EJ
-    Original Eqn: demand forest energy non tradition EJ+demand forest energy traditional EJ
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Total demand of forest energy.
     """
@@ -1263,11 +1502,11 @@ def total_demand_energy_forest_ej():
 def total_demand_forest_biomass_ej():
     """
     Real Name: total demand forest biomass EJ
-    Original Eqn: demand forest energy non tradition EJ+demand forest energy traditional EJ+demand wood products EJ
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Total demand of wood products from forest for all uses
     """
@@ -1281,14 +1520,13 @@ def total_demand_forest_biomass_ej():
 def total_land_occupied_by_res():
     """
     Real Name: Total land occupied by RES
-    Original Eqn: Compet agricultural land for biofuels+Land for solar and hydro RES +Marginal land for biofuels
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Total land occupied by RES (biofuel crops and RES elec PV on land, CSP and
-        hydro).
+    Total land occupied by RES (biofuel crops and RES elec PV on land, CSP and hydro).
     """
     return (
         compet_agricultural_land_for_biofuels()
@@ -1300,11 +1538,11 @@ def total_land_occupied_by_res():
 def unsustainable_loggin():
     """
     Real Name: unsustainable loggin
-    Original Eqn: MAX(0, (forest extraction EJ-max sustainable forest extraction EJ )*forest stock ratio)
+    Original Eqn:
     Units: MHa/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Loss of forest land due to overexplotation of forest for energy uses.
     """
@@ -1318,29 +1556,32 @@ def unsustainable_loggin():
 def urban_land():
     """
     Real Name: Urban land
-    Original Eqn: INTEG ( urban land rate, initial urban land)
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
-    Land for urban uses and infraestructures. Corresponds with FAOSTAT
-        category "Artificial surfaces (including urban and associated areas)".
+    Land for urban uses and infraestructures. Corresponds with FAOSTAT category "Artificial surfaces (including urban and associated areas)".
     """
     return _integ_urban_land()
+
+
+_integ_urban_land = Integ(
+    lambda: urban_land_rate(), lambda: initial_urban_land(), "_integ_urban_land"
+)
 
 
 def urban_land_density():
     """
     Real Name: urban land density
-    Original Eqn: IF THEN ELSE(Time<2015, Historic urban land density, IF THEN ELSE(Time<Start year P urban land density, Historic urban land density, IF THEN ELSE(Time<Target year P urban land density, Historic urban land density+(P urban land density-Historic urban land density)*(Time -Start year P urban land density)/(Target year P urban land density-Start year P urban land density), P urban land density )))
+    Original Eqn:
     Units: m2/people
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Urban land density evolution as a result of the application of a policy
-        target.
+    Urban land density evolution as a result of the application of a policy target.
     """
     return if_then_else(
         time() < 2015,
@@ -1366,25 +1607,34 @@ def urban_land_density():
 def urban_land_density_t1():
     """
     Real Name: "urban land density t-1"
-    Original Eqn: DELAY FIXED ( urban land density, 1, 108.5)
+    Original Eqn:
     Units: m2/person
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
     Policy target to set urban land density in a target year delayed 1 year.
     """
     return _delayfixed_urban_land_density_t1()
 
 
+_delayfixed_urban_land_density_t1 = DelayFixed(
+    lambda: urban_land_density(),
+    lambda: 1,
+    lambda: 108.5,
+    time_step,
+    "_delayfixed_urban_land_density_t1",
+)
+
+
 def urban_land_density_variation():
     """
     Real Name: urban land density variation
-    Original Eqn: urban land density-"urban land density t-1"
+    Original Eqn:
     Units: m2/people/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Urban land density annual variation.
     """
@@ -1394,11 +1644,11 @@ def urban_land_density_variation():
 def urban_land_rate():
     """
     Real Name: urban land rate
-    Original Eqn: IF THEN ELSE(Time<2014, hist variation urban land, 0.000795116*urban land density variation+2.03205*1e-08*pop variation)*aux reach ag land
+    Original Eqn:
     Units: MHa/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Rate of urban surface rate.
     """
@@ -1416,327 +1666,15 @@ def urban_land_rate():
 def wood_energy_density():
     """
     Real Name: wood energy density
-    Original Eqn: GET DIRECT CONSTANTS('../land.xlsx', 'Global', 'wood_energy_density')
+    Original Eqn:
     Units: EJ/m3
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Average energy of wood products.
     """
     return _ext_constant_wood_energy_density()
-
-
-_integ_available_land = Integ(
-    lambda: -land_for_res_elec_rate()
-    - increase_agricultural_land()
-    - marginal_land_for_biofuels_rate(),
-    lambda: initial_available_land(),
-    "_integ_available_land",
-)
-
-
-_integ_available_forest_area = Integ(
-    lambda: -deforestation_rate()
-    - forest_loss_to_sustain_agriculture()
-    - available_to_primary_forest_rate(),
-    lambda: initial_available_forest_area(),
-    "_integ_available_forest_area",
-)
-
-
-_integ_agricultural_land = Integ(
-    lambda: deforestation_rate()
-    + forest_loss_to_sustain_agriculture()
-    + increase_agricultural_land()
-    - compet_land_for_biofuels_rate()
-    - urban_land_rate(),
-    lambda: initial_agricultural_area(),
-    "_integ_agricultural_land",
-)
-
-
-_sample_if_true_agricultural_land_pc_until_2015 = SampleIfTrue(
-    lambda: time() < 2015,
-    lambda: agricultural_land_pc(),
-    lambda: agricultural_land_pc(),
-    "_sample_if_true_agricultural_land_pc_until_2015",
-)
-
-
-_sample_if_true_agricultural_land_until_2015 = SampleIfTrue(
-    lambda: time() < 2015,
-    lambda: agricultural_land(),
-    lambda: agricultural_land(),
-    "_sample_if_true_agricultural_land_until_2015",
-)
-
-
-_integ_compet_agricultural_land_for_biofuels = Integ(
-    lambda: compet_land_for_biofuels_rate(),
-    lambda: initial_value_land_compet_biofuels_2gen_mha(),
-    "_integ_compet_agricultural_land_for_biofuels",
-)
-
-
-_ext_constant_demand_forest_wood_products_pc = ExtConstant(
-    "../land.xlsx",
-    "Global",
-    "demand_forest_wood_products",
-    {},
-    _root,
-    "_ext_constant_demand_forest_wood_products_pc",
-)
-
-
-_ext_constant_forest_extraction_per_ha = ExtConstant(
-    "../land.xlsx",
-    "Global",
-    "forest_extraction",
-    {},
-    _root,
-    "_ext_constant_forest_extraction_per_ha",
-)
-
-
-_ext_constant_growing_stock_forest_per_ha = ExtConstant(
-    "../land.xlsx",
-    "Global",
-    "growing_stock_forest",
-    {},
-    _root,
-    "_ext_constant_growing_stock_forest_per_ha",
-)
-
-
-_ext_constant_historic_av_variation_primary_forests_area = ExtConstant(
-    "../land.xlsx",
-    "Austria",
-    "variation_primary_forests_area",
-    {},
-    _root,
-    "_ext_constant_historic_av_variation_primary_forests_area",
-)
-
-
-_ext_lookup_historic_primary_forest = ExtLookup(
-    "../land.xlsx",
-    "Austria",
-    "time",
-    "primary_forest",
-    {},
-    _root,
-    "_ext_lookup_historic_primary_forest",
-)
-
-
-_ext_lookup_historic_urban_land = ExtLookup(
-    "../land.xlsx",
-    "Austria",
-    "time",
-    "urban_land",
-    {},
-    _root,
-    "_ext_lookup_historic_urban_land",
-)
-
-
-_ext_constant_initial_available_land = ExtConstant(
-    "../land.xlsx",
-    "Austria",
-    "initial_available_land",
-    {},
-    _root,
-    "_ext_constant_initial_available_land",
-)
-
-
-_ext_constant_initial_agricultural_area = ExtConstant(
-    "../land.xlsx",
-    "Austria",
-    "initial_agricultural_area",
-    {},
-    _root,
-    "_ext_constant_initial_agricultural_area",
-)
-
-
-_ext_constant_initial_other_naturally_regen_forest = ExtConstant(
-    "../land.xlsx",
-    "Austria",
-    "initial_other_naturally_regen_forest",
-    {},
-    _root,
-    "_ext_constant_initial_other_naturally_regen_forest",
-)
-
-
-_ext_constant_initial_permanent_snowsglaciers_area = ExtConstant(
-    "../land.xlsx",
-    "Austria",
-    "initial_permanent_snow_glaciers_area",
-    {},
-    _root,
-    "_ext_constant_initial_permanent_snowsglaciers_area",
-)
-
-
-_ext_constant_initial_planted_forests = ExtConstant(
-    "../land.xlsx",
-    "Austria",
-    "initial_planted_forests",
-    {},
-    _root,
-    "_ext_constant_initial_planted_forests",
-)
-
-
-_ext_constant_initial_primary_forest_area = ExtConstant(
-    "../land.xlsx",
-    "Austria",
-    "initial_primary_forest",
-    {},
-    _root,
-    "_ext_constant_initial_primary_forest_area",
-)
-
-
-_ext_constant_initial_urban_land = ExtConstant(
-    "../land.xlsx",
-    "Austria",
-    "initial_urban",
-    {},
-    _root,
-    "_ext_constant_initial_urban_land",
-)
-
-
-_integ_land_for_solar_and_hydro_res = Integ(
-    lambda: land_for_res_elec_rate(), lambda: 0.9, "_integ_land_for_solar_and_hydro_res"
-)
-
-
-_delayfixed_land_requirements_res_elec_compet_uses_t1 = DelayFixed(
-    lambda: land_requirements_res_elec_compet_uses(),
-    lambda: 1,
-    lambda: 0.09,
-    time_step,
-    "_delayfixed_land_requirements_res_elec_compet_uses_t1",
-)
-
-
-_integ_marginal_land_for_biofuels = Integ(
-    lambda: marginal_land_for_biofuels_rate(),
-    lambda: initial_marginal_land_occupied_by_biofuels(),
-    "_integ_marginal_land_for_biofuels",
-)
-
-
-_ext_constant_p_forest_overexplotation = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "forest_overexplotation",
-    {},
-    _root,
-    "_ext_constant_p_forest_overexplotation",
-)
-
-
-_ext_constant_p_minimum_forest = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "minimum_forest",
-    {},
-    _root,
-    "_ext_constant_p_minimum_forest",
-)
-
-
-_ext_constant_p_urban_land_density = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "urban_land_density",
-    {},
-    _root,
-    "_ext_constant_p_urban_land_density",
-)
-
-
-_ext_constant_p_variation_primary_forest = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "variation_primary_forest",
-    {},
-    _root,
-    "_ext_constant_p_variation_primary_forest",
-)
-
-
-_integ_permanent_snowsglaciers_area = Integ(
-    lambda: 0,
-    lambda: initial_permanent_snowsglaciers_area(),
-    "_integ_permanent_snowsglaciers_area",
-)
-
-
-_integ_primary_forests_area = Integ(
-    lambda: available_to_primary_forest_rate(),
-    lambda: initial_primary_forest_area(),
-    "_integ_primary_forests_area",
-)
-
-
-_delayfixed_shortage_bioe_non_trad_delayed_1yr = DelayFixed(
-    lambda: shortage_bioe_non_trad(),
-    lambda: 1,
-    lambda: 1,
-    time_step,
-    "_delayfixed_shortage_bioe_non_trad_delayed_1yr",
-)
-
-
-_ext_constant_start_year_p_urban_land_density = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "start_year_P_urban_land_density",
-    {},
-    _root,
-    "_ext_constant_start_year_p_urban_land_density",
-)
-
-
-_ext_constant_start_year_p_variation_primary_forest = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "start_year_variation_primary_forest",
-    {},
-    _root,
-    "_ext_constant_start_year_p_variation_primary_forest",
-)
-
-
-_ext_constant_target_year_p_urban_land_density = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "target_year_P_urban_land_density",
-    {},
-    _root,
-    "_ext_constant_target_year_p_urban_land_density",
-)
-
-
-_integ_urban_land = Integ(
-    lambda: urban_land_rate(), lambda: initial_urban_land(), "_integ_urban_land"
-)
-
-
-_delayfixed_urban_land_density_t1 = DelayFixed(
-    lambda: urban_land_density(),
-    lambda: 1,
-    lambda: 108.5,
-    time_step,
-    "_delayfixed_urban_land_density_t1",
-)
 
 
 _ext_constant_wood_energy_density = ExtConstant(

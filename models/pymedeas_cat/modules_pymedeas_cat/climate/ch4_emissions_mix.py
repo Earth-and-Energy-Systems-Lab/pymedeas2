@@ -1,17 +1,17 @@
 """
 Module ch4_emissions_mix
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
 def ch4_emissions_coal_test():
     """
     Real Name: CH4 emissions COAL test
-    Original Eqn: CH4 emissions coal without CTL+CH4 emissions CTL
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -21,11 +21,11 @@ def ch4_emissions_coal_test():
 def ch4_emissions_extraction_coal():
     """
     Real Name: CH4 emissions extraction coal
-    Original Eqn: (Coal in FEC AUT+PE demand coal Elec plants EJ+PED coal for CHP plants EJ+PED coal for CTL EJ +PED coal for Heat plants EJ+"PED coal Heat-nc")*MJ per EJ*gCH4 per MJ coal/g per Mt
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -47,11 +47,11 @@ def ch4_emissions_extraction_coal():
 def ch4_emissions_extraction_gas():
     """
     Real Name: CH4 emissions extraction gas
-    Original Eqn: (FE nat gas consumption+PE demand gas Elec plants EJ+PED gas for CHP plants EJ+"PED gas Heat-nc" +PED gases for Heat plants EJ+"PED nat. gas for GTL EJ" )*(1-share unconv tot gas )*MJ per EJ*gCH4 per MJ conv gas/g per Mt+ (FE nat gas consumption+PE demand gas Elec plants EJ+PED gas for CHP plants EJ+"PED gas Heat-nc" +PED gases for Heat plants EJ+"PED nat. gas for GTL EJ" )*share unconv tot gas *gCH4 per MJ unconv gas*MJ per EJ/g per Mt
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -77,11 +77,11 @@ def ch4_emissions_extraction_gas():
 def ch4_emissions_extraction_oil():
     """
     Real Name: CH4 emissions extraction OIL
-    Original Eqn: (FED oil+PE demand oil Elec plants EJ+"PED liquids Heat-nc" +PED oil for CHP plants EJ +PED oil for Heat plants EJ)*MJ per EJ*gCH4 per MJ oil/g per Mt
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -102,11 +102,11 @@ def ch4_emissions_extraction_oil():
 def ch4_emissions_gas_test():
     """
     Real Name: CH4 emissions GAS test
-    Original Eqn: CH4 emissions conv gas without GTL+CH4 emissions GTL+CH4 emissions unconv gas
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -120,11 +120,11 @@ def ch4_emissions_gas_test():
 def ch4_emissions_oil_test():
     """
     Real Name: CH4 emissions OIL test
-    Original Eqn: CH4 emissions oil
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -134,11 +134,11 @@ def ch4_emissions_oil_test():
 def check_hist_ch4_emissions():
     """
     Real Name: check hist CH4 emissions
-    Original Eqn: IF THEN ELSE(Time<2012, (Total FE CH4 emissions-Total CH4 emissions fossil fuels )*100/Total CH4 emissions fossil fuels, 0)
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -154,11 +154,11 @@ def check_hist_ch4_emissions():
 def coal_for_elec_ch4_emissions():
     """
     Real Name: Coal for Elec CH4 emissions
-    Original Eqn: (PE demand coal Elec plants EJ+PED coal for CHP plants EJ)*MJ per EJ*gCH4 per MJ coal/g per Mt
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -173,11 +173,11 @@ def coal_for_elec_ch4_emissions():
 def coal_for_heat_ch4_emissions():
     """
     Real Name: Coal for Heat CH4 emissions
-    Original Eqn: ("PED coal Heat-nc"+PED coal for Heat plants EJ)*MJ per EJ*gCH4 per MJ coal/g per Mt
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -192,11 +192,11 @@ def coal_for_heat_ch4_emissions():
 def fe_nat_gas_consumption():
     """
     Real Name: FE nat gas consumption
-    Original Eqn: (1-share Biogas total PES Gases AUT)*real FE consumption gases EJ
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -206,11 +206,11 @@ def fe_nat_gas_consumption():
 def fec_oil_2():
     """
     Real Name: FEC oil 2
-    Original Eqn: real FE consumption liquids EJ-FES total biofuels production EJ
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -220,11 +220,11 @@ def fec_oil_2():
 def fed_oil():
     """
     Real Name: FED oil
-    Original Eqn: PEC total oil-total demand oil other FED
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -234,11 +234,11 @@ def fed_oil():
 def gas_for_elec_ch4_emissions():
     """
     Real Name: Gas for Elec CH4 emissions
-    Original Eqn: (PE demand gas Elec plants EJ+PED gas for CHP plants EJ)*MJ per EJ*gCH4 per MJ conv gas/g per Mt
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -253,11 +253,11 @@ def gas_for_elec_ch4_emissions():
 def gas_for_heat_ch4_emissions():
     """
     Real Name: Gas for Heat CH4 emissions
-    Original Eqn: (PED gases for Heat plants EJ+"PED gas Heat-nc")*MJ per EJ*gCH4 per MJ conv gas/g per Mt
+    Original Eqn:
     Units: GtCO2/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -272,11 +272,11 @@ def gas_for_heat_ch4_emissions():
 def gases_fe_ch4_emission():
     """
     Real Name: Gases FE CH4 emission
-    Original Eqn: FE nat gas consumption*MJ per EJ*gCH4 per MJ conv gas/g per Mt
+    Original Eqn:
     Units: GtCO2/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -286,11 +286,11 @@ def gases_fe_ch4_emission():
 def liquids_fe_ch4_emissions():
     """
     Real Name: Liquids FE CH4 emissions
-    Original Eqn: FED oil*MJ per EJ*gCH4 per MJ oil/g per Mt+ PED coal for CTL EJ*MJ per EJ*gCH4 per MJ CTL/g per Mt+ "PED nat. gas for GTL EJ"*MJ per EJ*gCH4 per MJ GTL/g per Mt
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -304,11 +304,11 @@ def liquids_fe_ch4_emissions():
 def oil_for_elec_ch4_emissions():
     """
     Real Name: Oil for Elec CH4 emissions
-    Original Eqn: (PE demand oil Elec plants EJ+PED oil for CHP plants EJ)*MJ per EJ*gCH4 per MJ oil/g per Mt
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -323,11 +323,11 @@ def oil_for_elec_ch4_emissions():
 def oil_for_heat_ch4_emissions():
     """
     Real Name: Oil for Heat CH4 emissions
-    Original Eqn: (PED oil for Heat plants EJ+"PED liquids Heat-nc")*MJ per EJ*gCH4 per MJ oil/g per Mt
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -342,11 +342,11 @@ def oil_for_heat_ch4_emissions():
 def pes_oil_2():
     """
     Real Name: PES oil 2
-    Original Eqn: PED NRE Liquids-Other liquids required EJ-PE demand oil Elec plants EJ-"PED liquids Heat-nc" -PED oil for CHP plants EJ-PED oil for Heat plants EJ
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -363,11 +363,11 @@ def pes_oil_2():
 def ratio_elec_ch4_emissions():
     """
     Real Name: ratio Elec CH4 emissions
-    Original Eqn: ZIDZ(Total Elec NRES CH4 emissions, Total FE Elec consumption EJ )
+    Original Eqn:
     Units: MtCH4/EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -377,11 +377,11 @@ def ratio_elec_ch4_emissions():
 def ratio_gases_ch4_emissions():
     """
     Real Name: ratio Gases CH4 emissions
-    Original Eqn: ZIDZ(Gases FE CH4 emission, real FE consumption gases EJ )
+    Original Eqn:
     Units: MtCH4/EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -391,11 +391,11 @@ def ratio_gases_ch4_emissions():
 def ratio_heat_ch4_emissions():
     """
     Real Name: ratio Heat CH4 emissions
-    Original Eqn: ZIDZ(Total Heat CH4 emissions, Total FED Heat EJ )
+    Original Eqn:
     Units: MtCH4/EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -405,11 +405,11 @@ def ratio_heat_ch4_emissions():
 def ratio_liquids_ch4_emissions():
     """
     Real Name: ratio Liquids CH4 emissions
-    Original Eqn: ZIDZ(Liquids FE CH4 emissions, Total FEC liquids )
+    Original Eqn:
     Units: MtCH4/EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -419,11 +419,11 @@ def ratio_liquids_ch4_emissions():
 def ratio_solids_ch4_emissions():
     """
     Real Name: ratio Solids CH4 emissions
-    Original Eqn: ZIDZ(Solids FE CH4 emissions, Required FED solids )
+    Original Eqn:
     Units: MtCH4/EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -433,11 +433,11 @@ def ratio_solids_ch4_emissions():
 def share_coal_for_elec_ch4_emissions():
     """
     Real Name: share coal for Elec CH4 emissions
-    Original Eqn: ZIDZ( Coal for Elec CH4 emissions,Total Elec NRES CH4 emissions )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -447,11 +447,11 @@ def share_coal_for_elec_ch4_emissions():
 def share_gas_for_elec_ch4_emissions():
     """
     Real Name: share gas for Elec CH4 emissions
-    Original Eqn: ZIDZ( Gas for Elec CH4 emissions,Total Elec NRES CH4 emissions)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -461,11 +461,11 @@ def share_gas_for_elec_ch4_emissions():
 def share_oil_for_elec_ch4_emissions():
     """
     Real Name: share oil for Elec CH4 emissions
-    Original Eqn: ZIDZ( Oil for Elec CH4 emissions,Total Elec NRES CH4 emissions)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -475,11 +475,11 @@ def share_oil_for_elec_ch4_emissions():
 def solids_fe_ch4_emissions():
     """
     Real Name: Solids FE CH4 emissions
-    Original Eqn: Coal in FEC AUT*MJ per EJ*gCH4 per MJ coal/g per Mt
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -489,11 +489,11 @@ def solids_fe_ch4_emissions():
 def total_ch4_emission_sper_sector():
     """
     Real Name: Total CH4 emission sper sector
-    Original Eqn: CH4 emissions extraction coal+CH4 emissions extraction gas+CH4 emissions extraction OIL
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -507,11 +507,11 @@ def total_ch4_emission_sper_sector():
 def total_ch4_emissions():
     """
     Real Name: Total CH4 emissions
-    Original Eqn: CH4 emissions COAL test+CH4 emissions GAS test+CH4 emissions OIL test
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -523,11 +523,11 @@ def total_ch4_emissions():
 def total_demand_oil_other_fed():
     """
     Real Name: total demand oil other FED
-    Original Eqn: PE demand oil Elec plants EJ+PED oil for CHP plants EJ+PED oil for Heat plants EJ+"PED liquids Heat-nc"
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -542,11 +542,11 @@ def total_demand_oil_other_fed():
 def total_elec_nres_ch4_emissions():
     """
     Real Name: Total Elec NRES CH4 emissions
-    Original Eqn: Coal for Elec CH4 emissions+Gas for Elec CH4 emissions+Oil for Elec CH4 emissions
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -560,25 +560,42 @@ def total_elec_nres_ch4_emissions():
 def total_fe_ch4_emissions():
     """
     Real Name: Total FE CH4 emissions
-    Original Eqn: SUM(Total per FE CH4 emissions[final sources!])
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
-    return sum(total_per_fe_ch4_emissions(), dim=("final sources",))
+    return sum(
+        total_per_fe_ch4_emissions().rename({"final sources": "final sources!"}),
+        dim=["final sources!"],
+    )
+
+
+def total_fec_liquids():
+    """
+    Real Name: Total FEC liquids
+    Original Eqn:
+    Units: EJ
+    Limits: (None, None)
+    Type: Auxiliary
+    Subs: []
+
+
+    """
+    return real_fe_consumption_liquids_ej() + ctl_production() + gtl_production()
 
 
 def total_heat_ch4_emissions():
     """
     Real Name: Total Heat CH4 emissions
-    Original Eqn: Coal for Heat CH4 emissions+Gas for Heat CH4 emissions+Oil for Heat CH4 emissions
+    Original Eqn:
     Units: MtCH4
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -594,36 +611,19 @@ def total_per_fe_ch4_emissions():
     """
     Real Name: Total per FE CH4 emissions
     Original Eqn:
-      Total Elec NRES CH4 emissions
-      Total Heat CH4 emissions
-      Liquids FE CH4 emissions
-      Gases FE CH4 emission
-      Solids FE CH4 emissions
     Units: MtCH4
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['final sources']
 
 
     """
-    return xrmerge(
-        rearrange(
-            total_elec_nres_ch4_emissions(),
-            ["final sources"],
-            {"final sources": ["electricity"]},
-        ),
-        rearrange(
-            total_heat_ch4_emissions(), ["final sources"], {"final sources": ["heat"]}
-        ),
-        rearrange(
-            liquids_fe_ch4_emissions(),
-            ["final sources"],
-            {"final sources": ["liquids"]},
-        ),
-        rearrange(
-            gases_fe_ch4_emission(), ["final sources"], {"final sources": ["gases"]}
-        ),
-        rearrange(
-            solids_fe_ch4_emissions(), ["final sources"], {"final sources": ["solids"]}
-        ),
+    value = xr.DataArray(
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
+    value.loc[{"final sources": ["electricity"]}] = total_elec_nres_ch4_emissions()
+    value.loc[{"final sources": ["heat"]}] = total_heat_ch4_emissions()
+    value.loc[{"final sources": ["liquids"]}] = liquids_fe_ch4_emissions()
+    value.loc[{"final sources": ["gases"]}] = gases_fe_ch4_emission()
+    value.loc[{"final sources": ["solids"]}] = solids_fe_ch4_emissions()
+    return value

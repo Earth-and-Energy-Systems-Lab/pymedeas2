@@ -2,7 +2,7 @@ name: pymedeas
 channels:
   - conda-forge
 dependencies:
-  - python=3.7
-  - pysd=2.2
+  - python=3.9
+  - pysd=2.2.1
   - matplotlib
   - dacite

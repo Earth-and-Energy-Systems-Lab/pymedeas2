@@ -1,25 +1,23 @@
 """
 Module crops_for_biofuels
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
 def bioe_gen_land_marg_available():
     """
     Real Name: BioE gen land marg available
-    Original Eqn: ZIDZ( (Max PEavail potential biofuels marginal lands-Potential PEavail biofuels land marg EJ), Max PEavail potential biofuels marginal lands)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Remaining potential available as given as a fraction of unity.
     """
     return zidz(
-        (
-            max_peavail_potential_biofuels_marginal_lands()
-            - potential_peavail_biofuels_land_marg_ej()
-        ),
+        max_peavail_potential_biofuels_marginal_lands()
+        - potential_peavail_biofuels_land_marg_ej(),
         max_peavail_potential_biofuels_marginal_lands(),
     )
 
@@ -27,16 +25,13 @@ def bioe_gen_land_marg_available():
 def bioe_potential_npp_marginal_lands():
     """
     Real Name: BioE potential NPP marginal lands
-    Original Eqn: Potential marginal lands MHa*Land productivity biofuels marg EJ MHa/Conv efficiency from NPP to biofuels
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Potential in marginal lands, i.e. witout competition with current uses.
-        (Field et al., 2008) find that 27 EJ of NPP can be extracted from 386 Mha
-        of marginal lands. We assume that all the production from marginal lands
-        is used for producing liquids.
+    Potential in marginal lands, i.e. witout competition with current uses. (Field et al., 2008) find that 27 EJ of NPP can be extracted from 386 Mha of marginal lands. We assume that all the production from marginal lands is used for producing liquids.
     """
     return (
         potential_marginal_lands_mha()
@@ -48,57 +43,83 @@ def bioe_potential_npp_marginal_lands():
 def conv_efficiency_from_npp_to_biofuels():
     """
     Real Name: Conv efficiency from NPP to biofuels
-    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Global', 'conv_efficiency_from_npp_to_biofuels')
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    Conversion efficiency from net primary productivity (NPP) of biomass to
-        biofuels of 15%. Ref: de Castro & Carpintero (2014).
+    Conversion efficiency from net primary productivity (NPP) of biomass to biofuels of 15%. Ref: de Castro & Carpintero (2014).
     """
     return _ext_constant_conv_efficiency_from_npp_to_biofuels()
+
+
+_ext_constant_conv_efficiency_from_npp_to_biofuels = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "conv_efficiency_from_npp_to_biofuels",
+    {},
+    _root,
+    "_ext_constant_conv_efficiency_from_npp_to_biofuels",
+)
 
 
 def land_occupation_ratio_biofuels_marg_land():
     """
     Real Name: Land occupation ratio biofuels marg land
-    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Global', 'land_occupation_ratio_biofuels_marginal_land')
+    Original Eqn:
     Units: MHa/EJ
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    Field et al. (2008) found that 27 EJ of NPP can be extracted from 386 MHa
-        of marginal lands. So, the land occupation ratio would be 386 MHa/27 EJ,
-        i.e. 14.3 MHa/EJ NPP.
+    Field et al. (2008) found that 27 EJ of NPP can be extracted from 386 MHa of marginal lands. So, the land occupation ratio would be 386 MHa/27 EJ, i.e. 14.3 MHa/EJ NPP.
     """
     return _ext_constant_land_occupation_ratio_biofuels_marg_land()
+
+
+_ext_constant_land_occupation_ratio_biofuels_marg_land = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "land_occupation_ratio_biofuels_marginal_land",
+    {},
+    _root,
+    "_ext_constant_land_occupation_ratio_biofuels_marg_land",
+)
 
 
 def land_productivity_biofuels_marg_ej_mha():
     """
     Real Name: Land productivity biofuels marg EJ MHa
-    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Global', 'land_productivity_biofuels_marginal_land')
+    Original Eqn:
     Units: EJ/MHa
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    Energy output per area of biofuels in marginal lands (final energy).
-        Source: Field et al (2008): 27 EJ (NPP) at 15% efficiency in 386 MHa.
+    Energy output per area of biofuels in marginal lands (final energy). Source: Field et al (2008): 27 EJ (NPP) at 15% efficiency in 386 MHa.
     """
     return _ext_constant_land_productivity_biofuels_marg_ej_mha()
+
+
+_ext_constant_land_productivity_biofuels_marg_ej_mha = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "land_productivity_biofuels_marginal_land",
+    {},
+    _root,
+    "_ext_constant_land_productivity_biofuels_marg_ej_mha",
+)
 
 
 def land_required_biofuels_land_marg():
     """
     Real Name: Land required biofuels land marg
-    Original Eqn: Potential PEavail biofuels land marg EJ*Land occupation ratio biofuels marg land/Conv efficiency from NPP to biofuels
+    Original Eqn:
     Units: MHa/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Marginal lands occupied by biofuels.
     """
@@ -112,11 +133,11 @@ def land_required_biofuels_land_marg():
 def max_peavail_potential_biofuels_marginal_lands():
     """
     Real Name: Max PEavail potential biofuels marginal lands
-    Original Eqn: BioE potential NPP marginal lands*Conv efficiency from NPP to biofuels
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Annual biofuels potential (primary energy) available from marginal lands
     """
@@ -126,16 +147,13 @@ def max_peavail_potential_biofuels_marginal_lands():
 def new_biofuels_land_marg():
     """
     Real Name: new biofuels land marg
-    Original Eqn: IF THEN ELSE(Time<start year biofuels land marg, 0, IF THEN ELSE(Potential marginal lands MHa=0, 0, IF THEN ELSE(Time<start year biofuels land marg+5, start production biofuels(Time-start year biofuels land marg )*EJ per ktoe/ratio land productivity 2gen vs marg, IF THEN ELSE(check liquids<0, "constrain liquids exogenous growth?" *Potential PEavail biofuels land marg EJ ,P biofuels marg lands*BioE gen land marg available*Potential PEavail biofuels land marg EJ ))))*Land availability constraint
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    New annual production from biofuels in marginal lands. For the first 5
-        years, we assume the same rate of land occupation (MHa/year) than the one
-        achieved by conventional biofuels -this is the reason to take into account
-        the relative land productivity between both types of crops.
+    New annual production from biofuels in marginal lands. For the first 5 years, we assume the same rate of land occupation (MHa/year) than the one achieved by conventional biofuels -this is the reason to take into account the relative land productivity between both types of crops.
     """
     return (
         if_then_else(
@@ -169,11 +187,11 @@ def new_biofuels_land_marg():
 def new_land_marg_for_biofuels():
     """
     Real Name: new land marg for biofuels
-    Original Eqn: new biofuels land marg*Land occupation ratio biofuels marg land/Conv efficiency from NPP to biofuels
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -187,29 +205,37 @@ def new_land_marg_for_biofuels():
 def p_biofuels_marg_lands():
     """
     Real Name: P biofuels marg lands
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'F46')
+    Original Eqn:
     Units: 1/Year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    Annual growth in energy output demand depending on the policy of the
-        scenario.
+    Annual growth in energy output demand depending on the policy of the scenario.
     """
     return _ext_constant_p_biofuels_marg_lands()
+
+
+_ext_constant_p_biofuels_marg_lands = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "p_biofuels_land_marg_growth",
+    {},
+    _root,
+    "_ext_constant_p_biofuels_marg_lands",
+)
 
 
 def pe_biofuels_land_marg_ej():
     """
     Real Name: PE biofuels land marg EJ
-    Original Eqn: PEavail biofuels land marg EJ/Conv efficiency from NPP to biofuels
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Total annual primary energy biomass for biofuel production in marginal
-        lands.
+    Total annual primary energy biomass for biofuel production in marginal lands.
     """
     return peavail_biofuels_land_marg_ej() / conv_efficiency_from_npp_to_biofuels()
 
@@ -217,11 +243,11 @@ def pe_biofuels_land_marg_ej():
 def peavail_biofuels_land_marg_ej():
     """
     Real Name: PEavail biofuels land marg EJ
-    Original Eqn: Potential PEavail biofuels land marg EJ*(1-share biofuels overcapacity )
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Total annual biofuel production in marginal lands.
     """
@@ -233,25 +259,35 @@ def peavail_biofuels_land_marg_ej():
 def potential_marginal_lands_mha():
     """
     Real Name: Potential marginal lands MHa
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'C43')
+    Original Eqn:
     Units: MHa
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Global marginal lands as estimated by Field et al (2008).
     """
     return _ext_constant_potential_marginal_lands_mha()
 
 
+_ext_constant_potential_marginal_lands_mha = ExtConstant(
+    "../energy.xlsx",
+    "Austria",
+    "pot_marg_land_biofuels",
+    {},
+    _root,
+    "_ext_constant_potential_marginal_lands_mha",
+)
+
+
 def potential_peavail_biofuels_land_marg_abandonned():
     """
     Real Name: Potential PEavail biofuels land marg abandonned
-    Original Eqn: Potential PEavail biofuels land marg EJ*share biofuels overcapacity
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -261,28 +297,35 @@ def potential_peavail_biofuels_land_marg_abandonned():
 def potential_peavail_biofuels_land_marg_ej():
     """
     Real Name: Potential PEavail biofuels land marg EJ
-    Original Eqn: INTEG ( new biofuels land marg-Potential PEavail biofuels land marg abandonned , 0)
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
     Potential total annual biofuel production in marginal lands.
     """
     return _integ_potential_peavail_biofuels_land_marg_ej()
 
 
+_integ_potential_peavail_biofuels_land_marg_ej = Integ(
+    lambda: new_biofuels_land_marg()
+    - potential_peavail_biofuels_land_marg_abandonned(),
+    lambda: 0,
+    "_integ_potential_peavail_biofuels_land_marg_ej",
+)
+
+
 def ratio_land_productivity_2gen_vs_marg():
     """
     Real Name: ratio land productivity 2gen vs marg
-    Original Eqn: Land productivity biofuels 2gen EJ MHa/Land productivity biofuels marg EJ MHa
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Ratio between the land productivity of biofuels 2gen in competition land
-        vs marginal lands.
+    Ratio between the land productivity of biofuels 2gen in competition land vs marginal lands.
     """
     return (
         land_productivity_biofuels_2gen_ej_mha()
@@ -293,11 +336,11 @@ def ratio_land_productivity_2gen_vs_marg():
 def remaining_potential_biofuels_land_marg():
     """
     Real Name: remaining potential biofuels land marg
-    Original Eqn: IF THEN ELSE(Max PEavail potential biofuels marginal lands > PEavail biofuels land marg EJ, (Max PEavail potential biofuels marginal lands-PEavail biofuels land marg EJ)/Max PEavail potential biofuels marginal lands, 0)
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Remaining potential available as a fraction of unity.
     """
@@ -316,89 +359,15 @@ def remaining_potential_biofuels_land_marg():
 def start_production_biofuels(x):
     """
     Real Name: start production biofuels
-    Original Eqn: GET DIRECT LOOKUPS('../energy.xlsx', 'Austria', 'delta_years', 'start_production_biofuels')
+    Original Eqn:
     Units: ktoe/Year
     Limits: (None, None)
-    Type: lookup
-    Subs: None
+    Type: Lookup
+    Subs: []
 
-    Exogenous start production scenario from the year "start year biofuels
-        land marg". It mimics the biofuel 2nd generation deployment from the year
-        2000.
+    Exogenous start production scenario from the year "start year biofuels land marg". It mimics the biofuel 2nd generation deployment from the year 2000.
     """
     return _ext_lookup_start_production_biofuels(x)
-
-
-def start_year_biofuels_land_marg():
-    """
-    Real Name: start year biofuels land marg
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_aut.xlsx', 'BAU', 'F45')
-    Units: Year
-    Limits: (None, None)
-    Type: constant
-    Subs: None
-
-    First year when the technology "biofuels land marg" is available.
-    """
-    return _ext_constant_start_year_biofuels_land_marg()
-
-
-_ext_constant_conv_efficiency_from_npp_to_biofuels = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "conv_efficiency_from_npp_to_biofuels",
-    {},
-    _root,
-    "_ext_constant_conv_efficiency_from_npp_to_biofuels",
-)
-
-
-_ext_constant_land_occupation_ratio_biofuels_marg_land = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "land_occupation_ratio_biofuels_marginal_land",
-    {},
-    _root,
-    "_ext_constant_land_occupation_ratio_biofuels_marg_land",
-)
-
-
-_ext_constant_land_productivity_biofuels_marg_ej_mha = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "land_productivity_biofuels_marginal_land",
-    {},
-    _root,
-    "_ext_constant_land_productivity_biofuels_marg_ej_mha",
-)
-
-
-_ext_constant_p_biofuels_marg_lands = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "F46",
-    {},
-    _root,
-    "_ext_constant_p_biofuels_marg_lands",
-)
-
-
-_ext_constant_potential_marginal_lands_mha = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
-    "BAU",
-    "C43",
-    {},
-    _root,
-    "_ext_constant_potential_marginal_lands_mha",
-)
-
-
-_integ_potential_peavail_biofuels_land_marg_ej = Integ(
-    lambda: new_biofuels_land_marg()
-    - potential_peavail_biofuels_land_marg_abandonned(),
-    lambda: 0,
-    "_integ_potential_peavail_biofuels_land_marg_ej",
-)
 
 
 _ext_lookup_start_production_biofuels = ExtLookup(
@@ -412,10 +381,24 @@ _ext_lookup_start_production_biofuels = ExtLookup(
 )
 
 
+def start_year_biofuels_land_marg():
+    """
+    Real Name: start year biofuels land marg
+    Original Eqn:
+    Units: Year
+    Limits: (None, None)
+    Type: Constant
+    Subs: []
+
+    First year when the technology "biofuels land marg" is available.
+    """
+    return _ext_constant_start_year_biofuels_land_marg()
+
+
 _ext_constant_start_year_biofuels_land_marg = ExtConstant(
-    "../../scenarios/scen_aut.xlsx",
+    "../../scenarios/scen_cat.xlsx",
     "BAU",
-    "F45",
+    "start_year_biofuels_land_marg",
     {},
     _root,
     "_ext_constant_start_year_biofuels_land_marg",

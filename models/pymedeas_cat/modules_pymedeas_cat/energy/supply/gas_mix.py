@@ -1,17 +1,17 @@
 """
 Module gas_mix
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
 def fed_gas_ej():
     """
     Real Name: FED GAS EJ
-    Original Eqn: Required FED by fuel[gases]
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -21,11 +21,11 @@ def fed_gas_ej():
 def gas_aut():
     """
     Real Name: Gas AUT
-    Original Eqn: "PES nat. gas AUT"
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -36,10 +36,10 @@ def gas_aut():
 def gas_co2_emissions():
     """
     Real Name: Gas Co2 emissions
-    Original Eqn: Required FED by gas*gCO2 per MJ conv gas*MJ per EJ/g per Gt
+    Original Eqn:
     Units: GtCO2/Year
     Limits: (None, None)
-    Type: component
+    Type: Auxiliary
     Subs: ['primary sources']
 
 
@@ -50,11 +50,11 @@ def gas_co2_emissions():
 def gas_row():
     """
     Real Name: Gas RoW
-    Original Eqn: "imports AUT nat. gas from RoW EJ"
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -64,11 +64,11 @@ def gas_row():
 def pes_nat_gas_aut():
     """
     Real Name: PES Nat Gas AUT
-    Original Eqn: real extraction conv gas EJ+real extraction unconv gas EJ
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -78,11 +78,11 @@ def pes_nat_gas_aut():
 def pes_nat_gas_row():
     """
     Real Name: PES Nat Gas RoW
-    Original Eqn: imports AUT conv gas from RoW EJ+imports AUT unconv gas from RoW EJ
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -92,11 +92,11 @@ def pes_nat_gas_row():
 def pes_total_nat_gas():
     """
     Real Name: PES total Nat Gas
-    Original Eqn: PES Nat Gas AUT+PES Nat Gas RoW
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -106,11 +106,11 @@ def pes_total_nat_gas():
 def share_biogas_total_pes_gases_aut():
     """
     Real Name: share Biogas total PES Gases AUT
-    Original Eqn: ZIDZ(PES biogas for TFC, Total PES Gases )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -120,16 +120,16 @@ def share_biogas_total_pes_gases_aut():
 def share_unconv_tot_gas():
     """
     Real Name: share unconv tot gas
-    Original Eqn: ZIDZ( (imports AUT unconv gas from RoW EJ+real extraction unconv gas EJ ), PES total Nat Gas )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
     return zidz(
-        (imports_aut_unconv_gas_from_row_ej() + real_extraction_unconv_gas_ej()),
+        imports_aut_unconv_gas_from_row_ej() + real_extraction_unconv_gas_ej(),
         pes_total_nat_gas(),
     )
 
@@ -137,11 +137,11 @@ def share_unconv_tot_gas():
 def total_biogas():
     """
     Real Name: TOTAL Biogas
-    Original Eqn: PES biogas for TFC
+    Original Eqn:
     Units:
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -151,11 +151,11 @@ def total_biogas():
 def total_gas_ej():
     """
     Real Name: Total GAS EJ
-    Original Eqn: Other gases required+PE demand gas Elec plants EJ+PED gas for CHP plants EJ+"PED gas Heat-nc" +PED gases for Heat plants EJ+"PED nat. gas for GTL EJ" +Required FED by gas
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -173,11 +173,11 @@ def total_gas_ej():
 def total_gas_pes():
     """
     Real Name: Total GAS PES
-    Original Eqn: Gas AUT+Gas RoW+TOTAL Biogas
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -187,11 +187,11 @@ def total_gas_pes():
 def total_pes_gases():
     """
     Real Name: Total PES Gases
-    Original Eqn: PES biogas for TFC+PES total Nat Gas
+    Original Eqn:
     Units: EJ/Year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """

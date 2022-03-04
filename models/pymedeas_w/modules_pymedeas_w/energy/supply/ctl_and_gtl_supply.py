@@ -1,22 +1,19 @@
 """
 Module ctl_and_gtl_supply
-Translated using PySD version 2.2.0
+Translated using PySD version 2.2.1
 """
 
 
 def abundance_liquids_ctl():
     """
     Real Name: abundance liquids CTL
-    Original Eqn: SQRT(ABS((PED liquids EJ-CTL potential production)/PED liquids EJ))
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Variable to moderate the growth of CTL when it comes close to supply all
-        the liquids. This variable limits the growth of a technology supplying a
-        particular final energy type when its supply increases its share in
-        relation to the total supply of this energy type (to avoid overshootings).
+    Variable to moderate the growth of CTL when it comes close to supply all the liquids. This variable limits the growth of a technology supplying a particular final energy type when its supply increases its share in relation to the total supply of this energy type (to avoid overshootings).
     """
     return np.sqrt(
         np.abs((ped_liquids_ej() - ctl_potential_production()) / ped_liquids_ej())
@@ -26,16 +23,13 @@ def abundance_liquids_ctl():
 def abundance_liquids_gtl():
     """
     Real Name: abundance liquids GTL
-    Original Eqn: SQRT(ABS((PED liquids EJ-GTL potential production)/PED liquids EJ))
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Variable to moderate the growth of GTL when it comes close to supply all
-        the liquids. This variable limits the growth of a technology supplying a
-        particular final energy type when its supply increases its share in
-        relation to the total supply of this energy type (to avoid overshootings).
+    Variable to moderate the growth of GTL when it comes close to supply all the liquids. This variable limits the growth of a technology supplying a particular final energy type when its supply increases its share in relation to the total supply of this energy type (to avoid overshootings).
     """
     return np.sqrt(
         np.abs((ped_liquids_ej() - gtl_potential_production()) / ped_liquids_ej())
@@ -45,16 +39,13 @@ def abundance_liquids_gtl():
 def additional_pe_production_of_ctlgtl_for_liquids():
     """
     Real Name: "Additional PE production of CTL+GTL for liquids"
-    Original Eqn: PED coal for CTL EJ+"PED nat. gas for GTL EJ"-"FES CTL+GTL EJ"
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    Additional primary energy production of CTL and GTL for liquids. We need
-        to account for this difference since the oil replaced by CTL liquids is
-        accounted for primary energy in WoLiM, while there are additional losses
-        to process coal to obtain CTL (required to balance the TPES with the TPED).
+    Additional primary energy production of CTL and GTL for liquids. We need to account for this difference since the oil replaced by CTL liquids is accounted for primary energy in WoLiM, while there are additional losses to process coal to obtain CTL (required to balance the TPES with the TPED).
     """
     return ped_coal_for_ctl_ej() + ped_nat_gas_for_gtl_ej() - fes_ctlgtl_ej()
 
@@ -62,67 +53,104 @@ def additional_pe_production_of_ctlgtl_for_liquids():
 def crash_programme_ctl():
     """
     Real Name: "Crash programme CTL?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'D110')
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    0- Crash programme CTL NOT activated        1- Crash programme CTL activated
+    0- Crash programme CTL NOT activated 1- Crash programme CTL activated
     """
     return _ext_constant_crash_programme_ctl()
+
+
+_ext_constant_crash_programme_ctl = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "crash_programme_CTL",
+    {},
+    _root,
+    "_ext_constant_crash_programme_ctl",
+)
 
 
 def crash_programme_gtl():
     """
     Real Name: "Crash programme GTL?"
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'D112')
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    0- Crash programme GTL NOT activated        1- Crash programme GTL activated
+    0- Crash programme GTL NOT activated 1- Crash programme GTL activated
     """
     return _ext_constant_crash_programme_gtl()
+
+
+_ext_constant_crash_programme_gtl = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "crash_programme_GTL",
+    {},
+    _root,
+    "_ext_constant_crash_programme_gtl",
+)
 
 
 def ctl_efficiency():
     """
     Real Name: CTL efficiency
-    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Global', 'ctl_efficiency')
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Efficiency of CTL plants. Source: IEA balances (see Technical Report).
     """
     return _ext_constant_ctl_efficiency()
 
 
+_ext_constant_ctl_efficiency = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "ctl_efficiency",
+    {},
+    _root,
+    "_ext_constant_ctl_efficiency",
+)
+
+
 def ctl_potential_production():
     """
     Real Name: CTL potential production
-    Original Eqn: INTEG ( replacement CTL+variation CTL-wear CTL, initial CTL production)
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
     Annual CTL potential production.
     """
     return _integ_ctl_potential_production()
 
 
+_integ_ctl_potential_production = Integ(
+    lambda: replacement_ctl() + variation_ctl() - wear_ctl(),
+    lambda: initial_ctl_production(),
+    "_integ_ctl_potential_production",
+)
+
+
 def ctl_production():
     """
     Real Name: CTL production
-    Original Eqn: CTL potential production*(1-"share CTL+GTL overcapacity")
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     CTL production.
     """
@@ -132,11 +160,11 @@ def ctl_production():
 def ctlgtl_gb():
     """
     Real Name: "CTL+GTL Gb"
-    Original Eqn: "FES CTL+GTL EJ"/Gboe per EJ
+    Original Eqn:
     Units: Gboe/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     CTL and GTL production.
     """
@@ -146,14 +174,13 @@ def ctlgtl_gb():
 def exogenous_growth_ctl():
     """
     Real Name: Exogenous growth CTL
-    Original Eqn: IF THEN ELSE(Time<2015, Hist growth CTL, IF THEN ELSE("Crash programme CTL?"=0,P CTL, IF THEN ELSE("Crash programme CTL?"=1 :AND: abundance liquids>=1, Hist growth CTL, P CTL)))
+    Original Eqn:
     Units: 1/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    If there is not scarcity of liquids, CTL production increases at
-        historical past rates.
+    If there is not scarcity of liquids, CTL production increases at historical past rates.
     """
     return if_then_else(
         time() < 2015,
@@ -162,7 +189,7 @@ def exogenous_growth_ctl():
             crash_programme_ctl() == 0,
             lambda: p_ctl(),
             lambda: if_then_else(
-                logical_and(crash_programme_ctl() == 1, abundance_liquids() >= 1),
+                np.logical_and(crash_programme_ctl() == 1, abundance_liquids() >= 1),
                 lambda: hist_growth_ctl(),
                 lambda: p_ctl(),
             ),
@@ -173,14 +200,13 @@ def exogenous_growth_ctl():
 def exogenous_growth_gtl():
     """
     Real Name: Exogenous growth GTL
-    Original Eqn: IF THEN ELSE(Time<2015, Hist growth GTL, IF THEN ELSE("Crash programme GTL?"=0,P GTL, IF THEN ELSE("Crash programme GTL?"=1 :AND: abundance liquids>=1, Hist growth GTL, P GTL)))
+    Original Eqn:
     Units: 1/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    If there is not scarcity of liquids, GTL production increases at
-        historical past rates.
+    If there is not scarcity of liquids, GTL production increases at historical past rates.
     """
     return if_then_else(
         time() < 2015,
@@ -189,7 +215,7 @@ def exogenous_growth_gtl():
             crash_programme_gtl() == 0,
             lambda: p_gtl(),
             lambda: if_then_else(
-                logical_and(crash_programme_gtl() == 1, abundance_liquids() >= 1),
+                np.logical_and(crash_programme_gtl() == 1, abundance_liquids() >= 1),
                 lambda: hist_growth_gtl(),
                 lambda: p_gtl(),
             ),
@@ -200,11 +226,11 @@ def exogenous_growth_gtl():
 def fes_ctlgtl_ej():
     """
     Real Name: "FES CTL+GTL EJ"
-    Original Eqn: MIN(PED NRE Liquids, "Potential FES CTL+GTL EJ")
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     CTL and GTL production.
     """
@@ -214,11 +240,11 @@ def fes_ctlgtl_ej():
 def gboe_per_ej():
     """
     Real Name: Gboe per EJ
-    Original Eqn: 5.582
+    Original Eqn:
     Units: EJ/Gboe
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Unit conversion (1 EJ = 5.582 Gb).
     """
@@ -228,39 +254,56 @@ def gboe_per_ej():
 def gtl_efficiency():
     """
     Real Name: GTL efficiency
-    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Global', 'gtl_efficiency')
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Efficiency of GTL plants. Source: IEA balances (see Technical Report).
     """
     return _ext_constant_gtl_efficiency()
 
 
+_ext_constant_gtl_efficiency = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "gtl_efficiency",
+    {},
+    _root,
+    "_ext_constant_gtl_efficiency",
+)
+
+
 def gtl_potential_production():
     """
     Real Name: GTL potential production
-    Original Eqn: INTEG ( replacement GTL+variation GTL-wear GTL, initial GTL production)
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Stateful
+    Subs: []
 
     Annual GTL potential production.
     """
     return _integ_gtl_potential_production()
 
 
+_integ_gtl_potential_production = Integ(
+    lambda: replacement_gtl() + variation_gtl() - wear_gtl(),
+    lambda: initial_gtl_production(),
+    "_integ_gtl_potential_production",
+)
+
+
 def gtl_production():
     """
     Real Name: GTL production
-    Original Eqn: GTL potential production*(1-"share CTL+GTL overcapacity")
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     GTL production.
     """
@@ -270,153 +313,243 @@ def gtl_production():
 def hist_growth_ctl():
     """
     Real Name: Hist growth CTL
-    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'World', 'historic_growth_ctl')
+    Original Eqn:
     Units: 1/year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Historic growth of CTL 1990-2014 (IEA Balances).
     """
     return _ext_constant_hist_growth_ctl()
 
 
+_ext_constant_hist_growth_ctl = ExtConstant(
+    "../energy.xlsx",
+    "World",
+    "historic_growth_ctl",
+    {},
+    _root,
+    "_ext_constant_hist_growth_ctl",
+)
+
+
 def hist_growth_gtl():
     """
     Real Name: Hist growth GTL
-    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'World', 'historic_growth_gtl')
+    Original Eqn:
     Units: 1/year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Historic growth of GTL 2000-2014 (IEA Balances).
     """
     return _ext_constant_hist_growth_gtl()
 
 
+_ext_constant_hist_growth_gtl = ExtConstant(
+    "../energy.xlsx",
+    "World",
+    "historic_growth_gtl",
+    {},
+    _root,
+    "_ext_constant_hist_growth_gtl",
+)
+
+
 def historic_ctl_production(x):
     """
     Real Name: Historic CTL production
-    Original Eqn: GET DIRECT LOOKUPS('../energy.xlsx', 'World', 'time_historic_data', 'historic_ctl_production')
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: lookup
-    Subs: None
+    Type: Lookup
+    Subs: []
 
     Historic generation of CTL 1990-2014 (IEA Balances).
     """
     return _ext_lookup_historic_ctl_production(x)
 
 
+_ext_lookup_historic_ctl_production = ExtLookup(
+    "../energy.xlsx",
+    "World",
+    "time_historic_data",
+    "historic_ctl_production",
+    {},
+    _root,
+    "_ext_lookup_historic_ctl_production",
+)
+
+
 def historic_gtl_production(x):
     """
     Real Name: historic GTL production
-    Original Eqn: GET DIRECT LOOKUPS('../energy.xlsx', 'World', 'time_historic_data', 'historic_gtl_production')
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: lookup
-    Subs: None
+    Type: Lookup
+    Subs: []
 
     Historic generation of GTL 1990-2014 (IEA Balances).
     """
     return _ext_lookup_historic_gtl_production(x)
 
 
+_ext_lookup_historic_gtl_production = ExtLookup(
+    "../energy.xlsx",
+    "World",
+    "time_historic_data",
+    "historic_gtl_production",
+    {},
+    _root,
+    "_ext_lookup_historic_gtl_production",
+)
+
+
 def initial_ctl_production():
     """
     Real Name: initial CTL production
-    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'World', 'initial_ctl_production')
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     CTL production in the initial year 1995 (IEA balances).
     """
     return _ext_constant_initial_ctl_production()
 
 
+_ext_constant_initial_ctl_production = ExtConstant(
+    "../energy.xlsx",
+    "World",
+    "initial_ctl_production",
+    {},
+    _root,
+    "_ext_constant_initial_ctl_production",
+)
+
+
 def initial_gtl_production():
     """
     Real Name: initial GTL production
-    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'World', 'initial_gtl_production')
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     GTL production in the initial year 1995 (IEA balances).
     """
     return _ext_constant_initial_gtl_production()
 
 
+_ext_constant_initial_gtl_production = ExtConstant(
+    "../energy.xlsx",
+    "World",
+    "initial_gtl_production",
+    {},
+    _root,
+    "_ext_constant_initial_gtl_production",
+)
+
+
 def lifetime_ctl():
     """
     Real Name: lifetime CTL
-    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Global', 'lifetime_ctl')
+    Original Eqn:
     Units: year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Lifetime of CTL plants.
     """
     return _ext_constant_lifetime_ctl()
 
 
+_ext_constant_lifetime_ctl = ExtConstant(
+    "../energy.xlsx", "Global", "lifetime_ctl", {}, _root, "_ext_constant_lifetime_ctl"
+)
+
+
 def lifetime_gtl():
     """
     Real Name: lifetime GTL
-    Original Eqn: GET DIRECT CONSTANTS('../energy.xlsx', 'Global', 'lifetime_gtl')
+    Original Eqn:
     Units: year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
     Lifetime of GTL plants.
     """
     return _ext_constant_lifetime_gtl()
 
 
+_ext_constant_lifetime_gtl = ExtConstant(
+    "../energy.xlsx", "Global", "lifetime_gtl", {}, _root, "_ext_constant_lifetime_gtl"
+)
+
+
 def p_ctl():
     """
     Real Name: P CTL
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C110')
+    Original Eqn:
     Units: 1/year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    Annual growth in energy output demand depending on the policy of the
-        scenario.
+    Annual growth in energy output demand depending on the policy of the scenario.
     """
     return _ext_constant_p_ctl()
+
+
+_ext_constant_p_ctl = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "p_CTL_annual_growth",
+    {},
+    _root,
+    "_ext_constant_p_ctl",
+)
 
 
 def p_gtl():
     """
     Real Name: P GTL
-    Original Eqn: GET DIRECT CONSTANTS('../../scenarios/scen_w.xlsx', 'BAU', 'C112')
+    Original Eqn:
     Units: 1/year
     Limits: (None, None)
-    Type: constant
-    Subs: None
+    Type: Constant
+    Subs: []
 
-    Annual growth in energy output demand depending on the policy of the
-        scenario.
+    Annual growth in energy output demand depending on the policy of the scenario.
     """
     return _ext_constant_p_gtl()
+
+
+_ext_constant_p_gtl = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "p_gtl_growth",
+    {},
+    _root,
+    "_ext_constant_p_gtl",
+)
 
 
 def ped_coal_for_ctl_ej():
     """
     Real Name: PED coal for CTL EJ
-    Original Eqn: CTL production/CTL efficiency
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Demand of coal for CTL.
     """
@@ -426,11 +559,11 @@ def ped_coal_for_ctl_ej():
 def ped_nat_gas_for_gtl_ej():
     """
     Real Name: "PED nat. gas for GTL EJ"
-    Original Eqn: GTL production/GTL efficiency
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Demand of gas for CTL.
     """
@@ -440,11 +573,11 @@ def ped_nat_gas_for_gtl_ej():
 def potential_fes_ctlgtl_ej():
     """
     Real Name: "Potential FES CTL+GTL EJ"
-    Original Eqn: CTL potential production+GTL potential production
+    Original Eqn:
     Units: EJ
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
@@ -454,14 +587,13 @@ def potential_fes_ctlgtl_ej():
 def real_growth_ctl():
     """
     Real Name: real growth CTL
-    Original Eqn: IF THEN ELSE(abundance coal>=abundance liquids, IF THEN ELSE(abundance coal=1, Exogenous growth CTL,0 ),0)*abundance liquids CTL*scarcity conv oil
+    Original Eqn:
     Units: 1/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    The real growth of CTL depends on the relative abundance of coal and
-        liquids, as well as on the availability of coal.
+    The real growth of CTL depends on the relative abundance of coal and liquids, as well as on the availability of coal.
     """
     return (
         if_then_else(
@@ -479,14 +611,13 @@ def real_growth_ctl():
 def real_growth_gtl():
     """
     Real Name: real growth GTL
-    Original Eqn: IF THEN ELSE(abundance gases>=abundance liquids, IF THEN ELSE(abundance gases=1, Exogenous growth GTL,0 ),0)*abundance liquids GTL*scarcity conv oil
+    Original Eqn:
     Units: 1/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
-    The real growth of GTL depends on the relative abundance of gas and
-        liquids, as well as on the availability of gas.
+    The real growth of GTL depends on the relative abundance of gas and liquids, as well as on the availability of gas.
     """
     return (
         if_then_else(
@@ -504,11 +635,11 @@ def real_growth_gtl():
 def replacement_ctl():
     """
     Real Name: replacement CTL
-    Original Eqn: IF THEN ELSE(Time<2015,0, IF THEN ELSE("Crash programme CTL?"=0,0, IF THEN ELSE(check liquids<-0.0001, "constrain liquids exogenous growth?"*wear CTL, wear CTL)))*scarcity conv oil
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Replacement of CTL.
     """
@@ -533,11 +664,11 @@ def replacement_ctl():
 def replacement_gtl():
     """
     Real Name: replacement GTL
-    Original Eqn: IF THEN ELSE(Time<2015,0, IF THEN ELSE("Crash programme GTL?"=0,0, IF THEN ELSE(check liquids<-0.0001, "constrain liquids exogenous growth?"*wear GTL, wear GTL)))*scarcity conv oil
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Replacement of GTL.
     """
@@ -562,27 +693,25 @@ def replacement_gtl():
 def share_ctlgtl_overcapacity():
     """
     Real Name: "share CTL+GTL overcapacity"
-    Original Eqn: ZIDZ( ("Potential FES CTL+GTL EJ"-"FES CTL+GTL EJ"), "Potential FES CTL+GTL EJ" )
+    Original Eqn:
     Units: Dmnl
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
 
     """
-    return zidz(
-        (potential_fes_ctlgtl_ej() - fes_ctlgtl_ej()), potential_fes_ctlgtl_ej()
-    )
+    return zidz(potential_fes_ctlgtl_ej() - fes_ctlgtl_ej(), potential_fes_ctlgtl_ej())
 
 
 def variation_ctl():
     """
     Real Name: variation CTL
-    Original Eqn: IF THEN ELSE(Time<2013, Historic CTL production(Time+1)-Historic CTL production(Time), IF THEN ELSE(check liquids<-0.0001, "constrain liquids exogenous growth?"*CTL potential production, CTL potential production*real growth CTL))
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     New annual CTL production.
     """
@@ -600,11 +729,11 @@ def variation_ctl():
 def variation_gtl():
     """
     Real Name: variation GTL
-    Original Eqn: IF THEN ELSE(Time<2013, historic GTL production(Time+1)-historic GTL production(Time), IF THEN ELSE(check liquids<-0.0001, "constrain liquids exogenous growth?"*GTL potential production, GTL potential production*real growth GTL))
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     New annual GTL production.
     """
@@ -622,11 +751,11 @@ def variation_gtl():
 def wear_ctl():
     """
     Real Name: wear CTL
-    Original Eqn: IF THEN ELSE(Time<2015, 0, CTL potential production/lifetime CTL)
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Depreciation of CTL plants.
     """
@@ -638,150 +767,14 @@ def wear_ctl():
 def wear_gtl():
     """
     Real Name: wear GTL
-    Original Eqn: IF THEN ELSE(Time<2015, 0, GTL potential production/lifetime GTL)
+    Original Eqn:
     Units: EJ/year
     Limits: (None, None)
-    Type: component
-    Subs: None
+    Type: Auxiliary
+    Subs: []
 
     Depreciation of GTL plants.
     """
     return if_then_else(
         time() < 2015, lambda: 0, lambda: gtl_potential_production() / lifetime_gtl()
     )
-
-
-_ext_constant_crash_programme_ctl = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "D110",
-    {},
-    _root,
-    "_ext_constant_crash_programme_ctl",
-)
-
-
-_ext_constant_crash_programme_gtl = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "D112",
-    {},
-    _root,
-    "_ext_constant_crash_programme_gtl",
-)
-
-
-_ext_constant_ctl_efficiency = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "ctl_efficiency",
-    {},
-    _root,
-    "_ext_constant_ctl_efficiency",
-)
-
-
-_integ_ctl_potential_production = Integ(
-    lambda: replacement_ctl() + variation_ctl() - wear_ctl(),
-    lambda: initial_ctl_production(),
-    "_integ_ctl_potential_production",
-)
-
-
-_ext_constant_gtl_efficiency = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "gtl_efficiency",
-    {},
-    _root,
-    "_ext_constant_gtl_efficiency",
-)
-
-
-_integ_gtl_potential_production = Integ(
-    lambda: replacement_gtl() + variation_gtl() - wear_gtl(),
-    lambda: initial_gtl_production(),
-    "_integ_gtl_potential_production",
-)
-
-
-_ext_constant_hist_growth_ctl = ExtConstant(
-    "../energy.xlsx",
-    "World",
-    "historic_growth_ctl",
-    {},
-    _root,
-    "_ext_constant_hist_growth_ctl",
-)
-
-
-_ext_constant_hist_growth_gtl = ExtConstant(
-    "../energy.xlsx",
-    "World",
-    "historic_growth_gtl",
-    {},
-    _root,
-    "_ext_constant_hist_growth_gtl",
-)
-
-
-_ext_lookup_historic_ctl_production = ExtLookup(
-    "../energy.xlsx",
-    "World",
-    "time_historic_data",
-    "historic_ctl_production",
-    {},
-    _root,
-    "_ext_lookup_historic_ctl_production",
-)
-
-
-_ext_lookup_historic_gtl_production = ExtLookup(
-    "../energy.xlsx",
-    "World",
-    "time_historic_data",
-    "historic_gtl_production",
-    {},
-    _root,
-    "_ext_lookup_historic_gtl_production",
-)
-
-
-_ext_constant_initial_ctl_production = ExtConstant(
-    "../energy.xlsx",
-    "World",
-    "initial_ctl_production",
-    {},
-    _root,
-    "_ext_constant_initial_ctl_production",
-)
-
-
-_ext_constant_initial_gtl_production = ExtConstant(
-    "../energy.xlsx",
-    "World",
-    "initial_gtl_production",
-    {},
-    _root,
-    "_ext_constant_initial_gtl_production",
-)
-
-
-_ext_constant_lifetime_ctl = ExtConstant(
-    "../energy.xlsx", "Global", "lifetime_ctl", {}, _root, "_ext_constant_lifetime_ctl"
-)
-
-
-_ext_constant_lifetime_gtl = ExtConstant(
-    "../energy.xlsx", "Global", "lifetime_gtl", {}, _root, "_ext_constant_lifetime_gtl"
-)
-
-
-_ext_constant_p_ctl = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C110", {}, _root, "_ext_constant_p_ctl"
-)
-
-
-_ext_constant_p_gtl = ExtConstant(
-    "../../scenarios/scen_w.xlsx", "BAU", "C112", {}, _root, "_ext_constant_p_gtl"
-)

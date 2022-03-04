@@ -12,6 +12,9 @@ import warnings
 import pysd
 import argparse
 from pathlib import Path
+import sys
+import platform
+import shutil
 from typing import List
 from pandas import DataFrame
 
@@ -100,6 +103,27 @@ if __name__ == "__main__":
     model: Model = pysd.load(
         str(config.model.model_file), initialize=False,
         data_files=data_files)
+
+    # if it's bundled, copy user modifiable files to the bundle tempdir
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        if platform.system() != 'Darwin':
+
+            bundle_dir = Path(__file__).parent
+            executable_dir = Path(sys.argv[0]).resolve().parent
+
+            # copying scenario files
+            for scen_name in Path(executable_dir, "scenarios").iterdir():
+                if scen_name.is_file():
+                    destination = Path(
+                        bundle_dir, "scenarios").joinpath(scen_name.name)
+                    shutil.copy(scen_name, destination)
+
+            # copying model parameters files
+            for pars_name in Path(executable_dir, "models").iterdir():
+                if pars_name.is_file():
+                    destination = Path(
+                        bundle_dir, "models").joinpath(pars_name.name)
+                    shutil.copy(pars_name, destination)
 
     # create results directory if it does not exist
     Path(config.model.out_folder).mkdir(parents=True, exist_ok=True)

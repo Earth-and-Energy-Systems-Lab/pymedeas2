@@ -1,6 +1,19 @@
 # -*- mode: python ; coding: utf-8 -*-
+
+"""
+This creates a folder dist that contains the executables for the plot_tool and
+for the pymedeas, as well as all the folders and files that the user should be
+able to modify to parametrise the model. The libraries shared between the
+pymedeas and plots executables will be placed in the shared directory.
+ 
+To run this, we need to first create a copy of run.py and save it as shared.py
+
+"""
+
+
 import os
 import sys
+import platform
 
 block_cipher = None
 
@@ -90,11 +103,38 @@ MERGE( (shared_a,
         'plot'
         ))
 
+# If we do not remove these binaries, we get this file shouldn't be here warnings
+if platform.system() == "Windows":
+    to_remove = ["libbz2.dll",
+                 "msvcp140.dll",
+                 "vcruntime140.dll",
+                 "vcruntime140_1.dll"]
+    for dep in plot_a.dependencies:
+        for duplicate in to_remove:
+            if duplicate in dep[1]:
+                plot_a.dependencies.remove(dep)
+
+    for dep in run_a.dependencies:
+        for duplicate in to_remove:
+            if duplicate in dep[1]:
+                run_a.dependencies.remove(dep)
+
+
+if platform.system() == "Linux":
+    to_remove = ["_struct.cpython-39-x86_64-linux-gnu.so",
+                 "zlib.cpython-39-x86_64-linux-gnu.so",
+                 "libgfortran.so.5",
+                 "libquadmath.so.0"]
+    
+    for dep in plot_a.dependencies:
+        for duplicate in to_remove:
+            if duplicate in dep[1]:
+                plot_a.dependencies.remove(dep)
+
 
 shared_pyz = PYZ(shared_a.pure,
-                 shared_a.zipped_data,
-                 cipher=block_cipher)
-
+                     shared_a.zipped_data,
+                     cipher=block_cipher)
 
 # The EXE object creates the executable file.
 
@@ -104,7 +144,7 @@ shared_exe = EXE(shared_pyz,
                  [],
                  exclude_binaries=True,
                  name='shared',
-                 debug=True,
+                 debug=False,
                  bootloader_ignore_signals=False,
                  strip=False,
                  upx=True,
@@ -123,11 +163,11 @@ run_exe = EXE(run_pyz,
               [],
               exclude_binaries=True,
               name='pymedeas', # The filename for the executable. On Windows suffix '.exe' is appended.
-              debug=True,
+              debug=False,
               bootloader_ignore_signals=False,
               strip=False,
               upx=True,
-              console=True,
+              console=True, # this must be True
 	          icon= os.path.join(specpath, 'MEDEAS.ico'),
               disable_windowed_traceback=False,
               target_arch=None,
@@ -149,19 +189,18 @@ plot_pyz = PYZ(plot_a.pure,
 
 plot_exe = EXE(plot_pyz,
                plot_a.scripts,
-               plot_a.binaries,
-               plot_a.zipfiles,
                plot_a.datas,
                plot_a.dependencies,
+               plot_a.binaries,
+               plot_a.zipfiles,
                [],
                name='plot', # The filename for the executable. On Windows suffix '.exe' is appended.
-               debug=True,
+               debug=False,
                bootloader_ignore_signals=False,
                strip=False,
+               console=False,
                upx=True,
                upx_exclude=[],
-               runtime_tmpdir=None,
-               console=False,
 	           icon= os.path.join(specpath, 'MEDEAS.ico'),
                disable_windowed_traceback=False,
                target_arch=None,

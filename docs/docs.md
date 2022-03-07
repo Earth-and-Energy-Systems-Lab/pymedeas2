@@ -115,14 +115,45 @@ The amount of coal that can be extracted is limited by the Hubbert curves if the
 
 $$
 Coal_{extraction}=min(PED_{coal}, max\_extract\_coal))
+<<<<<<< HEAD
 $$
+=======
+```
+
+
+>>>>>>> 41afe48e5e3b2c565d27c65365a7473163b15f51
 **Uranium extraction**
 
 This view is in charge of calculating the uranium extraction, taking into account the Hubbert curve of maxim extraction of the uranium. The demand of uranium is obtained from the potential generation of nuclear electricity divided by the efficiency of uranium for electricity. If the parameters *unlimited uranium?* and *unlimited NRE?* are desactivated, the extraction of uranium is limited by the maximum extraction limit as:
 
 $$
 Uranium_{extraction}=min(PED_{uranium}, max\_extract\_uranium))
+<<<<<<< HEAD
 $$
+=======
+```
+In the nested models, for calculating the abundance of uranium, the imports from the rest of the world are included. In such way, when there is local scarcity, the imports can compensate it. 
+
+```diff
+- There can be a double counting of imports of the RoW of the nested model of Europe and the nested model of Catalonia!
+```
+
+**Final energy abundance**
+
+The abundance of final fuels is obtained from the primary energy demand (PED) and the primary energy supply (PES) as follows:
+
+```math
+A= {{PED_i-PES_i} \over {PED_i}}
+```
+When the PED\<\PES the abundance is always 1. The index i is the energy carrier: liquids, gases, solids, electricity and heat.
+Then, depending on the *sensitivity_to_scarcity_option* defined in the scenarios files, the perception of final energy scarcity of each fuel by economic sectors is obtained. This perception drives the fuel replacement and efficiency improvement. This perception of scarcity decreases on time depending on the *energy_scarcity_forgeting_time* defined also at the scenario files as the time in years that society takes to forget the percepticon of scarcity for economic sectors.
+
+##### Supply
+
+Primary total energy demand is covered with different Primary Energy Sources (PES) gruped in five categories: solids, liquids, gases, electricity and heat
+
+**Nuclear**
+>>>>>>> 41afe48e5e3b2c565d27c65365a7473163b15f51
 
 ### Economy
 ---
@@ -329,7 +360,9 @@ This view relates the biophysicals results with social and environmental indexes
 
 The first calculated index is the Human Development Index. It has been observed that above certain level of GDP, the HDI decouples from income. Therefore it is important to consider other relations that may explain the HDI evolution. Among these, energy consumption is found to have an importnat relation, so it is used by the model, following the next equation:
 
-![HDI_equation](https://latex.codecogs.com/gif.latex?HDI%20%3D%200.1508&plus;0.1395%20%5Ccdot%20ln%28TFECpc%29)
+```math
+HDI=0.1508+0.1395 \cdot ln(TFEC_{pc})
+```
 
 ```diff
 - The correlation of the HDI with the TFEC is not the best approax, it can be approximated by the relation with the Final Energy Footprint per capita (FEFpc) (Deliverable 4.1)

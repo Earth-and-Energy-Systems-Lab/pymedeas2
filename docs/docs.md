@@ -115,24 +115,17 @@ The amount of coal that can be extracted is limited by the Hubbert curves if the
 
 $$
 Coal_{extraction}=min(PED_{coal}, max\_extract\_coal))
-<<<<<<< HEAD
 $$
-=======
-```
 
-
->>>>>>> 41afe48e5e3b2c565d27c65365a7473163b15f51
 **Uranium extraction**
 
 This view is in charge of calculating the uranium extraction, taking into account the Hubbert curve of maxim extraction of the uranium. The demand of uranium is obtained from the potential generation of nuclear electricity divided by the efficiency of uranium for electricity. If the parameters *unlimited uranium?* and *unlimited NRE?* are desactivated, the extraction of uranium is limited by the maximum extraction limit as:
 
 $$
 Uranium_{extraction}=min(PED_{uranium}, max\_extract\_uranium))
-<<<<<<< HEAD
 $$
-=======
-```
-In the nested models, for calculating the abundance of uranium, the imports from the rest of the world are included. In such way, when there is local scarcity, the imports can compensate it. 
+
+In the nested models, for calculating the abundance of uranium, the imports from the rest of the world are included. In such way, when there is local scarcity, the imports can compensate it.
 
 ```diff
 - There can be a double counting of imports of the RoW of the nested model of Europe and the nested model of Catalonia!
@@ -153,7 +146,6 @@ Then, depending on the *sensitivity_to_scarcity_option* defined in the scenarios
 Primary total energy demand is covered with different Primary Energy Sources (PES) gruped in five categories: solids, liquids, gases, electricity and heat
 
 **Nuclear**
->>>>>>> 41afe48e5e3b2c565d27c65365a7473163b15f51
 
 ### Economy
 ---
@@ -283,6 +275,26 @@ $$
 ```
 
 **Exports demand**
+The exports demand is only computed in nested models. In the case of the regional model, the exports to the *rest of the world (RoW)* are needed, while, in the case of the subregional model the exports to the *rest of the region* (RoR) and *rest of the world* (RoW) are needed.
+
+The computation of the exports demand ($ExpD$) is similar to that used for gross fixed capital formation and households demand:
+
+$$
+\log\left(ExpD^i_{ExpRoX}(sector)\right) = b_0^{ExpRoX}(sector) + b_1^{ExpRoX}\,\log\left(GDP^i_X\right)
+$$
+
+where $b_x^y$ parameters are adjusted by doing a linear regression with historical data. Being $GDP_X$ the gross domestic product of X (world or region).
+
+Therefore, the expected variation is computed as follows:
+$$
+\Delta ExpD^i_{RoX,\,expected}(sector) = e^{b_0^{ExpRoX}(sector)}\,\Big[\left(GDP^{i+1}_X\right)^{b_1^{ExpRoX}}-\left(GDP^i_X\right)^{b_1^{ExpRoX}}\Big]
+$$
+
+Finally the new step $GFCF$ and $HD$ are corrected using the uncovered demand by sector ($UD$) of the current step:
+
+$$
+ExpD^{i+1}_{RoX}(sector) = ExpD^i_{RoX}(sector)+\Delta ExpD^i_{RoX,\,expected}(sector)-UD^i(sector)\,ExpD_{RoX}share^i_{expected}(sector)
+$$
 
 
 **Change in inventories and goverment expenditures**
@@ -299,6 +311,7 @@ $$
 CI\&GE^i(sector)=(GFCF^i(sector)+HD^i(sector)+ExpD^i(sector))\,\frac{CI\&GEshare}{1-CI\&GEshare}
 $$
 where $GFCF$, $HD$ and $ExpD$ are the gross fixed capital formation, the household demand and the exports demand by secotor.
+
 
 
 **Final demand**

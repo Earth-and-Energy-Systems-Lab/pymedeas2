@@ -66,13 +66,16 @@ blah blah blah
 TODOs
 - [x] Include main explanation about nexting
 - [ ] Add runing nested models information
-- [ ] Add informations about rest of the "region" (RoW, RoR...).
-- [ ] Include a figure?
+- [x] Add informations about rest of the "region" (RoW, RoR...).
+- [x] Include a figure
 
 The pymedeas models allow to running from world experiments to small scale regions. In order to do so, three pymedeas models are provided, which are organized in two nestings:
 - The main model is the full world model (nesting level 0). This model repressents the full agreggated world system.
 - The first nested model (nesting level 1) corresponds to a regional model, this model repressents a region of the world model.
 - The second nested model (nesting level 2) corresponds to a subregional model, this model repressents a subregion of the region used in the regional model
+
+In the nested models we commonly refer to the complementary part of the region as rest of the world (RoW) or rest of the region (RoR). Therefore, Row repressents all the world except Region, and RoR repressents all the Region except Subregion, see the figure below.
+![Nesting](figures/nesting.png)
 
 In order to run a nested model the upper... bla bla bla
 
@@ -96,34 +99,43 @@ This submodule calculates the availability of non-renewable energy sources: oil,
 
 This view takes into account the limitation of the oil resources, and models availability of oil depending on two constraints: the stock (EJ) and the flows (Watts). The model priorizes the others NRE liquids fuels, then the oil demand is obtained as follows:
 
-$$
+```math
+\begin{equation}
 Oil\_demand=PED\_NRE\_Liquids-FES_{CTL}- FES_{GTL}- ORF
-$$
-Where PED_NRE_Liquieds is the Primary energy demand of non-renewable eneregy liquids (EJ), FES_GTL is the final energy demand of GTL (Gas-to-liquids) (EJ),  FES_CTL is the final energy demand of GTL (Coal-to-liquids) (EJ) and ORF is the oil refinery gains.
+\end{equation}
+```
 
+Where PED_NRE_Liquieds is the Primary energy demand of non-renewable eneregy liquids (EJ), FES_GTL is the final energy demand of GTL (Gas-to-liquids) (EJ),  FES_CTL is the final energy demand of GTL (Coal-to-liquids) (EJ) and ORF is the oil refinery gains.
 
 **Coal extraction**
 
 This view is in charge of obtaining the coal extraction taking into account the limitations of the coal resources. The model priorizes other solid NRE sources for satisfying the primary energy demand.
 
-$$
+```math
+\begin{equation}
 Coal_{demand}=PED_{solids}-PE_{trad\_bio}-PES_{peat}-PES_{waste}-LCP
-$$
+\end{equation}
+```
+
 Where, PED_solids is the primary energy demand of the solids (EJ), PE_trad_bio is the primary energy of the traditional biomass (EJ), PES_peat is the Primary energy suplly of peat (EJ), PES_waste is the primary energy obtained from waste (EJ) and LCP are the losses in charcoal plants (EJ).
 
 The amount of coal that can be extracted is limited by the Hubbert curves if the parameters *unlimited coal?* and *unlimited NRE?* are desactivated. Then, the extraction of coal is limited by the maximum extraction limit as:
 
-$$
+```math
+\begin{equation}
 Coal_{extraction}=min(PED_{coal}, max\_extract\_coal))
-$$
+\end{equation}
+```
 
 **Uranium extraction**
 
 This view is in charge of calculating the uranium extraction, taking into account the Hubbert curve of maxim extraction of the uranium. The demand of uranium is obtained from the potential generation of nuclear electricity divided by the efficiency of uranium for electricity. If the parameters *unlimited uranium?* and *unlimited NRE?* are desactivated, the extraction of uranium is limited by the maximum extraction limit as:
 
-$$
+```math
+\begin{equation}
 Uranium_{extraction}=min(PED_{uranium}, max\_extract\_uranium))
-$$
+\end{equation}
+```
 
 In the nested models, for calculating the abundance of uranium, the imports from the rest of the world are included. In such way, when there is local scarcity, the imports can compensate it.
 
@@ -136,8 +148,11 @@ In the nested models, for calculating the abundance of uranium, the imports from
 The abundance of final fuels is obtained from the primary energy demand (PED) and the primary energy supply (PES) as follows:
 
 ```math
+\begin{equation}
 A= {{PED_i-PES_i} \over {PED_i}}
+\end{equation}
 ```
+
 When the PED\<\PES the abundance is always 1. The index i is the energy carrier: liquids, gases, solids, electricity and heat.
 Then, depending on the *sensitivity_to_scarcity_option* defined in the scenarios files, the perception of final energy scarcity of each fuel by economic sectors is obtained. This perception drives the fuel replacement and efficiency improvement. This perception of scarcity decreases on time depending on the *energy_scarcity_forgeting_time* defined also at the scenario files as the time in years that society takes to forget the percepticon of scarcity for economic sectors.
 
@@ -204,35 +219,50 @@ This process is split in different submodules:
 Capital compensation ($CC$) and labour compensation ($LC$) are used in the models to compute the time evolution of final demands. This values are computed from a share of the gross domestic product ($GDP$).
 
 Both capital and labour compensations are computed in a similar ways. First the expected $GDP$ of next step (time $i\!+\!1$) is computed, as:
-$$
+
+```math
+\begin{equation}
 GDP_{expected}^{i+1} = GDP^i\,(1+GDPgrowth^{i}_{expected})
-$$
+\end{equation}
+```
+
 the value of $GDPgrowth^{i}_{expected}$ is setted in the scenario file by the user.
 
 Then the expected capital compensation share ($CCshare$) and labour compensations share ($LCshare$) respect to the $GDP$ are computed as:
-$$
+
+```math
+\begin{gather}
 LCshare_{expected}^{i+1} = LCshare^i\,(1+LCgrowth_{expected})\\
 CCshare_{expected}^{i+1} = CCshare^i\,(1+CCgrowth_{expected})
-$$
+\end{gather}
+```
+
 Therefore, the expected $LC$ and $CC$ can be easily computed as:
-$$
+
+```math
+\begin{gather}
 LC_{expected}^{i+1} = GDP_{expected}^{i+1} \, LCshare_{expected}^{i+1}\\
 CC_{expected}^{i+1} = GDP_{expected}^{i+1} \, CCshare_{expected}^{i+1}
-$$
-
+\end{gather}
+```
 
 Therefore, the expected variation of $LC$ and $CC$ can be computed as follows:
-$$
+
+```math
+\begin{gather}
 \Delta LC_{expected}^i = GDP^i\,LCshare^i\,\Big[\left(1+GDPgrowth^{i}_{expected}\right)\,\left(1+LCgrowth_{expected}\right)-1\Big]\\
 \Delta CC_{expected}^i = GDP^i\,CCshare^i\,\Big[\left(1+GDPgrowth^{i}_{expected}\right)\,\left(1+CCgrowth_{expected}\right)-1\Big]
-$$
+\end{gather}
+```
 
 Finally the new step $LC$ and $CC$ are corrected using the total uncovered demand ($UD_{total}$) of the current step:
 
-$$
+```math
+\begin{gather}
 LC^{i+1} = LC^i+\Delta LC_{expected}^i-UD_{total}^i\,LCshare_{expected}^i\\
 CC^{i+1} = CC^i+\Delta CC_{expected}^i-UD_{total}^i\,CCshare_{expected}^i
-$$
+\end{gather}
+```
 
 ```diff
 - Current version of pymedeas_cat doesn't take into account the uncovered demand to compute the CC and LC!
@@ -250,25 +280,33 @@ This process is split in different submodules:
 
 The gross fixed capital formation ($GFCF$) and households demand ($HD$) by sector at time $i$ are computed asuming the following relations.
 
-$$
+```math
+\begin{gather}
 \log\left(GFCF^i(sector)\right) = b_0^{GFCF}(sector) + b_1^{GFCF}\,\log\left(CC^i\right)\\
 \log\left(HD^i(sector)\right) = b_0^{HD}(sector) + b_1^{HD}\,\log\left(LC^i\right)
-$$
+\end{gather}
+```
 
 where $b_x^y$ parameters are adjusted by doing a linear regression with historical data. Being $CC$ and $LC$ the capital and labour compensations respectively.
 
 Therefore, the expected variation in both variables is computed as follows:
-$$
+```math
+\begin{gather}
 \Delta GFCF^i_{expected}(sector) = e^{b_0^{GFCF}(sector)}\,\Big[\left(CC^i\!+\!\Delta CC_{expected}^i\right)^{b_1^{GFCF}}-\left(CC^{i}\right)^{b_1^{GFCF}}\Big]\\
 \Delta HD^i_{expected}(sector) = e^{b_0^{HD}(sector)}\,\Big[\left(LC^i\!+\!\Delta LC_{expected}^i\right)^{b_1^{HD}}-\left(LC^{i}\right)^{b_1^{HD}}\Big]
-$$
+\end{gather}
+```
 
 Finally the new step $GFCF$ and $HD$ are corrected using the uncovered demand by sector ($UD$) of the current step:
 
-$$
-GFCF^{i+1}(sector) = GFCF^i(sector)+\Delta GFCF^i_{expected}(sector)-UD^i(sector)\,GFCFshare^i_{expected}(sector)\\
-HD^{i+1}(sector) = HD^i(sector)+\Delta HD^i_{expected}(sector)-UD^i(sector)\,HDshare^i_{expected}(sector)
-$$
+```math
+\begin{align}
+GFCF^{i+1}(sector) =\hspace{5pt}  &GFCF^i(sector)+\Delta GFCF^i_{expected}(sector)\nonumber\\
+                     &-UD^i(sector)\,GFCFshare^i_{expected}(sector)\\
+HD^{i+1}(sector) =\hspace{5pt}  &HD^i(sector)+\Delta HD^i_{expected}(sector)\nonumber\\
+                   &-UD^i(sector)\,HDshare^i_{expected}(sector)
+\end{align}
+```
 
 ```diff
 - In the world model the CC is used by sectors.
@@ -279,22 +317,30 @@ The exports demand is only computed in nested models. In the case of the regiona
 
 The computation of the exports demand ($ExpD$) is similar to that used for gross fixed capital formation and households demand:
 
-$$
+```math
+\begin{equation}
 \log\left(ExpD^i_{ExpRoX}(sector)\right) = b_0^{ExpRoX}(sector) + b_1^{ExpRoX}\,\log\left(GDP^i_X\right)
-$$
+\end{equation}
+```
 
 where $b_x^y$ parameters are adjusted by doing a linear regression with historical data. Being $GDP_X$ the gross domestic product of X (world or region).
 
 Therefore, the expected variation is computed as follows:
-$$
+
+```math
+\begin{equation}
 \Delta ExpD^i_{RoX,\,expected}(sector) = e^{b_0^{ExpRoX}(sector)}\,\Big[\left(GDP^{i+1}_X\right)^{b_1^{ExpRoX}}-\left(GDP^i_X\right)^{b_1^{ExpRoX}}\Big]
-$$
+\end{equation}
+```
 
 Finally the new step $GFCF$ and $HD$ are corrected using the uncovered demand by sector ($UD$) of the current step:
 
-$$
-ExpD^{i+1}_{RoX}(sector) = ExpD^i_{RoX}(sector)+\Delta ExpD^i_{RoX,\,expected}(sector)-UD^i(sector)\,ExpD_{RoX}share^i_{expected}(sector)
-$$
+```math
+\begin{align}
+ExpD^{i+1}_{RoX}(sector) = \hspace{5pt}&ExpD^i_{RoX}(sector)+\Delta ExpD^i_{RoX,\,expected}(sector)\nonumber\\
+&-UD^i(sector)\,ExpD_{RoX}share^i_{expected}(sector)
+\end{align}
+```
 
 
 **Change in inventories and goverment expenditures**
@@ -307,9 +353,13 @@ This process is split in different submodules:
 ```
 
 The share of change in inventoris and goverment expenditures ($CI\&GEshare$) respect to the final demand is assumed constant after the historic period. This way the goverment expenditures and change in inventories contribution to the finall demand ($CI\&GE$) by sector at time $i$ is computed in the following way:
-$$
-CI\&GE^i(sector)=(GFCF^i(sector)+HD^i(sector)+ExpD^i(sector))\,\frac{CI\&GEshare}{1-CI\&GEshare}
-$$
+
+```math
+\begin{align}
+CI\&GE^i(sector)=\frac{CI\&GEshare}{1-CI\&GEshare}\,\Big[&GFCF^i(sector)+HD^i(sector)\nonumber \\&+ExpD^i(sector)\Big]
+\end{align}
+```
+
 where $GFCF$, $HD$ and $ExpD$ are the gross fixed capital formation, the household demand and the exports demand by secotor.
 
 
@@ -324,23 +374,37 @@ This process is split in different submodules:
 ```
 
 The final demand $FD$ is the sum of gross fixed capital formation ($GFCF$), households demand ($HD$), change in inventories and goverment expenditures ($CI\&GE$) and exports demand $ExpD$ (if we are not running world model). Therefore, the $FD$ by sector at time $i$ can be computed as:
-$$
+
+```math
+\begin{equation}
 FD^i(sector) = GFCF^i(sector)+HD^i(sector)+ExpD^i(sector)+CI\&GE^i(sector)
-$$
+\end{equation}
+```
+
 and if we use the expression from the previous section we have:
-$$
+
+```math
+\begin{equation}
 FD^i(sector)=\frac{GFCF^i(sector)+HD^i(sector)+ExpD^i(sector)}{1-CI\&GEshare}
-$$
+\end{equation}
+```
 
 Therefore, the expected change in the final demand is computed using the expected change of all the variables that are in the previous equation:
-$$
-\Delta FD_{expected}^i(sector)=\frac{\Delta GFCF_{expected}^i(sector)+\Delta HD_{expected}^i(sector)+\Delta ExpD_{expected}^i(sector)}{1-CI\&GEshare}
-$$
+
+```math
+\begin{align}
+\Delta FD_{expected}^i&(sector)=\nonumber\\
+&\frac{\Delta GFCF_{expected}^i(sector)+\Delta HD_{expected}^i(sector)+\Delta ExpD_{expected}^i(sector)}{1-CI\&GEshare}
+\end{align}
+```
 
 The evolution of final demand by sector to the next step is computed considering the uncovered demand in the current step:
-$$
+
+```math
+\begin{equation}
 FD^{i+1}(sector)=FD^i(sector)+\Delta FD_{expected}^i(sector)-UD^i(sector)
-$$
+\end{equation}
+```
 
 
 #### Economy evolution

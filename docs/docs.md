@@ -79,10 +79,10 @@ In the nested models we commonly refer to the complementary part of the region a
 
 In order to run a nested model the upper... bla bla bla
 
-## Modules
-The pymedeas models are structured in the following modules.
+# Modules
+The pymedeas models are structured in seven modules: 
 
-### Energy
+## Energy
 This module is in charge of the estimation of energy demand, the energy supply, the energy resource availability, the modelling of electricity and heat generation and the modelling of non-energy use. The module is diveded in 6 submodules:
 
 - Availability
@@ -92,7 +92,15 @@ This module is in charge of the estimation of energy demand, the energy supply, 
 - Storage
 - EROI
 
-##### Availabiliy
+#### Availabiliy
+---
+TODOs
+- [ ] Oil extraction, reformulate in only one way
+- [ ] Gas extraction, reformulate in only one way
+- [ ] Explain year scarcity
+
+---
+
 This submodule calculates the availability of non-renewable energy sources: oil, natural gas, coal and uranium.
 
 **Oil Extraction**
@@ -101,7 +109,7 @@ This view takes into account the limitation of the oil resources, and models ava
 
 ```math
 \begin{equation}
-Oil\_demand=PED\_NRE\_Liquids-FES_{CTL}- FES_{GTL}- ORF
+Oil_{demand}=PED_{NRE\_Liquids}-FES_{CTL}- FES_{GTL}- ORF
 \end{equation}
 ```
 
@@ -156,11 +164,42 @@ A= {{PED_i-PES_i} \over {PED_i}}
 When the PED\<\PES the abundance is always 1. The index i is the energy carrier: liquids, gases, solids, electricity and heat.
 Then, depending on the *sensitivity_to_scarcity_option* defined in the scenarios files, the perception of final energy scarcity of each fuel by economic sectors is obtained. This perception drives the fuel replacement and efficiency improvement. This perception of scarcity decreases on time depending on the *energy_scarcity_forgeting_time* defined also at the scenario files as the time in years that society takes to forget the percepticon of scarcity for economic sectors.
 
-##### Supply
+#### Supply
 
 Primary total energy demand is covered with different Primary Energy Sources (PES) gruped in five categories: solids, liquids, gases, electricity and heat
 
 **Nuclear**
+
+Installation of nuclear plants is limited by several factors: uranium availability, RES supply, nuclear Cp. The uranium scarcity that is calculated in the availabilty submodule, 
+
+There are four different scenarios
+
+1. Constant power at current levels
+2. No more nuclear power installed capacity
+3. Growth of nuclear power installed capacity
+4. Phase-out nuclear power
+
+In the firts one, the nuclear capacity is being substitute when the lifetime of the installations is reached; in the second scenario, there is not more nuclear power installed when the facilities are depreciated; in the third scenario there is a yearly increase of the power capacity; and in the phase-out scenario there is a decrease of nuclear facilities before its lifetime is reached. 
+
+The new annual increase of new planned nuclear capacity is zero except for the scenario 3, where this increase of capacity is defined in the scenario's excel. Then, the new requiered capacity is obtained by:
+
+```math
+\begin{equation}
+C_{new \_nuc}=   C_{nuc} \cdot G_{nuc\_elect} \cdot S_{uranium} \cdot Cp_{limit}
+\end{equation}
+```
+
+Where C_num is the actual installed capacity, G_nuc_elect is the annual growth of new planned nuclear capacity, S_uraium is the uranium scarcity and Cp limit is a factor that limitates the new capacity installation when the capacity factor of nuclear due to the RES penetration falls below 60%.
+
+**RES electricity potentials**
+
+#### Demand
+
+#### Consumption
+
+#### Storage
+
+#### EROI
 
 ### Economy
 ---

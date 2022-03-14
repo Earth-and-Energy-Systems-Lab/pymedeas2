@@ -27,6 +27,7 @@ __author__ = "Eneko Martin, Emilio Ramon Garcia Ladona"
 __maintainer__ = "Roger Samsó, Eneko Martin"
 __status__ = "Development"
 
+_root = Path(__file__).parent
 
 warnings.filterwarnings("ignore")
 
@@ -100,7 +101,7 @@ class PlotTool(tk.Frame):
 
     def get_config(self):
         """Popup window for selecting configuration"""
-        with open("pytools/models.json") as mod_pars:
+        with _root.joinpath("pytools/models.json").open() as mod_pars:
             model_pars = json.load(mod_pars)
 
         self.popup = tk.Toplevel()
@@ -205,7 +206,7 @@ class PlotTool(tk.Frame):
         self.canvas.get_tk_widget().pack()
 
         # info buttom for variable description
-        info_icon = tk.PhotoImage(file='pytools/info-logo.png')
+        info_icon = tk.PhotoImage(file=_root.joinpath("pytools/info-logo.png"))
         info_icon = info_icon.subsample(8, 8)
         self.button = tk.Button(
             self.toolbar, image=info_icon, width=25, height=20,

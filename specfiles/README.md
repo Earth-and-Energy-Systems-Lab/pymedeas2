@@ -6,13 +6,7 @@ To create the executable for the run.py script (which also includes the plot_too
 
 
 ```console
-pyinstaller --clean specfiles/pymedeas.spec
-```
-
-To create the executable for the plot_tool.py as a single file, run:
-    
-```console
-pyinstaller --clean specfiles/plot.spec
+pyinstaller --clean specfiles/merge_apps.spec
 ```
 
 To generate signed mac executables, we need to use different spec files:

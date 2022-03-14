@@ -1,0 +1,17 @@
+name: pymedeas_dev
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pysd=2.2.1
+  - matplotlib
+  - dacite
+  - pyinstaller
+  - pycairo
+  - wxpython
+  - pytest
+  - pytest-cov
+  - pytest-xdist
+  - pytest-mock
+  - coverage
+

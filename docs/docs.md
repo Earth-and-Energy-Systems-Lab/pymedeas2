@@ -98,6 +98,8 @@ TODOs
 - [ ] Oil extraction, reformulate in only one way
 - [ ] Gas extraction, reformulate in only one way
 - [ ] Explain year scarcity
+- [ ] Explain nuclear
+
 
 ---
 
@@ -170,7 +172,7 @@ Primary total energy demand is covered with different Primary Energy Sources (PE
 
 **Nuclear**
 
-Installation of nuclear plants is limited by several factors: uranium availability, RES supply, nuclear Cp. The uranium scarcity that is calculated in the availabilty submodule, 
+Installation of nuclear plants is limited by several factors: uranium availability, RES supply, nuclear Cp. 
 
 There are four different scenarios
 
@@ -185,13 +187,29 @@ The new annual increase of new planned nuclear capacity is zero except for the s
 
 ```math
 \begin{equation}
-C_{new \_nuc}=   C_{nuc} \cdot G_{nuc\_elect} \cdot S_{uranium} \cdot Cp_{limit}
+C_{new \_nuc}=   C_{nuc} \cdot G_{nuc\_elect} \cdot Ef_{scarcity\_uranium} \cdot Cp_{limit}
 \end{equation}
 ```
 
-Where C_num is the actual installed capacity, G_nuc_elect is the annual growth of new planned nuclear capacity, S_uraium is the uranium scarcity and Cp limit is a factor that limitates the new capacity installation when the capacity factor of nuclear due to the RES penetration falls below 60%.
+Where C_num is the actual installed capacity, G_nuc_elect is the annual growth of new planned nuclear capacity, Ef_{scarcity\_uranium} is the efect of uranium scarcity and Cp limit is a factor that limitates the new capacity installation when the capacity factor of nuclear due to the RES penetration falls below 60%.
+
+The efects of the uranium scarcity, that is calculated in the availabilty submodule, con be modeled by a relationship that avoids an abrupt limitation by introducing a range (1;0.8) in the uranium abundance that constrains the development of new nuclear facilities. This relation models the behaviour of new required nuclear capacity when the abundance is in the range (1;0.8):
+
+```math
+\begin{equation}
+Ef_{scarcity\_uranium}=  ((A_{Uranium}-0.8) \cdot 5)^2
+\end{equation}
+```
+Then, the new planed nuclear capacity is calculated from the new nuclear capacity under planning plus replacement nuclear capacity less nuclear capacity under construction.
+
 
 **RES electricity potentials**
+
+Renewables potentials are limited by biophysical sustainable constraints, limiting the potential installed by a techno-sustainable limits that are taking into account the ecological, and the technical limitation of renewable energy sources. This potential limits are read from the "energy.xslx" excel file, and used in other views.
+
+** RES electric capacities and generation**
+
+Energy generation from Renewable Energy Source (RES) from different sources (hydro, geothermal, solid biomass, oceanic, wind onshore, wind offshore and solar) is limited by the techno-sustainable potentials and its growth is defined in the "scenario.xslx" file. 
 
 #### Demand
 

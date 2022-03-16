@@ -163,7 +163,7 @@ A= {{PED_i-PES_i} \over {PED_i}}
 \end{equation}
 ```
 
-When the PED\<\PES the abundance is always 1. The index i is the energy carrier: liquids, gases, solids, electricity and heat.
+When the PED$<$PES the abundance is always 1. The index i is the energy carrier: liquids, gases, solids, electricity and heat.
 Then, depending on the *sensitivity_to_scarcity_option* defined in the scenarios files, the perception of final energy scarcity of each fuel by economic sectors is obtained. This perception drives the fuel replacement and efficiency improvement. This perception of scarcity decreases on time depending on the *energy_scarcity_forgeting_time* defined also at the scenario files as the time in years that society takes to forget the percepticon of scarcity for economic sectors.
 
 #### Supply
@@ -209,7 +209,7 @@ Renewables potentials are limited by biophysical sustainable constraints, limiti
 
 ** RES electric capacities and generation**
 
-Energy generation from Renewable Energy Source (RES) from different sources (hydro, geothermal, solid biomass, oceanic, wind onshore, wind offshore and solar) is limited by the techno-sustainable potentials and its growth is defined in the "scenario.xslx" file. 
+Energy generation from Renewable Energy Source (RES) from different sources (hydro, geothermal, solid biomass, oceanic, wind onshore, wind offshore and solar) is limited by the techno-sustainable potentials and its growth is defined in the "scenario.xslx" file and by the reduction of the capacity factor due tot the intermitency of RES. The module prioritize the use of biogas and waste as energy sources, 
 
 #### Demand
 

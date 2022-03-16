@@ -112,18 +112,17 @@ if __name__ == "__main__":
             executable_dir = Path(sys.argv[0]).resolve().parent
 
             # copying scenario files
-            for scen_name in Path(executable_dir, "scenarios").iterdir():
-                if scen_name.is_file():
-                    destination = Path(
-                        bundle_dir, "scenarios").joinpath(scen_name.name)
-                    shutil.copy(scen_name, destination)
-
+            shutil.copytree(
+                executable_dir.joinpath("scenarios"),
+                bundle_dir.joinpath("scenarios"),
+                dirs_exist_ok=True
+            )
             # copying model parameters files
-            for pars_name in Path(executable_dir, "models").iterdir():
-                if pars_name.is_file():
-                    destination = Path(
-                        bundle_dir, "models").joinpath(pars_name.name)
-                    shutil.copy(pars_name, destination)
+            shutil.copytree(
+                executable_dir.joinpath("models"),
+                bundle_dir.joinpath("models"),
+                dirs_exist_ok=True
+            )
 
     # create results directory if it does not exist
     Path(config.model.out_folder).mkdir(parents=True, exist_ok=True)

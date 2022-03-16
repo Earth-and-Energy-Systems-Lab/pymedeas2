@@ -12,12 +12,23 @@ To run this, we need to first create a copy of run.py and save it as shared.py
 
 
 import os
+import shutil
 import platform
 
 BLOCK_CIPHER = None
 
+# libraries used for development or by PySD for translation and building
+EXCLUDE_LIBRARIES = [
+    "pytest", "IPython", "coverage", "lxml", "parsimonious", "black",
+    "pytest-cov", "pytest-xdist", "pytest-mock"
+]
+
 specpath = os.path.dirname(os.path.abspath(SPEC))
 main_path = os.path.dirname(specpath)
+
+# create a copy of run.py in shared file to allow creating shared directory
+shared_file = os.path.join(main_path, "shared.py")
+shutil.copy(os.path.join(main_path, "run.py"), shared_file)
 
 shared_added_files = [
     (os.path.join(main_path, 'pytools', '*.json'), 'pytools'),
@@ -35,7 +46,8 @@ run_added_files = [
 
 plot_added_files = [
     (os.path.join(main_path, 'models'), 'models'),
-    (os.path.join(main_path, 'pytools', '*.json'), 'pytools')
+    (os.path.join(main_path, 'pytools', '*.json'), 'pytools'),
+    (os.path.join(main_path, 'pytools', 'info-logo.png'), 'pytools')
 ]
 
 shared_a = Analysis(
@@ -47,7 +59,7 @@ shared_a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=['pytest', 'IPython'],
+    excludes=EXCLUDE_LIBRARIES,
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=BLOCK_CIPHER,
@@ -63,7 +75,7 @@ run_a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=['pytest', 'IPython'],
+    excludes=EXCLUDE_LIBRARIES,
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=BLOCK_CIPHER,
@@ -79,7 +91,7 @@ plot_a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=['pytest', 'IPython'],
+    excludes=EXCLUDE_LIBRARIES,
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=BLOCK_CIPHER,
@@ -112,31 +124,31 @@ MERGE(
 # If we do not remove these binaries, we get this file shouldn't be
 # here warnings
 if platform.system() == "Windows":
-    to_remove = ["libbz2.dll",
-                 "msvcp140.dll",
-                 "vcruntime140.dll",
-                 "vcruntime140_1.dll"]
-    for dep in plot_a.dependencies:
+    to_remove = [
+        "libbz2.dll",
+        "msvcp140.dll",
+        "vcruntime140.dll",
+        "vcruntime140_1.dll"
+    ]
+    elements = [plot_a, run_a]
+elif platform.system() == "Linux":
+    to_remove = [
+            "_struct.cpython-39-x86_64-linux-gnu.so",
+            "zlib.cpython-39-x86_64-linux-gnu.so",
+            "libgfortran.so.5",
+            "liblapack.so.3",
+            "libquadmath.so.0"
+        ]
+    elements = [plot_a]
+else:
+    to_remove = []
+    elements = []
+
+for element in elements:
+    for dep in element.dependencies:
         for duplicate in to_remove:
             if duplicate in dep[1]:
-                plot_a.dependencies.remove(dep)
-
-    for dep in run_a.dependencies:
-        for duplicate in to_remove:
-            if duplicate in dep[1]:
-                run_a.dependencies.remove(dep)
-
-
-if platform.system() == "Linux":
-    to_remove = ["_struct.cpython-39-x86_64-linux-gnu.so",
-                 "zlib.cpython-39-x86_64-linux-gnu.so",
-                 "libgfortran.so.5",
-                 "libquadmath.so.0"]
-
-    for dep in plot_a.dependencies:
-        for duplicate in to_remove:
-            if duplicate in dep[1]:
-                plot_a.dependencies.remove(dep)
+                element.dependencies.remove(dep)
 
 shared_pyz = PYZ(
     shared_a.pure,
@@ -235,3 +247,6 @@ shared_coll = COLLECT(
     upx_exclude=[],
     name=os.path.join('dist', 'shared')  # The name of the dir to be built
 )
+
+# remove shared.py copy
+os.remove(shared_file)

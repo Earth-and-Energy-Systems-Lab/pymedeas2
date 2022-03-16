@@ -3,30 +3,28 @@ __author__ = "Roger Samsó, Eneko Martin"
 __maintainer__ = "Eneko Martin, Roger Samsó"
 __status__ = "Development"
 
-from pytools.config import read_model_config
 import sys
 import time
 from datetime import datetime
-
-import pandas as pd
 from pathlib import Path
 from argparse import Namespace
-
-from .argparser import parser, config
-from .config import Params, ParentModel
+# these imports will not be needed in Python 3.9
+from typing import Union, List
 
 # imports for GUI
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
-from .logger.logger import log
+import pandas as pd
 
 # PySD imports for replaced functions
 from pysd.py_backend.statefuls import Model
 
-# these imports will not be needed in Python 3.9
-from typing import Union, List
+
 from . import PROJ_FOLDER
+from .logger.logger import log
+from .argparser import parser, config
+from .config import Params, ParentModel, read_model_config
 
 
 def get_initial_user_input(args: Union[List, None] = None) -> Namespace:

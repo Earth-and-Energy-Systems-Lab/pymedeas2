@@ -7,8 +7,6 @@ dependencies:
   - matplotlib
   - dacite
   - pyinstaller
-  - pycairo
-  - wxpython
   - pytest
   - pytest-cov
   - pytest-xdist

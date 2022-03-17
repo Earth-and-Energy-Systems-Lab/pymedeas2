@@ -7,8 +7,8 @@ import pandas as pd
 import pytools.tools as tools
 
 world = ["pymedeas_w"]
-all_regions = ["pymedeas_w", "pymedeas_eu", "pymedeas_cat"]
-sub_regions = ["pymedeas_eu", "pymedeas_cat"]
+all_regions = ["pymedeas_w"]
+sub_regions = []
 
 
 @pytest.mark.parametrize("region", all_regions, ids=all_regions)
@@ -16,66 +16,6 @@ def test_update_config_from_user_input_defaults(region, default_config):
     """Update config from user imput"""
     options = tools.get_initial_user_input(["-m", region])
     assert tools.update_config_from_user_input(options) == default_config
-
-
-@pytest.mark.parametrize("region", ["pymedeas_eu"])
-def test_update_config_from_user_input_not_raising(
-      cli_input_not_raises, expected_conf_cli_input_long_and_short):
-
-    # if the parent results folder and the export pickle folder do not exist,
-    # it will raise. Therefore they must exist.
-    base_tmp_folder = expected_conf_cli_input_long_and_short. \
-                    model_arguments.export.parent.parent
-    results_file_path = base_tmp_folder.joinpath(
-        cli_input_not_raises[11].split(":")[1])
-    pickle_file_path = base_tmp_folder.joinpath(cli_input_not_raises[19])
-    # creating results folder (hence the pickle folder too, but I leave it
-    # there in case the config of the test ever changes)
-    results_file_path.parent.mkdir(parents=True, exist_ok=True)
-    pickle_file_path.parent.mkdir(parents=True, exist_ok=True)
-    # creating results file
-    results_file_path.touch(exist_ok=True)
-
-    options = tools.get_initial_user_input(cli_input_not_raises)
-    result_config = tools.update_config_from_user_input(
-        options, base_path=base_tmp_folder)
-
-    for attr in dir(expected_conf_cli_input_long_and_short):
-        if not attr.startswith("_") and attr != "model_arguments":
-            assert getattr(expected_conf_cli_input_long_and_short, attr) == \
-                    getattr(result_config, attr)
-
-    model_args_def = expected_conf_cli_input_long_and_short.model_arguments
-    model_args_res = result_config.model_arguments
-
-    for attr in dir(model_args_def):
-        if not attr.startswith("_") and attr != "update_params":
-            assert getattr(model_args_def, attr) == \
-                        getattr(model_args_res, attr)
-
-    for key, value in model_args_def.update_params.items():
-        if isinstance(value, pd.Series):
-            assert model_args_def.update_params[key].equals(
-                model_args_res.update_params[key])
-        else:
-            assert model_args_def.update_params[key] == \
-                model_args_res.update_params[key]
-
-
-def test_update_config_from_user_input_raises_valueerror(
-      cli_raises_value_error):
-    with pytest.raises(ValueError):
-        options = tools.get_initial_user_input(
-             cli_raises_value_error)
-        tools.update_config_from_user_input(options)
-
-
-def test_update_config_from_user_input_raises_filenotfounderror(
-      cli_input_invalid_parent_results_file_path):
-    with pytest.raises(FileNotFoundError):
-        options = tools.get_initial_user_input(
-             cli_input_invalid_parent_results_file_path)
-        tools.update_config_from_user_input(options)
 
 
 @pytest.mark.parametrize("region", all_regions, ids=all_regions)

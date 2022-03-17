@@ -114,11 +114,3 @@ def test_run_three_levels(tmp_path, proj_folder, default_vars):
     model, config = select_model(
         tmp_path, proj_folder, "pymedeas_w", default_vars)
     main(config, model)
-
-    model, config = select_model(
-        tmp_path, proj_folder, "pymedeas_eu", default_vars)
-    main(config, model)
-
-    model, config = select_model(
-        tmp_path, proj_folder, "pymedeas_cat", default_vars)
-    main(config, model)

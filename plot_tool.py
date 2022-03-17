@@ -20,8 +20,7 @@ from matplotlib.ticker import MultipleLocator
 import pysd
 
 from pytools.config import read_config, read_model_config
-from pytools.data_manager import DataContainer, DataFile, DataLoaded,\
-                                 DataVensim
+from pytools.data_manager import DataContainer, DataFile, DataLoaded
 
 __author__ = "Eneko Martin, Emilio Ramon Garcia Ladona"
 __maintainer__ = "Roger Samsó, Eneko Martin"
@@ -141,9 +140,6 @@ class PlotTool(tk.Frame):
 
         filemenu = tk.Menu(menubar)
         filemenu.add_command(label="Load data", command=self.load_file)
-        filemenu.add_command(
-            label="Load Vensim data",
-            command=lambda: self.load_file(lambda x: DataVensim(x, self.doc)))
         filemenu.add_command(label="Clear data", command=self.clear_data)
         filemenu.add_command(label="Exit", command=lambda: on_closing(self))
         menubar.add_cascade(label="File", menu=filemenu)
@@ -431,15 +427,6 @@ def main(config=None, data=None, scenario=None):
 
 
 if __name__ == '__main__':
-
-    # load configuration file
-    if len(sys.argv) == 1:
-        main()
-    elif len(sys.argv) == 2:
-        config = read_config()
-        config.region = sys.argv[1]
-        main(read_model_config(config))
-    else:
-        raise ValueError(
-            "python plot_tool.py only accepts 1 argument, corresponding"
-            " to the region (e.g.: python plot_tool.py pymedeas_eu)")
+    config = read_config()
+    config.region = "pymedeas_w"
+    main(read_model_config(config))

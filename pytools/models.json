@@ -28,38 +28,5 @@
             "population"
             ],
         "parent": []
-        },
-    "pymedeas_eu": {
-            "model_file": "models/pymedeas_eu/pymedeas_eu.py",
-            "out_folder": "outputs/pymedeas_eu",
-            "out_default": [
-                "gdp_eu",
-                "total_fe_elec_generation_twh_eu",
-                "annual_gdp_growth_rate_eu",
-                "real_final_demand_by_sector_eu",
-                "real_total_output_by_sector_eu",
-                "real_final_energy_by_sector_and_fuel_eu"
-                ],
-            "parent": [
-                {
-                    "name": "pymedeas_w",
-                    "default_results_folder": "outputs/pymedeas_w"
-                }
-            ]
-        },
-    "pymedeas_cat": {
-            "model_file": "models/pymedeas_cat/pymedeas_cat.py",
-            "out_folder": "outputs/pymedeas_cat",
-            "out_default": [],
-            "parent": [
-                {
-                    "name": "pymedeas_w",
-                    "default_results_folder": "outputs/pymedeas_w"
-                },
-                {
-                    "name": "pymedeas_eu",
-                    "default_results_folder": "outputs/pymedeas_eu"
-                }
-            ]
         }
 }

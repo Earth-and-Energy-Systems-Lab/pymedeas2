@@ -60,13 +60,15 @@ def main(config: Params, model: Model) -> None:
     # select scenario sheet
     select_scenario_sheet(model, config.scenario_sheet)
 
-    if not config.model_arguments.return_columns:
-        # list of columns that need to be present in the output file
-        config.model_arguments.return_columns = select_model_outputs(config,
-                                                                     model)
-    elif config.model_arguments.return_columns[0] in ['all', 'default']:
-        config.model_arguments.return_columns = select_model_outputs(
-            config, model, config.model_arguments.return_columns[0])
+    config.model_arguments.return_columns = sorted([
+        "gdppc",
+        "temperature_change",
+        "total_co2_emissions_gtco2",
+        "eroist_system",
+        "share_res_electricity_generation",
+        "scarcity_final_fuels",
+        "tfec_per_capita"
+    ])
 
     # run the simulation
     stock: DataFrame = run(config, model)

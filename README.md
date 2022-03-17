@@ -1,11 +1,10 @@
-# temporary_name models
+# pymedeas models
 [![coverage report](https://gitlab.com/gencat_creaf/pymedeas2/badges/master/coverage.svg)](https://gitlab.com/gencat_creaf/pymedeas2/-/commits/master)
 
 The models in this repository are loaded and run using the [PySD](https://github.com/JamesPHoughton/pysd) library.
 
-Currently, *temporary_name* models for World (*temporary_name_w*), EU28 (*temporary_name_eu*) and Catalonia (*temporary_name_cat*) are available.
+Currently, *pymedeas* model for World (*pymedeas_w*) is available.
 
-Please note that the three models are nested, hence **to run *temporary_name_cat* the two parent models (*temporary_name_w* and *temporary_name_eu*) need to be run first**. Child models will request the results file/s from the parents at runtime.
 
 
 Python 3.7 is required to run the code.
@@ -36,16 +35,6 @@ NOTE: If you already had Anaconda installed on your Mac and then upgraded the OS
 
     ```console
     python run.py -x BAU -p
-    ```
-4. By default the World model will run, but you can use the *-m* option to select another model:
-
-    ```console
-    python run.py -m pymedeas_eu -x BAU -p
-    ```
-    or
-
-    ```console
-    python run.py -m pymedeas_cat -x BAU -p
     ```
 NOTE: to see all user options and default parameter values, run:
 

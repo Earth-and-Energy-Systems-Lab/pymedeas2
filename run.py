@@ -1,24 +1,22 @@
 #!/usr/bin/env python
-__author__ = "Oleg Osychenko, Roger Samsó, Eneko Martin"
-__maintainer__ = "Eneko Martin"
-__status__ = "Development"
-
 """
 This code allows parametrizing, launching and saving and plotting the
 results of the pymedeas models.
 """
-from pytools.config import Params
-import warnings
-import pysd
-import argparse
-from pathlib import Path
 import sys
+import warnings
+import argparse
 import platform
 import shutil
 from typing import List
+from pathlib import Path
+
 from pandas import DataFrame
+from pysd.py_backend.statefuls import Model
+import pysd
 
 import plot_tool
+from pytools.config import Params
 from pytools.tools import get_initial_user_input,\
                           update_config_from_user_input, \
                           select_scenario_sheet,\
@@ -27,9 +25,12 @@ from pytools.tools import get_initial_user_input,\
                           run,\
                           store_results_csv
 
-from pysd.py_backend.statefuls import Model
 
 warnings.filterwarnings("ignore")
+
+__author__ = "Oleg Osychenko, Roger Samsó, Eneko Martin"
+__maintainer__ = "Eneko Martin"
+__status__ = "Development"
 
 # check PySD version
 if tuple(int(i) for i in pysd.__version__.split(".")) < (2, 2, 0):
@@ -111,18 +112,25 @@ if __name__ == "__main__":
             bundle_dir = Path(__file__).parent
             executable_dir = Path(sys.argv[0]).resolve().parent
 
-            # copying scenario files
-            shutil.copytree(
-                executable_dir.joinpath("scenarios"),
-                bundle_dir.joinpath("scenarios"),
-                dirs_exist_ok=True
-            )
-            # copying model parameters files
-            shutil.copytree(
-                executable_dir.joinpath("models"),
-                bundle_dir.joinpath("models"),
-                dirs_exist_ok=True
-            )
+            try:
+                # copying scenario files
+                shutil.copytree(
+                    executable_dir.joinpath("scenarios"),
+                    bundle_dir.joinpath("scenarios"),
+                    dirs_exist_ok=True
+                )
+                # copying model parameters files
+                shutil.copytree(
+                    executable_dir.joinpath("models"),
+                    bundle_dir.joinpath("models"),
+                    dirs_exist_ok=True
+                )
+            except shutil.Error as err:
+                raise PermissionError(
+                    f"\n\nUnable to copy '{err.args[0][0][0]}'...\n"
+                    + f"Please, close '{err.args[0][0][0].split('~$')[-1]}'"
+                    + " file before running the model.\n\n"
+                ) from None
 
     # create results directory if it does not exist
     Path(config.model.out_folder).mkdir(parents=True, exist_ok=True)

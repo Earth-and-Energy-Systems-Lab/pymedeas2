@@ -176,14 +176,14 @@ class PlotTool(tk.Frame):
         right_scrollbar.config(command=self.lstbox.yview)
         self.lstbox.bind('<<ListboxSelect>>', self.on_click)
 
-        self.populate_list()
-
         self.search_tit = tk.Label(search_frame, text="Search")
         self.search_tit.pack(side=tk.LEFT, expand=0)
 
         self.search_var = tk.StringVar()
         self.search_var.trace("w", lambda name, index, mode:
-                              self.update_list(self.all_vars))
+                              self.update_list())
+
+        self.update_list()
 
         self.entry = tk.Entry(
             search_frame, textvariable=self.search_var, width=50)
@@ -245,14 +245,7 @@ class PlotTool(tk.Frame):
             widgets.destroy()
         self.dimension_frame.config(height=0)  # update height
 
-    def populate_list(self):
-        """
-        populating the list with variable names
-        """
-        for item in self.all_vars:
-            self.lstbox.insert(tk.END, item)
-
-    def update_list(self, list_):
+    def update_list(self):
         """
         Updates the list of variables in lstbox based on the user input
         :param list_:
@@ -260,12 +253,9 @@ class PlotTool(tk.Frame):
         """
         search_term = self.search_var.get()
 
-        # populate the listbox with default values
-        lbox_list = list_
-
         self.lstbox.delete(0, tk.END)
 
-        for item in lbox_list:
+        for item in self.all_vars:
             if search_term.lower() in item.lower():
                 self.lstbox.insert(tk.END, item)
 
@@ -293,7 +283,7 @@ class PlotTool(tk.Frame):
         elif filename.suffix in [".csv", ".tab"]:
             self.data_container.add(DataType(filename))
             self.all_vars = self.data_container.variable_list
-            self.populate_list()
+            self.update_list()
             if self.column:
                 # update plots when loading new data
                 self.select_variable()

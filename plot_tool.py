@@ -289,7 +289,7 @@ class PlotTool(tk.Frame):
         elif filename.suffix in [".csv", ".tab"]:
             self.data_container.add(DataType(filename))
             self.all_vars = self.data_container.variable_list
-            self.populate_list()
+            self.update_list(self.all_vars)
             if self.column:
                 # update plots when loading new data
                 self.select_variable()

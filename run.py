@@ -61,13 +61,18 @@ def main(config: Params, model: Model) -> None:
     select_scenario_sheet(model, config.scenario_sheet)
 
     config.model_arguments.return_columns = sorted([
+        "gdp",
         "gdppc",
         "temperature_change",
         "total_co2_emissions_gtco2",
         "eroist_system",
         "share_res_electricity_generation",
         "scarcity_final_fuels",
-        "tfec_per_capita"
+        "tfec_per_capita",
+        "fe_nuclear_elec_generation_twh",
+        "fe_elec_generation_from_fossil_fuels_twh",
+        "fe_tot_generation_all_res_elec_twh",
+        "total_fe_elec_generation_twh"
     ])
 
     # run the simulation
@@ -109,22 +114,28 @@ if __name__ == "__main__":
     # if it's bundled, copy user modifiable files to the bundle tempdir
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
         if platform.system() != 'Darwin':
-
             bundle_dir = Path(__file__).parent
             executable_dir = Path(sys.argv[0]).resolve().parent
 
-            # copying scenario files
-            shutil.copytree(
-                executable_dir.joinpath("scenarios"),
-                bundle_dir.joinpath("scenarios"),
-                dirs_exist_ok=True
-            )
-            # copying model parameters files
-            shutil.copytree(
-                executable_dir.joinpath("models"),
-                bundle_dir.joinpath("models"),
-                dirs_exist_ok=True
-            )
+            try:
+                # copying scenario files
+                shutil.copytree(
+                    executable_dir.joinpath("scenarios"),
+                    bundle_dir.joinpath("scenarios"),
+                    dirs_exist_ok=True
+                )
+                # copying model parameters files
+                shutil.copytree(
+                    executable_dir.joinpath("models"),
+                    bundle_dir.joinpath("models"),
+                    dirs_exist_ok=True
+                )
+            except shutil.Error as err:
+                raise PermissionError(
+                    f"\n\nUnable to copy '{err.args[0][0][0]}'...\n"
+                    + f"Please, close '{err.args[0][0][0].split('~$')[-1]}'"
+                    + " file before running the model.\n\n"
+                ) from None
 
     # create results directory if it does not exist
     Path(config.model.out_folder).mkdir(parents=True, exist_ok=True)

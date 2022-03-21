@@ -1784,6 +1784,7 @@
         "__external__": null
     },
     "buffer_factor": {
+        "time": 1,
         "_active_initial_buffer_factor": 1
     },
     "by_mineral_rr_alt_techn": {

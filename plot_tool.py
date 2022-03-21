@@ -3,7 +3,7 @@
 import sys
 import warnings
 import tkinter as tk
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilenames
 
 import json
 from pathlib import Path
@@ -273,7 +273,7 @@ class PlotTool(tk.Frame):
 
     def load_file(self, DataType=DataFile):
         """Create Data object with columns information"""
-        filename = Path(askopenfilename(
+        filenames = askopenfilenames(
             initialdir=self.results_folder,
             title="Open file",
             filetypes=(
@@ -282,22 +282,23 @@ class PlotTool(tk.Frame):
                 ("tab files", "*.tab"),
                 ("All files", "*")
             )
-        ) or "")
+        )
 
-        if not filename.name:
-            pass
-        elif filename.suffix in [".csv", ".tab"]:
-            self.data_container.add(DataType(filename))
-            self.all_vars = self.data_container.variable_list
-            self.update_list(self.all_vars)
-            if self.column:
-                # update plots when loading new data
-                self.select_variable()
-        else:
-            tk.messagebox.showerror(
-                title="Incompatible file format",
-                message=f"Incompatible file format '{filename}'.\n"
-                        "Compatible file formats are '.csv' and '.tab'")
+        for filename in filenames:
+            filename = Path(filename)
+            if filename.suffix in [".csv", ".tab"]:
+                self.data_container.add(DataType(filename))
+            else:
+                tk.messagebox.showerror(
+                    title="Incompatible file format",
+                    message=f"Incompatible file format '{filename}'.\n"
+                            "Compatible file formats are '.csv' and '.tab'")
+
+        self.all_vars = self.data_container.variable_list
+        self.update_list(self.all_vars)
+        if self.column:
+            # update plots when loading new data
+            self.select_variable()
 
     def on_click(self, event):
         """Select a variable"""

@@ -72,8 +72,12 @@ def main(config: Params, model: Model) -> None:
         "fe_nuclear_elec_generation_twh",
         "fe_elec_generation_from_fossil_fuels_twh",
         "fe_tot_generation_all_res_elec_twh",
-        "total_fe_elec_generation_twh"
+        "total_fe_elec_generation_twh",
+        "remaining_potential"
     ])
+
+    #config.model_arguments.return_columns = select_model_outputs(
+    #    config, model, "all")
 
     # run the simulation
     stock: DataFrame = run(config, model)

@@ -1,6 +1,6 @@
 """
 Module nuclear
-Translated using PySD version 2.2.1
+Translated using PySD version 2.2.3
 """
 
 
@@ -65,7 +65,7 @@ def effects_shortage_uranium():
     Type: Auxiliary
     Subs: []
 
-    The eventual scarcity of coal would likely constrain the development of CTL. The proposed relationship avoids an abrupt limitation by introducing a range (1;0.8) in the gas abundance that constrains the development of CTL.
+    The eventual scarcity of coal would likely constrain the development of new nuclear facilities. The proposed relationship avoids an abrupt limitation by introducing a range (1;0.8) in the uranium abundance that constrains the intallation of new nuclear capacity.
     """
     return if_then_else(
         extraction_uranium_ej() == 0,
@@ -344,13 +344,9 @@ def new_required_capacity_nuclear():
         np.maximum(
             0,
             if_then_else(
-                time() < 2014,
+                np.logical_or(time() < 2014, demand_elec_nre_twh() == 0),
                 lambda: 0,
-                lambda: if_then_else(
-                    demand_elec_nre_twh() == 0,
-                    lambda: 0,
-                    lambda: installed_capacity_nuclear_tw() * p_nuclear_elec_gen(),
-                ),
+                lambda: installed_capacity_nuclear_tw() * p_nuclear_elec_gen(),
             ),
         )
         * effects_shortage_uranium()
@@ -436,24 +432,18 @@ def p_nuclear_elec_gen():
     Annual increase of new planned nuclear capacity.
     """
     return if_then_else(
-        selection_of_nuclear_scenario() == 1,
+        np.logical_or(
+            selection_of_nuclear_scenario() == 1,
+            np.logical_or(
+                selection_of_nuclear_scenario() == 2,
+                selection_of_nuclear_scenario() == 4,
+            ),
+        ),
         lambda: 0,
         lambda: if_then_else(
-            selection_of_nuclear_scenario() == 2,
+            time() < start_year_nuclear_growth_scen34(),
             lambda: 0,
-            lambda: if_then_else(
-                selection_of_nuclear_scenario() == 4,
-                lambda: 0,
-                lambda: if_then_else(
-                    selection_of_nuclear_scenario() == 3,
-                    lambda: if_then_else(
-                        time() < start_year_nuclear_growth_scen34(),
-                        lambda: 0,
-                        lambda: p_nuclear_scen34(),
-                    ),
-                    lambda: 0,
-                ),
-            ),
+            lambda: p_nuclear_scen34(),
         ),
     )
 
@@ -482,9 +472,9 @@ _ext_constant_p_nuclear_scen34 = ExtConstant(
 )
 
 
-def pe_demand_uranium_ej():
+def pe_demand_uranium():
     """
-    Real Name: PE demand uranium EJ
+    Real Name: PE demand uranium
     Original Eqn:
     Units: EJ/year
     Limits: (None, None)
@@ -556,15 +546,14 @@ def replacement_nuclear_capacity():
             time() < 2013,
             lambda: nuclear_capacity_under_construction(),
             lambda: if_then_else(
-                selection_of_nuclear_scenario() == 2,
-                lambda: 0,
-                lambda: if_then_else(
+                np.logical_or(
+                    selection_of_nuclear_scenario() == 2,
                     selection_of_nuclear_scenario() == 4,
-                    lambda: 0,
-                    lambda: replacement_rate_nuclear()
-                    * wear_nuclear()
-                    * (1 - nuclear_overcapacity()),
                 ),
+                lambda: 0,
+                lambda: replacement_rate_nuclear()
+                * wear_nuclear()
+                * (1 - nuclear_overcapacity()),
             ),
         )
         * cp_limit_nuclear()

@@ -1,6 +1,6 @@
 """
 Module storage_demand_and_supply
-Translated using PySD version 2.2.1
+Translated using PySD version 2.2.3
 """
 
 
@@ -23,40 +23,6 @@ def abundance_storage():
             1
             - (demand_storage_capacity() - total_capacity_elec_storage_tw())
             / total_capacity_elec_storage_tw(),
-        ),
-    )
-
-
-@subs(["RES elec"], _subscript_dict)
-def constraint_elec_storage_availability():
-    """
-    Real Name: constraint elec storage availability
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
-    Remaining potential available as a fraction of unity. This feedback ensures that the electricity storage levels required by the penetration of the RES variables for the generation of electricity are respected.
-    """
-    return if_then_else(
-        res_elec_variables() == 0,
-        lambda: xr.DataArray(
-            1, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-        ),
-        lambda: xr.DataArray(
-            if_then_else(
-                demand_storage_capacity() <= total_capacity_elec_storage_tw(),
-                lambda: 1,
-                lambda: np.maximum(
-                    0,
-                    1
-                    - (demand_storage_capacity() - total_capacity_elec_storage_tw())
-                    / total_capacity_elec_storage_tw(),
-                ),
-            ),
-            {"RES elec": _subscript_dict["RES elec"]},
-            ["RES elec"],
         ),
     )
 

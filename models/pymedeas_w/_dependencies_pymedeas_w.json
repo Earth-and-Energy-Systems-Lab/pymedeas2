@@ -1139,7 +1139,6 @@
         "initial": {},
         "step": {
             "materials_availability_reserves": 1,
-            "scarcity_reserves_counter": 1,
             "time": 1,
             "time_step": 1
         }
@@ -1148,7 +1147,6 @@
         "initial": {},
         "step": {
             "materials_availability_resources": 1,
-            "scarcity_resources_counter": 1,
             "time": 1,
             "time_step": 1
         }
@@ -1368,13 +1366,6 @@
         "abundance_total_nat_gas": 1,
         "abundance_total_oil": 1
     },
-    "abundance_res_elec": {
-        "fe_real_tot_generation_res_elec_twh": 2,
-        "total_fe_elec_demand_after_priorities_twh": 4
-    },
-    "abundance_res_elec2": {
-        "abundance_res_elec": 1
-    },
     "abundance_res_heatcom": {
         "fe_real_supply_res_for_heatcom_tot_ej": 1,
         "fed_heatcom_after_priorities_ej": 3
@@ -1424,7 +1415,7 @@
     },
     "abundance_uranium": {
         "extraction_uranium_ej": 2,
-        "pe_demand_uranium_ej": 4
+        "pe_demand_uranium": 4
     },
     "activate_afforestation_program": {
         "__external__": null
@@ -1472,7 +1463,6 @@
     "adapt_growth_res_elec_after_allocation": {
         "activate_eroi_allocation_rule": 1,
         "adapt_growth_res_elec": 2,
-        "constraint_elec_storage_availability": 1,
         "eroi_allocation_rule_per_res_elec": 1
     },
     "adapt_growth_res_for_heatcom": {
@@ -1794,7 +1784,6 @@
         "__external__": null
     },
     "buffer_factor": {
-        "time": 1,
         "_active_initial_buffer_factor": 1
     },
     "by_mineral_rr_alt_techn": {
@@ -1986,7 +1975,7 @@
         "ppb_ch4_per_mt_ch4": 1
     },
     "ch4_emissions_coal_without_ctl": {
-        "extraction_coal_emissions_relevant_ej": 1,
+        "extraction_coal_emissions_relevant": 1,
         "g_per_mt": 1,
         "gch4_per_mj_coal": 1,
         "mj_per_ej": 1
@@ -2000,7 +1989,7 @@
         "share_conv_vs_total_gas_extraction": 1
     },
     "ch4_emissions_ctl": {
-        "extraction_coal_for_ctl_ej": 1,
+        "extraction_coal_for_ctl": 1,
         "g_per_mt": 1,
         "gch4_per_mj_ctl": 1,
         "mj_per_ej": 1
@@ -2122,7 +2111,7 @@
         "__external__": null
     },
     "co2_emissions_coal_without_ctl": {
-        "extraction_coal_emissions_relevant_ej": 1,
+        "extraction_coal_emissions_relevant": 1,
         "g_per_gt": 1,
         "gco2_per_mj_coal": 1,
         "mj_per_ej": 1
@@ -2140,7 +2129,7 @@
         "real_extraction_conv_oil_emissions_relevant_ej": 1
     },
     "co2_emissions_ctl": {
-        "extraction_coal_for_ctl_ej": 1,
+        "extraction_coal_for_ctl": 1,
         "g_per_gt": 1,
         "gco2_per_mj_ctl": 1,
         "mj_per_ej": 1
@@ -2235,11 +2224,6 @@
     "constrain_rr_improv_for_rest_per_mineral": {
         "max_recycling_rates_minerals": 1,
         "recycling_rates_minerals_rest": 1
-    },
-    "constraint_elec_storage_availability": {
-        "demand_storage_capacity": 2,
-        "res_elec_variables": 1,
-        "total_capacity_elec_storage_tw": 3
     },
     "conv_efficiency_from_npp_to_biofuels": {
         "__external__": null
@@ -2408,10 +2392,6 @@
     },
     "cumulated_uranium_extraction": {
         "_integ_cumulated_uranium_extraction": 1
-    },
-    "cumulated_uranium_extraction_kt": {
-        "cumulated_uranium_extraction": 1,
-        "kt_uranium_per_ej": 1
     },
     "cumulated_uranium_extraction_to_1995": {
         "__external__": null
@@ -3004,20 +2984,16 @@
         "unlimited_coal": 1,
         "unlimited_nre": 1
     },
-    "extraction_coal_emissions_relevant_ej": {
-        "extraction_coal_without_ctl_ej": 1,
+    "extraction_coal_emissions_relevant": {
+        "extraction_coal_without_ctl": 1,
         "nonenergy_use_demand_by_final_fuel_ej": 1
     },
-    "extraction_coal_for_ctl_ej": {
+    "extraction_coal_for_ctl": {
         "ped_coal_for_ctl_ej": 1
     },
-    "extraction_coal_mtoe": {
+    "extraction_coal_without_ctl": {
         "extraction_coal_ej": 1,
-        "mtoe_per_ej": 1
-    },
-    "extraction_coal_without_ctl_ej": {
-        "extraction_coal_ej": 1,
-        "extraction_coal_for_ctl_ej": 1
+        "extraction_coal_for_ctl": 1
     },
     "extraction_conv_gas__tot_agg": {
         "extraction_tot_agg_gas_ej": 1,
@@ -3087,14 +3063,10 @@
         "time": 1
     },
     "extraction_uranium_ej": {
-        "max_extraction_uranium_ej": 1,
-        "pe_demand_uranium_ej": 2,
+        "max_extraction_uranium": 1,
+        "pe_demand_uranium": 2,
         "unlimited_nre": 1,
         "unlimited_uranium": 1
-    },
-    "extraction_uranium_kt": {
-        "extraction_uranium_ej": 1,
-        "kt_uranium_per_ej": 1
     },
     "fe_demand_coal_elec_plants_twh": {
         "demand_elec_gas_and_coal_twh": 1,
@@ -4523,7 +4495,6 @@
         "m_per_t": 1
     },
     "kg_per_mt": {},
-    "kt_uranium_per_ej": {},
     "kw_per_battery_ev": {
         "__external__": null
     },
@@ -4730,11 +4701,6 @@
         "minerals_extraction_projection_rest_with_rr": 1
     },
     "max_auxiliar_elec": {},
-    "max_bioe_twe": {
-        "available_potential_fe_solid_bioe_for_elec_ej": 1,
-        "ej_per_twh": 1,
-        "twe_per_twh": 1
-    },
     "max_biogas_ej": {
         "__external__": null
     },
@@ -4759,10 +4725,6 @@
     "max_csp_on_land_mha": {
         "max_solar_on_land_mha": 1,
         "surface_solar_pv_mha": 1
-    },
-    "max_csp_twe": {
-        "max_csp_on_land_mha": 1,
-        "power_density_res_elec_twemha": 1
     },
     "max_efficiency_gas_power_plants": {
         "__external__": null
@@ -4803,20 +4765,13 @@
         "table_max_extraction_unconv_oil": 1,
         "tot_rurr_unconv_oil": 1
     },
-    "max_extraction_uranium_ej": {
+    "max_extraction_uranium": {
         "rurr_uranium": 1,
         "table_max_extraction_uranium": 1
     },
     "max_fe_potential_res_for_heat": {
         "efficiency_res_heat": 3,
         "max_pe_potential_res_for_heat": 3
-    },
-    "max_geotelec_twe": {
-        "efficiency_conversion_geot_pe_to_elec": 1,
-        "max_pe_geotelec_twth": 1
-    },
-    "max_hydro_twe": {
-        "__external__": null
     },
     "max_land_compet_biofuels_2gen": {
         "additional_land_compet_available_for_biofuels": 1,
@@ -4832,15 +4787,6 @@
     "max_npp_potential_bioe_residues_for_heat_and_elec": {
         "max_npp_potential_bioe_residues": 1,
         "share_cellulosic_biofuels_vs_bioe_residues": 1
-    },
-    "max_oceanic_twe": {
-        "__external__": null
-    },
-    "max_offshore_wind_twe": {
-        "__external__": null
-    },
-    "max_onshore_wind_twe": {
-        "__external__": null
     },
     "max_pe_geotelec_twth": {
         "__external__": null
@@ -4900,14 +4846,15 @@
         "twe_per_twh": 1
     },
     "max_potential_res_elec_twe": {
-        "max_bioe_twe": 1,
-        "max_csp_twe": 1,
-        "max_geotelec_twe": 1,
-        "max_hydro_twe": 1,
-        "max_oceanic_twe": 1,
-        "max_offshore_wind_twe": 1,
-        "max_onshore_wind_twe": 1,
-        "max_solar_pv_on_land_twe": 1
+        "__external__": null,
+        "available_potential_fe_solid_bioe_for_elec_ej": 1,
+        "efficiency_conversion_geot_pe_to_elec": 1,
+        "ej_per_twh": 1,
+        "max_csp_on_land_mha": 1,
+        "max_pe_geotelec_twth": 1,
+        "max_solar_pv_on_land_mha": 1,
+        "power_density_res_elec_twemha": 2,
+        "twe_per_twh": 1
     },
     "max_potential_res_elec_twh": {
         "max_potential_res_elec_twe": 1,
@@ -4933,10 +4880,6 @@
     "max_solar_pv_on_land_mha": {
         "max_solar_on_land_mha": 1,
         "surface_csp_mha": 1
-    },
-    "max_solar_pv_on_land_twe": {
-        "max_solar_pv_on_land_mha": 1,
-        "power_density_res_elec_twemha": 1
     },
     "max_unconv_gas_growth_extraction": {
         "p_constraint_growth_extraction_unconv_gas": 1,
@@ -5152,10 +5095,10 @@
         "time": 1
     },
     "new_required_capacity_res_elec": {
-        "abundance_res_elec2": 1,
         "adapt_growth_res_elec_after_allocation": 1,
         "historic_new_required_capacity_res_elec": 1,
         "installed_capacity_res_elec_tw": 1,
+        "nre_elec_demand": 1,
         "remaining_potential_constraint_on_new_res_elec_capacity": 1,
         "time": 1,
         "total_time_planconstr_res_elec": 1
@@ -5204,6 +5147,11 @@
     },
     "nonenergy_use_demand_by_final_fuel_ej": {
         "_integ_nonenergy_use_demand_by_final_fuel_ej": 1
+    },
+    "nre_elec_demand": {
+        "fe_real_tot_generation_res_elec_twh": 1,
+        "total_fe_elec_demand_after_priorities_twh": 1,
+        "twe_per_twh": 1
     },
     "nuclear_capacity_phaseout": {
         "installed_capacity_nuclear_tw": 1,
@@ -5377,9 +5325,6 @@
     "p_constraint_growth_extraction_unconv_oil": {
         "__external__": null
     },
-    "p_csp_growth": {
-        "__external__": null
-    },
     "p_ctl": {
         "__external__": null
     },
@@ -5399,9 +5344,6 @@
         "__external__": null
     },
     "p_gas": {
-        "__external__": null
-    },
-    "p_geot_growth": {
         "__external__": null
     },
     "p_geothermal_for_heat": {
@@ -5424,9 +5366,6 @@
         "__external__": null
     },
     "p_hyb": {
-        "__external__": null
-    },
-    "p_hydro_growth": {
         "__external__": null
     },
     "p_inlandt": {
@@ -5454,28 +5393,18 @@
     },
     "p_nuclear_elec_gen": {
         "p_nuclear_scen34": 1,
-        "selection_of_nuclear_scenario": 4,
+        "selection_of_nuclear_scenario": 3,
         "start_year_nuclear_growth_scen34": 1,
         "time": 1
     },
     "p_nuclear_scen34": {
         "__external__": null
     },
-    "p_oceanic_growth": {
-        "__external__": null
-    },
     "p_phs_growth": {
         "__external__": null
     },
     "p_res_elec_growth": {
-        "p_csp_growth": 1,
-        "p_geot_growth": 1,
-        "p_hydro_growth": 1,
-        "p_oceanic_growth": 1,
-        "p_solar_pv_growth": 1,
-        "p_solid_bioeelec_growth": 1,
-        "p_wind_offshore_growth": 1,
-        "p_wind_onshore_growth": 1
+        "__external__": null
     },
     "p_res_for_heat": {
         "p_geothermal_for_heat": 1,
@@ -5504,13 +5433,7 @@
     "p_solar_for_heat": {
         "__external__": null
     },
-    "p_solar_pv_growth": {
-        "__external__": null
-    },
     "p_solid_bioe_for_heat": {
-        "__external__": null
-    },
-    "p_solid_bioeelec_growth": {
         "__external__": null
     },
     "p_timeseries_gdppc_growth_rate": {
@@ -5525,12 +5448,6 @@
         "__external__": null
     },
     "p_waste_change": {
-        "__external__": null
-    },
-    "p_wind_offshore_growth": {
-        "__external__": null
-    },
-    "p_wind_onshore_growth": {
         "__external__": null
     },
     "past_biofuels_2gen": {
@@ -5604,7 +5521,7 @@
         "ej_per_twh": 1,
         "fe_demand_oil_elec_plants_twh": 1
     },
-    "pe_demand_uranium_ej": {
+    "pe_demand_uranium": {
         "efficiency_uranium_for_electricity": 1,
         "ej_per_twh": 1,
         "potential_generation_nuclear_elec_twh": 1
@@ -6596,7 +6513,7 @@
         "efficiency_gas_for_electricity": 1,
         "max_efficiency_gas_power_plants": 2
     },
-    "remaining_potential_bioe": {
+    "remaining_potential": {
         "max_potential_res_elec_twh": 3,
         "real_generation_res_elec_twh": 2
     },
@@ -6612,33 +6529,9 @@
         "remaining_potential_res_for_heat": 2,
         "threshold_remaining_potential_new_capacity": 2
     },
-    "remaining_potential_csp": {
-        "max_potential_res_elec_twh": 3,
-        "real_generation_res_elec_twh": 2
-    },
     "remaining_potential_elec_storage_by_res_techn": {
         "demand_storage_capacity": 2,
         "max_capacity_elec_storage": 3
-    },
-    "remaining_potential_geotelec": {
-        "max_potential_res_elec_twh": 3,
-        "real_generation_res_elec_twh": 2
-    },
-    "remaining_potential_hydro": {
-        "max_potential_res_elec_twh": 3,
-        "real_generation_res_elec_twh": 2
-    },
-    "remaining_potential_oceanic": {
-        "max_potential_res_elec_twh": 3,
-        "real_generation_res_elec_twh": 2
-    },
-    "remaining_potential_offshore_wind": {
-        "max_potential_res_elec_twh": 3,
-        "real_generation_res_elec_twh": 2
-    },
-    "remaining_potential_onshore_wind": {
-        "max_potential_res_elec_twh": 3,
-        "real_generation_res_elec_twh": 2
     },
     "remaining_potential_phs": {
         "installed_capacity_phs_tw": 2,
@@ -6655,10 +6548,6 @@
         "max_fe_potential_res_for_heat": 2,
         "potential_fes_res_for_heatcom_ej": 1,
         "potential_fes_res_for_heatnc_ej": 1
-    },
-    "remaining_potential_solarelec_pv": {
-        "max_potential_res_elec_twh": 3,
-        "real_generation_res_elec_twh": 2
     },
     "remaining_potential_tot_res_elec": {
         "fe_tot_generation_all_res_elec_twh": 2,
@@ -6689,7 +6578,6 @@
         "wear_phs": 1
     },
     "replacement_capacity_res_elec": {
-        "constraint_elec_storage_availability": 1,
         "replacement_rate_res_elec": 1,
         "res_elec_tot_overcapacity": 1,
         "time": 1,
@@ -7094,12 +6982,6 @@
     "share_consum_goverment_and_inventories": {
         "historic_change_in_inventories": 1,
         "historic_demand": 1,
-        "historic_goverment_expenditures": 1,
-        "time": 2
-    },
-    "share_consum_goverments_and_inventories_next_year": {
-        "historic_change_in_inventories": 1,
-        "historic_demand_next_year": 1,
         "historic_goverment_expenditures": 1,
         "time": 2
     },
@@ -7576,9 +7458,6 @@
     },
     "sum_4w_shares": {
         "percents_h_vehicles": 3
-    },
-    "sum_variation": {
-        "variation_demand_flow_fd": 1
     },
     "surface_csp_mha": {
         "surface_res_elec": 1
@@ -8357,11 +8236,8 @@
         "time": 3
     },
     "variation_demand_flow_fd": {
-        "gross_fixed_capital_formation": 1,
         "historic_variation_demand": 1,
-        "household_demand": 1,
-        "share_consum_goverment_and_inventories": 2,
-        "share_consum_goverments_and_inventories_next_year": 3,
+        "share_consum_goverment_and_inventories": 1,
         "time": 1,
         "variation_gfcf": 1,
         "variation_household_demand": 1
@@ -8566,8 +8442,9 @@
     },
     "year_final_labour_share": {},
     "year_final_scarcity_final_fuels": {
-        "scarcity_final_fuels_counter": 2,
-        "year_init_scarcity_final_fuels": 1
+        "scarcity_final_fuels_flags": 1,
+        "time": 1,
+        "time_step": 1
     },
     "year_final_scarcity_reserves": {
         "scarcity_reserves_counter": 2,

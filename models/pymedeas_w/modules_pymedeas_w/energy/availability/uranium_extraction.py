@@ -1,6 +1,6 @@
 """
 Module uranium_extraction
-Translated using PySD version 2.2.1
+Translated using PySD version 2.2.3
 """
 
 
@@ -16,14 +16,13 @@ def abundance_uranium():
     The parameter abundance varies between (1;0). Abundance=1 while the supply covers the demand; the closest to 0 indicates a higher divergence between supply and demand.
     """
     return if_then_else(
-        pe_demand_uranium_ej() == 0,
+        pe_demand_uranium() == 0,
         lambda: 1,
         lambda: if_then_else(
-            extraction_uranium_ej() > pe_demand_uranium_ej(),
+            extraction_uranium_ej() > pe_demand_uranium(),
             lambda: 1,
             lambda: 1
-            - (pe_demand_uranium_ej() - extraction_uranium_ej())
-            / pe_demand_uranium_ej(),
+            - (pe_demand_uranium() - extraction_uranium_ej()) / pe_demand_uranium(),
         ),
     )
 
@@ -47,20 +46,6 @@ _integ_cumulated_uranium_extraction = Integ(
     lambda: cumulated_uranium_extraction_to_1995(),
     "_integ_cumulated_uranium_extraction",
 )
-
-
-def cumulated_uranium_extraction_kt():
-    """
-    Real Name: Cumulated uranium extraction kt
-    Original Eqn:
-    Units: Kt
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-    Cumulated uranium extraction (kt).
-    """
-    return cumulated_uranium_extraction() * kt_uranium_per_ej()
 
 
 def cumulated_uranium_extraction_to_1995():
@@ -100,42 +85,14 @@ def extraction_uranium_ej():
     """
     return if_then_else(
         np.logical_or(unlimited_nre() == 1, unlimited_uranium() == 1),
-        lambda: pe_demand_uranium_ej(),
-        lambda: np.minimum(pe_demand_uranium_ej(), max_extraction_uranium_ej()),
+        lambda: pe_demand_uranium(),
+        lambda: np.minimum(pe_demand_uranium(), max_extraction_uranium()),
     )
 
 
-def extraction_uranium_kt():
+def max_extraction_uranium():
     """
-    Real Name: extraction uranium kt
-    Original Eqn:
-    Units: Kt/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-    Extracción of uranium in kt.
-    """
-    return extraction_uranium_ej() * kt_uranium_per_ej()
-
-
-def kt_uranium_per_ej():
-    """
-    Real Name: kt uranium per EJ
-    Original Eqn:
-    Units: Kt/EJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-    Unit conversion (1 EJ thermal = 2.3866). See EWG (2006).
-    """
-    return 2.38663
-
-
-def max_extraction_uranium_ej():
-    """
-    Real Name: max extraction uranium EJ
+    Real Name: max extraction uranium
     Original Eqn:
     Units: EJ/year
     Limits: (None, None)
@@ -230,7 +187,7 @@ def urr_uranium():
     """
     return if_then_else(
         np.logical_or(unlimited_nre() == 1, unlimited_uranium() == 1),
-        lambda: 1e+32,
+        lambda: 1e32,
         lambda: urr_uranium_input(),
     )
 

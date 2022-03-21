@@ -1,6 +1,6 @@
 """
 Module res_elec_total_monetary_investment
-Translated using PySD version 2.2.1
+Translated using PySD version 2.2.3
 """
 
 

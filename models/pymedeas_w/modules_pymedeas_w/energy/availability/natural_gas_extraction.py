@@ -1,6 +1,6 @@
 """
 Module natural_gas_extraction
-Translated using PySD version 2.2.1
+Translated using PySD version 2.2.3
 """
 
 
@@ -1486,7 +1486,7 @@ def urr_conv_gas():
         separate_conv_and_unconv_gas() == 1,
         lambda: if_then_else(
             np.logical_or(unlimited_nre() == 1, unlimited_gas() == 1),
-            lambda: 1e+32,
+            lambda: 1e32,
             lambda: urr_conv_gas_input(),
         ),
         lambda: 0,
@@ -1533,7 +1533,7 @@ def urr_tot_agg_gas():
         lambda: 0,
         lambda: if_then_else(
             np.logical_or(unlimited_nre() == 1, unlimited_gas() == 1),
-            lambda: 1e+32,
+            lambda: 1e32,
             lambda: urr_total_gas_input(),
         ),
     )

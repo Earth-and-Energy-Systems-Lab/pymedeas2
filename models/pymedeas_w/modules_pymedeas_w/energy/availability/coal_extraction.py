@@ -1,6 +1,6 @@
 """
 Module coal_extraction
-Translated using PySD version 2.2.1
+Translated using PySD version 2.2.3
 """
 
 
@@ -107,9 +107,9 @@ def extraction_coal_ej():
     )
 
 
-def extraction_coal_emissions_relevant_ej():
+def extraction_coal_emissions_relevant():
     """
-    Real Name: extraction coal emissions relevant EJ
+    Real Name: extraction coal emissions relevant
     Original Eqn:
     Units: EJ
     Limits: (None, None)
@@ -120,14 +120,14 @@ def extraction_coal_emissions_relevant_ej():
     """
     return np.maximum(
         0,
-        extraction_coal_without_ctl_ej()
+        extraction_coal_without_ctl()
         - float(nonenergy_use_demand_by_final_fuel_ej().loc["solids"]),
     )
 
 
-def extraction_coal_for_ctl_ej():
+def extraction_coal_for_ctl():
     """
-    Real Name: extraction coal for CTL EJ
+    Real Name: extraction coal for CTL
     Original Eqn:
     Units: EJ/year
     Limits: (None, None)
@@ -139,23 +139,9 @@ def extraction_coal_for_ctl_ej():
     return ped_coal_for_ctl_ej()
 
 
-def extraction_coal_mtoe():
+def extraction_coal_without_ctl():
     """
-    Real Name: extraction coal Mtoe
-    Original Eqn:
-    Units: MToe/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-    Annual extraction of coal.
-    """
-    return extraction_coal_ej() * mtoe_per_ej()
-
-
-def extraction_coal_without_ctl_ej():
-    """
-    Real Name: extraction coal without CTL EJ
+    Real Name: extraction coal without CTL
     Original Eqn:
     Units: EJ/year
     Limits: (None, None)
@@ -164,7 +150,7 @@ def extraction_coal_without_ctl_ej():
 
     Extraction of conventional gas excepting the resource used to produce GTL.
     """
-    return np.maximum(extraction_coal_ej() - extraction_coal_for_ctl_ej(), 0)
+    return np.maximum(extraction_coal_ej() - extraction_coal_for_ctl(), 0)
 
 
 def flow_coal_left_in_ground():
@@ -179,13 +165,12 @@ def flow_coal_left_in_ground():
     Flow of coal left in the ground. We assume that this amount is removed from the stock of coal available in 1 year.
     """
     return if_then_else(
-        time() < start_policy_leave_in_ground_coal(),
-        lambda: 0,
-        lambda: if_then_else(
+        np.logical_or(
+            time() < start_policy_leave_in_ground_coal(),
             time() >= start_policy_leave_in_ground_coal() + 1,
-            lambda: 0,
-            lambda: coal_to_leave_underground(),
         ),
+        lambda: 0,
+        lambda: coal_to_leave_underground(),
     )
 
 
@@ -417,7 +402,7 @@ def urr_coal():
     """
     return if_then_else(
         np.logical_or(unlimited_nre() == 1, unlimited_coal() == 1),
-        lambda: 1e+32,
+        lambda: 1e32,
         lambda: urr_coal_input(),
     )
 

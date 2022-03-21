@@ -1,6 +1,6 @@
 """
 Module total_ghg_emissions
-Translated using PySD version 2.2.1
+Translated using PySD version 2.2.3
 """
 
 
@@ -179,7 +179,7 @@ def ch4_emissions_coal_without_ctl():
     CH4 emissions coal.
     """
     return (
-        extraction_coal_emissions_relevant_ej()
+        extraction_coal_emissions_relevant()
         * gch4_per_mj_coal()
         * mj_per_ej()
         / g_per_mt()
@@ -219,7 +219,7 @@ def ch4_emissions_ctl():
 
     CH4 emissions CTL.
     """
-    return extraction_coal_for_ctl_ej() * gch4_per_mj_ctl() * mj_per_ej() / g_per_mt()
+    return extraction_coal_for_ctl() * gch4_per_mj_ctl() * mj_per_ej() / g_per_mt()
 
 
 def ch4_emissions_gtl():
@@ -284,7 +284,7 @@ def co2_emissions_coal_without_ctl():
     Emissions from coal withoug accounting for CTL-related emissions.
     """
     return (
-        extraction_coal_emissions_relevant_ej()
+        extraction_coal_emissions_relevant()
         * gco2_per_mj_coal()
         * mj_per_ej()
         / g_per_gt()
@@ -340,7 +340,7 @@ def co2_emissions_ctl():
 
     CO2 emissions associated to CTL production.
     """
-    return gco2_per_mj_ctl() * extraction_coal_for_ctl_ej() * mj_per_ej() / g_per_gt()
+    return gco2_per_mj_ctl() * extraction_coal_for_ctl() * mj_per_ej() / g_per_gt()
 
 
 def co2_emissions_gtl():

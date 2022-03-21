@@ -1,6 +1,6 @@
 """
 Module final_energy_abundances
-Translated using PySD version 2.2.1
+Translated using PySD version 2.2.3
 """
 
 
@@ -702,8 +702,12 @@ def year_final_scarcity_final_fuels():
     Final year of scarcity of final fuels.
     """
     return if_then_else(
-        scarcity_final_fuels_counter() > 0,
-        lambda: year_init_scarcity_final_fuels() + scarcity_final_fuels_counter() - 1,
+        scarcity_final_fuels_flags() == 1,
+        lambda: xr.DataArray(
+            time() / time_step() - 20,
+            {"final sources": _subscript_dict["final sources"]},
+            ["final sources"],
+        ),
         lambda: xr.DataArray(
             0, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
         ),
@@ -812,16 +816,10 @@ def year_init_scarcity_reserves():
 _integ_year_init_scarcity_reserves = Integ(
     lambda: if_then_else(
         materials_availability_reserves() == 0,
-        lambda: if_then_else(
-            scarcity_reserves_counter() == 1,
-            lambda: xr.DataArray(
-                time() * 1 / time_step(),
-                {"materials": _subscript_dict["materials"]},
-                ["materials"],
-            ),
-            lambda: xr.DataArray(
-                0, {"materials": _subscript_dict["materials"]}, ["materials"]
-            ),
+        lambda: xr.DataArray(
+            time() / time_step(),
+            {"materials": _subscript_dict["materials"]},
+            ["materials"],
         ),
         lambda: xr.DataArray(
             0, {"materials": _subscript_dict["materials"]}, ["materials"]
@@ -850,16 +848,10 @@ def year_init_scarcity_resources():
 _integ_year_init_scarcity_resources = Integ(
     lambda: if_then_else(
         materials_availability_resources() == 0,
-        lambda: if_then_else(
-            scarcity_resources_counter() == 1,
-            lambda: xr.DataArray(
-                time() * 1 / time_step(),
-                {"materials": _subscript_dict["materials"]},
-                ["materials"],
-            ),
-            lambda: xr.DataArray(
-                0, {"materials": _subscript_dict["materials"]}, ["materials"]
-            ),
+        lambda: xr.DataArray(
+            time() * 1 / time_step(),
+            {"materials": _subscript_dict["materials"]},
+            ["materials"],
         ),
         lambda: xr.DataArray(
             0, {"materials": _subscript_dict["materials"]}, ["materials"]

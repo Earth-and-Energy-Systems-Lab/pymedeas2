@@ -1,48 +1,90 @@
 """
 Module res_elec_capacities_and_generation
-Translated using PySD version 2.2.1
+Translated using PySD version 2.2.3
 """
 
 
-def abundance_res_elec():
+@subs(["RES elec"], _subscript_dict)
+def new_required_capacity_res_elec():
     """
-    Real Name: abundance RES elec
+    Real Name: new required capacity RES elec
     Original Eqn:
-    Units: Dmnl
+    Units: TW
+    Limits: (None, None)
+    Type: Auxiliary
+    Subs: ['RES elec']
+
+    New required capacity of RES technologies for electricity generation. We assume 100% of the required infraestructure is planned and constructed.
+    """
+    return if_then_else(
+        time() < 2014 - total_time_planconstr_res_elec(),
+        lambda: historic_new_required_capacity_res_elec(),
+        lambda: np.minimum(
+            installed_capacity_res_elec_tw()
+            * adapt_growth_res_elec_after_allocation()
+            * remaining_potential_constraint_on_new_res_elec_capacity(),
+            nre_elec_demand(),
+        ),
+    )
+
+
+def nre_elec_demand():
+    """
+    Real Name: NRE elec demand
+    Original Eqn:
+    Units: TW
     Limits: (None, None)
     Type: Auxiliary
     Subs: []
 
     The parameter abundance varies between (1;0). The closest to 1 indicates that electricity generation from RES is far to cover to whole electricity demand, if "abundance RES elec"=0 it means that RES elec cover the whole electricity demand.
     """
-    return if_then_else(
-        total_fe_elec_demand_after_priorities_twh() == 0,
-        lambda: 0,
-        lambda: if_then_else(
-            total_fe_elec_demand_after_priorities_twh()
-            > fe_real_tot_generation_res_elec_twh(),
-            lambda: (
-                total_fe_elec_demand_after_priorities_twh()
-                - fe_real_tot_generation_res_elec_twh()
-            )
-            / total_fe_elec_demand_after_priorities_twh(),
-            lambda: 0,
-        ),
-    )
+    return (
+        total_fe_elec_demand_after_priorities_twh()
+        - fe_real_tot_generation_res_elec_twh()
+    ) * twe_per_twh()
 
 
-def abundance_res_elec2():
+@subs(["RES elec"], _subscript_dict)
+def adapt_growth_res_elec_after_allocation():
     """
-    Real Name: abundance RES elec2
+    Real Name: adapt growth RES elec after allocation
     Original Eqn:
     Units: Dmnl
     Limits: (None, None)
     Type: Auxiliary
-    Subs: []
+    Subs: ['RES elec']
 
-    Adaptation of the parameter abundance for better behaviour of the model.
+    Annual growth per RES elec technology after accounting for the allocation rule.
     """
-    return np.sqrt(abundance_res_elec())
+    return if_then_else(
+        activate_eroi_allocation_rule() == 0,
+        lambda: adapt_growth_res_elec(),
+        lambda: adapt_growth_res_elec() * eroi_allocation_rule_per_res_elec(),
+    )
+
+
+@subs(["RES elec"], _subscript_dict)
+def replacement_capacity_res_elec():
+    """
+    Real Name: replacement capacity RES elec
+    Original Eqn:
+    Units: TW/year
+    Limits: (None, None)
+    Type: Auxiliary
+    Subs: ['RES elec']
+
+    Annual replacement of RES infrastructure for electricity generation by technology. It is assumed that the step of planning the replaced infrastructure can be done while the infraestructure to be replaced is still under operation. For replaced infraestructures, the construction time should be smaller than for new infaestructures, however we compensate for this assuming that the demantling time is included in onstruction time for replaced infrastructure.
+    """
+    return if_then_else(
+        time() < 2015,
+        lambda: xr.DataArray(
+            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        ),
+        lambda: replacement_rate_res_elec()
+        * wear_res_elec()
+        * (1 - res_elec_tot_overcapacity()),
+    )
 
 
 def activate_eroi_allocation_rule():
@@ -195,28 +237,6 @@ def adapt_growth_res_elec():
         ),
     )
     return value
-
-
-@subs(["RES elec"], _subscript_dict)
-def adapt_growth_res_elec_after_allocation():
-    """
-    Real Name: adapt growth RES elec after allocation
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
-    Annual growth per RES elec technology after accounting for the allocation rule.
-    """
-    return (
-        if_then_else(
-            activate_eroi_allocation_rule() == 0,
-            lambda: adapt_growth_res_elec(),
-            lambda: adapt_growth_res_elec() * eroi_allocation_rule_per_res_elec(),
-        )
-        * constraint_elec_storage_availability()
-    )
 
 
 @subs(["RES elec"], _subscript_dict)
@@ -479,28 +499,6 @@ def new_capacity_installed_growth_rate_res_elec():
 
 
 @subs(["RES elec"], _subscript_dict)
-def new_required_capacity_res_elec():
-    """
-    Real Name: new required capacity RES elec
-    Original Eqn:
-    Units: TW
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
-    New required capacity of RES technologies for electricity generation. We assume 100% of the required infraestructure is planned and constructed.
-    """
-    return if_then_else(
-        time() < 2014 - total_time_planconstr_res_elec(),
-        lambda: historic_new_required_capacity_res_elec(),
-        lambda: installed_capacity_res_elec_tw()
-        * adapt_growth_res_elec_after_allocation()
-        * remaining_potential_constraint_on_new_res_elec_capacity()
-        * abundance_res_elec2(),
-    )
-
-
-@subs(["RES elec"], _subscript_dict)
 def new_res_elec_capacity_under_planning():
     """
     Real Name: new RES elec capacity under planning
@@ -517,102 +515,6 @@ def new_res_elec_capacity_under_planning():
     )
 
 
-def p_csp_growth():
-    """
-    Real Name: P CSP growth
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_csp_growth()
-
-
-_ext_constant_p_csp_growth = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "p_CSP_growth",
-    {},
-    _root,
-    "_ext_constant_p_csp_growth",
-)
-
-
-def p_geot_growth():
-    """
-    Real Name: P geot growth
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_geot_growth()
-
-
-_ext_constant_p_geot_growth = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "p_geot_elect_growth",
-    {},
-    _root,
-    "_ext_constant_p_geot_growth",
-)
-
-
-def p_hydro_growth():
-    """
-    Real Name: P hydro growth
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_hydro_growth()
-
-
-_ext_constant_p_hydro_growth = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "p_hydro_growth",
-    {},
-    _root,
-    "_ext_constant_p_hydro_growth",
-)
-
-
-def p_oceanic_growth():
-    """
-    Real Name: P oceanic growth
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_oceanic_growth()
-
-
-_ext_constant_p_oceanic_growth = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "p_oceanic_growth_2020",
-    {},
-    _root,
-    "_ext_constant_p_oceanic_growth",
-)
-
-
 @subs(["RES elec"], _subscript_dict)
 def p_res_elec_growth():
     """
@@ -620,118 +522,67 @@ def p_res_elec_growth():
     Original Eqn:
     Units:
     Limits: (None, None)
-    Type: Auxiliary
+    Type: Constant
     Subs: ['RES elec']
 
     For hydro, geot-elec and solid bioenergy this variable represents the projected annual growth in relation to past growth trends, for the rest of RES elec (oceanic, wind & solar), it represents the annual growth in relation to the existing installed capacity.
     """
-    value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-    )
-    value.loc[{"RES elec": ["hydro"]}] = p_hydro_growth()
-    value.loc[{"RES elec": ["geot elec"]}] = p_geot_growth()
-    value.loc[{"RES elec": ["solid bioE elec"]}] = p_solid_bioeelec_growth()
-    value.loc[{"RES elec": ["oceanic"]}] = p_oceanic_growth()
-    value.loc[{"RES elec": ["wind onshore"]}] = p_wind_onshore_growth()
-    value.loc[{"RES elec": ["wind offshore"]}] = p_wind_offshore_growth()
-    value.loc[{"RES elec": ["solar PV"]}] = p_solar_pv_growth()
-    value.loc[{"RES elec": ["CSP"]}] = p_csp_growth()
-    return value
+    return _ext_constant_p_res_elec_growth()
 
 
-def p_solar_pv_growth():
-    """
-    Real Name: P solar PV growth
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_solar_pv_growth()
-
-
-_ext_constant_p_solar_pv_growth = ExtConstant(
+_ext_constant_p_res_elec_growth = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "p_solar_pv_growth",
-    {},
+    "p_hydro_growth",
+    {"RES elec": ["hydro"]},
     _root,
-    "_ext_constant_p_solar_pv_growth",
+    "_ext_constant_p_res_elec_growth",
 )
 
+_ext_constant_p_res_elec_growth.add(
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "p_geot_elect_growth",
+    {"RES elec": ["geot elec"]},
+)
 
-def p_solid_bioeelec_growth():
-    """
-    Real Name: "P solid bioE-elec growth"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_solid_bioeelec_growth()
-
-
-_ext_constant_p_solid_bioeelec_growth = ExtConstant(
+_ext_constant_p_res_elec_growth.add(
     "../../scenarios/scen_w.xlsx",
     "BAU",
     "p_solid_bioe_elect_growth",
-    {},
-    _root,
-    "_ext_constant_p_solid_bioeelec_growth",
+    {"RES elec": ["solid bioE elec"]},
 )
 
-
-def p_wind_offshore_growth():
-    """
-    Real Name: P wind offshore growth
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_wind_offshore_growth()
-
-
-_ext_constant_p_wind_offshore_growth = ExtConstant(
+_ext_constant_p_res_elec_growth.add(
     "../../scenarios/scen_w.xlsx",
     "BAU",
-    "p_wind_offshore_growth",
-    {},
-    _root,
-    "_ext_constant_p_wind_offshore_growth",
+    "p_oceanic_growth_2020",
+    {"RES elec": ["oceanic"]},
 )
 
-
-def p_wind_onshore_growth():
-    """
-    Real Name: P wind onshore growth
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_wind_onshore_growth()
-
-
-_ext_constant_p_wind_onshore_growth = ExtConstant(
+_ext_constant_p_res_elec_growth.add(
     "../../scenarios/scen_w.xlsx",
     "BAU",
     "p_onshore_wind_growth",
-    {},
-    _root,
-    "_ext_constant_p_wind_onshore_growth",
+    {"RES elec": ["wind onshore"]},
+)
+
+_ext_constant_p_res_elec_growth.add(
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "p_wind_offshore_growth",
+    {"RES elec": ["wind offshore"]},
+)
+
+_ext_constant_p_res_elec_growth.add(
+    "../../scenarios/scen_w.xlsx",
+    "BAU",
+    "p_solar_pv_growth",
+    {"RES elec": ["solar PV"]},
+)
+
+_ext_constant_p_res_elec_growth.add(
+    "../../scenarios/scen_w.xlsx", "BAU", "p_CSP_growth", {"RES elec": ["CSP"]}
 )
 
 
@@ -934,32 +785,6 @@ def remaining_potential_tot_res_elec_after_intermitt():
         )
         / potential_tot_res_elec_after_intermitt(),
         lambda: 0,
-    )
-
-
-@subs(["RES elec"], _subscript_dict)
-def replacement_capacity_res_elec():
-    """
-    Real Name: replacement capacity RES elec
-    Original Eqn:
-    Units: TW/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
-    Annual replacement of RES infrastructure for electricity generation by technology. It is assumed that the step of planning the replaced infrastructure can be done while the infraestructure to be replaced is still under operation. For replaced infraestructures, the construction time should be smaller than for new infaestructures, however we compensate for this assuming that the demantling time is included in onstruction time for replaced infrastructure.
-    """
-    return (
-        if_then_else(
-            time() < 2015,
-            lambda: xr.DataArray(
-                0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-            ),
-            lambda: replacement_rate_res_elec()
-            * wear_res_elec()
-            * (1 - res_elec_tot_overcapacity()),
-        )
-        * constraint_elec_storage_availability()
     )
 
 

@@ -1,6 +1,6 @@
 """
 Module res_elec_overcap_due_to_res_variabi
-Translated using PySD version 2.2.1
+Translated using PySD version 2.2.3
 """
 
 

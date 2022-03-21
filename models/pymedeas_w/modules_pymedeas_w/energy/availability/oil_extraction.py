@@ -1621,7 +1621,7 @@ def urr_conv_oil():
         separate_conv_and_unconv_oil() == 1,
         lambda: if_then_else(
             np.logical_or(unlimited_nre() == 1, unlimited_oil() == 1),
-            lambda: nan,
+            lambda: 1e+32,
             lambda: urr_conv_oil_input(),
         ),
         lambda: 0,
@@ -1668,7 +1668,7 @@ def urr_tot_agg_oil():
         lambda: 0,
         lambda: if_then_else(
             np.logical_or(unlimited_oil() == 1, unlimited_nre() == 1),
-            lambda: nan,
+            lambda: 1e+32,
             lambda: urr_tot_agg_oil_input(),
         ),
     )

@@ -230,7 +230,7 @@ def urr_uranium():
     """
     return if_then_else(
         np.logical_or(unlimited_nre() == 1, unlimited_uranium() == 1),
-        lambda: nan,
+        lambda: 1e+32,
         lambda: urr_uranium_input(),
     )
 

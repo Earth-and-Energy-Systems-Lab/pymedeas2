@@ -417,7 +417,7 @@ def urr_coal():
     """
     return if_then_else(
         np.logical_or(unlimited_nre() == 1, unlimited_coal() == 1),
-        lambda: nan,
+        lambda: 1e+32,
         lambda: urr_coal_input(),
     )
 

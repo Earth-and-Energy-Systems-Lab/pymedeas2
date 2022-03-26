@@ -1,0 +1,34 @@
+\note{Document real demand computation process (economy evolution)}
+\note{Include final energy intensities in this section}
+
+
+\note{Create a template to introduce all module inputs in the same way}
+Module inputs:
+\begin{itemize}
+    \item Capital compensation per sector
+    \item Labour compensation per sector
+    \item Gross fixed capital formation per sector
+    \item Household demand per sector
+    \item Goverment expenditures per sector
+    \item Change in inventories per sector
+    \item Final demand by sector of other regions per sector\footnote{\label{fnote:regional-var}This variables are only required in the nested models, and are the export from the running region to the rest of the parent regions.}
+    \item Export of final goods to other regions per sector\footnoteref{fnote:regional-var}
+    \item Final energy intensities per sector and final source
+    \item Gross Domestic Product (GDP)
+    \item Economic coefficient A matrix for the wanted sectors\footnote{Coefficient matrix should be given in the dessagregation of the current level, if the input is for a subregion, the first submatrix should be for the subregion the second for the rest of the region and the last for the rest of the world.}
+\end{itemize}
+
+Scenario parameters:
+\begin{itemize}
+    \item GDPpc growth
+    \item LC and CC growth policies...
+\end{itemize}
+\note{Add information about the module and scenario inputs}
+
+\subsubsection{Final demand}
+    \label{se:economy-final_demand}
+    \input{sections/modules/economy/final_demand.tex}
+
+ \subsubsection{Total outputs}
+    \label{se:economy-total_outputs}
+    \input{sections/modules/economy/total_outputs.tex}

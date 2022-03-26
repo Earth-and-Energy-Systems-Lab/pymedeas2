@@ -1,0 +1,171 @@
+The final demand ($FD$) is the basis of the economic evolution of pymdedeas models. For the computation of the final demand the expected Gross Domestic Product ($GDP$) evolution is used.
+
+\paragraph{Capital and labour compensations}
+
+\warning{
+    This process is split in different submodules:
+        pymedeas\_w: sectors\_and\_households
+        pymedeas\_eu: gdp\_desired\_labour\_and\_capital\_share
+        pymedeas\_cat: gdp\_desired\_labour\_and\_capital\_share
+}
+
+Capital compensation ($CC$) and labour compensation ($LC$) are used in the models to compute the time evolution of final demands. This values are computed from a share of the gross domestic product ($GDP$).
+
+Both capital and labour compensations are computed in a similar ways. First the expected $GDP$ of next step (time $i\!+\!1$) is computed, using the expected growth ($GDPgrowth^{i}_{expc}$), which is  given as an scenario input by the user. This process is given in equation \eqref{eq:exp_gdp}.
+
+\begin{equation}
+GDP_{expc}^{i+1} = GDP^i\,(1+GDPgrowth^{i}_{expc})
+\label{eq:exp_gdp}
+\end{equation}
+
+The expected capital compensation share ($CCshare$) and labour compensations share ($LCshare$) respect to the $GDP$ are computed following their expected growth as given in equations \eqref{eq:exp_ccshare} and \eqref{eq:exp_lcshare}, respectively.
+
+\begin{gather}
+CCshare_{expc}^{i+1} = CCshare^i\,(1+CCgrowth_{expc}) \label{eq:exp_ccshare}\\
+LCshare_{expc}^{i+1} = LCshare^i\,(1+LCgrowth_{expc}) \label{eq:exp_lcshare}
+\end{gather}
+
+Therefore, the expected $CC$ and $LC$ are computed in equations \eqref{eq:exp_cc} and \eqref{eq:exp_lc} using the product of expected $GDP$ and their corresponent expected share.
+
+\begin{gather}
+CC_{expc}^{i+1} = GDP_{expc}^{i+1} \, CCshare_{expc}^{i+1}\label{eq:exp_cc}\\
+LC_{expc}^{i+1} = GDP_{expc}^{i+1} \, LCshare_{expc}^{i+1}\label{eq:exp_lc}
+\end{gather}
+
+Therefore, when putting together equations \eqref{eq:exp_gdp} to \eqref{eq:exp_lc} the expected variation of $LC$ and $CC$ can be computed as follows given in \eqref{eq:exp_cc2} and \eqref{eq:exp_lc2}.
+
+\begin{gather}
+\Delta CC_{expc}^i = GDP^i\,CCshare^i\,\Big[\left(1+GDPgrowth^{i}_{expc}\right)\,\left(1+CCgrowth_{expc}\right)-1\Big]\label{eq:exp_cc2}\\
+\Delta LC_{expc}^i = GDP^i\,LCshare^i\,\Big[\left(1+GDPgrowth^{i}_{expc}\right)\,\left(1+LCgrowth_{expc}\right)-1\Big]\label{eq:exp_lc2}
+\end{gather}
+
+Finally, the new step $LC$ and $CC$ are corrected using the total uncovered demand ($UD_{total}$) of the current step as shown in equations \eqref{eq:cc_next} and \eqref{eq:lc_next},
+
+%\begin{integ}
+    \begin{equation}
+    CC^{i+1} = CC^i+\Delta CC_{expc}^i-UD_{total}^i\,CCshare_{expc}^i\label{eq:cc_next}
+    \end{equation}
+%\end{integ}
+%\begin{integ}
+    \begin{equation}
+    LC^{i+1} = LC^i+\Delta LC_{expc}^i-UD_{total}^i\,LCshare_{expc}^i\label{eq:lc_next}
+    \end{equation}
+%\end{integ}
+
+\warning{Current version of pymedeas\_cat doesn't take into account the uncovered demand to compute the CC and LC!}
+\warning{In the world model the CC is computed by sectors CC(sector), maybe we should compute the total directly in order to have the same approach in the 3 models.}
+
+\paragraph{Gross fixed capital formation and households demand}
+\label{par:gfcf_hd}
+\warning{
+    This process is split in different submodules:
+        pymedeas\_w: sectors\_and\_households
+        pymedeas\_eu: households\_economic\_demand / exports\_demand
+        pymedeas\_cat: households\_economic\_demand\_and\_investment
+}
+
+The gross fixed capital formation ($GFCF$) and households demand ($HD$) by sector at time $i$ are computed asuming the relations of equations \eqref{eq:loggfcf} and \eqref{eq:loghd}, respectively.
+
+\begin{gather}
+\log\left(GFCF^i(sector)\right) = b_0^{GFCF}(sector) + b_1^{GFCF}\,\log\left(CC^i\right)\label{eq:loggfcf}\\
+\log\left(HD^i(sector)\right) = b_0^{HD}(sector) + b_1^{HD}\,\log\left(LC^i\right)\label{eq:loghd}
+\end{gather}
+
+where $b_x^y$ parameters are adjusted by doing a linear regression with historical data. Being $CC$ and $LC$ the capital and labour compensations respectively.
+
+From the equations \eqref{eq:loggfcf} and \eqref{eq:loghd} the new relations from \eqref{eq:vargfcf} and \eqref{eq:varhd} to compute the expected variation in $CC$ and $LC$.
+\begin{gather}
+\Delta GFCF^i_{expc}(sector) = e^{b_0^{GFCF}(sector)}\,\Big[\left(CC^i\!+\!\Delta CC_{expc}^i\right)^{b_1^{GFCF}}-\left(CC^{i}\right)^{b_1^{GFCF}}\Big]\label{eq:vargfcf}\\
+\Delta HD^i_{expc}(sector) = e^{b_0^{HD}(sector)}\,\Big[\left(LC^i\!+\!\Delta LC_{expc}^i\right)^{b_1^{HD}}-\left(LC^{i}\right)^{b_1^{HD}}\Big]\label{eq:varhd}
+\end{gather}
+
+
+Finally the new step $GFCF$ and $HD$ are corrected using the uncovered demand by sector ($UD$) of the current step, see equations \eqref{eq:gfcf_next} and \eqref{eq:hd_next}.
+%\begin{integ}
+    \begin{align}
+    GFCF^{i+1}(sector) =\hspace{5pt}  &GFCF^i(sector)+\Delta GFCF^i_{expc}(sector)\nonumber\\
+                        &-UD^i(sector)\,GFCFshare^i_{expc}(sector)\label{eq:gfcf_next}
+    \end{align}
+%\end{integ}
+%\begin{integ}
+    \begin{align}
+    HD^{i+1}(sector) =\hspace{5pt}  &HD^i(sector)+\Delta HD^i_{expc}(sector)\nonumber\\
+                    &-UD^i(sector)\,HDshare^i_{expc}(sector)\label{eq:hd_next}
+    \end{align}
+%\end{integ}
+
+\warning{In the world model the CC is used by sectors.}
+
+\paragraph{Exports demand}
+The exports demand is only computed in nested models. In the case of the regional model, the exports to the \emph{rest of the world} (RoW) are needed, while, in the case of the subregional model the exports to the \emph{rest of the region} (RoR) and \emph{rest of the world} (RoW) are needed.
+
+The computation of the exports demand ($ExpD$) is similar to that used for gross fixed capital formation and households demand in Section
+\ref{par:gfcf_hd}.
+\begin{equation}
+\log\left(ExpD^i_{ExpRoX}(sector)\right) = b_0^{ExpRoX}(sector) + b_1^{ExpRoX}\,\log\left(GDP^i_X\right)\label{eq:logexp}
+\end{equation}
+
+The equation \eqref{eq:logexp} shows the logarithmic relation of the exports to rest of region $X$ (RoX) based on the gross domestic product of $X$ ($GDP_X$), where $X$ could be \emph{world} or \emph{region}. The parameters $b_x^y$ are adjusted by doing a linear regression with historical data. Therefore, the expected variation is computed as given in equation \eqref{eq:varexp}.
+\begin{align}
+\Delta ExpD^i_{RoX,\,expc}(sector) =\hspace{50pt}& \nonumber\\e^{b_0^{ExpRoX}(sector)}&\,\Big[\left(GDP^{i+1}_X\right)^{b_1^{ExpRoX}}-\left(GDP^i_X\right)^{b_1^{ExpRoX}}\Big]\label{eq:varexp}
+\end{align}
+
+Finally the new step $GFCF$ and $HD$ are corrected using the uncovered demand by sector ($UD$) of the current step, equation \eqref{eq:exp_next} show how the stock of $ExpD$ is computed.
+%\begin{integ}
+    \begin{align}
+    ExpD^{i+1}_{RoX}(sector) = \hspace{5pt}&ExpD^i_{RoX}(sector)+\Delta ExpD^i_{RoX,\,expc}(sector)\nonumber\\
+    &-UD^i(sector)\,ExpD_{RoX}share^i_{expc}(sector)\label{eq:exp_next}
+    \end{align}
+%\end{integ}
+
+
+\paragraph{Change in inventories and goverment expenditures}
+
+\warning{
+    This process is split in different submodules:
+        pymedeas\_w: sectors\_and\_households
+        pymedeas\_eu: economic\_demand
+        pymedeas\_cat: economic\_demand
+}
+
+The share of change in inventoris and goverment expenditures ($CI\&GEshare$) respect to the final demand is assumed constant after the historic period. This way the goverment expenditures and change in inventories contribution to the finall demand ($CI\&GE$) by sector at time $i$ is computed using the values for gross fixed capital formation ($GFCF$), household demand ($HD$) and exports demand ($ExpD$) by sector, as given in equation \eqref{eq:cigeshare}.
+\begin{align}
+CI\&GE^i(sector)=\frac{CI\&GEshare}{1-CI\&GEshare}\,\Big[&GFCF^i(sector)+HD^i(sector)\nonumber \\&+ExpD^i(sector)\Big]\label{eq:cigeshare}
+\end{align}
+
+
+\paragraph{Final demand}
+
+\warning{
+This process is split in different submodules:
+        pymedeas\_w: sectors\_and\_households
+        pymedeas\_eu: economic\_demand
+        pymedeas\_cat: economic\_demand
+}
+
+The final demand $FD$ is the sum of gross fixed capital formation ($GFCF$), households demand ($HD$), change in inventories and goverment expenditures ($CI\&GE$) and exports demand ($ExpD$). Therefore, the $FD$ by sector at time $i$ can be computed as given in equation \eqref{eq:fd1}.
+\begin{align}
+FD^i(sector) =\hspace{5pt} &GFCF^i(sector)+HD^i(sector)\nonumber\\
+               &+ExpD^i(sector)+CI\&GE^i(sector)\label{eq:fd1}
+\end{align}
+
+When combining equation \eqref{eq:fd1} with \eqref{eq:cigeshare} the $FD$ can be given as in equation \eqref{eq:fd2}.
+\begin{equation}
+FD^i(sector)=\frac{GFCF^i(sector)+HD^i(sector)+ExpD^i(sector)}{1-CI\&GEshare}
+\label{eq:fd2}
+\end{equation}
+
+Therefore, the expected change in the final demand is computed using the expected change of all the variables from equation \eqref{eq:fd2}. The output of resulting equation \eqref{eq:varfd} is used together with the uncovered demand in order to compute the final demand in the next step in equation \eqref{eq:fd_next}.
+
+\begin{align}
+\Delta FD_{expc}^i&(sector)=\nonumber\\
+&\frac{\Delta GFCF_{expc}^i(sector)+\Delta HD_{expc}^i(sector)+\Delta ExpD_{expc}^i(sector)}{1-CI\&GEshare}
+\label{eq:varfd}
+\end{align}
+
+%\begin{integ}
+    \begin{equation}
+    FD^{i+1}(sector)=FD^i(sector)+\Delta FD_{expc}^i(sector)-UD^i(sector)
+    \label{eq:fd_next}
+    \end{equation}
+%\end{integ}

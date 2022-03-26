@@ -1,0 +1,103 @@
+\documentclass{article}
+
+\usepackage{amsmath, amssymb, float, xcolor, titlesec, tcolorbox}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
+\usepackage{todonotes} % The notes can be hidden using \usepackage[disable]{todonotes}
+
+
+% multireferenced footnotes
+\makeatletter
+\newcommand{\footnoteref}[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
+
+% Allow using pragraph as now subsubsubsection
+\setcounter{secnumdepth}{4}
+\titleformat{\paragraph}{\normalfont\normalsize}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+% Box for stocks
+\newtcolorbox{integ}{colback=white,grow to right by=-1mm,grow to left by=-1mm, boxrule=2pt,boxsep=0pt}
+
+% Equation, figures, tables numbering
+\newcommand{\prefix}[1]{
+    \setcounter{equation}{0}
+    \setcounter{figure}{0}
+    \setcounter{table}{0}
+    \renewcommand{\theequation}{#1.\arabic{equation}}
+    \renewcommand{\thefigure}{#1.\arabic{figure}}
+    \renewcommand{\thetable}{#1.\arabic{table}}
+}
+
+% Naming the models
+\newcommand{\model}{\emph{pymedeas} }
+\newcommand{\modelsub}[1]{\emph{pymedeas\_#1}}
+
+% Commands for comments and other todos
+\newcommand{\note}[1]{\todo[inline,color=orange]{{\bf TODO:} #1}}
+\newcommand{\urgent}[1]{\todo[inline,color=red]{{\bf URGENT:} #1}}
+\newcommand{\warning}[1]{\todo[inline,color=yellow]{{\bf WARNING:} #1}}
+\newcommand{\eneko}[1]{\todo[inline,color=white,linecolor=red,bordercolor=red]{\textcolor{red}{\bf Eneko:} #1}}
+\newcommand{\enric}[1]{\todo[inline,color=white,linecolor=green,bordercolor=green]{\textcolor{green}{\bf Enric:} #1}}
+\newcommand{\roger}[1]{\todo[inline,color=white,linecolor=blue,bordercolor=blue]{\textcolor{blue}{\bf Roger:} #1}}
+\newcommand{\jordi}[1]{\todo[inline,color=white,linecolor=yellow,bordercolor=yellow]{\textcolor{yellow}{\bf Jordi:} #1}}
+
+% Titlepage
+\title{\model models documentation}
+\author{Eneko Martin-Martinez \and Enric Alcover \and Roger Samsó \and Jordi Solé}
+
+\begin{document}
+    \maketitle
+    \note{use jcap to generate the authors}
+    \note{include bibtex}
+    \newpage
+    \tableofcontents
+    \newpage
+    \listoftodos[TODOs]
+    \newpage
+    \section{General logic of the \model models}
+        \label{se:general_logic}
+        \input{sections/general_logic}
+
+    \section{Main hypothesis behind the \model models}
+        \label{se:hypothesis}
+        \input{sections/hypothesis}
+
+    \section{Main features of the \model models}
+        \label{se:features}
+        \subsection{Nestings}
+            \label{se:nestings}
+            \input{sections/features/nestings}
+    \section{Modules}
+        \label{se:modules}
+        \subsection{Climate}
+            \label{se:climate}
+            \prefix{CLIM}
+            \input{sections/modules/climate}
+        \subsection{Economy}
+            \label{se:economyy}
+            \prefix{ECON}
+            \input{sections/modules/economy}
+        \subsection{Energy}
+            \label{se:energy}
+            \prefix{ENER}
+            \input{sections/modules/energy}
+        \subsection{Environment}
+            \label{se:environment}
+            \prefix{ENV}
+            \input{sections/modules/environment}
+        \subsection{Materials}
+            \label{se:materials}
+            \prefix{MAT}
+            \input{sections/modules/materials}
+        \subsection{Society}
+            \label{se:society}
+            \prefix{SCTY}
+            \input{sections/modules/society}
+        \subsection{Transport}
+            \label{se:transport}
+            \prefix{TRANS}
+            \input{sections/modules/transport}
+
+\end{document}

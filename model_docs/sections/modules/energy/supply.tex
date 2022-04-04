@@ -33,8 +33,30 @@ Then, the new planed nuclear capacity is calculated from the new nuclear capacit
 
 \paragraph{RES electricity potentials}
 
+Nine types of RES for electricity generation are modeled: hydro, solar PV, solar CSP, onshore wind, offshore wind, geothermal, biomass, oceanic and biogas.
+
 Renewables potentials are limited by biophysical sustainable constraints, limiting the potential installed by a techno-sustainable limits that are taking into account the ecological, and the technical limitation of renewable energy sources. This potential limits are read from the "energy.xslx" excel file, and used in other views.
 
 \paragraph{RES electric capacities and generation}
 
-Energy generation from Renewable Energy Source (RES) from different sources (hydro, geothermal, solid biomass, oceanic, wind onshore, wind offshore and solar) is limited by the techno-sustainable potentials and its growth is defined in the "scenario.xslx" file and by the reduction of the capacity factor due tot the intermitency of RES. The module prioritize the use of biogas and waste as energy sources,
+Energy generation from Renewable Energy Source (RES) from different sources (hydro, geothermal, solid biomass, oceanic, wind onshore, wind offshore and solar) is limited by the techno-sustainable potentials and its growth is defined in the "scenario.xslx" file and by the reduction of the capacity factor due tot the intermitency of RES. The module prioritize the use of biogas and waste as energy sources, and only after using this energy sources, it uses other RES. Desired growing rates of differet RES are defined at the "scenario.xslx" file, but also limited by several factors: storage capacity, reduction of capacity factor due to intermitency and EROI of each energy source.
+
+\paragraph{RES electric supply by technology}
+
+There is a priority in RES, first of all, electricity generation from waste and bioenergy is calculated and the final electricity demand after priorities obtained as:
+
+\begin{equation}
+    FED_{elect\_after\_prior}= FED_{elect\_tot}-FES_{elect\_bio}-FES_{elect\_waste}
+\end{equation}
+
+Then, $FED_{elect\_after\_prior}$ is used by the RES electricity potential submodule for determining the amount of RES potential to be installed.
+Once the model has calculated the total amount of electricity generated from RES, it obtains the electricity demand from NRE that is needed to satisfy the total electricity demand as:
+
+\begin{equation}
+    FED_{elect\_NRE}= FED_{elect\_tot}-FES_{RES}-FES_{elect\_waste}
+\end{equation}
+
+\paragraph{RES electric overcapacity due to RES variability}
+
+We assume that an increasing level of overcapacity of both dispatchable and variable RES is required when the variable RES increase their generation share in the electricity sector.Then, the used approach consists on estimating the reduction of the Cp of the RES power plants as a function of the penetration of variable RES in the electricity generation.
+Overcapacity of dispatchable RES is estimated taking as reference the study (NREL, 2012) which analyses the implications of different levels of RES penetration in USA, extrapolating the results (until 90\%) to the 100\% renewable scenario using a polynomial method (2nd order), considering that at 100\% penetration level of intermittent generation the Cp of baseloads plants would fall to zero

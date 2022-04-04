@@ -5,6 +5,23 @@
 \usepackage{cleveref}
 \usepackage{todonotes} % The notes can be hidden using \usepackage[disable]{todonotes}
 
+% Bibliography
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+
+% Page composition
+\usepackage[
+	a4paper,
+    bmargin=70pt,
+    tmargin=80pt,
+    inner=60pt,
+    outer=60pt
+]{geometry}
+
+\linespread{1.069}
+\parskip=10pt plus 1pt minus .5pt
+\frenchspacing
+% \raggedright
 
 % multireferenced footnotes
 \makeatletter
@@ -60,15 +77,19 @@
         \label{se:general_logic}
         \input{sections/general_logic}
 
+    \newpage
     \section{Main hypothesis behind the \model models}
         \label{se:hypothesis}
         \input{sections/hypothesis}
-
+        
+    \newpage
     \section{Main features of the \model models}
         \label{se:features}
         \subsection{Nestings}
             \label{se:nestings}
             \input{sections/features/nestings}
+
+    \newpage
     \section{Modules}
         \label{se:modules}
         \subsection{Climate}
@@ -99,5 +120,9 @@
             \label{se:transport}
             \prefix{TRANS}
             \input{sections/modules/transport}
+
+\newpage
+\addcontentsline{toc}{section}{References}
+\bibliography{references}
 
 \end{document}

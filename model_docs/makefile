@@ -10,3 +10,4 @@ clean_all: clean
 
 pdf: clean_all
 	pdflatex main.tex
+	pdflatex main.tex

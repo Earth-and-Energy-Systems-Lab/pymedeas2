@@ -7,14 +7,14 @@
 This submodule calculates the availability of non-renewable energy sources: oil, natural gas, coal and uranium.
 
 \paragraph{Oil Extraction}
-\eneko{Avoid using 'view', we have no views in the Python version! Use submodule instead or better avoid starting sentences like this.}
-This view takes into account the limitation of the oil resources, and models availability of oil depending on two constraints: the stock (EJ) and the flows (Watts). The model priorizes the others NRE liquids fuels, then the oil demand is obtained as follows:
+The limitation of the oil resources, and availability of oil depends on two constraints: the stock (EJ) and the flows (Watts). The model priorizes the others NRE liquids fuels, then the oil demand is obtained as follows:
 
 \begin{equation}
 Oil_{demand}=PED_{NRE\_Liquids}-FES_{CTL}- FES_{GTL}- ORF
+\label{eq:oil-demand}
 \end{equation}
-\eneko{when referencing variables use \$\$ to make them look like in the equations.}
-Where PED\_NRE\_Liquids is the Primary energy demand of non-renewable eneregy liquids (EJ), FES\_GTL is the final energy demand of GTL (Gas-to-liquids) (EJ),  FES\_CTL is the final energy demand of GTL (Coal-to-liquids) (EJ) and ORF is the oil refinery gains.
+
+Where $PED\_NRE\_Liquids$ is the Primary energy demand of non-renewable eneregy liquids (EJ), $FES\_GTL$ is the final energy demand of GTL (Gas-to-liquids) (EJ),  FES\_CTL is the final energy demand of GTL (Coal-to-liquids) (EJ) and ORF is the oil refinery gains.
 
 \paragraph{Coal extraction}
 
@@ -22,23 +22,26 @@ Coal extraction submodule is in charge of obtaining the coal extraction taking i
 
 \begin{equation}
 Coal_{demand}=PED_{solids}-PE_{trad\_bio}-PES_{peat}-PES_{waste}-LCP
+\label{eq:coal-demand}
 \end{equation}
 
-Where, PED\_solids is the primary energy demand of the solids (EJ), PE\_trad\_bio is the primary energy of the traditional biomass (EJ), PES\_peat is the Primary energy suplly of peat (EJ), PES\_waste is the primary energy obtained from waste (EJ) and LCP are the losses in charcoal plants (EJ).
+Where, $PED\_solids$ is the primary energy demand of the solids (EJ), $PE\_trad\_bio$ is the primary energy of the traditional biomass (EJ), $PES\_peat$ is the Primary energy suplly of peat (EJ), PES\_waste is the primary energy obtained from waste (EJ) and LCP are the losses in charcoal plants (EJ).
 
 The amount of coal that can be extracted is limited by the Hubbert curves if the parameters *unlimited coal?* and *unlimited NRE?* are desactivated. Then, the extraction of coal is limited by the maximum extraction limit as:
 
 \begin{equation}
 Coal_{extraction}=min(PED_{coal}, max\_extract\_coal))
+\label{eq:coal-extraction}
 \end{equation}
 
 \paragraph{Uranium extraction}
 
-This view is in charge of calculating the uranium extraction, taking into account the Hubbert curve of maxim extraction of the uranium. The demand of uranium is obtained from the potential generation of nuclear electricity divided by the efficiency of uranium for electricity. If the parameters *unlimited uranium?* and *unlimited NRE?* are desactivated, the extraction of uranium is limited by the maximum extraction limit as:
+Uranium extraction depends on demand and resource availability, taking into account the Hubbert curve of maxim extraction of the uranium. The demand of uranium is obtained from the potential generation of nuclear electricity divided by the efficiency of uranium for electricity. If the parameters *unlimited uranium?* and *unlimited NRE?* are desactivated, the extraction of uranium is limited by the maximum extraction limit as:
 \eneko{Avoid talking about parameters like unlimited uranium or unlimited NRE, they are used for research but their non-default value has no physical sense!}
 
 \begin{equation}
 Uranium_{extraction}=min(PED_{uranium}, max\_extract\_uranium))
+\label{eq:uranium-extraction}
 \end{equation}
 
 In the nested models, for calculating the abundance of uranium, the imports from the rest of the world are included. In such way, when there is local scarcity, the imports can compensate it.
@@ -51,6 +54,7 @@ The abundance of final fuels is obtained from the primary energy demand (PED) an
 
 \begin{equation}
 A= {{PED_i-PES_i} \over {PED_i}}
+\label{eq:abundance-final-fuels}
 \end{equation}
 
 When the $PED<PES$ the abundance is always 1. The index i is the energy carrier: liquids, gases, solids, electricity and heat.

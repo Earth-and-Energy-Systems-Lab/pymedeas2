@@ -18,6 +18,7 @@ The new annual increase of new planned nuclear capacity is zero except for the s
 
 \begin{equation}
 C_{new \_nuc}=   C_{nuc} \cdot G_{nuc\_elect} \cdot Ef_{scarcity\_uranium} \cdot Cp_{limit}
+\label{eq:new-nuc-capacity}
 \end{equation}
 
 Where $C\_num$ is the actual installed capacity, $G\_nuc\_elect$ is the annual growth of new planned nuclear capacity, $Ef_{scarcity\_uranium}$ is the efect of uranium scarcity and Cp limit is a factor that limitates the new capacity installation when the capacity factor of nuclear due to the RES penetration falls below 60\%.
@@ -26,6 +27,7 @@ The efects of the uranium scarcity, that is calculated in the availabilty submod
 
 \begin{equation}
 Ef_{scarcity\_uranium}=  ((A_{Uranium}-0.8) \cdot 5)^2
+\label{eq:effects-uranium-scarcity}
 \end{equation}
 
 Then, the new planed nuclear capacity is calculated from the new nuclear capacity under planning plus replacement nuclear capacity less nuclear capacity under construction.
@@ -35,7 +37,7 @@ Then, the new planed nuclear capacity is calculated from the new nuclear capacit
 
 Nine types of RES for electricity generation are modeled: hydro, solar PV, solar CSP, onshore wind, offshore wind, geothermal, biomass, oceanic and biogas.
 
-Renewables potentials are limited by biophysical sustainable constraints, limiting the potential installed by a techno-sustainable limits that are taking into account the ecological, and the technical limitation of renewable energy sources. This potential limits are read from the "energy.xslx" excel file, and used in other views.
+Renewables potentials are limited by biophysical sustainable constraints, limiting the potential installed by a techno-sustainable limits that are taking into account the ecological, and the technical limitation of renewable energy sources. This potential limits are read from the "energy.xslx" excel file.
 
 \paragraph{RES electric capacities and generation}
 
@@ -47,6 +49,7 @@ There is a priority in RES, first of all, electricity generation from waste and 
 
 \begin{equation}
     FED_{elect\_after\_prior}= FED_{elect\_tot}-FES_{elect\_bio}-FES_{elect\_waste}
+    \label{eq:FED-after-priorities}
 \end{equation}
 
 Then, $FED_{elect\_after\_prior}$ is used by the RES electricity potential submodule for determining the amount of RES potential to be installed.
@@ -54,9 +57,45 @@ Once the model has calculated the total amount of electricity generated from RES
 
 \begin{equation}
     FED_{elect\_NRE}= FED_{elect\_tot}-FES_{RES}-FES_{elect\_waste}
+    \label{eq:FED-elect-NRE}
 \end{equation}
 
 \paragraph{RES electric overcapacity due to RES variability}
 
 We assume that an increasing level of overcapacity of both dispatchable and variable RES is required when the variable RES increase their generation share in the electricity sector.Then, the used approach consists on estimating the reduction of the Cp of the RES power plants as a function of the penetration of variable RES in the electricity generation.
-Overcapacity of dispatchable RES is estimated taking as reference the study (NREL, 2012) which analyses the implications of different levels of RES penetration in USA, extrapolating the results (until 90\%) to the 100\% renewable scenario using a polynomial method (2nd order), considering that at 100\% penetration level of intermittent generation the Cp of baseloads plants would fall to zero
+Overcapacity of dispatchable RES is estimated taking as reference the study (NREL, 2012) which analyses the implications of different levels of RES penetration in USA, extrapolating the results (until 90\%) to the 100\% renewable scenario using a polynomial method (2nd order), considering that at 100\% penetration level of intermittent generation the Cp of baseloads plants would fall to zero. Then, the equation that describes this Cp reduction is:
+
+\begin{equation}
+    Cp_{red\_dispatchable}=-0.6209 \cdot S_{RES}^2-0.3998 \cdot S_{RES} + 1.0222
+    \label{eq:cp-reduction-dispatchable}
+\end{equation}
+
+Where $S_{RES}$ is the share of RES over total electricity generation. 
+
+We estimate the overcapacity of variable RES following the study from (Delarue and Morris, 2015). Hence, we assume that in the case the variable RES would cover 100% of
+the electricity generation, an overcapacity of almost +200\% (3 times) would be required for those
+power plants running on variable RES technologies, equivalent to a reduction of almost 3 times in
+their Cp.
+
+\begin{equation}
+    Cp_{red\_variable}= \frac {1} {1+0.0001exp(9.85 \cdot S_{RES})}
+    \label{eq:cp-reduction-variable}
+\end{equation}
+
+To avoid unrealistically low values of Cp that would imply that power plants would be running
+unprofitably (and/or with negative net energy return to the system), we set a minimum Cp per
+technology.
+
+\paragraph{RES electric total monetary investment}
+
+The monetary investment for building new plants up to 2050 is computed following (Teske et al.,
+2011). We assume the same price to new plants and repowering plants, in order to not understimate the cost. 
+
+The costs related to the variability of RES and the need of grid development are modeled taking into account studies for wind. Grid reinforcement costs are obtained from the median value calculated in (Mills et al., 2012)  for 40 transmission studies for wind energy
+in the USA.
+
+Other monetary costs, as balancing costs, are also introduced into the model. We assume here similar costs for the combined variable
+renewable producers -solar and wind-, extrapolating the cost until it reaches a maximum of 8
+euros/MWh (7.6 US 1995\$/MWh) at 50\% of total electricity share.
+
+\enric{Detail monetary investments}

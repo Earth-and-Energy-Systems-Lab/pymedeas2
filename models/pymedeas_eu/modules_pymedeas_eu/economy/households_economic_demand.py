@@ -1,19 +1,18 @@
 """
 Module households_economic_demand
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="beta 0 HD",
+    units="Dmnl",
+    subscripts=["sectors"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def beta_0_hd():
     """
-    Real Name: beta 0 HD
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['sectors']
-
     Beta coefficient of panel data regression of households demand.
     """
     return _ext_constant_beta_0_hd()
@@ -25,42 +24,55 @@ _ext_constant_beta_0_hd = ExtConstant(
     "beta_0_HD*",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_constant_beta_0_hd",
 )
 
 
+@component.add(
+    name="beta 1 HD", units="Dmnl", comp_type="Constant", comp_subtype="External"
+)
 def beta_1_hd():
     """
-    Real Name: beta 1 HD
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Beta coefficient of panel data regression of households demand.
     """
     return _ext_constant_beta_1_hd()
 
 
 _ext_constant_beta_1_hd = ExtConstant(
-    "../economy.xlsx", "Europe", "beta_1_HD", {}, _root, "_ext_constant_beta_1_hd"
+    "../economy.xlsx", "Europe", "beta_1_HD", {}, _root, {}, "_ext_constant_beta_1_hd"
 )
 
 
-@subs(["sectors"], _subscript_dict)
-def historic_hd(x):
+@component.add(
+    name="historic HD",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_hd(x, final_subs=None):
     """
-    Real Name: historic HD
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['sectors']
-
     Historical final demand by households (14 sectors).
     """
-    return _ext_lookup_historic_hd(x)
+    return _ext_lookup_historic_hd(x, final_subs)
 
 
 _ext_lookup_historic_hd = ExtLookup(
@@ -70,20 +82,37 @@ _ext_lookup_historic_hd = ExtLookup(
     "historic_HD",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_lookup_historic_hd",
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Household demand",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def household_demand():
     """
-    Real Name: Household demand
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['sectors']
-
     Sectorial domestic final demand made by Households
     """
     return _integ_household_demand()
@@ -96,16 +125,15 @@ _integ_household_demand = Integ(
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Household demand not covered",
+    units="Mdollars/Year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def household_demand_not_covered():
     """
-    Real Name: Household demand not covered
-    Original Eqn:
-    Units: Mdollars/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Gap between households consumption required and households real consumption (after energy-economy feedback)
     """
     return if_then_else(
@@ -115,60 +143,55 @@ def household_demand_not_covered():
     )
 
 
+@component.add(
+    name="Household demand total",
+    units="Mdollars",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def household_demand_total():
     """
-    Real Name: Household demand total
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Whole economy domestic households demand
     """
     return sum(household_demand().rename({"sectors": "sectors!"}), dim=["sectors!"])
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="initial household demand",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def initial_household_demand():
     """
-    Real Name: initial household demand
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Initial final demand by households
     """
     return historic_hd(1995)
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="variation historic demand",
+    units="Mdollars/Year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_historic_demand():
     """
-    Real Name: variation historic demand
-    Original Eqn:
-    Units: Mdollars/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Variation of final demand by households
     """
     return historic_hd(integer(time() + 1)) - historic_hd(integer(time()))
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="variation household demand",
+    units="Mdollars/Year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_household_demand():
     """
-    Real Name: variation household demand
-    Original Eqn:
-    Units: Mdollars/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Variation of final demand by households by industrial sectors
     """
     return if_then_else(

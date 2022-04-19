@@ -1,19 +1,17 @@
 """
 Module recycling_and_material_extraction_dem
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="a lineal regr rr alt techn",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def a_lineal_regr_rr_alt_techn():
     """
-    Real Name: a lineal regr rr alt techn
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     a parameter of lineal regression "y=a*TIME+b" where y corresponds to the evolution of the recycling rate of each mineral over time ("by mineral rr alt technology").
     """
     return (
@@ -21,16 +19,14 @@ def a_lineal_regr_rr_alt_techn():
     ) / (target_year_p_rr_minerals() - start_year_p_rr_minerals())
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="a lineal regr rr Rest",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def a_lineal_regr_rr_rest():
     """
-    Real Name: a lineal regr rr Rest
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     a parameter of lineal regression "y=a*TIME+b" where y corresponds to the evolution of the recycling rate of each mineral over time ("by mineral rr Rest").
     """
     return (p_rr_minerals_rest() - current_recycling_rates_minerals()) / (
@@ -38,30 +34,27 @@ def a_lineal_regr_rr_rest():
     )
 
 
+@component.add(
+    name='"All minerals virgin?"',
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def all_minerals_virgin():
     """
-    Real Name: "All minerals virgin?"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     0. All minerals are virgin: current and future recycling rates set to 0% (pption to compare with results offline MEDEAS). 1. Real share of virgin/recycled minerals (for normal simulations).
     """
     return 1
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="b lineal regr rr alt techn",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def b_lineal_regr_rr_alt_techn():
     """
-    Real Name: b lineal regr rr alt techn
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     b parameter of lineal regression "y=a*TIME+b" where y corresponds to the evolution of the recycling rate of each mineral over time ("by mineral rr alt technology").
     """
     return (
@@ -70,46 +63,42 @@ def b_lineal_regr_rr_alt_techn():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="b lineal regr rr Rest",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def b_lineal_regr_rr_rest():
     """
-    Real Name: b lineal regr rr Rest
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     b parameter of lineal regression "y=a*TIME+b" where y corresponds to the evolution of the recycling rate of each mineral over time ("by mineral rr Rest").
     """
     return p_rr_minerals_rest() - a_lineal_regr_rr_rest() * target_year_p_rr_minerals()
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="by mineral rr alt techn",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def by_mineral_rr_alt_techn():
     """
-    Real Name: by mineral rr alt techn
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Recycling rates over time by mineral for alternative technologies (RES elec & EV batteries).
     """
     return a_lineal_regr_rr_alt_techn() * time() + b_lineal_regr_rr_alt_techn()
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="by mineral rr alt techn 1yr",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
 def by_mineral_rr_alt_techn_1yr():
     """
-    Real Name: by mineral rr alt techn 1yr
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
     Recycling rates over time delayed 1 year by mineral for alternative technologies (RES elec & EV batteries).
     """
     return _delayfixed_by_mineral_rr_alt_techn_1yr()
@@ -124,31 +113,29 @@ _delayfixed_by_mineral_rr_alt_techn_1yr = DelayFixed(
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="by mineral rr Rest",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def by_mineral_rr_rest():
     """
-    Real Name: by mineral rr Rest
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Recycling rates over time by mineral for the rest of the economy.
     """
     return a_lineal_regr_rr_rest() * time() + b_lineal_regr_rr_rest()
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="by mineral rr Rest 1yr",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
 def by_mineral_rr_rest_1yr():
     """
-    Real Name: by mineral rr Rest 1yr
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
     Recycling rates over time delayed 1 year by mineral for the rest of the economy.
     """
     return _delayfixed_by_mineral_rr_rest_1yr()
@@ -163,16 +150,15 @@ _delayfixed_by_mineral_rr_rest_1yr = DelayFixed(
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="by mineral rr variation alt techn",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def by_mineral_rr_variation_alt_techn():
     """
-    Real Name: by mineral rr variation alt techn
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Variation of recycling rates per mineral for alternative technologies (RES elec & EV batteries).
     """
     return if_then_else(
@@ -186,16 +172,15 @@ def by_mineral_rr_variation_alt_techn():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="by mineral rr variation Rest",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def by_mineral_rr_variation_rest():
     """
-    Real Name: by mineral rr variation Rest
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Variation of recycling rates per mineral for the rest of the economy.
     """
     return if_then_else(
@@ -209,15 +194,14 @@ def by_mineral_rr_variation_rest():
     )
 
 
+@component.add(
+    name="choose targets mineral recycling rates",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def choose_targets_mineral_recycling_rates():
     """
-    Real Name: choose targets mineral recycling rates
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     1- Disaggregated by mineral. 2- Common annual variation for all minerals.
     """
     return _ext_constant_choose_targets_mineral_recycling_rates()
@@ -229,20 +213,20 @@ _ext_constant_choose_targets_mineral_recycling_rates = ExtConstant(
     "choose_targets_mineral_recycling_rates",
     {},
     _root,
+    {},
     "_ext_constant_choose_targets_mineral_recycling_rates",
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="common rr minerals variation alt techn",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def common_rr_minerals_variation_alt_techn():
     """
-    Real Name: common rr minerals variation alt techn
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Recycling rates of minererals (common annual variation).
     """
     return if_then_else(
@@ -256,16 +240,15 @@ def common_rr_minerals_variation_alt_techn():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="common rr minerals variation Rest",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def common_rr_minerals_variation_rest():
     """
-    Real Name: common rr minerals variation Rest
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Recycling rates of minererals (common annual variation).
     """
     return if_then_else(
@@ -279,16 +262,15 @@ def common_rr_minerals_variation_rest():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="constrain rr improv for alt techn per mineral",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def constrain_rr_improv_for_alt_techn_per_mineral():
     """
-    Real Name: constrain rr improv for alt techn per mineral
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Constraint recycling rate improvement for alternative technologies (RES elec & EV batteries) per material.
     """
     return if_then_else(
@@ -302,16 +284,15 @@ def constrain_rr_improv_for_alt_techn_per_mineral():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="constrain rr improv for Rest per mineral",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def constrain_rr_improv_for_rest_per_mineral():
     """
-    Real Name: constrain rr improv for Rest per mineral
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Remaining recycling rate improvement for the rest of the economy per material.
     """
     return if_then_else(
@@ -325,16 +306,15 @@ def constrain_rr_improv_for_rest_per_mineral():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="current recycling rates minerals",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def current_recycling_rates_minerals():
     """
-    Real Name: current recycling rates minerals
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['materials']
-
     Current recycling rates minerals of the whole economy (UNEP, 2011).
     """
     return _ext_constant_current_recycling_rates_minerals()
@@ -346,20 +326,81 @@ _ext_constant_current_recycling_rates_minerals = ExtConstant(
     "current_recycling_rates_minerals*",
     {"materials": _subscript_dict["materials"]},
     _root,
+    {
+        "materials": [
+            "Adhesive",
+            "Aluminium",
+            "Aluminium mirrors",
+            "Cadmium",
+            "Carbon fiber",
+            "Cement",
+            "Chromium",
+            "Copper",
+            "diesel",
+            "Dy",
+            "electronic components",
+            "Evacuation lines",
+            "Fiberglass",
+            "Foam glass",
+            "Galium",
+            "Glass",
+            "Glass reinforcing plastic",
+            "gravel",
+            "Indium",
+            "Iron",
+            "KNO3 mined",
+            "Asphalt",
+            "Lime",
+            "Limestone",
+            "Lithium",
+            "Lubricant",
+            "Magnesium",
+            "Manganese",
+            "Heavy equipment",
+            "Concrete",
+            "Molybdenum",
+            "NaNO3 mined",
+            "NaNO3 synthetic",
+            "Neodymium",
+            "Nickel",
+            "over grid 15perc",
+            "over grid 5perc",
+            "Paint",
+            "Lead",
+            "Plastics",
+            "Polypropylene",
+            "Rock",
+            "Rock wool",
+            "Sand",
+            "Silicon sand",
+            "Silicon wafer modules",
+            "Silver",
+            "Site preparation",
+            "Tin",
+            "soda ash",
+            "steel",
+            "synthetic oil",
+            "tellurium",
+            "titanium",
+            "titanium dioxide",
+            "vanadium",
+            "wires",
+            "zinc",
+        ]
+    },
     "_ext_constant_current_recycling_rates_minerals",
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="current recycling rates minerals alt techn",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def current_recycling_rates_minerals_alt_techn():
     """
-    Real Name: current recycling rates minerals alt techn
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Current recycling rates of minerales for alternative technologies. Since these technologies are novel and often include materials which are used in small quantities in complex products, the recycling rates of the used minerals are lower than for the whole economy (following the parameter "EOL-RR minerals alt techn RES vs. total economy").
     """
     return (
@@ -368,15 +409,14 @@ def current_recycling_rates_minerals_alt_techn():
     )
 
 
+@component.add(
+    name='"EOL-RR minerals alt techn RES vs. total economy"',
+    units="Dnml",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def eolrr_minerals_alt_techn_res_vs_total_economy():
     """
-    Real Name: "EOL-RR minerals alt techn RES vs. total economy"
-    Original Eqn:
-    Units: Dnml
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Recycling rate of minerals used in variable RES technologies in relation to the total economy. Since these technologies are novel and often include materials which are used in small quantities in complex products, the recycling rates of the used minerals are lower than for the whole economy.
     """
     return _ext_constant_eolrr_minerals_alt_techn_res_vs_total_economy()
@@ -388,35 +428,99 @@ _ext_constant_eolrr_minerals_alt_techn_res_vs_total_economy = ExtConstant(
     "eol_rr_minerals_alt_techn_res_vs_total_economy",
     {},
     _root,
+    {},
     "_ext_constant_eolrr_minerals_alt_techn_res_vs_total_economy",
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Historic improvement recycling rates minerals",
+    units="percent",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def historic_improvement_recycling_rates_minerals():
     """
-    Real Name: Historic improvement recycling rates minerals
-    Original Eqn:
-    Units: percent
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['materials']
-
     Due to the large uncertainty and slow evolution of these data, historical recycling rates minerals correspond with the current estimates (UNEP, 2011).
     """
-    return xr.DataArray(0, {"materials": _subscript_dict["materials"]}, ["materials"])
+    return xr.DataArray(
+        0,
+        {
+            "materials": [
+                "Adhesive",
+                "Aluminium",
+                "Aluminium mirrors",
+                "Cadmium",
+                "Carbon fiber",
+                "Cement",
+                "Chromium",
+                "Copper",
+                "diesel",
+                "Dy",
+                "electronic components",
+                "Evacuation lines",
+                "Fiberglass",
+                "Foam glass",
+                "Galium",
+                "Glass",
+                "Glass reinforcing plastic",
+                "gravel",
+                "Indium",
+                "Iron",
+                "KNO3 mined",
+                "Asphalt",
+                "Lime",
+                "Limestone",
+                "Lithium",
+                "Lubricant",
+                "Magnesium",
+                "Manganese",
+                "Heavy equipment",
+                "Concrete",
+                "Molybdenum",
+                "NaNO3 mined",
+                "NaNO3 synthetic",
+                "Neodymium",
+                "Nickel",
+                "over grid 15perc",
+                "over grid 5perc",
+                "Paint",
+                "Lead",
+                "Plastics",
+                "Polypropylene",
+                "Rock",
+                "Rock wool",
+                "Sand",
+                "Silicon sand",
+                "Silicon wafer modules",
+                "Silver",
+                "Site preparation",
+                "Tin",
+                "soda ash",
+                "steel",
+                "synthetic oil",
+                "tellurium",
+                "titanium",
+                "titanium dioxide",
+                "vanadium",
+                "wires",
+                "zinc",
+            ]
+        },
+        ["materials"],
+    )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="improvement recycling rates minerals alt techn",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def improvement_recycling_rates_minerals_alt_techn():
     """
-    Real Name: improvement recycling rates minerals alt techn
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Annual improvement of the recycling rates of minerals for alternative technologies (RES elec & EV batteries).
     """
     return (
@@ -434,16 +538,15 @@ def improvement_recycling_rates_minerals_alt_techn():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="improvement recycling rates minerals Rest",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def improvement_recycling_rates_minerals_rest():
     """
-    Real Name: improvement recycling rates minerals Rest
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Annual improvement of the recycling rates of minerals for the rest of the economy.
     """
     return (
@@ -461,15 +564,14 @@ def improvement_recycling_rates_minerals_rest():
     )
 
 
+@component.add(
+    name="Max recycling rates minerals",
+    units="Dnml",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def max_recycling_rates_minerals():
     """
-    Real Name: Max recycling rates minerals
-    Original Eqn:
-    Units: Dnml
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Maximum assumed recycling rate per mineral.
     """
     return _ext_constant_max_recycling_rates_minerals()
@@ -481,19 +583,19 @@ _ext_constant_max_recycling_rates_minerals = ExtConstant(
     "maximum_recycling_rate_minerals",
     {},
     _root,
+    {},
     "_ext_constant_max_recycling_rates_minerals",
 )
 
 
+@component.add(
+    name="P common rr minerals variation alt techn",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_common_rr_minerals_variation_alt_techn():
     """
-    Real Name: P common rr minerals variation alt techn
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Annual recycling rate improvement per mineral for alternative technologies (RES elec & EV batteries).
     """
     return _ext_constant_p_common_rr_minerals_variation_alt_techn()
@@ -505,19 +607,19 @@ _ext_constant_p_common_rr_minerals_variation_alt_techn = ExtConstant(
     "P_common_rr_minerals_variation_alt_techn",
     {},
     _root,
+    {},
     "_ext_constant_p_common_rr_minerals_variation_alt_techn",
 )
 
 
+@component.add(
+    name="P common rr minerals variation Rest",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_common_rr_minerals_variation_rest():
     """
-    Real Name: P common rr minerals variation Rest
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Annual recycling rate improvement per mineral for the rest of the economy.
     """
     return _ext_constant_p_common_rr_minerals_variation_rest()
@@ -529,20 +631,20 @@ _ext_constant_p_common_rr_minerals_variation_rest = ExtConstant(
     "P_common_rr_minerals_variation_Rest",
     {},
     _root,
+    {},
     "_ext_constant_p_common_rr_minerals_variation_rest",
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="P rr minerals alt techn",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External, Normal",
+)
 def p_rr_minerals_alt_techn():
     """
-    Real Name: P rr minerals alt techn
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['materials']
-
     Recycling rates by mineral for alternative technologies (RES elec & EV batteries) and rest of the economy selected by user by scenario.
     """
     value = xr.DataArray(
@@ -627,20 +729,42 @@ _ext_constant_p_rr_minerals_alt_techn = ExtConstant(
     "P_rr_minerals_alt_techn*",
     {"materials": _subscript_dict["MATERIALS RECYCABLE"]},
     _root,
+    {
+        "materials": [
+            "Aluminium",
+            "Cadmium",
+            "Chromium",
+            "Copper",
+            "Galium",
+            "Indium",
+            "Iron",
+            "Lithium",
+            "Magnesium",
+            "Manganese",
+            "Molybdenum",
+            "Nickel",
+            "Lead",
+            "Silver",
+            "Tin",
+            "tellurium",
+            "titanium",
+            "vanadium",
+            "zinc",
+        ]
+    },
     "_ext_constant_p_rr_minerals_alt_techn",
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="P rr minerals Rest",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External, Normal",
+)
 def p_rr_minerals_rest():
     """
-    Real Name: P rr minerals Rest
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['materials']
-
     Recycling rates by mineral for alternative technologies (RES elec & EV batteries) and rest of the economy selected by user by scenario.
     """
     value = xr.DataArray(
@@ -725,20 +849,42 @@ _ext_constant_p_rr_minerals_rest = ExtConstant(
     "P_rr_minerals_Rest*",
     {"materials": _subscript_dict["MATERIALS RECYCABLE"]},
     _root,
+    {
+        "materials": [
+            "Aluminium",
+            "Cadmium",
+            "Chromium",
+            "Copper",
+            "Galium",
+            "Indium",
+            "Iron",
+            "Lithium",
+            "Magnesium",
+            "Manganese",
+            "Molybdenum",
+            "Nickel",
+            "Lead",
+            "Silver",
+            "Tin",
+            "tellurium",
+            "titanium",
+            "vanadium",
+            "zinc",
+        ]
+    },
     "_ext_constant_p_rr_minerals_rest",
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="recycling rates minerals alt techn",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def recycling_rates_minerals_alt_techn():
     """
-    Real Name: recycling rates minerals alt techn
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
     Recycling rates minerals of alternative technologies (RES elec & EV batteries).
     """
     return _integ_recycling_rates_minerals_alt_techn()
@@ -751,16 +897,15 @@ _integ_recycling_rates_minerals_alt_techn = Integ(
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="recycling rates minerals Rest",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def recycling_rates_minerals_rest():
     """
-    Real Name: recycling rates minerals Rest
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
     Recycling rates minerals for the rest of the economy.
     """
     return _integ_recycling_rates_minerals_rest()
@@ -773,15 +918,14 @@ _integ_recycling_rates_minerals_rest = Integ(
 )
 
 
+@component.add(
+    name="start year P common rr minerals alt techn",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def start_year_p_common_rr_minerals_alt_techn():
     """
-    Real Name: start year P common rr minerals alt techn
-    Original Eqn:
-    Units: year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Start year of variation recycling rate of minerals for alternative technologies (RES elec & EV batteries).
     """
     return _ext_constant_start_year_p_common_rr_minerals_alt_techn()
@@ -793,19 +937,19 @@ _ext_constant_start_year_p_common_rr_minerals_alt_techn = ExtConstant(
     "start_year_P_common_rr_minerals_alt_techn",
     {},
     _root,
+    {},
     "_ext_constant_start_year_p_common_rr_minerals_alt_techn",
 )
 
 
+@component.add(
+    name="start year P common rr minerals Rest",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def start_year_p_common_rr_minerals_rest():
     """
-    Real Name: start year P common rr minerals Rest
-    Original Eqn:
-    Units: year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Start year of variation recycling rate of minerals of the rest of the economy.
     """
     return _ext_constant_start_year_p_common_rr_minerals_rest()
@@ -817,19 +961,19 @@ _ext_constant_start_year_p_common_rr_minerals_rest = ExtConstant(
     "start_year_P_common_rr_minerals_Rest",
     {},
     _root,
+    {},
     "_ext_constant_start_year_p_common_rr_minerals_rest",
 )
 
 
+@component.add(
+    name="start year P rr minerals",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def start_year_p_rr_minerals():
     """
-    Real Name: start year P rr minerals
-    Original Eqn:
-    Units: year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Start year of variation recycling rate of minerals for alternative technologies (RES elec & EV batteries) and rest of the economy.
     """
     return _ext_constant_start_year_p_rr_minerals()
@@ -841,19 +985,19 @@ _ext_constant_start_year_p_rr_minerals = ExtConstant(
     "start_year_P_rr_minerals",
     {},
     _root,
+    {},
     "_ext_constant_start_year_p_rr_minerals",
 )
 
 
+@component.add(
+    name="target year P rr minerals",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def target_year_p_rr_minerals():
     """
-    Real Name: target year P rr minerals
-    Original Eqn:
-    Units: year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Target year of variation recycling rate of minerals for alternative technologies (RES elec & EV batteries) and rest of the economy.
     """
     return _ext_constant_target_year_p_rr_minerals()
@@ -865,5 +1009,6 @@ _ext_constant_target_year_p_rr_minerals = ExtConstant(
     "target_year_P_rr_minerals",
     {},
     _root,
+    {},
     "_ext_constant_target_year_p_rr_minerals",
 )

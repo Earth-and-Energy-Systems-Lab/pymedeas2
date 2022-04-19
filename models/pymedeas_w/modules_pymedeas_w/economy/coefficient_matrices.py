@@ -1,19 +1,18 @@
 """
 Module coefficient_matrices
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["economic years", "sectors A matrix", "sectors A matrix1"], _subscript_dict)
+@component.add(
+    name="historic A Matrix",
+    units="Dmnl",
+    subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def historic_a_matrix():
     """
-    Real Name: historic A Matrix
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['economic years', 'sectors A matrix', 'sectors A matrix1']
-
     Historic A Matrix WIOD database.
     """
     return _ext_constant_historic_a_matrix()
@@ -29,6 +28,62 @@ _ext_constant_historic_a_matrix = ExtConstant(
         "sectors A matrix1": _subscript_dict["sectors A matrix1"],
     },
     _root,
+    {
+        "economic years": [
+            "year1995",
+            "year1996",
+            "year1997",
+            "year1998",
+            "year1999",
+            "year2000",
+            "year2001",
+            "year2002",
+            "year2003",
+            "year2004",
+            "year2005",
+            "year2006",
+            "year2007",
+            "year2008",
+            "year2009",
+            "year2010",
+            "year2011",
+            "year2012",
+            "year2013",
+            "year2014",
+        ],
+        "sectors A matrix": [
+            "sec1",
+            "sec2",
+            "sec3",
+            "sec4",
+            "sec5",
+            "sec6",
+            "sec7",
+            "sec8",
+            "sec9",
+            "sec10",
+            "sec11",
+            "sec12",
+            "sec13",
+            "sec14",
+        ],
+        "sectors A matrix1": [
+            "secb1",
+            "secb2",
+            "secb3",
+            "secb4",
+            "secb5",
+            "secb6",
+            "secb7",
+            "secb8",
+            "secb9",
+            "secb10",
+            "secb11",
+            "secb12",
+            "secb13",
+            "secb14",
+        ],
+    },
     "_ext_constant_historic_a_matrix",
 )
 
@@ -242,16 +297,14 @@ _ext_constant_historic_a_matrix.add(
 )
 
 
-@subs(["economic years", "sectors A matrix", "sectors A matrix1"], _subscript_dict)
+@component.add(
+    name="historic IA Matrix",
+    subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historic_ia_matrix():
     """
-    Real Name: historic IA Matrix
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['economic years', 'sectors A matrix', 'sectors A matrix1']
-
     Historic I-A Matrix.
     """
     return (
@@ -291,31 +344,24 @@ def historic_ia_matrix():
     )
 
 
-@subs(["economic years", "sectors A matrix", "sectors A matrix1"], _subscript_dict)
+@component.add(
+    name="historic Leontief Matrix",
+    subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historic_leontief_matrix():
-    """
-    Real Name: historic Leontief Matrix
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['economic years', 'sectors A matrix', 'sectors A matrix1']
-
-
-    """
     return invert_matrix(historic_ia_matrix())
 
 
-@subs(["sectors A matrix", "sectors A matrix1"], _subscript_dict)
+@component.add(
+    name="I Matrix",
+    subscripts=["sectors A matrix", "sectors A matrix1"],
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def i_matrix():
     """
-    Real Name: I Matrix
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['sectors A matrix', 'sectors A matrix1']
-
     Identity matrix.
     """
     return if_then_else(
@@ -368,16 +414,15 @@ def i_matrix():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="IA matrix",
+    units="Dmnl",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ia_matrix():
     """
-    Real Name: IA matrix
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
     I-A matrix WIOD database
     """
     return if_then_else(
@@ -610,16 +655,14 @@ def ia_matrix():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="Leontief Matrix",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def leontief_matrix():
     """
-    Real Name: Leontief Matrix
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
     Leontieff matrix.
     """
     return if_then_else(

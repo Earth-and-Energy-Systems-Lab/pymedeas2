@@ -1,18 +1,17 @@
 """
 Module res_noncommercial_heat_capacities
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name='"abundance RES heat-nc"',
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def abundance_res_heatnc():
     """
-    Real Name: "abundance RES heat-nc"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     The parameter abundance varies between (1;0). The closest to 1 indicates that heat generation from RES is far to cover to whole heat demand, if "abundance RES heat"=0 it means that RES heat cover the whole heat demand. IF THEN ELSE(Total FED Heat EJ delayed 1yr=0,0, IF THEN ELSE(Total FED Heat EJ delayed 1yr > FE real supply RES for heat tot EJ, (Total FED Heat EJ delayed 1yr-FE real supply RES for heat tot EJ)/Total FED Heat EJ delayed 1yr, 0))
     """
     return if_then_else(
@@ -25,30 +24,28 @@ def abundance_res_heatnc():
     )
 
 
+@component.add(
+    name='"abundance RES heat-nc2"',
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def abundance_res_heatnc2():
     """
-    Real Name: "abundance RES heat-nc2"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Adaptation of the parameter abundance for better behaviour of the model.
     """
     return np.sqrt(abundance_res_heatnc())
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"adapt growth RES for heat-nc"',
+    units="1/Year",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def adapt_growth_res_for_heatnc():
     """
-    Real Name: "adapt growth RES for heat-nc"
-    Original Eqn:
-    Units: 1/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES heat']
-
     Modeling of a soft transition from current historic annual growth to reach the policy-objective in the target yeat.
     """
     return if_then_else(
@@ -69,33 +66,25 @@ def adapt_growth_res_for_heatnc():
     )
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name="Cp RES for heat",
+    units="Dmnl",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cp_res_for_heat():
-    """
-    Real Name: Cp RES for heat
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES heat']
-
-
-    """
     return cpini_res_for_heat() * shortage_bioe_for_heat()
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"Cp-ini RES for heat"',
+    units="Dmnl",
+    subscripts=["RES heat"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def cpini_res_for_heat():
-    """
-    Real Name: "Cp-ini RES for heat"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['RES heat']
-
-
-    """
     return _ext_constant_cpini_res_for_heat()
 
 
@@ -105,34 +94,33 @@ _ext_constant_cpini_res_for_heat = ExtConstant(
     "cp_initial_res_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
+    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
     "_ext_constant_cpini_res_for_heat",
 )
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"FE real generation RES heat-nc EJ"',
+    units="EJ",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fe_real_generation_res_heatnc_ej():
     """
-    Real Name: "FE real generation RES heat-nc EJ"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES heat']
-
     Non-commercial heat generation by RES technology.
     """
     return potential_fes_res_for_heatnc_ej() * (1 - res_heatnc_tot_overcapacity())
 
 
+@component.add(
+    name='"FE real supply RES for heat-nc tot EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fe_real_supply_res_for_heatnc_tot_ej():
     """
-    Real Name: "FE real supply RES for heat-nc tot EJ"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total final energy supply delivered by RES for non-commercial heat.
     """
     return np.minimum(
@@ -140,19 +128,18 @@ def fe_real_supply_res_for_heatnc_tot_ej():
     )
 
 
-@subs(["RES heat"], _subscript_dict)
-def historic_res_capacity_for_heatnc(x):
+@component.add(
+    name='"Historic RES capacity for heat-nc"',
+    units="TW",
+    subscripts=["RES heat"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_res_capacity_for_heatnc(x, final_subs=None):
     """
-    Real Name: "Historic RES capacity for heat-nc"
-    Original Eqn:
-    Units: TW
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['RES heat']
-
     Historic installed capacity of RES technologies for non-commercial heat generation.
     """
-    return _ext_lookup_historic_res_capacity_for_heatnc(x)
+    return _ext_lookup_historic_res_capacity_for_heatnc(x, final_subs)
 
 
 _ext_lookup_historic_res_capacity_for_heatnc = ExtLookup(
@@ -162,20 +149,20 @@ _ext_lookup_historic_res_capacity_for_heatnc = ExtLookup(
     "historic_res_capacity_for_heat_non_commercial",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
+    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
     "_ext_lookup_historic_res_capacity_for_heatnc",
 )
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"initial value RES for heat-nc"',
+    units="TW",
+    subscripts=["RES heat"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def initial_value_res_for_heatnc():
     """
-    Real Name: "initial value RES for heat-nc"
-    Original Eqn:
-    Units: TW
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['RES heat']
-
     RES supply by technology for non-commercial heat in the year 1995.
     """
     return _ext_constant_initial_value_res_for_heatnc()
@@ -187,20 +174,20 @@ _ext_constant_initial_value_res_for_heatnc = ExtConstant(
     "initial_res_capacity_for_heat_non_commercial*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
+    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
     "_ext_constant_initial_value_res_for_heatnc",
 )
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"installed capacity RES heat-nc TW"',
+    units="TW",
+    subscripts=["RES heat"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def installed_capacity_res_heatnc_tw():
     """
-    Real Name: "installed capacity RES heat-nc TW"
-    Original Eqn:
-    Units: TW
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['RES heat']
-
     Installed capacity of RES for non-commercial heat.
     """
     return _integ_installed_capacity_res_heatnc_tw()
@@ -215,16 +202,15 @@ _integ_installed_capacity_res_heatnc_tw = Integ(
 )
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"new RES capacity for heat-nc TW"',
+    units="TW/Year",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def new_res_capacity_for_heatnc_tw():
     """
-    Real Name: "new RES capacity for heat-nc TW"
-    Original Eqn:
-    Units: TW/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES heat']
-
     New annual installed capacity of RES technologies for non-commercial heat.
     """
     return (
@@ -240,16 +226,15 @@ def new_res_capacity_for_heatnc_tw():
     )
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"past RES growth for heat-nc"',
+    units="1/Year",
+    subscripts=["RES heat"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def past_res_growth_for_heatnc():
     """
-    Real Name: "past RES growth for heat-nc"
-    Original Eqn:
-    Units: 1/Year
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['RES heat']
-
     Historic annual average growth.
     """
     return _ext_constant_past_res_growth_for_heatnc()
@@ -261,20 +246,20 @@ _ext_constant_past_res_growth_for_heatnc = ExtConstant(
     "historic_growth_res_for_heat_nc*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
+    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
     "_ext_constant_past_res_growth_for_heatnc",
 )
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"PES DEM RES for heat-nc by techn"',
+    units="EJ",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_dem_res_for_heatnc_by_techn():
     """
-    Real Name: "PES DEM RES for heat-nc by techn"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES heat']
-
     Primary energy supply of RES technologies for non-commercial heat (Direct Energy Method convention of accounting for primary energy).
     """
     value = xr.DataArray(
@@ -292,46 +277,43 @@ def pes_dem_res_for_heatnc_by_techn():
     return value
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"PES RES for heat-nc by techn"',
+    units="EJ",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_res_for_heatnc_by_techn():
     """
-    Real Name: "PES RES for heat-nc by techn"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES heat']
-
     Primary energy supply of RES technologies for non-commercial heat.
     """
     return fe_real_generation_res_heatnc_ej() / efficiency_res_heat()
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"potential FES RES for heat-nc EJ"',
+    units="EJ",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def potential_fes_res_for_heatnc_ej():
     """
-    Real Name: "potential FES RES for heat-nc EJ"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES heat']
-
     Potential final energy supply renewables for non-commercial heat given the installed capacity.
     """
     return potential_fes_res_for_heatnc_twh() * ej_per_twh()
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"potential FES RES for heat-nc TWh"',
+    units="TWh",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def potential_fes_res_for_heatnc_twh():
     """
-    Real Name: "potential FES RES for heat-nc TWh"
-    Original Eqn:
-    Units: TWh
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES heat']
-
     Potential final energy supply renewables for non-commercial heat given the installed capacity.
     """
     return (
@@ -342,15 +324,14 @@ def potential_fes_res_for_heatnc_twh():
     )
 
 
+@component.add(
+    name='"potential FES tot RES for heat-nc EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def potential_fes_tot_res_for_heatnc_ej():
     """
-    Real Name: "potential FES tot RES for heat-nc EJ"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Potential total final energy supply renewables for non-commercial heat given the installed capacity.
     """
     return sum(
@@ -359,16 +340,15 @@ def potential_fes_tot_res_for_heatnc_ej():
     )
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"replacement RES for heat-nc TW"',
+    units="TW/Year",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def replacement_res_for_heatnc_tw():
     """
-    Real Name: "replacement RES for heat-nc TW"
-    Original Eqn:
-    Units: TW/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES heat']
-
     Annual replacement of RES for non-commercial heat by technology.
     """
     return (
@@ -379,16 +359,15 @@ def replacement_res_for_heatnc_tw():
     )
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"replacement RES for heat-nc"',
+    units="Dmnl",
+    subscripts=["RES heat"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def replacement_res_for_heatnc():
     """
-    Real Name: "replacement RES for heat-nc"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['RES heat']
-
     If =1, we asume that all the power that reaches the end of its lifetime is replaced.
     """
     return _ext_constant_replacement_res_for_heatnc()
@@ -400,19 +379,19 @@ _ext_constant_replacement_res_for_heatnc = ExtConstant(
     "replacement_rate_res_for_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
+    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
     "_ext_constant_replacement_res_for_heatnc",
 )
 
 
+@component.add(
+    name='"RES heat-nc tot overcapacity"',
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def res_heatnc_tot_overcapacity():
     """
-    Real Name: "RES heat-nc tot overcapacity"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Overcapacity for each technology RES for heat-nc taking into account the installed capacity and the real generation.
     """
     return if_then_else(
@@ -426,16 +405,15 @@ def res_heatnc_tot_overcapacity():
     )
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name='"wear RES capacity for heat-nc TW"',
+    units="TW",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def wear_res_capacity_for_heatnc_tw():
     """
-    Real Name: "wear RES capacity for heat-nc TW"
-    Original Eqn:
-    Units: TW
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES heat']
-
     Decommission of the capacity that reachs the end of its lifetime.
     """
     return installed_capacity_res_heatnc_tw() / life_time_res_for_heat()

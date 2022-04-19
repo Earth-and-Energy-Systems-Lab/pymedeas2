@@ -1,34 +1,32 @@
 """
 Module transport_energy_demand
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Share demand by fuel in transport",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_demand_by_fuel_in_transport():
     """
-    Real Name: Share demand by fuel in transport
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     Share demand by fuel in transport
     """
     return total_transport_fed_by_fuel() / transport_tfed()
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Total transport FED by fuel",
+    units="EJ/year",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_transport_fed_by_fuel():
     """
-    Real Name: Total transport FED by fuel
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     Total energy in transport. This model considers transport the four sector in WIOD related with transport and households transport.
     """
     return (
@@ -51,16 +49,15 @@ def total_transport_fed_by_fuel():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="transport fraction",
+    units="Dmnl",
+    subscripts=["sectors"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def transport_fraction():
     """
-    Real Name: transport fraction
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['sectors']
-
     Sectors of fraction of the sector that are part of transport.
     """
     return _ext_constant_transport_fraction()
@@ -72,19 +69,33 @@ _ext_constant_transport_fraction = ExtConstant(
     "transport_fraction",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_constant_transport_fraction",
 )
 
 
+@component.add(
+    name="Transport TFED", units="EJ/year", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def transport_tfed():
     """
-    Real Name: Transport TFED
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total Final Energy demand in transport
     """
     return sum(
@@ -93,15 +104,11 @@ def transport_tfed():
     )
 
 
+@component.add(
+    name="Transport TFED energy intensity",
+    units="EJ/Tdollars",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def transport_tfed_energy_intensity():
-    """
-    Real Name: Transport TFED energy intensity
-    Original Eqn:
-    Units: EJ/Tdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return zidz(transport_tfed(), gdp())

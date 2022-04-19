@@ -1,21 +1,17 @@
 """
 Module imports_and_exports
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Demand by sector RoW",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def demand_by_sector_row():
-    """
-    Real Name: Demand by sector RoW
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
-
-    """
     return if_then_else(
         time() < 2009,
         lambda: historic_demand_row(),
@@ -23,16 +19,15 @@ def demand_by_sector_row():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Domestic output required for exports by sector",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def domestic_output_required_for_exports_by_sector():
     """
-    Real Name: Domestic output required for exports by sector
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Value of output (production) required to satisfy Rest of the World demand of EU28 producs (exports) by sector.
     """
     return sum(
@@ -52,16 +47,15 @@ def domestic_output_required_for_exports_by_sector():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="historic demand RoW",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Data",
+    comp_subtype="External",
+)
 def historic_demand_row():
     """
-    Real Name: historic demand RoW
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Data
-    Subs: ['sectors']
-
     Final demand by sector (Rest of the World).
     """
     return _ext_data_historic_demand_row(time())
@@ -75,20 +69,37 @@ _ext_data_historic_demand_row = ExtData(
     None,
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_data_historic_demand_row",
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="IC exports EU",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ic_exports_eu():
     """
-    Real Name: IC exports EU
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Total intermediate products exports
     """
     return sum(
@@ -96,16 +107,15 @@ def ic_exports_eu():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="IC exports EU matrix",
+    units="Mdollars",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ic_exports_eu_matrix():
     """
-    Real Name: IC exports EU matrix
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
     Intermediate products exports by sector
     """
     return -ia_matrix_exports() * (
@@ -121,16 +131,15 @@ def ic_exports_eu_matrix():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="IC imports EU",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ic_imports_eu():
     """
-    Real Name: IC imports EU
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Total intermediate products imports
     """
     return sum(
@@ -139,16 +148,15 @@ def ic_imports_eu():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="IC imports EU matrix",
+    units="Mdollars",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ic_imports_eu_matrix():
     """
-    Real Name: IC imports EU matrix
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
     Intermediate products imports by sector
     """
     return -ia_matrix_imports() * (
@@ -164,31 +172,26 @@ def ic_imports_eu_matrix():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Real demand by sector RoW",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def real_demand_by_sector_row():
-    """
-    Real Name: Real demand by sector RoW
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
-
-    """
     return real_demand_by_sector_world() - real_demand_by_sector_delayed_eu()
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Real Final Demand of exports",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def real_final_demand_of_exports():
     """
-    Real Name: Real Final Demand of exports
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Real final demand of EU28 products made by the Rest of the World (Exports).
     """
     return sum(
@@ -208,31 +211,29 @@ def real_final_demand_of_exports():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Real total output by sector RoW",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def real_total_output_by_sector_row():
     """
-    Real Name: Real total output by sector RoW
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Sectoral real total production by Rest of the World.
     """
     return real_total_output_by_sector_world() - real_total_output_by_sector_eu()
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Total domestic output required for exports by sector",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_domestic_output_required_for_exports_by_sector():
     """
-    Real Name: Total domestic output required for exports by sector
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Value of output (production) required to satisfy Rest of the World demand of EU28 producs (exports) by sector.
     """
     return domestic_output_required_for_exports_by_sector()

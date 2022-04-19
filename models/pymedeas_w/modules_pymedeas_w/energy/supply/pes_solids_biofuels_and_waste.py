@@ -1,18 +1,17 @@
 """
 Module pes_solids_biofuels_and_waste
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="Losses in charcoal plants EJ",
+    units="EJ",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def losses_in_charcoal_plants_ej():
     """
-    Real Name: Losses in charcoal plants EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Losses of energy (EJ) produced in charcoal plants.
     """
     return _ext_data_losses_in_charcoal_plants_ej(time())
@@ -26,33 +25,32 @@ _ext_data_losses_in_charcoal_plants_ej = ExtData(
     "interpolate",
     {},
     _root,
+    {},
     "_ext_data_losses_in_charcoal_plants_ej",
 )
 
 
-def pes_solids_bioe__waste_ej():
+@component.add(
+    name='"PES solids bioE & waste EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def pes_solids_bioe_waste_ej():
     """
-    Real Name: "PES solids bioE & waste EJ"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total primary energy supply solids biofuels and waste.
     """
     return pes_solids_bioe_ej() - pes_waste_ej()
 
 
+@component.add(
+    name="PES solids bioE EJ",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_solids_bioe_ej():
     """
-    Real Name: PES solids bioE EJ
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total biomass supply.It aggregates supply for electricity, heat and traditional biomass.
     """
     return (
@@ -64,15 +62,14 @@ def pes_solids_bioe_ej():
     )
 
 
+@component.add(
+    name="solid biofuels emissions relevant EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def solid_biofuels_emissions_relevant_ej():
     """
-    Real Name: solid biofuels emissions relevant EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Solids biofuels primary energy supply for estimating the CO2 emissions (we assume the XO2 emissions from traditional biomass are already included in land-use change emissions).
     """
     return (

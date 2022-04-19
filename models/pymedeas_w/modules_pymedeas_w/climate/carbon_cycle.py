@@ -1,18 +1,18 @@
 """
 Module carbon_cycle
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="atm ocean mixing time",
+    units="year ",
+    limits=(0.25, 10.0, 0.25),
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def atm_ocean_mixing_time():
     """
-    Real Name: atm ocean mixing time
-    Original Eqn:
-    Units: year
-    Limits: (0.25, 10.0, 0.25)
-    Type: Constant
-    Subs: []
-
     Atmosphere - mixed ocean layer mixing time.
     """
     return _ext_constant_atm_ocean_mixing_time()
@@ -24,19 +24,19 @@ _ext_constant_atm_ocean_mixing_time = ExtConstant(
     "atm_ocean_mixing_time",
     {},
     _root,
+    {},
     "_ext_constant_atm_ocean_mixing_time",
 )
 
 
+@component.add(
+    name="biomass residence time",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def biomass_residence_time():
     """
-    Real Name: biomass residence time
-    Original Eqn:
-    Units: year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Average residence time of carbon in biomass.
     """
     return _ext_constant_biomass_residence_time()
@@ -48,33 +48,30 @@ _ext_constant_biomass_residence_time = ExtConstant(
     "biomass_residence_time",
     {},
     _root,
+    {},
     "_ext_constant_biomass_residence_time",
 )
 
 
+@component.add(
+    name="biostim coeff", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def biostim_coeff():
     """
-    Real Name: biostim coeff
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Coefficient for response of primary production to carbon concentration.
     """
     return biostim_coeff_index() * biostim_coeff_mean()
 
 
+@component.add(
+    name="biostim coeff index",
+    units="Dmnl ",
+    limits=(0.6, 1.7, 0.05),
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def biostim_coeff_index():
     """
-    Real Name: biostim coeff index
-    Original Eqn:
-    Units: Dmnl
-    Limits: (0.6, 1.7, 0.05)
-    Type: Constant
-    Subs: []
-
     Index of coefficient for response of primary production to carbon concentration, as multiplying factor of the mean value.
     """
     return _ext_constant_biostim_coeff_index()
@@ -86,19 +83,20 @@ _ext_constant_biostim_coeff_index = ExtConstant(
     "biostim_coeff_index",
     {},
     _root,
+    {},
     "_ext_constant_biostim_coeff_index",
 )
 
 
+@component.add(
+    name="biostim coeff mean",
+    units="Dmnl ",
+    limits=(0.3, 0.7),
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def biostim_coeff_mean():
     """
-    Real Name: biostim coeff mean
-    Original Eqn:
-    Units: Dmnl
-    Limits: (0.3, 0.7)
-    Type: Constant
-    Subs: []
-
     Mean coefficient for response of primary production to CO2 concentration. Reflects the increase in NPP with doubling the CO2 level. Goudriaan and Ketner, 1984; Rotmans, 1990
     """
     return _ext_constant_biostim_coeff_mean()
@@ -110,19 +108,16 @@ _ext_constant_biostim_coeff_mean = ExtConstant(
     "biostim_coeff_mean",
     {},
     _root,
+    {},
     "_ext_constant_biostim_coeff_mean",
 )
 
 
+@component.add(
+    name="buffer C coeff", units="Dmnl", comp_type="Constant", comp_subtype="External"
+)
 def buffer_c_coeff():
     """
-    Real Name: buffer C coeff
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Coefficient of CO2 concentration influence on buffer factor.
     """
     return _ext_constant_buffer_c_coeff()
@@ -134,52 +129,47 @@ _ext_constant_buffer_c_coeff = ExtConstant(
     "buffer_C_coeff",
     {},
     _root,
+    {},
     "_ext_constant_buffer_c_coeff",
 )
 
 
+@component.add(
+    name="Buffer Factor", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def buffer_factor():
     """
-    Real Name: Buffer Factor
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Buffer factor for atmosphere/mixed ocean carbon equilibration.
     """
     return active_initial(
-        __data["time"],
+        __data["time"].stage,
         lambda: ref_buffer_factor()
         * (c_in_mixed_layer() / preindustrial_c_in_mixed_layer()) ** buffer_c_coeff(),
         ref_buffer_factor(),
     )
 
 
+@component.add(
+    name="C from CH4 oxidation",
+    units="GtC/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def c_from_ch4_oxidation():
     """
-    Real Name: C from CH4 oxidation
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Flux of C into the atmosphere from the oxidation of CH4, the mode of removal of CH4 from atmosphere.
     """
     return ch4_uptake() / ch4_per_c() / mt_per_gt()
 
 
+@component.add(
+    name="C humification fraction",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def c_humification_fraction():
     """
-    Real Name: C humification fraction
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Fraction of carbon outflow from biomass that enters humus stock.
     """
     return _ext_constant_c_humification_fraction()
@@ -191,19 +181,19 @@ _ext_constant_c_humification_fraction = ExtConstant(
     "C_humification_fraction",
     {},
     _root,
+    {},
     "_ext_constant_c_humification_fraction",
 )
 
 
+@component.add(
+    name="C humus residence time",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def c_humus_residence_time():
     """
-    Real Name: C humus residence time
-    Original Eqn:
-    Units: year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Average carbon residence time in humus.
     """
     return _ext_constant_c_humus_residence_time()
@@ -215,19 +205,16 @@ _ext_constant_c_humus_residence_time = ExtConstant(
     "C_humus_residence_time",
     {},
     _root,
+    {},
     "_ext_constant_c_humus_residence_time",
 )
 
 
+@component.add(
+    name="C in Atmosphere", units="GtC", comp_type="Stateful", comp_subtype="Integ"
+)
 def c_in_atmosphere():
     """
-    Real Name: C in Atmosphere
-    Original Eqn:
-    Units: GtC
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Carbon in atmosphere.
     """
     return _integ_c_in_atmosphere()
@@ -246,15 +233,11 @@ _integ_c_in_atmosphere = Integ(
 )
 
 
+@component.add(
+    name="C in Biomass", units="GtC", comp_type="Stateful", comp_subtype="Integ"
+)
 def c_in_biomass():
     """
-    Real Name: C in Biomass
-    Original Eqn:
-    Units: GtC
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Carbon in biomass.
     """
     return _integ_c_in_biomass()
@@ -270,16 +253,15 @@ _integ_c_in_biomass = Integ(
 )
 
 
-@subs(["Layers"], _subscript_dict)
+@component.add(
+    name="C in Deep Ocean",
+    units="GtC",
+    subscripts=["Layers"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def c_in_deep_ocean():
     """
-    Real Name: C in Deep Ocean
-    Original Eqn:
-    Units: GtC
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['Layers']
-
     Carbon in deep ocean.
     """
     value = xr.DataArray(np.nan, {"Layers": _subscript_dict["Layers"]}, ["Layers"])
@@ -321,30 +303,25 @@ _integ_c_in_deep_ocean_1 = Integ(
 )
 
 
-@subs(["Layers"], _subscript_dict)
+@component.add(
+    name="C in deep ocean per meter",
+    units="GtC/meter",
+    subscripts=["Layers"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def c_in_deep_ocean_per_meter():
     """
-    Real Name: C in deep ocean per meter
-    Original Eqn:
-    Units: GtC/meter
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['Layers']
-
     Concentration of carbon in ocean layers.
     """
     return c_in_deep_ocean() / layer_depth()
 
 
+@component.add(
+    name="C in Humus", units="GtC", comp_type="Stateful", comp_subtype="Integ"
+)
 def c_in_humus():
     """
-    Real Name: C in Humus
-    Original Eqn:
-    Units: GtC
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Carbon in humus.
     """
     return _integ_c_in_humus()
@@ -357,15 +334,11 @@ _integ_c_in_humus = Integ(
 )
 
 
+@component.add(
+    name="C in Mixed Layer", units="GtC", comp_type="Stateful", comp_subtype="Integ"
+)
 def c_in_mixed_layer():
     """
-    Real Name: C in Mixed Layer
-    Original Eqn:
-    Units: GtC
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Carbon in mixed layer.
     """
     return _integ_c_in_mixed_layer()
@@ -378,29 +351,25 @@ _integ_c_in_mixed_layer = Integ(
 )
 
 
+@component.add(
+    name="C in mixed layer per meter",
+    units="GtC/meter",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def c_in_mixed_layer_per_meter():
-    """
-    Real Name: C in mixed layer per meter
-    Original Eqn:
-    Units: GtC/meter
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return c_in_mixed_layer() / mixed_layer_depth()
 
 
+@component.add(
+    name="CH4 generation rate from biomass",
+    units="1/year ",
+    limits=(0.0, 0.00014),
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def ch4_generation_rate_from_biomass():
     """
-    Real Name: CH4 generation rate from biomass
-    Original Eqn:
-    Units: 1/year
-    Limits: (0.0, 0.00014)
-    Type: Constant
-    Subs: []
-
     The rate of the natural flux of methane from C in biomass. The sum of the flux of methane from C in humus and the flux of methane from C in biomass yields the natural emissions of methane.
     """
     return _ext_constant_ch4_generation_rate_from_biomass()
@@ -412,19 +381,20 @@ _ext_constant_ch4_generation_rate_from_biomass = ExtConstant(
     "CH4_generation_rate_from_biomass",
     {},
     _root,
+    {},
     "_ext_constant_ch4_generation_rate_from_biomass",
 )
 
 
+@component.add(
+    name="CH4 generation rate from humus",
+    units="1/year ",
+    limits=(0.0, 0.00016),
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def ch4_generation_rate_from_humus():
     """
-    Real Name: CH4 generation rate from humus
-    Original Eqn:
-    Units: 1/year
-    Limits: (0.0, 0.00016)
-    Type: Constant
-    Subs: []
-
     The rate of the natural flux of methane from C in humus. The sum of the flux of methane from C in humus and the flux of methane from C in biomass yields the natural emissions of methane.
     """
     return _ext_constant_ch4_generation_rate_from_humus()
@@ -436,48 +406,43 @@ _ext_constant_ch4_generation_rate_from_humus = ExtConstant(
     "CH4_generation_rate_from_humus",
     {},
     _root,
+    {},
     "_ext_constant_ch4_generation_rate_from_humus",
 )
 
 
+@component.add(
+    name="CH4 per C", units="Mt/MtC", comp_type="Constant", comp_subtype="Normal"
+)
 def ch4_per_c():
     """
-    Real Name: CH4 per C
-    Original Eqn:
-    Units: Mt/MtC
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Molar mass ratio of CH4 to C, 16/12
     """
     return 16 / 12
 
 
+@component.add(
+    name="CO2 ppm concentrations",
+    units="ppm",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def co2_ppm_concentrations():
     """
-    Real Name: CO2 ppm concentrations
-    Original Eqn:
-    Units: ppm
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     1 part per million of atmospheric CO2 is equivalent to 2.13 gigatonnes Carbon. Historical Mauna Loa CO2 Record: ftp://ftp.cmdl.noaa.gov/products/trends/co2/co2_mm_mlo.txt
     """
     return c_in_atmosphere() / 2.13
 
 
-@subs(["Layers"], _subscript_dict)
+@component.add(
+    name="Diffusion Flux",
+    units="GtC/year",
+    subscripts=["Layers"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def diffusion_flux():
     """
-    Real Name: Diffusion Flux
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['Layers']
-
     Diffusion flux between ocean layers.
     """
     value = xr.DataArray(np.nan, {"Layers": _subscript_dict["Layers"]}, ["Layers"])
@@ -511,29 +476,28 @@ def diffusion_flux():
     return value
 
 
+@component.add(
+    name="eddy diffusion coef",
+    units="m2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def eddy_diffusion_coef():
     """
-    Real Name: eddy diffusion coef
-    Original Eqn:
-    Units: m2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Multiplier of eddy diffusion coefficient mean
     """
     return eddy_diffusion_coef_index() * eddy_diffusion_mean()
 
 
+@component.add(
+    name="eddy diffusion coef index",
+    units="Dmnl ",
+    limits=(0.85, 1.15, 0.05),
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def eddy_diffusion_coef_index():
     """
-    Real Name: eddy diffusion coef index
-    Original Eqn:
-    Units: Dmnl
-    Limits: (0.85, 1.15, 0.05)
-    Type: Constant
-    Subs: []
-
     Index of coefficient for rate at which carbon is mixed in the ocean due to eddy motion, where 1 is equivalent to the expected value (defaulted to 4400 m2/year).
     """
     return _ext_constant_eddy_diffusion_coef_index()
@@ -545,19 +509,20 @@ _ext_constant_eddy_diffusion_coef_index = ExtConstant(
     "eddy_diffusion_coef_index",
     {},
     _root,
+    {},
     "_ext_constant_eddy_diffusion_coef_index",
 )
 
 
+@component.add(
+    name="eddy diffusion mean",
+    units="m2/year ",
+    limits=(2000.0, 8000.0),
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def eddy_diffusion_mean():
     """
-    Real Name: eddy diffusion mean
-    Original Eqn:
-    Units: m2/year
-    Limits: (2000.0, 8000.0)
-    Type: Constant
-    Subs: []
-
     Rate of vertical transport and mixing in the ocean due to eddy diffusion motion.
     """
     return _ext_constant_eddy_diffusion_mean()
@@ -569,47 +534,45 @@ _ext_constant_eddy_diffusion_mean = ExtConstant(
     "eddy_diffusion_mean",
     {},
     _root,
+    {},
     "_ext_constant_eddy_diffusion_mean",
 )
 
 
+@component.add(
+    name="Effect of Temp on DIC pCO2",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def effect_of_temp_on_dic_pco2():
     """
-    Real Name: Effect of Temp on DIC pCO2
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     The fractional reduction in the solubility of CO2 in ocean falls with rising temperatures. We assume a linear relationship, likely a good approximation over the typical range for warming by 2100.
     """
     return 1 - sensitivity_of_pco2_dic_to_temperature() * temperature_change()
 
 
+@component.add(
+    name="Effect of Warming on C flux to biomass",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def effect_of_warming_on_c_flux_to_biomass():
     """
-    Real Name: Effect of Warming on C flux to biomass
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     The fractional reduction in the flux of C from the atmosphere to biomass with rising temperatures. We assume a linear relationship, likely a good approxim
     """
     return 1 + strength_of_temp_effect_on_c_flux_to_land() * temperature_change()
 
 
+@component.add(
+    name="Effect of Warming on CH4 Release from Biological Activity",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def effect_of_warming_on_ch4_release_from_biological_activity():
     """
-    Real Name: Effect of Warming on CH4 Release from Biological Activity
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     The fractional increase in the flux of C as CH4 from humus with rising temperatures. We assume a linear relationship, likely a good approximation over the typical range for warming by 2100.
     """
     return (
@@ -620,15 +583,14 @@ def effect_of_warming_on_ch4_release_from_biological_activity():
     )
 
 
+@component.add(
+    name="Equil C in Mixed Layer",
+    units="GtC",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def equil_c_in_mixed_layer():
     """
-    Real Name: Equil C in Mixed Layer
-    Original Eqn:
-    Units: GtC
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Equilibrium carbon content of mixed layer. Determined by the Revelle buffering factor, and by temperature. For simplicity, we assume a linear impact of warming on the equilibrium solubility of CO2 in the ocean.
     """
     return (
@@ -638,29 +600,27 @@ def equil_c_in_mixed_layer():
     )
 
 
+@component.add(
+    name="Equilibrium C per meter in Mixed Layer",
+    units="GtC/meter",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def equilibrium_c_per_meter_in_mixed_layer():
     """
-    Real Name: Equilibrium C per meter in Mixed Layer
-    Original Eqn:
-    Units: GtC/meter
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     The equilibrium concentration of C in the mixed layer, in GtC/meter, based on the total quantity of C in that layer and the average layer depth.
     """
     return equil_c_in_mixed_layer() / mixed_layer_depth()
 
 
+@component.add(
+    name="Flux Atm to Biomass",
+    units="GtC/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def flux_atm_to_biomass():
     """
-    Real Name: Flux Atm to Biomass
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Carbon flux from atmosphere to biosphere (from primary production)
     """
     return (
@@ -670,43 +630,40 @@ def flux_atm_to_biomass():
     )
 
 
+@component.add(
+    name="Flux Atm to Ocean",
+    units="GtC/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def flux_atm_to_ocean():
     """
-    Real Name: Flux Atm to Ocean
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Carbon flux from atmosphere to mixed ocean layer.
     """
     return (equil_c_in_mixed_layer() - c_in_mixed_layer()) / atm_ocean_mixing_time()
 
 
+@component.add(
+    name="Flux Biomass to Atmosphere",
+    units="GtC/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def flux_biomass_to_atmosphere():
     """
-    Real Name: Flux Biomass to Atmosphere
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Carbon flux from biomass to atmosphere.
     """
     return c_in_biomass() / biomass_residence_time() * (1 - c_humification_fraction())
 
 
+@component.add(
+    name="Flux Biomass to CH4",
+    units="GtC/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def flux_biomass_to_ch4():
     """
-    Real Name: Flux Biomass to CH4
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     The natural flux of methane from C in biomass. The sum of the flux of methane from C in humus and the flux of methane from C in biomass yields the natural emissions of methane. Adjusted to account for temperature feedback.
     """
     return (
@@ -716,57 +673,53 @@ def flux_biomass_to_ch4():
     )
 
 
+@component.add(
+    name="Flux Biomass to Humus",
+    units="GtC/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def flux_biomass_to_humus():
     """
-    Real Name: Flux Biomass to Humus
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Carbon flux from biomass to humus.
     """
     return c_in_biomass() / biomass_residence_time() * c_humification_fraction()
 
 
+@component.add(
+    name="Flux Biosphere to CH4",
+    units="GtC/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def flux_biosphere_to_ch4():
     """
-    Real Name: Flux Biosphere to CH4
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Carbon flux from biosphere as methane, in GtC/year, arising from anaerobic respiration.
     """
     return flux_biomass_to_ch4() + flux_humus_to_ch4()
 
 
+@component.add(
+    name="Flux Humus to Atmosphere",
+    units="GtC/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def flux_humus_to_atmosphere():
     """
-    Real Name: Flux Humus to Atmosphere
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Carbon flux from humus to atmosphere.
     """
     return c_in_humus() / c_humus_residence_time()
 
 
+@component.add(
+    name="Flux Humus to CH4",
+    units="GtC/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def flux_humus_to_ch4():
     """
-    Real Name: Flux Humus to CH4
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     The natural flux of methane from C in humus. The sum of the flux of methane from C in humus and the flux of methane from C in biomass yields the natural emissions of methane. Adjusted to account for temperature feedback.
     """
     return (
@@ -776,43 +729,35 @@ def flux_humus_to_ch4():
     )
 
 
+@component.add(
+    name="GtC per ppm", units="GtC/ppm", comp_type="Constant", comp_subtype="Normal"
+)
 def gtc_per_ppm():
     """
-    Real Name: GtC per ppm
-    Original Eqn:
-    Units: GtC/ppm
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Conversion from ppm to GtC (1 ppm by volume of atmosphere CO2 = 2.13 Gt C (Uses atmospheric mass (Ma) = 5.137 × 10^18 kg)) CDIAC: http://cdiac.ornl.gov/pns/convert.html
     """
     return 2.13
 
 
+@component.add(
+    name="init C in atm",
+    units="GtC ",
+    limits=(500.0, 1000.0),
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def init_c_in_atm():
     """
-    Real Name: init C in atm
-    Original Eqn:
-    Units: GtC
-    Limits: (500.0, 1000.0)
-    Type: Auxiliary
-    Subs: []
-
     Initial C in atmosphere. [DICE-1994] Initial Greenhouse Gases in Atmosphere 1965 [M(t)] (tC equivalent). [Cowles, pg. 21] /6.77e+011 / [DICE-2013R] mat0: Initial concentration in atmosphere 2010 (GtC) /830.4 /
     """
     return init_co2_in_atm_ppm() * gtc_per_ppm()
 
 
+@component.add(
+    name="init C in biomass", units="GtC", comp_type="Constant", comp_subtype="External"
+)
 def init_c_in_biomass():
     """
-    Real Name: init C in biomass
-    Original Eqn:
-    Units: GtC
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Initial carbon in biomass.
     """
     return _ext_constant_init_c_in_biomass()
@@ -824,20 +769,20 @@ _ext_constant_init_c_in_biomass = ExtConstant(
     "init_C_in_biomass",
     {},
     _root,
+    {},
     "_ext_constant_init_c_in_biomass",
 )
 
 
-@subs(["Layers"], _subscript_dict)
+@component.add(
+    name="init C in deep ocean",
+    units="GtC/meter",
+    subscripts=["Layers"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def init_c_in_deep_ocean():
     """
-    Real Name: init C in deep ocean
-    Original Eqn:
-    Units: GtC/meter
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['Layers']
-
     Initial carbon concentration in deep ocean layers per meter.
     """
     return _ext_constant_init_c_in_deep_ocean()
@@ -849,19 +794,16 @@ _ext_constant_init_c_in_deep_ocean = ExtConstant(
     "init_C_in_deep_ocean*",
     {"Layers": _subscript_dict["Layers"]},
     _root,
+    {"Layers": ["Layer1", "Layer2", "Layer3", "Layer4"]},
     "_ext_constant_init_c_in_deep_ocean",
 )
 
 
+@component.add(
+    name="init C in humus", units="GtC", comp_type="Constant", comp_subtype="External"
+)
 def init_c_in_humus():
     """
-    Real Name: init C in humus
-    Original Eqn:
-    Units: GtC
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Inital carbon in humus.
     """
     return _ext_constant_init_c_in_humus()
@@ -873,19 +815,19 @@ _ext_constant_init_c_in_humus = ExtConstant(
     "init_C_in_humus",
     {},
     _root,
+    {},
     "_ext_constant_init_c_in_humus",
 )
 
 
+@component.add(
+    name="init C in mixed ocean",
+    units="GtC/meter",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def init_c_in_mixed_ocean():
     """
-    Real Name: init C in mixed ocean
-    Original Eqn:
-    Units: GtC/meter
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Initial carbon in mixed ocean layer per meter.
     """
     return _ext_constant_init_c_in_mixed_ocean()
@@ -897,19 +839,19 @@ _ext_constant_init_c_in_mixed_ocean = ExtConstant(
     "init_C_in_mixed_ocean",
     {},
     _root,
+    {},
     "_ext_constant_init_c_in_mixed_ocean",
 )
 
 
+@component.add(
+    name="init CO2 in atm ppm",
+    units="ppm",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def init_co2_in_atm_ppm():
     """
-    Real Name: init CO2 in atm ppm
-    Original Eqn:
-    Units: ppm
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Initial CO2 in atmosphere. Historical Mauna Loa CO2 Record: Average between 1st and last month of 1990 was: (353.74+355.12)/2=354.43 ppm Historical Mauna Loa CO2 Record: Average between 1st and last month of 1995 was: (359.92+360.68)/2= 360.3 ppm ftp://ftp.cmdl.noaa.gov/products/trends/co2/co2_mm_mlo.txt [DICE-1994] Initial Greenhouse Gases in Atmosphere 1965 [M(t)] (tC equivalent). [Cowles, pg. 21] /6.77e+011 / [DICE-2013R] mat0: Initial concentration in atmosphere 2010 (GtC) /830.4 /
     """
     return _ext_constant_init_co2_in_atm_ppm()
@@ -921,39 +863,35 @@ _ext_constant_init_co2_in_atm_ppm = ExtConstant(
     "init_CO2_in_atm_ppm",
     {},
     _root,
+    {},
     "_ext_constant_init_co2_in_atm_ppm",
 )
 
 
+@component.add(
+    name="init NPP", units="GtC/year", comp_type="Constant", comp_subtype="External"
+)
 def init_npp():
     """
-    Real Name: init NPP
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Initial net primary production. Adapted from Goudriaan, 1984.
     """
     return _ext_constant_init_npp()
 
 
 _ext_constant_init_npp = ExtConstant(
-    "../climate.xlsx", "World", "init_NPP", {}, _root, "_ext_constant_init_npp"
+    "../climate.xlsx", "World", "init_NPP", {}, _root, {}, "_ext_constant_init_npp"
 )
 
 
-@subs(["Layers"], _subscript_dict)
+@component.add(
+    name="layer depth",
+    units="m",
+    subscripts=["Layers"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def layer_depth():
     """
-    Real Name: layer depth
-    Original Eqn:
-    Units: m
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['Layers']
-
     Deep ocean layer thicknesses.
     """
     return _ext_constant_layer_depth()
@@ -965,20 +903,20 @@ _ext_constant_layer_depth = ExtConstant(
     "layer_depth*",
     {"Layers": _subscript_dict["Layers"]},
     _root,
+    {"Layers": ["Layer1", "Layer2", "Layer3", "Layer4"]},
     "_ext_constant_layer_depth",
 )
 
 
-@subs(["Layers"], _subscript_dict)
+@component.add(
+    name="Layer Time Constant",
+    units="year",
+    subscripts=["Layers"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def layer_time_constant():
     """
-    Real Name: Layer Time Constant
-    Original Eqn:
-    Units: year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['Layers']
-
     Time constant of exchange between layers.
     """
     value = xr.DataArray(np.nan, {"Layers": _subscript_dict["Layers"]}, ["Layers"])
@@ -997,16 +935,15 @@ def layer_time_constant():
     return value
 
 
-@subs(["Layers"], _subscript_dict)
+@component.add(
+    name="Mean Depth of Adjacent Layers",
+    units="meter",
+    subscripts=["Layers"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def mean_depth_of_adjacent_layers():
     """
-    Real Name: Mean Depth of Adjacent Layers
-    Original Eqn:
-    Units: meter
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['Layers']
-
     The mean depth of adjacent ocean layers.
     """
     value = xr.DataArray(np.nan, {"Layers": _subscript_dict["Layers"]}, ["Layers"])
@@ -1030,15 +967,14 @@ def mean_depth_of_adjacent_layers():
     return value
 
 
+@component.add(
+    name="mixed layer depth",
+    units="meter",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def mixed_layer_depth():
     """
-    Real Name: mixed layer depth
-    Original Eqn:
-    Units: meter
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Mixed ocean layer depth.
     """
     return _ext_constant_mixed_layer_depth()
@@ -1050,33 +986,29 @@ _ext_constant_mixed_layer_depth = ExtConstant(
     "mixed_layer_depth",
     {},
     _root,
+    {},
     "_ext_constant_mixed_layer_depth",
 )
 
 
+@component.add(
+    name="natural CH4 emissions",
+    units="Mt/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def natural_ch4_emissions():
     """
-    Real Name: natural CH4 emissions
-    Original Eqn:
-    Units: Mt/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Flux of methane from anaerobic respiration in the biosphere, in megatonnes CH4/year.
     """
     return flux_biosphere_to_ch4() * ch4_per_c() * mt_per_gt()
 
 
+@component.add(
+    name="preindustrial C", units="GtC", comp_type="Constant", comp_subtype="External"
+)
 def preindustrial_c():
     """
-    Real Name: preindustrial C
-    Original Eqn:
-    Units: GtC
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Preindustrial C content of atmosphere.
     """
     return _ext_constant_preindustrial_c()
@@ -1088,33 +1020,32 @@ _ext_constant_preindustrial_c = ExtConstant(
     "preindustrial_C",
     {},
     _root,
+    {},
     "_ext_constant_preindustrial_c",
 )
 
 
+@component.add(
+    name="preindustrial C in mixed layer",
+    units="GtC",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def preindustrial_c_in_mixed_layer():
     """
-    Real Name: preindustrial C in mixed layer
-    Original Eqn:
-    Units: GtC
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Initial carbon concentration of mixed ocean layer.
     """
     return preindustrial_c_in_ocean() * mixed_layer_depth()
 
 
+@component.add(
+    name="preindustrial C in ocean",
+    units="GtC/m",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def preindustrial_c_in_ocean():
     """
-    Real Name: preindustrial C in ocean
-    Original Eqn:
-    Units: GtC/m
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Preindustrial ocean carbon content per meter. Corresponds with 767.8 GtC in a 75m layer.
     """
     return _ext_constant_preindustrial_c_in_ocean()
@@ -1126,19 +1057,19 @@ _ext_constant_preindustrial_c_in_ocean = ExtConstant(
     "preind_C_in_ocean",
     {},
     _root,
+    {},
     "_ext_constant_preindustrial_c_in_ocean",
 )
 
 
+@component.add(
+    name="Ref Buffer Factor",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def ref_buffer_factor():
     """
-    Real Name: Ref Buffer Factor
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Normal buffer factor.
     """
     return _ext_constant_ref_buffer_factor()
@@ -1150,19 +1081,19 @@ _ext_constant_ref_buffer_factor = ExtConstant(
     "ref_buffer_factor",
     {},
     _root,
+    {},
     "_ext_constant_ref_buffer_factor",
 )
 
 
+@component.add(
+    name="reference temperature change for effect of warming on CH4 from respiration",
+    units="ºC",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def reference_temperature_change_for_effect_of_warming_on_ch4_from_respiration():
     """
-    Real Name: reference temperature change for effect of warming on CH4 from respiration
-    Original Eqn:
-    Units: ºC
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Temperature change at which the C as CH4 release from humus doubles for the sensitivity of methane emissions to temperature=1.
     """
     return (
@@ -1176,19 +1107,20 @@ _ext_constant_reference_temperature_change_for_effect_of_warming_on_ch4_from_res
     "reference_temperature_change_for_effect_of_warming_on_CH4_from_respiration",
     {},
     _root,
+    {},
     "_ext_constant_reference_temperature_change_for_effect_of_warming_on_ch4_from_respiration",
 )
 
 
+@component.add(
+    name="sensitivity of C uptake to temperature",
+    units="Dmnl ",
+    limits=(0.0, 2.5, 0.1),
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def sensitivity_of_c_uptake_to_temperature():
     """
-    Real Name: sensitivity of C uptake to temperature
-    Original Eqn:
-    Units: Dmnl
-    Limits: (0.0, 2.5, 0.1)
-    Type: Constant
-    Subs: []
-
     Strength of the feedback effect of temperature on uptake of C by land and oceans. 0 means no temperature-carbon uptake feedback and default of 1 yields the average value found in Friedlingstein et al., 2006. Climate-Carbon Cycle Feedback Analysis: ResuMCS from the C4MIP Model Intercomparison. Journal of Climate. p3337-3353.
     """
     return _ext_constant_sensitivity_of_c_uptake_to_temperature()
@@ -1200,19 +1132,20 @@ _ext_constant_sensitivity_of_c_uptake_to_temperature = ExtConstant(
     "sensitivity_of_C_uptake_to_temperature",
     {},
     _root,
+    {},
     "_ext_constant_sensitivity_of_c_uptake_to_temperature",
 )
 
 
+@component.add(
+    name="sensitivity of methane emissions to temperature",
+    units="Dmnl ",
+    limits=(0.0, 2.5, 0.1),
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def sensitivity_of_methane_emissions_to_temperature():
     """
-    Real Name: sensitivity of methane emissions to temperature
-    Original Eqn:
-    Units: Dmnl
-    Limits: (0.0, 2.5, 0.1)
-    Type: Constant
-    Subs: []
-
     Allows users to control the strength of the feedback effect of temperature on release of C as CH4 from humus. Default of 0 means no temperature feedback and 1 is mean feedback.
     """
     return _ext_constant_sensitivity_of_methane_emissions_to_temperature()
@@ -1224,19 +1157,19 @@ _ext_constant_sensitivity_of_methane_emissions_to_temperature = ExtConstant(
     "sensitivity_of_methane_emissions_to_temperature",
     {},
     _root,
+    {},
     "_ext_constant_sensitivity_of_methane_emissions_to_temperature",
 )
 
 
+@component.add(
+    name="sensitivity of pCO2 DIC to temperature",
+    units="1/ºC",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def sensitivity_of_pco2_dic_to_temperature():
     """
-    Real Name: sensitivity of pCO2 DIC to temperature
-    Original Eqn:
-    Units: 1/ºC
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Sensitivity of pCO2 of dissolved inorganic carbon in ocean to temperature.
     """
     return (
@@ -1245,15 +1178,14 @@ def sensitivity_of_pco2_dic_to_temperature():
     )
 
 
+@component.add(
+    name="sensitivity of pCO2 DIC to temperature mean",
+    units="1/ºC",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def sensitivity_of_pco2_dic_to_temperature_mean():
     """
-    Real Name: sensitivity of pCO2 DIC to temperature mean
-    Original Eqn:
-    Units: 1/ºC
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Sensitivity of equilibrium concentration of dissolved inorganic carbon to temperature. Calibrated to be consistent with Friedlingstein et al., 2006. Climate-Carbon Cycle Feedback Analysis: ResuMCS from the C4MIP Model Intercomparison. Journal of Climate. p3337-3353. Default sensitivity of C uptake to temperature of 1 corresponds to mean value from the 11 models tested.
     """
     return _ext_constant_sensitivity_of_pco2_dic_to_temperature_mean()
@@ -1265,19 +1197,19 @@ _ext_constant_sensitivity_of_pco2_dic_to_temperature_mean = ExtConstant(
     "sensitivity_of_pCO2_DIC_to_temperature_mean",
     {},
     _root,
+    {},
     "_ext_constant_sensitivity_of_pco2_dic_to_temperature_mean",
 )
 
 
+@component.add(
+    name="Strength of Temp Effect on C Flux to Land",
+    units="1/ºC",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def strength_of_temp_effect_on_c_flux_to_land():
     """
-    Real Name: Strength of Temp Effect on C Flux to Land
-    Original Eqn:
-    Units: 1/ºC
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Strength of temperature effect on C flux to the land.
     """
     return (
@@ -1286,15 +1218,14 @@ def strength_of_temp_effect_on_c_flux_to_land():
     )
 
 
+@component.add(
+    name="Strength of temp effect on land C flux mean",
+    units="1/ºC",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def strength_of_temp_effect_on_land_c_flux_mean():
     """
-    Real Name: Strength of temp effect on land C flux mean
-    Original Eqn:
-    Units: 1/ºC
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Average effect of temperature on flux of carbon to land. Calibrated to be consistent with Friedlingstein et al., 2006. Climate-Carbon Cycle Feedback Analysis: ResuMCS from the C4MIP Model Intercomparison. Journal of Climate. p3337-3353. Default sensitivity of C uptake to temperature of 1 corresponds to mean value from the 11 models tested.
     """
     return _ext_constant_strength_of_temp_effect_on_land_c_flux_mean()
@@ -1306,19 +1237,19 @@ _ext_constant_strength_of_temp_effect_on_land_c_flux_mean = ExtConstant(
     "strength_of_temp_effect_on_land_C_flux_mean",
     {},
     _root,
+    {},
     "_ext_constant_strength_of_temp_effect_on_land_c_flux_mean",
 )
 
 
+@component.add(
+    name="Total C anthro emissions",
+    units="GtC/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_c_anthro_emissions():
     """
-    Real Name: Total C anthro emissions
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total annual CO2 emissions converted to GtC/year.
     """
     return total_co2_emissions_gtco2() * c_per_co2()

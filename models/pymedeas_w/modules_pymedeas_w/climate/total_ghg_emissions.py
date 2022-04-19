@@ -1,18 +1,17 @@
 """
 Module total_ghg_emissions
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="activate afforestation program",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def activate_afforestation_program():
     """
-    Real Name: activate afforestation program
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     1. Activated. 2. No.
     """
     return _ext_constant_activate_afforestation_program()
@@ -24,19 +23,19 @@ _ext_constant_activate_afforestation_program = ExtConstant(
     "afforestation_program",
     {},
     _root,
+    {},
     "_ext_constant_activate_afforestation_program",
 )
 
 
+@component.add(
+    name="Adapt CO2 emissions unconv gas",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def adapt_co2_emissions_unconv_gas():
     """
-    Real Name: Adapt CO2 emissions unconv gas
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Unconventional gas emissions are 3,53 tCO2/toe vs 2,35 for conventional. Since we have all natural gas modeled in an aggregated manner, this function corrects these emissions assuming that unconventional gas would follow the share un relation to natural gas as estimated by [Mohr&Evans2011](BG) for 2050 and 2100 (linear interpolation).
     """
     return if_then_else(
@@ -50,15 +49,14 @@ def adapt_co2_emissions_unconv_gas():
     )
 
 
+@component.add(
+    name="Adapt emissions shale oil",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def adapt_emissions_shale_oil():
     """
-    Real Name: Adapt emissions shale oil
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Shale oil emissions are 6,14tCO2/toe vs 3,84 for unconventional oil. Since we have unconventional oils in an aggregated manner, this functions corrects these emissions assuming that shale oil would follow the share in relation to the total unconventional oil as estimated by [Mohr&Evans2010](Low Case) for 2050 and 2100 (linear interpolation)
     """
     return if_then_else(
@@ -72,15 +70,14 @@ def adapt_emissions_shale_oil():
     )
 
 
+@component.add(
+    name="Afforestation program 2020",
+    units="MtC/year",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def afforestation_program_2020():
     """
-    Real Name: Afforestation program 2020
-    Original Eqn:
-    Units: MtC/year
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Afforestation program from 2020 following [Nilsson 1995] (time to inverse the deforestation trend).
     """
     return _ext_data_afforestation_program_2020(time())
@@ -94,19 +91,19 @@ _ext_data_afforestation_program_2020 = ExtData(
     "interpolate",
     {},
     _root,
+    {},
     "_ext_data_afforestation_program_2020",
 )
 
 
+@component.add(
+    name="Afforestation program 2020 GtCO2",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def afforestation_program_2020_gtco2():
     """
-    Real Name: Afforestation program 2020 GtCO2
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Annual emissions captured by the afforestation program.
     """
     return (
@@ -116,15 +113,14 @@ def afforestation_program_2020_gtco2():
     )
 
 
+@component.add(
+    name="BioE CO2 emissions",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def bioe_co2_emissions():
     """
-    Real Name: BioE CO2 emissions
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CO2 emissions from biomass. We assume that biofuels have an emission intensity similar to natural gas (due to ILUCs, see Technical Report), and for the rest (traditional biomass, biomass for electricity and biomass for heat) we asssume that the carbon balance is null.
     """
     return (
@@ -139,62 +135,55 @@ def bioe_co2_emissions():
     )
 
 
+@component.add(
+    name="C per CO2", units="GtC/GTCO2e", comp_type="Constant", comp_subtype="Normal"
+)
 def c_per_co2():
     """
-    Real Name: C per CO2
-    Original Eqn:
-    Units: GtC/GTCO2e
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     1 kg of CO2 contains 3/11 of carbon.
     """
     return 3 / 11
 
 
+@component.add(
+    name="Carbon emissions GtC",
+    units="GtC/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def carbon_emissions_gtc():
     """
-    Real Name: Carbon emissions GtC
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total anual carbon emissions.
     """
     return total_co2_emissions_gtco2() * c_per_co2()
 
 
+@component.add(
+    name="CH4 emissions coal without CTL",
+    units="MtCH4",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ch4_emissions_coal_without_ctl():
     """
-    Real Name: CH4 emissions coal without CTL
-    Original Eqn:
-    Units: MtCH4
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CH4 emissions coal.
     """
     return (
-        extraction_coal_emissions_relevant_ej()
+        extraction_coal_emissions_relevant()
         * gch4_per_mj_coal()
         * mj_per_ej()
         / g_per_mt()
     )
 
 
+@component.add(
+    name="CH4 emissions conv gas without GTL",
+    units="MtCH4",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ch4_emissions_conv_gas_without_gtl():
     """
-    Real Name: CH4 emissions conv gas without GTL
-    Original Eqn:
-    Units: MtCH4
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CH4 emissions conventional gas.
     """
     return (
@@ -208,57 +197,53 @@ def ch4_emissions_conv_gas_without_gtl():
     )
 
 
+@component.add(
+    name="CH4 emissions CTL",
+    units="MtCH4",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ch4_emissions_ctl():
     """
-    Real Name: CH4 emissions CTL
-    Original Eqn:
-    Units: MtCH4
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CH4 emissions CTL.
     """
-    return extraction_coal_for_ctl_ej() * gch4_per_mj_ctl() * mj_per_ej() / g_per_mt()
+    return extraction_coal_for_ctl() * gch4_per_mj_ctl() * mj_per_ej() / g_per_mt()
 
 
+@component.add(
+    name="CH4 emissions GTL",
+    units="MtCH4",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ch4_emissions_gtl():
     """
-    Real Name: CH4 emissions GTL
-    Original Eqn:
-    Units: MtCH4
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CH4 emissions GTL.
     """
     return ped_nat_gas_for_gtl_ej() * gch4_per_mj_gtl() * mj_per_ej() / g_per_mt()
 
 
+@component.add(
+    name="CH4 emissions oil",
+    units="MtCH4",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ch4_emissions_oil():
     """
-    Real Name: CH4 emissions oil
-    Original Eqn:
-    Units: MtCH4
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CH4 emissions oil.
     """
     return pes_oil_ej() * gch4_per_mj_oil() * mj_per_ej() / g_per_mt()
 
 
+@component.add(
+    name="CH4 emissions unconv gas",
+    units="MtCH4",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ch4_emissions_unconv_gas():
     """
-    Real Name: CH4 emissions unconv gas
-    Original Eqn:
-    Units: MtCH4
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CH4 emissions unconventional gas.
     """
     return (
@@ -272,34 +257,32 @@ def ch4_emissions_unconv_gas():
     )
 
 
+@component.add(
+    name="CO2 emissions coal without CTL",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def co2_emissions_coal_without_ctl():
     """
-    Real Name: CO2 emissions coal without CTL
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Emissions from coal withoug accounting for CTL-related emissions.
     """
     return (
-        extraction_coal_emissions_relevant_ej()
+        extraction_coal_emissions_relevant()
         * gco2_per_mj_coal()
         * mj_per_ej()
         / g_per_gt()
     )
 
 
+@component.add(
+    name="CO2 emissions conv gas without GTL",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def co2_emissions_conv_gas_without_gtl():
     """
-    Real Name: CO2 emissions conv gas without GTL
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CO2 emissions from conventional gas (withouth GTL) when the gas extraction is disaggregated in conventional and unconventional resource, and CO2 emissions from total gas when the extraction is aggregated.
     """
     return (
@@ -310,15 +293,14 @@ def co2_emissions_conv_gas_without_gtl():
     )
 
 
+@component.add(
+    name="CO2 emissions conv oil",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def co2_emissions_conv_oil():
     """
-    Real Name: CO2 emissions conv oil
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CO2 emissions from conventional oil.
     """
     return (
@@ -329,57 +311,53 @@ def co2_emissions_conv_oil():
     )
 
 
+@component.add(
+    name="CO2 emissions CTL",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def co2_emissions_ctl():
     """
-    Real Name: CO2 emissions CTL
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CO2 emissions associated to CTL production.
     """
-    return gco2_per_mj_ctl() * extraction_coal_for_ctl_ej() * mj_per_ej() / g_per_gt()
+    return gco2_per_mj_ctl() * extraction_coal_for_ctl() * mj_per_ej() / g_per_gt()
 
 
+@component.add(
+    name="CO2 emissions GTL",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def co2_emissions_gtl():
     """
-    Real Name: CO2 emissions GTL
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CO2 emissions associated to GTL production.
     """
     return ped_nat_gas_for_gtl_ej() * gco2_per_mj_gtl() * mj_per_ej() / g_per_gt()
 
 
+@component.add(
+    name="CO2 emissions peat",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def co2_emissions_peat():
     """
-    Real Name: CO2 emissions peat
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CO2 emissions from peat.
     """
     return pes_peat_ej() * gco2_per_mj_shale_oil() * mj_per_ej() / g_per_gt()
 
 
+@component.add(
+    name="CO2 emissions unconv gas",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def co2_emissions_unconv_gas():
     """
-    Real Name: CO2 emissions unconv gas
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CO2 emissions from unconventional gas.
     """
     return (
@@ -390,15 +368,14 @@ def co2_emissions_unconv_gas():
     )
 
 
+@component.add(
+    name="CO2 emissions unconv oil",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def co2_emissions_unconv_oil():
     """
-    Real Name: CO2 emissions unconv oil
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CO2 emissions from unconventional oil.
     """
     return (
@@ -415,15 +392,14 @@ def co2_emissions_unconv_oil():
     )
 
 
+@component.add(
+    name="CO2 fossil fuel emissions",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def co2_fossil_fuel_emissions():
     """
-    Real Name: CO2 fossil fuel emissions
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total CO2 emissions from fossil fuels.
     """
     return (
@@ -437,15 +413,14 @@ def co2_fossil_fuel_emissions():
     )
 
 
+@component.add(
+    name='"CO2 land-use change emissions exogenous"',
+    units="GtCO2/year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def co2_landuse_change_emissions_exogenous():
     """
-    Real Name: "CO2 land-use change emissions exogenous"
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     [DICE-2013R] Land-use change emissions. Cte at 2010 level for the period 1990-2100 as first approximation.
     """
     return _ext_constant_co2_landuse_change_emissions_exogenous()
@@ -457,49 +432,44 @@ _ext_constant_co2_landuse_change_emissions_exogenous = ExtConstant(
     "co2_luc",
     {},
     _root,
+    {},
     "_ext_constant_co2_landuse_change_emissions_exogenous",
 )
 
 
+@component.add(
+    name='"CO2 soil&LUC emissions"',
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def co2_soilluc_emissions():
     """
-    Real Name: "CO2 soil&LUC emissions"
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CO2 emissions associated to soil managemente and land-use change uses.
     """
     return co2_landuse_change_emissions_exogenous()
 
 
+@component.add(
+    name="correction factor all GHGs",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def correction_factor_all_ghgs():
     """
-    Real Name: correction factor all GHGs
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Taking as reference data for 2012 (comparing MEDEAS outputs and CAT from INSTM report).
     """
     return 1.22
 
 
+@component.add(
+    name="Cumulative CO2e GHG emissions",
+    units="GTCO2e/year",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def cumulative_co2e_ghg_emissions():
-    """
-    Real Name: Cumulative CO2e GHG emissions
-    Original Eqn:
-    Units: GTCO2e/year
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
-
-    """
     return _integ_cumulative_co2e_ghg_emissions()
 
 
@@ -508,15 +478,14 @@ _integ_cumulative_co2e_ghg_emissions = Integ(
 )
 
 
+@component.add(
+    name="Cumulative emissions to 1995",
+    units="GtC",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def cumulative_emissions_to_1995():
     """
-    Real Name: Cumulative emissions to 1995
-    Original Eqn:
-    Units: GtC
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Cumulative emissions 1751-1995 due to carbon emissions from fossil fuel consumption, cement production and land-use changes. Data from CDIAC and World Resources Institute.
     """
     return _ext_constant_cumulative_emissions_to_1995()
@@ -528,47 +497,39 @@ _ext_constant_cumulative_emissions_to_1995 = ExtConstant(
     "cumulative_emissions_to_1995",
     {},
     _root,
+    {},
     "_ext_constant_cumulative_emissions_to_1995",
 )
 
 
+@component.add(
+    name="g per Gt", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+)
 def g_per_gt():
     """
-    Real Name: g per Gt
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Unit conversion.
     """
     return 1000000000000000.0
 
 
+@component.add(
+    name="g per Mt", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+)
 def g_per_mt():
     """
-    Real Name: g per Mt
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     1e12 grams = 1 Mtonne.
     """
     return 1000000000000.0
 
 
+@component.add(
+    name="gCH4 per MJ coal",
+    units="GtCO2/MToe",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gch4_per_mj_coal():
     """
-    Real Name: gCH4 per MJ coal
-    Original Eqn:
-    Units: GtCO2/MToe
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CH4 emissions associated to the extraction of coal. Ref: Fig. 2 Howarth (2015).
     """
     return _ext_constant_gch4_per_mj_coal()
@@ -580,19 +541,19 @@ _ext_constant_gch4_per_mj_coal = ExtConstant(
     "gch4_coal",
     {},
     _root,
+    {},
     "_ext_constant_gch4_per_mj_coal",
 )
 
 
+@component.add(
+    name="gCH4 per MJ conv gas",
+    units="GtCO2/MToe",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gch4_per_mj_conv_gas():
     """
-    Real Name: gCH4 per MJ conv gas
-    Original Eqn:
-    Units: GtCO2/MToe
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CH4 emissions associated to the extraction of conventional gas. Ref: Fig. 2 Howarth (2015).
     """
     return _ext_constant_gch4_per_mj_conv_gas()
@@ -604,19 +565,19 @@ _ext_constant_gch4_per_mj_conv_gas = ExtConstant(
     "gch4_conv_gas",
     {},
     _root,
+    {},
     "_ext_constant_gch4_per_mj_conv_gas",
 )
 
 
+@component.add(
+    name="gCH4 per MJ CTL",
+    units="GtCO2/MToe",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gch4_per_mj_ctl():
     """
-    Real Name: gCH4 per MJ CTL
-    Original Eqn:
-    Units: GtCO2/MToe
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CH4 emission factor of CTL.
     """
     return _ext_constant_gch4_per_mj_ctl()
@@ -628,19 +589,19 @@ _ext_constant_gch4_per_mj_ctl = ExtConstant(
     "gch4_ctl",
     {},
     _root,
+    {},
     "_ext_constant_gch4_per_mj_ctl",
 )
 
 
+@component.add(
+    name="gCH4 per MJ GTL",
+    units="GtCO2/MToe",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gch4_per_mj_gtl():
     """
-    Real Name: gCH4 per MJ GTL
-    Original Eqn:
-    Units: GtCO2/MToe
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CH4 emission factor of GTL.
     """
     return _ext_constant_gch4_per_mj_gtl()
@@ -652,19 +613,19 @@ _ext_constant_gch4_per_mj_gtl = ExtConstant(
     "gch4_gtl",
     {},
     _root,
+    {},
     "_ext_constant_gch4_per_mj_gtl",
 )
 
 
+@component.add(
+    name="gCH4 per MJ oil",
+    units="GtCO2/MToe",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gch4_per_mj_oil():
     """
-    Real Name: gCH4 per MJ oil
-    Original Eqn:
-    Units: GtCO2/MToe
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CH4 emissions associated to the extraction of oil. Ref: Fig. 2 Howarth (2015).
     """
     return _ext_constant_gch4_per_mj_oil()
@@ -676,19 +637,19 @@ _ext_constant_gch4_per_mj_oil = ExtConstant(
     "gch4_oil",
     {},
     _root,
+    {},
     "_ext_constant_gch4_per_mj_oil",
 )
 
 
+@component.add(
+    name="gCH4 per MJ unconv gas",
+    units="GtCO2/MToe",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gch4_per_mj_unconv_gas():
     """
-    Real Name: gCH4 per MJ unconv gas
-    Original Eqn:
-    Units: GtCO2/MToe
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CH4 emissions associated to the extraction of unconventional gas (shale gas). Ref: Fig. 2 Howarth (2015).
     """
     return _ext_constant_gch4_per_mj_unconv_gas()
@@ -700,19 +661,19 @@ _ext_constant_gch4_per_mj_unconv_gas = ExtConstant(
     "gch4_unconventional_gas",
     {},
     _root,
+    {},
     "_ext_constant_gch4_per_mj_unconv_gas",
 )
 
 
+@component.add(
+    name="gCO2 per MJ coal",
+    units="gCO2/MJ",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gco2_per_mj_coal():
     """
-    Real Name: gCO2 per MJ coal
-    Original Eqn:
-    Units: gCO2/MJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CO2 emission factor coal.
     """
     return _ext_constant_gco2_per_mj_coal()
@@ -724,19 +685,19 @@ _ext_constant_gco2_per_mj_coal = ExtConstant(
     "gco2_coal",
     {},
     _root,
+    {},
     "_ext_constant_gco2_per_mj_coal",
 )
 
 
+@component.add(
+    name="gCO2 per MJ conv gas",
+    units="gCO2/MJ",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gco2_per_mj_conv_gas():
     """
-    Real Name: gCO2 per MJ conv gas
-    Original Eqn:
-    Units: gCO2/MJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CO2 emission factor conventional natural gas.
     """
     return _ext_constant_gco2_per_mj_conv_gas()
@@ -748,19 +709,19 @@ _ext_constant_gco2_per_mj_conv_gas = ExtConstant(
     "gco2_conventional_gas",
     {},
     _root,
+    {},
     "_ext_constant_gco2_per_mj_conv_gas",
 )
 
 
+@component.add(
+    name="gCO2 per MJ conv oil",
+    units="gCO2/MJ",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gco2_per_mj_conv_oil():
     """
-    Real Name: gCO2 per MJ conv oil
-    Original Eqn:
-    Units: gCO2/MJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CO2 emission factor conventional oil.
     """
     return _ext_constant_gco2_per_mj_conv_oil()
@@ -772,19 +733,19 @@ _ext_constant_gco2_per_mj_conv_oil = ExtConstant(
     "gco2_conventional_oil",
     {},
     _root,
+    {},
     "_ext_constant_gco2_per_mj_conv_oil",
 )
 
 
+@component.add(
+    name="gCO2 per MJ CTL",
+    units="gCO2/MJ",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gco2_per_mj_ctl():
     """
-    Real Name: gCO2 per MJ CTL
-    Original Eqn:
-    Units: gCO2/MJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CO2 emissions coefficient of CTL.
     """
     return _ext_constant_gco2_per_mj_ctl()
@@ -796,19 +757,19 @@ _ext_constant_gco2_per_mj_ctl = ExtConstant(
     "gco2_ctl",
     {},
     _root,
+    {},
     "_ext_constant_gco2_per_mj_ctl",
 )
 
 
+@component.add(
+    name="gCO2 per MJ GTL",
+    units="gCO2/MJ",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gco2_per_mj_gtl():
     """
-    Real Name: gCO2 per MJ GTL
-    Original Eqn:
-    Units: gCO2/MJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CO2 emissions coefficient of GTL.
     """
     return _ext_constant_gco2_per_mj_gtl()
@@ -820,19 +781,19 @@ _ext_constant_gco2_per_mj_gtl = ExtConstant(
     "gco2_gtl",
     {},
     _root,
+    {},
     "_ext_constant_gco2_per_mj_gtl",
 )
 
 
+@component.add(
+    name="gCO2 per MJ shale oil",
+    units="gCO2/MJ",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gco2_per_mj_shale_oil():
     """
-    Real Name: gCO2 per MJ shale oil
-    Original Eqn:
-    Units: gCO2/MJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CO2 emission factor shale oil.
     """
     return _ext_constant_gco2_per_mj_shale_oil()
@@ -844,19 +805,19 @@ _ext_constant_gco2_per_mj_shale_oil = ExtConstant(
     "gco2_shale_oil",
     {},
     _root,
+    {},
     "_ext_constant_gco2_per_mj_shale_oil",
 )
 
 
+@component.add(
+    name="gCO2 per MJ unconv gas",
+    units="gCO2/MJ",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gco2_per_mj_unconv_gas():
     """
-    Real Name: gCO2 per MJ unconv gas
-    Original Eqn:
-    Units: gCO2/MJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     CO2 emission factor of unconventional gas.
     """
     return _ext_constant_gco2_per_mj_unconv_gas()
@@ -868,19 +829,19 @@ _ext_constant_gco2_per_mj_unconv_gas = ExtConstant(
     "gco2_unconventional_gas",
     {},
     _root,
+    {},
     "_ext_constant_gco2_per_mj_unconv_gas",
 )
 
 
+@component.add(
+    name="gCO2 per MJ unconv oil",
+    units="gCO2/MJ",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def gco2_per_mj_unconv_oil():
     """
-    Real Name: gCO2 per MJ unconv oil
-    Original Eqn:
-    Units: gCO2/MJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Emission factor unconventional oil (tar sands/extra heavy oil).
     """
     return _ext_constant_gco2_per_mj_unconv_oil()
@@ -892,75 +853,54 @@ _ext_constant_gco2_per_mj_unconv_oil = ExtConstant(
     "gco2_unconventional_oil",
     {},
     _root,
+    {},
     "_ext_constant_gco2_per_mj_unconv_oil",
 )
 
 
+@component.add(name="GWP 100 years CH4", comp_type="Constant", comp_subtype="Normal")
 def gwp_100_years_ch4():
-    """
-    Real Name: GWP 100 years CH4
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-
-    """
     return 34
 
 
+@component.add(
+    name="Mt per Gt", units="Mt/Gt", comp_type="Constant", comp_subtype="Normal"
+)
 def mt_per_gt():
     """
-    Real Name: Mt per Gt
-    Original Eqn:
-    Units: Mt/Gt
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Converts megatonnes to gigatonnes.
     """
     return 1000
 
 
+@component.add(
+    name="new C GtC", units="GtC/year", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def new_c_gtc():
     """
-    Real Name: new C GtC
-    Original Eqn:
-    Units: GtC/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Annual carbon emissions.
     """
     return carbon_emissions_gtc()
 
 
+@component.add(
+    name="Total Ce all GHG",
+    units="GTCe/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_ce_all_ghg():
-    """
-    Real Name: Total Ce all GHG
-    Original Eqn:
-    Units: GTCe/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return total_co2e_gwp100_years() * correction_factor_all_ghgs() * c_per_co2()
 
 
+@component.add(
+    name="Total CH4 emissions fossil fuels",
+    units="MtCH4",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_ch4_emissions_fossil_fuels():
     """
-    Real Name: Total CH4 emissions fossil fuels
-    Original Eqn:
-    Units: MtCH4
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total CH4 emissions from fossil fuels.
     """
     return (
@@ -973,15 +913,14 @@ def total_ch4_emissions_fossil_fuels():
     )
 
 
+@component.add(
+    name="Total CO2 emissions GTCO2",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_co2_emissions_gtco2():
     """
-    Real Name: Total CO2 emissions GTCO2
-    Original Eqn:
-    Units: GtCO2/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total annual CO2 emissions. Original unit: "mill Tn CO2"
     """
     return (
@@ -993,46 +932,37 @@ def total_co2_emissions_gtco2():
     )
 
 
+@component.add(
+    name='"Total CO2e [GWP=100 years]"',
+    units="GTCO2e/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_co2e_gwp100_years():
-    """
-    Real Name: "Total CO2e [GWP=100 years]"
-    Original Eqn:
-    Units: GTCO2e/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return (
         total_ch4_emissions_fossil_fuels() * gwp_100_years_ch4() / 1000
         + total_co2_emissions_gtco2()
     )
 
 
+@component.add(
+    name="Total CO2e all GHG",
+    units="GTCO2e/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_co2e_all_ghg():
-    """
-    Real Name: Total CO2e all GHG
-    Original Eqn:
-    Units: GTCO2e/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return total_co2e_gwp100_years() * correction_factor_all_ghgs()
 
 
+@component.add(
+    name="Total cumulative emissions GtC",
+    units="GtC",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def total_cumulative_emissions_gtc():
     """
-    Real Name: Total cumulative emissions GtC
-    Original Eqn:
-    Units: GtC
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Total cumulative emissions.
     """
     return _integ_total_cumulative_emissions_gtc()
@@ -1045,15 +975,14 @@ _integ_total_cumulative_emissions_gtc = Integ(
 )
 
 
+@component.add(
+    name="Total cumulative emissions GtCO2",
+    units="GtCO2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_cumulative_emissions_gtco2():
     """
-    Real Name: Total cumulative emissions GtCO2
-    Original Eqn:
-    Units: GtCO2
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total cumulative emissions.
     """
     return total_cumulative_emissions_gtc() / c_per_co2()

@@ -1,19 +1,18 @@
 """
 Module water_demand_res_elec_var
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["RES elec", "water0"], _subscript_dict)
+@component.add(
+    name='"CED O&M over lifetime per water RES elec var"',
+    units="EJ",
+    subscripts=["RES elec", "water0"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ced_om_over_lifetime_per_water_res_elec_var():
     """
-    Real Name: "CED O&M over lifetime per water RES elec var"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec', 'water0']
-
     Cumulative energy demand per water type for O&M of RES variables per technology over all the lifetime of the infrastructure.
     """
     return (
@@ -28,7 +27,7 @@ def ced_om_over_lifetime_per_water_res_elec_var():
             )
             + res_elec_capacity_under_construction_tw()
         )
-        * water_for_om__res_elec()
+        * water_for_om_res_elec()
         * (
             xr.DataArray(
                 0,
@@ -56,16 +55,15 @@ def ced_om_over_lifetime_per_water_res_elec_var():
     )
 
 
-@subs(["RES elec", "water0"], _subscript_dict)
+@component.add(
+    name='"Energy requirements for O&M for water consumption RES elec"',
+    units="EJ",
+    subscripts=["RES elec", "water0"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def energy_requirements_for_om_for_water_consumption_res_elec():
     """
-    Real Name: "Energy requirements for O&M for water consumption RES elec"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec', 'water0']
-
     Energy requirements for operation and maintenance of water consumption by RES technology for generating electricity.
     """
     return (
@@ -104,16 +102,15 @@ def energy_requirements_for_om_for_water_consumption_res_elec():
     )
 
 
-@subs(["water0"], _subscript_dict)
+@component.add(
+    name="Energy requirements per unit of water consumption",
+    units="MJ/kg",
+    subscripts=["water0"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def energy_requirements_per_unit_of_water_consumption():
     """
-    Real Name: Energy requirements per unit of water consumption
-    Original Eqn:
-    Units: MJ/kg
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['water0']
-
     Energy requirements for water consumption in RES plants for generation of electricity.
     """
     return _ext_constant_energy_requirements_per_unit_of_water_consumption()
@@ -125,20 +122,20 @@ _ext_constant_energy_requirements_per_unit_of_water_consumption = ExtConstant(
     "energy_requirements_per_unit_of_water_consumption*",
     {"water0": _subscript_dict["water0"]},
     _root,
+    {"water0": ["clean water", "distilled water"]},
     "_ext_constant_energy_requirements_per_unit_of_water_consumption",
 )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name='"Total energy requirements O&M for water consumption RES elec"',
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_energy_requirements_om_for_water_consumption_res_elec():
     """
-    Real Name: "Total energy requirements O&M for water consumption RES elec"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Total energy requirements for water consumption (all types) by RES technology for electricity generation.
     """
     return sum(
@@ -149,16 +146,15 @@ def total_energy_requirements_om_for_water_consumption_res_elec():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name='"Total water for O&M required by RES elec per techn"',
+    units="Mt",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_water_for_om_required_by_res_elec_per_techn():
     """
-    Real Name: "Total water for O&M required by RES elec per techn"
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Annual total water required by RES technology for generating electricity.
     """
     return sum(
@@ -167,18 +163,14 @@ def total_water_for_om_required_by_res_elec_per_techn():
     )
 
 
-@subs(["water"], _subscript_dict)
+@component.add(
+    name='"Total water for O&M required by RES elec"',
+    units="Mt",
+    subscripts=["water"],
+    comp_type="Constant, Auxiliary",
+    comp_subtype="Normal",
+)
 def total_water_for_om_required_by_res_elec():
-    """
-    Real Name: "Total water for O&M required by RES elec"
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Constant, Auxiliary
-    Subs: ['water']
-
-
-    """
     value = xr.DataArray(np.nan, {"water": _subscript_dict["water"]}, ["water"])
     value.loc[{"water": ["blue water"]}] = sum(
         total_water_for_om_required_by_res_elec_per_techn().rename(
@@ -191,18 +183,14 @@ def total_water_for_om_required_by_res_elec():
     return value
 
 
-@subs(["RES elec", "water0"], _subscript_dict)
-def water_for_om__res_elec():
-    """
-    Real Name: "water for O&M - RES elec"
-    Original Eqn:
-    Units: kg/MW
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['RES elec', 'water0']
-
-
-    """
+@component.add(
+    name='"water for O&M - RES elec"',
+    units="kg/MW",
+    subscripts=["RES elec", "water0"],
+    comp_type="Constant",
+    comp_subtype="External, Normal",
+)
+def water_for_om_res_elec():
     value = xr.DataArray(
         np.nan,
         {"RES elec": _subscript_dict["RES elec"], "water0": _subscript_dict["water0"]},
@@ -232,20 +220,23 @@ _ext_constant_water_for_om_res_elec = ExtConstant(
         "water0": _subscript_dict["water0"],
     },
     _root,
+    {
+        "RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"],
+        "water0": ["clean water", "distilled water"],
+    },
     "_ext_constant_water_for_om_res_elec",
 )
 
 
-@subs(["RES elec", "water0"], _subscript_dict)
+@component.add(
+    name='"Water for O&M required for RES elec"',
+    units="Mt",
+    subscripts=["RES elec", "water0"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def water_for_om_required_for_res_elec():
     """
-    Real Name: "Water for O&M required for RES elec"
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec', 'water0']
-
     Annual water required for the operation and maintenance of the capacity of RES for electricity in operation by technology.
     """
     return (
@@ -260,7 +251,7 @@ def water_for_om_required_for_res_elec():
             )
             + installed_capacity_res_elec_tw()
         )
-        * water_for_om__res_elec()
+        * water_for_om_res_elec()
         * m_per_t()
         / kg_per_mt()
     )

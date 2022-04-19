@@ -1,19 +1,18 @@
 """
 Module losses_in_transformation_and_distri
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Energy distr losses FF EJ",
+    units="EJ",
+    subscripts=["final sources"],
+    comp_type="Auxiliary, Constant",
+    comp_subtype="Normal",
+)
 def energy_distr_losses_ff_ej():
     """
-    Real Name: Energy distr losses FF EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary, Constant
-    Subs: ['final sources']
-
     Energy distribution losses of fossil fuels.
     """
     value = xr.DataArray(
@@ -33,34 +32,26 @@ def energy_distr_losses_ff_ej():
     return value
 
 
+@component.add(
+    name='"FEC gases+liquids"', units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def fec_gasesliquids():
-    """
-    Real Name: "FEC gases+liquids"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return float(real_fe_consumption_by_fuel().loc["gases"]) + float(
         real_fe_consumption_by_fuel().loc["liquids"]
     )
 
 
-def historic_pipeline_transport(x):
+@component.add(
+    name="Historic pipeline transport",
+    units="EJ",
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_pipeline_transport(x, final_subs=None):
     """
-    Real Name: Historic pipeline transport
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Lookup
-    Subs: []
-
     Historic pipeline transport
     """
-    return _ext_lookup_historic_pipeline_transport(x)
+    return _ext_lookup_historic_pipeline_transport(x, final_subs)
 
 
 _ext_lookup_historic_pipeline_transport = ExtLookup(
@@ -70,20 +61,20 @@ _ext_lookup_historic_pipeline_transport = ExtLookup(
     "historic_pipeline_transport",
     {},
     _root,
+    {},
     "_ext_lookup_historic_pipeline_transport",
 )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Historic share of losses vs extraction",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Data",
+    comp_subtype="External",
+)
 def historic_share_of_losses_vs_extraction():
     """
-    Real Name: Historic share of losses vs extraction
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: ['final sources']
-
     Historic share losses of each fossil fuel vs annual extraction. (Own elaboration from IEA balances)
     """
     return _ext_data_historic_share_of_losses_vs_extraction(time())
@@ -97,6 +88,7 @@ _ext_data_historic_share_of_losses_vs_extraction = ExtData(
     None,
     {"final sources": ["liquids"]},
     _root,
+    {"final sources": ["liquids", "solids", "gases"]},
     "_ext_data_historic_share_of_losses_vs_extraction",
 )
 
@@ -119,16 +111,15 @@ _ext_data_historic_share_of_losses_vs_extraction.add(
 )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Historic share of transformation losses vs extraction",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Data",
+    comp_subtype="External",
+)
 def historic_share_of_transformation_losses_vs_extraction():
     """
-    Real Name: Historic share of transformation losses vs extraction
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: ['final sources']
-
     Historic share transformation losses of each fossil fuel vs annual extraction. (Own elaboration from IEA balances)
     """
     return _ext_data_historic_share_of_transformation_losses_vs_extraction(time())
@@ -142,6 +133,7 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction = ExtData(
     None,
     {"final sources": ["liquids"]},
     _root,
+    {"final sources": ["liquids", "solids"]},
     "_ext_data_historic_share_of_transformation_losses_vs_extraction",
 )
 
@@ -155,15 +147,14 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction.add(
 )
 
 
+@component.add(
+    name="Historic share pipeline transport",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historic_share_pipeline_transport():
     """
-    Real Name: Historic share pipeline transport
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Historic share of energy for pipeline transport vs TFEC of liquids and gases.
     """
     return if_then_else(
@@ -173,16 +164,15 @@ def historic_share_pipeline_transport():
     )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="PES fossil fuel extraction",
+    units="EJ/Year",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_fossil_fuel_extraction():
     """
-    Real Name: PES fossil fuel extraction
-    Original Eqn:
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     Annual extraction of fossil fuels
     """
     value = xr.DataArray(
@@ -192,7 +182,7 @@ def pes_fossil_fuel_extraction():
         pes_total_oil_ej_aut() + imports_aut_total_oil_from_row_ej()
     )
     value.loc[{"final sources": ["solids"]}] = (
-        extraction_coal_ej_aut() + imports_aut_coal_from_row_ej()
+        extraction_coal_aut() + imports_aut_coal_from_row_ej()
     )
     value.loc[{"final sources": ["gases"]}] = (
         pes_nat_gas_aut_1() + imports_aut_nat_gas_from_row_ej()
@@ -200,16 +190,15 @@ def pes_fossil_fuel_extraction():
     return value
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="PES fossil fuel extraction delayed",
+    units="EJ/Year",
+    subscripts=["final sources"],
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
 def pes_fossil_fuel_extraction_delayed():
     """
-    Real Name: PES fossil fuel extraction delayed
-    Original Eqn:
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['final sources']
-
     Annual extraction of fossil fuels delayed
     """
     value = xr.DataArray(
@@ -264,29 +253,24 @@ _delayfixed_pes_fossil_fuel_extraction_delayed_2 = DelayFixed(
 )
 
 
+@component.add(
+    name="Pipeline transport", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def pipeline_transport():
     """
-    Real Name: Pipeline transport
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Pipeline transport. IEA definition: Pipeline transport includes energy used in the support and operation of pipelines transporting gases, liquids, slurries and other commodities, including the energy used for pump stations and maintenance of the pipeline.
     """
     return share_pipeline_transport_fecgl_in_2015() * fec_gasesliquids()
 
 
+@component.add(
+    name="Ratio gain gas vs lose solids in tranf processes",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def ratio_gain_gas_vs_lose_solids_in_tranf_processes():
     """
-    Real Name: Ratio gain gas vs lose solids in tranf processes
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Gas gain in transformation processes of coal(Coke oven, Blust furnace,...) (Own elaboration from IEA balances)
     """
     return _ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes(time())
@@ -300,19 +284,19 @@ _ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes = ExtData(
     None,
     {},
     _root,
+    {},
     "_ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes",
 )
 
 
+@component.add(
+    name='"Share pipeline transport FECg+l in 2015"',
+    units="Dmnl",
+    comp_type="Stateful",
+    comp_subtype="SampleIfTrue",
+)
 def share_pipeline_transport_fecgl_in_2015():
     """
-    Real Name: "Share pipeline transport FECg+l in 2015"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Share of energy dedicated for pipeline transport vs final energy consumption of gases and liquids.
     """
     return _sampleiftrue_share_pipeline_transport_fecgl_in_2015()
@@ -326,15 +310,14 @@ _sampleiftrue_share_pipeline_transport_fecgl_in_2015 = SampleIfTrue(
 )
 
 
+@component.add(
+    name="Total distribution losses",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_distribution_losses():
     """
-    Real Name: Total distribution losses
-    Original Eqn:
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total energy distribution losses.
     """
     return (
@@ -349,16 +332,15 @@ def total_distribution_losses():
     )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Transformation FF losses EJ",
+    units="EJ",
+    subscripts=["final sources"],
+    comp_type="Auxiliary, Constant",
+    comp_subtype="Normal",
+)
 def transformation_ff_losses_ej():
     """
-    Real Name: Transformation FF losses EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary, Constant
-    Subs: ['final sources']
-
     Losses in transformation processes of each fossil fuel
     """
     value = xr.DataArray(

@@ -1,19 +1,18 @@
 """
 Module energy_consumption
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Energy cons per unit of material cons for RES elec",
+    units="MJ/kg",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def energy_cons_per_unit_of_material_cons_for_res_elec():
     """
-    Real Name: Energy cons per unit of material cons for RES elec
-    Original Eqn:
-    Units: MJ/kg
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Average energy consumption per unit of material consumption accounting for recycling rates for RES elec technologies. recycling rates minerals RES elec[materials]*"Initial energy cons per unit of material cons (recycled)"[materials]+(1-recycling rates minerals RES elec[materials])*"Initial energy cons per unit of material cons (virgin)"[materials]
     """
     return (
@@ -24,16 +23,15 @@ def energy_cons_per_unit_of_material_cons_for_res_elec():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Energy required for material consumption for EV batteries",
+    units="EJ",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def energy_required_for_material_consumption_for_ev_batteries():
     """
-    Real Name: Energy required for material consumption for EV batteries
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Energy required for material consumption for EV batteries.
     """
     return (
@@ -44,16 +42,15 @@ def energy_required_for_material_consumption_for_ev_batteries():
     )
 
 
-@subs(["RES elec", "materials"], _subscript_dict)
+@component.add(
+    name="Energy required for material consumption for new RES elec",
+    units="EJ",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def energy_required_for_material_consumption_for_new_res_elec():
     """
-    Real Name: Energy required for material consumption for new RES elec
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec', 'materials']
-
     Energy required for material consumption for new RES elec.
     """
     return (
@@ -74,18 +71,14 @@ def energy_required_for_material_consumption_for_new_res_elec():
     )
 
 
-@subs(["RES elec", "materials"], _subscript_dict)
+@component.add(
+    name='"Energy required for material consumption for O&M RES elec"',
+    units="EJ",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def energy_required_for_material_consumption_for_om_res_elec():
-    """
-    Real Name: "Energy required for material consumption for O&M RES elec"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec', 'materials']
-
-
-    """
     return (
         materials_required_for_om_res_elec_mt()
         * (
@@ -104,16 +97,15 @@ def energy_required_for_material_consumption_for_om_res_elec():
     )
 
 
-@subs(["RES elec", "materials"], _subscript_dict)
+@component.add(
+    name="Energy required for material consumption per RES elec",
+    units="EJ/year",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def energy_required_for_material_consumption_per_res_elec():
     """
-    Real Name: Energy required for material consumption per RES elec
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec', 'materials']
-
     Energy required for material consumption per material per RES elec technologies.
     """
     return (
@@ -122,16 +114,15 @@ def energy_required_for_material_consumption_per_res_elec():
     )
 
 
-@subs(["materials"], _subscript_dict)
-def initial_energy_cons_per_unit_of_material_cons_recycled__data():
+@component.add(
+    name='"Initial energy cons per unit of material cons (recycled) - data"',
+    units="MJ/kg",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def initial_energy_cons_per_unit_of_material_cons_recycled_data():
     """
-    Real Name: "Initial energy cons per unit of material cons (recycled) - data"
-    Original Eqn:
-    Units: MJ/kg
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['materials']
-
     Energy consumption required to use recycled materials per unit of material consumption. This variable reads directly from "inputs_W.xlsx" but has 0s for those materials for which information was not found.
     """
     return _ext_constant_initial_energy_cons_per_unit_of_material_cons_recycled_data()
@@ -143,39 +134,99 @@ _ext_constant_initial_energy_cons_per_unit_of_material_cons_recycled_data = ExtC
     "initial_energy_cons_per_material_recycled*",
     {"materials": _subscript_dict["materials"]},
     _root,
+    {
+        "materials": [
+            "Adhesive",
+            "Aluminium",
+            "Aluminium mirrors",
+            "Cadmium",
+            "Carbon fiber",
+            "Cement",
+            "Chromium",
+            "Copper",
+            "diesel",
+            "Dy",
+            "electronic components",
+            "Evacuation lines",
+            "Fiberglass",
+            "Foam glass",
+            "Galium",
+            "Glass",
+            "Glass reinforcing plastic",
+            "gravel",
+            "Indium",
+            "Iron",
+            "KNO3 mined",
+            "Asphalt",
+            "Lime",
+            "Limestone",
+            "Lithium",
+            "Lubricant",
+            "Magnesium",
+            "Manganese",
+            "Heavy equipment",
+            "Concrete",
+            "Molybdenum",
+            "NaNO3 mined",
+            "NaNO3 synthetic",
+            "Neodymium",
+            "Nickel",
+            "over grid 15perc",
+            "over grid 5perc",
+            "Paint",
+            "Lead",
+            "Plastics",
+            "Polypropylene",
+            "Rock",
+            "Rock wool",
+            "Sand",
+            "Silicon sand",
+            "Silicon wafer modules",
+            "Silver",
+            "Site preparation",
+            "Tin",
+            "soda ash",
+            "steel",
+            "synthetic oil",
+            "tellurium",
+            "titanium",
+            "titanium dioxide",
+            "vanadium",
+            "wires",
+            "zinc",
+        ]
+    },
     "_ext_constant_initial_energy_cons_per_unit_of_material_cons_recycled_data",
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name='"Initial energy cons per unit of material cons (recycled)"',
+    units="MJ/kg",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def initial_energy_cons_per_unit_of_material_cons_recycled():
     """
-    Real Name: "Initial energy cons per unit of material cons (recycled)"
-    Original Eqn:
-    Units: MJ/kg
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Energy consumption required to use recycled materials per unit of material consumption. When data for recycled materials was not available, the energy consumption for virgin materials was assumed.
     """
     return if_then_else(
-        initial_energy_cons_per_unit_of_material_cons_recycled__data() == 0,
+        initial_energy_cons_per_unit_of_material_cons_recycled_data() == 0,
         lambda: initial_energy_cons_per_unit_of_material_cons_virgin(),
-        lambda: initial_energy_cons_per_unit_of_material_cons_recycled__data(),
+        lambda: initial_energy_cons_per_unit_of_material_cons_recycled_data(),
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name='"Initial energy cons per unit of material cons (virgin)"',
+    units="MJ/kg",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def initial_energy_cons_per_unit_of_material_cons_virgin():
     """
-    Real Name: "Initial energy cons per unit of material cons (virgin)"
-    Original Eqn:
-    Units: MJ/kg
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['materials']
-
     Energy consumption required to extract and use virgin materials per unit of material consumption.
     """
     return _ext_constant_initial_energy_cons_per_unit_of_material_cons_virgin()
@@ -187,47 +238,100 @@ _ext_constant_initial_energy_cons_per_unit_of_material_cons_virgin = ExtConstant
     "initial_energy_cons_per_material_virgin*",
     {"materials": _subscript_dict["materials"]},
     _root,
+    {
+        "materials": [
+            "Adhesive",
+            "Aluminium",
+            "Aluminium mirrors",
+            "Cadmium",
+            "Carbon fiber",
+            "Cement",
+            "Chromium",
+            "Copper",
+            "diesel",
+            "Dy",
+            "electronic components",
+            "Evacuation lines",
+            "Fiberglass",
+            "Foam glass",
+            "Galium",
+            "Glass",
+            "Glass reinforcing plastic",
+            "gravel",
+            "Indium",
+            "Iron",
+            "KNO3 mined",
+            "Asphalt",
+            "Lime",
+            "Limestone",
+            "Lithium",
+            "Lubricant",
+            "Magnesium",
+            "Manganese",
+            "Heavy equipment",
+            "Concrete",
+            "Molybdenum",
+            "NaNO3 mined",
+            "NaNO3 synthetic",
+            "Neodymium",
+            "Nickel",
+            "over grid 15perc",
+            "over grid 5perc",
+            "Paint",
+            "Lead",
+            "Plastics",
+            "Polypropylene",
+            "Rock",
+            "Rock wool",
+            "Sand",
+            "Silicon sand",
+            "Silicon wafer modules",
+            "Silver",
+            "Site preparation",
+            "Tin",
+            "soda ash",
+            "steel",
+            "synthetic oil",
+            "tellurium",
+            "titanium",
+            "titanium dioxide",
+            "vanadium",
+            "wires",
+            "zinc",
+        ]
+    },
     "_ext_constant_initial_energy_cons_per_unit_of_material_cons_virgin",
 )
 
 
+@component.add(
+    name="MJ per EJ", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+)
 def mj_per_ej():
-    """
-    Real Name: MJ per EJ
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-
-    """
     return 1000000000000.0
 
 
+@component.add(
+    name="share energy for material consumption for alt techn vs TFEC",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_energy_for_material_consumption_for_alt_techn_vs_tfec():
     """
-    Real Name: share energy for material consumption for alt techn vs TFEC
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of energy requirements for alternative technologies (RES elec & EV Batteries) vs TFES.
     """
     return tfe_required_for_total_material_consumption_for_alt_techn() / real_tfec()
 
 
+@component.add(
+    name="TFE required for total material consumption for alt techn",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def tfe_required_for_total_material_consumption_for_alt_techn():
     """
-    Real Name: TFE required for total material consumption for alt techn
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total final energy required for total material consumption for alternative technologies (RES elec & EV Batteries).
     """
     return (
@@ -236,15 +340,14 @@ def tfe_required_for_total_material_consumption_for_alt_techn():
     )
 
 
+@component.add(
+    name="Total energy required for material consumption for RES elec",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_energy_required_for_material_consumption_for_res_elec():
     """
-    Real Name: Total energy required for material consumption for RES elec
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total energy required for material consumption for RES elec.
     """
     return sum(
@@ -255,16 +358,15 @@ def total_energy_required_for_material_consumption_for_res_elec():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="Total energy required for material consumption per RES elec",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_energy_required_for_material_consumption_per_res_elec():
     """
-    Real Name: Total energy required for material consumption per RES elec
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Total energy required for material consumption per RES elec
     """
     return sum(
@@ -275,15 +377,14 @@ def total_energy_required_for_material_consumption_per_res_elec():
     )
 
 
+@component.add(
+    name="Total energy required for total material consumption for EV batteries",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_energy_required_for_total_material_consumption_for_ev_batteries():
     """
-    Real Name: Total energy required for total material consumption for EV batteries
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total energy required for total material consumption for EV batteries.
     """
     return sum(
@@ -294,16 +395,15 @@ def total_energy_required_for_total_material_consumption_for_ev_batteries():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Total energy required per material for alt techn",
+    units="EJ/year",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_energy_required_per_material_for_alt_techn():
     """
-    Real Name: Total energy required per material for alt techn
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Total energy required for total material consumption per material for alternative technologies (RES elec & EV Batteries).
     """
     return (

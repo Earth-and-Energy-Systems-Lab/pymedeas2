@@ -1,19 +1,18 @@
 """
 Module demand_for_ev_batteries
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="cum materials requirements for EV batteries",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def cum_materials_requirements_for_ev_batteries():
     """
-    Real Name: cum materials requirements for EV batteries
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
     Total cumulative materials requirements for EV batteries.
     """
     return _integ_cum_materials_requirements_for_ev_batteries()
@@ -30,16 +29,15 @@ _integ_cum_materials_requirements_for_ev_batteries = Integ(
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="cum materials to extract for EV batteries",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def cum_materials_to_extract_for_ev_batteries():
     """
-    Real Name: cum materials to extract for EV batteries
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
     Cumulative materials to be mined for EV batteries.
     """
     return _integ_cum_materials_to_extract_for_ev_batteries()
@@ -56,16 +54,15 @@ _integ_cum_materials_to_extract_for_ev_batteries = Integ(
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="cum materials to extract for EV batteries from 2015",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def cum_materials_to_extract_for_ev_batteries_from_2015():
     """
-    Real Name: cum materials to extract for EV batteries from 2015
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
     Cumulative materials to be mined for EV batteries.
     """
     return _integ_cum_materials_to_extract_for_ev_batteries_from_2015()
@@ -82,30 +79,25 @@ _integ_cum_materials_to_extract_for_ev_batteries_from_2015 = Integ(
 )
 
 
+@component.add(
+    name="initial cumulated material requirements for EV batteries 1995",
+    units="Mt",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def initial_cumulated_material_requirements_for_ev_batteries_1995():
-    """
-    Real Name: initial cumulated material requirements for EV batteries 1995
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-
-    """
     return 0
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="materials per new capacity installed EV batteries",
+    units="kg/MW",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def materials_per_new_capacity_installed_ev_batteries():
     """
-    Real Name: materials per new capacity installed EV batteries
-    Original Eqn:
-    Units: kg/MW
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['materials']
-
     Materials requirements per EV battery.
     """
     return _ext_constant_materials_per_new_capacity_installed_ev_batteries()
@@ -117,20 +109,81 @@ _ext_constant_materials_per_new_capacity_installed_ev_batteries = ExtConstant(
     "materials_per_new_capacity_installed_ev_batteries*",
     {"materials": _subscript_dict["materials"]},
     _root,
+    {
+        "materials": [
+            "Adhesive",
+            "Aluminium",
+            "Aluminium mirrors",
+            "Cadmium",
+            "Carbon fiber",
+            "Cement",
+            "Chromium",
+            "Copper",
+            "diesel",
+            "Dy",
+            "electronic components",
+            "Evacuation lines",
+            "Fiberglass",
+            "Foam glass",
+            "Galium",
+            "Glass",
+            "Glass reinforcing plastic",
+            "gravel",
+            "Indium",
+            "Iron",
+            "KNO3 mined",
+            "Asphalt",
+            "Lime",
+            "Limestone",
+            "Lithium",
+            "Lubricant",
+            "Magnesium",
+            "Manganese",
+            "Heavy equipment",
+            "Concrete",
+            "Molybdenum",
+            "NaNO3 mined",
+            "NaNO3 synthetic",
+            "Neodymium",
+            "Nickel",
+            "over grid 15perc",
+            "over grid 5perc",
+            "Paint",
+            "Lead",
+            "Plastics",
+            "Polypropylene",
+            "Rock",
+            "Rock wool",
+            "Sand",
+            "Silicon sand",
+            "Silicon wafer modules",
+            "Silver",
+            "Site preparation",
+            "Tin",
+            "soda ash",
+            "steel",
+            "synthetic oil",
+            "tellurium",
+            "titanium",
+            "titanium dioxide",
+            "vanadium",
+            "wires",
+            "zinc",
+        ]
+    },
     "_ext_constant_materials_per_new_capacity_installed_ev_batteries",
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="materials required for EV batteries Mt",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def materials_required_for_ev_batteries_mt():
     """
-    Real Name: materials required for EV batteries Mt
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Annual materials required for the fabrication of EV batteries.
     """
     return (
@@ -141,31 +194,29 @@ def materials_required_for_ev_batteries_mt():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Total materials required for EV batteries",
+    units="Mt/Year",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_materials_required_for_ev_batteries():
     """
-    Real Name: Total materials required for EV batteries
-    Original Eqn:
-    Units: Mt/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Total annual materials requirements for EV batteries.
     """
     return materials_required_for_ev_batteries_mt()
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Total materials to extract for EV batteries from 2015 Mt",
+    units="Mt/Year",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_materials_to_extract_for_ev_batteries_from_2015_mt():
     """
-    Real Name: Total materials to extract for EV batteries from 2015 Mt
-    Original Eqn:
-    Units: Mt/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Annual materials to be mined for EV batteries from 2015.
     """
     return if_then_else(
@@ -177,16 +228,15 @@ def total_materials_to_extract_for_ev_batteries_from_2015_mt():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Total materials to extract for EV batteries Mt",
+    units="Mt/Year",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_materials_to_extract_for_ev_batteries_mt():
     """
-    Real Name: Total materials to extract for EV batteries Mt
-    Original Eqn:
-    Units: Mt/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Annual materials to be mined for the construction of EV batteries.
     """
     return total_materials_required_for_ev_batteries() * (
@@ -194,16 +244,15 @@ def total_materials_to_extract_for_ev_batteries_mt():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Total recycled materials for EV batteries Mt",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_recycled_materials_for_ev_batteries_mt():
     """
-    Real Name: Total recycled materials for EV batteries Mt
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Total recycled materials for EV batteries.
     """
     return (

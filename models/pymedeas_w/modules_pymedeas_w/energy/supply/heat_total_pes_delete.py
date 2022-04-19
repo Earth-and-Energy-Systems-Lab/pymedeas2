@@ -1,18 +1,14 @@
 """
 Module heat_total_pes_delete
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="PES heat RES", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def pes_heat_res():
     """
-    Real Name: PES heat RES
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy of RES for heat.
     """
     return (
@@ -28,31 +24,17 @@ def pes_heat_res():
     )
 
 
+@component.add(
+    name="PES NRE heat", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def pes_nre_heat():
-    """
-    Real Name: PES NRE heat
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return pes_nre_heatcom() + pes_nre_heatnc()
 
 
+@component.add(
+    name='"PES NRE Heat-com"', units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def pes_nre_heatcom():
-    """
-    Real Name: "PES NRE Heat-com"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return (
         pes_coal_for_heatcom_plants()
         + pes_nat_gas_for_heatcom_plants()
@@ -60,17 +42,10 @@ def pes_nre_heatcom():
     )
 
 
+@component.add(
+    name='"PES NRE Heat-nc"', units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def pes_nre_heatnc():
-    """
-    Real Name: "PES NRE Heat-nc"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return (
         pes_coal_for_heatnc_plants()
         + pes_nat_gas_for_heatnc_plants()
@@ -78,15 +53,8 @@ def pes_nre_heatnc():
     )
 
 
+@component.add(
+    name="TPES heat", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def tpes_heat():
-    """
-    Real Name: TPES heat
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return pes_nre_heat() + pes_heat_res() + pes_tot_waste_for_heatcom()

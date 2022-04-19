@@ -1,18 +1,17 @@
 """
 Module res_heat_potential
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="FE solar potential for heat",
+    units="EJ/year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def fe_solar_potential_for_heat():
     """
-    Real Name: FE solar potential for heat
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Global solar thermal potential. We assume that the primary energy coincides with the final energy. See Technical Report Appendix D.
     """
     return _ext_constant_fe_solar_potential_for_heat()
@@ -24,33 +23,32 @@ _ext_constant_fe_solar_potential_for_heat = ExtConstant(
     "solar_thermal_pot_FE",
     {},
     _root,
+    {},
     "_ext_constant_fe_solar_potential_for_heat",
 )
 
 
+@component.add(
+    name="Geot PE potential for heat EJ",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def geot_pe_potential_for_heat_ej():
     """
-    Real Name: Geot PE potential for heat EJ
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Geothermal potential (primary energy) for producing heat.
     """
     return geot_pe_potential_for_heat_twth() * ej_per_twh() / twe_per_twh()
 
 
+@component.add(
+    name="Geot PE potential for heat TWth",
+    units="TWth",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def geot_pe_potential_for_heat_twth():
     """
-    Real Name: Geot PE potential for heat TWth
-    Original Eqn:
-    Units: TWth
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Geothermal primary energy potential for heat.
     """
     return _ext_constant_geot_pe_potential_for_heat_twth()
@@ -62,20 +60,20 @@ _ext_constant_geot_pe_potential_for_heat_twth = ExtConstant(
     "geothermal_PE_pot_heat",
     {},
     _root,
+    {},
     "_ext_constant_geot_pe_potential_for_heat_twth",
 )
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name="Max FE potential RES for heat",
+    units="EJ",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_fe_potential_res_for_heat():
     """
-    Real Name: Max FE potential RES for heat
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES heat']
-
     Potential (final energy) for producing heat from renewables.
     """
     value = xr.DataArray(
@@ -94,30 +92,28 @@ def max_fe_potential_res_for_heat():
     return value
 
 
+@component.add(
+    name="max PE potential biogas for heat",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_pe_potential_biogas_for_heat():
     """
-    Real Name: max PE potential biogas for heat
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy potential of biogas for heat taking into account the current share.
     """
     return max_biogas_ej() * share_pes_biogas_for_heat()
 
 
-@subs(["RES heat"], _subscript_dict)
+@component.add(
+    name="Max PE potential RES for heat",
+    units="EJ",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_pe_potential_res_for_heat():
     """
-    Real Name: Max PE potential RES for heat
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES heat']
-
     Potential (primary energy) for producing heat from renewables.
     """
     value = xr.DataArray(
@@ -131,15 +127,14 @@ def max_pe_potential_res_for_heat():
     return value
 
 
+@component.add(
+    name="max PE potential tot RES heat EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_pe_potential_tot_res_heat_ej():
     """
-    Real Name: max PE potential tot RES heat EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Maximum total primary energy potential of RES for heat.
     """
     return max_pe_potential_biogas_for_heat() + sum(
@@ -148,29 +143,27 @@ def max_pe_potential_tot_res_heat_ej():
     )
 
 
+@component.add(
+    name="Percent remaining potential tot RES heat",
+    units="percent",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def percent_remaining_potential_tot_res_heat():
     """
-    Real Name: Percent remaining potential tot RES heat
-    Original Eqn:
-    Units: percent
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Remaining potential available as a percentage.
     """
     return remaining_potential_tot_res_heat() * 100
 
 
+@component.add(
+    name="PES tot RES for heat",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_tot_res_for_heat():
     """
-    Real Name: PES tot RES for heat
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total primary energy supply for generating commercial and non-commercial heat from renewables.
     """
     return (
@@ -186,15 +179,14 @@ def pes_tot_res_for_heat():
     )
 
 
+@component.add(
+    name="remaining potential tot RES heat",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def remaining_potential_tot_res_heat():
     """
-    Real Name: remaining potential tot RES heat
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Remaining potential available as a fraction of unity.
     """
     return if_then_else(

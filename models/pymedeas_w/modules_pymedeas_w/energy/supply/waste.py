@@ -1,18 +1,17 @@
 """
 Module waste
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="adapt growth waste",
+    units="1/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def adapt_growth_waste():
     """
-    Real Name: adapt growth waste
-    Original Eqn:
-    Units: 1/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Modeling of a soft transition from current historic annual growth to reach the policy-objective 5 years later.
     """
     return if_then_else(
@@ -27,15 +26,14 @@ def adapt_growth_waste():
     )
 
 
+@component.add(
+    name="efficiency waste for elec CHP plants",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def efficiency_waste_for_elec_chp_plants():
     """
-    Real Name: efficiency waste for elec CHP plants
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Efficiency of the transformation of waste in elec in CHP plants.
     """
     return _ext_constant_efficiency_waste_for_elec_chp_plants()
@@ -47,19 +45,19 @@ _ext_constant_efficiency_waste_for_elec_chp_plants = ExtConstant(
     "efficiency_waste_for_elec_chp_plants",
     {},
     _root,
+    {},
     "_ext_constant_efficiency_waste_for_elec_chp_plants",
 )
 
 
+@component.add(
+    name="efficiency waste for elec plants",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def efficiency_waste_for_elec_plants():
     """
-    Real Name: efficiency waste for elec plants
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Efficiency of the transformation of waste in elec plants.
     """
     return _ext_constant_efficiency_waste_for_elec_plants()
@@ -71,19 +69,19 @@ _ext_constant_efficiency_waste_for_elec_plants = ExtConstant(
     "efficiency_waste_for_elec_plants",
     {},
     _root,
+    {},
     "_ext_constant_efficiency_waste_for_elec_plants",
 )
 
 
+@component.add(
+    name="efficiency waste for heat CHP plants",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def efficiency_waste_for_heat_chp_plants():
     """
-    Real Name: efficiency waste for heat CHP plants
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Efficiency of the transformation of waste in heat in CHP plants.
     """
     return _ext_constant_efficiency_waste_for_heat_chp_plants()
@@ -95,19 +93,19 @@ _ext_constant_efficiency_waste_for_heat_chp_plants = ExtConstant(
     "efficiency_waste_for_heat_CHP_plants",
     {},
     _root,
+    {},
     "_ext_constant_efficiency_waste_for_heat_chp_plants",
 )
 
 
+@component.add(
+    name="efficiency waste for heat plants",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def efficiency_waste_for_heat_plants():
     """
-    Real Name: efficiency waste for heat plants
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Efficiency of the transformation of waste in heat plants.
     """
     return _ext_constant_efficiency_waste_for_heat_plants()
@@ -119,120 +117,113 @@ _ext_constant_efficiency_waste_for_heat_plants = ExtConstant(
     "efficiency_waste_for_heat_plants",
     {},
     _root,
+    {},
     "_ext_constant_efficiency_waste_for_heat_plants",
 )
 
 
+@component.add(
+    name="FES elec from waste EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fes_elec_from_waste_ej():
     """
-    Real Name: FES elec from waste EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     TFES electricity from waste.
     """
     return fes_elec_from_waste_in_chp_plants() + fes_elec_from_waste_in_elec_plants()
 
 
+@component.add(
+    name="FES elec from waste in CHP plants",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fes_elec_from_waste_in_chp_plants():
     """
-    Real Name: FES elec from waste in CHP plants
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy supply of elec in CHP plants from waste.
     """
     return pes_waste_for_chp_plants() * efficiency_waste_for_elec_chp_plants()
 
 
+@component.add(
+    name="FES elec from waste in elec plants",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fes_elec_from_waste_in_elec_plants():
     """
-    Real Name: FES elec from waste in elec plants
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy supply of electricity in Elec plants from waste.
     """
     return pes_waste_for_elec_plants() * efficiency_waste_for_elec_plants()
 
 
+@component.add(
+    name="FES elec from waste TWh",
+    units="TWh",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fes_elec_from_waste_twh():
     """
-    Real Name: FES elec from waste TWh
-    Original Eqn:
-    Units: TWh
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     TFES electricity from waste.
     """
     return fes_elec_from_waste_ej() / ej_per_twh()
 
 
+@component.add(
+    name='"FES heat-com from waste EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fes_heatcom_from_waste_ej():
     """
-    Real Name: "FES heat-com from waste EJ"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     TFES commercial heat from waste.
     """
     return fes_waste_for_heatcom_plants() + fes_heatcom_from_waste_in_chp_plants()
 
 
+@component.add(
+    name='"FES heat-com from waste in CHP plants"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fes_heatcom_from_waste_in_chp_plants():
     """
-    Real Name: "FES heat-com from waste in CHP plants"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy supply of commercial heat in CHP plants from waste.
     """
     return pes_waste_for_chp_plants() * efficiency_waste_for_heat_chp_plants()
 
 
+@component.add(
+    name='"FES waste for heat-com plants"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fes_waste_for_heatcom_plants():
     """
-    Real Name: "FES waste for heat-com plants"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy supply of heat in commercial Heat plants from waste.
     """
     return pes_waste_for_heatcom_plants() * efficiency_waste_for_heat_plants()
 
 
-def historic_pes_waste_ej(x):
+@component.add(
+    name="Historic PES waste EJ",
+    units="EJ/year",
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_pes_waste_ej(x, final_subs=None):
     """
-    Real Name: Historic PES waste EJ
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Lookup
-    Subs: []
-
     Historic primary energy supply of waste (1990-2014).
     """
-    return _ext_lookup_historic_pes_waste_ej(x)
+    return _ext_lookup_historic_pes_waste_ej(x, final_subs)
 
 
 _ext_lookup_historic_pes_waste_ej = ExtLookup(
@@ -242,19 +233,16 @@ _ext_lookup_historic_pes_waste_ej = ExtLookup(
     "historic_primary_energy_supply_of_waste",
     {},
     _root,
+    {},
     "_ext_lookup_historic_pes_waste_ej",
 )
 
 
+@component.add(
+    name="initial PES waste", units="EJ", comp_type="Constant", comp_subtype="External"
+)
 def initial_pes_waste():
     """
-    Real Name: initial PES waste
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Waste primary energy supply in 1995.
     """
     return _ext_constant_initial_pes_waste()
@@ -266,19 +254,16 @@ _ext_constant_initial_pes_waste = ExtConstant(
     "initial_primary_energy_supply_from_waste",
     {},
     _root,
+    {},
     "_ext_constant_initial_pes_waste",
 )
 
 
+@component.add(
+    name="Losses CHP waste", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def losses_chp_waste():
     """
-    Real Name: Losses CHP waste
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Losses in waste CHP plants.
     """
     return (
@@ -288,15 +273,11 @@ def losses_chp_waste():
     )
 
 
+@component.add(
+    name="max waste", units="EJ", comp_type="Constant", comp_subtype="External"
+)
 def max_waste():
     """
-    Real Name: max waste
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Maximun potencial of waste (primary energy supply).
     """
     return _ext_constant_max_waste()
@@ -308,19 +289,19 @@ _ext_constant_max_waste = ExtConstant(
     "max_waste_potential",
     {},
     _root,
+    {},
     "_ext_constant_max_waste",
 )
 
 
+@component.add(
+    name="new waste supply EJ",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def new_waste_supply_ej():
     """
-    Real Name: new waste supply EJ
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     New annual waste primary energy supply.
     """
     return if_then_else(
@@ -336,15 +317,11 @@ def new_waste_supply_ej():
     )
 
 
+@component.add(
+    name="P waste change", units="1/year", comp_type="Constant", comp_subtype="External"
+)
 def p_waste_change():
     """
-    Real Name: P waste change
-    Original Eqn:
-    Units: 1/year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Annual PES growth depending on the policy of the scenario.
     """
     return _ext_constant_p_waste_change()
@@ -356,19 +333,19 @@ _ext_constant_p_waste_change = ExtConstant(
     "pes_waste_growth",
     {},
     _root,
+    {},
     "_ext_constant_p_waste_change",
 )
 
 
+@component.add(
+    name="Past waste growth",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def past_waste_growth():
     """
-    Real Name: Past waste growth
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Past growth in PES of waste supply.
     """
     return _ext_constant_past_waste_growth()
@@ -380,19 +357,19 @@ _ext_constant_past_waste_growth = ExtConstant(
     "historic_average_pes_from_waste_growth",
     {},
     _root,
+    {},
     "_ext_constant_past_waste_growth",
 )
 
 
+@component.add(
+    name="PES tot waste for elec",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_tot_waste_for_elec():
     """
-    Real Name: PES tot waste for elec
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total primary energy supply for generating electricity from biogas (including CHP plants).
     """
     return (
@@ -402,15 +379,14 @@ def pes_tot_waste_for_elec():
     )
 
 
+@component.add(
+    name='"PES tot waste for heat-com"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_tot_waste_for_heatcom():
     """
-    Real Name: "PES tot waste for heat-com"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total primary energy supply for generating commercial heat from waste (including CHP plants).
     """
     return (
@@ -420,15 +396,11 @@ def pes_tot_waste_for_heatcom():
     )
 
 
+@component.add(
+    name="PES waste EJ", units="EJ", comp_type="Stateful", comp_subtype="Integ"
+)
 def pes_waste_ej():
     """
-    Real Name: PES waste EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Waste primary energy supply (includes industrial and municipal (renew and non-renew).
     """
     return _integ_pes_waste_ej()
@@ -439,87 +411,75 @@ _integ_pes_waste_ej = Integ(
 )
 
 
+@component.add(
+    name="PES waste for CHP plants",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_waste_for_chp_plants():
     """
-    Real Name: PES waste for CHP plants
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy supply waste for CHP plants.
     """
     return pes_waste_ej() * share_pes_waste_for_chp()
 
 
+@component.add(
+    name="PES waste for elec plants",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_waste_for_elec_plants():
     """
-    Real Name: PES waste for elec plants
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy supply of heat in Heat plants from waste.
     """
     return pes_waste_ej() * share_pes_waste_for_elec_plants()
 
 
+@component.add(
+    name='"PES waste for heat-com plants"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_waste_for_heatcom_plants():
     """
-    Real Name: "PES waste for heat-com plants"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy supply of commercial heat in Heat plants from waste.
     """
     return pes_waste_ej() * share_pes_waste_for_heatcom_plants()
 
 
+@component.add(
+    name="PES waste for TFC", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def pes_waste_for_tfc():
     """
-    Real Name: PES waste for TFC
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy supply waste for total final consumption.
     """
     return pes_waste_ej() * share_pes_waste_tfc()
 
 
+@component.add(
+    name="share efficiency waste for elec in CHP plants",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_efficiency_waste_for_elec_in_chp_plants():
-    """
-    Real Name: share efficiency waste for elec in CHP plants
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return efficiency_waste_for_elec_chp_plants() / (
         efficiency_waste_for_elec_chp_plants() + efficiency_waste_for_heat_chp_plants()
     )
 
 
+@component.add(
+    name="share PES waste for CHP",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def share_pes_waste_for_chp():
     """
-    Real Name: share PES waste for CHP
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Share of PES waste for CHP plants.
     """
     return _ext_constant_share_pes_waste_for_chp()
@@ -531,19 +491,19 @@ _ext_constant_share_pes_waste_for_chp = ExtConstant(
     "share_pes_waste_for_chp",
     {},
     _root,
+    {},
     "_ext_constant_share_pes_waste_for_chp",
 )
 
 
+@component.add(
+    name="share PES waste for elec plants",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def share_pes_waste_for_elec_plants():
     """
-    Real Name: share PES waste for elec plants
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Share of PES waste for elec plants.
     """
     return _ext_constant_share_pes_waste_for_elec_plants()
@@ -555,19 +515,19 @@ _ext_constant_share_pes_waste_for_elec_plants = ExtConstant(
     "share_pes_waste_for_elec_plants",
     {},
     _root,
+    {},
     "_ext_constant_share_pes_waste_for_elec_plants",
 )
 
 
+@component.add(
+    name='"share PES waste for heat-com plants"',
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def share_pes_waste_for_heatcom_plants():
     """
-    Real Name: "share PES waste for heat-com plants"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Share of PES waste for commercial heat plants.
     """
     return _ext_constant_share_pes_waste_for_heatcom_plants()
@@ -579,19 +539,19 @@ _ext_constant_share_pes_waste_for_heatcom_plants = ExtConstant(
     "share_pes_waste_for_heat_plants",
     {},
     _root,
+    {},
     "_ext_constant_share_pes_waste_for_heatcom_plants",
 )
 
 
+@component.add(
+    name="share PES waste TFC",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def share_pes_waste_tfc():
     """
-    Real Name: share PES waste TFC
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Share of PES waste for total final consumption.
     """
     return _ext_constant_share_pes_waste_tfc()
@@ -603,19 +563,16 @@ _ext_constant_share_pes_waste_tfc = ExtConstant(
     "share_pes_waste_tfc",
     {},
     _root,
+    {},
     "_ext_constant_share_pes_waste_tfc",
 )
 
 
+@component.add(
+    name="waste change", units="1/year", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def waste_change():
     """
-    Real Name: waste change
-    Original Eqn:
-    Units: 1/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     If GDP becomes negative, annual PES change follows it decreasing trends.
     """
     return if_then_else(

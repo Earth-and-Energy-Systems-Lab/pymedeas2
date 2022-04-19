@@ -1,18 +1,17 @@
 """
 Module res_elec_total_monetary_investment
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="Balancing costs",
+    units="Tdollars/TWh",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def balancing_costs():
     """
-    Real Name: Balancing costs
-    Original Eqn:
-    Units: Tdollars/TWh
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Balancing costs (1995T$ / TWh produced).
     """
     return (
@@ -20,18 +19,17 @@ def balancing_costs():
     )
 
 
-def balancing_costs_ref(x):
+@component.add(
+    name="Balancing costs ref",
+    units="dollars/MWh",
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def balancing_costs_ref(x, final_subs=None):
     """
-    Real Name: Balancing costs ref
-    Original Eqn:
-    Units: dollars/MWh
-    Limits: (None, None)
-    Type: Lookup
-    Subs: []
-
     Balancing costs adapting data from Holttinen et al (2011).
     """
-    return _ext_lookup_balancing_costs_ref(x)
+    return _ext_lookup_balancing_costs_ref(x, final_subs)
 
 
 _ext_lookup_balancing_costs_ref = ExtLookup(
@@ -41,19 +39,19 @@ _ext_lookup_balancing_costs_ref = ExtLookup(
     "balancing_cost",
     {},
     _root,
+    {},
     "_ext_lookup_balancing_costs_ref",
 )
 
 
+@component.add(
+    name="cumulated invest E grid",
+    units="Tdollars",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def cumulated_invest_e_grid():
     """
-    Real Name: cumulated invest E grid
-    Original Eqn:
-    Units: Tdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Cumulated monetary investment for developing electricity grids to integrate renewable intermittent sources.
     """
     return _integ_cumulated_invest_e_grid()
@@ -66,15 +64,14 @@ _integ_cumulated_invest_e_grid = Integ(
 )
 
 
+@component.add(
+    name="Cumulated total monet invest RES for Elec",
+    units="Tdollars",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def cumulated_total_monet_invest_res_for_elec():
     """
-    Real Name: Cumulated total monet invest RES for Elec
-    Original Eqn:
-    Units: Tdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Cumulated total monetary investment in RES for electricity generation from 1995 (1995 US$).
     """
     return _integ_cumulated_total_monet_invest_res_for_elec()
@@ -87,15 +84,14 @@ _integ_cumulated_total_monet_invest_res_for_elec = Integ(
 )
 
 
+@component.add(
+    name="extra monet invest to cope with variable Elec RES",
+    units="Tdollars/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def extra_monet_invest_to_cope_with_variable_elec_res():
     """
-    Real Name: extra monet invest to cope with variable Elec RES
-    Original Eqn:
-    Units: Tdollars/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Annual additional monetary investment to cope with the intermittency of RES (taking wind as a proxy) including balancing and grid reinforcement costs (1995 US$).
     """
     return (
@@ -104,29 +100,21 @@ def extra_monet_invest_to_cope_with_variable_elec_res():
     ) * balancing_costs() + grid_reinforcement_costs_tdollar()
 
 
+@component.add(
+    name="G per T", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+)
 def g_per_t():
-    """
-    Real Name: G per T
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-
-    """
     return 1000
 
 
+@component.add(
+    name="Grid reinforcement costs",
+    units="dollars/kW",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def grid_reinforcement_costs():
     """
-    Real Name: Grid reinforcement costs
-    Original Eqn:
-    Units: dollars/kW
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Grid reinforcement costs. We take the median from the study of Mills et al (2012) for wind: 300 $/kW (238.33 US1995$).
     """
     return _ext_constant_grid_reinforcement_costs()
@@ -138,19 +126,19 @@ _ext_constant_grid_reinforcement_costs = ExtConstant(
     "grid_reinforcement_costs",
     {},
     _root,
+    {},
     "_ext_constant_grid_reinforcement_costs",
 )
 
 
+@component.add(
+    name="Grid reinforcement costs Tdollar",
+    units="Tdollar",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def grid_reinforcement_costs_tdollar():
     """
-    Real Name: Grid reinforcement costs Tdollar
-    Original Eqn:
-    Units: Tdollar
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     1995 US$.
     """
     return (
@@ -160,16 +148,15 @@ def grid_reinforcement_costs_tdollar():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="invest cost RES elec",
+    units="T$/TW",
+    subscripts=["RES elec"],
+    comp_type="Data",
+    comp_subtype="External",
+)
 def invest_cost_res_elec():
     """
-    Real Name: invest cost RES elec
-    Original Eqn:
-    Units: T$/TW
-    Limits: (None, None)
-    Type: Data
-    Subs: ['RES elec']
-
     Input assumption on installation cost of new RES capacity for electricity.
     """
     return _ext_data_invest_cost_res_elec(time())
@@ -183,62 +170,61 @@ _ext_data_invest_cost_res_elec = ExtData(
     "interpolate",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
+    {
+        "RES elec": [
+            "hydro",
+            "geot elec",
+            "solid bioE elec",
+            "oceanic",
+            "wind onshore",
+            "wind offshore",
+            "solar PV",
+            "CSP",
+        ]
+    },
     "_ext_data_invest_cost_res_elec",
 )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="invest RES elec Tdolar",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def invest_res_elec_tdolar():
-    """
-    Real Name: invest RES elec Tdolar
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
-
-    """
     return res_elec_capacity_under_construction_tw() * invest_cost_res_elec()
 
 
+@component.add(
+    name="new capacity installed onshore wind TW",
+    units="TW",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def new_capacity_installed_onshore_wind_tw():
-    """
-    Real Name: new capacity installed onshore wind TW
-    Original Eqn:
-    Units: TW
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return float(new_res_elec_capacity_under_planning().loc["wind onshore"])
 
 
+@component.add(
+    name="Percent tot monet invest RESelec vs GDP",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def percent_tot_monet_invest_reselec_vs_gdp():
     """
-    Real Name: Percent tot monet invest RESelec vs GDP
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Annual total monetary investment for RES for electricity as a share of the annual GDP ( in percentage ).
     """
     return share_tot_monet_invest_elec_res_vs_gdp() * 100
 
 
+@component.add(
+    name="share extra monet invest to cope with variable Elec RES",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_extra_monet_invest_to_cope_with_variable_elec_res():
     """
-    Real Name: share extra monet invest to cope with variable Elec RES
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of the anual additional monetary investment to cope with the intermittency of RES (taking wind as a proxy) in relation to the total investment for RES.
     """
     return (
@@ -247,29 +233,27 @@ def share_extra_monet_invest_to_cope_with_variable_elec_res():
     )
 
 
+@component.add(
+    name="share tot monet invest Elec RES vs GDP",
+    units="1/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_tot_monet_invest_elec_res_vs_gdp():
     """
-    Real Name: share tot monet invest Elec RES vs GDP
-    Original Eqn:
-    Units: 1/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Annual total monetary investment for RES for electricity as a share of the annual GDP.
     """
     return zidz(total_monet_invest_res_for_elec_tdolar(), gdp_aut())
 
 
+@component.add(
+    name="Total monet invest RES for elec Tdolar",
+    units="Tdollars/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_monet_invest_res_for_elec_tdolar():
     """
-    Real Name: Total monet invest RES for elec Tdolar
-    Original Eqn:
-    Units: Tdollars/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Annual total monetary investment for RES for electricity: capacity, balancing costs and grid improvements to cope with variability (1995 US$).
     """
     return (

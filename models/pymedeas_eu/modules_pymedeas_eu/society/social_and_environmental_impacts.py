@@ -1,60 +1,53 @@
 """
 Module social_and_environmental_impacts
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name='"Carbon footprint tCO2/person"',
+    units="tCO2/person",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def carbon_footprint_tco2person():
     """
-    Real Name: "Carbon footprint tCO2/person"
-    Original Eqn:
-    Units: tCO2/person
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CO2 emissions per capita.
     """
     return total_co2_emissions_gtco2() * t_per_gt() / population()
 
 
+@component.add(
+    name='"Carbon footprint tonnesC/person"',
+    units="tonnesC/person",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def carbon_footprint_tonnescperson():
     """
-    Real Name: "Carbon footprint tonnesC/person"
-    Original Eqn:
-    Units: tonnesC/person
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Carbon footprint.
     """
     return carbon_footprint_tco2person() * c_per_co2()
 
 
+@component.add(
+    name="CO2 emissions per value added",
+    units="GtCO2/(Year*T$)",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def co2_emissions_per_value_added():
     """
-    Real Name: CO2 emissions per value added
-    Original Eqn:
-    Units: GtCO2/(Year*T$)
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     CO2 emissions per value added (GDP).
     """
     return zidz(total_co2_emissions_gtco2(), gdp_eu())
 
 
+@component.add(
+    name="Potential max HDI", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def potential_max_hdi():
     """
-    Real Name: Potential max HDI
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Potential HDI that can be reached by a society given its final energy use per capita.
     """
     return if_then_else(
@@ -64,44 +57,38 @@ def potential_max_hdi():
     )
 
 
+@component.add(
+    name="t per Gt", units="TonC/GtC", comp_type="Constant", comp_subtype="Normal"
+)
 def t_per_gt():
     """
-    Real Name: t per Gt
-    Original Eqn:
-    Units: TonC/GtC
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Conversion from tones to Gigatonnes of carbon.
     """
     return 1000000000.0
 
 
+@component.add(
+    name="Total water use per capita",
+    units="dam3/person",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_water_use_per_capita():
     """
-    Real Name: Total water use per capita
-    Original Eqn:
-    Units: dam3/person
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total water use (all types aggregated) per capita.
     """
     return total_water_use() / population()
 
 
-@subs(["water"], _subscript_dict)
+@component.add(
+    name="Water use per type per capita",
+    units="dam3/person",
+    subscripts=["water"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def water_use_per_type_per_capita():
     """
-    Real Name: Water use per type per capita
-    Original Eqn:
-    Units: dam3/person
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['water']
-
     Water use per type per capita.
     """
     return total_water_use_by_type() / population()

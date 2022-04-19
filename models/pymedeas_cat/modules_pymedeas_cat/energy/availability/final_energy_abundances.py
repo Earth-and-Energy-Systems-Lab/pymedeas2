@@ -1,21 +1,16 @@
 """
 Module final_energy_abundances
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Abundance final fuels",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def abundance_final_fuels():
-    """
-    Real Name: Abundance final fuels
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
-
-    """
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
@@ -27,15 +22,14 @@ def abundance_final_fuels():
     return value
 
 
+@component.add(
+    name="energy scarcity forgetting time",
+    units="Year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def energy_scarcity_forgetting_time():
     """
-    Real Name: energy scarcity forgetting time
-    Original Eqn:
-    Units: Year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Time in years that society takes to forget the percepticon of scarcity for economic sectors.
     """
     return _ext_constant_energy_scarcity_forgetting_time()
@@ -47,19 +41,19 @@ _ext_constant_energy_scarcity_forgetting_time = ExtConstant(
     "energy_scarcity_forgetting_time",
     {},
     _root,
+    {},
     "_ext_constant_energy_scarcity_forgetting_time",
 )
 
 
+@component.add(
+    name="energy scarcity forgetting time H",
+    units="Year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def energy_scarcity_forgetting_time_h():
     """
-    Real Name: energy scarcity forgetting time H
-    Original Eqn:
-    Units: Year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Time in years that households take to forget the percepticon of scarcity.
     """
     return _ext_constant_energy_scarcity_forgetting_time_h()
@@ -71,20 +65,20 @@ _ext_constant_energy_scarcity_forgetting_time_h = ExtConstant(
     "energy_scarcity_forgetting_time_H",
     {},
     _root,
+    {},
     "_ext_constant_energy_scarcity_forgetting_time_h",
 )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="increase in perception FE scarcity",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def increase_in_perception_fe_scarcity():
     """
-    Real Name: increase in perception FE scarcity
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     Increase in the perception of economic sectors of final energy scarcity of each fuel
     """
     return (
@@ -94,16 +88,15 @@ def increase_in_perception_fe_scarcity():
     )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="increase in perception FE scarcity H",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def increase_in_perception_fe_scarcity_h():
     """
-    Real Name: increase in perception FE scarcity H
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     Increase in socieconomic perception of final energy scarcity of each fuel for households.
     """
     return (
@@ -113,16 +106,15 @@ def increase_in_perception_fe_scarcity_h():
     )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="perception of final energy scarcity",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def perception_of_final_energy_scarcity():
     """
-    Real Name: perception of final energy scarcity
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['final sources']
-
     Perception of final energy scarcity of each fuel by economic sectors. This perception drives the fuel replacement and efficiency improvement.
     """
     return _integ_perception_of_final_energy_scarcity()
@@ -138,16 +130,15 @@ _integ_perception_of_final_energy_scarcity = Integ(
 )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="perception of final energy scarcity H",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def perception_of_final_energy_scarcity_h():
     """
-    Real Name: perception of final energy scarcity H
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['final sources']
-
     Socieconomic perception of final energy scarcity of each fuel for households. This perception drives the fuel replacement and efficiency improvement.
     """
     return _integ_perception_of_final_energy_scarcity_h()
@@ -163,16 +154,15 @@ _integ_perception_of_final_energy_scarcity_h = Integ(
 )
 
 
-@subs(["final sources", "final sources1"], _subscript_dict)
+@component.add(
+    name='"perception of inter-fuel final energy scarcities H"',
+    units="Dmnl",
+    subscripts=["final sources", "final sources1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def perception_of_interfuel_final_energy_scarcities_h():
     """
-    Real Name: "perception of inter-fuel final energy scarcities H"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources', 'final sources1']
-
     Socieconomic perception of final energy scarcity between fuels for households. Matrix 5x5. This perception drives the fuel replacement and efficiency improvement.
     """
     return xr.DataArray(
@@ -192,46 +182,42 @@ def perception_of_interfuel_final_energy_scarcities_h():
             },
             ["final sources1", "final sources"],
         ),
-        lambda: zidz(
-            (
-                xr.DataArray(
-                    0,
-                    {
-                        "final sources1": _subscript_dict["final sources1"],
-                        "final sources": _subscript_dict["final sources"],
-                    },
-                    ["final sources1", "final sources"],
-                )
-                + perception_of_final_energy_scarcity_h().rename(
-                    {"final sources": "final sources1"}
-                )
+        lambda: (
+            xr.DataArray(
+                0,
+                {
+                    "final sources1": _subscript_dict["final sources1"],
+                    "final sources": _subscript_dict["final sources"],
+                },
+                ["final sources1", "final sources"],
             )
-            - (
-                xr.DataArray(
-                    0,
-                    {
-                        "final sources1": _subscript_dict["final sources1"],
-                        "final sources": _subscript_dict["final sources"],
-                    },
-                    ["final sources1", "final sources"],
-                )
-                + perception_of_final_energy_scarcity_h()
-            ),
-            1,
+            + perception_of_final_energy_scarcity_h().rename(
+                {"final sources": "final sources1"}
+            )
+        )
+        - (
+            xr.DataArray(
+                0,
+                {
+                    "final sources1": _subscript_dict["final sources1"],
+                    "final sources": _subscript_dict["final sources"],
+                },
+                ["final sources1", "final sources"],
+            )
+            + perception_of_final_energy_scarcity_h()
         ),
     )
 
 
-@subs(["final sources", "final sources1"], _subscript_dict)
+@component.add(
+    name='"perception of inter-fuel final energy scarcities"',
+    units="Dmnl",
+    subscripts=["final sources", "final sources1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def perception_of_interfuel_final_energy_scarcities():
     """
-    Real Name: "perception of inter-fuel final energy scarcities"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources', 'final sources1']
-
     Perception of economic sectors of final energy scarcity between fuels. Matrix 5x5. This perception drives the fuel replacement and efficiency improvement.
     """
     return xr.DataArray(
@@ -251,93 +237,82 @@ def perception_of_interfuel_final_energy_scarcities():
             },
             ["final sources1", "final sources"],
         ),
-        lambda: zidz(
-            (
-                xr.DataArray(
-                    0,
-                    {
-                        "final sources1": _subscript_dict["final sources1"],
-                        "final sources": _subscript_dict["final sources"],
-                    },
-                    ["final sources1", "final sources"],
-                )
-                + perception_of_final_energy_scarcity().rename(
-                    {"final sources": "final sources1"}
-                )
+        lambda: (
+            xr.DataArray(
+                0,
+                {
+                    "final sources1": _subscript_dict["final sources1"],
+                    "final sources": _subscript_dict["final sources"],
+                },
+                ["final sources1", "final sources"],
             )
-            - (
-                xr.DataArray(
-                    0,
-                    {
-                        "final sources1": _subscript_dict["final sources1"],
-                        "final sources": _subscript_dict["final sources"],
-                    },
-                    ["final sources1", "final sources"],
-                )
-                + perception_of_final_energy_scarcity()
-            ),
-            1,
+            + perception_of_final_energy_scarcity().rename(
+                {"final sources": "final sources1"}
+            )
+        )
+        - (
+            xr.DataArray(
+                0,
+                {
+                    "final sources1": _subscript_dict["final sources1"],
+                    "final sources": _subscript_dict["final sources"],
+                },
+                ["final sources1", "final sources"],
+            )
+            + perception_of_final_energy_scarcity()
         ),
     )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="reduction in perception FE scarcity",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def reduction_in_perception_fe_scarcity():
     """
-    Real Name: reduction in perception FE scarcity
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     Reduction of the perception of energy scarcity of economic sectors due to the "forgetting" effect.
     """
     return perception_of_final_energy_scarcity() / energy_scarcity_forgetting_time()
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="reduction in perception FE scarcity H",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def reduction_in_perception_fe_scarcity_h():
     """
-    Real Name: reduction in perception FE scarcity H
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     Reduction of the perception of energy scarcity of households due to the "forgetting" effect.
     """
     return perception_of_final_energy_scarcity_h() / energy_scarcity_forgetting_time_h()
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="scarcity final fuels",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def scarcity_final_fuels():
     """
-    Real Name: scarcity final fuels
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     The parameter scarcity varies between (1;0). (Scarcity =1-Abundance) Scarcity=0 while the supply covers the demand; the closest to 1 indicates a higher divergence between supply and demand.
     """
     return 1 - abundance_final_fuels()
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="scarcity final fuels counter",
+    subscripts=["final sources"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def scarcity_final_fuels_counter():
-    """
-    Real Name: scarcity final fuels counter
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['final sources']
-
-
-    """
     return _integ_scarcity_final_fuels_counter()
 
 
@@ -358,18 +333,13 @@ _integ_scarcity_final_fuels_counter = Integ(
 )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="scarcity final fuels flags",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def scarcity_final_fuels_flags():
-    """
-    Real Name: scarcity final fuels flags
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
-
-    """
     return if_then_else(
         abundance_final_fuels() < 0.999,
         lambda: xr.DataArray(
@@ -381,31 +351,28 @@ def scarcity_final_fuels_flags():
     )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="scarcity final fuels H",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def scarcity_final_fuels_h():
     """
-    Real Name: scarcity final fuels H
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     The parameter scarcity varies between (1;0). (Scarcity =1-Abundance) Scarcity=0 while the supply covers the demand; the closest to 1 indicates a higher divergence between supply and demand.
     """
     return 1 - abundance_final_fuels()
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Scarcity fuels flag",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def scarcity_fuels_flag():
     """
-    Real Name: Scarcity fuels flag
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     Scarcity indicator for final fuels.
     """
     return if_then_else(
@@ -419,18 +386,13 @@ def scarcity_fuels_flag():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="scarcity reserves counter",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def scarcity_reserves_counter():
-    """
-    Real Name: scarcity reserves counter
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
-
-    """
     return _integ_scarcity_reserves_counter()
 
 
@@ -449,16 +411,14 @@ _integ_scarcity_reserves_counter = Integ(
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Scarcity reserves flag",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def scarcity_reserves_flag():
     """
-    Real Name: Scarcity reserves flag
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Scarcity indicator for materials reserves.
     """
     return if_then_else(
@@ -472,18 +432,13 @@ def scarcity_reserves_flag():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="scarcity resources counter",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def scarcity_resources_counter():
-    """
-    Real Name: scarcity resources counter
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
-
-    """
     return _integ_scarcity_resources_counter()
 
 
@@ -502,16 +457,14 @@ _integ_scarcity_resources_counter = Integ(
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Scarcity resources flag",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def scarcity_resources_flag():
     """
-    Real Name: Scarcity resources flag
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Scarcity indicator for materials resources.
     """
     return if_then_else(
@@ -525,15 +478,14 @@ def scarcity_resources_flag():
     )
 
 
+@component.add(
+    name="sensitivity to energy scarcity High",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def sensitivity_to_energy_scarcity_high():
     """
-    Real Name: sensitivity to energy scarcity High
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     High value option of sensitivity to energy scarcity.
     """
     return _ext_constant_sensitivity_to_energy_scarcity_high()
@@ -545,19 +497,19 @@ _ext_constant_sensitivity_to_energy_scarcity_high = ExtConstant(
     "sensitivity_scarcity_high",
     {},
     _root,
+    {},
     "_ext_constant_sensitivity_to_energy_scarcity_high",
 )
 
 
+@component.add(
+    name="sensitivity to energy scarcity Low",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def sensitivity_to_energy_scarcity_low():
     """
-    Real Name: sensitivity to energy scarcity Low
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Low value option of sensitivity to energy scarcity.
     """
     return _ext_constant_sensitivity_to_energy_scarcity_low()
@@ -569,19 +521,19 @@ _ext_constant_sensitivity_to_energy_scarcity_low = ExtConstant(
     "sensitivity_scarcity_low",
     {},
     _root,
+    {},
     "_ext_constant_sensitivity_to_energy_scarcity_low",
 )
 
 
+@component.add(
+    name="sensitivity to energy scarcity Medium",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def sensitivity_to_energy_scarcity_medium():
     """
-    Real Name: sensitivity to energy scarcity Medium
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Medium value option of sensitivity to energy scarcity.
     """
     return _ext_constant_sensitivity_to_energy_scarcity_medium()
@@ -593,19 +545,19 @@ _ext_constant_sensitivity_to_energy_scarcity_medium = ExtConstant(
     "sensitivity_scarcity_medium",
     {},
     _root,
+    {},
     "_ext_constant_sensitivity_to_energy_scarcity_medium",
 )
 
 
+@component.add(
+    name="sensitivity to scarcity",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def sensitivity_to_scarcity():
     """
-    Real Name: sensitivity to scarcity
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Sensitivity of the economic sectors to the energy scarcity. Value defined by user.
     """
     return if_then_else(
@@ -619,15 +571,14 @@ def sensitivity_to_scarcity():
     )
 
 
+@component.add(
+    name="sensitivity to scarcity H",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def sensitivity_to_scarcity_h():
     """
-    Real Name: sensitivity to scarcity H
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Sensitivity of the households to the energy scarcity. Value defined by user.
     """
     return if_then_else(
@@ -641,15 +592,14 @@ def sensitivity_to_scarcity_h():
     )
 
 
+@component.add(
+    name="sensitivity to scarcity option",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def sensitivity_to_scarcity_option():
     """
-    Real Name: sensitivity to scarcity option
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Option defined by user about the sensitivity of economic sectors to energy scarcity: 1-Low 2-Medium 3-High
     """
     return _ext_constant_sensitivity_to_scarcity_option()
@@ -661,19 +611,19 @@ _ext_constant_sensitivity_to_scarcity_option = ExtConstant(
     "sensitivity_to_scarcity_option",
     {},
     _root,
+    {},
     "_ext_constant_sensitivity_to_scarcity_option",
 )
 
 
+@component.add(
+    name="sensitivity to scarcity option H",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def sensitivity_to_scarcity_option_h():
     """
-    Real Name: sensitivity to scarcity option H
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Option defined by user about the sensitivity of households to the energy scarcity: 1-Low 2-Medium 3-High
     """
     return _ext_constant_sensitivity_to_scarcity_option_h()
@@ -685,20 +635,19 @@ _ext_constant_sensitivity_to_scarcity_option_h = ExtConstant(
     "sensitivity_to_scarcity_option_H",
     {},
     _root,
+    {},
     "_ext_constant_sensitivity_to_scarcity_option_h",
 )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Year final scarcity final fuels",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def year_final_scarcity_final_fuels():
     """
-    Real Name: Year final scarcity final fuels
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     Final year of scarcity of final fuels.
     """
     return if_then_else(
@@ -710,16 +659,14 @@ def year_final_scarcity_final_fuels():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Year final scarcity reserves",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def year_final_scarcity_reserves():
     """
-    Real Name: Year final scarcity reserves
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Final year of scarcity of material reserves.
     """
     return if_then_else(
@@ -731,16 +678,14 @@ def year_final_scarcity_reserves():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Year final scarcity resources",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def year_final_scarcity_resources():
     """
-    Real Name: Year final scarcity resources
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Final year of scarcity of materials resources.
     """
     return if_then_else(
@@ -752,16 +697,14 @@ def year_final_scarcity_resources():
     )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Year init scarcity final fuels",
+    subscripts=["final sources"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def year_init_scarcity_final_fuels():
     """
-    Real Name: Year init scarcity final fuels
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['final sources']
-
     Initial year of scarcity of final fuels.
     """
     return _integ_year_init_scarcity_final_fuels()
@@ -770,18 +713,10 @@ def year_init_scarcity_final_fuels():
 _integ_year_init_scarcity_final_fuels = Integ(
     lambda: if_then_else(
         scarcity_final_fuels_flags() == 1,
-        lambda: if_then_else(
-            scarcity_final_fuels_counter() == 1,
-            lambda: xr.DataArray(
-                time() * 1 / time_step() - 20,
-                {"final sources": _subscript_dict["final sources"]},
-                ["final sources"],
-            ),
-            lambda: xr.DataArray(
-                0,
-                {"final sources": _subscript_dict["final sources"]},
-                ["final sources"],
-            ),
+        lambda: xr.DataArray(
+            time() / time_step() - 20,
+            {"final sources": _subscript_dict["final sources"]},
+            ["final sources"],
         ),
         lambda: xr.DataArray(
             0, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
@@ -794,16 +729,14 @@ _integ_year_init_scarcity_final_fuels = Integ(
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Year init scarcity reserves",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def year_init_scarcity_reserves():
     """
-    Real Name: Year init scarcity reserves
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
     Initial year of scarcity of material reserves.
     """
     return _integ_year_init_scarcity_reserves()
@@ -812,16 +745,10 @@ def year_init_scarcity_reserves():
 _integ_year_init_scarcity_reserves = Integ(
     lambda: if_then_else(
         materials_availability_reserves() == 0,
-        lambda: if_then_else(
-            scarcity_reserves_counter() == 1,
-            lambda: xr.DataArray(
-                time() * 1 / time_step(),
-                {"materials": _subscript_dict["materials"]},
-                ["materials"],
-            ),
-            lambda: xr.DataArray(
-                0, {"materials": _subscript_dict["materials"]}, ["materials"]
-            ),
+        lambda: xr.DataArray(
+            time() * 1 / time_step(),
+            {"materials": _subscript_dict["materials"]},
+            ["materials"],
         ),
         lambda: xr.DataArray(
             0, {"materials": _subscript_dict["materials"]}, ["materials"]
@@ -832,16 +759,14 @@ _integ_year_init_scarcity_reserves = Integ(
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Year init scarcity resources",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def year_init_scarcity_resources():
     """
-    Real Name: Year init scarcity resources
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
     Initial year of scarcity of material resources.
     """
     return _integ_year_init_scarcity_resources()
@@ -850,16 +775,10 @@ def year_init_scarcity_resources():
 _integ_year_init_scarcity_resources = Integ(
     lambda: if_then_else(
         materials_availability_resources() == 0,
-        lambda: if_then_else(
-            scarcity_resources_counter() == 1,
-            lambda: xr.DataArray(
-                time() * 1 / time_step(),
-                {"materials": _subscript_dict["materials"]},
-                ["materials"],
-            ),
-            lambda: xr.DataArray(
-                0, {"materials": _subscript_dict["materials"]}, ["materials"]
-            ),
+        lambda: xr.DataArray(
+            time() * 1 / time_step(),
+            {"materials": _subscript_dict["materials"]},
+            ["materials"],
         ),
         lambda: xr.DataArray(
             0, {"materials": _subscript_dict["materials"]}, ["materials"]

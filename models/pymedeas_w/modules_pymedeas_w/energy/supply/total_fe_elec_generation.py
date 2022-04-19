@@ -1,18 +1,17 @@
 """
 Module total_fe_elec_generation
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="Abundance electricity",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def abundance_electricity():
     """
-    Real Name: Abundance electricity
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     The parameter abundance varies between (1;0). Abundance=1 while the supply covers the demand; the closest to 0 indicates a higher divergence between supply and demand.
     """
     return if_then_else(
@@ -26,15 +25,14 @@ def abundance_electricity():
     )
 
 
+@component.add(
+    name="Annual growth rate electricity generation RES elec tot",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def annual_growth_rate_electricity_generation_res_elec_tot():
     """
-    Real Name: Annual growth rate electricity generation RES elec tot
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Annual growth rate of electricity generation from RES.
     """
     return (
@@ -44,15 +42,14 @@ def annual_growth_rate_electricity_generation_res_elec_tot():
     )
 
 
+@component.add(
+    name="FE Elec generation from coal TWh",
+    units="TWh/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fe_elec_generation_from_coal_twh():
     """
-    Real Name: FE Elec generation from coal TWh
-    Original Eqn:
-    Units: TWh/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy electricity generation from coal (TWh).
     """
     return (
@@ -63,15 +60,14 @@ def fe_elec_generation_from_coal_twh():
     )
 
 
+@component.add(
+    name="FE Elec generation from conv gas TWh",
+    units="TWh/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fe_elec_generation_from_conv_gas_twh():
     """
-    Real Name: FE Elec generation from conv gas TWh
-    Original Eqn:
-    Units: TWh/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy electricity generation from conventional gas (TWh).
     """
     return (
@@ -82,15 +78,14 @@ def fe_elec_generation_from_conv_gas_twh():
     )
 
 
+@component.add(
+    name="FE Elec generation from fossil fuels TWh",
+    units="TWh/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fe_elec_generation_from_fossil_fuels_twh():
     """
-    Real Name: FE Elec generation from fossil fuels TWh
-    Original Eqn:
-    Units: TWh/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy electricity generation from fossil fuels (TWh).
     """
     return (
@@ -102,29 +97,27 @@ def fe_elec_generation_from_fossil_fuels_twh():
     )
 
 
+@component.add(
+    name="FE Elec generation from NRE TWh",
+    units="TWh/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fe_elec_generation_from_nre_twh():
     """
-    Real Name: FE Elec generation from NRE TWh
-    Original Eqn:
-    Units: TWh/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Electricity generation from non-renewable resources (fossil fuels and uranium).
     """
     return fe_elec_generation_from_fossil_fuels_twh() + fe_nuclear_elec_generation_twh()
 
 
+@component.add(
+    name="FE Elec generation from total oil TWh",
+    units="TWh/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fe_elec_generation_from_total_oil_twh():
     """
-    Real Name: FE Elec generation from total oil TWh
-    Original Eqn:
-    Units: TWh/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Electricity generation (final energy) from total oil.
     """
     return (
@@ -135,15 +128,14 @@ def fe_elec_generation_from_total_oil_twh():
     )
 
 
+@component.add(
+    name="FE Elec generation from unconv gas TWh",
+    units="TWh/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fe_elec_generation_from_unconv_gas_twh():
     """
-    Real Name: FE Elec generation from unconv gas TWh
-    Original Eqn:
-    Units: TWh/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy electricity generation from unconventional gas (TWh).
     """
     return (
@@ -154,29 +146,27 @@ def fe_elec_generation_from_unconv_gas_twh():
     )
 
 
+@component.add(
+    name="FE nuclear Elec generation TWh",
+    units="TWh/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fe_nuclear_elec_generation_twh():
     """
-    Real Name: FE nuclear Elec generation TWh
-    Original Eqn:
-    Units: TWh/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy electricity generation from uranium (TWh).
     """
     return extraction_uranium_ej() * efficiency_uranium_for_electricity() / ej_per_twh()
 
 
+@component.add(
+    name="FE tot generation all RES elec TWh delayed 1yr",
+    units="Tdollars/year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
 def fe_tot_generation_all_res_elec_twh_delayed_1yr():
     """
-    Real Name: FE tot generation all RES elec TWh delayed 1yr
-    Original Eqn:
-    Units: Tdollars/year
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Electricity generation from all RES technologies. delayed 1 year.
     """
     return _delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr()
@@ -191,15 +181,11 @@ _delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr = DelayFixed(
 )
 
 
+@component.add(
+    name="FES elec from BioW", units="TWh", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def fes_elec_from_biow():
     """
-    Real Name: FES elec from BioW
-    Original Eqn:
-    Units: TWh
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Electricity generation of total bioenergy and waste (to compare with more common statistics).
     """
     return (
@@ -209,43 +195,40 @@ def fes_elec_from_biow():
     )
 
 
+@component.add(
+    name="share RES electricity generation",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_res_electricity_generation():
     """
-    Real Name: share RES electricity generation
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of RES in the electricity generation.
     """
     return fe_tot_generation_all_res_elec_twh() / total_fe_elec_generation_twh()
 
 
+@component.add(
+    name="Total FE Elec consumption TWh",
+    units="TWh/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_fe_elec_consumption_twh():
     """
-    Real Name: Total FE Elec consumption TWh
-    Original Eqn:
-    Units: TWh/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total final energy electricity consumption (fossil fuels, nuclear, waste & renewables) (TWh) excluding distribution losses.
     """
     return total_fe_elec_generation_twh() / (1 + share_transmdistr_elec_losses())
 
 
+@component.add(
+    name="Total FE Elec generation TWh",
+    units="TWh/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_fe_elec_generation_twh():
     """
-    Real Name: Total FE Elec generation TWh
-    Original Eqn:
-    Units: TWh/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total final energy electricity generation (fossil fuels, nuclear, waste & renewables) (TWh).
     """
     return (
@@ -255,15 +238,14 @@ def total_fe_elec_generation_twh():
     )
 
 
+@component.add(
+    name="Year scarcity Elec",
+    units="year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def year_scarcity_elec():
     """
-    Real Name: Year scarcity Elec
-    Original Eqn:
-    Units: year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Year when the parameter abundance falls below 0.95, i.e. year when scarcity starts.
     """
     return if_then_else(abundance_electricity() > 0.95, lambda: 0, lambda: time())

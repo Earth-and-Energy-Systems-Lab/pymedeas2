@@ -1,19 +1,18 @@
 """
 Module coefficient_matrices
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["economic years", "sectors A matrix", "sectors A matrix1"], _subscript_dict)
+@component.add(
+    name="historic A Matrix",
+    units="Dmnl",
+    subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def historic_a_matrix():
     """
-    Real Name: historic A Matrix
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['economic years', 'sectors A matrix', 'sectors A matrix1']
-
     Historic A Matrix for 14 sectors and 2 regions.
     """
     return _ext_constant_historic_a_matrix()
@@ -29,6 +28,118 @@ _ext_constant_historic_a_matrix = ExtConstant(
         "sectors A matrix1": _subscript_dict["sectors A matrix1"],
     },
     _root,
+    {
+        "economic years": [
+            "year1995",
+            "year1996",
+            "year1997",
+            "year1998",
+            "year1999",
+            "year2000",
+            "year2001",
+            "year2002",
+            "year2003",
+            "year2004",
+            "year2005",
+            "year2006",
+            "year2007",
+            "year2008",
+            "year2009",
+            "year2010",
+            "year2011",
+            "year2012",
+            "year2013",
+            "year2014",
+        ],
+        "sectors A matrix": [
+            "sec1",
+            "sec2",
+            "sec3",
+            "sec4",
+            "sec5",
+            "sec6",
+            "sec7",
+            "sec8",
+            "sec9",
+            "sec10",
+            "sec11",
+            "sec12",
+            "sec13",
+            "sec14",
+            "sec15",
+            "sec16",
+            "sec17",
+            "sec18",
+            "sec19",
+            "sec20",
+            "sec21",
+            "sec22",
+            "sec23",
+            "sec24",
+            "sec25",
+            "sec26",
+            "sec27",
+            "sec28",
+            "sec29",
+            "sec30",
+            "sec31",
+            "sec32",
+            "sec33",
+            "sec34",
+            "sec35",
+            "sec36",
+            "sec37",
+            "sec38",
+            "sec39",
+            "sec40",
+            "sec41",
+            "sec42",
+        ],
+        "sectors A matrix1": [
+            "secb1",
+            "secb2",
+            "secb3",
+            "secb4",
+            "secb5",
+            "secb6",
+            "secb7",
+            "secb8",
+            "secb9",
+            "secb10",
+            "secb11",
+            "secb12",
+            "secb13",
+            "secb14",
+            "secb15",
+            "secb16",
+            "secb17",
+            "secb18",
+            "secb19",
+            "secb20",
+            "secb21",
+            "secb22",
+            "secb23",
+            "secb24",
+            "secb25",
+            "secb26",
+            "secb27",
+            "secb28",
+            "secb29",
+            "secb30",
+            "secb31",
+            "secb32",
+            "secb33",
+            "secb34",
+            "secb35",
+            "secb36",
+            "secb37",
+            "secb38",
+            "secb39",
+            "secb40",
+            "secb41",
+            "secb42",
+        ],
+    },
     "_ext_constant_historic_a_matrix",
 )
 
@@ -242,18 +353,13 @@ _ext_constant_historic_a_matrix.add(
 )
 
 
-@subs(["economic years", "sectors A matrix", "sectors A matrix1"], _subscript_dict)
+@component.add(
+    name="historic IA Matrix",
+    subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historic_ia_matrix():
-    """
-    Real Name: historic IA Matrix
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['economic years', 'sectors A matrix', 'sectors A matrix1']
-
-
-    """
     return (
         xr.DataArray(
             0,
@@ -291,33 +397,23 @@ def historic_ia_matrix():
     )
 
 
-@subs(["economic years", "sectors A matrix", "sectors A matrix1"], _subscript_dict)
+@component.add(
+    name="historic Leontief Matrix",
+    subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historic_leontief_matrix():
-    """
-    Real Name: historic Leontief Matrix
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['economic years', 'sectors A matrix', 'sectors A matrix1']
-
-
-    """
     return invert_matrix(historic_ia_matrix())
 
 
-@subs(["sectors A matrix", "sectors A matrix1"], _subscript_dict)
+@component.add(
+    name="I Matrix",
+    subscripts=["sectors A matrix", "sectors A matrix1"],
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def i_matrix():
-    """
-    Real Name: I Matrix
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['sectors A matrix', 'sectors A matrix1']
-
-
-    """
     return if_then_else(
         (
             xr.DataArray(
@@ -368,18 +464,13 @@ def i_matrix():
     )
 
 
-@subs(["sectors A matrix", "sectors A matrix1"], _subscript_dict)
+@component.add(
+    name="IA Matrix",
+    subscripts=["sectors A matrix", "sectors A matrix1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ia_matrix():
-    """
-    Real Name: IA Matrix
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors A matrix', 'sectors A matrix1']
-
-
-    """
     return if_then_else(
         time() >= 2009,
         lambda: historic_ia_matrix().loc["year2009", :, :].reset_coords(drop=True),
@@ -465,18 +556,13 @@ def ia_matrix():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="IA Matrix Domestic",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ia_matrix_domestic():
-    """
-    Real Name: IA Matrix Domestic
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
-
-    """
     return xr.DataArray(
         ia_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 2"]]
@@ -490,18 +576,13 @@ def ia_matrix_domestic():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="IA Matrix Exports 0",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ia_matrix_exports_0():
-    """
-    Real Name: IA Matrix Exports 0
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
-
-    """
     return xr.DataArray(
         ia_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 0"]]
@@ -515,18 +596,13 @@ def ia_matrix_exports_0():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="IA Matrix Exports 1",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ia_matrix_exports_1():
-    """
-    Real Name: IA Matrix Exports 1
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
-
-    """
     return xr.DataArray(
         ia_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 1"]]
@@ -540,18 +616,13 @@ def ia_matrix_exports_1():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="IA Matrix Imports 0",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ia_matrix_imports_0():
-    """
-    Real Name: IA Matrix Imports 0
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
-
-    """
     return xr.DataArray(
         ia_matrix()
         .loc[_subscript_dict["sec map 0"], _subscript_dict["secb map 2"]]
@@ -565,18 +636,13 @@ def ia_matrix_imports_0():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="IA Matrix Imports 1",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ia_matrix_imports_1():
-    """
-    Real Name: IA Matrix Imports 1
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
-
-    """
     return xr.DataArray(
         ia_matrix()
         .loc[_subscript_dict["sec map 1"], _subscript_dict["secb map 2"]]
@@ -590,18 +656,13 @@ def ia_matrix_imports_1():
     )
 
 
-@subs(["sectors A matrix", "sectors A matrix1"], _subscript_dict)
+@component.add(
+    name="Leontief Matrix",
+    subscripts=["sectors A matrix", "sectors A matrix1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def leontief_matrix():
-    """
-    Real Name: Leontief Matrix
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors A matrix', 'sectors A matrix1']
-
-
-    """
     return if_then_else(
         time() >= 2009,
         lambda: historic_leontief_matrix()
@@ -691,18 +752,13 @@ def leontief_matrix():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="Leontief Matrix Domestic",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def leontief_matrix_domestic():
-    """
-    Real Name: Leontief Matrix Domestic
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
-
-    """
     return xr.DataArray(
         leontief_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 2"]]
@@ -716,18 +772,13 @@ def leontief_matrix_domestic():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="Leontief Matrix Exports 0",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def leontief_matrix_exports_0():
-    """
-    Real Name: Leontief Matrix Exports 0
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
-
-    """
     return xr.DataArray(
         leontief_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 0"]]
@@ -741,18 +792,13 @@ def leontief_matrix_exports_0():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="Leontief Matrix Exports 1",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def leontief_matrix_exports_1():
-    """
-    Real Name: Leontief Matrix Exports 1
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
-
-    """
     return xr.DataArray(
         leontief_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 1"]]
@@ -766,18 +812,13 @@ def leontief_matrix_exports_1():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="Leontief Matrix Imports 0",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def leontief_matrix_imports_0():
-    """
-    Real Name: Leontief Matrix Imports 0
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
-
-    """
     return xr.DataArray(
         leontief_matrix()
         .loc[_subscript_dict["sec map 0"], _subscript_dict["secb map 2"]]
@@ -791,18 +832,13 @@ def leontief_matrix_imports_0():
     )
 
 
-@subs(["sectors", "sectors1"], _subscript_dict)
+@component.add(
+    name="Leontief Matrix Imports 1",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def leontief_matrix_imports_1():
-    """
-    Real Name: Leontief Matrix Imports 1
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'sectors1']
-
-
-    """
     return xr.DataArray(
         leontief_matrix()
         .loc[_subscript_dict["sec map 1"], _subscript_dict["secb map 2"]]

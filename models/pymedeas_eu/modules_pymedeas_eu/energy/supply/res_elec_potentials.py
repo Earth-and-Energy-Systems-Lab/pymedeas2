@@ -1,18 +1,17 @@
 """
 Module res_elec_potentials
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="available max FE solid bioE for elec EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def available_max_fe_solid_bioe_for_elec_ej():
     """
-    Real Name: available max FE solid bioE for elec EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Maximum available (final energy) solid bioenergy for electricity.
     """
     return (
@@ -20,15 +19,14 @@ def available_max_fe_solid_bioe_for_elec_ej():
     )
 
 
+@component.add(
+    name="desired share installed PV urban vs tot PV",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def desired_share_installed_pv_urban_vs_tot_pv():
     """
-    Real Name: desired share installed PV urban vs tot PV
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Desired share of installed PV in urban areas vs total PV installed.
     """
     return if_then_else(
@@ -52,15 +50,14 @@ def desired_share_installed_pv_urban_vs_tot_pv():
     )
 
 
+@component.add(
+    name="Efficiency conversion geot PE to Elec",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def efficiency_conversion_geot_pe_to_elec():
     """
-    Real Name: Efficiency conversion geot PE to Elec
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Efficiency of the transformation from geothermal (primary energy) to electricity.
     """
     return _ext_constant_efficiency_conversion_geot_pe_to_elec()
@@ -72,19 +69,19 @@ _ext_constant_efficiency_conversion_geot_pe_to_elec = ExtConstant(
     "efficiency_conversion_geot_pe_to_elec",
     {},
     _root,
+    {},
     "_ext_constant_efficiency_conversion_geot_pe_to_elec",
 )
 
 
+@component.add(
+    name="FE Elec gen from solar PV on land TWh",
+    units="TWh",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fe_elec_gen_from_solar_pv_on_land_twh():
     """
-    Real Name: FE Elec gen from solar PV on land TWh
-    Original Eqn:
-    Units: TWh
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Electricity generation from solar PV on land.
     """
     return float(real_generation_res_elec_twh().loc["solar PV"]) * (
@@ -92,17 +89,13 @@ def fe_elec_gen_from_solar_pv_on_land_twh():
     )
 
 
+@component.add(
+    name="historic share installed PV urban vs tot PV",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def historic_share_installed_pv_urban_vs_tot_pv():
-    """
-    Real Name: historic share installed PV urban vs tot PV
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
-
-    """
     return _ext_data_historic_share_installed_pv_urban_vs_tot_pv(time())
 
 
@@ -114,61 +107,52 @@ _ext_data_historic_share_installed_pv_urban_vs_tot_pv = ExtData(
     None,
     {},
     _root,
+    {},
     "_ext_data_historic_share_installed_pv_urban_vs_tot_pv",
 )
 
 
+@component.add(
+    name="max BioE TWe", units="TWe", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def max_bioe_twe():
     """
-    Real Name: max BioE TWe
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Techno-ecological potential of biomass&waste. This potential is dynamic and dependant on the potential assigned for bioenergy residues.
     """
     return available_max_fe_solid_bioe_for_elec_ej() * twe_per_twh() / ej_per_twh()
 
 
+@component.add(
+    name="max CSP on land MHa",
+    units="MHa",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_csp_on_land_mha():
     """
-    Real Name: max CSP on land MHa
-    Original Eqn:
-    Units: MHa
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Available land for solar CSP taking into account the total land availability for solar and the actual occupation from solar PV on land.
     """
     return max_solar_on_land_mha() - surface_solar_pv_on_land_mha()
 
 
+@component.add(
+    name="max CSP TWe", units="TWe", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def max_csp_twe():
     """
-    Real Name: max CSP TWe
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Techno-ecological potential of solar CSP. This potential depends on the assumed land availability for solar CSP power plants ("max solar PV on land MHa") and its power density (1 TWe = 8760 TWh in one year).
     """
     return max_csp_on_land_mha() * power_density_csp()
 
 
+@component.add(
+    name="max FE potential solid bioE for elec TWe",
+    units="TWe",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_fe_potential_solid_bioe_for_elec_twe():
     """
-    Real Name: max FE potential solid bioE for elec TWe
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Available potential (final energy) solid bioenergy for electricity.
     """
     return (
@@ -179,29 +163,24 @@ def max_fe_potential_solid_bioe_for_elec_twe():
     )
 
 
+@component.add(
+    name='"max geot-elec TWe"',
+    units="TWe",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_geotelec_twe():
     """
-    Real Name: "max geot-elec TWe"
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Techno-ecological potential of electric geothermal (1 TWe = 8760 TWh in one year). We assume that the global potential of 0.2 TWe.
     """
     return max_pe_geotelec_twth() * efficiency_conversion_geot_pe_to_elec()
 
 
+@component.add(
+    name="max hydro TWe", units="TWe", comp_type="Constant", comp_subtype="External"
+)
 def max_hydro_twe():
     """
-    Real Name: max hydro TWe
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Techno-ecological potential of hydro (1 TWe = 8760 TWh in one year).
     """
     return _ext_constant_max_hydro_twe()
@@ -213,19 +192,16 @@ _ext_constant_max_hydro_twe = ExtConstant(
     "max_hydro_potential",
     {},
     _root,
+    {},
     "_ext_constant_max_hydro_twe",
 )
 
 
+@component.add(
+    name="max oceanic TWe", units="TWe", comp_type="Constant", comp_subtype="External"
+)
 def max_oceanic_twe():
     """
-    Real Name: max oceanic TWe
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Techno-ecological potential of oceanic (1 TWe = 8760 TWh in one year).
     """
     return _ext_constant_max_oceanic_twe()
@@ -237,19 +213,19 @@ _ext_constant_max_oceanic_twe = ExtConstant(
     "max_oceanic_potential",
     {},
     _root,
+    {},
     "_ext_constant_max_oceanic_twe",
 )
 
 
+@component.add(
+    name="max offshore wind TWe",
+    units="TWe",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def max_offshore_wind_twe():
     """
-    Real Name: max offshore wind TWe
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Techno-ecological potential of offshore wind (1 TWe = 8760 TWh in one year).
     """
     return _ext_constant_max_offshore_wind_twe()
@@ -261,19 +237,19 @@ _ext_constant_max_offshore_wind_twe = ExtConstant(
     "max_offshore_wind_potential",
     {},
     _root,
+    {},
     "_ext_constant_max_offshore_wind_twe",
 )
 
 
+@component.add(
+    name="max onshore wind TWe",
+    units="TWe",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def max_onshore_wind_twe():
     """
-    Real Name: max onshore wind TWe
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Techno-ecological potential of onshore wind (1 TWe = 8760 TWh in one year).
     """
     return _ext_constant_max_onshore_wind_twe()
@@ -285,19 +261,19 @@ _ext_constant_max_onshore_wind_twe = ExtConstant(
     "max_onshore_wind_potential",
     {},
     _root,
+    {},
     "_ext_constant_max_onshore_wind_twe",
 )
 
 
+@component.add(
+    name='"max PE geot-elec TWth"',
+    units="TWe",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def max_pe_geotelec_twth():
     """
-    Real Name: "max PE geot-elec TWth"
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Primary energy of geothermal for electricity.
     """
     return _ext_constant_max_pe_geotelec_twth()
@@ -309,33 +285,32 @@ _ext_constant_max_pe_geotelec_twth = ExtConstant(
     "max_PE_geot_elec_potential",
     {},
     _root,
+    {},
     "_ext_constant_max_pe_geotelec_twth",
 )
 
 
+@component.add(
+    name="max PE potential biogas for elec",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_pe_potential_biogas_for_elec():
     """
-    Real Name: max PE potential biogas for elec
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Maximum potential (primary energy) of biogas for electricity.
     """
     return max_pe_biogas_ej() * share_pes_biogas_for_elec()
 
 
+@component.add(
+    name="max potential CSP TWe",
+    units="TWe",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_potential_csp_twe():
     """
-    Real Name: max potential CSP TWe
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Maximum potential of CSP PV for producing electricity on land. To distribute the area potential with the CSP, we assume the potential share proportional to the generation share in each time period.
     """
     return (
@@ -345,16 +320,15 @@ def max_potential_csp_twe():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="max potential RES elec TWh",
+    units="TWh",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_potential_res_elec_twh():
     """
-    Real Name: max potential RES elec TWh
-    Original Eqn:
-    Units: TWh
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Maximum potential of RES for electricity per technology considering an optimal Cp.
     """
     value = xr.DataArray(
@@ -383,15 +357,14 @@ def max_potential_res_elec_twh():
     return value
 
 
+@component.add(
+    name="max potential solar PV TWe",
+    units="TWe",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_potential_solar_pv_twe():
     """
-    Real Name: max potential solar PV TWe
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Maximum potential of solar PV for producing electricity on land. To distribute the area potential with the CSP, we assume the potential share proportional to the generation share in each time period.
     """
     return (
@@ -401,15 +374,14 @@ def max_potential_solar_pv_twe():
     )
 
 
+@component.add(
+    name="max potential tot RES elec TWh",
+    units="TWh",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_potential_tot_res_elec_twh():
     """
-    Real Name: max potential tot RES elec TWh
-    Original Eqn:
-    Units: TWh
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Maximum total potential of RES for electricity considering an optimal Cp.
     """
     return (
@@ -422,16 +394,15 @@ def max_potential_tot_res_elec_twh():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="max RES elec TWe",
+    units="TWe",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_res_elec_twe():
     """
-    Real Name: max RES elec TWe
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Maximum level of RES for electricity per technology considering an optimal Cp. For most technologies this variable corresponds with the maximum potential, excepting for solids bioenergy and solar, where given to the competing uses (solids bioenergy for heat and electricity) and competing technologies (solar PV and CSP) this variable corresponds to the maximum level from each use and technology.
     """
     value = xr.DataArray(
@@ -448,57 +419,53 @@ def max_res_elec_twe():
     return value
 
 
+@component.add(
+    name="max solar PV on land MHa",
+    units="MHa",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_solar_pv_on_land_mha():
     """
-    Real Name: max solar PV on land MHa
-    Original Eqn:
-    Units: MHa
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Available land for solar PV taking into account the total land availability for solar and the actual occupation from CSP.
     """
     return max_solar_on_land_mha() - surface_csp_mha()
 
 
+@component.add(
+    name="max solar PV on land TWe",
+    units="TWe",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_solar_pv_on_land_twe():
     """
-    Real Name: max solar PV on land TWe
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Techno-ecological potential of solar PV on land. This potential depends on the assumed land availability for solar PV power plants ("max solar PV on land MHa") and its power density (1 TWe = 8760 TWh in one year).
     """
     return max_solar_pv_on_land_mha() * power_density_solar_pv_on_land_twemha()
 
 
+@component.add(
+    name="max tot solar PV TWe",
+    units="TWe",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_tot_solar_pv_twe():
     """
-    Real Name: max tot solar PV TWe
-    Original Eqn:
-    Units: TWe
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Techno-ecological potential of total solar PV (on land + urban)..
     """
     return max_solar_pv_on_land_twe() + max_solar_pv_urban()
 
 
+@component.add(
+    name="P share installed PV urban vs tot PV",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_share_installed_pv_urban_vs_tot_pv():
     """
-    Real Name: P share installed PV urban vs tot PV
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     User defined share of installed PV in urban areas vs total PV.
     """
     return _ext_constant_p_share_installed_pv_urban_vs_tot_pv()
@@ -510,33 +477,32 @@ _ext_constant_p_share_installed_pv_urban_vs_tot_pv = ExtConstant(
     "share_PV_urban_tot_PV",
     {},
     _root,
+    {},
     "_ext_constant_p_share_installed_pv_urban_vs_tot_pv",
 )
 
 
+@component.add(
+    name="Percent remaining potential tot RES elec",
+    units="percent",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def percent_remaining_potential_tot_res_elec():
     """
-    Real Name: Percent remaining potential tot RES elec
-    Original Eqn:
-    Units: percent
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Remaining potential available as a percentage.
     """
     return remaining_potential_tot_res_elec() * 100
 
 
+@component.add(
+    name="Potential elec gen from solar PV on land TWh",
+    units="TWh",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def potential_elec_gen_from_solar_pv_on_land_twh():
     """
-    Real Name: Potential elec gen from solar PV on land TWh
-    Original Eqn:
-    Units: TWh
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Potential electricity generation from solar PV on land.
     """
     return (
@@ -545,15 +511,14 @@ def potential_elec_gen_from_solar_pv_on_land_twh():
     )
 
 
+@component.add(
+    name="Potential elec gen from solar PV urban TWh",
+    units="TWh",
+    comp_type="Stateful",
+    comp_subtype="SampleIfTrue",
+)
 def potential_elec_gen_from_solar_pv_urban_twh():
     """
-    Real Name: Potential elec gen from solar PV urban TWh
-    Original Eqn:
-    Units: TWh
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Potential electricity generation from solar PV in urban areas.
     """
     return _sampleiftrue_potential_elec_gen_from_solar_pv_urban_twh()
@@ -567,15 +532,14 @@ _sampleiftrue_potential_elec_gen_from_solar_pv_urban_twh = SampleIfTrue(
 )
 
 
+@component.add(
+    name="Potential elec gen from solar PV urban unconstrained TWh",
+    units="TWh",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def potential_elec_gen_from_solar_pv_urban_unconstrained_twh():
     """
-    Real Name: Potential elec gen from solar PV urban unconstrained TWh
-    Original Eqn:
-    Units: TWh
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Unconstrained potential electricity generation from solar PV in urban areas.
     """
     return (
@@ -584,29 +548,27 @@ def potential_elec_gen_from_solar_pv_urban_unconstrained_twh():
     )
 
 
+@component.add(
+    name="power density CSP",
+    units="TWe/MHa",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def power_density_csp():
     """
-    Real Name: power density CSP
-    Original Eqn:
-    Units: TWe/MHa
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Power density of CSP power plants.
     """
     return float(power_density_initial_res_elec_twemha().loc["CSP"])
 
 
+@component.add(
+    name="real share PV urban vs total PV",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def real_share_pv_urban_vs_total_pv():
     """
-    Real Name: real share PV urban vs total PV
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of PV in urban areas vs total (urban + on land power plants).
     """
     return np.minimum(
@@ -618,16 +580,15 @@ def real_share_pv_urban_vs_total_pv():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="remaining potential RES elec",
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def remaining_potential_res_elec():
     """
-    Real Name: remaining potential RES elec
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Remaining potential of renewables for electricity by technology.
     """
     return if_then_else(
@@ -640,15 +601,14 @@ def remaining_potential_res_elec():
     )
 
 
+@component.add(
+    name="remaining potential solar PV urban",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def remaining_potential_solar_pv_urban():
     """
-    Real Name: remaining potential solar PV urban
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Remaining potential of solar PV in urban areas.
     """
     return np.maximum(
@@ -662,15 +622,14 @@ def remaining_potential_solar_pv_urban():
     )
 
 
+@component.add(
+    name="remaining potential tot RES elec",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def remaining_potential_tot_res_elec():
     """
-    Real Name: remaining potential tot RES elec
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Remaining potential available as a fraction of unity.
     """
     return if_then_else(
@@ -683,15 +642,14 @@ def remaining_potential_tot_res_elec():
     )
 
 
+@component.add(
+    name="share solar PV vs tot solar gen",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_solar_pv_vs_tot_solar_gen():
     """
-    Real Name: share solar PV vs tot solar gen
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of solar PV vs CSP generation.
     """
     return zidz(

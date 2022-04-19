@@ -1,18 +1,17 @@
 """
 Module chp_plants
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="efficiency Elec coal CHP plants",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def efficiency_elec_coal_chp_plants():
     """
-    Real Name: efficiency Elec coal CHP plants
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Efficiency of elec in coal CHP plants. We assume constant last data IEA.
     """
     return _ext_data_efficiency_elec_coal_chp_plants(time())
@@ -26,19 +25,19 @@ _ext_data_efficiency_elec_coal_chp_plants = ExtData(
     None,
     {},
     _root,
+    {},
     "_ext_data_efficiency_elec_coal_chp_plants",
 )
 
 
+@component.add(
+    name="efficiency Elec gas CHP plants",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def efficiency_elec_gas_chp_plants():
     """
-    Real Name: efficiency Elec gas CHP plants
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Efficiency of elec in gas CHP plants. We assume constant last data IEA.
     """
     return _ext_data_efficiency_elec_gas_chp_plants(time())
@@ -52,19 +51,19 @@ _ext_data_efficiency_elec_gas_chp_plants = ExtData(
     "interpolate",
     {},
     _root,
+    {},
     "_ext_data_efficiency_elec_gas_chp_plants",
 )
 
 
+@component.add(
+    name="efficiency Elec oil CHP plants",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def efficiency_elec_oil_chp_plants():
     """
-    Real Name: efficiency Elec oil CHP plants
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Efficiency of liquids in gas CHP plants. We assume constant last data IEA.
     """
     return _ext_data_efficiency_elec_oil_chp_plants(time())
@@ -78,19 +77,19 @@ _ext_data_efficiency_elec_oil_chp_plants = ExtData(
     None,
     {},
     _root,
+    {},
     "_ext_data_efficiency_elec_oil_chp_plants",
 )
 
 
+@component.add(
+    name="efficiency Heat coal CHP plants",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def efficiency_heat_coal_chp_plants():
     """
-    Real Name: efficiency Heat coal CHP plants
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Efficiency of heat in gas CHP plants. We assume constant last data IEA.
     """
     return _ext_data_efficiency_heat_coal_chp_plants(time())
@@ -104,19 +103,19 @@ _ext_data_efficiency_heat_coal_chp_plants = ExtData(
     "interpolate",
     {},
     _root,
+    {},
     "_ext_data_efficiency_heat_coal_chp_plants",
 )
 
 
+@component.add(
+    name="efficiency Heat gas CHP plants",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def efficiency_heat_gas_chp_plants():
     """
-    Real Name: efficiency Heat gas CHP plants
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Efficiency of heat in gas CHP plants. We assume constant last data IEA.
     """
     return _ext_data_efficiency_heat_gas_chp_plants(time())
@@ -130,19 +129,19 @@ _ext_data_efficiency_heat_gas_chp_plants = ExtData(
     "interpolate",
     {},
     _root,
+    {},
     "_ext_data_efficiency_heat_gas_chp_plants",
 )
 
 
+@component.add(
+    name="efficiency Heat oil CHP plants",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def efficiency_heat_oil_chp_plants():
     """
-    Real Name: efficiency Heat oil CHP plants
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Efficiency of heat in oil CHP plants. We assume constant last data IEA.
     """
     return _ext_data_efficiency_heat_oil_chp_plants(time())
@@ -156,33 +155,32 @@ _ext_data_efficiency_heat_oil_chp_plants = ExtData(
     "interpolate",
     {},
     _root,
+    {},
     "_ext_data_efficiency_heat_oil_chp_plants",
 )
 
 
+@component.add(
+    name="FED heat coal CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fed_heat_coal_chp_plants_ej():
     """
-    Real Name: FED heat coal CHP plants EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy demand of coal to produce heat in CHP plants.
     """
     return fed_heat_fossil_fuels_chp_plants_ej() * share_chp_plants_coal()
 
 
+@component.add(
+    name="FED heat fossil fuels CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fed_heat_fossil_fuels_chp_plants_ej():
     """
-    Real Name: FED heat fossil fuels CHP plants EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy demand of fossil fuels in CHP plants.
     """
     return np.maximum(
@@ -190,43 +188,40 @@ def fed_heat_fossil_fuels_chp_plants_ej():
     )
 
 
+@component.add(
+    name="FED heat gas CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fed_heat_gas_chp_plants_ej():
     """
-    Real Name: FED heat gas CHP plants EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy demand of gas to produce heat in CHP plants.
     """
     return fed_heat_fossil_fuels_chp_plants_ej() * historic_share_chp_plants_gas()
 
 
+@component.add(
+    name="FED heat liquids CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fed_heat_liquids_chp_plants_ej():
     """
-    Real Name: FED heat liquids CHP plants EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy demand of oil to produce heat in CHP plants.
     """
     return fed_heat_fossil_fuels_chp_plants_ej() * share_chp_plants_oil()
 
 
+@component.add(
+    name='"FED heat-com by NRE CHP plants EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fed_heatcom_by_nre_chp_plants_ej():
     """
-    Real Name: "FED heat-com by NRE CHP plants EJ"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy demand of commercial heat in CHP plants without RES.
     """
     return (
@@ -235,15 +230,14 @@ def fed_heatcom_by_nre_chp_plants_ej():
     )
 
 
+@component.add(
+    name="FES Elec fossil fuel CHP plants EJ",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fes_elec_fossil_fuel_chp_plants_ej():
     """
-    Real Name: FES Elec fossil fuel CHP plants EJ
-    Original Eqn:
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final Energy supply of electricity from fossil fuels in CHP plants. We assign priority to it due to its better efficiency.
     """
     return np.minimum(
@@ -252,29 +246,27 @@ def fes_elec_fossil_fuel_chp_plants_ej():
     )
 
 
+@component.add(
+    name='"FES heat-com fossil fuels CHP plants EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fes_heatcom_fossil_fuels_chp_plants_ej():
     """
-    Real Name: "FES heat-com fossil fuels CHP plants EJ"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final Energy supply of heat from fossil fuels in CHP plants. We assign priority to it due to its better efficiency.
     """
     return fed_heat_fossil_fuels_chp_plants_ej()
 
 
+@component.add(
+    name='"FES Heat-com nuclear CHP plants EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fes_heatcom_nuclear_chp_plants_ej():
     """
-    Real Name: "FES Heat-com nuclear CHP plants EJ"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Commercial heat produced in cogeration nuclear plants.
     """
     return np.minimum(
@@ -282,15 +274,14 @@ def fes_heatcom_nuclear_chp_plants_ej():
     )
 
 
+@component.add(
+    name="historic share CHP plants gas",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def historic_share_chp_plants_gas():
     """
-    Real Name: historic share CHP plants gas
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Historic share of natural gas for electricity in relation to the total fossil fuels for CHP plants
     """
     return _ext_data_historic_share_chp_plants_gas(time())
@@ -304,19 +295,19 @@ _ext_data_historic_share_chp_plants_gas = ExtData(
     "interpolate",
     {},
     _root,
+    {},
     "_ext_data_historic_share_chp_plants_gas",
 )
 
 
+@component.add(
+    name="historic share CHP plants oil",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def historic_share_chp_plants_oil():
     """
-    Real Name: historic share CHP plants oil
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     historic share CHP plants oil
     """
     return _ext_data_historic_share_chp_plants_oil(time())
@@ -330,75 +321,71 @@ _ext_data_historic_share_chp_plants_oil = ExtData(
     None,
     {},
     _root,
+    {},
     "_ext_data_historic_share_chp_plants_oil",
 )
 
 
+@component.add(
+    name="PED coal for CHP plants EJ",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ped_coal_for_chp_plants_ej():
     """
-    Real Name: PED coal for CHP plants EJ
-    Original Eqn:
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy demand of coal (EJ) for CHP plants.
     """
     return fed_heat_coal_chp_plants_ej() / efficiency_heat_coal_chp_plants()
 
 
+@component.add(
+    name="PED gas for CHP plants EJ",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ped_gas_for_chp_plants_ej():
     """
-    Real Name: PED gas for CHP plants EJ
-    Original Eqn:
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy demand of gas (EJ) for CHP plants.
     """
     return fed_heat_gas_chp_plants_ej() / efficiency_heat_gas_chp_plants()
 
 
+@component.add(
+    name="PED oil for CHP plants EJ",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ped_oil_for_chp_plants_ej():
     """
-    Real Name: PED oil for CHP plants EJ
-    Original Eqn:
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy demand of oil (EJ) for CHP plants.
     """
     return fed_heat_liquids_chp_plants_ej() / efficiency_heat_oil_chp_plants()
 
 
+@component.add(
+    name="Potential FE gen Elec coal CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def potential_fe_gen_elec_coal_chp_plants_ej():
     """
-    Real Name: Potential FE gen Elec coal CHP plants EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Potential electricity generation from CHP plants burning coal.
     """
     return ped_coal_for_chp_plants_ej() * efficiency_elec_coal_chp_plants()
 
 
+@component.add(
+    name="Potential FE gen Elec fossil fuel CHP plants EJ",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def potential_fe_gen_elec_fossil_fuel_chp_plants_ej():
     """
-    Real Name: Potential FE gen Elec fossil fuel CHP plants EJ
-    Original Eqn:
-    Units: EJ/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Potential electricity generation from CHP plants burning fossil fuels.
     """
     return (
@@ -408,43 +395,27 @@ def potential_fe_gen_elec_fossil_fuel_chp_plants_ej():
     )
 
 
-def potential_fe_gen_elec_gas_chp_plants_ej():
-    """
-    Real Name: Potential FE gen Elec gas CHP plants EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-    Potential electricity generation from CHP plants burning natural gas.
-    """
-    return ped_gas_for_chp_plants_ej() * efficiency_elec_gas_chp_plants()
-
-
+@component.add(
+    name="Potential FE gen Elec liquids CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def potential_fe_gen_elec_liquids_chp_plants_ej():
     """
-    Real Name: Potential FE gen Elec liquids CHP plants EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Potential electricity generation from CHP plants burning oil liquids.
     """
     return ped_oil_for_chp_plants_ej() * efficiency_elec_oil_chp_plants()
 
 
+@component.add(
+    name='"Potential FES Heat-com nuclear CHP plants EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def potential_fes_heatcom_nuclear_chp_plants_ej():
     """
-    Real Name: "Potential FES Heat-com nuclear CHP plants EJ"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Potential commercial heat to be produced in cogeration nuclear plants.
     """
     return (
@@ -453,29 +424,40 @@ def potential_fes_heatcom_nuclear_chp_plants_ej():
     )
 
 
+@component.add(
+    name="Potential FE gen Elec gas CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def potential_fe_gen_elec_gas_chp_plants_ej():
+    """
+    Potential electricity generation from CHP plants burning natural gas.
+    """
+    return ped_gas_for_chp_plants_ej() * efficiency_elec_gas_chp_plants()
+
+
+@component.add(
+    name="share CHP plants coal",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_chp_plants_coal():
     """
-    Real Name: share CHP plants coal
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Coal is assumed to cover the rest of the CHP plants demand after RES, nuclear, oil and gas.
     """
     return 1 - historic_share_chp_plants_gas() - share_chp_plants_oil()
 
 
+@component.add(
+    name="share CHP plants oil",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_chp_plants_oil():
     """
-    Real Name: share CHP plants oil
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Oil share of heat demand. Since this share has been falling globally since the first oil shock, and given the difficulties to substitute oil in other sectors (e.g. Transportation) and that there are many more resources that can supply heat, we assume an exogenous linear decreasing trend for the oil share of heat demand to reach 0% around 2025.
     """
     return np.maximum(
@@ -488,15 +470,14 @@ def share_chp_plants_oil():
     )
 
 
+@component.add(
+    name='"Share heat-com CHP plants NRE vs NRE tot heat-com generation"',
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation():
     """
-    Real Name: "Share heat-com CHP plants NRE vs NRE tot heat-com generation"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Share of commercial heat produced in CHP plants from non-renewable energies vs. total commercial heat generation from NRE.
     """
     return _ext_data_share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation(time())
@@ -510,19 +491,19 @@ _ext_data_share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation = ExtData(
     "interpolate",
     {},
     _root,
+    {},
     "_ext_data_share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation",
 )
 
 
+@component.add(
+    name="share of heat production in CHP plants vs total nucelar elec generation",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation():
     """
-    Real Name: share of heat production in CHP plants vs total nucelar elec generation
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Share of heat production in CHP plants vs total nucelar elec generation.
     """
     return (
@@ -536,19 +517,19 @@ _ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_gener
     "share_heat_output_vs_electricity_in_nuclear",
     {},
     _root,
+    {},
     "_ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation",
 )
 
 
+@component.add(
+    name="Total gen losses demand for CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_gen_losses_demand_for_chp_plants_ej():
     """
-    Real Name: Total gen losses demand for CHP plants EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total generation losses associated to CHP plants.
     """
     return (

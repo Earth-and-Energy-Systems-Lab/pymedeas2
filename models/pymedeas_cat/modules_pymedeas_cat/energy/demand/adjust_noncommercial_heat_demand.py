@@ -1,19 +1,18 @@
 """
 Module adjust_noncommercial_heat_demand
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name='"FED by fuel for heat-nc"',
+    units="EJ",
+    subscripts=["final sources"],
+    comp_type="Auxiliary, Constant",
+    comp_subtype="Normal",
+)
 def fed_by_fuel_for_heatnc():
     """
-    Real Name: "FED by fuel for heat-nc"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary, Constant
-    Subs: ['final sources']
-
     Final energy demand (excluding distribution and generation losses) of non-commercial heat by final fuel.
     """
     value = xr.DataArray(
@@ -29,15 +28,14 @@ def fed_by_fuel_for_heatnc():
     return value
 
 
+@component.add(
+    name='"FED coal for heat-nc"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fed_coal_for_heatnc():
     """
-    Real Name: "FED coal for heat-nc"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy demand (excluding distribution and generation losses) of non-commercial heat from coal.
     """
     return (
@@ -51,15 +49,14 @@ def fed_coal_for_heatnc():
     )
 
 
+@component.add(
+    name='"FED nat. gas for heat-nc"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fed_nat_gas_for_heatnc():
     """
-    Real Name: "FED nat. gas for heat-nc"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy demand (excluding distribution and generation losses) of non-commercial heat from natural gas.
     """
     return (
@@ -70,29 +67,24 @@ def fed_nat_gas_for_heatnc():
     )
 
 
+@component.add(
+    name='"FED NRE for heat-nc"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fed_nre_for_heatnc():
-    """
-    Real Name: "FED NRE for heat-nc"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return fed_coal_for_heatnc() + fed_nat_gas_for_heatnc() + fed_oil_for_heatnc()
 
 
+@component.add(
+    name='"FED oil for heat-nc"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fed_oil_for_heatnc():
     """
-    Real Name: "FED oil for heat-nc"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy demand (excluding distribution and generation losses) of non-commercial heat from oil.
     """
     return (
@@ -103,15 +95,14 @@ def fed_oil_for_heatnc():
     )
 
 
+@component.add(
+    name='"FED solid bioE for heat-nc"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fed_solid_bioe_for_heatnc():
     """
-    Real Name: "FED solid bioE for heat-nc"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy demand (excluding distribution and generation losses) of non-commercial heat from solid bioenergy.
     """
     return (
@@ -122,15 +113,14 @@ def fed_solid_bioe_for_heatnc():
     )
 
 
+@component.add(
+    name='"ratio FED for heat-nc vs FED for heat-com"',
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ratio_fed_for_heatnc_vs_fed_for_heatcom():
     """
-    Real Name: "ratio FED for heat-nc vs FED for heat-com"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Ratio FED for non-commercial heat vs FED for commercial heat (before climate change impacts).
     """
     return sum(
@@ -139,58 +129,54 @@ def ratio_fed_for_heatnc_vs_fed_for_heatcom():
     ) * zidz(1, float(required_fed_by_fuel_before_heat_correction().loc["heat"]))
 
 
+@component.add(
+    name='"share FED coal vs NRE heat-nc"',
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_fed_coal_vs_nre_heatnc():
     """
-    Real Name: "share FED coal vs NRE heat-nc"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share coal vs non-renewable energy sources for non-commercial heat generation.
     """
     return zidz(fed_coal_for_heatnc(), fed_nre_for_heatnc())
 
 
+@component.add(
+    name='"share FED gas vs NRE heat-nc"',
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_fed_gas_vs_nre_heatnc():
     """
-    Real Name: "share FED gas vs NRE heat-nc"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share gas vs non-renewable energy sources for non-commercial heat generation.
     """
     return zidz(fed_nat_gas_for_heatnc(), fed_nre_for_heatnc())
 
 
+@component.add(
+    name='"share FED liquids vs NRE heat-nc"',
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_fed_liquids_vs_nre_heatnc():
     """
-    Real Name: "share FED liquids vs NRE heat-nc"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share liquids vs non-renewable energy sources for non-commercial heat generation.
     """
     return zidz(fed_oil_for_heatnc(), fed_nre_for_heatnc())
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="share FEH over FED by final fuel",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Auxiliary, Constant",
+    comp_subtype="Normal",
+)
 def share_feh_over_fed_by_final_fuel():
     """
-    Real Name: share FEH over FED by final fuel
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary, Constant
-    Subs: ['final sources']
-
     Share FEH over FED by final fuel.
     """
     value = xr.DataArray(
@@ -206,15 +192,14 @@ def share_feh_over_fed_by_final_fuel():
     return value
 
 
+@component.add(
+    name="share FEH over FED coal",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def share_feh_over_fed_coal():
     """
-    Real Name: share FEH over FED coal
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Estimated share of FEH over FED for coal solids (IEA, 2014 and own calculations).
     """
     return _ext_constant_share_feh_over_fed_coal()
@@ -226,19 +211,19 @@ _ext_constant_share_feh_over_fed_coal = ExtConstant(
     "share_feh_over_fed_coal",
     {},
     _root,
+    {},
     "_ext_constant_share_feh_over_fed_coal",
 )
 
 
+@component.add(
+    name='"share FEH over FED nat. gas"',
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def share_feh_over_fed_nat_gas():
     """
-    Real Name: "share FEH over FED nat. gas"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Estimated share of FEH over FED for gases (IEA, 2014 and own calculations).
     """
     return _ext_constant_share_feh_over_fed_nat_gas()
@@ -250,19 +235,19 @@ _ext_constant_share_feh_over_fed_nat_gas = ExtConstant(
     "share_feh_over_fed_nat_gas",
     {},
     _root,
+    {},
     "_ext_constant_share_feh_over_fed_nat_gas",
 )
 
 
+@component.add(
+    name="share FEH over FED oil",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def share_feh_over_fed_oil():
     """
-    Real Name: share FEH over FED oil
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Estimated share of FEH over FED for liquids (IEA, 2014 and own calculations).
     """
     return _ext_constant_share_feh_over_fed_oil()
@@ -274,19 +259,19 @@ _ext_constant_share_feh_over_fed_oil = ExtConstant(
     "share_feh_over_fed_oil",
     {},
     _root,
+    {},
     "_ext_constant_share_feh_over_fed_oil",
 )
 
 
+@component.add(
+    name="share FEH over FED solid bioE",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def share_feh_over_fed_solid_bioe():
     """
-    Real Name: share FEH over FED solid bioE
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Estimated share of FEH over FED for solid bioenergy for the year 2011 (IEA, 2014 and own calculations).
     """
     return _ext_constant_share_feh_over_fed_solid_bioe()
@@ -298,5 +283,6 @@ _ext_constant_share_feh_over_fed_solid_bioe = ExtConstant(
     "share_feh_over_fed_solids_bioe",
     {},
     _root,
+    {},
     "_ext_constant_share_feh_over_fed_solid_bioe",
 )

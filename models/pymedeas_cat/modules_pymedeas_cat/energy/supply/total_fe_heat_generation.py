@@ -1,18 +1,14 @@
 """
 Module total_fe_heat_generation
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="Abundance heat", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def abundance_heat():
     """
-    Real Name: Abundance heat
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     The parameter abundance varies between (1;0). Abundance=1 while the supply covers the demand; the closest to 0 indicates a higher divergence between supply and demand.
     """
     return if_then_else(
@@ -25,29 +21,24 @@ def abundance_heat():
     )
 
 
+@component.add(
+    name="Annual growth rate RES for heat",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def annual_growth_rate_res_for_heat():
     """
-    Real Name: Annual growth rate RES for heat
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Annual growth rate of heat generation from RES.
     """
     return -1 + fes_res_for_heat_ej() / fes_res_for_heat_delayed_1yr()
 
 
+@component.add(
+    name="FES heat from BioW", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def fes_heat_from_biow():
     """
-    Real Name: FES heat from BioW
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Heat generation of total bioenergy and waste (to compare with more common statistics).
     """
     return (
@@ -58,15 +49,11 @@ def fes_heat_from_biow():
     )
 
 
+@component.add(
+    name="FES Heat from coal", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def fes_heat_from_coal():
     """
-    Real Name: FES Heat from coal
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Heat from Heat plants that burn coal (both commercial and non-commercial).
     """
     return (
@@ -74,15 +61,14 @@ def fes_heat_from_coal():
     ) * efficiency_coal_for_heat_plants()
 
 
+@component.add(
+    name='"FES Heat from nat. gas"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fes_heat_from_nat_gas():
     """
-    Real Name: "FES Heat from nat. gas"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Heat from Heat plants that burn fossil natural gas (both commercial and non-commercial).
     """
     return (
@@ -90,15 +76,11 @@ def fes_heat_from_nat_gas():
     ) * efficiency_gases_for_heat_plants()
 
 
+@component.add(
+    name="FES Heat from oil", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def fes_heat_from_oil():
     """
-    Real Name: FES Heat from oil
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Heat from Heat plants that burn oil (both commercial and non-commercial).
     """
     return (
@@ -106,15 +88,11 @@ def fes_heat_from_oil():
     ) * efficiency_liquids_for_heat_plants()
 
 
+@component.add(
+    name="FES NRE for heat", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def fes_nre_for_heat():
     """
-    Real Name: FES NRE for heat
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Heat from non-renewable energy resources.
     """
     return (
@@ -126,15 +104,14 @@ def fes_nre_for_heat():
     )
 
 
+@component.add(
+    name="FES RES for heat delayed 1yr",
+    units="Tdollars/Year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
 def fes_res_for_heat_delayed_1yr():
     """
-    Real Name: FES RES for heat delayed 1yr
-    Original Eqn:
-    Units: Tdollars/Year
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Heat from renewable energy sources delayed 1 year.
     """
     return _delayfixed_fes_res_for_heat_delayed_1yr()
@@ -149,15 +126,11 @@ _delayfixed_fes_res_for_heat_delayed_1yr = DelayFixed(
 )
 
 
+@component.add(
+    name="FES RES for heat EJ", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def fes_res_for_heat_ej():
     """
-    Real Name: FES RES for heat EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Heat from renewable energy sources.
     """
     return (
@@ -167,47 +140,44 @@ def fes_res_for_heat_ej():
     )
 
 
+@component.add(
+    name='"PES coal for Heat-com plants"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_coal_for_heatcom_plants():
     """
-    Real Name: "PES coal for Heat-com plants"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy supply of coal for commercial Heat plants.
     """
     return (
-        extraction_coal_ej_aut() + imports_aut_coal_from_row_ej()
+        extraction_coal_aut() + imports_aut_coal_from_row_ej()
     ) * share_coal_dem_for_heatcom()
 
 
+@component.add(
+    name='"PES coal for Heat-nc plants"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_coal_for_heatnc_plants():
     """
-    Real Name: "PES coal for Heat-nc plants"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy supply of coal for non-commercial Heat plants.
     """
     return (
-        extraction_coal_ej_aut() + imports_aut_coal_from_row_ej()
+        extraction_coal_aut() + imports_aut_coal_from_row_ej()
     ) * share_coal_dem_for_heatnc()
 
 
+@component.add(
+    name='"PES nat. gas for Heat-com plants"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_nat_gas_for_heatcom_plants():
     """
-    Real Name: "PES nat. gas for Heat-com plants"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy supply of fossil natural gas for commercial Heat plants.
     """
     return (
@@ -215,29 +185,27 @@ def pes_nat_gas_for_heatcom_plants():
     ) * share_nat_gas_dem_for_heatcom()
 
 
+@component.add(
+    name='"PES nat. gas for Heat-nc plants"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_nat_gas_for_heatnc_plants():
     """
-    Real Name: "PES nat. gas for Heat-nc plants"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy supply of natural gas for non-commercial Heat plants.
     """
     return (pes_gases() - ped_nat_gas_for_gtl_ej()) * share_gases_dem_for_heatnc()
 
 
+@component.add(
+    name='"PES oil for Heat-com plants"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_oil_for_heatcom_plants():
     """
-    Real Name: "PES oil for Heat-com plants"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy supply of oil for commercial Heat plants.
     """
     return (
@@ -245,71 +213,66 @@ def pes_oil_for_heatcom_plants():
     ) * share_oil_dem_for_heatcom()
 
 
+@component.add(
+    name='"PES oil for Heat-nc plants"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_oil_for_heatnc_plants():
     """
-    Real Name: "PES oil for Heat-nc plants"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy supply of natural oil for non-commercial Heat plants.
     """
     return pes_liquids_ej() * share_liquids_dem_for_heatnc()
 
 
+@component.add(
+    name="share RES heat generation",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_res_heat_generation():
     """
-    Real Name: share RES heat generation
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of RES in the total heat generation.
     """
     return fes_res_for_heat_ej() / total_fe_heat_generation_ej()
 
 
+@component.add(
+    name="Total FE Heat consumption EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_fe_heat_consumption_ej():
     """
-    Real Name: Total FE Heat consumption EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total final heat consumption (fossil fuels, nuclear, waste & renewables) (EJ).
     """
     return total_fe_heat_generation_ej() / (1 + share_heat_distribution_losses())
 
 
+@component.add(
+    name="Total FE Heat generation EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_fe_heat_generation_ej():
     """
-    Real Name: Total FE Heat generation EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total final heat generation (fossil fuels, nuclear, waste & renewables) (EJ).
     """
     return fes_res_for_heat_ej() + fes_heatcom_from_waste_ej() + fes_nre_for_heat()
 
 
+@component.add(
+    name="Year scarcity Heat",
+    units="Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def year_scarcity_heat():
     """
-    Real Name: Year scarcity Heat
-    Original Eqn:
-    Units: Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Year when the parameter abundance falls below 0.95, i.e. year when scarcity starts.
     """
     return if_then_else(abundance_heat() > 0.95, lambda: 0, lambda: time())

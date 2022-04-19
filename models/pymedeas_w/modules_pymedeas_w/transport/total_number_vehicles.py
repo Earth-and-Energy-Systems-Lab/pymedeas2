@@ -1,18 +1,17 @@
 """
 Module total_number_vehicles
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name='"share elec+hyb light vehicles"',
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_elechyb_light_vehicles():
     """
-    Real Name: "share elec+hyb light vehicles"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of electricity+hybrid LD vehicles
     """
     return (
@@ -20,29 +19,27 @@ def share_elechyb_light_vehicles():
     ) / total_number_light_vehicles()
 
 
+@component.add(
+    name="share of electric light vehicles",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_of_electric_light_vehicles():
     """
-    Real Name: share of electric light vehicles
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of electric LD vehicles
     """
     return total_number_elec_light_vehicles() / total_number_light_vehicles()
 
 
+@component.add(
+    name="total number elec light vehicles",
+    units="vehicle",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_number_elec_light_vehicles():
     """
-    Real Name: total number elec light vehicles
-    Original Eqn:
-    Units: vehicle
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total number of light electric vehicles, households+cargo (battery based+plug in hybrid)
     """
     return float(number_vehicles_h().loc["elec 4wheels"]) + float(
@@ -50,15 +47,14 @@ def total_number_elec_light_vehicles():
     )
 
 
+@component.add(
+    name="total number gas light vehicles",
+    units="vehicle",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_number_gas_light_vehicles():
     """
-    Real Name: total number gas light vehicles
-    Original Eqn:
-    Units: vehicle
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total number of light gas vehicles, households+cargo
     """
     return float(number_vehicles_h().loc["gas 4wheels"]) + float(
@@ -66,15 +62,14 @@ def total_number_gas_light_vehicles():
     )
 
 
+@component.add(
+    name="total number hybrid light vehicles",
+    units="vehicle",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_number_hybrid_light_vehicles():
     """
-    Real Name: total number hybrid light vehicles
-    Original Eqn:
-    Units: vehicle
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total number of light hybrid vehicles, households+cargo
     """
     return float(number_vehicles_h().loc["hib 4wheels"]) + float(
@@ -82,15 +77,14 @@ def total_number_hybrid_light_vehicles():
     )
 
 
+@component.add(
+    name="total number light vehicles",
+    units="Mvehicles",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_number_light_vehicles():
     """
-    Real Name: total number light vehicles
-    Original Eqn:
-    Units: Mvehicles
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total number of ligth duty vehicles (cargo+households)
     """
     return (

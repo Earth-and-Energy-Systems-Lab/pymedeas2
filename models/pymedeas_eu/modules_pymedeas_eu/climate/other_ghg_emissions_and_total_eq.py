@@ -1,18 +1,17 @@
 """
 Module other_ghg_emissions_and_total_eq
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="CH4 anthro emissions",
+    units="Mton/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ch4_anthro_emissions():
     """
-    Real Name: CH4 anthro emissions
-    Original Eqn:
-    Units: Mton/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     "Representative Concentration Pathways" (RCPs, see http://tntcat.iiasa.ac.at:8787/RcpDb/dsd?Action=htmlpage&page=compare) except Power Plants, Energy Conversion, Extraction, and Distribution. Corrected with endogenous data "Total CH4 emissions fossil fuels" Choose RCP: 1. RCP 2.6 2. RCP 4.5 3. RCP 6.0 4. RCP 8.5
     """
     return total_ch4_emissions_fossil_fuels() + if_then_else(
@@ -33,16 +32,15 @@ def ch4_anthro_emissions():
     )
 
 
-@subs(["RCP Scenario"], _subscript_dict)
+@component.add(
+    name="CH4 anthro emissions RCP",
+    units="Mton/Year",
+    subscripts=["RCP Scenario"],
+    comp_type="Data",
+    comp_subtype="External",
+)
 def ch4_anthro_emissions_rcp():
     """
-    Real Name: CH4 anthro emissions RCP
-    Original Eqn:
-    Units: Mton/Year
-    Limits: (None, None)
-    Type: Data
-    Subs: ['RCP Scenario']
-
     "Representative Concentration Pathways" (RCPs, see http://tntcat.iiasa.ac.at:8787/RcpDb/dsd?Action=htmlpage&page=compare)
     """
     return _ext_data_ch4_anthro_emissions_rcp(time())
@@ -56,19 +54,16 @@ _ext_data_ch4_anthro_emissions_rcp = ExtData(
     "interpolate",
     {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
+    {"RCP Scenario": ["RCP26", "RCP45", "RCP60", "RCP85"]},
     "_ext_data_ch4_anthro_emissions_rcp",
 )
 
 
+@component.add(
+    name="Choose RCP", units="Dmnl", comp_type="Constant", comp_subtype="External"
+)
 def choose_rcp():
     """
-    Real Name: Choose RCP
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Choose RCP (Representative Concentration Pathway) 1. RCP 2.6 2. RCP 4.5 3. RCP 6.0 4. RCP 8.5
     """
     return _ext_constant_choose_rcp()
@@ -80,20 +75,20 @@ _ext_constant_choose_rcp = ExtConstant(
     "RCP_GHG_emissions_select",
     {},
     _root,
+    {},
     "_ext_constant_choose_rcp",
 )
 
 
-@subs(["HFC type"], _subscript_dict)
+@component.add(
+    name="HFC emissions",
+    units="tons/Year",
+    subscripts=["HFC type"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def hfc_emissions():
     """
-    Real Name: HFC emissions
-    Original Eqn:
-    Units: tons/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['HFC type']
-
     Historic data + projections "Representative Concentration Pathways" (RCPs, see http://tntcat.iiasa.ac.at:8787/RcpDb/dsd?Action=htmlpage&page=compare) Choose RCP: 1. RCP 2.6 2. RCP 4.5 3. RCP 6.0 4. RCP 8.5
     """
     return if_then_else(
@@ -111,16 +106,15 @@ def hfc_emissions():
     )
 
 
-@subs(["RCP Scenario", "HFC type"], _subscript_dict)
+@component.add(
+    name="HFC emissions RCP",
+    units="tons/Year",
+    subscripts=["RCP Scenario", "HFC type"],
+    comp_type="Data",
+    comp_subtype="External",
+)
 def hfc_emissions_rcp():
     """
-    Real Name: HFC emissions RCP
-    Original Eqn:
-    Units: tons/Year
-    Limits: (None, None)
-    Type: Data
-    Subs: ['RCP Scenario', 'HFC type']
-
     Historic data + projections "Representative Concentration Pathways" (RCPs, see http://tntcat.iiasa.ac.at:8787/RcpDb/dsd?Action=htmlpage&page=compare)
     """
     return _ext_data_hfc_emissions_rcp(time())
@@ -134,6 +128,20 @@ _ext_data_hfc_emissions_rcp = ExtData(
     "interpolate",
     {"RCP Scenario": _subscript_dict["RCP Scenario"], "HFC type": ["HFC134a"]},
     _root,
+    {
+        "RCP Scenario": ["RCP26", "RCP45", "RCP60", "RCP85"],
+        "HFC type": [
+            "HFC134a",
+            "HFC23",
+            "HFC32",
+            "HFC125",
+            "HFC143a",
+            "HFC152a",
+            "HFC227ea",
+            "HFC245ca",
+            "HFC4310mee",
+        ],
+    },
     "_ext_data_hfc_emissions_rcp",
 )
 
@@ -210,15 +218,14 @@ _ext_data_hfc_emissions_rcp.add(
 )
 
 
+@component.add(
+    name="N2O Anthro Emissions",
+    units="Mton N/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def n2o_anthro_emissions():
     """
-    Real Name: N2O Anthro Emissions
-    Original Eqn:
-    Units: Mton N/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Historic data + projections "Representative Concentration Pathways" (RCPs, see http://tntcat.iiasa.ac.at:8787/RcpDb/dsd?Action=htmlpage&page=compare) Choose RCP: 1. RCP 2.6 2. RCP 4.5 3. RCP 6.0 4. RCP 8.5
     """
     return if_then_else(
@@ -236,16 +243,15 @@ def n2o_anthro_emissions():
     )
 
 
-@subs(["RCP Scenario"], _subscript_dict)
+@component.add(
+    name="N2O Anthro Emissions RCP",
+    units="Mton N/Year",
+    subscripts=["RCP Scenario"],
+    comp_type="Data",
+    comp_subtype="External",
+)
 def n2o_anthro_emissions_rcp():
     """
-    Real Name: N2O Anthro Emissions RCP
-    Original Eqn:
-    Units: Mton N/Year
-    Limits: (None, None)
-    Type: Data
-    Subs: ['RCP Scenario']
-
     Historic data + projections "Representative Concentration Pathways" (RCPs, see http://tntcat.iiasa.ac.at:8787/RcpDb/dsd?Action=htmlpage&page=compare)
     """
     return _ext_data_n2o_anthro_emissions_rcp(time())
@@ -259,19 +265,19 @@ _ext_data_n2o_anthro_emissions_rcp = ExtData(
     "interpolate",
     {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
+    {"RCP Scenario": ["RCP26", "RCP45", "RCP60", "RCP85"]},
     "_ext_data_n2o_anthro_emissions_rcp",
 )
 
 
+@component.add(
+    name="PFC emissions",
+    units="tons/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pfc_emissions():
     """
-    Real Name: PFC emissions
-    Original Eqn:
-    Units: tons/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Historic data + projections "Representative Concentration Pathways" (RCPs, see http://tntcat.iiasa.ac.at:8787/RcpDb/dsd?Action=htmlpage&page=compare) Choose RCP: 1. RCP 2.6 2. RCP 4.5 3. RCP 6.0 4. RCP 8.5
     """
     return if_then_else(
@@ -289,16 +295,15 @@ def pfc_emissions():
     )
 
 
-@subs(["RCP Scenario"], _subscript_dict)
+@component.add(
+    name="PFC emissions RCP",
+    units="tons/Year",
+    subscripts=["RCP Scenario"],
+    comp_type="Data",
+    comp_subtype="External",
+)
 def pfc_emissions_rcp():
     """
-    Real Name: PFC emissions RCP
-    Original Eqn:
-    Units: tons/Year
-    Limits: (None, None)
-    Type: Data
-    Subs: ['RCP Scenario']
-
     Historic data + projections "Representative Concentration Pathways" (RCPs, see http://tntcat.iiasa.ac.at:8787/RcpDb/dsd?Action=htmlpage&page=compare)
     """
     return _ext_data_pfc_emissions_rcp(time())
@@ -312,33 +317,29 @@ _ext_data_pfc_emissions_rcp = ExtData(
     "interpolate",
     {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
+    {"RCP Scenario": ["RCP26", "RCP45", "RCP60", "RCP85"]},
     "_ext_data_pfc_emissions_rcp",
 )
 
 
+@component.add(
+    name="ratio Power Plants Energy Conversion Extraction and Distribution vs total CH4 emissions",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def ratio_power_plants_energy_conversion_extraction_and_distribution_vs_total_ch4_emissions():
-    """
-    Real Name: ratio Power Plants Energy Conversion Extraction and Distribution vs total CH4 emissions
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-
-    """
     return 0.2752
 
 
+@component.add(
+    name="SF6 emissions",
+    units="tons/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def sf6_emissions():
     """
-    Real Name: SF6 emissions
-    Original Eqn:
-    Units: tons/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Historic data + projections "Representative Concentration Pathways" (RCPs, see http://tntcat.iiasa.ac.at:8787/RcpDb/dsd?Action=htmlpage&page=compare) Choose RCP: 1. RCP 2.6 2. RCP 4.5 3. RCP 6.0 4. RCP 8.5
     """
     return if_then_else(
@@ -356,16 +357,15 @@ def sf6_emissions():
     )
 
 
-@subs(["RCP Scenario"], _subscript_dict)
+@component.add(
+    name="SF6 emissions RCP",
+    units="tons/Year",
+    subscripts=["RCP Scenario"],
+    comp_type="Data",
+    comp_subtype="External",
+)
 def sf6_emissions_rcp():
     """
-    Real Name: SF6 emissions RCP
-    Original Eqn:
-    Units: tons/Year
-    Limits: (None, None)
-    Type: Data
-    Subs: ['RCP Scenario']
-
     Historic data + projections "Representative Concentration Pathways" (RCPs, see http://tntcat.iiasa.ac.at:8787/RcpDb/dsd?Action=htmlpage&page=compare)
     """
     return _ext_data_sf6_emissions_rcp(time())
@@ -379,5 +379,6 @@ _ext_data_sf6_emissions_rcp = ExtData(
     "interpolate",
     {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
+    {"RCP Scenario": ["RCP26", "RCP45", "RCP60", "RCP85"]},
     "_ext_data_sf6_emissions_rcp",
 )

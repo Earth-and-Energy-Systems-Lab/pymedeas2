@@ -1,19 +1,18 @@
 """
 Module nonenergy_use
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name='"Annual variation non-energy use"',
+    units="EJ",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def annual_variation_nonenergy_use():
     """
-    Real Name: "Annual variation non-energy use"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     Annual variation non-energy use by final fuel.
     """
     return if_then_else(
@@ -24,19 +23,18 @@ def annual_variation_nonenergy_use():
     )
 
 
-@subs(["final sources"], _subscript_dict)
-def historic_nonenergy_use(x):
+@component.add(
+    name="historic nonenergy use",
+    units="EJ",
+    subscripts=["final sources"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_nonenergy_use(x, final_subs=None):
     """
-    Real Name: historic nonenergy use
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['final sources']
-
     Historic data non-energy use by final fuel.
     """
-    return _ext_lookup_historic_nonenergy_use(x)
+    return _ext_lookup_historic_nonenergy_use(x, final_subs)
 
 
 _ext_lookup_historic_nonenergy_use = ExtLookup(
@@ -46,20 +44,20 @@ _ext_lookup_historic_nonenergy_use = ExtLookup(
     "historic_non_energy_use",
     {"final sources": _subscript_dict["final sources"]},
     _root,
+    {"final sources": ["electricity", "heat", "liquids", "gases", "solids"]},
     "_ext_lookup_historic_nonenergy_use",
 )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="initial nonenergy use",
+    units="EJ",
+    subscripts=["final sources"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def initial_nonenergy_use():
     """
-    Real Name: initial nonenergy use
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['final sources']
-
     Non-energy use consumption in the year 1995.
     """
     return _ext_constant_initial_nonenergy_use()
@@ -71,20 +69,20 @@ _ext_constant_initial_nonenergy_use = ExtConstant(
     "initial_non_energy_use*",
     {"final sources": _subscript_dict["final sources"]},
     _root,
+    {"final sources": ["electricity", "heat", "liquids", "gases", "solids"]},
     "_ext_constant_initial_nonenergy_use",
 )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name='"Non-energy use demand by final fuel EJ"',
+    units="EJ",
+    subscripts=["final sources"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def nonenergy_use_demand_by_final_fuel_ej():
     """
-    Real Name: "Non-energy use demand by final fuel EJ"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['final sources']
-
     Non-energy use demand by final fuel
     """
     return _integ_nonenergy_use_demand_by_final_fuel_ej()
@@ -97,17 +95,13 @@ _integ_nonenergy_use_demand_by_final_fuel_ej = Integ(
 )
 
 
+@component.add(
+    name='"Total real non-energy use consumption EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_real_nonenergy_use_consumption_ej():
-    """
-    Real Name: "Total real non-energy use consumption EJ"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return sum(
         nonenergy_use_demand_by_final_fuel_ej().rename(
             {"final sources": "final sources!"}
@@ -116,18 +110,14 @@ def total_real_nonenergy_use_consumption_ej():
     )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name='"variation non-energy use"',
+    units="EJ",
+    subscripts=["final sources"],
+    comp_type="Constant, Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_nonenergy_use():
-    """
-    Real Name: "variation non-energy use"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary, Constant
-    Subs: ['final sources']
-
-
-    """
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )

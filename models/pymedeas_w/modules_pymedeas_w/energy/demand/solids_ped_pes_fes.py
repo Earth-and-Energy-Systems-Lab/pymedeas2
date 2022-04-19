@@ -1,18 +1,14 @@
 """
 Module solids_ped_pes_fes
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="abundance solids", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def abundance_solids():
     """
-    Real Name: abundance solids
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     The parameter abundance varies between (1;0). Abundance=1 while the supply covers the demand; the closest to 0 indicates a higher divergence between supply and demand.
     """
     return if_then_else(
@@ -22,15 +18,11 @@ def abundance_solids():
     )
 
 
+@component.add(
+    name="Historic PES peat EJ", units="EJ", comp_type="Data", comp_subtype="External"
+)
 def historic_pes_peat_ej():
     """
-    Real Name: Historic PES peat EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Historic primary energy supply of peat.
     """
     return _ext_data_historic_pes_peat_ej(time())
@@ -44,21 +36,18 @@ _ext_data_historic_pes_peat_ej = ExtData(
     "interpolate",
     {},
     _root,
+    {},
     "_ext_data_historic_pes_peat_ej",
 )
 
 
+@component.add(
+    name="Other solids required",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def other_solids_required():
-    """
-    Real Name: Other solids required
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return (
         float(transformation_ff_losses_ej().loc["solids"])
         + float(energy_distr_losses_ff_ej().loc["solids"])
@@ -66,17 +55,10 @@ def other_solids_required():
     )
 
 
+@component.add(
+    name="PED coal EJ", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def ped_coal_ej():
-    """
-    Real Name: PED coal EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return np.maximum(
         0,
         ped_solids()
@@ -89,15 +71,11 @@ def ped_coal_ej():
     )
 
 
+@component.add(
+    name="PED solids", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def ped_solids():
     """
-    Real Name: PED solids
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy demand of solids.
     """
     return np.maximum(
@@ -112,17 +90,10 @@ def ped_solids():
     )
 
 
+@component.add(
+    name="PES peat EJ", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def pes_peat_ej():
-    """
-    Real Name: PES peat EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return np.maximum(
         if_then_else(
             time() > 2014,
@@ -133,15 +104,11 @@ def pes_peat_ej():
     )
 
 
+@component.add(
+    name="PES solids", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def pes_solids():
     """
-    Real Name: PES solids
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy supply solids.
     """
     return (
@@ -153,29 +120,24 @@ def pes_solids():
     )
 
 
+@component.add(
+    name="Required FED solids", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def required_fed_solids():
     """
-    Real Name: Required FED solids
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Required final energy demand solids.
     """
     return float(required_fed_by_fuel().loc["solids"])
 
 
+@component.add(
+    name="share coal dem for Elec",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_coal_dem_for_elec():
     """
-    Real Name: share coal dem for Elec
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of coal demand to cover electricity consumption in Elec plants.
     """
     return if_then_else(
@@ -185,15 +147,14 @@ def share_coal_dem_for_elec():
     )
 
 
+@component.add(
+    name='"share coal dem for Heat-com"',
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_coal_dem_for_heatcom():
     """
-    Real Name: "share coal dem for Heat-com"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of coal demand to cover commercial heat consumption in Heat plants.
     """
     return if_then_else(
@@ -203,29 +164,27 @@ def share_coal_dem_for_heatcom():
     )
 
 
+@component.add(
+    name='"share coal dem for Heat-nc"',
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_coal_dem_for_heatnc():
     """
-    Real Name: "share coal dem for Heat-nc"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of coal demand to cover non-commercial heat consumption in Heat plants.
     """
     return zidz(ped_coal_heatnc(), ped_coal_ej())
 
 
+@component.add(
+    name="share solids for final energy",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_solids_for_final_energy():
     """
-    Real Name: share solids for final energy
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of final energy vs primary energy for solids.
     """
     return zidz(

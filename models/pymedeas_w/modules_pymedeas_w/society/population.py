@@ -1,20 +1,16 @@
 """
 Module population
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="Annual population growth rate",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def annual_population_growth_rate():
-    """
-    Real Name: Annual population growth rate
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return if_then_else(
         select_population_evolution_input() == 0,
         lambda: variation_input_pop(),
@@ -30,18 +26,17 @@ def annual_population_growth_rate():
     )
 
 
-def historic_population(x):
+@component.add(
+    name="historic population",
+    units="people",
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_population(x, final_subs=None):
     """
-    Real Name: historic population
-    Original Eqn:
-    Units: people
-    Limits: (None, None)
-    Type: Lookup
-    Subs: []
-
     Historic population (1995-2015). Ref: World bank.
     """
-    return _ext_lookup_historic_population(x)
+    return _ext_lookup_historic_population(x, final_subs)
 
 
 _ext_lookup_historic_population = ExtLookup(
@@ -51,19 +46,19 @@ _ext_lookup_historic_population = ExtLookup(
     "historic_population",
     {},
     _root,
+    {},
     "_ext_lookup_historic_population",
 )
 
 
+@component.add(
+    name="initial population",
+    units="people",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def initial_population():
     """
-    Real Name: initial population
-    Original Eqn:
-    Units: people
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Initial value from WorldBank in 1995.
     """
     return _ext_constant_initial_population()
@@ -75,22 +70,22 @@ _ext_constant_initial_population = ExtConstant(
     "initial_population",
     {},
     _root,
+    {},
     "_ext_constant_initial_population",
 )
 
 
-def input_population(x):
+@component.add(
+    name="input population",
+    units="Mpeople",
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def input_population(x, final_subs=None):
     """
-    Real Name: input population
-    Original Eqn:
-    Units: Mpeople
-    Limits: (None, None)
-    Type: Lookup
-    Subs: []
-
     Original values from SSP2 evolution.
     """
-    return _ext_lookup_input_population(x)
+    return _ext_lookup_input_population(x, final_subs)
 
 
 _ext_lookup_input_population = ExtLookup(
@@ -100,19 +95,19 @@ _ext_lookup_input_population = ExtLookup(
     "input_population",
     {},
     _root,
+    {},
     "_ext_lookup_input_population",
 )
 
 
+@component.add(
+    name="P customized cte pop variation",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_customized_cte_pop_variation():
     """
-    Real Name: P customized cte pop variation
-    Original Eqn:
-    Units: year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     From customized year, set annual constant variation.
     """
     return _ext_constant_p_customized_cte_pop_variation()
@@ -124,19 +119,19 @@ _ext_constant_p_customized_cte_pop_variation = ExtConstant(
     "Constant_population_variation",
     {},
     _root,
+    {},
     "_ext_constant_p_customized_cte_pop_variation",
 )
 
 
+@component.add(
+    name="P customized year pop evolution",
+    units="1/year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_customized_year_pop_evolution():
     """
-    Real Name: P customized year pop evolution
-    Original Eqn:
-    Units: 1/year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     From customized year, set annual constant variation.
     """
     return _ext_constant_p_customized_year_pop_evolution()
@@ -148,19 +143,19 @@ _ext_constant_p_customized_year_pop_evolution = ExtConstant(
     "start_year_population_variation",
     {},
     _root,
+    {},
     "_ext_constant_p_customized_year_pop_evolution",
 )
 
 
+@component.add(
+    name="P timeseries pop growth rate",
+    units="1/year",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def p_timeseries_pop_growth_rate():
     """
-    Real Name: P timeseries pop growth rate
-    Original Eqn:
-    Units: 1/year
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Annual population growth from timeseries. UN projections in their medium scenario (Medium fertility variant)
     """
     return _ext_data_p_timeseries_pop_growth_rate(time())
@@ -174,19 +169,19 @@ _ext_data_p_timeseries_pop_growth_rate = ExtData(
     "interpolate",
     {},
     _root,
+    {},
     "_ext_data_p_timeseries_pop_growth_rate",
 )
 
 
+@component.add(
+    name="pop variation",
+    units="people/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pop_variation():
     """
-    Real Name: pop variation
-    Original Eqn:
-    Units: people/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Population growth. (Historic data from 1990-2010; projection 2011-2100) 2011 UST$
     """
     return if_then_else(
@@ -196,15 +191,11 @@ def pop_variation():
     )
 
 
+@component.add(
+    name="Population", units="people", comp_type="Stateful", comp_subtype="Integ"
+)
 def population():
     """
-    Real Name: Population
-    Original Eqn:
-    Units: people
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Population projection.
     """
     return _integ_population()
@@ -215,15 +206,14 @@ _integ_population = Integ(
 )
 
 
+@component.add(
+    name="select Population evolution input",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def select_population_evolution_input():
     """
-    Real Name: select Population evolution input
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     0. From SSPs 1. Timeseries 2. From cusotmized year, set annual constant variation
     """
     return _ext_constant_select_population_evolution_input()
@@ -235,19 +225,19 @@ _ext_constant_select_population_evolution_input = ExtConstant(
     "pop_evolution_input",
     {},
     _root,
+    {},
     "_ext_constant_select_population_evolution_input",
 )
 
 
+@component.add(
+    name="variation historic pop",
+    units="people/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_historic_pop():
     """
-    Real Name: variation historic pop
-    Original Eqn:
-    Units: people/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Population historic variation.
     """
     return if_then_else(
@@ -257,17 +247,13 @@ def variation_historic_pop():
     )
 
 
+@component.add(
+    name="variation input pop",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_input_pop():
-    """
-    Real Name: variation input pop
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return if_then_else(
         time() < 2010,
         lambda: 0,

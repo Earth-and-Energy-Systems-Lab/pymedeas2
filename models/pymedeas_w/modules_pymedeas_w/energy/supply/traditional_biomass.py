@@ -1,35 +1,30 @@
 """
 Module traditional_biomass
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="modern BioE in households",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def modern_bioe_in_households():
-    """
-    Real Name: modern BioE in households
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return (
         float(households_final_energy_demand().loc["solids"])
         - pe_traditional_biomass_consum_ej()
     )
 
 
+@component.add(
+    name="PE consumption trad biomass ref",
+    units="EJ/year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def pe_consumption_trad_biomass_ref():
     """
-    Real Name: PE consumption trad biomass ref
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Primary energy consumption of trad biomass. From IEA balances, 39.626 EJ were consumed as primary solids biofuels for TFC in 2008.
     """
     return _ext_constant_pe_consumption_trad_biomass_ref()
@@ -41,33 +36,32 @@ _ext_constant_pe_consumption_trad_biomass_ref = ExtConstant(
     "pe_consumption_trad_biomass_ref",
     {},
     _root,
+    {},
     "_ext_constant_pe_consumption_trad_biomass_ref",
 )
 
 
+@component.add(
+    name="PE traditional biomass consum EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pe_traditional_biomass_consum_ej():
     """
-    Real Name: PE traditional biomass consum EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Annual primary energy consumption of traditional biomass. It also includes charcoal and biosolids for solids. It's limited by the maximum given by the stock of forests MAX(max E forest traditional EJ,Households final energy demand[solids]*share trad biomass vs solids in households)
     """
     return pe_traditional_biomass_demand_ej()
 
 
+@component.add(
+    name="PE traditional biomass demand EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pe_traditional_biomass_demand_ej():
     """
-    Real Name: PE traditional biomass demand EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Annual primary energy demand of traditional biomass driven by population and energy intensity evolution. It also includes charcoal and biosolids for solids.
     """
     return (
@@ -76,15 +70,14 @@ def pe_traditional_biomass_demand_ej():
     )
 
 
+@component.add(
+    name="PE traditional biomass EJ delayed 1yr",
+    units="EJ/year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
 def pe_traditional_biomass_ej_delayed_1yr():
     """
-    Real Name: PE traditional biomass EJ delayed 1yr
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Annual primary energy consumption of traditional biomass. It also includes charcoal and biosolids for solids.
     """
     return _delayfixed_pe_traditional_biomass_ej_delayed_1yr()
@@ -99,15 +92,14 @@ _delayfixed_pe_traditional_biomass_ej_delayed_1yr = DelayFixed(
 )
 
 
+@component.add(
+    name="People relying trad biomass ref",
+    units="people",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def people_relying_trad_biomass_ref():
     """
-    Real Name: People relying trad biomass ref
-    Original Eqn:
-    Units: people
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     People relying on traditional biomass in 2008. WEO 2010 reportad that in 2008, 2.5 billion people consumed 724 Mtoe of traditional biomass.
     """
     return _ext_constant_people_relying_trad_biomass_ref()
@@ -119,33 +111,32 @@ _ext_constant_people_relying_trad_biomass_ref = ExtConstant(
     "people_relying_on_traditional_biomass",
     {},
     _root,
+    {},
     "_ext_constant_people_relying_trad_biomass_ref",
 )
 
 
+@component.add(
+    name="PEpc consumption people depending on trad biomass",
+    units="MToe/people",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pepc_consumption_people_depending_on_trad_biomass():
     """
-    Real Name: PEpc consumption people depending on trad biomass
-    Original Eqn:
-    Units: MToe/people
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Primary energy per capita consumption of people currently depending on trad biomass.
     """
     return pe_consumption_trad_biomass_ref() / people_relying_trad_biomass_ref()
 
 
+@component.add(
+    name="Population dependent on trad biomass",
+    units="people",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def population_dependent_on_trad_biomass():
     """
-    Real Name: Population dependent on trad biomass
-    Original Eqn:
-    Units: people
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Population dependent on traditional biomass.
     """
     return (
@@ -154,31 +145,23 @@ def population_dependent_on_trad_biomass():
     )
 
 
+@component.add(
+    name="share global pop dependent on trad biomass",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_global_pop_dependent_on_trad_biomass():
-    """
-    Real Name: share global pop dependent on trad biomass
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return population_dependent_on_trad_biomass() / population()
 
 
+@component.add(
+    name="share trad biomass vs solids in households",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def share_trad_biomass_vs_solids_in_households():
-    """
-    Real Name: share trad biomass vs solids in households
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-
-    """
     return _ext_constant_share_trad_biomass_vs_solids_in_households()
 
 
@@ -188,5 +171,6 @@ _ext_constant_share_trad_biomass_vs_solids_in_households = ExtConstant(
     "share_trad_biomass_vs_solids_in_households",
     {},
     _root,
+    {},
     "_ext_constant_share_trad_biomass_vs_solids_in_households",
 )

@@ -1,21 +1,16 @@
 """
 Module inland_transport_sector
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="aaux Tveh",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def aaux_tveh():
-    """
-    Real Name: aaux Tveh
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['vehicleT']
-
-
-    """
     return if_then_else(
         np.abs(time() - t_ini_inlandt()) < 1 * time_step(),
         lambda: percent_t_vehicles(),
@@ -25,33 +20,23 @@ def aaux_tveh():
     )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="aaux Tveh ini",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def aaux_tveh_ini():
-    """
-    Real Name: aaux Tveh ini
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['vehicleT']
-
-
-    """
     return np.maximum(aaux_tveh(), aaux_tveh_t())
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="aaux Tveh t",
+    subscripts=["vehicleT"],
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
 def aaux_tveh_t():
-    """
-    Real Name: aaux Tveh t
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['vehicleT']
-
-
-    """
     return _delayfixed_aaux_tveh_t()
 
 
@@ -64,15 +49,14 @@ _delayfixed_aaux_tveh_t = DelayFixed(
 )
 
 
+@component.add(
+    name="Activate policy inlandT",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def activate_policy_inlandt():
     """
-    Real Name: Activate policy inlandT
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     1 to set growth of alternative inland transportation, starting in T ini and ending in T fin with the desired share defined in policies, linear growth
     """
     return _ext_constant_activate_policy_inlandt()
@@ -84,20 +68,20 @@ _ext_constant_activate_policy_inlandt = ExtConstant(
     "activate_inland_transp",
     {},
     _root,
+    {},
     "_ext_constant_activate_policy_inlandt",
 )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="adapt var inlandT",
+    units="Dmnl",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def adapt_var_inlandt():
     """
-    Real Name: adapt var inlandT
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['vehicleT']
-
     Growth of percent of vehicles adapted to saturation and shorgate of energy
     """
     return if_then_else(
@@ -114,15 +98,14 @@ def adapt_var_inlandt():
     )
 
 
+@component.add(
+    name="adjust energy for transport to inland transport",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def adjust_energy_for_transport_to_inland_transport():
     """
-    Real Name: adjust energy for transport to inland transport
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     'International Energy Agency (2016), Energy Technology Perspectives 2016, OECD/IEA, considers in 2015 about 34 EJ of liquids for commercial transport. However WIOD database considers to inland transport sector about 12 EJ. Provisionally, we adjust OECD/IEA data to WIOD. We consider OECD/IEA data in relative terms
     """
     return _ext_constant_adjust_energy_for_transport_to_inland_transport()
@@ -134,20 +117,20 @@ _ext_constant_adjust_energy_for_transport_to_inland_transport = ExtConstant(
     "adjust_energy_for_transport_to_inland_transport",
     {},
     _root,
+    {},
     "_ext_constant_adjust_energy_for_transport_to_inland_transport",
 )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="aux hist Tveh",
+    units="1/yr",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def aux_hist_tveh():
     """
-    Real Name: aux hist Tveh
-    Original Eqn:
-    Units: 1/yr
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['vehicleT']
-
     auxiliar variable to set the variation of liquid vehicles
     """
     value = xr.DataArray(
@@ -182,15 +165,14 @@ def aux_hist_tveh():
     return value
 
 
+@component.add(
+    name="effects shortage gas",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def effects_shortage_gas():
     """
-    Real Name: effects shortage gas
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     The eventual scarcity of gas would likely constrain the development of NGVs/GTLs. The proposed relationship avoids an abrupt limitation by introducing a range (1;0.8) in the gas abundance that constrains the development of NGVs/GTLs.
     """
     return if_then_else(
@@ -198,16 +180,15 @@ def effects_shortage_gas():
     )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="Energy initial inland transport",
+    units="EJ",
+    subscripts=["vehicleT"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def energy_initial_inland_transport():
     """
-    Real Name: Energy initial inland transport
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['vehicleT']
-
     Initial energy consumed by the inland transport sector, before politics, TpolicyT (default 2015) data 'International Energy Agency (2016), Energy Technology Perspectives 2016, OECD/IEA,
     """
     return _ext_constant_energy_initial_inland_transport()
@@ -219,20 +200,36 @@ _ext_constant_energy_initial_inland_transport = ExtConstant(
     "energy_initial_inland_transport*",
     {"vehicleT": _subscript_dict["vehicleT"]},
     _root,
+    {
+        "vehicleT": [
+            "HV liq",
+            "HV hib",
+            "HV gas",
+            "LV liq",
+            "LV elec",
+            "LV hib",
+            "LV gas",
+            "bus liq",
+            "bus elec",
+            "bus hib",
+            "bus gas",
+            "train liq",
+            "train elec",
+        ]
+    },
     "_ext_constant_energy_initial_inland_transport",
 )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="energy per X t",
+    units="EJ/T$",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def energy_per_x_t():
     """
-    Real Name: energy per X t
-    Original Eqn:
-    Units: EJ/T$
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['vehicleT']
-
     Energy per T$ of economic activity of inland transport sector.
     """
     value = xr.DataArray(
@@ -276,15 +273,14 @@ def energy_per_x_t():
     return value
 
 
+@component.add(
+    name="energy per X train",
+    units="EJ/T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def energy_per_x_train():
     """
-    Real Name: energy per X train
-    Original Eqn:
-    Units: EJ/T$
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     EJ/T$economic activity Average consumption of vehicles from historical data= energy used in that kind of transport/ economic activity of the sector In the case of trains the number of vehicles is set to 1 since there are no data of the number of trains
     """
     return (
@@ -294,31 +290,49 @@ def energy_per_x_train():
     )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="hist var inlandT",
+    units="Dmnl",
+    subscripts=["vehicleT"],
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def hist_var_inlandt():
     """
-    Real Name: hist var inlandT
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['vehicleT']
-
     Historical growth of alternative percentages of transport vehicles. For inland transport vehicles the initial percentages of vehicles are neglictible in 2015.
     """
-    return xr.DataArray(0, {"vehicleT": _subscript_dict["vehicleT"]}, ["vehicleT"])
+    return xr.DataArray(
+        0,
+        {
+            "vehicleT": [
+                "HV liq",
+                "HV hib",
+                "HV gas",
+                "LV liq",
+                "LV elec",
+                "LV hib",
+                "LV gas",
+                "bus liq",
+                "bus elec",
+                "bus hib",
+                "bus gas",
+                "train liq",
+                "train elec",
+            ]
+        },
+        ["vehicleT"],
+    )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="hist var percent Tveh",
+    units="1/yr",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary, Constant",
+    comp_subtype="Normal",
+)
 def hist_var_percent_tveh():
     """
-    Real Name: hist var percent Tveh
-    Original Eqn:
-    Units: 1/yr
-    Limits: (None, None)
-    Type: Auxiliary, Constant
-    Subs: ['vehicleT']
-
     historical evolution of percent of vehicles based on the linear interpolation between 2005 and T hist H transp(default 2015). Before 2005 all vehicles are liquid based except trains. Percents relative to each type of vehicle
     """
     value = xr.DataArray(
@@ -380,16 +394,15 @@ def hist_var_percent_tveh():
     return value
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="initial percent T vehicles",
+    units="Dmnl",
+    subscripts=["vehicleT"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def initial_percent_t_vehicles():
     """
-    Real Name: initial percent T vehicles
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['vehicleT']
-
     Initial percentage of vehicles of each fuel (2015), percents relative to each class of vehicles (LV; HV, bus, train)
     """
     return _ext_constant_initial_percent_t_vehicles()
@@ -401,20 +414,36 @@ _ext_constant_initial_percent_t_vehicles = ExtConstant(
     "initial_percent_T_vehicles*",
     {"vehicleT": _subscript_dict["vehicleT"]},
     _root,
+    {
+        "vehicleT": [
+            "HV liq",
+            "HV hib",
+            "HV gas",
+            "LV liq",
+            "LV elec",
+            "LV hib",
+            "LV gas",
+            "bus liq",
+            "bus elec",
+            "bus hib",
+            "bus gas",
+            "train liq",
+            "train elec",
+        ]
+    },
     "_ext_constant_initial_percent_t_vehicles",
 )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="initial vehicles inland",
+    units="vehicle",
+    subscripts=["vehicleT"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def initial_vehicles_inland():
     """
-    Real Name: initial vehicles inland
-    Original Eqn:
-    Units: vehicle
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['vehicleT']
-
     Initial number of vehicles in time TpolicyT, 2015 by default, vehicles 'International Energy Agency (2016), Energy Technology Perspectives 2016, OECD/IEA, Paris' No data for train vehicles
     """
     return _ext_constant_initial_vehicles_inland()
@@ -426,19 +455,32 @@ _ext_constant_initial_vehicles_inland = ExtConstant(
     "initial_vehicles_inland*",
     {"vehicleT": _subscript_dict["vehicleT"]},
     _root,
+    {
+        "vehicleT": [
+            "HV liq",
+            "HV hib",
+            "HV gas",
+            "LV liq",
+            "LV elec",
+            "LV hib",
+            "LV gas",
+            "bus liq",
+            "bus elec",
+            "bus hib",
+            "bus gas",
+            "train liq",
+            "train elec",
+        ]
+    },
     "_ext_constant_initial_vehicles_inland",
 )
 
 
+@component.add(
+    name="initial Xt inland", units="T$", comp_type="Constant", comp_subtype="External"
+)
 def initial_xt_inland():
     """
-    Real Name: initial Xt inland
-    Original Eqn:
-    Units: T$
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Economic activity of inland transport sector in the year of start of policies (2015 default) T$
     """
     return _ext_constant_initial_xt_inland()
@@ -450,22 +492,19 @@ _ext_constant_initial_xt_inland = ExtConstant(
     "initial_Xt_inland",
     {},
     _root,
+    {},
     "_ext_constant_initial_xt_inland",
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="inland transport fraction",
+    units="Dmnl",
+    subscripts=["sectors"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def inland_transport_fraction():
-    """
-    Real Name: inland transport fraction
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['sectors']
-
-
-    """
     return _ext_constant_inland_transport_fraction()
 
 
@@ -475,20 +514,37 @@ _ext_constant_inland_transport_fraction = ExtConstant(
     "inland_transport_fraction",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_constant_inland_transport_fraction",
 )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="inland transport variation intensity",
+    units="EJ/TS/yr",
+    subscripts=["final sources"],
+    comp_type="Auxiliary, Constant",
+    comp_subtype="Normal",
+)
 def inland_transport_variation_intensity():
     """
-    Real Name: inland transport variation intensity
-    Original Eqn:
-    Units: EJ/TS/yr
-    Limits: (None, None)
-    Type: Auxiliary, Constant
-    Subs: ['final sources']
-
     Variation of the energy intensity of inland transport
     """
     value = xr.DataArray(
@@ -502,15 +558,14 @@ def inland_transport_variation_intensity():
     return value
 
 
+@component.add(
+    name="liquids per X bus",
+    units="EJ/T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def liquids_per_x_bus():
     """
-    Real Name: liquids per X bus
-    Original Eqn:
-    Units: EJ/T$
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     EJ/T$economic activity Average consumption of vehicles from historical data= energy used in that kind of transport/ economic activity of the sector data 'International Energy Agency (2016), Energy Technology Perspectives 2016, OECD/IEA,data data 'International Energy Agency (2016), Energy Technology Perspectives 2016, OECD/IEA, for energy number of buses from http://www.theicct.org/global-transportation-roadmap-model
     """
     return (
@@ -520,15 +575,11 @@ def liquids_per_x_bus():
     )
 
 
+@component.add(
+    name="liquids per X HV", units="EJ/T$", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def liquids_per_x_hv():
     """
-    Real Name: liquids per X HV
-    Original Eqn:
-    Units: EJ/T$
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     EJ/T$economic activity Average consumption of vehicles from historical data= energy used in that kind of transport/ economic activity of the sector data 'International Energy Agency (2016), Energy Technology Perspectives 2016, OECD/IEA,
     """
     return (
@@ -538,15 +589,11 @@ def liquids_per_x_hv():
     )
 
 
+@component.add(
+    name="liquids per X LV", units="EJ/T$", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def liquids_per_x_lv():
     """
-    Real Name: liquids per X LV
-    Original Eqn:
-    Units: EJ/T$
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     EJ/T$economic activity Average consumption of vehicles from historical data= energy used in that kind of transport/ economic activity of the sector data 'International Energy Agency (2016), Energy Technology Perspectives 2016, OECD/IEA,data
     """
     return (
@@ -556,15 +603,14 @@ def liquids_per_x_lv():
     )
 
 
+@component.add(
+    name="NX bus inlandT",
+    units="Mvehicles/Mdollar",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def nx_bus_inlandt():
     """
-    Real Name: NX bus inlandT
-    Original Eqn:
-    Units: Mvehicles/Mdollar
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     number of vehicles per unit of economic activity (e6 dollars) initial values in the year of initial policy (default 2015)
     """
     return (
@@ -575,15 +621,14 @@ def nx_bus_inlandt():
     ) / initial_xt_inland()
 
 
+@component.add(
+    name="NX HV inland T",
+    units="vehicles/T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def nx_hv_inland_t():
     """
-    Real Name: NX HV inland T
-    Original Eqn:
-    Units: vehicles/T$
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     number of vehicles per unit of economic activity (e12 dollars) initial values in the year of initial policy (default 2015)
     """
     return (
@@ -593,15 +638,14 @@ def nx_hv_inland_t():
     ) / initial_xt_inland()
 
 
+@component.add(
+    name="NX LV inland T",
+    units="vehicles/Tdollar",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def nx_lv_inland_t():
     """
-    Real Name: NX LV inland T
-    Original Eqn:
-    Units: vehicles/Tdollar
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     number of vehicles per unit of economic activity (Tdollars) initial values in the year of initial policy (default 2015)
     """
     return (
@@ -612,30 +656,28 @@ def nx_lv_inland_t():
     ) / initial_xt_inland()
 
 
+@component.add(
+    name="NX train inland T",
+    units="vehicles/Tdollar",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def nx_train_inland_t():
     """
-    Real Name: NX train inland T
-    Original Eqn:
-    Units: vehicles/Tdollar
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     no number of trains found in data, assume the number of trains is 1
     """
     return 1 / initial_xt_inland()
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="NX0 vehicles per Xinland T",
+    units="vehicles/T$",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def nx0_vehicles_per_xinland_t():
     """
-    Real Name: NX0 vehicles per Xinland T
-    Original Eqn:
-    Units: vehicles/T$
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['vehicleT']
-
     Estimated number of vehicles per unit of inland transport economic activity
     """
     value = xr.DataArray(
@@ -657,16 +699,15 @@ def nx0_vehicles_per_xinland_t():
     return value
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="P inlandT",
+    units="Dmnl",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def p_inlandt():
     """
-    Real Name: P inlandT
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['vehicleT']
-
     Desired percent each type of inland transport vehicle in T fin, Liquids policies are obtained by substracting the rest of vehicles, the sum of all policies must be 1 for each type of vehicle (HV, LV, bus, train).
     """
     value = xr.DataArray(
@@ -692,15 +733,14 @@ def p_inlandt():
     return value
 
 
+@component.add(
+    name="P percent bus elec",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_percent_bus_elec():
     """
-    Real Name: P percent bus elec
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Policy of change of bus. Desired percent of bus electric in T fin relative to the total bus
     """
     return _ext_constant_p_percent_bus_elec()
@@ -712,19 +752,19 @@ _ext_constant_p_percent_bus_elec = ExtConstant(
     "percent_electr_bus_tfin",
     {},
     _root,
+    {},
     "_ext_constant_p_percent_bus_elec",
 )
 
 
+@component.add(
+    name="P percent bus gas",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_percent_bus_gas():
     """
-    Real Name: P percent bus gas
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Policy of change of bus. Desired percent of bus gas in T fin relative to the total bus
     """
     return _ext_constant_p_percent_bus_gas()
@@ -736,19 +776,19 @@ _ext_constant_p_percent_bus_gas = ExtConstant(
     "percent_natgas_bus_tfin",
     {},
     _root,
+    {},
     "_ext_constant_p_percent_bus_gas",
 )
 
 
+@component.add(
+    name="P percent bus hyb",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_percent_bus_hyb():
     """
-    Real Name: P percent bus hyb
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Policy of change of bus. Desired percent of bus hibrid in T fin relative to the total of bus
     """
     return _ext_constant_p_percent_bus_hyb()
@@ -760,19 +800,16 @@ _ext_constant_p_percent_bus_hyb = ExtConstant(
     "percent_hybrid_bus_tfin",
     {},
     _root,
+    {},
     "_ext_constant_p_percent_bus_hyb",
 )
 
 
+@component.add(
+    name="P percent HV gas", units="Dmnl", comp_type="Constant", comp_subtype="External"
+)
 def p_percent_hv_gas():
     """
-    Real Name: P percent HV gas
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Policy of change of heavy vehicles. Desired percent of HV gas in T fin relative to total Heavy Vehicles
     """
     return _ext_constant_p_percent_hv_gas()
@@ -784,19 +821,16 @@ _ext_constant_p_percent_hv_gas = ExtConstant(
     "percent_gas_heavy_veh_tfin",
     {},
     _root,
+    {},
     "_ext_constant_p_percent_hv_gas",
 )
 
 
+@component.add(
+    name="P percent HV hyb", units="Dmnl", comp_type="Constant", comp_subtype="External"
+)
 def p_percent_hv_hyb():
     """
-    Real Name: P percent HV hyb
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Policy of change of heavy vehicles. Desired percent of HV hibrid in T fin relative to total Heavy Vehicles
     """
     return _ext_constant_p_percent_hv_hyb()
@@ -808,19 +842,19 @@ _ext_constant_p_percent_hv_hyb = ExtConstant(
     "percent_hybrid_heavy_veh_tfin",
     {},
     _root,
+    {},
     "_ext_constant_p_percent_hv_hyb",
 )
 
 
+@component.add(
+    name="P percent LV elec",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_percent_lv_elec():
     """
-    Real Name: P percent LV elec
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Policy of change of light cargo vehicles. Percent of LV electric in T fin relative to the total of Light Vehicles
     """
     return _ext_constant_p_percent_lv_elec()
@@ -832,19 +866,16 @@ _ext_constant_p_percent_lv_elec = ExtConstant(
     "percent_electric_light_cargo_veh_tfin",
     {},
     _root,
+    {},
     "_ext_constant_p_percent_lv_elec",
 )
 
 
+@component.add(
+    name="P percent LV gas", units="Dmnl", comp_type="Constant", comp_subtype="External"
+)
 def p_percent_lv_gas():
     """
-    Real Name: P percent LV gas
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Policy of change of light cargo vehicles. Desired percent of LV gas in T fin relative to the total Light Vehicles
     """
     return _ext_constant_p_percent_lv_gas()
@@ -856,19 +887,16 @@ _ext_constant_p_percent_lv_gas = ExtConstant(
     "percent_natgas_light_cargo_veh_tfin",
     {},
     _root,
+    {},
     "_ext_constant_p_percent_lv_gas",
 )
 
 
+@component.add(
+    name="P percent LV hyb", units="Dmnl", comp_type="Constant", comp_subtype="External"
+)
 def p_percent_lv_hyb():
     """
-    Real Name: P percent LV hyb
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Policy of change of light cargo vehicles. Desired percent of LV hibrid in T fin relative to the total Light Vehicles
     """
     return _ext_constant_p_percent_lv_hyb()
@@ -880,19 +908,19 @@ _ext_constant_p_percent_lv_hyb = ExtConstant(
     "percent_hybrid_light_cargo_veh_tfin",
     {},
     _root,
+    {},
     "_ext_constant_p_percent_lv_hyb",
 )
 
 
+@component.add(
+    name="P percent train elec",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_percent_train_elec():
     """
-    Real Name: P percent train elec
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Policy of change of trains. Desired percent of train electric in T fin relative to the total of trains
     """
     return _ext_constant_p_percent_train_elec()
@@ -904,20 +932,20 @@ _ext_constant_p_percent_train_elec = ExtConstant(
     "percent_electric_train_tfin",
     {},
     _root,
+    {},
     "_ext_constant_p_percent_train_elec",
 )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="percent T veh Tini",
+    units="Dmnl",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def percent_t_veh_tini():
     """
-    Real Name: percent T veh Tini
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['vehicleT']
-
     percents in the year of beguining of policies of vehicles relative to each type
     """
     return if_then_else(
@@ -927,16 +955,15 @@ def percent_t_veh_tini():
     )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="percent T vehicles",
+    units="Dmnl",
+    subscripts=["vehicleT"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def percent_t_vehicles():
     """
-    Real Name: percent T vehicles
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['vehicleT']
-
     Percents of inland transport vehicles, each type relative to its own: heavy vehicles (%liq+%hib+%gas) add 1, light vehicles (%liq+%elec+%gas+%hib) add 1, bus (%liq+%elec+%gas+%hib) add 1 and trains ((%liq+%elec) add 1.
     """
     return _integ_percent_t_vehicles()
@@ -949,18 +976,13 @@ _integ_percent_t_vehicles = Integ(
 )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="percent Tveh 1995",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary, Constant",
+    comp_subtype="Normal",
+)
 def percent_tveh_1995():
-    """
-    Real Name: percent Tveh 1995
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary, Constant
-    Subs: ['vehicleT']
-
-
-    """
     value = xr.DataArray(
         np.nan, {"vehicleT": _subscript_dict["vehicleT"]}, ["vehicleT"]
     )
@@ -984,30 +1006,24 @@ def percent_tveh_1995():
     return value
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="ratio var T vehicles",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ratio_var_t_vehicles():
-    """
-    Real Name: ratio var T vehicles
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['vehicleT']
-
-
-    """
     return var_percent_t_vehicles() / 100
 
 
+@component.add(
+    name="Real total output inland transport",
+    units="T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def real_total_output_inland_transport():
     """
-    Real Name: Real total output inland transport
-    Original Eqn:
-    Units: T$
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     /1e+006
     """
     return (
@@ -1020,16 +1036,15 @@ def real_total_output_inland_transport():
     )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="saving ratios vehicles",
+    units="Dmnl",
+    subscripts=["vehicleT"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def saving_ratios_vehicles():
     """
-    Real Name: saving ratios vehicles
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['vehicleT']
-
     ratios of energy consumption of diferente vehicles per Km compared to conventional liquids vechicles
     """
     return _ext_constant_saving_ratios_vehicles()
@@ -1041,19 +1056,32 @@ _ext_constant_saving_ratios_vehicles = ExtConstant(
     "saving_ratios_vehicles*",
     {"vehicleT": _subscript_dict["vehicleT"]},
     _root,
+    {
+        "vehicleT": [
+            "HV liq",
+            "HV hib",
+            "HV gas",
+            "LV liq",
+            "LV elec",
+            "LV hib",
+            "LV gas",
+            "bus liq",
+            "bus elec",
+            "bus hib",
+            "bus gas",
+            "train liq",
+            "train elec",
+        ]
+    },
     "_ext_constant_saving_ratios_vehicles",
 )
 
 
+@component.add(
+    name="T fin inlandT", units="Year", comp_type="Constant", comp_subtype="External"
+)
 def t_fin_inlandt():
     """
-    Real Name: T fin inlandT
-    Original Eqn:
-    Units: Year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Time of begining of inland transport policies
     """
     return _ext_constant_t_fin_inlandt()
@@ -1065,33 +1093,26 @@ _ext_constant_t_fin_inlandt = ExtConstant(
     "tfin_policy_inland_transp_veh",
     {},
     _root,
+    {},
     "_ext_constant_t_fin_inlandt",
 )
 
 
+@component.add(
+    name="T hist inlandT", units="Year", comp_type="Constant", comp_subtype="Normal"
+)
 def t_hist_inlandt():
     """
-    Real Name: T hist inlandT
-    Original Eqn:
-    Units: Year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Year used to calibrate the historical growth of vehicles, 2015
     """
     return 2015
 
 
+@component.add(
+    name="T ini inlandT", units="Year", comp_type="Constant", comp_subtype="External"
+)
 def t_ini_inlandt():
     """
-    Real Name: T ini inlandT
-    Original Eqn:
-    Units: Year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     By this time the policy objectives defined in policies must be obtained
     """
     return _ext_constant_t_ini_inlandt()
@@ -1103,19 +1124,19 @@ _ext_constant_t_ini_inlandt = ExtConstant(
     "tini_policy_inland_transp_veh",
     {},
     _root,
+    {},
     "_ext_constant_t_ini_inlandt",
 )
 
 
+@component.add(
+    name="var I inland Elec",
+    units="EJ/T$/yr",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def var_i_inland_elec():
     """
-    Real Name: var I inland Elec
-    Original Eqn:
-    Units: EJ/T$/yr
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Variation of the energy intensity of inland transport relative to electricity and due to the variations of electricity based vehicles
     """
     return (
@@ -1128,15 +1149,14 @@ def var_i_inland_elec():
     )
 
 
+@component.add(
+    name="var I inlandT Gas",
+    units="EJ/T$/yr",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def var_i_inlandt_gas():
     """
-    Real Name: var I inlandT Gas
-    Original Eqn:
-    Units: EJ/T$/yr
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Variation of the energy intensity of inland transport relative to gas and due to the variations of gas based vehicles
     """
     return (
@@ -1149,15 +1169,14 @@ def var_i_inlandt_gas():
     )
 
 
+@component.add(
+    name="var I inlandT liq",
+    units="EJ/T$/yr",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def var_i_inlandt_liq():
     """
-    Real Name: var I inlandT liq
-    Original Eqn:
-    Units: EJ/T$/yr
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Variation of the energy intensity of inland transport relative to liquids and due to the variations of liquids based vehicles
     """
     return (
@@ -1178,16 +1197,15 @@ def var_i_inlandt_liq():
     )
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="var percent T vehicles",
+    units="Dmnl",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def var_percent_t_vehicles():
     """
-    Real Name: var percent T vehicles
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['vehicleT']
-
     growth of percents of inland transport vehicles, each type relative to its own: heavy vehicles (%liq+%hib+%gas) add 1, light vehicles (%liq+%elec+%gas+%hib) add 1, bus (%liq+%elec+%gas+%hib) add 1 and trains ((%liq+%elec) add 1. The growth of liquids allways adapts to the one of the rest, we assume that the policies are passing from liquids to other fuels
     """
     value = xr.DataArray(
@@ -1262,16 +1280,15 @@ def var_percent_t_vehicles():
     return value
 
 
-@subs(["vehicleT"], _subscript_dict)
+@component.add(
+    name="vehicles inlandT",
+    units="vehicles",
+    subscripts=["vehicleT"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def vehicles_inlandt():
     """
-    Real Name: vehicles inlandT
-    Original Eqn:
-    Units: vehicles
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['vehicleT']
-
     Estimation of the number of vehicles of inland transport sector by types, based on a constant ratio number ob vehicles per economic activity of the inland transport sector
     """
     return (

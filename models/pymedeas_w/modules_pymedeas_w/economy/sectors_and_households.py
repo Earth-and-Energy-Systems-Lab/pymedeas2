@@ -1,20 +1,16 @@
 """
 Module sectors_and_households
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="Annual GDPpc growth rate",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def annual_gdppc_growth_rate():
-    """
-    Real Name: Annual GDPpc growth rate
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return if_then_else(
         select_gdppc_evolution_input() == 0,
         lambda: input_gdppc_annual_growth(),
@@ -30,16 +26,15 @@ def annual_gdppc_growth_rate():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="beta 0 GFCF",
+    units="Dmnl",
+    subscripts=["sectors"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def beta_0_gfcf():
     """
-    Real Name: beta 0 GFCF
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['sectors']
-
     Beta coefficient of panel data regression of gross fixed capital formation.
     """
     return _ext_constant_beta_0_gfcf()
@@ -51,20 +46,37 @@ _ext_constant_beta_0_gfcf = ExtConstant(
     "beta_0_GFCF*",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_constant_beta_0_gfcf",
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="beta 0 HD",
+    units="Dmnl",
+    subscripts=["sectors"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def beta_0_hd():
     """
-    Real Name: beta 0 HD
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['sectors']
-
     Beta coefficient of panel data regression of households demand.
     """
     return _ext_constant_beta_0_hd()
@@ -76,86 +88,93 @@ _ext_constant_beta_0_hd = ExtConstant(
     "beta_0_HD*",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_constant_beta_0_hd",
 )
 
 
+@component.add(
+    name="beta 1 GFCF", units="Dmnl", comp_type="Constant", comp_subtype="External"
+)
 def beta_1_gfcf():
     """
-    Real Name: beta 1 GFCF
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Beta coefficient of panel data regression of gross fixed capital formation.
     """
     return _ext_constant_beta_1_gfcf()
 
 
 _ext_constant_beta_1_gfcf = ExtConstant(
-    "../economy.xlsx", "World", "beta_1_GFCF", {}, _root, "_ext_constant_beta_1_gfcf"
+    "../economy.xlsx",
+    "World",
+    "beta_1_GFCF",
+    {},
+    _root,
+    {},
+    "_ext_constant_beta_1_gfcf",
 )
 
 
+@component.add(
+    name="beta 1 HD", units="Dmnl", comp_type="Constant", comp_subtype="External"
+)
 def beta_1_hd():
     """
-    Real Name: beta 1 HD
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Beta coefficient of panel data regression of households demand.
     """
     return _ext_constant_beta_1_hd()
 
 
 _ext_constant_beta_1_hd = ExtConstant(
-    "../economy.xlsx", "World", "beta_1_HD", {}, _root, "_ext_constant_beta_1_hd"
+    "../economy.xlsx", "World", "beta_1_HD", {}, _root, {}, "_ext_constant_beta_1_hd"
 )
 
 
+@component.add(
+    name="capital share", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def capital_share():
     """
-    Real Name: capital share
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Capital share.
     """
     return 1 - labour_share()
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="CC sectoral",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cc_sectoral():
     """
-    Real Name: CC sectoral
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Capital compensation by industrial sectors
     """
     return cc_total() * share_cc()
 
 
+@component.add(
+    name="CC total", units="Mdollars", comp_type="Stateful", comp_subtype="Integ"
+)
 def cc_total():
     """
-    Real Name: CC total
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Capital compensation
     """
     return _integ_cc_total()
@@ -168,30 +187,28 @@ _integ_cc_total = Integ(
 )
 
 
+@component.add(
+    name="CC total not covered",
+    units="Mdollars/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cc_total_not_covered():
     """
-    Real Name: CC total not covered
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Gap between capital compensation required and real capital compensation (after energy-economy feedback)
     """
     return demand_not_covered_total_fd() * capital_share()
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Demand by sector FD",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def demand_by_sector_fd():
     """
-    Real Name: Demand by sector FD
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['sectors']
-
     Final demand by 35 industrial sectors
     """
     return _integ_demand_by_sector_fd()
@@ -204,33 +221,28 @@ _integ_demand_by_sector_fd = Integ(
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="demand by sector FD adjusted",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def demand_by_sector_fd_adjusted():
     """
-    Real Name: demand by sector FD adjusted
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Demand by sector after adjustment to match the desired GDP level.
     """
     return demand_by_sector_fd() * diff_demand()
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="demand not covered by sector FD",
+    units="Mdollars/year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def demand_not_covered_by_sector_fd():
-    """
-    Real Name: demand not covered by sector FD
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
-
-    """
     return if_then_else(
         time() > 2009,
         lambda: demand_by_sector_fd() - real_demand_by_sector(),
@@ -238,46 +250,37 @@ def demand_not_covered_by_sector_fd():
     )
 
 
+@component.add(
+    name="demand not covered total FD",
+    units="Mdollars/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def demand_not_covered_total_fd():
-    """
-    Real Name: demand not covered total FD
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return sum(
         demand_not_covered_by_sector_fd().rename({"sectors": "sectors!"}),
         dim=["sectors!"],
     )
 
 
+@component.add(
+    name="Desired annual GDP growth rate",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def desired_annual_gdp_growth_rate():
     """
-    Real Name: Desired annual GDP growth rate
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Desired annual GDP growth rate.
     """
     return -1 + desired_gdp() / desired_gdp_delayed_1yr()
 
 
+@component.add(
+    name="Desired GDP", units="T$", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def desired_gdp():
     """
-    Real Name: Desired GDP
-    Original Eqn:
-    Units: T$
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Desired GDP level for each scenario (user selection). The factor "0.56" corrects for a discrepancy when the TIME STEP < frequency of historical data.
     """
     return if_then_else(
@@ -287,15 +290,14 @@ def desired_gdp():
     )
 
 
+@component.add(
+    name="Desired GDP delayed 1yr",
+    units="T$/year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
 def desired_gdp_delayed_1yr():
     """
-    Real Name: Desired GDP delayed 1yr
-    Original Eqn:
-    Units: T$/year
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Desired GDP delayed 1 year.
     """
     return _delayfixed_desired_gdp_delayed_1yr()
@@ -310,17 +312,10 @@ _delayfixed_desired_gdp_delayed_1yr = DelayFixed(
 )
 
 
+@component.add(
+    name="Desired GDPpc", units="$/person", comp_type="Stateful", comp_subtype="Integ"
+)
 def desired_gdppc():
-    """
-    Real Name: Desired GDPpc
-    Original Eqn:
-    Units: $/person
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
-
-    """
     return _integ_desired_gdppc()
 
 
@@ -331,17 +326,13 @@ _integ_desired_gdppc = Integ(
 )
 
 
+@component.add(
+    name="Desired variation GDPpc",
+    units="$/person",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def desired_variation_gdppc():
-    """
-    Real Name: Desired variation GDPpc
-    Original Eqn:
-    Units: $/person
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return if_then_else(
         time() < 2013,
         lambda: variation_historic_gdppc(),
@@ -349,15 +340,11 @@ def desired_variation_gdppc():
     )
 
 
+@component.add(
+    name="diff demand", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def diff_demand():
     """
-    Real Name: diff demand
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Ratio between the desired GDP and the real GDP level after applying the demand function.
     """
     return if_then_else(
@@ -368,44 +355,38 @@ def diff_demand():
     )
 
 
+@component.add(
+    name="dollar per Mdollar",
+    units="dollar/Mdollar",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def dollar_per_mdollar():
     """
-    Real Name: dollar per Mdollar
-    Original Eqn:
-    Units: dollar/Mdollar
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Dollars per million dollar (1 M$ = 1e6 $).
     """
     return 1000000.0
 
 
+@component.add(
+    name="GDPpc initial year",
+    units="$/person",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def gdppc_initial_year():
-    """
-    Real Name: GDPpc initial year
-    Original Eqn:
-    Units: $/person
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return historic_gdp(1995) / historic_population(1995) * dollar_per_mdollar()
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="GFCF not covered",
+    units="Mdollars/year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def gfcf_not_covered():
     """
-    Real Name: GFCF not covered
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Gap between gross fixed capital formation required and real gross fixed capital formation (after energy-economy feedback)
     """
     return if_then_else(
@@ -415,16 +396,15 @@ def gfcf_not_covered():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Gross fixed capital formation",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def gross_fixed_capital_formation():
     """
-    Real Name: Gross fixed capital formation
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['sectors']
-
     Value of gross fixed capital formation
     """
     return _integ_gross_fixed_capital_formation()
@@ -437,29 +417,27 @@ _integ_gross_fixed_capital_formation = Integ(
 )
 
 
+@component.add(
+    name="growth capital share",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def growth_capital_share():
     """
-    Real Name: growth capital share
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Historic capital share variation (own calculations from WIOD-SEA).
     """
     return -growth_labour_share() * labour_share() / (1 - labour_share())
 
 
+@component.add(
+    name="growth labour share",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def growth_labour_share():
     """
-    Real Name: growth labour share
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Real variation rate of labour share depending on activation.
     """
     return if_then_else(
@@ -471,19 +449,18 @@ def growth_labour_share():
     )
 
 
-@subs(["sectors"], _subscript_dict)
-def historic_capital_compensation(x):
+@component.add(
+    name="historic capital compensation",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_capital_compensation(x, final_subs=None):
     """
-    Real Name: historic capital compensation
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['sectors']
-
     Historical capital compensation (14 sectors).
     """
-    return _ext_lookup_historic_capital_compensation(x)
+    return _ext_lookup_historic_capital_compensation(x, final_subs)
 
 
 _ext_lookup_historic_capital_compensation = ExtLookup(
@@ -493,23 +470,40 @@ _ext_lookup_historic_capital_compensation = ExtLookup(
     "historic_capital_compensation",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_lookup_historic_capital_compensation",
 )
 
 
-@subs(["sectors"], _subscript_dict)
-def historic_change_in_inventories(x):
+@component.add(
+    name="historic change in inventories",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_change_in_inventories(x, final_subs=None):
     """
-    Real Name: historic change in inventories
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['sectors']
-
     Historical capital compensation (14 sectors).
     """
-    return _ext_lookup_historic_change_in_inventories(x)
+    return _ext_lookup_historic_change_in_inventories(x, final_subs)
 
 
 _ext_lookup_historic_change_in_inventories = ExtLookup(
@@ -519,20 +513,37 @@ _ext_lookup_historic_change_in_inventories = ExtLookup(
     "historic_change_in_inventories",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_lookup_historic_change_in_inventories",
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="historic demand",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historic_demand():
     """
-    Real Name: historic demand
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Historic demand (35 WIOD sectors). US$1995.
     """
     return (
@@ -543,18 +554,13 @@ def historic_demand():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="historic demand next year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historic_demand_next_year():
-    """
-    Real Name: historic demand next year
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
-
-    """
     return (
         historic_gfcf(time() + 1)
         + historic_hd(time() + 1)
@@ -563,18 +569,14 @@ def historic_demand_next_year():
     )
 
 
-def historic_gdp(x):
+@component.add(
+    name="historic GDP", units="Mdollars", comp_type="Lookup", comp_subtype="External"
+)
+def historic_gdp(x, final_subs=None):
     """
-    Real Name: historic GDP
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Lookup
-    Subs: []
-
     Historic GDP Million dollars. Data derived from A matrix. US$1995.
     """
-    return _ext_lookup_historic_gdp(x)
+    return _ext_lookup_historic_gdp(x, final_subs)
 
 
 _ext_lookup_historic_gdp = ExtLookup(
@@ -584,23 +586,23 @@ _ext_lookup_historic_gdp = ExtLookup(
     "historic_GDP",
     {},
     _root,
+    {},
     "_ext_lookup_historic_gdp",
 )
 
 
-@subs(["sectors"], _subscript_dict)
-def historic_gfcf(x):
+@component.add(
+    name="historic GFCF",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_gfcf(x, final_subs=None):
     """
-    Real Name: historic GFCF
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['sectors']
-
     Historic gross fixed capital formation (WIOD-14 sectors).
     """
-    return _ext_lookup_historic_gfcf(x)
+    return _ext_lookup_historic_gfcf(x, final_subs)
 
 
 _ext_lookup_historic_gfcf = ExtLookup(
@@ -610,23 +612,40 @@ _ext_lookup_historic_gfcf = ExtLookup(
     "historic_GFCF",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_lookup_historic_gfcf",
 )
 
 
-@subs(["sectors"], _subscript_dict)
-def historic_goverment_expenditures(x):
+@component.add(
+    name="historic goverment expenditures",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_goverment_expenditures(x, final_subs=None):
     """
-    Real Name: historic goverment expenditures
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['sectors']
-
     Historical capital compensation (14 sectors).
     """
-    return _ext_lookup_historic_goverment_expenditures(x)
+    return _ext_lookup_historic_goverment_expenditures(x, final_subs)
 
 
 _ext_lookup_historic_goverment_expenditures = ExtLookup(
@@ -636,23 +655,40 @@ _ext_lookup_historic_goverment_expenditures = ExtLookup(
     "historic_goverment_expenditures",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_lookup_historic_goverment_expenditures",
 )
 
 
-@subs(["sectors"], _subscript_dict)
-def historic_hd(x):
+@component.add(
+    name="historic HD",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_hd(x, final_subs=None):
     """
-    Real Name: historic HD
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['sectors']
-
     Historical final demand by households (WIOD-14 sectors).
     """
-    return _ext_lookup_historic_hd(x)
+    return _ext_lookup_historic_hd(x, final_subs)
 
 
 _ext_lookup_historic_hd = ExtLookup(
@@ -662,23 +698,40 @@ _ext_lookup_historic_hd = ExtLookup(
     "historic_HD",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_lookup_historic_hd",
 )
 
 
-@subs(["sectors"], _subscript_dict)
-def historic_labour_compensation(x):
+@component.add(
+    name="historic labour compensation",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_labour_compensation(x, final_subs=None):
     """
-    Real Name: historic labour compensation
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['sectors']
-
     Historical labour compensation (14 sectors).
     """
-    return _ext_lookup_historic_labour_compensation(x)
+    return _ext_lookup_historic_labour_compensation(x, final_subs)
 
 
 _ext_lookup_historic_labour_compensation = ExtLookup(
@@ -688,19 +741,36 @@ _ext_lookup_historic_labour_compensation = ExtLookup(
     "historic_labour_compensation",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_lookup_historic_labour_compensation",
 )
 
 
+@component.add(
+    name="historic labour share variation",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historic_labour_share_variation():
     """
-    Real Name: historic labour share variation
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Historic variation of labour share (own calculations from WIOD-SEA).
     """
     return (
@@ -708,31 +778,29 @@ def historic_labour_share_variation():
     ) / labour_compensation_share()
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="historic variation demand",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historic_variation_demand():
     """
-    Real Name: historic variation demand
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Historic variation of demand (35 WIOD sectors). US$1995
     """
     return historic_demand_next_year() - historic_demand()
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Household demand",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def household_demand():
     """
-    Real Name: Household demand
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['sectors']
-
     Finald demand by Households
     """
     return _integ_household_demand()
@@ -745,16 +813,15 @@ _integ_household_demand = Integ(
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Household demand not covered",
+    units="Mdollars/year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def household_demand_not_covered():
     """
-    Real Name: Household demand not covered
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Gap between households consumption required and households real consumption (after energy-economy feedback)
     """
     return if_then_else(
@@ -764,119 +831,104 @@ def household_demand_not_covered():
     )
 
 
+@component.add(
+    name="Household demand total",
+    units="Mdollars",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def household_demand_total():
     """
-    Real Name: Household demand total
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Economic households demand (in millionUS$1995)
     """
     return sum(household_demand().rename({"sectors": "sectors!"}), dim=["sectors!"])
 
 
+@component.add(
+    name="initial CC total",
+    units="Mdollars",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def initial_cc_total():
-    """
-    Real Name: initial CC total
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-
-    """
     return 10573900.0
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="initial demand",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Stateful",
+    comp_subtype="Initial",
+)
 def initial_demand():
-    """
-    Real Name: initial demand
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['sectors']
-
-
-    """
     return _initial_initial_demand()
 
 
 _initial_initial_demand = Initial(lambda: historic_demand(), "_initial_initial_demand")
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="initial GFCF",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def initial_gfcf():
     """
-    Real Name: initial GFCF
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Initial gross fixed capital formation
     """
     return historic_gfcf(1995)
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="initial household demand",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def initial_household_demand():
     """
-    Real Name: initial household demand
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Initial final demand by households
     """
     return historic_hd(1995)
 
 
+@component.add(
+    name="Initial Labour share",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def initial_labour_share():
     """
-    Real Name: Initial Labour share
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Historic 2014 Labour share
     """
     return 0.5621
 
 
+@component.add(
+    name="initial LC total",
+    units="Mdollars",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def initial_lc_total():
     """
-    Real Name: initial LC total
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Initial labour compensation
     """
     return 18584700.0
 
 
+@component.add(
+    name="input GDPpc annual growth",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def input_gdppc_annual_growth():
     """
-    Real Name: input GDPpc annual growth
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Original values for annual growth of GDPpc from SSP2.
     """
     return _ext_data_input_gdppc_annual_growth(time())
@@ -890,35 +942,25 @@ _ext_data_input_gdppc_annual_growth = ExtData(
     None,
     {},
     _root,
+    {},
     "_ext_data_input_gdppc_annual_growth",
 )
 
 
+@component.add(
+    name='"Labor share cte?"', units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+)
 def labor_share_cte():
     """
-    Real Name: "Labor share cte?"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     0: Labor share: cte 1: Labor share evolves following "P labor share"
     """
     return 1
 
 
+@component.add(
+    name="labour compensation share", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def labour_compensation_share():
-    """
-    Real Name: labour compensation share
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return sum(
         historic_labour_compensation(time()).rename({"sectors": "sectors!"}),
         dim=["sectors!"],
@@ -929,17 +971,12 @@ def labour_compensation_share():
     )
 
 
+@component.add(
+    name="labour compensation share next step",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def labour_compensation_share_next_step():
-    """
-    Real Name: labour compensation share next step
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return sum(
         historic_labour_compensation(time() + 1).rename({"sectors": "sectors!"}),
         dim=["sectors!"],
@@ -950,17 +987,10 @@ def labour_compensation_share_next_step():
     )
 
 
+@component.add(
+    name="labour share", units="Dmnl", comp_type="Stateful", comp_subtype="Integ"
+)
 def labour_share():
-    """
-    Real Name: labour share
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
-
-    """
     return _integ_labour_share()
 
 
@@ -969,15 +999,14 @@ _integ_labour_share = Integ(
 )
 
 
+@component.add(
+    name="Labour share growth",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def labour_share_growth():
     """
-    Real Name: Labour share growth
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Mean cummulative growth rate of labour share.
     """
     return (p_labour_share_2050() / initial_labour_share()) ** (
@@ -985,15 +1014,9 @@ def labour_share_growth():
     ) - 1
 
 
+@component.add(name="LC", units="Mdollars", comp_type="Stateful", comp_subtype="Integ")
 def lc():
     """
-    Real Name: LC
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Labour compensation
     """
     return _integ_lc()
@@ -1004,29 +1027,27 @@ _integ_lc = Integ(
 )
 
 
+@component.add(
+    name="LC not covered",
+    units="Mdollars/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def lc_not_covered():
     """
-    Real Name: LC not covered
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Gap between labour compensation required andreal labour compensation (after energy-economy feedback)
     """
     return demand_not_covered_total_fd() * labour_share()
 
 
+@component.add(
+    name="P customized cte GDPpc variation",
+    units="1/year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_customized_cte_gdppc_variation():
     """
-    Real Name: P customized cte GDPpc variation
-    Original Eqn:
-    Units: 1/year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     From customized year, set annual constant variation.
     """
     return _ext_constant_p_customized_cte_gdppc_variation()
@@ -1038,19 +1059,19 @@ _ext_constant_p_customized_cte_gdppc_variation = ExtConstant(
     "constant_GDP_variation",
     {},
     _root,
+    {},
     "_ext_constant_p_customized_cte_gdppc_variation",
 )
 
 
+@component.add(
+    name="P customized year GDPpc evolution",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_customized_year_gdppc_evolution():
     """
-    Real Name: P customized year GDPpc evolution
-    Original Eqn:
-    Units: year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     From customized year, set annual constant variation.
     """
     return _ext_constant_p_customized_year_gdppc_evolution()
@@ -1062,19 +1083,19 @@ _ext_constant_p_customized_year_gdppc_evolution = ExtConstant(
     "start_year_gdp_variation",
     {},
     _root,
+    {},
     "_ext_constant_p_customized_year_gdppc_evolution",
 )
 
 
+@component.add(
+    name="P labour share 2050",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_labour_share_2050():
     """
-    Real Name: P labour share 2050
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Labour share targetted by 2050.
     """
     return _ext_constant_p_labour_share_2050()
@@ -1086,19 +1107,19 @@ _ext_constant_p_labour_share_2050 = ExtConstant(
     "p_labor_share_2050",
     {},
     _root,
+    {},
     "_ext_constant_p_labour_share_2050",
 )
 
 
+@component.add(
+    name="P timeseries GDPpc growth rate",
+    units="1/year",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def p_timeseries_gdppc_growth_rate():
     """
-    Real Name: P timeseries GDPpc growth rate
-    Original Eqn:
-    Units: 1/year
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Annual GDPpc growth from timeseries.
     """
     return _ext_data_p_timeseries_gdppc_growth_rate(time())
@@ -1112,20 +1133,20 @@ _ext_data_p_timeseries_gdppc_growth_rate = ExtData(
     "interpolate",
     {},
     _root,
+    {},
     "_ext_data_p_timeseries_gdppc_growth_rate",
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name='"pct GFCF vs GFCF+HD"',
+    units="Dmnl",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pct_gfcf_vs_gfcfhd():
     """
-    Real Name: "pct GFCF vs GFCF+HD"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Share of Gross Fixed Capital Formation in final demand by households and enterprises.
     """
     return gross_fixed_capital_formation() / (
@@ -1133,16 +1154,15 @@ def pct_gfcf_vs_gfcfhd():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Real GFCF",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def real_gfcf():
     """
-    Real Name: Real GFCF
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Real Gross Fixed Capital Formation
     """
     return (
@@ -1152,18 +1172,14 @@ def real_gfcf():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Real Household demand",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def real_household_demand():
-    """
-    Real Name: Real Household demand
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
-
-    """
     return (
         real_demand_by_sector()
         * (1 - share_consum_goverment_and_inventories())
@@ -1171,15 +1187,14 @@ def real_household_demand():
     )
 
 
+@component.add(
+    name="select GDPpc evolution input",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def select_gdppc_evolution_input():
     """
-    Real Name: select GDPpc evolution input
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     0. SSP2 1. Timeseries 2. From customized year, set annual constant variation
     """
     return _ext_constant_select_gdppc_evolution_input()
@@ -1191,20 +1206,20 @@ _ext_constant_select_gdppc_evolution_input = ExtConstant(
     "gdp_evolution_input",
     {},
     _root,
+    {},
     "_ext_constant_select_gdppc_evolution_input",
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="share CC",
+    units="Dmnl",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_cc():
     """
-    Real Name: share CC
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Sectoral share of capital compensation. (Capital compensation[i]/Total capital compensation)
     """
     return historic_capital_compensation(time()) / sum(
@@ -1213,84 +1228,37 @@ def share_cc():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="share CC next step",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_cc_next_step():
-    """
-    Real Name: share CC next step
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
-
-    """
     return historic_capital_compensation(time() + 1) / sum(
         historic_capital_compensation(time() + 1).rename({"sectors": "sectors!"}),
         dim=["sectors!"],
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="share consum goverment and inventories",
+    units="Dmnl",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_consum_goverment_and_inventories():
-    """
-    Real Name: share consum goverment and inventories
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
-
-    """
     return (
         historic_goverment_expenditures(time()) + historic_change_in_inventories(time())
     ) / historic_demand()
 
 
-@subs(["sectors"], _subscript_dict)
-def share_consum_goverments_and_inventories_next_year():
-    """
-    Real Name: share consum goverments and inventories next year
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
-    Sum of share of Public expenditures and changes in inventories.
-    """
-    return (
-        historic_goverment_expenditures(time() + 1)
-        + historic_change_in_inventories(time() + 1)
-    ) / historic_demand_next_year()
-
-
-def sum_variation():
-    """
-    Real Name: sum variation
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-    Variation of total final demand
-    """
-    return sum(
-        variation_demand_flow_fd().rename({"sectors": "sectors!"}), dim=["sectors!"]
-    )
-
-
+@component.add(
+    name="total demand", units="Tdollars", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def total_demand():
     """
-    Real Name: total demand
-    Original Eqn:
-    Units: Tdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total final demand
     """
     return (
@@ -1299,15 +1267,14 @@ def total_demand():
     )
 
 
+@component.add(
+    name="total demand adjusted",
+    units="Tdollars",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_demand_adjusted():
     """
-    Real Name: total demand adjusted
-    Original Eqn:
-    Units: Tdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total demand after adjustment of the demand function.
     """
     return (
@@ -1319,15 +1286,14 @@ def total_demand_adjusted():
     )
 
 
+@component.add(
+    name="variation CC",
+    units="Mdollars/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_cc():
     """
-    Real Name: variation CC
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Variation of capital compensation
     """
     return (
@@ -1341,16 +1307,15 @@ def variation_cc():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="variation CC sectoral",
+    units="Mdollars/year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_cc_sectoral():
     """
-    Real Name: variation CC sectoral
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Variation of capital compensation by industrial sectors
     """
     return (
@@ -1358,51 +1323,34 @@ def variation_cc_sectoral():
     ) * share_cc_next_step() - cc_total() * share_cc()
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="variation demand flow FD",
+    units="Mdollars/year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_demand_flow_fd():
     """
-    Real Name: variation demand flow FD
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     variation of final demand by industrial sectors
     """
     return if_then_else(
         time() < 2009,
         lambda: historic_variation_demand(),
-        lambda: (
-            gross_fixed_capital_formation()
-            * (
-                1
-                - (1 - share_consum_goverments_and_inventories_next_year())
-                / (1 - share_consum_goverment_and_inventories())
-            )
-            + household_demand()
-            * (
-                1
-                - (1 - share_consum_goverments_and_inventories_next_year())
-                / (1 - share_consum_goverment_and_inventories())
-            )
-            + variation_gfcf()
-            + variation_household_demand()
-        )
-        / (1 - share_consum_goverments_and_inventories_next_year()),
+        lambda: (variation_gfcf() + variation_household_demand())
+        / (1 - share_consum_goverment_and_inventories()),
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="variation GFCF",
+    units="Mdollars/year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_gfcf():
     """
-    Real Name: variation GFCF
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Variation of gross fixed capital formation by industrial sectors
     """
     return if_then_else(
@@ -1416,30 +1364,28 @@ def variation_gfcf():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="variation historic demand",
+    units="Mdollars/year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_historic_demand():
     """
-    Real Name: variation historic demand
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Variation of final demand by households
     """
     return historic_hd(time() + 1) - historic_hd(time())
 
 
+@component.add(
+    name="variation historic GDPpc",
+    units="$/(person*year)",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_historic_gdppc():
     """
-    Real Name: variation historic GDPpc
-    Original Eqn:
-    Units: $/(person*year)
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Variation of historic GDP per capita.
     """
     return if_then_else(
@@ -1453,31 +1399,29 @@ def variation_historic_gdppc():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="variation historic GFCF",
+    units="Mdollars/year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_historic_gfcf():
     """
-    Real Name: variation historic GFCF
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Historic variation of gross fixed capital formation (WIOD-35 sectors)
     """
     return historic_gfcf(time() + 1) - historic_gfcf(time())
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="variation household demand",
+    units="Mdollars/year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_household_demand():
     """
-    Real Name: variation household demand
-    Original Eqn:
-    Units: Mdollars/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Variation of final demand by households by industrial sectors
     """
     return if_then_else(
@@ -1488,29 +1432,24 @@ def variation_household_demand():
     )
 
 
+@component.add(
+    name="variation labour share",
+    units="1/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_labour_share():
     """
-    Real Name: variation labour share
-    Original Eqn:
-    Units: 1/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Real variation of labor share.
     """
     return growth_labour_share() * labour_share()
 
 
+@component.add(
+    name="variation LC", units="Mdollars", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def variation_lc():
     """
-    Real Name: variation LC
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Variation of labour compensation
     """
     return (
@@ -1524,29 +1463,21 @@ def variation_lc():
     )
 
 
+@component.add(
+    name="Year Final Labour share", comp_type="Constant", comp_subtype="Normal"
+)
 def year_final_labour_share():
     """
-    Real Name: Year Final Labour share
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Year of final labour share by scenarios to use in the mean accumulative growth rate.
     """
     return 2050
 
 
+@component.add(
+    name="Year Initial Labour share", comp_type="Constant", comp_subtype="Normal"
+)
 def year_initial_labour_share():
     """
-    Real Name: Year Initial Labour share
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Last year with historical data to use in the mean cummulative growth rate.
     """
     return 2014

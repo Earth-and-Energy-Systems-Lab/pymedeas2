@@ -1,18 +1,17 @@
 """
 Module crop_and_forest_residues
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name='"BioE residues for heat+elec available"',
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def bioe_residues_for_heatelec_available():
     """
-    Real Name: "BioE residues for heat+elec available"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Remaining potential available of bioenergy residues for heat and electricity as given as a fraction of unity.
     """
     return (
@@ -21,15 +20,14 @@ def bioe_residues_for_heatelec_available():
     ) / max_npp_potential_bioe_residues_for_heat_and_elec()
 
 
+@component.add(
+    name="Cellulosic biofuels available",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cellulosic_biofuels_available():
     """
-    Real Name: Cellulosic biofuels available
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Remaining potential available as given as a fraction of unity.
     """
     return zidz(
@@ -39,29 +37,27 @@ def cellulosic_biofuels_available():
     )
 
 
+@component.add(
+    name="Efficiency bioE residues to cellulosic liquids",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def efficiency_bioe_residues_to_cellulosic_liquids():
     """
-    Real Name: Efficiency bioE residues to cellulosic liquids
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Efficiency of the transformation from bioenergy residues to cellulosic liquids. We assume it is the same efficiency than for the conversion from biomass to 2nd generation biofuels.
     """
     return conv_efficiency_from_npp_to_biofuels()
 
 
+@component.add(
+    name="Max NPP potential bioE residues",
+    units="EJ/year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def max_npp_potential_bioe_residues():
     """
-    Real Name: Max NPP potential bioE residues
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Potencial following WBGU (2009).
     """
     return _ext_constant_max_npp_potential_bioe_residues()
@@ -73,19 +69,19 @@ _ext_constant_max_npp_potential_bioe_residues = ExtConstant(
     "max_NPP_pot_bioe_res",
     {},
     _root,
+    {},
     "_ext_constant_max_npp_potential_bioe_residues",
 )
 
 
+@component.add(
+    name="Max NPP potential BioE residues for cellulosic biofuels",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_npp_potential_bioe_residues_for_cellulosic_biofuels():
     """
-    Real Name: Max NPP potential BioE residues for cellulosic biofuels
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Potential assigned to the cellulosic biofuels from bioE residues.
     """
     return (
@@ -93,15 +89,14 @@ def max_npp_potential_bioe_residues_for_cellulosic_biofuels():
     )
 
 
+@component.add(
+    name="Max NPP potential BioE residues for heat and elec",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_npp_potential_bioe_residues_for_heat_and_elec():
     """
-    Real Name: Max NPP potential BioE residues for heat and elec
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of bioE for heat and electricity.
     """
     return max_npp_potential_bioe_residues() * (
@@ -109,32 +104,26 @@ def max_npp_potential_bioe_residues_for_heat_and_elec():
     )
 
 
+@component.add(
+    name="Max PEavail potential bioE residues for cellulosic biofuels",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
-    """
-    Real Name: Max PEavail potential bioE residues for cellulosic biofuels
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return (
         max_npp_potential_bioe_residues_for_cellulosic_biofuels()
         * efficiency_bioe_residues_to_cellulosic_liquids()
     )
 
 
+@component.add(
+    name='"new BioE residues for heat+elec"',
+    units="EJ/(year*year)",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def new_bioe_residues_for_heatelec():
     """
-    Real Name: "new BioE residues for heat+elec"
-    Original Eqn:
-    Units: EJ/(year*year)
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     BioE residues used for heat and electricity. For the first 5 years, we assume the same rate of energy produced than the one achieved by conventional biofuels (2nd generation).
     """
     return if_then_else(
@@ -153,15 +142,14 @@ def new_bioe_residues_for_heatelec():
     )
 
 
+@component.add(
+    name="new cellulosic biofuels",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def new_cellulosic_biofuels():
     """
-    Real Name: new cellulosic biofuels
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     New annual production of cellulosic biofuels from bioE residues. For the first 5 years, we assume the same rate of energy produced than the one achieved by conventional biofuels (2nd generation).
     """
     return if_then_else(
@@ -183,15 +171,14 @@ def new_cellulosic_biofuels():
     )
 
 
+@component.add(
+    name='"P bioE residues for heat+elec"',
+    units="1/year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_bioe_residues_for_heatelec():
     """
-    Real Name: "P bioE residues for heat+elec"
-    Original Eqn:
-    Units: 1/year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Annual growth in energy output demand depending on the policy of the scenario.
     """
     return _ext_constant_p_bioe_residues_for_heatelec()
@@ -203,19 +190,19 @@ _ext_constant_p_bioe_residues_for_heatelec = ExtConstant(
     "p_bioe_residues_for_heat_electr",
     {},
     _root,
+    {},
     "_ext_constant_p_bioe_residues_for_heatelec",
 )
 
 
+@component.add(
+    name="P cellulosic biofuels",
+    units="1/year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def p_cellulosic_biofuels():
     """
-    Real Name: P cellulosic biofuels
-    Original Eqn:
-    Units: 1/year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Annual growth in energy output demand depending on the policy of the scenario.
     """
     return _ext_constant_p_cellulosic_biofuels()
@@ -227,19 +214,19 @@ _ext_constant_p_cellulosic_biofuels = ExtConstant(
     "p_cellulosic_biofuels",
     {},
     _root,
+    {},
     "_ext_constant_p_cellulosic_biofuels",
 )
 
 
+@component.add(
+    name='"PE bioE residues for heat+elec EJ"',
+    units="EJ/year",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def pe_bioe_residues_for_heatelec_ej():
     """
-    Real Name: "PE bioE residues for heat+elec EJ"
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Total annual bioE residues production.
     """
     return _integ_pe_bioe_residues_for_heatelec_ej()
@@ -252,43 +239,40 @@ _integ_pe_bioe_residues_for_heatelec_ej = Integ(
 )
 
 
+@component.add(
+    name="PE cellulosic biofuel EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pe_cellulosic_biofuel_ej():
     """
-    Real Name: PE cellulosic biofuel EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Annual primary energy biomass used for cellulosic biofuels.
     """
     return potential_pe_cellulosic_biofuel_ej() * (1 - share_biofuels_overcapacity())
 
 
+@component.add(
+    name="PEavail cellulosic biofuel EJ",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def peavail_cellulosic_biofuel_ej():
     """
-    Real Name: PEavail cellulosic biofuel EJ
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Cellulosic biofuels production from bioenergy-residues.
     """
     return pe_cellulosic_biofuel_ej() * efficiency_bioe_residues_to_cellulosic_liquids()
 
 
+@component.add(
+    name="Potential PE cellulosic biofuel EJ",
+    units="EJ/year",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def potential_pe_cellulosic_biofuel_ej():
     """
-    Real Name: Potential PE cellulosic biofuel EJ
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Potential annual primary energy biomass used for cellulosic biofuels.
     """
     return _integ_potential_pe_cellulosic_biofuel_ej()
@@ -301,29 +285,24 @@ _integ_potential_pe_cellulosic_biofuel_ej = Integ(
 )
 
 
+@component.add(
+    name="Potential PEavail cellulosic biofuel EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def potential_peavail_cellulosic_biofuel_ej():
-    """
-    Real Name: Potential PEavail cellulosic biofuel EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return potential_pe_cellulosic_biofuel_ej() * conv_efficiency_from_npp_to_biofuels()
 
 
+@component.add(
+    name="share cellulosic biofuels vs BioE residues",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def share_cellulosic_biofuels_vs_bioe_residues():
     """
-    Real Name: share cellulosic biofuels vs BioE residues
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Share bioenergy residues potential allocated to cellulosic biofuels production.
     """
     return _ext_constant_share_cellulosic_biofuels_vs_bioe_residues()
@@ -335,19 +314,19 @@ _ext_constant_share_cellulosic_biofuels_vs_bioe_residues = ExtConstant(
     "share_cell_biofuels_vs_bioe_residues",
     {},
     _root,
+    {},
     "_ext_constant_share_cellulosic_biofuels_vs_bioe_residues",
 )
 
 
+@component.add(
+    name='"start year BioE residues for heat+elec"',
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def start_year_bioe_residues_for_heatelec():
     """
-    Real Name: "start year BioE residues for heat+elec"
-    Original Eqn:
-    Units: year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     First year when the technology is available.
     """
     return _ext_constant_start_year_bioe_residues_for_heatelec()
@@ -359,19 +338,19 @@ _ext_constant_start_year_bioe_residues_for_heatelec = ExtConstant(
     "start_year_bioe_residues_heat_electr",
     {},
     _root,
+    {},
     "_ext_constant_start_year_bioe_residues_for_heatelec",
 )
 
 
+@component.add(
+    name="start year cellulosic biofuels",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def start_year_cellulosic_biofuels():
     """
-    Real Name: start year cellulosic biofuels
-    Original Eqn:
-    Units: year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     First year when the technology is available.
     """
     return _ext_constant_start_year_cellulosic_biofuels()
@@ -383,5 +362,6 @@ _ext_constant_start_year_cellulosic_biofuels = ExtConstant(
     "start_year_cell_biofuels",
     {},
     _root,
+    {},
     "_ext_constant_start_year_cellulosic_biofuels",
 )

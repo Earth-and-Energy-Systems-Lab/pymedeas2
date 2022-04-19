@@ -1,52 +1,30 @@
 """
 Module esoi_phs
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(name="a lineal regr", comp_type="Auxiliary", comp_subtype="Normal")
 def a_lineal_regr():
-    """
-    Real Name: a lineal regr
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return (esoi_phs_full_potential() - esoi_phs_depleted_potential()) / (
         0 - max_capacity_potential_phs()
     )
 
 
+@component.add(name="b lineal regr", comp_type="Auxiliary", comp_subtype="Normal")
 def b_lineal_regr():
-    """
-    Real Name: b lineal regr
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return (
         esoi_phs_depleted_potential() - a_lineal_regr() * max_capacity_potential_phs()
     )
 
 
+@component.add(
+    name="CED per TW over lifetime PHS",
+    units="EJ/TW",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ced_per_tw_over_lifetime_phs():
-    """
-    Real Name: CED per TW over lifetime PHS
-    Original Eqn:
-    Units: EJ/TW
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return zidz(
         cp_phs()
         * float(lifetime_res_elec().loc["hydro"])
@@ -56,29 +34,21 @@ def ced_per_tw_over_lifetime_phs():
     )
 
 
+@component.add(
+    name="CEDtot over lifetime PHS",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cedtot_over_lifetime_phs():
-    """
-    Real Name: CEDtot over lifetime PHS
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return phs_capacity_under_construction() * ced_per_tw_over_lifetime_phs()
 
 
+@component.add(
+    name="ESOI PHS", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def esoi_phs():
     """
-    Real Name: ESOI PHS
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     ESOI of pumped hydro storage. *lifetime RES elec[hydro]
     """
     return zidz(
@@ -87,15 +57,14 @@ def esoi_phs():
     )
 
 
+@component.add(
+    name="ESOI PHS depleted potential",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def esoi_phs_depleted_potential():
     """
-    Real Name: ESOI PHS depleted potential
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     ESOI PHS of the depleted potential of the resource. We assume the ESOI of PHS linearly decreases with the PHS cumulated installed capacity.
     """
     return _ext_constant_esoi_phs_depleted_potential()
@@ -107,19 +76,19 @@ _ext_constant_esoi_phs_depleted_potential = ExtConstant(
     "esoi_phs_depleted_potential",
     {},
     _root,
+    {},
     "_ext_constant_esoi_phs_depleted_potential",
 )
 
 
+@component.add(
+    name="ESOI PHS full potential",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def esoi_phs_full_potential():
     """
-    Real Name: ESOI PHS full potential
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     ESOI of PHS when the full potential is available.
     """
     return float(eroiini_res_elec_dispatch().loc["hydro"]) * (
@@ -127,15 +96,11 @@ def esoi_phs_full_potential():
     )
 
 
+@component.add(
+    name="ESOI static PHS", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def esoi_static_phs():
     """
-    Real Name: ESOI static PHS
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     ESOI of the PHS without accounting for endogenous dynamic variations.
     """
     return np.maximum(
@@ -143,15 +108,14 @@ def esoi_static_phs():
     )
 
 
+@component.add(
+    name="Final energy invested PHS",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def final_energy_invested_phs():
     """
-    Real Name: Final energy invested PHS
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Final energy invested is equivalent to the denominator of the EROI (=CED*g).
     """
     return zidz(real_fe_elec_stored_phs_twh() * ej_per_twh(), esoi_phs())

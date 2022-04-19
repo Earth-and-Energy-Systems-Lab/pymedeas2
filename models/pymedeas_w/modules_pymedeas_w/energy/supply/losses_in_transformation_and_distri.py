@@ -1,19 +1,18 @@
 """
 Module losses_in_transformation_and_distri
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Energy distr losses FF EJ",
+    units="EJ/year",
+    subscripts=["final sources"],
+    comp_type="Constant, Auxiliary",
+    comp_subtype="Normal",
+)
 def energy_distr_losses_ff_ej():
     """
-    Real Name: Energy distr losses FF EJ
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Constant, Auxiliary
-    Subs: ['final sources']
-
     Energy distribution losses of fossil fuels.
     """
     value = xr.DataArray(
@@ -33,16 +32,15 @@ def energy_distr_losses_ff_ej():
     return value
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Historic share of losses vs extraction",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Data",
+    comp_subtype="External",
+)
 def historic_share_of_losses_vs_extraction():
     """
-    Real Name: Historic share of losses vs extraction
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: ['final sources']
-
     Historic share losses of each fossil fuel vs annual extraction. (Own elaboration from IEA balances)
     """
     return _ext_data_historic_share_of_losses_vs_extraction(time())
@@ -56,6 +54,7 @@ _ext_data_historic_share_of_losses_vs_extraction = ExtData(
     None,
     {"final sources": ["liquids"]},
     _root,
+    {"final sources": ["liquids", "solids", "gases"]},
     "_ext_data_historic_share_of_losses_vs_extraction",
 )
 
@@ -78,16 +77,15 @@ _ext_data_historic_share_of_losses_vs_extraction.add(
 )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Historic share of transformation losses vs extraction",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Data",
+    comp_subtype="External",
+)
 def historic_share_of_transformation_losses_vs_extraction():
     """
-    Real Name: Historic share of transformation losses vs extraction
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: ['final sources']
-
     Historic share transformation losses of each fossil fuel vs annual extraction. (Own elaboration from IEA balances)
     """
     return _ext_data_historic_share_of_transformation_losses_vs_extraction(time())
@@ -101,6 +99,7 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction = ExtData(
     None,
     {"final sources": ["liquids"]},
     _root,
+    {"final sources": ["liquids", "solids"]},
     "_ext_data_historic_share_of_transformation_losses_vs_extraction",
 )
 
@@ -114,16 +113,15 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction.add(
 )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="PES fossil fuel extraction",
+    units="EJ/year",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def pes_fossil_fuel_extraction():
     """
-    Real Name: PES fossil fuel extraction
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['final sources']
-
     Annual extraction of fossil fuels
     """
     value = xr.DataArray(
@@ -135,16 +133,15 @@ def pes_fossil_fuel_extraction():
     return value
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="PES fossil fuel extraction delayed",
+    units="EJ/year",
+    subscripts=["final sources"],
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
 def pes_fossil_fuel_extraction_delayed():
     """
-    Real Name: PES fossil fuel extraction delayed
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['final sources']
-
     Annual extraction of fossil fuels delayed
     """
     value = xr.DataArray(
@@ -199,29 +196,27 @@ _delayfixed_pes_fossil_fuel_extraction_delayed_2 = DelayFixed(
 )
 
 
+@component.add(
+    name='"pipeline transport constant 2.6 EJ in 2014"',
+    units="EJ",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def pipeline_transport_constant_26_ej_in_2014():
     """
-    Real Name: "pipeline transport constant 2.6 EJ in 2014"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Pipeline transport in 2014 (Ref: IEA balances).
     """
     return 2.6
 
 
+@component.add(
+    name="Ratio gain gas vs lose solids in tranf processes",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
 def ratio_gain_gas_vs_lose_solids_in_tranf_processes():
     """
-    Real Name: Ratio gain gas vs lose solids in tranf processes
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Data
-    Subs: []
-
     Gas gain in transformation processes of coal(Coke oven, Blust furnace,...) (Own elaboration from IEA balances)
     """
     return _ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes(time())
@@ -235,19 +230,19 @@ _ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes = ExtData(
     None,
     {},
     _root,
+    {},
     "_ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes",
 )
 
 
+@component.add(
+    name="Total distribution losses",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_distribution_losses():
     """
-    Real Name: Total distribution losses
-    Original Eqn:
-    Units: EJ/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total energy distribution losses.
     """
     return (
@@ -262,16 +257,14 @@ def total_distribution_losses():
     )
 
 
-@subs(["final sources"], _subscript_dict)
+@component.add(
+    name="Transformation FF losses EJ",
+    subscripts=["final sources"],
+    comp_type="Constant, Auxiliary",
+    comp_subtype="Normal",
+)
 def transformation_ff_losses_ej():
     """
-    Real Name: Transformation FF losses EJ
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Constant, Auxiliary
-    Subs: ['final sources']
-
     Losses in transformation processes of each fossil fuel
     """
     value = xr.DataArray(

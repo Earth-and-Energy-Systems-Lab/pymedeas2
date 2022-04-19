@@ -1,18 +1,27 @@
 """
 Module eroi_system
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="EROIst system", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+)
+def eroist_system():
+    """
+    EROI standard of the system.
+    """
+    return np.maximum(0, real_tfec() / feist_system())
+
+
+@component.add(
+    name="FE tot generation all RES elec EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fe_tot_generation_all_res_elec_ej():
     """
-    Real Name: FE tot generation all RES elec EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Electricity generation from all RES technologies.
     """
     return (
@@ -22,29 +31,11 @@ def fe_tot_generation_all_res_elec_ej():
     )
 
 
-def eroist_system():
-    """
-    Real Name: EROIst system
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-    EROI standard of the system.
-    """
-    return np.maximum(0, real_tfec() / feist_system())
-
-
+@component.add(
+    name="FEIst system", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def feist_system():
     """
-    Real Name: FEIst system
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total (dynamic) final energy investment of the whole energy system (standard EROI approach)..
     """
     return (
@@ -54,18 +45,17 @@ def feist_system():
     )
 
 
-def historic_energy_industry_ownuse(x):
+@component.add(
+    name='"Historic energy industry own-use"',
+    units="EJ",
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_energy_industry_ownuse(x, final_subs=None):
     """
-    Real Name: "Historic energy industry own-use"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Lookup
-    Subs: []
-
     Energy industry own-use.
     """
-    return _ext_lookup_historic_energy_industry_ownuse(x)
+    return _ext_lookup_historic_energy_industry_ownuse(x, final_subs)
 
 
 _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
@@ -75,19 +65,19 @@ _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
     "historic_energy_industry_own_use",
     {},
     _root,
+    {},
     "_ext_lookup_historic_energy_industry_ownuse",
 )
 
 
+@component.add(
+    name='"Historic share E industry own-use vs TFEC"',
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historic_share_e_industry_ownuse_vs_tfec():
     """
-    Real Name: "Historic share E industry own-use vs TFEC"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Historic share of the energy industry own-energy use vs TFEC.
     """
     return if_then_else(
@@ -98,17 +88,13 @@ def historic_share_e_industry_ownuse_vs_tfec():
     )
 
 
+@component.add(
+    name='"Share E industry own-use vs TFEC in 2015"',
+    units="Dmnl",
+    comp_type="Stateful",
+    comp_subtype="SampleIfTrue",
+)
 def share_e_industry_ownuse_vs_tfec_in_2015():
-    """
-    Real Name: "Share E industry own-use vs TFEC in 2015"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
-
-    """
     return _sampleiftrue_share_e_industry_ownuse_vs_tfec_in_2015()
 
 
@@ -120,15 +106,11 @@ _sampleiftrue_share_e_industry_ownuse_vs_tfec_in_2015 = SampleIfTrue(
 )
 
 
+@component.add(
+    name="Total dyn FEI RES", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def total_dyn_fei_res():
     """
-    Real Name: Total dyn FEI RES
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total (dynamic) final energy investment for RES.
     """
     return (

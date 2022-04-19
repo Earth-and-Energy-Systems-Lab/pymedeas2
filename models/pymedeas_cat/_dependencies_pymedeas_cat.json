@@ -400,7 +400,7 @@
             "cumulated_coal_extraction_to_1995": 1
         },
         "step": {
-            "extraction_coal_ej_aut": 1
+            "extraction_coal_aut": 1
         }
     },
     "_integ_cumulated_conv_gas_extraction": {
@@ -477,13 +477,13 @@
             "total_co2e_ce": 1
         }
     },
-    "_integ_demand_by_sector_fd_eu": {
+    "_integ_demand_by_sector_fd_aut": {
         "initial": {
             "initial_demand": 1
         },
         "step": {
-            "demand_not_covered_by_sector_fd_eu": 1,
-            "variation_demand_flow_fd_eu": 1
+            "demand_not_covered_by_sector_fd_aut": 1,
+            "variation_demand_flow_fd_aut": 1
         }
     },
     "_integ_desired_gdppc": {
@@ -896,7 +896,7 @@
             "urr_coal": 1
         },
         "step": {
-            "extraction_coal_ej_aut": 1,
+            "extraction_coal_aut": 1,
             "flow_coal_left_in_ground": 1
         }
     },
@@ -1098,7 +1098,6 @@
     "_integ_year_init_scarcity_final_fuels": {
         "initial": {},
         "step": {
-            "scarcity_final_fuels_counter": 1,
             "scarcity_final_fuels_flags": 1,
             "time": 1,
             "time_step": 1
@@ -1108,7 +1107,6 @@
         "initial": {},
         "step": {
             "materials_availability_reserves": 1,
-            "scarcity_reserves_counter": 1,
             "time": 1,
             "time_step": 1
         }
@@ -1117,7 +1115,6 @@
         "initial": {},
         "step": {
             "materials_availability_resources": 1,
-            "scarcity_resources_counter": 1,
             "time": 1,
             "time_step": 1
         }
@@ -1452,11 +1449,11 @@
         "_delayfixed_aaux_tveh_t": 1
     },
     "abundance_coal": {
-        "__data__": null,
+        "__data__": "_data_abundance_coal",
         "time": 1
     },
     "abundance_coal_aut": {
-        "extraction_coal_ej_aut": 2,
+        "extraction_coal_aut": 2,
         "imports_aut_coal_from_row_ej": 2,
         "ped_coal_ej": 3
     },
@@ -1529,7 +1526,7 @@
         "total_capacity_elec_storage_tw": 3
     },
     "abundance_total_nat_gas": {
-        "__data__": null,
+        "__data__": "_data_abundance_total_nat_gas",
         "time": 1
     },
     "abundance_total_nat_gas_aut": {
@@ -1540,7 +1537,7 @@
         "abundance_total_nat_gas": 1
     },
     "abundance_total_oil": {
-        "__data__": null,
+        "__data__": "_data_abundance_total_oil",
         "time": 1
     },
     "abundance_total_oil_aut": {
@@ -1573,19 +1570,19 @@
         "pe_demand_uranium_aut_ej": 4
     },
     "activate_affores_program": {
-        "__external__": null
+        "__external__": "_ext_constant_activate_affores_program"
     },
     "activate_bottom_up_method": {},
     "activate_elf_by_scen": {
-        "__external__": null
+        "__external__": "_ext_constant_activate_elf_by_scen"
     },
     "activate_energy_scarcity_feedback": {},
     "activate_eroi_allocation_rule": {},
     "activate_policy_h_transp": {
-        "__external__": null
+        "__external__": "_ext_constant_activate_policy_h_transp"
     },
     "activate_policy_inlandt": {
-        "__external__": null
+        "__external__": "_ext_constant_activate_policy_inlandt"
     },
     "adapt_co2_emissions_unconv_gas": {
         "time": 4
@@ -1681,10 +1678,11 @@
         "ped_nat_gas_for_gtl_ej": 1
     },
     "adjust_energy_for_transport_to_inland_transport": {
-        "__external__": null
+        "__external__": "_ext_constant_adjust_energy_for_transport_to_inland_transport"
     },
     "afforestation_program_2020": {
-        "__external__": null,
+        "__data__": "_ext_data_afforestation_program_2020",
+        "__external__": "_ext_data_afforestation_program_2020",
         "time": 1
     },
     "afforestation_program_2020_gtco2": {
@@ -1697,7 +1695,7 @@
         "_integ_agricultural_land": 1
     },
     "agricultural_land_2015": {
-        "__external__": null
+        "__external__": "_ext_constant_agricultural_land_2015"
     },
     "agricultural_land_pc": {
         "agricultural_land": 1,
@@ -1721,7 +1719,7 @@
         "time": 3
     },
     "annual_gdp_growth_rate": {
-        "__data__": null,
+        "__data__": "_data_annual_gdp_growth_rate",
         "time": 1
     },
     "annual_gdp_growth_rate_aut": {
@@ -1729,7 +1727,7 @@
         "gdp_delayed_1yr": 1
     },
     "annual_gdp_growth_rate_eu": {
-        "__data__": null,
+        "__data__": "_data_annual_gdp_growth_rate_eu",
         "time": 1
     },
     "annual_gdp_growth_rate_eu28": {
@@ -1763,7 +1761,7 @@
         "variation_input_pop": 1
     },
     "annual_shift_from_2gen_to_3gen": {
-        "__external__": null
+        "__external__": "_ext_constant_annual_shift_from_2gen_to_3gen"
     },
     "annual_variation_nonenergy_use": {
         "historic_nonenergy_use": 2,
@@ -1771,7 +1769,7 @@
         "variation_nonenergy_use": 1
     },
     "ar_water": {
-        "__external__": null
+        "__external__": "_ext_constant_ar_water"
     },
     "aux_hist_h": {
         "hist_var_percent_h": 8
@@ -1791,11 +1789,11 @@
     "aux_reach_zero": {
         "energy_intensity_of_households_transport": 1
     },
-    "av_past_eu_domestic_uranium_extraction": {
-        "__external__": null
+    "av_past_aut_domestic_uranium_extraction": {
+        "__external__": "_ext_constant_av_past_aut_domestic_uranium_extraction"
     },
     "av_solar_i": {
-        "__external__": null
+        "__external__": "_ext_constant_av_solar_i"
     },
     "available_forest_area": {
         "_integ_available_forest_area": 1
@@ -1882,8 +1880,8 @@
         "share_variable_res_elec_generation_vs_total": 1
     },
     "balancing_costs_ref": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_balancing_costs_ref",
+        "__lookup__": "_ext_lookup_balancing_costs_ref"
     },
     "bat_number_2w": {
         "bateries_ratio_2w_e": 1,
@@ -1902,46 +1900,46 @@
         "vehicles_inlandt": 3
     },
     "bateries_ratio_2w_e": {
-        "__external__": null
+        "__external__": "_ext_constant_bateries_ratio_2w_e"
     },
     "bateries_ratio_bus_e": {
-        "__external__": null
+        "__external__": "_ext_constant_bateries_ratio_bus_e"
     },
     "bateries_ratio_hib_bus": {
-        "__external__": null
+        "__external__": "_ext_constant_bateries_ratio_hib_bus"
     },
     "bateries_ratio_hib_hv": {
-        "__external__": null
+        "__external__": "_ext_constant_bateries_ratio_hib_hv"
     },
     "bateries_ratio_hib_lv": {
-        "__external__": null
+        "__external__": "_ext_constant_bateries_ratio_hib_lv"
     },
     "batteries_evhib2we": {
         "_integ_batteries_evhib2we": 1
     },
     "beta_0_exp_0": {
-        "__external__": null
+        "__external__": "_ext_constant_beta_0_exp_0"
     },
     "beta_0_exp_1": {
-        "__external__": null
+        "__external__": "_ext_constant_beta_0_exp_1"
     },
     "beta_0_gfcf": {
-        "__external__": null
+        "__external__": "_ext_constant_beta_0_gfcf"
     },
     "beta_0_hd": {
-        "__external__": null
+        "__external__": "_ext_constant_beta_0_hd"
     },
     "beta_1_exp_0": {
-        "__external__": null
+        "__external__": "_ext_constant_beta_1_exp_0"
     },
     "beta_1_exp_1": {
-        "__external__": null
+        "__external__": "_ext_constant_beta_1_exp_1"
     },
     "beta_1_gfcf": {
-        "__external__": null
+        "__external__": "_ext_constant_beta_1_gfcf"
     },
     "beta_1_hd": {
-        "__external__": null
+        "__external__": "_ext_constant_beta_1_hd"
     },
     "bioe_co2_emissions": {
         "g_per_gt": 1,
@@ -1965,7 +1963,7 @@
         "pe_bioe_residues_nonbiofuels_ej": 1
     },
     "biofuel_production_2015": {
-        "__external__": null
+        "__external__": "_ext_constant_biofuel_production_2015"
     },
     "biofuels_3gen_land_compet_available": {
         "land_compet_biofuels_3gen_mha": 1,
@@ -2064,7 +2062,7 @@
         "m_per_t": 1,
         "mj_per_ej": 1,
         "res_elec_capacity_under_construction_tw": 1,
-        "water_for_om__res_elec": 1
+        "water_for_om_res_elec": 1
     },
     "ced_om_over_lifetime_res_elec_var": {
         "ced_om_over_lifetime_per_material_res_elec_var": 1,
@@ -2128,7 +2126,8 @@
         "total_ch4_emissions_fossil_fuels": 1
     },
     "ch4_anthro_emissions_rcp": {
-        "__external__": null,
+        "__data__": "_ext_data_ch4_anthro_emissions_rcp",
+        "__external__": "_ext_data_ch4_anthro_emissions_rcp",
         "time": 1
     },
     "ch4_emissions_coal_test": {
@@ -2150,7 +2149,7 @@
         "share_conv_vs_total_gas_extraction": 1
     },
     "ch4_emissions_ctl": {
-        "extraction_coal_for_ctl_ej": 1,
+        "extraction_coal_for_ctl": 1,
         "g_per_mt": 1,
         "gch4_per_mj_ctl": 1,
         "mj_per_ej": 1
@@ -2221,7 +2220,7 @@
         "time": 3
     },
     "check_domestic_aut_extracted": {
-        "extraction_coal_ej_aut": 1,
+        "extraction_coal_aut": 1,
         "historic_coal_domestic_aut_extracted_ej": 1
     },
     "check_gas_delayed_1yr": {
@@ -2250,19 +2249,19 @@
         "_delayfixed_check_liquids_delayed_1yr": 1
     },
     "choose_energy_intensity_target_method": {
-        "__external__": null
+        "__external__": "_ext_constant_choose_energy_intensity_target_method"
     },
     "choose_final_sectoral_energy_intensities_evolution_method": {
-        "__external__": null
+        "__external__": "_ext_constant_choose_final_sectoral_energy_intensities_evolution_method"
     },
     "choose_gwp_time_frame": {
-        "__external__": null
+        "__external__": "_ext_constant_choose_gwp_time_frame"
     },
     "choose_rcp": {
-        "__external__": null
+        "__external__": "_ext_constant_choose_rcp"
     },
     "choose_targets_mineral_recycling_rates": {
-        "__external__": null
+        "__external__": "_ext_constant_choose_targets_mineral_recycling_rates"
     },
     "co2_emissions_coal": {
         "coal_for_elec_co2_emissions": 1,
@@ -2291,7 +2290,7 @@
         "real_consumption_ue_conv_oil_emissions_relevant_ej": 1
     },
     "co2_emissions_ctl": {
-        "extraction_coal_for_ctl_ej": 1,
+        "extraction_coal_for_ctl": 1,
         "g_per_gt": 1,
         "gco2_per_mj_ctl": 1,
         "mj_per_ej": 1
@@ -2459,7 +2458,7 @@
         "pec_coal": 1
     },
     "conv_efficiency_from_npp_to_biofuels": {
-        "__external__": null
+        "__external__": "_ext_constant_conv_efficiency_from_npp_to_biofuels"
     },
     "conv_gas_to_leave_underground": {
         "rurr_conv_gas_until_start_year_plg": 1,
@@ -2509,10 +2508,10 @@
         "cp_nuclear_initial": 1
     },
     "cp_nuclear_initial": {
-        "__external__": null
+        "__external__": "_ext_constant_cp_nuclear_initial"
     },
     "cp_phs": {
-        "__external__": null
+        "__external__": "_ext_constant_cp_phs"
     },
     "cp_res_elec": {
         "cp_exogenous_res_elec_reduction": 1,
@@ -2525,19 +2524,19 @@
         "shortage_bioe_for_heat": 1
     },
     "cpini_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_cpini_res_elec"
     },
     "cpini_res_for_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_cpini_res_for_heat"
     },
     "crash_programme_ctl": {
-        "__external__": null
+        "__external__": "_ext_constant_crash_programme_ctl"
     },
     "crash_programme_gtl": {
-        "__external__": null
+        "__external__": "_ext_constant_crash_programme_gtl"
     },
     "ctl_efficiency": {
-        "__external__": null
+        "__external__": "_ext_constant_ctl_efficiency"
     },
     "ctl_potential_production": {
         "_integ_ctl_potential_production": 1
@@ -2576,19 +2575,19 @@
         "_integ_cumulated_coal_extraction": 1
     },
     "cumulated_coal_extraction_to_1995": {
-        "__external__": null
+        "__external__": "_ext_constant_cumulated_coal_extraction_to_1995"
     },
     "cumulated_conv_gas_extraction": {
         "_integ_cumulated_conv_gas_extraction": 1
     },
     "cumulated_conv_gas_extraction_to_1995": {
-        "__external__": null
+        "__external__": "_ext_constant_cumulated_conv_gas_extraction_to_1995"
     },
     "cumulated_conv_oil_extraction": {
         "_integ_cumulated_conv_oil_extraction": 1
     },
     "cumulated_conv_oil_extraction_to_1995": {
-        "__external__": null
+        "__external__": "_ext_constant_cumulated_conv_oil_extraction_to_1995"
     },
     "cumulated_invest_e_grid": {
         "_integ_cumulated_invest_e_grid": 1
@@ -2614,38 +2613,34 @@
         "_integ_cumulated_unconv_gas_extraction": 1
     },
     "cumulated_unconv_gas_extraction_to_1995": {
-        "__external__": null
+        "__external__": "_ext_constant_cumulated_unconv_gas_extraction_to_1995"
     },
     "cumulated_unconv_oil_extraction": {
         "_integ_cumulated_unconv_oil_extraction": 1
     },
     "cumulated_unconv_oil_extraction_to_1995": {
-        "__external__": null
+        "__external__": "_ext_constant_cumulated_unconv_oil_extraction_to_1995"
     },
     "cumulated_uranium_extraction": {
         "_integ_cumulated_uranium_extraction": 1
     },
-    "cumulated_uranium_extraction_kt": {
-        "cumulated_uranium_extraction": 1,
-        "kt_uranium_per_ej": 1
-    },
     "cumulated_uranium_extraction_to_1995": {
-        "__external__": null
+        "__external__": "_ext_constant_cumulated_uranium_extraction_to_1995"
     },
     "cumulative_co2e_ghg_emissions": {
         "_integ_cumulative_co2e_ghg_emissions": 1
     },
     "cumulative_emissions_to_1995": {
-        "__external__": null
+        "__external__": "_ext_constant_cumulative_emissions_to_1995"
     },
     "current_mineral_reserves_mt": {
-        "__external__": null
+        "__external__": "_ext_constant_current_mineral_reserves_mt"
     },
     "current_mineral_resources_mt": {
-        "__external__": null
+        "__external__": "_ext_constant_current_mineral_resources_mt"
     },
     "current_recycling_rates_minerals": {
-        "__external__": null
+        "__external__": "_ext_constant_current_recycling_rates_minerals"
     },
     "current_recycling_rates_minerals_alt_techn": {
         "current_recycling_rates_minerals": 1,
@@ -2711,11 +2706,11 @@
         "unsustainable_loggin": 1
     },
     "demand_by_sector_fd_adjusted": {
-        "demand_by_sector_fd_eu": 1,
-        "diff_demand_eu": 1
+        "demand_by_sector_fd_aut": 1,
+        "diff_demand_aut": 1
     },
-    "demand_by_sector_fd_eu": {
-        "_integ_demand_by_sector_fd_eu": 1
+    "demand_by_sector_fd_aut": {
+        "_integ_demand_by_sector_fd_aut": 1
     },
     "demand_by_sector_roeu": {
         "historic_demand_1": 1,
@@ -2764,22 +2759,22 @@
         "pe_traditional_biomass_demand_ej": 1
     },
     "demand_forest_wood_products_pc": {
-        "__external__": null
+        "__external__": "_ext_constant_demand_forest_wood_products_pc"
     },
     "demand_gas_for_oil_refinery_gains": {
         "efficiency_gas_for_oil_refinery_gains": 1,
         "oil_refinery_gains_ej": 1
     },
     "demand_h": {
-        "__external__": null
+        "__external__": "_ext_constant_demand_h"
     },
-    "demand_not_covered_by_sector_fd_eu": {
-        "demand_by_sector_fd_eu": 1,
+    "demand_not_covered_by_sector_fd_aut": {
+        "demand_by_sector_fd_aut": 1,
         "real_final_demand_by_sector_aut": 1,
         "time": 1
     },
     "demand_not_covered_total_fd": {
-        "demand_not_covered_by_sector_fd_eu": 1
+        "demand_not_covered_by_sector_fd_aut": 1
     },
     "demand_storage_capacity": {
         "share_capacity_storageres_elec_var": 1,
@@ -2846,7 +2841,7 @@
         "time": 2,
         "variation_historic_gdppc": 1
     },
-    "diff_demand_eu": {
+    "diff_demand_aut": {
         "desired_annual_total_demand_growth_rate_delayed_1_yr": 1,
         "real_demand_delayed_1yr": 1,
         "time": 1,
@@ -2891,47 +2886,51 @@
         "conv_efficiency_from_npp_to_biofuels": 1
     },
     "efficiency_biogas_for_elec_chp_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_biogas_for_elec_chp_plants"
     },
     "efficiency_biogas_for_elec_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_biogas_for_elec_plants"
     },
     "efficiency_biogas_for_heat": {
         "fes_heatcom_from_biogas_ej": 1,
         "pes_tot_biogas_for_heatcom": 1
     },
     "efficiency_biogas_for_heat_chp_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_biogas_for_heat_chp_plants"
     },
     "efficiency_biogas_for_heat_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_biogas_for_heat_plants"
     },
     "efficiency_coal_for_electricity": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_coal_for_electricity"
     },
     "efficiency_coal_for_heat_plants": {
-        "__external__": null,
+        "__data__": "_ext_data_efficiency_coal_for_heat_plants",
+        "__external__": "_ext_data_efficiency_coal_for_heat_plants",
         "time": 1
     },
     "efficiency_conversion_bioe_plants_to_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_conversion_bioe_plants_to_heat"
     },
     "efficiency_conversion_bioe_to_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_conversion_bioe_to_elec"
     },
     "efficiency_conversion_geot_pe_to_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_conversion_geot_pe_to_elec"
     },
     "efficiency_elec_coal_chp_plants": {
-        "__external__": null,
+        "__data__": "_ext_data_efficiency_elec_coal_chp_plants",
+        "__external__": "_ext_data_efficiency_elec_coal_chp_plants",
         "time": 1
     },
     "efficiency_elec_gas_chp_plants": {
-        "__external__": null,
+        "__data__": "_ext_data_efficiency_elec_gas_chp_plants",
+        "__external__": "_ext_data_efficiency_elec_gas_chp_plants",
         "time": 1
     },
     "efficiency_elec_oil_chp_plants": {
-        "__external__": null,
+        "__data__": "_ext_data_efficiency_elec_oil_chp_plants",
+        "__external__": "_ext_data_efficiency_elec_oil_chp_plants",
         "time": 1
     },
     "efficiency_energy_acceleration": {
@@ -2943,42 +2942,47 @@
         "_integ_efficiency_gas_for_electricity": 1
     },
     "efficiency_gas_for_oil_refinery_gains": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_gas_for_oil_refinery_gains"
     },
     "efficiency_gases_for_heat_plants": {
-        "__external__": null,
+        "__data__": "_ext_data_efficiency_gases_for_heat_plants",
+        "__external__": "_ext_data_efficiency_gases_for_heat_plants",
         "time": 1
     },
     "efficiency_geothermal_for_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_geothermal_for_heat"
     },
     "efficiency_heat_coal_chp_plants": {
-        "__external__": null,
+        "__data__": "_ext_data_efficiency_heat_coal_chp_plants",
+        "__external__": "_ext_data_efficiency_heat_coal_chp_plants",
         "time": 1
     },
     "efficiency_heat_gas_chp_plants": {
-        "__external__": null,
+        "__data__": "_ext_data_efficiency_heat_gas_chp_plants",
+        "__external__": "_ext_data_efficiency_heat_gas_chp_plants",
         "time": 1
     },
     "efficiency_heat_oil_chp_plants": {
-        "__external__": null,
+        "__data__": "_ext_data_efficiency_heat_oil_chp_plants",
+        "__external__": "_ext_data_efficiency_heat_oil_chp_plants",
         "time": 1
     },
     "efficiency_improv_gas_for_electricity": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_improv_gas_for_electricity"
     },
     "efficiency_improvement_biofuels_3gen": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_improvement_biofuels_3gen"
     },
     "efficiency_liquids_for_electricity": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_liquids_for_electricity"
     },
     "efficiency_liquids_for_heat_plants": {
-        "__external__": null,
+        "__data__": "_ext_data_efficiency_liquids_for_heat_plants",
+        "__external__": "_ext_data_efficiency_liquids_for_heat_plants",
         "time": 1
     },
     "efficiency_rate_of_substitution": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_rate_of_substitution"
     },
     "efficiency_res_heat": {
         "efficiency_conversion_bioe_plants_to_heat": 1,
@@ -2987,19 +2991,19 @@
         "losses_solar_for_heat": 1
     },
     "efficiency_uranium_for_electricity": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_uranium_for_electricity"
     },
     "efficiency_waste_for_elec_chp_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_waste_for_elec_chp_plants"
     },
     "efficiency_waste_for_elec_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_waste_for_elec_plants"
     },
     "efficiency_waste_for_heat_chp_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_waste_for_heat_chp_plants"
     },
     "efficiency_waste_for_heat_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_efficiency_waste_for_heat_plants"
     },
     "ej_per_ktoe": {},
     "ej_per_twh": {},
@@ -3028,22 +3032,22 @@
         "total_fe_elec_demand_twh": 1
     },
     "employment_factor_biofuels": {
-        "__external__": null
+        "__external__": "_ext_constant_employment_factor_biofuels"
     },
     "employment_factor_fuel_supply_solids_bioe": {
-        "__external__": null
+        "__external__": "_ext_constant_employment_factor_fuel_supply_solids_bioe"
     },
     "employment_factors_new_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_employment_factors_new_res_elec"
     },
     "employment_factors_new_res_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_employment_factors_new_res_heat"
     },
     "employment_factors_om_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_employment_factors_om_res_elec"
     },
     "employment_factors_om_res_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_employment_factors_om_res_heat"
     },
     "energy_cons_per_unit_of_material_cons_for_res_elec": {
         "initial_energy_cons_per_unit_of_material_cons_recycled": 1,
@@ -3069,7 +3073,7 @@
         "required_total_output_for_exports": 1
     },
     "energy_initial_inland_transport": {
-        "__external__": null
+        "__external__": "_ext_constant_energy_initial_inland_transport"
     },
     "energy_intensity_construction_ev_batteries_mjmw": {
         "m_per_t": 1,
@@ -3096,7 +3100,7 @@
         "mdollar_per_tdollar": 1
     },
     "energy_intensity_target_mdollar": {
-        "__external__": null
+        "__external__": "_ext_constant_energy_intensity_target_mdollar"
     },
     "energy_per_x_t": {
         "energy_per_x_train": 2,
@@ -3139,7 +3143,7 @@
         "water_for_om_required_for_res_elec": 1
     },
     "energy_requirements_per_unit_of_water_consumption": {
-        "__external__": null
+        "__external__": "_ext_constant_energy_requirements_per_unit_of_water_consumption"
     },
     "energy_scarcity_feedback_shortage_coeff_aut": {
         "activate_energy_scarcity_feedback": 1,
@@ -3147,10 +3151,10 @@
         "required_fed_by_fuel_before_heat_correction": 1
     },
     "energy_scarcity_forgetting_time": {
-        "__external__": null
+        "__external__": "_ext_constant_energy_scarcity_forgetting_time"
     },
     "energy_scarcity_forgetting_time_h": {
-        "__external__": null
+        "__external__": "_ext_constant_energy_scarcity_forgetting_time_h"
     },
     "enery_embedded_in_aut_imports_from_row_by_sector_and_fuel": {
         "final_energy_intensity_by_sector_and_fuel_row": 1,
@@ -3158,14 +3162,14 @@
         "row_output_required_for_aut_imports_by_sector": 1
     },
     "eolrr_minerals_alt_techn_res_vs_total_economy": {
-        "__external__": null
+        "__external__": "_ext_constant_eolrr_minerals_alt_techn_res_vs_total_economy"
     },
     "eroi_allocation_rule_per_res_elec": {
         "ratio_eroi_per_techn_vs_eroitot_static": 3,
         "time": 1
     },
     "eroiini_res_elec_dispatch": {
-        "__external__": null
+        "__external__": "_ext_constant_eroiini_res_elec_dispatch"
     },
     "eroist_system": {
         "feist_system": 1,
@@ -3193,7 +3197,7 @@
         "output_phs_over_lifetime": 1
     },
     "esoi_phs_depleted_potential": {
-        "__external__": null
+        "__external__": "_ext_constant_esoi_phs_depleted_potential"
     },
     "esoi_phs_full_potential": {
         "cp_phs": 1,
@@ -3269,11 +3273,7 @@
         "grid_reinforcement_costs_tdollar": 1,
         "real_generation_res_elec_twh": 2
     },
-    "extraction_coal_ej": {
-        "__data__": null,
-        "time": 1
-    },
-    "extraction_coal_ej_aut": {
+    "extraction_coal_aut": {
         "max_extraction_coal_ej": 1,
         "ped_domestic_aut_coal_ej": 2,
         "rurr_coal": 1,
@@ -3281,8 +3281,12 @@
         "unlimited_coal": 1,
         "unlimited_nre": 1
     },
+    "extraction_coal_ej": {
+        "__data__": "_data_extraction_coal_ej",
+        "time": 1
+    },
     "extraction_coal_ej_row": {
-        "extraction_coal_ej_aut": 1,
+        "extraction_coal_aut": 1,
         "extraction_coal_ej_world": 1
     },
     "extraction_coal_ej_world": {
@@ -3292,20 +3296,16 @@
         "extraction_coal_without_ctl_ej": 1,
         "nonenergy_use_demand_by_final_fuel_ej": 1
     },
-    "extraction_coal_for_ctl_ej": {
+    "extraction_coal_for_ctl": {
         "ped_coal_for_ctl_ej": 1
     },
     "extraction_coal_mtoe": {
-        "extraction_coal_ej_aut": 1,
+        "extraction_coal_aut": 1,
         "mtoe_per_ej": 1
     },
     "extraction_coal_without_ctl_ej": {
-        "extraction_coal_ej_aut": 1,
-        "extraction_coal_for_ctl_ej": 1
-    },
-    "extraction_conv_gas__tot_agg": {
-        "extraction_tot_agg_gas_ej": 1,
-        "share_conv_gas_vs_tot_agg": 1
+        "extraction_coal_aut": 1,
+        "extraction_coal_for_ctl": 1
     },
     "extraction_conv_gas_ej": {
         "max_extraction_conv_gas_ej": 1,
@@ -3315,9 +3315,9 @@
         "unlimited_gas": 1,
         "unlimited_nre": 1
     },
-    "extraction_conv_oil__tot_agg": {
-        "extraction_tot_agg_oil_ej": 1,
-        "share_conv_oil_vs_tot_agg": 1
+    "extraction_conv_gas_tot_agg": {
+        "extraction_tot_agg_gas_ej": 1,
+        "share_conv_gas_vs_tot_agg": 1
     },
     "extraction_conv_oil_ej": {
         "max_extraction_conv_oil_ej": 1,
@@ -3326,6 +3326,10 @@
         "time": 1,
         "unlimited_nre": 1,
         "unlimited_oil": 1
+    },
+    "extraction_conv_oil_tot_agg": {
+        "extraction_tot_agg_oil_ej": 1,
+        "share_conv_oil_vs_tot_agg": 1
     },
     "extraction_nat_gas_ej_world": {
         "pes_nat_gas": 1
@@ -3349,10 +3353,6 @@
         "unlimited_nre": 1,
         "unlimited_oil": 1
     },
-    "extraction_unconv_gas__tot_agg": {
-        "extraction_tot_agg_gas_ej": 1,
-        "share_unconv_gas_vs_tot_agg": 1
-    },
     "extraction_unconv_gas_delayed": {
         "_delayfixed_extraction_unconv_gas_delayed": 1
     },
@@ -3364,9 +3364,9 @@
         "separate_conv_and_unconv_gas": 1,
         "time": 1
     },
-    "extraction_unconv_oil__tot_agg": {
-        "extraction_tot_agg_oil_ej": 1,
-        "share_unconv_oil_vs_tot_agg": 1
+    "extraction_unconv_gas_tot_agg": {
+        "extraction_tot_agg_gas_ej": 1,
+        "share_unconv_gas_vs_tot_agg": 1
     },
     "extraction_unconv_oil_delayed": {
         "_delayfixed_extraction_unconv_oil_delayed": 1
@@ -3380,12 +3380,16 @@
         "separate_conv_and_unconv_oil": 1,
         "time": 1
     },
+    "extraction_unconv_oil_tot_agg": {
+        "extraction_tot_agg_oil_ej": 1,
+        "share_unconv_oil_vs_tot_agg": 1
+    },
     "extraction_uranium_ej": {
-        "__data__": null,
+        "__data__": "_data_extraction_uranium_ej",
         "time": 1
     },
     "extraction_uranium_ej_aut": {
-        "historic_uranium_domestic_eu_extracted_t": 1,
+        "historic_uranium_domestic_extracted": 1,
         "kt_uranium_per_ej": 1,
         "max_extraction_uranium_ej": 1,
         "pe_demand_uranium_aut_ej": 2,
@@ -3398,19 +3402,15 @@
     "extraction_uranium_ej_world": {
         "extraction_uranium_ej": 1
     },
-    "extraction_uranium_kt": {
-        "extraction_uranium_ej_aut": 1,
-        "kt_uranium_per_ej": 1
-    },
     "extraction_uranium_row": {
         "extraction_uranium_ej_world": 2,
-        "imports_eu_uranium_from_row_ej": 2
+        "imports_aut_uranium_from_row": 2
     },
     "f1_pv_solar_in_target_year": {
-        "__external__": null
+        "__external__": "_ext_constant_f1_pv_solar_in_target_year"
     },
     "f1_solar_panels_for_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_f1_solar_panels_for_heat"
     },
     "f1_solar_pv": {
         "f1_pv_solar_in_target_year": 2,
@@ -3420,13 +3420,13 @@
         "time": 4
     },
     "f1ini_solar_pv": {
-        "__external__": null
+        "__external__": "_ext_constant_f1ini_solar_pv"
     },
     "f2_pf_solar_pv": {
-        "__external__": null
+        "__external__": "_ext_constant_f2_pf_solar_pv"
     },
     "f3_solar_pv_on_land": {
-        "__external__": null
+        "__external__": "_ext_constant_f3_solar_pv_on_land"
     },
     "fe_demand_coal_elec_plants_twh": {
         "demand_elec_gas_and_coal_twh": 1,
@@ -3455,7 +3455,7 @@
     "fe_elec_generation_from_coal_twh": {
         "efficiency_coal_for_electricity": 1,
         "ej_per_twh": 1,
-        "extraction_coal_ej_aut": 1,
+        "extraction_coal_aut": 1,
         "imports_aut_coal_from_row_ej": 1,
         "share_coal_dem_for_elec": 1
     },
@@ -3859,7 +3859,7 @@
     },
     "final_time": {},
     "final_year_energy_intensity_target": {
-        "__external__": null
+        "__external__": "_ext_constant_final_year_energy_intensity_target"
     },
     "flow_coal_left_in_ground": {
         "coal_to_leave_underground": 1,
@@ -3909,7 +3909,7 @@
         "total_demand_forest_biomass_ej": 1
     },
     "forest_extraction_per_ha": {
-        "__external__": null
+        "__external__": "_ext_constant_forest_extraction_per_ha"
     },
     "forest_loss_to_sustain_agriculture": {
         "agricultural_land": 1,
@@ -3999,46 +3999,46 @@
     },
     "gboe_per_ej": {},
     "gch4_per_mj_coal": {
-        "__external__": null
+        "__external__": "_ext_constant_gch4_per_mj_coal"
     },
     "gch4_per_mj_conv_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_gch4_per_mj_conv_gas"
     },
     "gch4_per_mj_ctl": {
-        "__external__": null
+        "__external__": "_ext_constant_gch4_per_mj_ctl"
     },
     "gch4_per_mj_gtl": {
-        "__external__": null
+        "__external__": "_ext_constant_gch4_per_mj_gtl"
     },
     "gch4_per_mj_oil": {
-        "__external__": null
+        "__external__": "_ext_constant_gch4_per_mj_oil"
     },
     "gch4_per_mj_unconv_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_gch4_per_mj_unconv_gas"
     },
     "gco2_per_mj_coal": {
-        "__external__": null
+        "__external__": "_ext_constant_gco2_per_mj_coal"
     },
     "gco2_per_mj_conv_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_gco2_per_mj_conv_gas"
     },
     "gco2_per_mj_conv_oil": {
-        "__external__": null
+        "__external__": "_ext_constant_gco2_per_mj_conv_oil"
     },
     "gco2_per_mj_ctl": {
-        "__external__": null
+        "__external__": "_ext_constant_gco2_per_mj_ctl"
     },
     "gco2_per_mj_gtl": {
-        "__external__": null
+        "__external__": "_ext_constant_gco2_per_mj_gtl"
     },
     "gco2_per_mj_shale_oil": {
-        "__external__": null
+        "__external__": "_ext_constant_gco2_per_mj_shale_oil"
     },
     "gco2_per_mj_unconv_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_gco2_per_mj_unconv_gas"
     },
     "gco2_per_mj_unconv_oil": {
-        "__external__": null
+        "__external__": "_ext_constant_gco2_per_mj_unconv_oil"
     },
     "gdp_aut": {
         "gdp_by_sector": 1
@@ -4059,7 +4059,7 @@
         "_delayfixed_gdp_delayed_1yr": 1
     },
     "gdp_eu": {
-        "__data__": null,
+        "__data__": "_data_gdp_eu",
         "time": 1
     },
     "gdp_eu28": {
@@ -4100,7 +4100,7 @@
         "twe_per_twh": 1
     },
     "geot_pe_potential_for_heat_twth": {
-        "__external__": null
+        "__external__": "_ext_constant_geot_pe_potential_for_heat_twth"
     },
     "gfcf_not_covered": {
         "gross_fixed_capital_formation": 1,
@@ -4120,13 +4120,13 @@
         "staticdynamic_quality_of_electricity": 1
     },
     "grid_correction_factor_ev_batteries": {
-        "__external__": null
+        "__external__": "_ext_constant_grid_correction_factor_ev_batteries"
     },
     "grid_correction_factor_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_grid_correction_factor_res_elec"
     },
     "grid_reinforcement_costs": {
-        "__external__": null
+        "__external__": "_ext_constant_grid_reinforcement_costs"
     },
     "grid_reinforcement_costs_tdollar": {
         "g_per_t": 1,
@@ -4137,7 +4137,7 @@
         "_integ_gross_fixed_capital_formation": 1
     },
     "growing_stock_forest_per_ha": {
-        "__external__": null
+        "__external__": "_ext_constant_growing_stock_forest_per_ha"
     },
     "growth_capital_share": {
         "capital_share_growth": 1,
@@ -4152,7 +4152,7 @@
         "time": 2
     },
     "gtl_efficiency": {
-        "__external__": null
+        "__external__": "_ext_constant_gtl_efficiency"
     },
     "gtl_potential_production": {
         "_integ_gtl_potential_production": 1
@@ -4162,10 +4162,10 @@
         "share_ctlgtl_overcapacity": 1
     },
     "gwp_100_year": {
-        "__external__": null
+        "__external__": "_ext_constant_gwp_100_year"
     },
     "gwp_20_year": {
-        "__external__": null
+        "__external__": "_ext_constant_gwp_20_year"
     },
     "h_2w_elec_adapt_growth": {
         "h_2w_elec_initial_growth": 1
@@ -4240,25 +4240,29 @@
         "hfc_emissions_rcp": 4
     },
     "hfc_emissions_rcp": {
-        "__external__": null,
+        "__data__": "_ext_data_hfc_emissions_rcp",
+        "__external__": "_ext_data_hfc_emissions_rcp",
         "time": 1
     },
     "hist_elec_exports_share": {
-        "__external__": null,
+        "__data__": "_ext_data_hist_elec_exports_share",
+        "__external__": "_ext_data_hist_elec_exports_share",
         "time": 1
     },
     "hist_growth_ctl": {
-        "__external__": null
+        "__external__": "_ext_constant_hist_growth_ctl"
     },
     "hist_growth_gtl": {
-        "__external__": null
+        "__external__": "_ext_constant_hist_growth_gtl"
     },
     "hist_share_gascoal_gas_elec": {
-        "__external__": null,
+        "__data__": "_ext_data_hist_share_gascoal_gas_elec",
+        "__external__": "_ext_data_hist_share_gascoal_gas_elec",
         "time": 1
     },
     "hist_share_oilff_elec": {
-        "__external__": null,
+        "__data__": "_ext_data_hist_share_oilff_elec",
+        "__external__": "_ext_data_hist_share_oilff_elec",
         "time": 1
     },
     "hist_var_inlandt": {},
@@ -4281,18 +4285,18 @@
         "time": 3
     },
     "historic_a_matrix": {
-        "__external__": null
+        "__external__": "_ext_constant_historic_a_matrix"
     },
     "historic_av_variation_primary_forests_area": {
-        "__external__": null
+        "__external__": "_ext_constant_historic_av_variation_primary_forests_area"
     },
     "historic_biogas_pes": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_biogas_pes",
+        "__lookup__": "_ext_lookup_historic_biogas_pes"
     },
     "historic_capital_compensation": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_capital_compensation",
+        "__lookup__": "_ext_lookup_historic_capital_compensation"
     },
     "historic_capital_share": {
         "historic_capital_compensation": 1,
@@ -4309,24 +4313,27 @@
         "time": 2
     },
     "historic_change_in_inventories": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_change_in_inventories",
+        "__lookup__": "_ext_lookup_historic_change_in_inventories"
     },
     "historic_coal_domestic_aut_extracted_ej": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_coal_domestic_aut_extracted_ej",
+        "__external__": "_ext_data_historic_coal_domestic_aut_extracted_ej",
         "time": 1
     },
     "historic_conv_nat_gas_domestic_aut_extracted_ej": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_conv_nat_gas_domestic_aut_extracted_ej",
+        "__external__": "_ext_data_historic_conv_nat_gas_domestic_aut_extracted_ej",
         "time": 1
     },
     "historic_conv_oil_domestic_aut_extracted_ej": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_conv_oil_domestic_aut_extracted_ej",
+        "__external__": "_ext_data_historic_conv_oil_domestic_aut_extracted_ej",
         "time": 1
     },
     "historic_ctl_production": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_ctl_production",
+        "__lookup__": "_ext_lookup_historic_ctl_production"
     },
     "historic_demand": {
         "historic_change_in_inventories": 1,
@@ -4338,11 +4345,13 @@
         "time": 6
     },
     "historic_demand_0": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_demand_0",
+        "__external__": "_ext_data_historic_demand_0",
         "time": 1
     },
     "historic_demand_1": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_demand_1",
+        "__external__": "_ext_data_historic_demand_1",
         "time": 1
     },
     "historic_demand_next_year": {
@@ -4355,44 +4364,44 @@
         "time": 6
     },
     "historic_efficiency_gas_for_electricity": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_efficiency_gas_for_electricity",
+        "__lookup__": "_ext_lookup_historic_efficiency_gas_for_electricity"
     },
     "historic_energy_industry_ownuse": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_energy_industry_ownuse",
+        "__lookup__": "_ext_lookup_historic_energy_industry_ownuse"
     },
     "historic_exports_demand_0": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_exports_demand_0",
+        "__lookup__": "_ext_lookup_historic_exports_demand_0"
     },
     "historic_exports_demand_1": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_exports_demand_1",
+        "__lookup__": "_ext_lookup_historic_exports_demand_1"
     },
     "historic_final_energy_intensity": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_final_energy_intensity",
+        "__lookup__": "_ext_lookup_historic_final_energy_intensity"
     },
     "historic_gdp": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_gdp",
+        "__lookup__": "_ext_lookup_historic_gdp"
     },
     "historic_gfcf": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_gfcf",
+        "__lookup__": "_ext_lookup_historic_gfcf"
     },
     "historic_goverment_expenditures": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_goverment_expenditures",
+        "__lookup__": "_ext_lookup_historic_goverment_expenditures"
     },
     "historic_gtl_production": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_gtl_production",
+        "__lookup__": "_ext_lookup_historic_gtl_production"
     },
     "historic_hd": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_hd",
+        "__lookup__": "_ext_lookup_historic_hd"
     },
     "historic_ia_matrix": {
         "historic_a_matrix": 1,
@@ -4400,8 +4409,8 @@
     },
     "historic_improvement_recycling_rates_minerals": {},
     "historic_labour_compensation": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_labour_compensation",
+        "__lookup__": "_ext_lookup_historic_labour_compensation"
     },
     "historic_labour_share": {
         "historic_gdp": 1,
@@ -4421,7 +4430,7 @@
         "historic_ia_matrix": 1
     },
     "historic_mean_rate_energy_intensity": {
-        "__external__": null
+        "__external__": "_ext_constant_historic_mean_rate_energy_intensity"
     },
     "historic_net_imports_coal_aut": {
         "historic_coal_domestic_aut_extracted_ej": 1,
@@ -4448,36 +4457,37 @@
         "total_time_planconstr_res_elec": 2
     },
     "historic_nonenergy_use": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_nonenergy_use",
+        "__lookup__": "_ext_lookup_historic_nonenergy_use"
     },
     "historic_nuclear_generation_twh": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_nuclear_generation_twh",
+        "__lookup__": "_ext_lookup_historic_nuclear_generation_twh"
     },
     "historic_pes_peat_ej": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_pes_peat_ej",
+        "__external__": "_ext_data_historic_pes_peat_ej",
         "time": 1
     },
     "historic_pes_waste_ej": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_pes_waste_ej",
+        "__lookup__": "_ext_lookup_historic_pes_waste_ej"
     },
     "historic_pipeline_transport": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_pipeline_transport",
+        "__lookup__": "_ext_lookup_historic_pipeline_transport"
     },
     "historic_population": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_population",
+        "__lookup__": "_ext_lookup_historic_population"
     },
     "historic_primary_forest": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_primary_forest",
+        "__lookup__": "_ext_lookup_historic_primary_forest"
     },
     "historic_produc_biofuels_2gen": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_produc_biofuels_2gen",
+        "__lookup__": "_ext_lookup_historic_produc_biofuels_2gen"
     },
     "historic_rate_final_energy_intensity": {
         "historic_final_energy_intensity": 2,
@@ -4485,19 +4495,21 @@
         "time": 2
     },
     "historic_res_capacity_for_heatcom": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_res_capacity_for_heatcom",
+        "__lookup__": "_ext_lookup_historic_res_capacity_for_heatcom"
     },
     "historic_res_capacity_for_heatnc": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_res_capacity_for_heatnc",
+        "__lookup__": "_ext_lookup_historic_res_capacity_for_heatnc"
     },
     "historic_share_chp_plants_gas": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_share_chp_plants_gas",
+        "__external__": "_ext_data_historic_share_chp_plants_gas",
         "time": 1
     },
     "historic_share_chp_plants_oil": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_share_chp_plants_oil",
+        "__external__": "_ext_data_historic_share_chp_plants_oil",
         "time": 1
     },
     "historic_share_coal_domestic_aut_extraction": {
@@ -4528,11 +4540,13 @@
         "time": 2
     },
     "historic_share_installed_pv_urban_vs_tot_pv": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_share_installed_pv_urban_vs_tot_pv",
+        "__external__": "_ext_data_historic_share_installed_pv_urban_vs_tot_pv",
         "time": 1
     },
     "historic_share_liquids_for_heat_plants": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_share_liquids_for_heat_plants",
+        "__external__": "_ext_data_historic_share_liquids_for_heat_plants",
         "time": 1
     },
     "historic_share_net_imports_coal_aut_until_2016": {
@@ -4545,11 +4559,13 @@
         "_sampleiftrue_historic_share_net_imports_oil_until_2016": 1
     },
     "historic_share_of_losses_vs_extraction": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_share_of_losses_vs_extraction",
+        "__external__": "_ext_data_historic_share_of_losses_vs_extraction",
         "time": 1
     },
     "historic_share_of_transformation_losses_vs_extraction": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_share_of_transformation_losses_vs_extraction",
+        "__external__": "_ext_data_historic_share_of_transformation_losses_vs_extraction",
         "time": 1
     },
     "historic_share_pipeline_transport": {
@@ -4572,28 +4588,33 @@
         "_sampleiftrue_historic_share_unconv_oil_domestric_aut_extraction_until_2016": 1
     },
     "historic_unconv_gas": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_unconv_gas",
+        "__external__": "_ext_data_historic_unconv_gas",
         "time": 1
     },
     "historic_unconv_nat_gas_domestic_aut_extracted_ej": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_unconv_nat_gas_domestic_aut_extracted_ej",
+        "__external__": "_ext_data_historic_unconv_nat_gas_domestic_aut_extracted_ej",
         "time": 1
     },
     "historic_unconv_oil": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_unconv_oil",
+        "__external__": "_ext_data_historic_unconv_oil",
         "time": 1
     },
     "historic_unconv_oil_domestic_aut_extracted_ej": {
-        "__external__": null,
+        "__data__": "_ext_data_historic_unconv_oil_domestic_aut_extracted_ej",
+        "__external__": "_ext_data_historic_unconv_oil_domestic_aut_extracted_ej",
         "time": 1
     },
-    "historic_uranium_domestic_eu_extracted_t": {
-        "__external__": null,
+    "historic_uranium_domestic_extracted": {
+        "__data__": "_ext_data_historic_uranium_domestic_extracted",
+        "__external__": "_ext_data_historic_uranium_domestic_extracted",
         "time": 1
     },
     "historic_urban_land": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_urban_land",
+        "__lookup__": "_ext_lookup_historic_urban_land"
     },
     "historic_urban_land_density": {
         "historic_population": 1,
@@ -4622,8 +4643,8 @@
         "_delayfixed_historic_water_intensities_for_households_delayed_1yr": 1
     },
     "historic_water_use": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_historic_water_use",
+        "__lookup__": "_ext_lookup_historic_water_use"
     },
     "household_demand": {
         "_integ_household_demand": 1
@@ -4754,7 +4775,7 @@
         "imports_aut_total_oil_from_row_ej": 1,
         "share_conv_vs_total_oil_extraction_world": 1
     },
-    "imports_eu_uranium_from_row_ej": {
+    "imports_aut_uranium_from_row": {
         "extraction_uranium_ej_aut": 1,
         "pe_demand_uranium_aut_ej": 1
     },
@@ -4896,14 +4917,14 @@
         "percent_h_vehicles_initial": 2
     },
     "initial_agricultural_area": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_agricultural_area"
     },
     "initial_available_forest_area": {
         "initial_other_naturally_regen_forest": 1,
         "initial_planted_forests": 1
     },
     "initial_available_land": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_available_land"
     },
     "initial_capacity_in_construction_nuclear": {},
     "initial_capacity_in_construction_phs": {
@@ -4922,7 +4943,7 @@
         "historic_gdp": 1
     },
     "initial_ctl_production": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_ctl_production"
     },
     "initial_cumulated_material_requirements_for_ev_batteries_1995": {},
     "initial_cumulated_material_requirements_for_res_elec_1995": {},
@@ -4930,24 +4951,24 @@
         "_initial_initial_demand": 1
     },
     "initial_efficiency_gas_for_electricity": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_efficiency_gas_for_electricity"
     },
     "initial_energy_cons_per_unit_of_material_cons_recycled": {
-        "initial_energy_cons_per_unit_of_material_cons_recycled__data": 2,
+        "initial_energy_cons_per_unit_of_material_cons_recycled_data": 2,
         "initial_energy_cons_per_unit_of_material_cons_virgin": 1
     },
-    "initial_energy_cons_per_unit_of_material_cons_recycled__data": {
-        "__external__": null
+    "initial_energy_cons_per_unit_of_material_cons_recycled_data": {
+        "__external__": "_ext_constant_initial_energy_cons_per_unit_of_material_cons_recycled_data"
     },
     "initial_energy_cons_per_unit_of_material_cons_virgin": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_energy_cons_per_unit_of_material_cons_virgin"
     },
     "initial_energy_intensity_1995": {
         "historic_final_energy_intensity": 1,
         "mdollar_per_tdollar": 1
     },
     "initial_energy_intensity_of_households_transport_2009": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_energy_intensity_of_households_transport_2009"
     },
     "initial_exports_demand_to_roeu": {
         "historic_exports_demand_1": 1
@@ -4956,7 +4977,7 @@
         "historic_exports_demand_0": 1
     },
     "initial_gen_nuclear": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_gen_nuclear"
     },
     "initial_gfcf": {
         "historic_gfcf": 1
@@ -4966,16 +4987,16 @@
         "mdollar_per_tdollar": 1
     },
     "initial_gtl_production": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_gtl_production"
     },
     "initial_household_demand": {
         "historic_hd": 1
     },
     "initial_instal_cap_phs": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_instal_cap_phs"
     },
     "initial_instal_cap_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_instal_cap_res_elec"
     },
     "initial_labour_share": {
         "historic_gdp": 1,
@@ -4983,28 +5004,28 @@
     },
     "initial_marginal_land_occupied_by_biofuels": {},
     "initial_nonenergy_use": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_nonenergy_use"
     },
     "initial_other_naturally_regen_forest": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_other_naturally_regen_forest"
     },
     "initial_percent_t_vehicles": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_percent_t_vehicles"
     },
     "initial_permanent_snowsglaciers_area": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_permanent_snowsglaciers_area"
     },
     "initial_pes_waste": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_pes_waste"
     },
     "initial_planted_forests": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_planted_forests"
     },
     "initial_population": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_population"
     },
     "initial_primary_forest_area": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_primary_forest_area"
     },
     "initial_required_capacity_nuclear": {},
     "initial_required_capacity_phs": {
@@ -5016,23 +5037,23 @@
     "initial_share_variable_res_elec_gen_vs_total": {},
     "initial_time": {},
     "initial_urban_land": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_urban_land"
     },
     "initial_value_land_compet_biofuels_2gen_ktoe": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_value_land_compet_biofuels_2gen_ktoe"
     },
     "initial_value_land_compet_biofuels_2gen_mha": {
         "ej_per_ktoe": 1,
         "initial_value_land_compet_biofuels_2gen_ktoe": 1
     },
     "initial_value_res_for_heatcom": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_value_res_for_heatcom"
     },
     "initial_value_res_for_heatnc": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_value_res_for_heatnc"
     },
     "initial_vehicles_inland": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_vehicles_inland"
     },
     "initial_water_intensity_by_sector": {
         "_initial_initial_water_intensity_by_sector": 1
@@ -5041,10 +5062,10 @@
         "_initial_initial_water_intensity_for_households": 1
     },
     "initial_xt_inland": {
-        "__external__": null
+        "__external__": "_ext_constant_initial_xt_inland"
     },
     "inland_transport_fraction": {
-        "__external__": null
+        "__external__": "_ext_constant_inland_transport_fraction"
     },
     "inland_transport_variation_intensity": {
         "var_i_inland_elec": 1,
@@ -5052,12 +5073,13 @@
         "var_i_inlandt_liq": 1
     },
     "input_gdppc_annual_growth": {
-        "__external__": null,
+        "__data__": "_ext_data_input_gdppc_annual_growth",
+        "__external__": "_ext_data_input_gdppc_annual_growth",
         "time": 1
     },
     "input_population": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_input_population",
+        "__lookup__": "_ext_lookup_input_population"
     },
     "installed_capacity_nuclear_tw": {
         "_integ_installed_capacity_nuclear_tw": 1
@@ -5086,11 +5108,13 @@
         "scarcity_feedback_final_fuel_replacement_flag": 1
     },
     "invest_cost_nuclear": {
-        "__external__": null,
+        "__data__": "_ext_data_invest_cost_nuclear",
+        "__external__": "_ext_data_invest_cost_nuclear",
         "time": 1
     },
     "invest_cost_res_elec": {
-        "__external__": null,
+        "__data__": "_ext_data_invest_cost_res_elec",
+        "__external__": "_ext_data_invest_cost_res_elec",
         "time": 1
     },
     "invest_nuclear_tdolar": {
@@ -5116,7 +5140,7 @@
     "kg_per_mt": {},
     "kt_uranium_per_ej": {},
     "kw_per_battery_ev": {
-        "__external__": null
+        "__external__": "_ext_constant_kw_per_battery_ev"
     },
     "kw_per_mw": {},
     "kwh_per_twh": {},
@@ -5170,13 +5194,13 @@
     },
     "land_module_activated": {},
     "land_occupation_ratio_biofuels_marg_land": {
-        "__external__": null
+        "__external__": "_ext_constant_land_occupation_ratio_biofuels_marg_land"
     },
     "land_productivity_biofuels_2gen_ej_mha": {
-        "__external__": null
+        "__external__": "_ext_constant_land_productivity_biofuels_2gen_ej_mha"
     },
     "land_productivity_biofuels_marg_ej_mha": {
-        "__external__": null
+        "__external__": "_ext_constant_land_productivity_biofuels_marg_ej_mha"
     },
     "land_required_biofuels_land_marg": {
         "conv_efficiency_from_npp_to_biofuels": 1,
@@ -5231,13 +5255,13 @@
         "leontief_matrix": 1
     },
     "life_time_nuclear": {
-        "__external__": null
+        "__external__": "_ext_constant_life_time_nuclear"
     },
     "life_time_res_for_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_life_time_res_for_heat"
     },
     "lifetime_ctl": {
-        "__external__": null
+        "__external__": "_ext_constant_lifetime_ctl"
     },
     "lifetime_ev_batteries": {
         "cp_ev_batteries_for_elec_storage": 1,
@@ -5248,25 +5272,25 @@
         "net_stored_energy_ev_battery_over_lifetime": 1
     },
     "lifetime_gtl": {
-        "__external__": null
+        "__external__": "_ext_constant_lifetime_gtl"
     },
     "lifetime_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_lifetime_res_elec"
     },
     "limit_coal_imports_from_row": {
-        "__external__": null
+        "__external__": "_ext_constant_limit_coal_imports_from_row"
     },
     "limit_nat_gas_imports_from_row": {
-        "__external__": null
+        "__external__": "_ext_constant_limit_nat_gas_imports_from_row"
     },
     "limit_oil_imports_from_row": {
-        "__external__": null
+        "__external__": "_ext_constant_limit_oil_imports_from_row"
     },
     "liq_2w": {
-        "__external__": null
+        "__external__": "_ext_constant_liq_2w"
     },
     "liq_4w": {
-        "__external__": null
+        "__external__": "_ext_constant_liq_4w"
     },
     "liquids_fe_ch4_emissions": {
         "fed_oil": 1,
@@ -5318,11 +5342,12 @@
         "pes_waste_for_chp_plants": 1
     },
     "losses_in_charcoal_plants_ej": {
-        "__external__": null,
+        "__data__": "_ext_data_losses_in_charcoal_plants_ej",
+        "__external__": "_ext_data_losses_in_charcoal_plants_ej",
         "time": 1
     },
     "losses_solar_for_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_losses_solar_for_heat"
     },
     "m_per_t": {},
     "marginal_land_for_biofuels": {
@@ -5345,19 +5370,19 @@
         "materials_per_new_res_elec_capacity_installed_material_overgrid_high_power": 1
     },
     "materials_for_om_per_capacity_installed_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_materials_for_om_per_capacity_installed_res_elec"
     },
     "materials_per_new_capacity_installed_ev_batteries": {
-        "__external__": null
+        "__external__": "_ext_constant_materials_per_new_capacity_installed_ev_batteries"
     },
     "materials_per_new_capacity_installed_res": {
-        "__external__": null
+        "__external__": "_ext_constant_materials_per_new_capacity_installed_res"
     },
     "materials_per_new_res_elec_capacity_installed_hvdcs": {
-        "__external__": null
+        "__external__": "_ext_constant_materials_per_new_res_elec_capacity_installed_hvdcs"
     },
     "materials_per_new_res_elec_capacity_installed_material_overgrid_high_power": {
-        "__external__": null
+        "__external__": "_ext_constant_materials_per_new_res_elec_capacity_installed_material_overgrid_high_power"
     },
     "materials_required_for_ev_batteries_mt": {
         "kg_per_mt": 1,
@@ -5378,7 +5403,7 @@
         "materials_for_om_per_capacity_installed_res_elec": 1
     },
     "max_additional_potential_land_for_biofuels_compet": {
-        "__external__": null
+        "__external__": "_ext_constant_max_additional_potential_land_for_biofuels_compet"
     },
     "max_auxiliar_elec": {},
     "max_bioe_twe": {
@@ -5430,7 +5455,7 @@
         "p_forest_overexplotation": 1
     },
     "max_efficiency_gas_power_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_max_efficiency_gas_power_plants"
     },
     "max_extraction_coal_ej": {
         "table_max_extraction_coal": 1,
@@ -5469,7 +5494,7 @@
         "tot_rurr_unconv_oil": 1
     },
     "max_extraction_uranium_ej": {
-        "av_past_eu_domestic_uranium_extraction": 1,
+        "av_past_aut_domestic_uranium_extraction": 1,
         "kt_uranium_per_ej": 1,
         "rurr_uranium": 1,
         "table_max_extraction_uranium": 1,
@@ -5509,14 +5534,14 @@
         "max_pe_geotelec_twth": 1
     },
     "max_hydro_twe": {
-        "__external__": null
+        "__external__": "_ext_constant_max_hydro_twe"
     },
     "max_land_compet_biofuels_2gen": {
         "additional_land_compet_available_for_biofuels": 1,
         "land_compet_available_for_biofuels_2gen_2015": 1
     },
     "max_npp_potential_bioe_residues": {
-        "__external__": null
+        "__external__": "_ext_constant_max_npp_potential_bioe_residues"
     },
     "max_npp_potential_bioe_residues_for_cellulosic_biofuels": {
         "max_npp_potential_bioe_residues": 1,
@@ -5527,19 +5552,19 @@
         "share_cellulosic_biofuels_vs_bioe_residues": 1
     },
     "max_oceanic_twe": {
-        "__external__": null
+        "__external__": "_ext_constant_max_oceanic_twe"
     },
     "max_offshore_wind_twe": {
-        "__external__": null
+        "__external__": "_ext_constant_max_offshore_wind_twe"
     },
     "max_onshore_wind_twe": {
-        "__external__": null
+        "__external__": "_ext_constant_max_onshore_wind_twe"
     },
     "max_pe_biogas_ej": {
-        "__external__": null
+        "__external__": "_ext_constant_max_pe_biogas_ej"
     },
     "max_pe_geotelec_twth": {
-        "__external__": null
+        "__external__": "_ext_constant_max_pe_geotelec_twth"
     },
     "max_pe_potential_biogas_for_elec": {
         "max_pe_biogas_ej": 1,
@@ -5572,7 +5597,7 @@
         "max_fe_solar_thermal_urban_twth": 1
     },
     "max_pe_waste": {
-        "__external__": null
+        "__external__": "_ext_constant_max_pe_waste"
     },
     "max_peavail_biofuels_potential": {
         "max_peavail_potential_bioe_residues_for_cellulosic_biofuels": 1,
@@ -5604,7 +5629,7 @@
         "max_peavail_biofuels_potential": 1
     },
     "max_potential_phs_twe": {
-        "__external__": null
+        "__external__": "_ext_constant_max_potential_phs_twe"
     },
     "max_potential_phs_twh": {
         "cp_phs": 1,
@@ -5631,7 +5656,7 @@
         "twe_per_twh": 1
     },
     "max_recycling_rates_minerals": {
-        "__external__": null
+        "__external__": "_ext_constant_max_recycling_rates_minerals"
     },
     "max_res_elec_twe": {
         "max_bioe_twe": 1,
@@ -5644,13 +5669,13 @@
         "max_tot_solar_pv_twe": 1
     },
     "max_share_imports_coal": {
-        "__external__": null
+        "__external__": "_ext_constant_max_share_imports_coal"
     },
     "max_share_imports_nat_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_max_share_imports_nat_gas"
     },
     "max_share_imports_oil": {
-        "__external__": null
+        "__external__": "_ext_constant_max_share_imports_oil"
     },
     "max_share_transmdistr_elec_losses": {
         "share_transmdistr_elec_losses_initial": 1
@@ -5710,31 +5735,31 @@
         "max_unconv_oil_growth_extraction": 1
     },
     "max_yearly_change_between_sources": {
-        "__external__": null
+        "__external__": "_ext_constant_max_yearly_change_between_sources"
     },
     "maximum_yearly_acceleration_of_intensity_improvement": {
-        "__external__": null
+        "__external__": "_ext_constant_maximum_yearly_acceleration_of_intensity_improvement"
     },
     "mbd_per_ejyear": {},
     "mdollar_per_tdollar": {},
     "mha_to_m2": {},
     "min_cp_baseload_res": {
-        "__external__": null
+        "__external__": "_ext_constant_min_cp_baseload_res"
     },
     "min_cp_nuclear": {
-        "__external__": null
+        "__external__": "_ext_constant_min_cp_nuclear"
     },
     "min_energy_intensity_vs_intial": {
-        "__external__": null
+        "__external__": "_ext_constant_min_energy_intensity_vs_intial"
     },
     "min_energy_intensity_vs_intial_h": {
-        "__external__": null
+        "__external__": "_ext_constant_min_energy_intensity_vs_intial_h"
     },
     "min_lifetime_ev_batteries": {
-        "__external__": null
+        "__external__": "_ext_constant_min_lifetime_ev_batteries"
     },
     "minimum_fraction_source": {
-        "__external__": null
+        "__external__": "_ext_constant_minimum_fraction_source"
     },
     "mj_per_ej": {},
     "modern_solids_bioe_demand_households": {
@@ -5750,14 +5775,15 @@
         "n2o_anthro_emissions_rcp": 4
     },
     "n2o_anthro_emissions_rcp": {
-        "__external__": null,
+        "__data__": "_ext_data_n2o_anthro_emissions_rcp",
+        "__external__": "_ext_data_n2o_anthro_emissions_rcp",
         "time": 1
     },
     "n_vehicles_h": {
-        "__external__": null
+        "__external__": "_ext_constant_n_vehicles_h"
     },
     "net_stored_energy_ev_battery_over_lifetime": {
-        "__external__": null
+        "__external__": "_ext_constant_net_stored_energy_ev_battery_over_lifetime"
     },
     "net_tfec": {
         "feist_system": 1,
@@ -6006,7 +6032,7 @@
         "pes_oil_ej_delayed": 1
     },
     "oil_refinery_gains_share": {
-        "__external__": null
+        "__external__": "_ext_constant_oil_refinery_gains_share"
     },
     "other_gases_required": {
         "energy_distr_losses_ff_ej": 1,
@@ -6059,68 +6085,68 @@
         "twe_per_twh": 1
     },
     "p_bioe_residues": {
-        "__external__": null
+        "__external__": "_ext_constant_p_bioe_residues"
     },
     "p_biofuels_2gen_land_compet": {
-        "__external__": null
+        "__external__": "_ext_constant_p_biofuels_2gen_land_compet"
     },
     "p_biofuels_3gen_land_compet": {
-        "__external__": null
+        "__external__": "_ext_constant_p_biofuels_3gen_land_compet"
     },
     "p_biofuels_marg_lands": {
-        "__external__": null
+        "__external__": "_ext_constant_p_biofuels_marg_lands"
     },
     "p_biogas": {
-        "__external__": null
+        "__external__": "_ext_constant_p_biogas"
     },
     "p_capital_share": {
-        "__external__": null
+        "__external__": "_ext_constant_p_capital_share"
     },
     "p_common_rr_minerals_variation_alt_techn": {
-        "__external__": null
+        "__external__": "_ext_constant_p_common_rr_minerals_variation_alt_techn"
     },
     "p_common_rr_minerals_variation_rest": {
-        "__external__": null
+        "__external__": "_ext_constant_p_common_rr_minerals_variation_rest"
     },
     "p_constraint_growth_extraction_unconv_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_p_constraint_growth_extraction_unconv_gas"
     },
     "p_constraint_growth_extraction_unconv_oil": {
-        "__external__": null
+        "__external__": "_ext_constant_p_constraint_growth_extraction_unconv_oil"
     },
     "p_csp_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_p_csp_growth"
     },
     "p_ctl": {
-        "__external__": null
+        "__external__": "_ext_constant_p_ctl"
     },
     "p_customized_cte_gdppc_variation": {
-        "__external__": null
+        "__external__": "_ext_constant_p_customized_cte_gdppc_variation"
     },
     "p_customized_cte_pop_variation": {
-        "__external__": null
+        "__external__": "_ext_constant_p_customized_cte_pop_variation"
     },
     "p_customized_year_gdppc_evolution": {
-        "__external__": null
+        "__external__": "_ext_constant_p_customized_year_gdppc_evolution"
     },
     "p_customized_year_pop_evolution": {
-        "__external__": null
+        "__external__": "_ext_constant_p_customized_year_pop_evolution"
     },
     "p_export_share": {},
     "p_forest_overexplotation": {
-        "__external__": null
+        "__external__": "_ext_constant_p_forest_overexplotation"
     },
     "p_gdppc_asymptote": {
-        "__external__": null
+        "__external__": "_ext_constant_p_gdppc_asymptote"
     },
     "p_geot_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_p_geot_growth"
     },
     "p_geothermal_for_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_p_geothermal_for_heat"
     },
     "p_gtl": {
-        "__external__": null
+        "__external__": "_ext_constant_p_gtl"
     },
     "p_h_vehicle": {
         "p_percent_2w_elec": 2,
@@ -6130,7 +6156,7 @@
         "p_share_2wheelers": 6
     },
     "p_hydro_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_p_hydro_growth"
     },
     "p_inlandt": {
         "p_percent_bus_elec": 2,
@@ -6144,10 +6170,10 @@
         "p_percent_train_elec": 2
     },
     "p_labour_share": {
-        "__external__": null
+        "__external__": "_ext_constant_p_labour_share"
     },
     "p_minimum_forest": {
-        "__external__": null
+        "__external__": "_ext_constant_p_minimum_forest"
     },
     "p_nuclear_elec_gen": {
         "p_nuclear_scen34": 1,
@@ -6156,55 +6182,55 @@
         "time": 1
     },
     "p_nuclear_scen34": {
-        "__external__": null
+        "__external__": "_ext_constant_p_nuclear_scen34"
     },
     "p_oceanic_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_p_oceanic_growth"
     },
     "p_percent_2w_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_2w_elec"
     },
     "p_percent_bus_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_bus_elec"
     },
     "p_percent_bus_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_bus_gas"
     },
     "p_percent_bus_hyb": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_bus_hyb"
     },
     "p_percent_elec_hveh": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_elec_hveh"
     },
     "p_percent_gas_hveh": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_gas_hveh"
     },
     "p_percent_hv_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_hv_gas"
     },
     "p_percent_hv_hyb": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_hv_hyb"
     },
     "p_percent_hyb_hveh": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_hyb_hveh"
     },
     "p_percent_lv_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_lv_elec"
     },
     "p_percent_lv_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_lv_gas"
     },
     "p_percent_lv_hyb": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_lv_hyb"
     },
     "p_percent_train_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_p_percent_train_elec"
     },
     "p_phs_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_p_phs_growth"
     },
     "p_pop_asymptote_millions": {
-        "__external__": null
+        "__external__": "_ext_constant_p_pop_asymptote_millions"
     },
     "p_res_elec_growth": {
         "p_csp_growth": 1,
@@ -6222,16 +6248,16 @@
         "p_solid_bioe_for_heat": 1
     },
     "p_rr_minerals_alt_techn": {
-        "__external__": null
+        "__external__": "_ext_constant_p_rr_minerals_alt_techn"
     },
     "p_rr_minerals_rest": {
-        "__external__": null
+        "__external__": "_ext_constant_p_rr_minerals_rest"
     },
     "p_share_2wheelers": {
-        "__external__": null
+        "__external__": "_ext_constant_p_share_2wheelers"
     },
     "p_share_installed_pv_urban_vs_tot_pv": {
-        "__external__": null
+        "__external__": "_ext_constant_p_share_installed_pv_urban_vs_tot_pv"
     },
     "p_share_oil_for_heat": {
         "a_lineal_regr_phaseout_oil_for_heat": 1,
@@ -6244,67 +6270,70 @@
         "time": 1
     },
     "p_solar_for_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_p_solar_for_heat"
     },
     "p_solar_pv_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_p_solar_pv_growth"
     },
     "p_solid_bioe_for_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_p_solid_bioe_for_heat"
     },
     "p_solid_bioeelec_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_p_solid_bioeelec_growth"
     },
     "p_timeseries_gdppc_growth_rate": {
-        "__external__": null,
+        "__data__": "_ext_data_p_timeseries_gdppc_growth_rate",
+        "__external__": "_ext_data_p_timeseries_gdppc_growth_rate",
         "time": 1
     },
     "p_timeseries_pop_growth_rate": {
-        "__external__": null,
+        "__data__": "_ext_data_p_timeseries_pop_growth_rate",
+        "__external__": "_ext_data_p_timeseries_pop_growth_rate",
         "time": 1
     },
     "p_urban_land_density": {
-        "__external__": null
+        "__external__": "_ext_constant_p_urban_land_density"
     },
     "p_variation_primary_forest": {
-        "__external__": null
+        "__external__": "_ext_constant_p_variation_primary_forest"
     },
     "p_waste_change": {
-        "__external__": null
+        "__external__": "_ext_constant_p_waste_change"
     },
     "p_wind_offshore_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_p_wind_offshore_growth"
     },
     "p_wind_onshore_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_p_wind_onshore_growth"
     },
     "past_biofuels_2gen": {
-        "__external__": null
+        "__external__": "_ext_constant_past_biofuels_2gen"
     },
     "past_biogas_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_past_biogas_growth"
     },
     "past_phs_capacity_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_past_phs_capacity_growth"
     },
     "past_res_elec_capacity_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_past_res_elec_capacity_growth"
     },
     "past_res_growth_for_heatcom": {
-        "__external__": null
+        "__external__": "_ext_constant_past_res_growth_for_heatcom"
     },
     "past_res_growth_for_heatnc": {
-        "__external__": null
+        "__external__": "_ext_constant_past_res_growth_for_heatnc"
     },
     "past_trends_co2_lucf": {
-        "__external__": null,
+        "__data__": "_ext_data_past_trends_co2_lucf",
+        "__external__": "_ext_data_past_trends_co2_lucf",
         "time": 1
     },
     "past_waste_growth": {
-        "__external__": null
+        "__external__": "_ext_constant_past_waste_growth"
     },
     "pct_change_energy_intensity_target": {
-        "__external__": null
+        "__external__": "_ext_constant_pct_change_energy_intensity_target"
     },
     "pe_bioe_residues_nonbiofuels_ej": {
         "_integ_pe_bioe_residues_nonbiofuels_ej": 1
@@ -6332,7 +6361,7 @@
         "share_biofuels_overcapacity": 1
     },
     "pe_consumption_trad_biomass_ref": {
-        "__external__": null
+        "__external__": "_ext_constant_pe_consumption_trad_biomass_ref"
     },
     "pe_demand_coal_elec_plants_ej": {
         "efficiency_coal_for_electricity": 1,
@@ -6369,7 +6398,7 @@
     },
     "pe_losses_coal_for_elec_ej": {
         "efficiency_coal_for_electricity": 1,
-        "extraction_coal_ej_aut": 1,
+        "extraction_coal_aut": 1,
         "imports_aut_coal_from_row_ej": 1,
         "share_coal_dem_for_elec": 1
     },
@@ -6460,7 +6489,7 @@
         "peavail_biofuels_3gen_land_compet_ej": 1
     },
     "pec_coal": {
-        "extraction_coal_ej_aut": 1,
+        "extraction_coal_aut": 1,
         "imports_aut_coal_from_row_ej": 1
     },
     "pec_conv_gas": {
@@ -6487,20 +6516,16 @@
         "imports_aut_unconv_oil_from_row_ej": 1,
         "real_extraction_unconv_oil_ej": 1
     },
-    "pec_uranium_eu_ej": {
+    "pec_uranium": {
         "extraction_uranium_ej_aut": 1,
         "extraction_uranium_row": 1
-    },
-    "pec_uranium_eu_kt": {
-        "kt_uranium_per_ej": 1,
-        "pec_uranium_eu_ej": 1
     },
     "ped2": {
         "ped_solids": 1,
         "transformation_ff_losses_ej": 1
     },
     "ped_aut_coal_from_row": {
-        "extraction_coal_ej_aut": 1,
+        "extraction_coal_aut": 1,
         "ped_coal_ej": 1
     },
     "ped_aut_nat_gas_from_row": {
@@ -6652,7 +6677,7 @@
         "required_fed_solids": 1
     },
     "people_relying_trad_biomass_ref": {
-        "__external__": null
+        "__external__": "_ext_constant_people_relying_trad_biomass_ref"
     },
     "pepc_consumption_people_depending_on_trad_biomass": {
         "pe_consumption_trad_biomass_ref": 1,
@@ -6671,7 +6696,7 @@
         "percent_h_vehicles_initial": 1
     },
     "percent_h_vehicles_initial": {
-        "__external__": null
+        "__external__": "_ext_constant_percent_h_vehicles_initial"
     },
     "percent_h_vehicles_tini": {
         "aaux_hveh_ini": 1,
@@ -6705,7 +6730,7 @@
         "initial_percent_t_vehicles": 2
     },
     "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": {
-        "__external__": null
+        "__external__": "_ext_constant_percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities"
     },
     "percents_2w_h_vehicles": {
         "percents_h_vehicles": 6
@@ -6791,12 +6816,12 @@
         "potential_pes_biogas_for_tfc": 1
     },
     "pes_coal_for_heatcom_plants": {
-        "extraction_coal_ej_aut": 1,
+        "extraction_coal_aut": 1,
         "imports_aut_coal_from_row_ej": 1,
         "share_coal_dem_for_heatcom": 1
     },
     "pes_coal_for_heatnc_plants": {
-        "extraction_coal_ej_aut": 1,
+        "extraction_coal_aut": 1,
         "imports_aut_coal_from_row_ej": 1,
         "share_coal_dem_for_heatnc": 1
     },
@@ -6809,7 +6834,7 @@
         "fe_real_generation_res_heatnc_ej": 3
     },
     "pes_fossil_fuel_extraction": {
-        "extraction_coal_ej_aut": 1,
+        "extraction_coal_aut": 1,
         "imports_aut_coal_from_row_ej": 1,
         "imports_aut_nat_gas_from_row_ej": 1,
         "imports_aut_total_oil_from_row_ej": 1,
@@ -6830,7 +6855,7 @@
         "pec_total_oil": 1
     },
     "pes_nat_gas": {
-        "__data__": null,
+        "__data__": "_data_pes_nat_gas",
         "time": 1
     },
     "pes_nat_gas_aut": {
@@ -6882,7 +6907,7 @@
         "ped_oil_for_heat_plants_ej": 1
     },
     "pes_oil_ej": {
-        "__data__": null,
+        "__data__": "_data_pes_oil_ej",
         "time": 1
     },
     "pes_oil_ej_delayed": {
@@ -6924,10 +6949,6 @@
         "pes_peat_ej": 1,
         "pes_waste_for_tfc": 1
     },
-    "pes_solids_bioe__waste_ej": {
-        "pes_solids_bioe_ej": 1,
-        "pes_waste_ej": 1
-    },
     "pes_solids_bioe_ej": {
         "losses_in_charcoal_plants_ej": 1,
         "modern_solids_bioe_demand_households": 1,
@@ -6937,6 +6958,10 @@
     },
     "pes_solids_bioe_for_heat": {
         "pes_res_for_heat_by_techn": 1
+    },
+    "pes_solids_bioe_waste_ej": {
+        "pes_solids_bioe_ej": 1,
+        "pes_waste_ej": 1
     },
     "pes_tot_biogas_for_elec": {
         "fes_elec_from_biogas_in_chp_plants": 1,
@@ -6998,14 +7023,15 @@
         "pfc_emissions_rcp": 4
     },
     "pfc_emissions_rcp": {
-        "__external__": null,
+        "__data__": "_ext_data_pfc_emissions_rcp",
+        "__external__": "_ext_data_pfc_emissions_rcp",
         "time": 1
     },
     "phaseout_oil_for_electricity": {
-        "__external__": null
+        "__external__": "_ext_constant_phaseout_oil_for_electricity"
     },
     "phaseout_oil_for_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_phaseout_oil_for_heat"
     },
     "phs_capacity_under_construction": {
         "phs_planned_capacity": 1,
@@ -7028,10 +7054,10 @@
         "_integ_planned_nuclear_capacity_tw": 1
     },
     "policy_change_energy_speed": {
-        "__external__": null
+        "__external__": "_ext_constant_policy_change_energy_speed"
     },
     "policy_to_improve_efficiency_speed": {
-        "__external__": null
+        "__external__": "_ext_constant_policy_to_improve_efficiency_speed"
     },
     "pop_asymptote": {
         "p_pop_asymptote_millions": 1
@@ -7169,7 +7195,7 @@
         "twe_per_twh": 1
     },
     "potential_marginal_lands_mha": {
-        "__external__": null
+        "__external__": "_ext_constant_potential_marginal_lands_mha"
     },
     "potential_max_hdi": {
         "net_tfec_per_capita": 2
@@ -7226,7 +7252,7 @@
         "power_density_initial_res_elec_twemha": 1
     },
     "power_density_initial_res_elec_twemha": {
-        "__external__": null
+        "__external__": "_ext_constant_power_density_initial_res_elec_twemha"
     },
     "power_density_res_elec_twemha": {
         "cp_res_elec": 8,
@@ -7308,7 +7334,8 @@
         "required_fed_by_fuel_before_heat_correction": 1
     },
     "ratio_gain_gas_vs_lose_solids_in_tranf_processes": {
-        "__external__": null,
+        "__data__": "_ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes",
+        "__external__": "_ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes",
         "time": 1
     },
     "ratio_gases_ch4_emissions": {
@@ -7352,10 +7379,10 @@
         "solids_fe_co2_emissions": 1
     },
     "ratio_total_vs_d_jobs_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_ratio_total_vs_d_jobs_res_elec"
     },
     "ratio_total_vs_d_jobs_res_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_ratio_total_vs_d_jobs_res_heat"
     },
     "ratio_var_t_vehicles": {
         "var_percent_t_vehicles": 1
@@ -7391,7 +7418,7 @@
         "real_final_demand_by_sector_aut": 1
     },
     "real_demand_by_sector": {
-        "__data__": null,
+        "__data__": "_data_real_demand_by_sector",
         "time": 1
     },
     "real_demand_by_sector_delayed_aut": {
@@ -7442,8 +7469,8 @@
         "share_exp_row_vs_gfcfhdexp": 1
     },
     "real_extraction_conv_gas_ej": {
-        "extraction_conv_gas__tot_agg": 1,
         "extraction_conv_gas_ej": 1,
+        "extraction_conv_gas_tot_agg": 1,
         "separate_conv_and_unconv_gas": 1
     },
     "real_extraction_conv_gas_emissions_relevant_ej": {
@@ -7453,8 +7480,8 @@
         "share_conv_vs_total_gas_extraction_eu": 1
     },
     "real_extraction_conv_oil_ej": {
-        "extraction_conv_oil__tot_agg": 1,
         "extraction_conv_oil_ej": 1,
+        "extraction_conv_oil_tot_agg": 1,
         "separate_conv_and_unconv_oil": 1
     },
     "real_extraction_conv_oil_emissions_relevant_ej": {
@@ -7467,8 +7494,8 @@
         "real_extraction_conv_oil_ej": 1
     },
     "real_extraction_unconv_gas_ej": {
-        "extraction_unconv_gas__tot_agg": 1,
         "extraction_unconv_gas_ej": 1,
+        "extraction_unconv_gas_tot_agg": 1,
         "separate_conv_and_unconv_gas": 1
     },
     "real_extraction_unconv_gas_emissions_relevant_ej": {
@@ -7478,8 +7505,8 @@
         "share_conv_vs_total_gas_extraction_eu": 1
     },
     "real_extraction_unconv_oil_ej": {
-        "extraction_unconv_oil__tot_agg": 1,
         "extraction_unconv_oil_ej": 1,
+        "extraction_unconv_oil_tot_agg": 1,
         "separate_conv_and_unconv_oil": 1
     },
     "real_extraction_unconv_oil_emissions_relevant_ej": {
@@ -7511,7 +7538,7 @@
         "share_liquids_for_final_energy": 1
     },
     "real_fe_consumption_solids_ej": {
-        "extraction_coal_ej_aut": 1,
+        "extraction_coal_aut": 1,
         "imports_aut_coal_from_row_ej": 1,
         "losses_in_charcoal_plants_ej": 1,
         "modern_solids_bioe_demand_households": 1,
@@ -7549,7 +7576,7 @@
         "real_final_demand_of_exports": 1
     },
     "real_final_demand_by_sector_eu": {
-        "__data__": null,
+        "__data__": "_data_real_final_demand_by_sector_eu",
         "time": 1
     },
     "real_final_demand_of_exports": {
@@ -7565,7 +7592,7 @@
         "real_total_output_by_sector_row": 1
     },
     "real_final_energy_by_sector_and_fuel": {
-        "__data__": null,
+        "__data__": "_data_real_final_energy_by_sector_and_fuel",
         "time": 1
     },
     "real_final_energy_by_sector_and_fuel_aut": {
@@ -7574,7 +7601,7 @@
         "required_final_energy_by_sector_and_fuel_aut": 1
     },
     "real_final_energy_by_sector_and_fuel_eu": {
-        "__data__": null,
+        "__data__": "_data_real_final_energy_by_sector_and_fuel_eu",
         "time": 1
     },
     "real_final_energy_by_sector_and_fuel_eu28": {
@@ -7650,14 +7677,14 @@
         "total_output_required_by_sector": 1
     },
     "real_total_output_by_sector": {
-        "__data__": null,
+        "__data__": "_data_real_total_output_by_sector",
         "time": 1
     },
     "real_total_output_by_sector_aut": {
         "real_total_output_by_fuel_and_sector": 5
     },
     "real_total_output_by_sector_eu": {
-        "__data__": null,
+        "__data__": "_data_real_total_output_by_sector_eu",
         "time": 1
     },
     "real_total_output_by_sector_eu28": {
@@ -7771,7 +7798,7 @@
         "share_transmdistr_elec_losses": 1
     },
     "renewable_water_resources": {
-        "__external__": null
+        "__external__": "_ext_constant_renewable_water_resources"
     },
     "replacement_batteries": {
         "discarded_batteries": 1
@@ -7815,7 +7842,7 @@
         "wear_nuclear": 1
     },
     "replacement_rate_nuclear": {
-        "__external__": null
+        "__external__": "_ext_constant_replacement_rate_nuclear"
     },
     "replacement_rate_phs": {
         "max_potential_phs_twh": 1,
@@ -7826,7 +7853,7 @@
         "potential_res_elec_after_intermitt_twh": 1
     },
     "replacement_res_for_heatcom": {
-        "__external__": null
+        "__external__": "_ext_constant_replacement_res_for_heatcom"
     },
     "replacement_res_for_heatcom_tw": {
         "replacement_res_for_heatcom": 1,
@@ -7835,7 +7862,7 @@
         "wear_res_capacity_for_heatcom_tw": 1
     },
     "replacement_res_for_heatnc": {
-        "__external__": null
+        "__external__": "_ext_constant_replacement_res_for_heatnc"
     },
     "replacement_res_for_heatnc_tw": {
         "replacement_res_for_heatnc": 1,
@@ -7924,10 +7951,10 @@
         "used_ev_batteries_for_elec_storage": 1
     },
     "rt_storage_efficiency_ev_batteries": {
-        "__external__": null
+        "__external__": "_ext_constant_rt_storage_efficiency_ev_batteries"
     },
     "rt_storage_efficiency_phs": {
-        "__external__": null
+        "__external__": "_ext_constant_rt_storage_efficiency_phs"
     },
     "rurr_coal": {
         "_integ_rurr_coal": 1
@@ -7976,10 +8003,10 @@
     },
     "saveper": {},
     "saving_ratio_2we": {
-        "__external__": null
+        "__external__": "_ext_constant_saving_ratio_2we"
     },
     "saving_ratios_vehicles": {
-        "__external__": null
+        "__external__": "_ext_constant_saving_ratios_vehicles"
     },
     "scarcity_agricultural_land": {
         "agricultural_land_pc": 1,
@@ -8010,7 +8037,7 @@
         "_integ_scarcity_conv_oil_stock": 1
     },
     "scarcity_feedback_final_fuel_replacement_flag": {
-        "__external__": null
+        "__external__": "_ext_constant_scarcity_feedback_final_fuel_replacement_flag"
     },
     "scarcity_final_fuels": {
         "abundance_final_fuels": 1
@@ -8043,25 +8070,25 @@
         "scarcity_resources_counter": 1
     },
     "select_gdppc_evolution_input": {
-        "__external__": null
+        "__external__": "_ext_constant_select_gdppc_evolution_input"
     },
     "select_population_evolution_input": {
-        "__external__": null
+        "__external__": "_ext_constant_select_population_evolution_input"
     },
     "selection_of_nuclear_scenario": {
-        "__external__": null
+        "__external__": "_ext_constant_selection_of_nuclear_scenario"
     },
     "selfelectricity_consumption_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_selfelectricity_consumption_res_elec"
     },
     "sensitivity_to_energy_scarcity_high": {
-        "__external__": null
+        "__external__": "_ext_constant_sensitivity_to_energy_scarcity_high"
     },
     "sensitivity_to_energy_scarcity_low": {
-        "__external__": null
+        "__external__": "_ext_constant_sensitivity_to_energy_scarcity_low"
     },
     "sensitivity_to_energy_scarcity_medium": {
-        "__external__": null
+        "__external__": "_ext_constant_sensitivity_to_energy_scarcity_medium"
     },
     "sensitivity_to_scarcity": {
         "sensitivity_to_energy_scarcity_high": 1,
@@ -8076,33 +8103,34 @@
         "sensitivity_to_scarcity_option_h": 2
     },
     "sensitivity_to_scarcity_option": {
-        "__external__": null
+        "__external__": "_ext_constant_sensitivity_to_scarcity_option"
     },
     "sensitivity_to_scarcity_option_h": {
-        "__external__": null
+        "__external__": "_ext_constant_sensitivity_to_scarcity_option_h"
     },
     "separate_conv_and_unconv_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_separate_conv_and_unconv_gas"
     },
     "separate_conv_and_unconv_oil": {
-        "__external__": null
+        "__external__": "_ext_constant_separate_conv_and_unconv_oil"
     },
     "sf6_emissions": {
         "choose_rcp": 3,
         "sf6_emissions_rcp": 4
     },
     "sf6_emissions_rcp": {
-        "__external__": null,
+        "__data__": "_ext_data_sf6_emissions_rcp",
+        "__external__": "_ext_data_sf6_emissions_rcp",
         "time": 1
     },
     "share_available_roof": {
-        "__external__": null
+        "__external__": "_ext_constant_share_available_roof"
     },
     "share_available_roof_for_rooftop_pv": {
-        "__external__": null
+        "__external__": "_ext_constant_share_available_roof_for_rooftop_pv"
     },
     "share_available_roof_for_solar_thermal": {
-        "__external__": null
+        "__external__": "_ext_constant_share_available_roof_for_solar_thermal"
     },
     "share_biofuel_in_pes": {
         "fes_total_biofuels_production_ej": 1,
@@ -8134,7 +8162,7 @@
         "share_elec_demand_covered_by_res": 1
     },
     "share_cellulosic_biofuels_vs_bioe_residues": {
-        "__external__": null
+        "__external__": "_ext_constant_share_cellulosic_biofuels_vs_bioe_residues"
     },
     "share_chp_plants_coal": {
         "historic_share_chp_plants_gas": 1,
@@ -8180,12 +8208,6 @@
         "historic_goverment_expenditures": 1,
         "time": 2
     },
-    "share_consum_goverment_and_inventories_next_year": {
-        "historic_change_in_inventories": 1,
-        "historic_demand_next_year": 1,
-        "historic_goverment_expenditures": 1,
-        "time": 2
-    },
     "share_conv_gas_vs_tot_agg": {
         "share_unconv_gas_vs_tot_agg": 1
     },
@@ -8193,7 +8215,7 @@
         "share_unconv_oil_vs_tot_agg": 1
     },
     "share_conv_vs_total_gas_extraction": {
-        "__data__": null,
+        "__data__": "_data_share_conv_vs_total_gas_extraction",
         "time": 1
     },
     "share_conv_vs_total_gas_extraction_eu": {
@@ -8204,7 +8226,7 @@
         "share_conv_vs_total_gas_extraction": 1
     },
     "share_conv_vs_total_oil_extraction": {
-        "__data__": null,
+        "__data__": "_data_share_conv_vs_total_oil_extraction",
         "time": 1
     },
     "share_conv_vs_total_oil_extraction_eu": {
@@ -8249,7 +8271,7 @@
         "_sampleiftrue_share_e_industry_ownuse_vs_tfec_in_2015": 1
     },
     "share_e_losses_cc": {
-        "__data__": null,
+        "__data__": "_data_share_e_losses_cc",
         "time": 1
     },
     "share_e_losses_cc_world": {
@@ -8278,10 +8300,10 @@
         "tfe_required_for_total_material_consumption_for_alt_techn": 1
     },
     "share_energy_requirements_for_decom_ev_batteries": {
-        "__external__": null
+        "__external__": "_ext_constant_share_energy_requirements_for_decom_ev_batteries"
     },
     "share_energy_requirements_for_decom_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_share_energy_requirements_for_decom_res_elec"
     },
     "share_exp_roeu_vs_gfcfhdexp": {
         "exports_demand_to_roeu": 2,
@@ -8322,16 +8344,16 @@
         "share_feh_over_fed_solid_bioe": 1
     },
     "share_feh_over_fed_coal": {
-        "__external__": null
+        "__external__": "_ext_constant_share_feh_over_fed_coal"
     },
     "share_feh_over_fed_nat_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_share_feh_over_fed_nat_gas"
     },
     "share_feh_over_fed_oil": {
-        "__external__": null
+        "__external__": "_ext_constant_share_feh_over_fed_oil"
     },
     "share_feh_over_fed_solid_bioe": {
-        "__external__": null
+        "__external__": "_ext_constant_share_feh_over_fed_solid_bioe"
     },
     "share_gas_for_elec_ch4_emissions": {
         "gas_for_elec_ch4_emissions": 1,
@@ -8352,10 +8374,11 @@
         "time": 1
     },
     "share_gascoalgas_for_elec_in_2014": {
-        "__external__": null
+        "__external__": "_ext_constant_share_gascoalgas_for_elec_in_2014"
     },
     "share_gascoalgas_for_heat_plants": {
-        "__external__": null,
+        "__data__": "_ext_data_share_gascoalgas_for_heat_plants",
+        "__external__": "_ext_data_share_gascoalgas_for_heat_plants",
         "time": 1
     },
     "share_gases_dem_for_heatnc": {
@@ -8380,10 +8403,11 @@
         "population_dependent_on_trad_biomass": 1
     },
     "share_heat_distribution_losses": {
-        "__external__": null
+        "__external__": "_ext_constant_share_heat_distribution_losses"
     },
     "share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation": {
-        "__external__": null,
+        "__data__": "_ext_data_share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation",
+        "__external__": "_ext_data_share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation",
         "time": 1
     },
     "share_imports_aut_coal_from_row_vs_extraction_world": {
@@ -8406,15 +8430,15 @@
         "extraction_oil_ej_world": 1,
         "imports_aut_total_oil_from_row_ej": 1
     },
-    "share_imports_eu_uranium_from_row_vs_extraction_world": {
+    "share_imports_aut_uranium_from_row_vs_extraction_world": {
         "extraction_uranium_ej_world": 1,
-        "imports_eu_uranium_from_row_ej": 1
+        "imports_aut_uranium_from_row": 1
     },
     "share_in_target_year_ff_for_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_share_in_target_year_ff_for_elec"
     },
     "share_in_target_year_oil_for_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_share_in_target_year_oil_for_heat"
     },
     "share_land_compet_biofuels": {
         "agricultural_land_2015": 1,
@@ -8468,7 +8492,7 @@
         "total_number_light_vehicles": 1
     },
     "share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation": {
-        "__external__": null
+        "__external__": "_ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation"
     },
     "share_oil_dem_for_elec": {
         "pe_demand_oil_elec_plants_ej": 1,
@@ -8496,43 +8520,43 @@
         "total_elec_nres_co2_emisions": 1
     },
     "share_oilff_for_elec_in_2015": {
-        "__external__": null
+        "__external__": "_ext_constant_share_oilff_for_elec_in_2015"
     },
     "share_ped_nre_liquids": {
         "fes_total_biofuels_production_ej": 1,
         "ped_liquids_ej": 1
     },
     "share_pes_biogas_for_chp": {
-        "__external__": null
+        "__external__": "_ext_constant_share_pes_biogas_for_chp"
     },
     "share_pes_biogas_for_elec": {
         "pes_biogas_ej": 1,
         "pes_tot_biogas_for_elec": 1
     },
     "share_pes_biogas_for_elec_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_share_pes_biogas_for_elec_plants"
     },
     "share_pes_biogas_for_heat": {
         "pes_biogas_ej": 1,
         "pes_tot_biogas_for_heatcom": 1
     },
     "share_pes_biogas_for_heatcom_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_share_pes_biogas_for_heatcom_plants"
     },
     "share_pes_biogas_tfc": {
-        "__external__": null
+        "__external__": "_ext_constant_share_pes_biogas_tfc"
     },
     "share_pes_waste_for_chp": {
-        "__external__": null
+        "__external__": "_ext_constant_share_pes_waste_for_chp"
     },
     "share_pes_waste_for_elec_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_share_pes_waste_for_elec_plants"
     },
     "share_pes_waste_for_heatcom_plants": {
-        "__external__": null
+        "__external__": "_ext_constant_share_pes_waste_for_heatcom_plants"
     },
     "share_pes_waste_tfc": {
-        "__external__": null
+        "__external__": "_ext_constant_share_pes_waste_tfc"
     },
     "share_pipeline_transport_fecgl_in_2015": {
         "_sampleiftrue_share_pipeline_transport_fecgl_in_2015": 1
@@ -8551,25 +8575,25 @@
         "total_fe_heat_generation_ej": 1
     },
     "share_rurr_coal_to_leave_underground": {
-        "__external__": null
+        "__external__": "_ext_constant_share_rurr_coal_to_leave_underground"
     },
     "share_rurr_conv_gas_to_leave_underground": {
-        "__external__": null
+        "__external__": "_ext_constant_share_rurr_conv_gas_to_leave_underground"
     },
     "share_rurr_conv_oil_to_leave_underground": {
-        "__external__": null
+        "__external__": "_ext_constant_share_rurr_conv_oil_to_leave_underground"
     },
     "share_rurr_tot_agg_gas_to_leave_underground": {
-        "__external__": null
+        "__external__": "_ext_constant_share_rurr_tot_agg_gas_to_leave_underground"
     },
     "share_rurr_tot_agg_oil_to_leave_underground": {
-        "__external__": null
+        "__external__": "_ext_constant_share_rurr_tot_agg_oil_to_leave_underground"
     },
     "share_rurr_unconv_gas_to_leave_underground": {
-        "__external__": null
+        "__external__": "_ext_constant_share_rurr_unconv_gas_to_leave_underground"
     },
     "share_rurr_unconv_oil_to_leave_underground": {
-        "__external__": null
+        "__external__": "_ext_constant_share_rurr_unconv_oil_to_leave_underground"
     },
     "share_solar_pv_vs_tot_solar_gen": {
         "fe_elec_gen_from_solar_pv_on_land_twh": 2,
@@ -8616,7 +8640,7 @@
         "total_water_use": 1
     },
     "share_trad_biomass_vs_solids_in_households": {
-        "__external__": null
+        "__external__": "_ext_constant_share_trad_biomass_vs_solids_in_households"
     },
     "share_traditional_biomass": {
         "pe_traditional_biomass_ej_delayed_1yr": 1,
@@ -8626,7 +8650,7 @@
         "_integ_share_transmdistr_elec_losses": 1
     },
     "share_transmdistr_elec_losses_initial": {
-        "__external__": null
+        "__external__": "_ext_constant_share_transmdistr_elec_losses_initial"
     },
     "share_unconv_gas_vs_tot_agg": {
         "evolution_share_unconv_gas_vs_tot_agg": 1,
@@ -8635,7 +8659,7 @@
         "time": 1
     },
     "share_unconv_gas_vs_tot_agg_in_2050": {
-        "__external__": null
+        "__external__": "_ext_constant_share_unconv_gas_vs_tot_agg_in_2050"
     },
     "share_unconv_oil_vs_tot_agg": {
         "evolution_share_unconv_oil_vs_tot_agg": 1,
@@ -8644,7 +8668,7 @@
         "time": 1
     },
     "share_unconv_oil_vs_tot_agg_in_2050": {
-        "__external__": null
+        "__external__": "_ext_constant_share_unconv_oil_vs_tot_agg_in_2050"
     },
     "share_unconv_tot_gas": {
         "imports_aut_unconv_gas_from_row_ej": 1,
@@ -8724,74 +8748,74 @@
         "modern_solids_bioe_demand_households": 1
     },
     "start_policy_leave_in_ground_coal": {
-        "__external__": null
+        "__external__": "_ext_constant_start_policy_leave_in_ground_coal"
     },
     "start_policy_leave_in_ground_conv_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_start_policy_leave_in_ground_conv_gas"
     },
     "start_policy_leave_in_ground_conv_oil": {
-        "__external__": null
+        "__external__": "_ext_constant_start_policy_leave_in_ground_conv_oil"
     },
     "start_policy_leave_in_ground_tot_agg_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_start_policy_leave_in_ground_tot_agg_gas"
     },
     "start_policy_leave_in_ground_tot_agg_oil": {
-        "__external__": null
+        "__external__": "_ext_constant_start_policy_leave_in_ground_tot_agg_oil"
     },
     "start_policy_leave_in_ground_unconv_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_start_policy_leave_in_ground_unconv_gas"
     },
     "start_policy_leave_in_ground_unconv_oil": {
-        "__external__": null
+        "__external__": "_ext_constant_start_policy_leave_in_ground_unconv_oil"
     },
     "start_production_biofuels": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_start_production_biofuels",
+        "__lookup__": "_ext_lookup_start_production_biofuels"
     },
     "start_year_3gen_cellulosic_biofuels": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_3gen_cellulosic_biofuels"
     },
     "start_year_bioe_residues_for_nonbiofuels": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_bioe_residues_for_nonbiofuels"
     },
     "start_year_biofuels_land_marg": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_biofuels_land_marg"
     },
     "start_year_modification_ei": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_modification_ei"
     },
     "start_year_nuclear_growth_scen34": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_nuclear_growth_scen34"
     },
     "start_year_p_common_rr_minerals_alt_techn": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_p_common_rr_minerals_alt_techn"
     },
     "start_year_p_common_rr_minerals_rest": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_p_common_rr_minerals_rest"
     },
     "start_year_p_f1_solar_pv": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_p_f1_solar_pv"
     },
     "start_year_p_growth_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_p_growth_res_elec"
     },
     "start_year_p_growth_res_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_p_growth_res_heat"
     },
     "start_year_p_rr_minerals": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_p_rr_minerals"
     },
     "start_year_p_urban_land_density": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_p_urban_land_density"
     },
     "start_year_p_variation_primary_forest": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_p_variation_primary_forest"
     },
     "start_year_policy_phaseout_oil_for_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_policy_phaseout_oil_for_elec"
     },
     "start_year_policy_phaseout_oil_for_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_start_year_policy_phaseout_oil_for_heat"
     },
     "static_eroi_res_elec": {
         "fei_over_lifetime_res_elec_dispatch": 8,
@@ -8818,9 +8842,6 @@
         "output_elec_over_lifetime_res_elec_for_allocation": 1
     },
     "staticdynamic_quality_of_electricity": {},
-    "sum_variation": {
-        "variation_demand_flow_fd_eu": 1
-    },
     "surface_csp_mha": {
         "surface_res_elec": 1
     },
@@ -8849,89 +8870,89 @@
         "target_year_pop_asymptote": 1
     },
     "t_fin_hveh": {
-        "__external__": null
+        "__external__": "_ext_constant_t_fin_hveh"
     },
     "t_fin_inlandt": {
-        "__external__": null
+        "__external__": "_ext_constant_t_fin_inlandt"
     },
     "t_hist_h_transp": {},
     "t_hist_inlandt": {},
     "t_ini_hveh": {
-        "__external__": null
+        "__external__": "_ext_constant_t_ini_hveh"
     },
     "t_ini_inlandt": {
-        "__external__": null
+        "__external__": "_ext_constant_t_ini_inlandt"
     },
     "t_per_gt": {},
     "table_hist_capacity_phs": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_table_hist_capacity_phs",
+        "__lookup__": "_ext_lookup_table_hist_capacity_phs"
     },
     "table_hist_capacity_res_elec": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_table_hist_capacity_res_elec",
+        "__lookup__": "_ext_lookup_table_hist_capacity_res_elec"
     },
     "table_max_extraction_agg_gas": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_table_max_extraction_agg_gas",
+        "__lookup__": "_ext_lookup_table_max_extraction_agg_gas"
     },
     "table_max_extraction_agg_oil": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_table_max_extraction_agg_oil",
+        "__lookup__": "_ext_lookup_table_max_extraction_agg_oil"
     },
     "table_max_extraction_coal": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_table_max_extraction_coal",
+        "__lookup__": "_ext_lookup_table_max_extraction_coal"
     },
     "table_max_extraction_conv_gas": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_table_max_extraction_conv_gas",
+        "__lookup__": "_ext_lookup_table_max_extraction_conv_gas"
     },
     "table_max_extraction_conv_oil": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_table_max_extraction_conv_oil",
+        "__lookup__": "_ext_lookup_table_max_extraction_conv_oil"
     },
     "table_max_extraction_unconv_gas": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_table_max_extraction_unconv_gas",
+        "__lookup__": "_ext_lookup_table_max_extraction_unconv_gas"
     },
     "table_max_extraction_unconv_oil": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_table_max_extraction_unconv_oil",
+        "__lookup__": "_ext_lookup_table_max_extraction_unconv_oil"
     },
     "table_max_extraction_uranium": {
-        "__external__": null,
-        "__lookup__": null
+        "__external__": "_ext_lookup_table_max_extraction_uranium",
+        "__lookup__": "_ext_lookup_table_max_extraction_uranium"
     },
     "target_year_f1_solar_pv": {
-        "__external__": null
+        "__external__": "_ext_constant_target_year_f1_solar_pv"
     },
     "target_year_gdppc_asymptote": {
-        "__external__": null
+        "__external__": "_ext_constant_target_year_gdppc_asymptote"
     },
     "target_year_p_growth_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_target_year_p_growth_res_elec"
     },
     "target_year_p_growth_res_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_target_year_p_growth_res_heat"
     },
     "target_year_p_rr_minerals": {
-        "__external__": null
+        "__external__": "_ext_constant_target_year_p_rr_minerals"
     },
     "target_year_p_urban_land_density": {
-        "__external__": null
+        "__external__": "_ext_constant_target_year_p_urban_land_density"
     },
     "target_year_policy_phaseout_ff_for_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_target_year_policy_phaseout_ff_for_elec"
     },
     "target_year_policy_phaseout_oil_for_heat": {
-        "__external__": null
+        "__external__": "_ext_constant_target_year_policy_phaseout_oil_for_heat"
     },
     "target_year_pop_asymptote": {
-        "__external__": null
+        "__external__": "_ext_constant_target_year_pop_asymptote"
     },
     "temperature_change": {
-        "__data__": null,
+        "__data__": "_data_temperature_change",
         "time": 1
     },
     "tfe_required_for_total_material_consumption_for_alt_techn": {
@@ -8967,16 +8988,16 @@
         "time": 1
     },
     "time_construction_nuclear": {
-        "__external__": null
+        "__external__": "_ext_constant_time_construction_nuclear"
     },
     "time_construction_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_time_construction_res_elec"
     },
     "time_planification_nuclear": {
-        "__external__": null
+        "__external__": "_ext_constant_time_planification_nuclear"
     },
     "time_planification_res_elec": {
-        "__external__": null
+        "__external__": "_ext_constant_time_planification_res_elec"
     },
     "time_step": {},
     "tonnes_per_kt": {},
@@ -9073,7 +9094,8 @@
         "solid_bioe_emissions_relevant_ej": 1
     },
     "total_co2_emissions_from_fossil_fuel_consumption_and_cement_production": {
-        "__external__": null,
+        "__data__": "_ext_data_total_co2_emissions_from_fossil_fuel_consumption_and_cement_production",
+        "__external__": "_ext_data_total_co2_emissions_from_fossil_fuel_consumption_and_cement_production",
         "time": 1
     },
     "total_co2_emissions_gtco2": {
@@ -9121,7 +9143,7 @@
         "_integ_total_coal_left_in_ground": 1
     },
     "total_consumption_nre_ej": {
-        "extraction_coal_ej_aut": 1,
+        "extraction_coal_aut": 1,
         "extraction_uranium_ej_aut": 1,
         "extraction_uranium_row": 1,
         "imports_aut_coal_from_row_ej": 1,
@@ -9154,7 +9176,7 @@
         "jobs_om_res_heat_per_techn": 1
     },
     "total_demand": {
-        "demand_by_sector_fd_eu": 1
+        "demand_by_sector_fd_aut": 1
     },
     "total_demand_adjusted": {
         "demand_by_sector_fd_adjusted": 1
@@ -9263,7 +9285,7 @@
         "exports_demand_to_row": 1
     },
     "total_extraction_nre_ej": {
-        "__data__": null,
+        "__data__": "_data_total_extraction_nre_ej",
         "time": 1
     },
     "total_extraction_nre_ej_world": {
@@ -9308,7 +9330,7 @@
         "fes_elec_from_waste_twh": 1
     },
     "total_fe_elec_generation_twh_eu": {
-        "__data__": null,
+        "__data__": "_data_total_fe_elec_generation_twh_eu",
         "time": 1
     },
     "total_fe_elec_generation_twh_eu28": {
@@ -9415,11 +9437,13 @@
         "gross_fixed_capital_formation": 1
     },
     "total_ghg_emissions_excluding_landuse_change_and_forestry": {
-        "__external__": null,
+        "__data__": "_ext_data_total_ghg_emissions_excluding_landuse_change_and_forestry",
+        "__external__": "_ext_data_total_ghg_emissions_excluding_landuse_change_and_forestry",
         "time": 1
     },
     "total_ghg_emissions_including_landuse_change_and_forestry": {
-        "__external__": null,
+        "__data__": "_ext_data_total_ghg_emissions_including_landuse_change_and_forestry",
+        "__external__": "_ext_data_total_ghg_emissions_including_landuse_change_and_forestry",
         "time": 1
     },
     "total_heat_ch4_emissions": {
@@ -9663,7 +9687,7 @@
         "ratio_gain_gas_vs_lose_solids_in_tranf_processes": 1
     },
     "transport_fraction": {
-        "__external__": null
+        "__external__": "_ext_constant_transport_fraction"
     },
     "transport_households_final_energy_demand": {
         "energy_intensity_of_households_transport": 1,
@@ -9691,19 +9715,19 @@
         "time": 1
     },
     "unlimited_coal": {
-        "__external__": null
+        "__external__": "_ext_constant_unlimited_coal"
     },
     "unlimited_gas": {
-        "__external__": null
+        "__external__": "_ext_constant_unlimited_gas"
     },
     "unlimited_nre": {
-        "__external__": null
+        "__external__": "_ext_constant_unlimited_nre"
     },
     "unlimited_oil": {
-        "__external__": null
+        "__external__": "_ext_constant_unlimited_oil"
     },
     "unlimited_uranium": {
-        "__external__": null
+        "__external__": "_ext_constant_unlimited_uranium"
     },
     "unsustainable_loggin": {
         "forest_extraction_ej": 1,
@@ -9735,7 +9759,7 @@
         "urban_land_density_variation": 1
     },
     "urban_surface_2015": {
-        "__external__": null
+        "__external__": "_ext_constant_urban_surface_2015"
     },
     "urr_coal": {
         "unlimited_coal": 1,
@@ -9743,7 +9767,7 @@
         "urr_coal_input": 1
     },
     "urr_coal_input": {
-        "__external__": null
+        "__external__": "_ext_constant_urr_coal_input"
     },
     "urr_conv_gas": {
         "separate_conv_and_unconv_gas": 1,
@@ -9752,7 +9776,7 @@
         "urr_conv_gas_input": 1
     },
     "urr_conv_gas_input": {
-        "__external__": null
+        "__external__": "_ext_constant_urr_conv_gas_input"
     },
     "urr_conv_oil": {
         "separate_conv_and_unconv_oil": 1,
@@ -9761,7 +9785,7 @@
         "urr_conv_oil_input": 1
     },
     "urr_conv_oil_input": {
-        "__external__": null
+        "__external__": "_ext_constant_urr_conv_oil_input"
     },
     "urr_tot_agg_gas": {
         "separate_conv_and_unconv_gas": 1,
@@ -9776,24 +9800,24 @@
         "urr_tot_agg_oil_input": 1
     },
     "urr_tot_agg_oil_input": {
-        "__external__": null
+        "__external__": "_ext_constant_urr_tot_agg_oil_input"
     },
     "urr_total_gas_input": {
-        "__external__": null
+        "__external__": "_ext_constant_urr_total_gas_input"
     },
     "urr_unconv_gas": {
         "separate_conv_and_unconv_gas": 1,
         "urr_unconv_gas_input": 1
     },
     "urr_unconv_gas_input": {
-        "__external__": null
+        "__external__": "_ext_constant_urr_unconv_gas_input"
     },
     "urr_unconv_oil": {
         "separate_conv_and_unconv_oil": 1,
         "urr_unconv_oil_input": 1
     },
     "urr_unconv_oil_input": {
-        "__external__": null
+        "__external__": "_ext_constant_urr_unconv_oil_input"
     },
     "urr_uranium": {
         "unlimited_nre": 1,
@@ -9801,7 +9825,7 @@
         "urr_uranium_input": 1
     },
     "urr_uranium_input": {
-        "__external__": null
+        "__external__": "_ext_constant_urr_uranium_input"
     },
     "used_ev_batteries_for_elec_storage": {
         "cp_ev_batteries_for_elec_storage": 1,
@@ -9871,14 +9895,11 @@
         "real_growth_ctl": 1,
         "time": 3
     },
-    "variation_demand_flow_fd_eu": {
-        "exports_demand_to_row": 1,
-        "gross_fixed_capital_formation": 1,
+    "variation_demand_flow_fd_aut": {
         "historic_variation_demand": 1,
-        "household_demand": 1,
-        "share_consum_goverment_and_inventories": 3,
-        "share_consum_goverment_and_inventories_next_year": 4,
+        "share_consum_goverment_and_inventories": 1,
         "time": 1,
+        "variation_exports_demand_to_roeu": 1,
         "variation_exports_demand_to_row": 1,
         "variation_gfcf": 1,
         "variation_household_demand": 1
@@ -10026,14 +10047,14 @@
         "annual_gdp_growth_rate_aut": 2,
         "p_waste_change": 1
     },
-    "water_for_om__res_elec": {
-        "__external__": null
-    },
     "water_for_om_required_for_res_elec": {
         "installed_capacity_res_elec_tw": 1,
         "kg_per_mt": 1,
         "m_per_t": 1,
-        "water_for_om__res_elec": 1
+        "water_for_om_res_elec": 1
+    },
+    "water_for_om_res_elec": {
+        "__external__": "_ext_constant_water_for_om_res_elec"
     },
     "water_intensity_by_sector": {
         "_integ_water_intensity_by_sector": 1
@@ -10087,10 +10108,10 @@
         "time": 1
     },
     "wood_energy_density": {
-        "__external__": null
+        "__external__": "_ext_constant_wood_energy_density"
     },
     "year_change_pct_energy_intensity_target": {
-        "__external__": null
+        "__external__": "_ext_constant_year_change_pct_energy_intensity_target"
     },
     "year_energy_intensity_target": {
         "choose_energy_intensity_target_method": 1,
@@ -10123,10 +10144,10 @@
     "year_initial_capital_share": {},
     "year_initial_labour_share": {},
     "year_policy_change_energy": {
-        "__external__": null
+        "__external__": "_ext_constant_year_policy_change_energy"
     },
     "year_policy_to_improve_efficiency": {
-        "__external__": null
+        "__external__": "_ext_constant_year_policy_to_improve_efficiency"
     },
     "year_scarcity_coal": {
         "abundance_coal_aut": 1,
@@ -10165,7 +10186,7 @@
         "time": 1
     },
     "year_to_finish_energy_intensity_policies": {
-        "__external__": null
+        "__external__": "_ext_constant_year_to_finish_energy_intensity_policies"
     },
     "year_to_finish_policy_change_energy": {}
 }

@@ -1,21 +1,17 @@
 """
 Module rest_demand
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="\"'a' extraction projection minerals\"",
+    units="Mt/year",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def a_extraction_projection_minerals():
-    """
-    Real Name: "'a' extraction projection minerals"
-    Original Eqn:
-    Units: Mt/year
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['materials']
-
-
-    """
     return _ext_constant_a_extraction_projection_minerals()
 
 
@@ -25,20 +21,81 @@ _ext_constant_a_extraction_projection_minerals = ExtConstant(
     "a_extraction_projection_minerals*",
     {"materials": _subscript_dict["materials"]},
     _root,
+    {
+        "materials": [
+            "Adhesive",
+            "Aluminium",
+            "Aluminium mirrors",
+            "Cadmium",
+            "Carbon fiber",
+            "Cement",
+            "Chromium",
+            "Copper",
+            "diesel",
+            "Dy",
+            "electronic components",
+            "Evacuation lines",
+            "Fiberglass",
+            "Foam glass",
+            "Galium",
+            "Glass",
+            "Glass reinforcing plastic",
+            "gravel",
+            "Indium",
+            "Iron",
+            "KNO3 mined",
+            "Asphalt",
+            "Lime",
+            "Limestone",
+            "Lithium",
+            "Lubricant",
+            "Magnesium",
+            "Manganese",
+            "Heavy equipment",
+            "Concrete",
+            "Molybdenum",
+            "NaNO3 mined",
+            "NaNO3 synthetic",
+            "Neodymium",
+            "Nickel",
+            "over grid 15perc",
+            "over grid 5perc",
+            "Paint",
+            "Lead",
+            "Plastics",
+            "Polypropylene",
+            "Rock",
+            "Rock wool",
+            "Sand",
+            "Silicon sand",
+            "Silicon wafer modules",
+            "Silver",
+            "Site preparation",
+            "Tin",
+            "soda ash",
+            "steel",
+            "synthetic oil",
+            "tellurium",
+            "titanium",
+            "titanium dioxide",
+            "vanadium",
+            "wires",
+            "zinc",
+        ]
+    },
     "_ext_constant_a_extraction_projection_minerals",
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="cum materials to extract Rest",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def cum_materials_to_extract_rest():
     """
-    Real Name: cum materials to extract Rest
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
     Cumulative materials to be mined for the rest of the economy.
     """
     return _integ_cum_materials_to_extract_rest()
@@ -55,16 +112,15 @@ _integ_cum_materials_to_extract_rest = Integ(
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="cum materials to extract Rest from 2015",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def cum_materials_to_extract_rest_from_2015():
     """
-    Real Name: cum materials to extract Rest from 2015
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
     Cumulative materials to be mined for the rest of the economy from 2015.
     """
     return _integ_cum_materials_to_extract_rest_from_2015()
@@ -81,19 +137,18 @@ _integ_cum_materials_to_extract_rest_from_2015 = Integ(
 )
 
 
-@subs(["materials"], _subscript_dict)
-def historical_extraction_minerals_rest(x):
+@component.add(
+    name="Historical extraction minerals Rest",
+    units="t",
+    subscripts=["materials"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historical_extraction_minerals_rest(x, final_subs=None):
     """
-    Real Name: Historical extraction minerals Rest
-    Original Eqn:
-    Units: t
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['materials']
-
     Historical extraction of minerals of the rest of the economy.
     """
-    return _ext_lookup_historical_extraction_minerals_rest(x)
+    return _ext_lookup_historical_extraction_minerals_rest(x, final_subs)
 
 
 _ext_lookup_historical_extraction_minerals_rest = ExtLookup(
@@ -103,20 +158,81 @@ _ext_lookup_historical_extraction_minerals_rest = ExtLookup(
     "historical_extraction_minerals_rest",
     {"materials": _subscript_dict["materials"]},
     _root,
+    {
+        "materials": [
+            "Adhesive",
+            "Aluminium",
+            "Aluminium mirrors",
+            "Cadmium",
+            "Carbon fiber",
+            "Cement",
+            "Chromium",
+            "Copper",
+            "diesel",
+            "Dy",
+            "electronic components",
+            "Evacuation lines",
+            "Fiberglass",
+            "Foam glass",
+            "Galium",
+            "Glass",
+            "Glass reinforcing plastic",
+            "gravel",
+            "Indium",
+            "Iron",
+            "KNO3 mined",
+            "Asphalt",
+            "Lime",
+            "Limestone",
+            "Lithium",
+            "Lubricant",
+            "Magnesium",
+            "Manganese",
+            "Heavy equipment",
+            "Concrete",
+            "Molybdenum",
+            "NaNO3 mined",
+            "NaNO3 synthetic",
+            "Neodymium",
+            "Nickel",
+            "over grid 15perc",
+            "over grid 5perc",
+            "Paint",
+            "Lead",
+            "Plastics",
+            "Polypropylene",
+            "Rock",
+            "Rock wool",
+            "Sand",
+            "Silicon sand",
+            "Silicon wafer modules",
+            "Silver",
+            "Site preparation",
+            "Tin",
+            "soda ash",
+            "steel",
+            "synthetic oil",
+            "tellurium",
+            "titanium",
+            "titanium dioxide",
+            "vanadium",
+            "wires",
+            "zinc",
+        ]
+    },
     "_ext_lookup_historical_extraction_minerals_rest",
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Historical variation minerals extraction Rest",
+    units="t",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historical_variation_minerals_extraction_rest():
     """
-    Real Name: Historical variation minerals extraction Rest
-    Original Eqn:
-    Units: t
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Historical variation in the extraction of minerals of the rest of the economy.
     """
     return historical_extraction_minerals_rest(
@@ -124,30 +240,25 @@ def historical_variation_minerals_extraction_rest():
     ) - historical_extraction_minerals_rest(time())
 
 
+@component.add(
+    name="initial cumulated material requirements for Rest 1995",
+    units="Mt",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def initial_cumulated_material_requirements_for_rest_1995():
-    """
-    Real Name: initial cumulated material requirements for Rest 1995
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-
-    """
     return 0
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="initial minerals extraction Rest",
+    units="t",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def initial_minerals_extraction_rest():
     """
-    Real Name: initial minerals extraction Rest
-    Original Eqn:
-    Units: t
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['materials']
-
     Initial minerals extraction of the rest of the economy.
     """
     return _ext_constant_initial_minerals_extraction_rest()
@@ -159,20 +270,81 @@ _ext_constant_initial_minerals_extraction_rest = ExtConstant(
     "initial_minerals_extraction_rest*",
     {"materials": _subscript_dict["materials"]},
     _root,
+    {
+        "materials": [
+            "Adhesive",
+            "Aluminium",
+            "Aluminium mirrors",
+            "Cadmium",
+            "Carbon fiber",
+            "Cement",
+            "Chromium",
+            "Copper",
+            "diesel",
+            "Dy",
+            "electronic components",
+            "Evacuation lines",
+            "Fiberglass",
+            "Foam glass",
+            "Galium",
+            "Glass",
+            "Glass reinforcing plastic",
+            "gravel",
+            "Indium",
+            "Iron",
+            "KNO3 mined",
+            "Asphalt",
+            "Lime",
+            "Limestone",
+            "Lithium",
+            "Lubricant",
+            "Magnesium",
+            "Manganese",
+            "Heavy equipment",
+            "Concrete",
+            "Molybdenum",
+            "NaNO3 mined",
+            "NaNO3 synthetic",
+            "Neodymium",
+            "Nickel",
+            "over grid 15perc",
+            "over grid 5perc",
+            "Paint",
+            "Lead",
+            "Plastics",
+            "Polypropylene",
+            "Rock",
+            "Rock wool",
+            "Sand",
+            "Silicon sand",
+            "Silicon wafer modules",
+            "Silver",
+            "Site preparation",
+            "Tin",
+            "soda ash",
+            "steel",
+            "synthetic oil",
+            "tellurium",
+            "titanium",
+            "titanium dioxide",
+            "vanadium",
+            "wires",
+            "zinc",
+        ]
+    },
     "_ext_constant_initial_minerals_extraction_rest",
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Materials to extract Rest from 2015 Mt",
+    units="Mt/year",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def materials_to_extract_rest_from_2015_mt():
     """
-    Real Name: Materials to extract Rest from 2015 Mt
-    Original Eqn:
-    Units: Mt/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Annual materials to be mined for the ithe rest of the economy from 2015.
     """
     return if_then_else(
@@ -184,31 +356,29 @@ def materials_to_extract_rest_from_2015_mt():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Materials to extract Rest Mt",
+    units="Mt/year",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def materials_to_extract_rest_mt():
     """
-    Real Name: Materials to extract Rest Mt
-    Original Eqn:
-    Units: Mt/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Annual materials to be mined for the rest of the economy.
     """
     return minerals_extraction_projection_rest_with_rr()
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Minerals consumption estimation Rest cte rr",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def minerals_consumption_estimation_rest_cte_rr():
     """
-    Real Name: Minerals consumption estimation Rest cte rr
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Projection of annual mineral consumption of the rest of the economy using historical data and assuming recycling rates remaing constant.
     """
     return minerals_extraction_projection_rest_cte_rr() / (
@@ -216,16 +386,15 @@ def minerals_consumption_estimation_rest_cte_rr():
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Minerals extraction projection Rest cte rr",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def minerals_extraction_projection_rest_cte_rr():
     """
-    Real Name: Minerals extraction projection Rest cte rr
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['materials']
-
     Projection of annual mineral extraction of the rest of the economy using historical data and assuming recycling rates remaing constant.
     """
     return _integ_minerals_extraction_projection_rest_cte_rr()
@@ -238,16 +407,15 @@ _integ_minerals_extraction_projection_rest_cte_rr = Integ(
 )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Minerals extraction projection Rest with rr",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def minerals_extraction_projection_rest_with_rr():
     """
-    Real Name: Minerals extraction projection Rest with rr
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Minerals extraction projection of the rest of the economy accounting for the dynamic evolution of recycling rates.
     """
     return minerals_consumption_estimation_rest_cte_rr() * (
@@ -255,85 +423,68 @@ def minerals_extraction_projection_rest_with_rr():
     )
 
 
+@component.add(
+    name="Mt per t", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+)
 def mt_per_t():
     """
-    Real Name: Mt per t
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     megatonne per tonne.
     """
     return 1e-06
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="share minerals consumption alt techn vs total economy",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_minerals_consumption_alt_techn_vs_total_economy():
-    """
-    Real Name: share minerals consumption alt techn vs total economy
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
-
-    """
     return zidz(
-        total_materials_required_for_res_elec__ev_batteries_mt(),
+        total_materials_required_for_res_elec_ev_batteries_mt(),
         minerals_consumption_estimation_rest_cte_rr()
-        + total_materials_required_for_res_elec__ev_batteries_mt(),
+        + total_materials_required_for_res_elec_ev_batteries_mt(),
     )
 
 
-@subs(["materials"], _subscript_dict)
-def total_materials_required_for_res_elec__ev_batteries_mt():
-    """
-    Real Name: "Total materials required for RES elec + EV batteries Mt"
-    Original Eqn:
-    Units: Mt/year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
-
-    """
+@component.add(
+    name='"Total materials required for RES elec + EV batteries Mt"',
+    units="Mt/year",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def total_materials_required_for_res_elec_ev_batteries_mt():
     return (
         total_materials_required_for_ev_batteries()
         + total_materials_required_for_res_elec_mt()
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="Total recycled materials for other Mt",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_recycled_materials_for_other_mt():
-    """
-    Real Name: Total recycled materials for other Mt
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
-
-    """
     return (
         minerals_consumption_estimation_rest_cte_rr()
         - minerals_extraction_projection_rest_with_rr()
     )
 
 
-@subs(["materials"], _subscript_dict)
+@component.add(
+    name="variation minerals extraction Rest",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_minerals_extraction_rest():
     """
-    Real Name: variation minerals extraction Rest
-    Original Eqn:
-    Units: Mt
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['materials']
-
     Variation of minerals extraction of the rest of the economy.
     """
     return (

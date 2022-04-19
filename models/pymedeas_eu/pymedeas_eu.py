@@ -9,28 +9,28 @@ import xarray as xr
 
 from pysd.py_backend.functions import (
     if_then_else,
-    integer,
-    zidz,
-    invert_matrix,
-    step,
-    sum,
     xidz,
+    invert_matrix,
+    sum,
+    step,
+    zidz,
+    integer,
 )
-from pysd.py_backend.statefuls import Integ, SampleIfTrue, Smooth, DelayFixed, Initial
-from pysd.py_backend.external import ExtConstant, ExtLookup, ExtData
+from pysd.py_backend.statefuls import Smooth, SampleIfTrue, DelayFixed, Integ, Initial
+from pysd.py_backend.external import ExtLookup, ExtData, ExtConstant
 from pysd.py_backend.data import TabData
 from pysd.py_backend.utils import load_model_data, load_modules
-from pysd import subs
+from pysd import Component
 
-__pysd_version__ = "2.2.1"
+__pysd_version__ = "3.0.0"
 
 __data = {"scope": None, "time": lambda: 0}
 
 _root = Path(__file__).parent
 
-_namespace, _subscript_dict, _dependencies, _modules = load_model_data(
-    _root, "pymedeas_eu"
-)
+_subscript_dict, _dependencies, _modules = load_model_data(_root, "pymedeas_eu")
+
+component = Component()
 
 #######################################################################
 #                          CONTROL VARIABLES                          #
@@ -49,61 +49,57 @@ def _init_outer_references(data):
         __data[key] = data[key]
 
 
+@component.add(name="Time")
 def time():
+    """
+    Current time of the model.
+    """
     return __data["time"]()
 
 
+@component.add(
+    name="FINAL TIME", units="Year", comp_type="Constant", comp_subtype="Normal"
+)
 def final_time():
     """
-    Real Name: FINAL TIME
-    Original Eqn:
-    Units: Year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     The final time for the simulation.
     """
     return __data["time"].final_time()
 
 
+@component.add(
+    name="INITIAL TIME", units="Year", comp_type="Constant", comp_subtype="Normal"
+)
 def initial_time():
     """
-    Real Name: INITIAL TIME
-    Original Eqn:
-    Units: Year
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     The initial time for the simulation.
     """
     return __data["time"].initial_time()
 
 
+@component.add(
+    name="SAVEPER",
+    units="Year ",
+    limits=(0.0, None),
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def saveper():
     """
-    Real Name: SAVEPER
-    Original Eqn:
-    Units: Year
-    Limits: (0.0, None)
-    Type: Constant
-    Subs: []
-
     The frequency with which output is stored.
     """
     return __data["time"].saveper()
 
 
+@component.add(
+    name="TIME STEP",
+    units="Year ",
+    limits=(0.0, None),
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def time_step():
     """
-    Real Name: TIME STEP
-    Original Eqn:
-    Units: Year
-    Limits: (0.0, None)
-    Type: Constant
-    Subs: []
-
     The time step for the simulation.
     """
     return __data["time"].time_step()

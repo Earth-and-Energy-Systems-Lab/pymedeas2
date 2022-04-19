@@ -1,19 +1,18 @@
 """
 Module exports_demand
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="beta 0 EXP",
+    units="Dmnl",
+    subscripts=["sectors"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def beta_0_exp():
     """
-    Real Name: beta 0 EXP
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['sectors']
-
     Beta coefficient of panel data regression of export demand.
     """
     return _ext_constant_beta_0_exp()
@@ -25,20 +24,37 @@ _ext_constant_beta_0_exp = ExtConstant(
     "beta_0_EXP*",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_constant_beta_0_exp",
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="beta 0 GFCF",
+    units="Dmnl",
+    subscripts=["sectors"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def beta_0_gfcf():
     """
-    Real Name: beta 0 GFCF
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['sectors']
-
     Beta coefficient of panel data regression of gross fixed capital formation.
     """
     return _ext_constant_beta_0_gfcf()
@@ -50,58 +66,73 @@ _ext_constant_beta_0_gfcf = ExtConstant(
     "beta_0_GFCF*",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_constant_beta_0_gfcf",
 )
 
 
+@component.add(
+    name="beta 1 EXP", units="Dmnl", comp_type="Constant", comp_subtype="External"
+)
 def beta_1_exp():
     """
-    Real Name: beta 1 EXP
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Beta coefficient of panel data regression of exports demand.
     """
     return _ext_constant_beta_1_exp()
 
 
 _ext_constant_beta_1_exp = ExtConstant(
-    "../economy.xlsx", "Europe", "beta_1_EXP", {}, _root, "_ext_constant_beta_1_exp"
+    "../economy.xlsx", "Europe", "beta_1_EXP", {}, _root, {}, "_ext_constant_beta_1_exp"
 )
 
 
+@component.add(
+    name="beta 1 GFCF", units="Dmnl", comp_type="Constant", comp_subtype="External"
+)
 def beta_1_gfcf():
     """
-    Real Name: beta 1 GFCF
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Beta coefficient of panel data regression of gross fixed capital formation.
     """
     return _ext_constant_beta_1_gfcf()
 
 
 _ext_constant_beta_1_gfcf = ExtConstant(
-    "../economy.xlsx", "Europe", "beta_1_GFCF", {}, _root, "_ext_constant_beta_1_gfcf"
+    "../economy.xlsx",
+    "Europe",
+    "beta_1_GFCF",
+    {},
+    _root,
+    {},
+    "_ext_constant_beta_1_gfcf",
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Exports demand",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def exports_demand():
     """
-    Real Name: Exports demand
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['sectors']
-
     Sectorial value of exports
     """
     return _integ_exports_demand()
@@ -114,16 +145,15 @@ _integ_exports_demand = Integ(
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Exports demand not covered",
+    units="Mdollars/Year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def exports_demand_not_covered():
     """
-    Real Name: Exports demand not covered
-    Original Eqn:
-    Units: Mdollars/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Gap between exports required and real exports (after energy-economy feedback)
     """
     return if_then_else(
@@ -133,16 +163,15 @@ def exports_demand_not_covered():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="GFCF not covered",
+    units="Mdollars/Year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def gfcf_not_covered():
     """
-    Real Name: GFCF not covered
-    Original Eqn:
-    Units: Mdollars/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Gap between gross fixed capital formation required and real gross fixed capital formation (after energy-economy feedback)
     """
     return if_then_else(
@@ -152,16 +181,15 @@ def gfcf_not_covered():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Gross fixed capital formation",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def gross_fixed_capital_formation():
     """
-    Real Name: Gross fixed capital formation
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['sectors']
-
     Sectorial domestic value of gross fixed capital formation
     """
     return _integ_gross_fixed_capital_formation()
@@ -174,19 +202,18 @@ _integ_gross_fixed_capital_formation = Integ(
 )
 
 
-@subs(["sectors"], _subscript_dict)
-def historic_exports_demand(x):
+@component.add(
+    name="historic exports demand",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_exports_demand(x, final_subs=None):
     """
-    Real Name: historic exports demand
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['sectors']
-
     Historic final exports to RoW.
     """
-    return _ext_lookup_historic_exports_demand(x)
+    return _ext_lookup_historic_exports_demand(x, final_subs)
 
 
 _ext_lookup_historic_exports_demand = ExtLookup(
@@ -196,23 +223,40 @@ _ext_lookup_historic_exports_demand = ExtLookup(
     "historic_exports_demand",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_lookup_historic_exports_demand",
 )
 
 
-@subs(["sectors"], _subscript_dict)
-def historic_gfcf(x):
+@component.add(
+    name="historic GFCF",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_gfcf(x, final_subs=None):
     """
-    Real Name: historic GFCF
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['sectors']
-
     Historic gross fixed capital formation (14 sectors).
     """
-    return _ext_lookup_historic_gfcf(x)
+    return _ext_lookup_historic_gfcf(x, final_subs)
 
 
 _ext_lookup_historic_gfcf = ExtLookup(
@@ -222,77 +266,78 @@ _ext_lookup_historic_gfcf = ExtLookup(
     "historic_GFCF",
     {"sectors": _subscript_dict["sectors"]},
     _root,
+    {
+        "sectors": [
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ]
+    },
     "_ext_lookup_historic_gfcf",
 )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="Initial exports demand",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def initial_exports_demand():
     """
-    Real Name: Initial exports demand
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Initial value of sectorial exports
     """
     return historic_exports_demand(1995)
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="initial GFCF",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def initial_gfcf():
     """
-    Real Name: initial GFCF
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Initial value of gross fixed capital formation
     """
     return historic_gfcf(1995)
 
 
+@component.add(
+    name="real demand world next step", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def real_demand_world_next_step():
-    """
-    Real Name: real demand world next step
-    Original Eqn:
-    Units:
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return real_demand_world() * (1 + annual_gdp_growth_rate_world())
 
 
+@component.add(
+    name="Total exports", units="Mdollars", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def total_exports():
     """
-    Real Name: Total exports
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Whole economy exports
     """
     return sum(exports_demand().rename({"sectors": "sectors!"}), dim=["sectors!"])
 
 
+@component.add(
+    name="Total GFCF", units="Mdollars", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def total_gfcf():
     """
-    Real Name: Total GFCF
-    Original Eqn:
-    Units: Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Whole economy domestic gross fixed capital formation
     """
     return sum(
@@ -301,16 +346,15 @@ def total_gfcf():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="variation exports demand",
+    units="Mdollars/Year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_exports_demand():
     """
-    Real Name: variation exports demand
-    Original Eqn:
-    Units: Mdollars/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Variation of exports by industrial sectors
     """
     return if_then_else(
@@ -328,16 +372,15 @@ def variation_exports_demand():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="variation GFCF",
+    units="Mdollars/Year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_gfcf():
     """
-    Real Name: variation GFCF
-    Original Eqn:
-    Units: Mdollars/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Variation of domestic gross fixed capital formation by industrial sectors
     """
     return if_then_else(
@@ -355,16 +398,15 @@ def variation_gfcf():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="variation historic exports demand",
+    units="Mdollars/Year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_historic_exports_demand():
     """
-    Real Name: variation historic exports demand
-    Original Eqn:
-    Units: Mdollars/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Historic variation of exports (WIOD-35 sectors)
     """
     return historic_exports_demand(integer(time() + 1)) - historic_exports_demand(
@@ -372,16 +414,15 @@ def variation_historic_exports_demand():
     )
 
 
-@subs(["sectors"], _subscript_dict)
+@component.add(
+    name="variation historic GFCF",
+    units="Mdollars/Year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_historic_gfcf():
     """
-    Real Name: variation historic GFCF
-    Original Eqn:
-    Units: Mdollars/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors']
-
     Historic variation of gross fixed capital formation (WIOD-35 sectors)
     """
     return historic_gfcf(integer(time() + 1)) - historic_gfcf(integer(time()))

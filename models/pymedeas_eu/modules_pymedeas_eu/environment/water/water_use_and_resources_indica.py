@@ -1,18 +1,14 @@
 """
 Module water_use_and_resources_indica
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="AR water", units="km3", comp_type="Constant", comp_subtype="External"
+)
 def ar_water():
     """
-    Real Name: AR water
-    Original Eqn:
-    Units: km3
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Accessible runnoff water. Source: UN (2003).
     """
     return _ext_constant_ar_water()
@@ -24,36 +20,26 @@ _ext_constant_ar_water = ExtConstant(
     "accessible_runnoff_water",
     {},
     _root,
+    {},
     "_ext_constant_ar_water",
 )
 
 
+@component.add(
+    name="dam3 per km3", units="km3", comp_type="Constant", comp_subtype="Normal"
+)
 def dam3_per_km3():
-    """
-    Real Name: dam3 per km3
-    Original Eqn:
-    Units: km3
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-
-    """
     return 1000000.0
 
 
-@subs(["sectors", "water"], _subscript_dict)
+@component.add(
+    name="Historic water by type intensities by sector",
+    units="dam3/Mdollars",
+    subscripts=["sectors", "water"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historic_water_by_type_intensities_by_sector():
-    """
-    Real Name: Historic water by type intensities by sector
-    Original Eqn:
-    Units: dam3/Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'water']
-
-
-    """
     return if_then_else(
         time() < 2009,
         lambda: historic_water_use(time())
@@ -78,18 +64,14 @@ def historic_water_by_type_intensities_by_sector():
     )
 
 
-@subs(["water"], _subscript_dict)
+@component.add(
+    name="Historic water by type intensities for households",
+    units="dam3/Mdollars",
+    subscripts=["water"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def historic_water_by_type_intensities_for_households():
-    """
-    Real Name: Historic water by type intensities for households
-    Original Eqn:
-    Units: dam3/Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['water']
-
-
-    """
     return if_then_else(
         time() < 2009,
         lambda: historic_water_use(time()).loc["Households", :].reset_coords(drop=True)
@@ -98,18 +80,14 @@ def historic_water_by_type_intensities_for_households():
     )
 
 
-@subs(["sectors", "water"], _subscript_dict)
+@component.add(
+    name="Historic water intensities by sector delayed 1yr",
+    units="dam3/Mdollars",
+    subscripts=["sectors", "water"],
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
 def historic_water_intensities_by_sector_delayed_1yr():
-    """
-    Real Name: Historic water intensities by sector delayed 1yr
-    Original Eqn:
-    Units: dam3/Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['sectors', 'water']
-
-
-    """
     return _delayfixed_historic_water_intensities_by_sector_delayed_1yr()
 
 
@@ -122,18 +100,14 @@ _delayfixed_historic_water_intensities_by_sector_delayed_1yr = DelayFixed(
 )
 
 
-@subs(["water"], _subscript_dict)
+@component.add(
+    name="Historic water intensities for households delayed 1yr",
+    units="dam3/Mdollars",
+    subscripts=["water"],
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
 def historic_water_intensities_for_households_delayed_1yr():
-    """
-    Real Name: Historic water intensities for households delayed 1yr
-    Original Eqn:
-    Units: dam3/Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['water']
-
-
-    """
     return _delayfixed_historic_water_intensities_for_households_delayed_1yr()
 
 
@@ -146,19 +120,18 @@ _delayfixed_historic_water_intensities_for_households_delayed_1yr = DelayFixed(
 )
 
 
-@subs(["SECTORS and HOUSEHOLDS", "water"], _subscript_dict)
-def historic_water_use(x):
+@component.add(
+    name="Historic water use",
+    units="dam3/$",
+    subscripts=["SECTORS and HOUSEHOLDS", "water"],
+    comp_type="Lookup",
+    comp_subtype="External",
+)
+def historic_water_use(x, final_subs=None):
     """
-    Real Name: Historic water use
-    Original Eqn:
-    Units: dam3/$
-    Limits: (None, None)
-    Type: Lookup
-    Subs: ['SECTORS and HOUSEHOLDS', 'water']
-
     Historic water use by type for 35 WIOD sectors and households.
     """
-    return _ext_lookup_historic_water_use(x)
+    return _ext_lookup_historic_water_use(x, final_subs)
 
 
 _ext_lookup_historic_water_use = ExtLookup(
@@ -171,6 +144,26 @@ _ext_lookup_historic_water_use = ExtLookup(
         "water": ["blue water"],
     },
     _root,
+    {
+        "SECTORS and HOUSEHOLDS": [
+            "Households",
+            "Agriculture",
+            "Mining quarrying and energy supply",
+            "Food Beverages and Tobacco",
+            "Textiles and leather etc",
+            "Coke refined petroleum nuclear fuel and chemicals etc",
+            "Electrical and optical equipment and Transport equipment",
+            "Other manufacturing",
+            "Construction",
+            "Distribution",
+            "Hotels and restaurant",
+            "Transport storage and communication",
+            "Financial Intermediation",
+            "Real estate renting and busine activitie",
+            "Non Market Service",
+        ],
+        "water": ["blue water", "green water", "gray water"],
+    },
     "_ext_lookup_historic_water_use",
 )
 
@@ -197,18 +190,14 @@ _ext_lookup_historic_water_use.add(
 )
 
 
-@subs(["sectors", "water"], _subscript_dict)
+@component.add(
+    name="Initial water intensity by sector",
+    units="dam3/Mdollars",
+    subscripts=["sectors", "water"],
+    comp_type="Stateful",
+    comp_subtype="Initial",
+)
 def initial_water_intensity_by_sector():
-    """
-    Real Name: Initial water intensity by sector
-    Original Eqn:
-    Units: dam3/Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['sectors', 'water']
-
-
-    """
     return _initial_initial_water_intensity_by_sector()
 
 
@@ -218,18 +207,14 @@ _initial_initial_water_intensity_by_sector = Initial(
 )
 
 
-@subs(["water"], _subscript_dict)
+@component.add(
+    name="Initial water intensity for households",
+    units="dam3/Mdollars",
+    subscripts=["water"],
+    comp_type="Stateful",
+    comp_subtype="Initial",
+)
 def initial_water_intensity_for_households():
-    """
-    Real Name: Initial water intensity for households
-    Original Eqn:
-    Units: dam3/Mdollars
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['water']
-
-
-    """
     return _initial_initial_water_intensity_for_households()
 
 
@@ -239,45 +224,33 @@ _initial_initial_water_intensity_for_households = Initial(
 )
 
 
+@component.add(
+    name="Mt to dam3", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+)
 def mt_to_dam3():
-    """
-    Real Name: Mt to dam3
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-
-    """
     return 1000
 
 
+@component.add(
+    name="Percent share blue water use vs AR",
+    units="percent",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def percent_share_blue_water_use_vs_ar():
     """
-    Real Name: Percent share blue water use vs AR
-    Original Eqn:
-    Units: percent
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Percent of the share of blue water used vs accessible runoff water.
     """
     return share_blue_water_use_vs_ar() * 100
 
 
+@component.add(
+    name="Renewable water resources",
+    units="km3",
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def renewable_water_resources():
-    """
-    Real Name: Renewable water resources
-    Original Eqn:
-    Units: km3
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
-
-    """
     return _ext_constant_renewable_water_resources()
 
 
@@ -287,19 +260,19 @@ _ext_constant_renewable_water_resources = ExtConstant(
     "renewable_water_resources",
     {},
     _root,
+    {},
     "_ext_constant_renewable_water_resources",
 )
 
 
+@component.add(
+    name="share blue water use vs AR",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_blue_water_use_vs_ar():
     """
-    Real Name: share blue water use vs AR
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of blue water used vs accessible runoff water.
     """
     return float(total_water_use_by_type().loc["blue water"]) / (
@@ -307,15 +280,14 @@ def share_blue_water_use_vs_ar():
     )
 
 
+@component.add(
+    name="share blue water use vs renewable water resources",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_blue_water_use_vs_renewable_water_resources():
     """
-    Real Name: share blue water use vs renewable water resources
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of blue water used vs renewable water resources.
     """
     return float(total_water_use_by_type().loc["blue water"]) / (
@@ -323,73 +295,62 @@ def share_blue_water_use_vs_renewable_water_resources():
     )
 
 
+@component.add(
+    name="share total water use vs AR",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_total_water_use_vs_ar():
     """
-    Real Name: share total water use vs AR
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of total water used vs accessible runnoff water.
     """
     return total_water_use() / (ar_water() * dam3_per_km3())
 
 
+@component.add(
+    name="share total water use vs renewable water resources",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_total_water_use_vs_renewable_water_resources():
     """
-    Real Name: share total water use vs renewable water resources
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of total water used vs renewable water resources.
     """
     return total_water_use() / (renewable_water_resources() * dam3_per_km3())
 
 
-@subs(["water"], _subscript_dict)
+@component.add(
+    name='"Total water for O&M required by RES elec dam3"',
+    units="dam3",
+    subscripts=["water"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_water_for_om_required_by_res_elec_dam3():
-    """
-    Real Name: "Total water for O&M required by RES elec dam3"
-    Original Eqn:
-    Units: dam3
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['water']
-
-
-    """
     return total_water_for_om_required_by_res_elec() * mt_to_dam3()
 
 
+@component.add(
+    name="Total water use", units="dam3", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def total_water_use():
     """
-    Real Name: Total water use
-    Original Eqn:
-    Units: dam3
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Total water use (all types aggregated).
     """
     return sum(total_water_use_by_type().rename({"water": "water!"}), dim=["water!"])
 
 
-@subs(["water"], _subscript_dict)
+@component.add(
+    name="Total water use by type",
+    units="dam3",
+    subscripts=["water"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def total_water_use_by_type():
     """
-    Real Name: Total water use by type
-    Original Eqn:
-    Units: dam3
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['water']
-
     Total water consumption by type (green, blue, grey).
     """
     return (
@@ -399,16 +360,15 @@ def total_water_use_by_type():
     )
 
 
-@subs(["sectors", "water"], _subscript_dict)
+@component.add(
+    name="Variation water intensity by sector",
+    units="dam3/$1995",
+    subscripts=["sectors", "water"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_water_intensity_by_sector():
     """
-    Real Name: Variation water intensity by sector
-    Original Eqn:
-    Units: dam3/$1995
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'water']
-
     Variation of water intensity by type, sector and year.
     """
     return if_then_else(
@@ -423,16 +383,15 @@ def variation_water_intensity_by_sector():
     )
 
 
-@subs(["water"], _subscript_dict)
+@component.add(
+    name="Variation water intensity households",
+    units="dam3/Mdollars",
+    subscripts=["water"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def variation_water_intensity_households():
     """
-    Real Name: Variation water intensity households
-    Original Eqn:
-    Units: dam3/Mdollars
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['water']
-
     Variation of water intensity for households by type and year.
     """
     return if_then_else(
@@ -443,18 +402,14 @@ def variation_water_intensity_households():
     )
 
 
-@subs(["sectors", "water"], _subscript_dict)
+@component.add(
+    name="Water intensity by sector",
+    units="dam3/$1995",
+    subscripts=["sectors", "water"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def water_intensity_by_sector():
-    """
-    Real Name: Water intensity by sector
-    Original Eqn:
-    Units: dam3/$1995
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['sectors', 'water']
-
-
-    """
     return _integ_water_intensity_by_sector()
 
 
@@ -465,18 +420,14 @@ _integ_water_intensity_by_sector = Integ(
 )
 
 
-@subs(["water"], _subscript_dict)
+@component.add(
+    name="Water intensity for households",
+    units="dam3/$1995",
+    subscripts=["water"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def water_intensity_for_households():
-    """
-    Real Name: Water intensity for households
-    Original Eqn:
-    Units: dam3/$1995
-    Limits: (None, None)
-    Type: Stateful
-    Subs: ['water']
-
-
-    """
     return _integ_water_intensity_for_households()
 
 
@@ -487,31 +438,29 @@ _integ_water_intensity_for_households = Integ(
 )
 
 
-@subs(["water"], _subscript_dict)
+@component.add(
+    name="Water use by households",
+    units="dam3",
+    subscripts=["water"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def water_use_by_households():
     """
-    Real Name: Water use by households
-    Original Eqn:
-    Units: dam3
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['water']
-
     Water use by type by households.
     """
     return water_intensity_for_households() * household_demand_total()
 
 
-@subs(["sectors", "water"], _subscript_dict)
+@component.add(
+    name="Water use by sector",
+    units="dam3",
+    subscripts=["sectors", "water"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def water_use_by_sector():
     """
-    Real Name: Water use by sector
-    Original Eqn:
-    Units: dam3
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['sectors', 'water']
-
     Water use by type by sector.
     """
     return water_intensity_by_sector() * (

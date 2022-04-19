@@ -1,18 +1,17 @@
 """
 Module res_elec_overcap_due_to_res_variabi
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
+@component.add(
+    name="Cp exogenous RES elec dispatch reduction",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cp_exogenous_res_elec_dispatch_reduction():
     """
-    Real Name: Cp exogenous RES elec dispatch reduction
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Reduction of the capacity factor of the dispatchable plants as a function of the penetration of variables RES in the electricity generation (Source: NREL (2012), see MEDEAS D4.1).
     """
     return np.minimum(
@@ -23,16 +22,15 @@ def cp_exogenous_res_elec_dispatch_reduction():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="Cp exogenous RES elec reduction",
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cp_exogenous_res_elec_reduction():
     """
-    Real Name: Cp exogenous RES elec reduction
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Reduction of Cp of RES elec due to the penetration of RES elec variables (modelling of overcapacities due to the intermittence of RES elec variables).
     """
     value = xr.DataArray(
@@ -51,15 +49,14 @@ def cp_exogenous_res_elec_reduction():
     return value
 
 
+@component.add(
+    name="Cp exogenous RES elec var reduction",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cp_exogenous_res_elec_var_reduction():
     """
-    Real Name: Cp exogenous RES elec var reduction
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Reduction of the capacity factor of the RES elec variables plants as a function of the penetration of variables RES in the electricity generation (Source: Delarue & Morris (2015), see MEDEAS D4.1).
     """
     return 1 / (
@@ -67,15 +64,14 @@ def cp_exogenous_res_elec_var_reduction():
     )
 
 
+@component.add(
+    name="Elec generation dispatch from RES TWh",
+    units="TWh",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def elec_generation_dispatch_from_res_twh():
     """
-    Real Name: Elec generation dispatch from RES TWh
-    Original Eqn:
-    Units: TWh
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Base-load electricity generation from RES.
     """
     return (
@@ -89,15 +85,14 @@ def elec_generation_dispatch_from_res_twh():
     )
 
 
+@component.add(
+    name="Elec generation variable from RES TWh",
+    units="TWh/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def elec_generation_variable_from_res_twh():
     """
-    Real Name: Elec generation variable from RES TWh
-    Original Eqn:
-    Units: TWh/Year
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Variable electricity generation from RES.
     """
     return sum(
@@ -108,46 +103,40 @@ def elec_generation_variable_from_res_twh():
     )
 
 
+@component.add(
+    name="increase variable RES share elec vs total generation",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def increase_variable_res_share_elec_vs_total_generation():
-    """
-    Real Name: increase variable RES share elec vs total generation
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return (
         share_variable_res_elec_generation_vs_total()
         - share_variable_res_elec_vs_total_generation_delayed_1yr()
     )
 
 
+@component.add(
+    name="initial share variable RES elec gen vs total",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def initial_share_variable_res_elec_gen_vs_total():
     """
-    Real Name: initial share variable RES elec gen vs total
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: []
-
     Initial share of variable RES electricity in relation to the total generation.
     """
     return 0.0071
 
 
+@component.add(
+    name="Share variable RES elec generation vs total",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def share_variable_res_elec_generation_vs_total():
     """
-    Real Name: Share variable RES elec generation vs total
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     Share of variable vs. total electricity generation. Condition to avoid error when the denominator is zero (0.5 is an arbitrary value).
     """
     return if_then_else(
@@ -165,15 +154,14 @@ def share_variable_res_elec_generation_vs_total():
     )
 
 
+@component.add(
+    name="Share variable RES elec generation vs total gen",
+    units="Dmnl",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
 def share_variable_res_elec_generation_vs_total_gen():
     """
-    Real Name: Share variable RES elec generation vs total gen
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     Share variable RES electricity generation vs total electricity generation. Same variable as "share variable RES elec generation vs total" but introduced as stock in order to avoid simultaneous equations.
     """
     return _integ_share_variable_res_elec_generation_vs_total_gen()
@@ -186,15 +174,14 @@ _integ_share_variable_res_elec_generation_vs_total_gen = Integ(
 )
 
 
+@component.add(
+    name="Share variable RES elec vs total generation delayed 1yr",
+    units="Dmnl",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
 def share_variable_res_elec_vs_total_generation_delayed_1yr():
     """
-    Real Name: Share variable RES elec vs total generation delayed 1yr
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Stateful
-    Subs: []
-
     "Share variable RES elec generation vs total" delayed 1 year.
     """
     return _delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr()

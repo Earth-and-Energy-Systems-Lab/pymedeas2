@@ -1,19 +1,18 @@
 """
 Module res_electricity
-Translated using PySD version 2.2.1
+Translated using PySD version 3.0.0
 """
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="\"'dynamic' EROI RES elec var\"",
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def dynamic_eroi_res_elec_var():
     """
-    Real Name: "'dynamic' EROI RES elec var"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Evolution of EROI over time per RES variable technology, considering CED dynamic over time.
     """
     return if_then_else(
@@ -25,16 +24,15 @@ def dynamic_eroi_res_elec_var():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="\"'static' EROI RES elec\"",
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def static_eroi_res_elec():
     """
-    Real Name: "'static' EROI RES elec"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Energy return on energy invested (over the full lifetime of the infrastructure) per RES technology for generating electricity.
     """
     value = xr.DataArray(
@@ -103,15 +101,14 @@ def static_eroi_res_elec():
     return value
 
 
+@component.add(
+    name="\"'static' EROItot RES elec\"",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def static_eroitot_res_elec():
     """
-    Real Name: "'static' EROItot RES elec"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
     EROI over the lifetime of the aggregated outputs and inputs of RES for generating electricity.
     """
     return if_then_else(
@@ -132,16 +129,15 @@ def static_eroitot_res_elec():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="CED decom RES elec capacity",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ced_decom_res_elec_capacity():
     """
-    Real Name: CED decom RES elec capacity
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Cumulative energy demand (CED) required to decommission RES electricity generation plants which have ended their lifetime.
     """
     return zidz(
@@ -152,16 +148,15 @@ def ced_decom_res_elec_capacity():
     )
 
 
-@subs(["RES elec", "materials"], _subscript_dict)
+@component.add(
+    name="CED new cap per material RES elec var",
+    units="EJ",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ced_new_cap_per_material_res_elec_var():
     """
-    Real Name: CED new cap per material RES elec var
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec', 'materials']
-
     Cumulative energy demand per material of new installed capacity of RES variables per technology.
     """
     return (
@@ -182,16 +177,15 @@ def ced_new_cap_per_material_res_elec_var():
     )
 
 
-@subs(["RES elec", "materials"], _subscript_dict)
+@component.add(
+    name='"CED O&M over lifetime per material RES elec var"',
+    units="EJ",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ced_om_over_lifetime_per_material_res_elec_var():
     """
-    Real Name: "CED O&M over lifetime per material RES elec var"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec', 'materials']
-
     Cumulative energy demand per material for O&M of RES variables per technology over all the lifetime of the infrastructure.
     """
     return (
@@ -234,16 +228,15 @@ def ced_om_over_lifetime_per_material_res_elec_var():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name='"CED O&M over lifetime RES elec var"',
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ced_om_over_lifetime_res_elec_var():
     """
-    Real Name: "CED O&M over lifetime RES elec var"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Cumulative energy demand for O&M of RES variables per technology over all the lifetime of the infrastructure.
     """
     return sum(
@@ -257,16 +250,15 @@ def ced_om_over_lifetime_res_elec_var():
     )
 
 
-@subs(["RES elec", "materials"], _subscript_dict)
+@component.add(
+    name='"CED O&M per material RES elec var"',
+    units="EJ",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def ced_om_per_material_res_elec_var():
     """
-    Real Name: "CED O&M per material RES elec var"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec', 'materials']
-
     Cumulative energy demand per material of new installed capacity of RES variables per technology.
     """
     return (
@@ -287,16 +279,15 @@ def ced_om_per_material_res_elec_var():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="CEDtot new cap RES elec var",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cedtot_new_cap_res_elec_var():
     """
-    Real Name: CEDtot new cap RES elec var
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Cumulative energy demand of new capacity for RES variables per technology.
     """
     return sum(
@@ -305,16 +296,15 @@ def cedtot_new_cap_res_elec_var():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name='"CEDtot O&M RES elec var"',
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cedtot_om_res_elec_var():
     """
-    Real Name: "CEDtot O&M RES elec var"
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Cumulative energy demand of O&M for RES variables per technology.
     """
     return (
@@ -326,16 +316,15 @@ def cedtot_om_res_elec_var():
     )
 
 
-@subs(["RES elec", "materials"], _subscript_dict)
+@component.add(
+    name="CEDtot per material RES elec var",
+    units="EJ",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cedtot_per_material_res_elec_var():
     """
-    Real Name: CEDtot per material RES elec var
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec', 'materials']
-
     Total cumulative energy demand (construction+O&M) per material of RES variables per technology.
     """
     return (
@@ -344,16 +333,15 @@ def cedtot_per_material_res_elec_var():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="CEDtot per TW over lifetime RES elec dispatch",
+    units="EJ/TW",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cedtot_per_tw_over_lifetime_res_elec_dispatch():
     """
-    Real Name: CEDtot per TW over lifetime RES elec dispatch
-    Original Eqn:
-    Units: EJ/TW
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Total cumulative energy demand (including installation of new capacity and O&M) per MW for RES dispatchables per technology over the lifetime of the infrastructure.
     """
     return zidz(
@@ -363,16 +351,15 @@ def cedtot_per_tw_over_lifetime_res_elec_dispatch():
     )
 
 
-@subs(["RES elec", "materials"], _subscript_dict)
+@component.add(
+    name="CEDtot per TW per material RES elec var",
+    units="EJ/TW",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cedtot_per_tw_per_material_res_elec_var():
     """
-    Real Name: CEDtot per TW per material RES elec var
-    Original Eqn:
-    Units: EJ/TW
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec', 'materials']
-
     Total cumulative energy demand (construction+O&M) per power installed per material of RES variables per technology (considering only material requirements).
     """
     return zidz(
@@ -391,16 +378,15 @@ def cedtot_per_tw_per_material_res_elec_var():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="CEDtot per TW RES elec var",
+    units="MJ/MW",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def cedtot_per_tw_res_elec_var():
     """
-    Real Name: CEDtot per TW RES elec var
-    Original Eqn:
-    Units: MJ/MW
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Total cumulative energy demand (construction+O&M) per power installed of RES variables per technology (considering only material requirements).
     """
     return (
@@ -414,30 +400,22 @@ def cedtot_per_tw_res_elec_var():
     )
 
 
+@component.add(
+    name="CEDtot solar PV", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
 def cedtot_solar_pv():
-    """
-    Real Name: CEDtot solar PV
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: []
-
-
-    """
     return float(fei_res_elec_var().loc["solar PV"])
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name='"EROI-ini RES elec dispatch"',
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
 def eroiini_res_elec_dispatch():
     """
-    Real Name: "EROI-ini RES elec dispatch"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['RES elec']
-
     Energy return on energy invested of RES technologies for generating electricity dispatchables at the initial Cp level.
     """
     return _ext_constant_eroiini_res_elec_dispatch()
@@ -449,20 +427,31 @@ _ext_constant_eroiini_res_elec_dispatch = ExtConstant(
     "eroi_initial_res_elec_dispatch*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
+    {
+        "RES elec": [
+            "hydro",
+            "geot elec",
+            "solid bioE elec",
+            "oceanic",
+            "wind onshore",
+            "wind offshore",
+            "solar PV",
+            "CSP",
+        ]
+    },
     "_ext_constant_eroiini_res_elec_dispatch",
 )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="FEI over lifetime RES elec",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fei_over_lifetime_res_elec():
     """
-    Real Name: FEI over lifetime RES elec
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Final energy investments over lifetime for RES elec technologies.
     """
     value = xr.DataArray(
@@ -495,16 +484,15 @@ def fei_over_lifetime_res_elec():
     return value
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="FEI over lifetime RES elec dispatch",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fei_over_lifetime_res_elec_dispatch():
     """
-    Real Name: FEI over lifetime RES elec dispatch
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Final energy invested over lifetime per RES elec dispatchable technology (equivalent to the denominator of the EROI (=CED*g).
     """
     return (
@@ -513,16 +501,15 @@ def fei_over_lifetime_res_elec_dispatch():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="FEI over lifetime RES elec var",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fei_over_lifetime_res_elec_var():
     """
-    Real Name: FEI over lifetime RES elec var
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Final energy invested over lifetime per RES elec variable technology (equivalent to the denominator of the EROI (=CED*g, with total cumulative energy demand (including installation of new capacity and O&M) for RES variables per technology over the lifetime of the infrastructure.
     """
     return (
@@ -536,16 +523,15 @@ def fei_over_lifetime_res_elec_var():
     ) * gquality_of_electricity() + output_elec_over_lifetime_res_elec() * selfelectricity_consumption_res_elec()
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="FEI RES elec var",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def fei_res_elec_var():
     """
-    Real Name: FEI RES elec var
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Final energy invested (equivalent to the denominator of the EROI (=CED*g, with total cumulative energy demand including installation of new capacity and O&M) for RES variables per technology).
     """
     return (
@@ -555,16 +541,15 @@ def fei_res_elec_var():
     ) * gquality_of_electricity() + real_generation_res_elec_ej() * selfelectricity_consumption_res_elec()
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="Grid correction factor RES elec",
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Constant",
+    comp_subtype="External, Normal",
+)
 def grid_correction_factor_res_elec():
     """
-    Real Name: Grid correction factor RES elec
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['RES elec']
-
     Grid correction factor to take into account the electricity losses due to Joule effect in each power plant.
     """
     value = xr.DataArray(
@@ -583,20 +568,20 @@ _ext_constant_grid_correction_factor_res_elec = ExtConstant(
     "grid_correction_factor_res_elec",
     {"RES elec": _subscript_dict["RES ELEC VARIABLE"]},
     _root,
+    {"RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"]},
     "_ext_constant_grid_correction_factor_res_elec",
 )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="output elec over lifetime RES elec",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def output_elec_over_lifetime_res_elec():
     """
-    Real Name: output elec over lifetime RES elec
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Total electricity output generated over the full operation of the infrastructure of the new capacity installed.
     """
     return (
@@ -608,31 +593,29 @@ def output_elec_over_lifetime_res_elec():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="real generation RES elec EJ",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
 def real_generation_res_elec_ej():
     """
-    Real Name: real generation RES elec EJ
-    Original Eqn:
-    Units: EJ
-    Limits: (None, None)
-    Type: Auxiliary
-    Subs: ['RES elec']
-
     Electricity generation by RES technology.
     """
     return real_generation_res_elec_twh() * ej_per_twh()
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name='"RES elec variables?"',
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
 def res_elec_variables():
     """
-    Real Name: "RES elec variables?"
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['RES elec']
-
     Vector to distinguis between RES elec variables and dispatchables: *If=1, RES elec variables (fully endogenous calculation from the materials requirements). *If=0, RES elec dispatchables (partially endogenous calculation requiring a value of EROI as starting point).
     """
     return xr.DataArray(
@@ -642,18 +625,14 @@ def res_elec_variables():
     )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="selfelectricity consumption RES elec",
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Constant",
+    comp_subtype="External, Normal",
+)
 def selfelectricity_consumption_res_elec():
-    """
-    Real Name: selfelectricity consumption RES elec
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['RES elec']
-
-
-    """
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
@@ -670,20 +649,20 @@ _ext_constant_selfelectricity_consumption_res_elec = ExtConstant(
     "self_electricity_consumption_res_elec",
     {"RES elec": _subscript_dict["RES ELEC VARIABLE"]},
     _root,
+    {"RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"]},
     "_ext_constant_selfelectricity_consumption_res_elec",
 )
 
 
-@subs(["RES elec"], _subscript_dict)
+@component.add(
+    name="share energy requirements for decom RES elec",
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Constant",
+    comp_subtype="External, Normal",
+)
 def share_energy_requirements_for_decom_res_elec():
     """
-    Real Name: share energy requirements for decom RES elec
-    Original Eqn:
-    Units: Dmnl
-    Limits: (None, None)
-    Type: Constant
-    Subs: ['RES elec']
-
     Share energy requirements for decomissioning power RES plants as a share of the energy requirements for the construction of new capacity.
     """
     value = xr.DataArray(
@@ -702,5 +681,6 @@ _ext_constant_share_energy_requirements_for_decom_res_elec = ExtConstant(
     "share_energy_requirements_for_decom_res_elec",
     {"RES elec": _subscript_dict["RES ELEC VARIABLE"]},
     _root,
+    {"RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"]},
     "_ext_constant_share_energy_requirements_for_decom_res_elec",
 )

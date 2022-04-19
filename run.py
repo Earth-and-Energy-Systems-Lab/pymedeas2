@@ -33,10 +33,10 @@ __maintainer__ = "Eneko Martin"
 __status__ = "Development"
 
 # check PySD version
-if tuple(int(i) for i in pysd.__version__.split(".")) < (2, 2, 0):
+if tuple(int(i) for i in pysd.__version__.split(".")) < (3, 0, 0):
     raise RuntimeError(
         "\n\n"
-        + "The current version of pymedeas models needs at least PySD 2.2.0"
+        + "The current version of pymedeas models needs at least PySD 3.0.0"
         + " You are running:\n\tPySD "
         + pysd.__version__
         + "\nPlease update PySD library with your package manager, "
@@ -109,6 +109,15 @@ if __name__ == "__main__":
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
         if platform.system() != 'Darwin':
 
+            def not_xlsx(path, names):
+                """Return not .xlsx files set"""
+                path = Path(path)
+                return {
+                    name for name in names
+                    if path.joinpath(name).is_file()
+                    and not name.endswith('.xlsx')
+                }
+
             bundle_dir = Path(__file__).parent
             executable_dir = Path(sys.argv[0]).resolve().parent
 
@@ -117,13 +126,15 @@ if __name__ == "__main__":
                 shutil.copytree(
                     executable_dir.joinpath("scenarios"),
                     bundle_dir.joinpath("scenarios"),
-                    dirs_exist_ok=True
+                    dirs_exist_ok=True,
+                    ignore=not_xlsx
                 )
                 # copying model parameters files
                 shutil.copytree(
                     executable_dir.joinpath("models"),
                     bundle_dir.joinpath("models"),
-                    dirs_exist_ok=True
+                    dirs_exist_ok=True,
+                    ignore=not_xlsx
                 )
             except shutil.Error as err:
                 raise PermissionError(

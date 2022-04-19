@@ -32,7 +32,7 @@ For contributions see :doc:`development <development/development_index>`.
 Requirements
 ------------
 * Python 3.7+
-* PySD 2.2.0+
+* PySD 3.0.0+
 * matplotlib
 * dacite
 

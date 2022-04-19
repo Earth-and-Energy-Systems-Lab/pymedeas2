@@ -252,10 +252,11 @@ def select_model_outputs(config: Params, model: Model,
 
     # returning cache.step objects
     var_list = sorted([
-        model.components._namespace[var_name]
+        model.namespace[var_name]
         for var_name in model._default_return_columns(which='step')
-        if all([a_var not in model.components._namespace[var_name]
-                for a_var in avoid_vars])
+        if all(
+            [a_var not in model.namespace[var_name] for a_var in avoid_vars]
+            )
         ])
 
     if select == "all":

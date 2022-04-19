@@ -69,7 +69,7 @@ def doc(model):
         else:
             return name
 
-    doc = model.doc()
+    doc = model.doc
     doc["Clean Name"] = doc["Real Name"].apply(clean_name)
 
     return doc
@@ -284,9 +284,9 @@ def all_outputs(default_config, avoid_output_vars, model):
     """Get all possible output list from a model"""
     avoid_vars = avoid_output_vars + default_config.model.out_default
     expected_ = sorted([
-        model.components._namespace[var_name]
+        model.namespace[var_name]
         for var_name in model._default_return_columns(which='step')
-        if all([a_var not in model.components._namespace[var_name]
+        if all([a_var not in model.namespace[var_name]
                 for a_var in avoid_vars])])
 
     expected = list(set(expected_ + default_config.model.out_default))

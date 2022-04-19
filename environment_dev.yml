@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.9
-  - pysd=2.2.3
+  - pysd=3.0.0
   - matplotlib
   - dacite
   - pyinstaller

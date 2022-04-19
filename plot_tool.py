@@ -3,7 +3,7 @@
 import sys
 import warnings
 import tkinter as tk
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilenames
 
 import json
 from pathlib import Path
@@ -14,7 +14,7 @@ import matplotlib
 from pandas.core.indexing import IndexingError
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg,\
-     NavigationToolbar2Tk
+    NavigationToolbar2Tk
 from matplotlib.figure import Figure
 from matplotlib.ticker import MultipleLocator
 import pysd
@@ -85,7 +85,7 @@ class PlotTool(tk.Frame):
 
         # Get model information (documentation, units, namespace)
         model = pysd.load(config.model.model_file, initialize=False)
-        self.doc = model.doc()
+        self.doc = model.doc
         self.doc["Clean Name"] = self.doc["Real Name"].apply(self.clean_name)
 
         # setting the default folder to store saved plots
@@ -267,7 +267,7 @@ class PlotTool(tk.Frame):
 
     def load_file(self, DataType=DataFile):
         """Create Data object with columns information"""
-        filename = Path(askopenfilename(
+        filenames = askopenfilenames(
             initialdir=self.results_folder,
             title="Open file",
             filetypes=(
@@ -276,22 +276,23 @@ class PlotTool(tk.Frame):
                 ("tab files", "*.tab"),
                 ("All files", "*")
             )
-        ) or "")
+        )
 
-        if not filename.name:
-            pass
-        elif filename.suffix in [".csv", ".tab"]:
-            self.data_container.add(DataType(filename))
-            self.all_vars = self.data_container.variable_list
-            self.update_list()
-            if self.column:
-                # update plots when loading new data
-                self.select_variable()
-        else:
-            tk.messagebox.showerror(
-                title="Incompatible file format",
-                message=f"Incompatible file format '{filename}'.\n"
-                        "Compatible file formats are '.csv' and '.tab'")
+        for filename in filenames:
+            filename = Path(filename)
+            if filename.suffix in [".csv", ".tab"]:
+                self.data_container.add(DataType(filename))
+            else:
+                tk.messagebox.showerror(
+                    title="Incompatible file format",
+                    message=f"Incompatible file format '{filename}'.\n"
+                            "Compatible file formats are '.csv' and '.tab'")
+
+        self.all_vars = self.data_container.variable_list
+        self.update_list()
+        if self.column:
+            # update plots when loading new data
+            self.select_variable()
 
     def on_click(self, event):
         """Select a variable"""
@@ -318,7 +319,7 @@ class PlotTool(tk.Frame):
         if any(index):
             # set the metadata using model doc
             self.title = self.doc[index]["Clean Name"].iloc[0]
-            self.units = self.doc[index]["Unit"].iloc[0]
+            self.units = self.doc[index]["Units"].iloc[0]
             self.description = self.doc[index]["Comment"].iloc[0]
         else:
             # if the variable comes from another version we may not have

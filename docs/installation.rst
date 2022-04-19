@@ -28,4 +28,4 @@ The models can be also run if the needed dependencies (found in the *environment
 
 Required Dependencies
 ---------------------
-*pymedeas2* models need `PySD <https://pysd.readthedocs.io>`_ library for running. It requires at least **Python 3.7** and **PySD 2.2.0**. Moreover **matplotlib** and **dacite** are required.
+*pymedeas2* models need `PySD <https://pysd.readthedocs.io>`_ library for running. It requires at least **Python 3.7** and **PySD 3.0.0**. Moreover **matplotlib** and **dacite** are required.

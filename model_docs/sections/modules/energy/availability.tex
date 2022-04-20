@@ -5,6 +5,52 @@
 
 
 This submodule calculates the availability of non-renewable energy sources: oil, natural gas, coal and uranium.
+The model considers the following non-renewable energy resources:
+
+\begin{enumerate}
+    \item Conventional oil: refers to crude oil and NGLs.
+    \item Unconventional oil: includes heavy and extra-heavy oil, natural bitumen (oil sand and tar
+    sands) and oil shales. Biofuels, CTL, GTL and refinery gains are modeled separately.
+    \item Conventional gas.
+    \item Unconventional gas: includes shale gas, tight gas, coal-bed methane (CBM) and hydrates.
+    \item Coal: includes anthracite, bituminous, sub-bituminous, black, brown and lignite coal.
+    \item Uranium
+\end{enumerate}
+
+Nuclear fusion is not considered since the ITER and DEMO projects
+estimate that the first commercial fusion power would not be available before 2040, which would prevent this technology to substantially contribute to the mix
+in the timeline of MEDEAS.
+
+The availability of non-renewable energy resources in MEDEAS depends upon two constraints:
+
+\begin{enumerate}
+    \item Stock: available resource in the ground
+    \item Flow: extraction rate of this resource
+\end{enumerate}
+
+The available stock of a resource is usually measured in terms of ultimately recoverable resources
+($URR$), or remaining RURR ($RURR$) if referenced to a given year. The RURR in a given time t is defined
+as the difference between the URR and cumulative extraction ($CExt$) in time t:
+
+In order to estimate the future availability of fossil fuels, we have reviewed the studies providing
+depletion curves for non-renewable energy resources taking into account both stocks and flow
+limits. 
+
+The depletion curves of non-renewable energies reviewed in the literature represent extraction
+levels compatible with geological constraints as a function of time. As the model is demand based, we assume that, while the maximum extraction rate is not reached, the extraxction of each resource matches the demand. Actual
+extraction will therefore be the minimum between the demand and the maximum extraction rate. To do this, the depletion curves have been converted into maximum production
+curves as a function of remaining resources. In these curves, as long as the remaining resources are
+large, extraction is only constrained by the maximum extraction level. However, with cumulated
+extraction, there is a level of remaining resources when physical limits start to appear and maximum
+extraction rates are gradually reduced. In this way, the model uses a stock of resources (the RURR)
+and it studies how this stock is exhausted depending on production, which is in turn determined by
+demand and maximum extraction.
+
+\begin{equation}
+    RURR_t=URR - CExt_t
+    \label{eq:available_stock}
+\end{equation}
+    
 
 \paragraph{Oil Extraction}
 The limitation of the oil resources, and availability of oil depends on two constraints: the stock (EJ) and the flows (Watts). The model priorizes the others NRE liquids fuels, then the oil demand is obtained as follows:
@@ -15,6 +61,8 @@ Oil_{demand}=PED_{NRE\_Liquids}-FES_{CTL}- FES_{GTL}- ORF
 \end{equation}
 
 Where $PED\_NRE\_Liquids$ is the Primary energy demand of non-renewable eneregy liquids (EJ), $FES\_GTL$ is the final energy demand of GTL (Gas-to-liquids) (EJ),  FES\_CTL is the final energy demand of GTL (Coal-to-liquids) (EJ) and ORF is the oil refinery gains.
+
+\paragraph{Natural gas extraction}
 
 \paragraph{Coal extraction}
 

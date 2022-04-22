@@ -35,10 +35,10 @@ def abundance_primary_sources():
         {"primary sources": _subscript_dict["primary sources"]},
         ["primary sources"],
     )
-    value.loc[{"primary sources": ["coal"]}] = abundance_coal()
-    value.loc[{"primary sources": ["oil"]}] = abundance_total_oil()
-    value.loc[{"primary sources": ["natural gas"]}] = abundance_total_nat_gas()
-    value.loc[{"primary sources": ["others"]}] = 1
+    value.loc[["coal"]] = abundance_coal()
+    value.loc[["oil"]] = abundance_total_oil()
+    value.loc[["natural gas"]] = abundance_total_nat_gas()
+    value.loc[["others"]] = 1
     return value
 
 
@@ -646,12 +646,7 @@ def perception_of_interfuel_primary_sources_scarcity():
         },
         ["primary sources1", "primary sources"],
     )
-    value.loc[
-        {
-            "primary sources1": ["coal"],
-            "primary sources": ["coal", "oil", "natural gas", "others"],
-        }
-    ] = (
+    value.loc[["coal"], :] = (
         xr.DataArray(
             0,
             {
@@ -674,12 +669,7 @@ def perception_of_interfuel_primary_sources_scarcity():
             ),
         )
     ).values
-    value.loc[
-        {
-            "primary sources1": ["oil"],
-            "primary sources": ["coal", "oil", "natural gas", "others"],
-        }
-    ] = (
+    value.loc[["oil"], :] = (
         xr.DataArray(
             0,
             {
@@ -702,12 +692,7 @@ def perception_of_interfuel_primary_sources_scarcity():
             ),
         )
     ).values
-    value.loc[
-        {
-            "primary sources1": ["natural gas"],
-            "primary sources": ["coal", "oil", "natural gas", "others"],
-        }
-    ] = (
+    value.loc[["natural gas"], :] = (
         xr.DataArray(
             0,
             {
@@ -730,12 +715,7 @@ def perception_of_interfuel_primary_sources_scarcity():
             ),
         )
     ).values
-    value.loc[
-        {
-            "primary sources1": ["others"],
-            "primary sources": ["coal", "oil", "natural gas", "others"],
-        }
-    ] = (
+    value.loc[["others"], :] = (
         xr.DataArray(
             0,
             {

@@ -14,11 +14,11 @@ def abundance_final_fuels():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["liquids"]}] = abundance_liquids()
-    value.loc[{"final sources": ["gases"]}] = abundance_gases()
-    value.loc[{"final sources": ["solids"]}] = abundance_solids()
-    value.loc[{"final sources": ["electricity"]}] = abundance_electricity()
-    value.loc[{"final sources": ["heat"]}] = abundance_heat()
+    value.loc[["liquids"]] = abundance_liquids()
+    value.loc[["gases"]] = abundance_gases()
+    value.loc[["solids"]] = abundance_solids()
+    value.loc[["electricity"]] = abundance_electricity()
+    value.loc[["heat"]] = abundance_heat()
     return value
 
 

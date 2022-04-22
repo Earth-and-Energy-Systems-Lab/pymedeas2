@@ -31,52 +31,6 @@ def available_improvement_efficiency_h():
 
 
 @component.add(
-    name="change total intensity to rest",
-    units="EJ/Tdollar",
-    subscripts=["final sources"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def change_total_intensity_to_rest():
-    """
-    Adjust to separate in 2009 among transport households and the rest in households. We assume that in 2009, 78% of the households liquids are from transport. This data is from WIOD (Diesel & gasoline from households is for transport) 1,245=0.78*1.596 For other sources, we asume 0% of the energy is for transport
-    """
-    value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
-    )
-    value.loc[{"final sources": ["liquids"]}] = 1 - step(__data["time"], 0.78, 2009)
-    value.loc[{"final sources": ["gases"]}] = 1 - step(__data["time"], 0.025, 2009)
-    value.loc[{"final sources": ["electricity"]}] = 1 - step(
-        __data["time"], 0.007, 2009
-    )
-    return value
-
-
-@component.add(
-    name="Choose energy intensity target method",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def choose_energy_intensity_target_method():
-    """
-    Choose energy intensity target method: 1- Energy intensity target defined by user 2- Variation in energy intensity over the intensity in defined year
-    """
-    return _ext_constant_choose_energy_intensity_target_method()
-
-
-_ext_constant_choose_energy_intensity_target_method = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "choose_energy_intensity_target_method",
-    {},
-    _root,
-    {},
-    "_ext_constant_choose_energy_intensity_target_method",
-)
-
-
-@component.add(
     name="Decrease of intensity due to change energy technology H TOP DOWN",
     units="EJ/Tdollars",
     subscripts=["final sources"],
@@ -108,6 +62,87 @@ def decrease_of_intensity_due_to_change_energy_technology_h_top_down():
 
 
 @component.add(
+    name="Energy intensity of households rest",
+    units="EJ/Tdollar",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def energy_intensity_of_households_rest():
+    """
+    Energy intensity of households by final source without considering the energy of transports for households
+    """
+    value = xr.DataArray(
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+    )
+    value.loc[["liquids"]] = if_then_else(
+        float(activate_bottom_up_method().loc["Households"]) == 1,
+        lambda: float(evol_final_energy_intensity_h().loc["liquids"])
+        * float(change_total_intensity_to_rest().loc["liquids"]),
+        lambda: float(evol_final_energy_intensity_h().loc["liquids"]),
+    )
+    value.loc[["solids"]] = float(evol_final_energy_intensity_h().loc["solids"])
+    value.loc[["gases"]] = if_then_else(
+        float(activate_bottom_up_method().loc["Households"]) == 1,
+        lambda: float(evol_final_energy_intensity_h().loc["gases"])
+        * float(change_total_intensity_to_rest().loc["gases"]),
+        lambda: float(evol_final_energy_intensity_h().loc["gases"]),
+    )
+    value.loc[["electricity"]] = if_then_else(
+        float(activate_bottom_up_method().loc["Households"]) == 1,
+        lambda: float(evol_final_energy_intensity_h().loc["electricity"])
+        * float(change_total_intensity_to_rest().loc["electricity"]),
+        lambda: float(evol_final_energy_intensity_h().loc["electricity"]),
+    )
+    value.loc[["heat"]] = float(evol_final_energy_intensity_h().loc["heat"])
+    return value
+
+
+@component.add(
+    name="change total intensity to rest",
+    units="EJ/Tdollar",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def change_total_intensity_to_rest():
+    """
+    Adjust to separate in 2009 among transport households and the rest in households. We assume that in 2009, 78% of the households liquids are from transport. This data is from WIOD (Diesel & gasoline from households is for transport) 1,245=0.78*1.596 For other sources, we asume 0% of the energy is for transport
+    """
+    value = xr.DataArray(
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+    )
+    value.loc[["liquids"]] = 1 - step(__data["time"], 0.78, 2009)
+    value.loc[["gases"]] = 1 - step(__data["time"], 0.025, 2009)
+    value.loc[["electricity"]] = 1 - step(__data["time"], 0.007, 2009)
+    return value
+
+
+@component.add(
+    name="Choose energy intensity target method",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def choose_energy_intensity_target_method():
+    """
+    Choose energy intensity target method: 1- Energy intensity target defined by user 2- Variation in energy intensity over the intensity in defined year
+    """
+    return _ext_constant_choose_energy_intensity_target_method()
+
+
+_ext_constant_choose_energy_intensity_target_method = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "choose_energy_intensity_target_method",
+    {},
+    _root,
+    {},
+    "_ext_constant_choose_energy_intensity_target_method",
+)
+
+
+@component.add(
     name="Energy intensity of households",
     units="EJ/Tdollar",
     subscripts=["final sources"],
@@ -128,47 +163,6 @@ def energy_intensity_of_households():
             + energy_intensity_of_households_rest(),
         ),
     )
-
-
-@component.add(
-    name="Energy intensity of households rest",
-    units="EJ/Tdollar",
-    subscripts=["final sources"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def energy_intensity_of_households_rest():
-    """
-    Energy intensity of households by final source without considering the energy of transports for households
-    """
-    value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
-    )
-    value.loc[{"final sources": ["liquids"]}] = if_then_else(
-        float(activate_bottom_up_method().loc["Households"]) == 1,
-        lambda: float(evol_final_energy_intensity_h().loc["liquids"])
-        * float(change_total_intensity_to_rest().loc["liquids"]),
-        lambda: float(evol_final_energy_intensity_h().loc["liquids"]),
-    )
-    value.loc[{"final sources": ["solids"]}] = float(
-        evol_final_energy_intensity_h().loc["solids"]
-    )
-    value.loc[{"final sources": ["gases"]}] = if_then_else(
-        float(activate_bottom_up_method().loc["Households"]) == 1,
-        lambda: float(evol_final_energy_intensity_h().loc["gases"])
-        * float(change_total_intensity_to_rest().loc["gases"]),
-        lambda: float(evol_final_energy_intensity_h().loc["gases"]),
-    )
-    value.loc[{"final sources": ["electricity"]}] = if_then_else(
-        float(activate_bottom_up_method().loc["Households"]) == 1,
-        lambda: float(evol_final_energy_intensity_h().loc["electricity"])
-        * float(change_total_intensity_to_rest().loc["electricity"]),
-        lambda: float(evol_final_energy_intensity_h().loc["electricity"]),
-    )
-    value.loc[{"final sources": ["heat"]}] = float(
-        evol_final_energy_intensity_h().loc["heat"]
-    )
-    return value
 
 
 @component.add(
@@ -531,6 +525,30 @@ _ext_constant_min_energy_intensity_vs_intial_h = ExtConstant(
 
 
 @component.add(
+    name="pct change energy intensity target",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def pct_change_energy_intensity_target():
+    """
+    In energy intensity target method option 2, the percentage of change in energy intensities over the given year
+    """
+    return _ext_constant_pct_change_energy_intensity_target()
+
+
+_ext_constant_pct_change_energy_intensity_target = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "pct_change_energy_intensity_target",
+    {},
+    _root,
+    {},
+    "_ext_constant_pct_change_energy_intensity_target",
+)
+
+
+@component.add(
     name="Percentage of change over the historic maximun variation of energy intensities",
     units="Dmnl",
     comp_type="Constant",
@@ -553,30 +571,6 @@ _ext_constant_percentage_of_change_over_the_historic_maximun_variation_of_energy
     _root,
     {},
     "_ext_constant_percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities",
-)
-
-
-@component.add(
-    name="pct change energy intensity target",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def pct_change_energy_intensity_target():
-    """
-    In energy intensity target method option 2, the percentage of change in energy intensities over the given year
-    """
-    return _ext_constant_pct_change_energy_intensity_target()
-
-
-_ext_constant_pct_change_energy_intensity_target = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "pct_change_energy_intensity_target",
-    {},
-    _root,
-    {},
-    "_ext_constant_pct_change_energy_intensity_target",
 )
 
 

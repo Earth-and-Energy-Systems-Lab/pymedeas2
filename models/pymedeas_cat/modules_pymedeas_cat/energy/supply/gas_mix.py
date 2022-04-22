@@ -26,7 +26,7 @@ def gas_aut():
 def gas_co2_emissions():
     return xr.DataArray(
         required_fed_by_gas() * gco2_per_mj_conv_gas() * mj_per_ej() / g_per_gt(),
-        {"primary sources": ["coal", "oil", "natural gas", "others"]},
+        {"primary sources": _subscript_dict["primary sources"]},
         ["primary sources"],
     )
 

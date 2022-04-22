@@ -22,47 +22,6 @@ def abundance_total_nat_gas_aut():
 
 
 @component.add(
-    name="check gas delayed 1yr",
-    units="Dmnl",
-    comp_type="Stateful",
-    comp_subtype="DelayFixed",
-)
-def check_gas_delayed_1yr():
-    """
-    Variable to avoid energy oversupply caused by exogenously driven policies.
-    """
-    return _delayfixed_check_gas_delayed_1yr()
-
-
-_delayfixed_check_gas_delayed_1yr = DelayFixed(
-    lambda: check_gases(),
-    lambda: 1,
-    lambda: 1,
-    time_step,
-    "_delayfixed_check_gas_delayed_1yr",
-)
-
-
-@component.add(
-    name='"constrain gas exogenous growth? delayed 1yr"',
-    units="Dmnl",
-    comp_type="Stateful",
-    comp_subtype="DelayFixed",
-)
-def constrain_gas_exogenous_growth_delayed_1yr():
-    return _delayfixed_constrain_gas_exogenous_growth_delayed_1yr()
-
-
-_delayfixed_constrain_gas_exogenous_growth_delayed_1yr = DelayFixed(
-    lambda: constrain_gas_exogenous_growth(),
-    lambda: 1,
-    lambda: 1,
-    time_step,
-    "_delayfixed_constrain_gas_exogenous_growth_delayed_1yr",
-)
-
-
-@component.add(
     name="conv gas to leave underground",
     units="EJ",
     comp_type="Auxiliary",
@@ -78,26 +37,6 @@ def conv_gas_to_leave_underground():
         lambda: rurr_conv_gas_until_start_year_plg()
         * share_rurr_conv_gas_to_leave_underground(),
     )
-
-
-@component.add(
-    name="cumulated conv gas extraction",
-    units="EJ",
-    comp_type="Stateful",
-    comp_subtype="Integ",
-)
-def cumulated_conv_gas_extraction():
-    """
-    Cumulated conventional gas extraction.
-    """
-    return _integ_cumulated_conv_gas_extraction()
-
-
-_integ_cumulated_conv_gas_extraction = Integ(
-    lambda: extraction_conv_gas_ej(),
-    lambda: cumulated_conv_gas_extraction_to_1995(),
-    "_integ_cumulated_conv_gas_extraction",
-)
 
 
 @component.add(
@@ -145,22 +84,6 @@ _integ_cumulated_tot_agg_gas_extraction = Integ(
 
 
 @component.add(
-    name="cumulated tot agg gas extraction to 1995",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def cumulated_tot_agg_gas_extraction_to_1995():
-    """
-    Cumulated total agg gas extraction to 1995.
-    """
-    return (
-        cumulated_conv_gas_extraction_to_1995()
-        + cumulated_unconv_gas_extraction_to_1995()
-    )
-
-
-@component.add(
     name="Cumulated unconv gas extraction",
     units="EJ",
     comp_type="Stateful",
@@ -202,6 +125,112 @@ _ext_constant_cumulated_unconv_gas_extraction_to_1995 = ExtConstant(
     {},
     "_ext_constant_cumulated_unconv_gas_extraction_to_1995",
 )
+
+
+@component.add(
+    name='"extraction unconv gas - tot agg"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def extraction_unconv_gas_tot_agg():
+    return extraction_tot_agg_gas_ej() * share_unconv_gas_vs_tot_agg()
+
+
+@component.add(
+    name="extraction unconv gas delayed",
+    units="EJ/Year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
+def extraction_unconv_gas_delayed():
+    return _delayfixed_extraction_unconv_gas_delayed()
+
+
+_delayfixed_extraction_unconv_gas_delayed = DelayFixed(
+    lambda: extraction_unconv_gas_ej(),
+    lambda: time_step(),
+    lambda: 0,
+    time_step,
+    "_delayfixed_extraction_unconv_gas_delayed",
+)
+
+
+@component.add(
+    name="check gas delayed 1yr",
+    units="Dmnl",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
+def check_gas_delayed_1yr():
+    """
+    Variable to avoid energy oversupply caused by exogenously driven policies.
+    """
+    return _delayfixed_check_gas_delayed_1yr()
+
+
+_delayfixed_check_gas_delayed_1yr = DelayFixed(
+    lambda: check_gases(),
+    lambda: 1,
+    lambda: 1,
+    time_step,
+    "_delayfixed_check_gas_delayed_1yr",
+)
+
+
+@component.add(
+    name='"constrain gas exogenous growth? delayed 1yr"',
+    units="Dmnl",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
+def constrain_gas_exogenous_growth_delayed_1yr():
+    return _delayfixed_constrain_gas_exogenous_growth_delayed_1yr()
+
+
+_delayfixed_constrain_gas_exogenous_growth_delayed_1yr = DelayFixed(
+    lambda: constrain_gas_exogenous_growth(),
+    lambda: 1,
+    lambda: 1,
+    time_step,
+    "_delayfixed_constrain_gas_exogenous_growth_delayed_1yr",
+)
+
+
+@component.add(
+    name="cumulated conv gas extraction",
+    units="EJ",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
+def cumulated_conv_gas_extraction():
+    """
+    Cumulated conventional gas extraction.
+    """
+    return _integ_cumulated_conv_gas_extraction()
+
+
+_integ_cumulated_conv_gas_extraction = Integ(
+    lambda: extraction_conv_gas_ej(),
+    lambda: cumulated_conv_gas_extraction_to_1995(),
+    "_integ_cumulated_conv_gas_extraction",
+)
+
+
+@component.add(
+    name="cumulated tot agg gas extraction to 1995",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def cumulated_tot_agg_gas_extraction_to_1995():
+    """
+    Cumulated total agg gas extraction to 1995.
+    """
+    return (
+        cumulated_conv_gas_extraction_to_1995()
+        + cumulated_unconv_gas_extraction_to_1995()
+    )
 
 
 @component.add(
@@ -341,35 +370,6 @@ def extraction_tot_agg_gas_ej():
             ),
         ),
     )
-
-
-@component.add(
-    name='"extraction unconv gas - tot agg"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def extraction_unconv_gas_tot_agg():
-    return extraction_tot_agg_gas_ej() * share_unconv_gas_vs_tot_agg()
-
-
-@component.add(
-    name="extraction unconv gas delayed",
-    units="EJ/Year",
-    comp_type="Stateful",
-    comp_subtype="DelayFixed",
-)
-def extraction_unconv_gas_delayed():
-    return _delayfixed_extraction_unconv_gas_delayed()
-
-
-_delayfixed_extraction_unconv_gas_delayed = DelayFixed(
-    lambda: extraction_unconv_gas_ej(),
-    lambda: time_step(),
-    lambda: 0,
-    time_step,
-    "_delayfixed_extraction_unconv_gas_delayed",
-)
 
 
 @component.add(

@@ -45,6 +45,13 @@ _ext_lookup_balancing_costs_ref = ExtLookup(
 
 
 @component.add(
+    name="G per T", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+)
+def g_per_t():
+    return 1000
+
+
+@component.add(
     name="cumulated invest E grid",
     units="Tdollars",
     comp_type="Stateful",
@@ -98,13 +105,6 @@ def extra_monet_invest_to_cope_with_variable_elec_res():
         float(real_generation_res_elec_twh().loc["wind onshore"])
         + float(real_generation_res_elec_twh().loc["wind offshore"])
     ) * balancing_costs() + grid_reinforcement_costs_tdollar()
-
-
-@component.add(
-    name="G per T", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
-)
-def g_per_t():
-    return 1000
 
 
 @component.add(
@@ -170,18 +170,7 @@ _ext_data_invest_cost_res_elec = ExtData(
     "interpolate",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_data_invest_cost_res_elec",
 )
 

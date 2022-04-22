@@ -370,23 +370,6 @@ def forest_consumption_ej():
 
 
 @component.add(
-    name="Forest loss to sustain agriculture",
-    units="MHa/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def forest_loss_to_sustain_agriculture():
-    """
-    Forest loss rate to maintain the area dedicated to agriculture in EU in the year 2015.
-    """
-    return if_then_else(
-        aux_reach_available_land() < 1,
-        lambda: agricultural_land_until_2015() - agricultural_land(),
-        lambda: 0,
-    )
-
-
-@component.add(
     name="forest extraction EJ",
     units="EJ",
     comp_type="Auxiliary",
@@ -428,6 +411,23 @@ _ext_constant_forest_extraction_per_ha = ExtConstant(
     {},
     "_ext_constant_forest_extraction_per_ha",
 )
+
+
+@component.add(
+    name="Forest loss to sustain agriculture",
+    units="MHa/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def forest_loss_to_sustain_agriculture():
+    """
+    Forest loss rate to maintain the area dedicated to agriculture in EU in the year 2015.
+    """
+    return if_then_else(
+        aux_reach_available_land() < 1,
+        lambda: agricultural_land_until_2015() - agricultural_land(),
+        lambda: 0,
+    )
 
 
 @component.add(
@@ -1108,7 +1108,7 @@ _integ_primary_forests_area = Integ(
     name="shortage BioE for elec",
     units="Dmnl",
     subscripts=["RES elec"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
 )
 def shortage_bioe_for_elec():
@@ -1118,14 +1118,14 @@ def shortage_bioe_for_elec():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = 1
-    value.loc[{"RES elec": ["geot elec"]}] = 1
-    value.loc[{"RES elec": ["solid bioE elec"]}] = shortage_bioe_non_trad_delayed_1yr()
-    value.loc[{"RES elec": ["oceanic"]}] = 1
-    value.loc[{"RES elec": ["wind onshore"]}] = 1
-    value.loc[{"RES elec": ["wind offshore"]}] = 1
-    value.loc[{"RES elec": ["solar PV"]}] = 1
-    value.loc[{"RES elec": ["CSP"]}] = 1
+    value.loc[["hydro"]] = 1
+    value.loc[["geot elec"]] = 1
+    value.loc[["solid bioE elec"]] = shortage_bioe_non_trad_delayed_1yr()
+    value.loc[["oceanic"]] = 1
+    value.loc[["wind onshore"]] = 1
+    value.loc[["wind offshore"]] = 1
+    value.loc[["solar PV"]] = 1
+    value.loc[["CSP"]] = 1
     return value
 
 
@@ -1133,7 +1133,7 @@ def shortage_bioe_for_elec():
     name="shortage BioE for heat",
     units="Dmnl",
     subscripts=["RES heat"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
 )
 def shortage_bioe_for_heat():
@@ -1143,9 +1143,9 @@ def shortage_bioe_for_heat():
     value = xr.DataArray(
         np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
-    value.loc[{"RES heat": ["solar heat"]}] = 1
-    value.loc[{"RES heat": ["geot heat"]}] = 1
-    value.loc[{"RES heat": ["solid bioE heat"]}] = shortage_bioe_non_trad_delayed_1yr()
+    value.loc[["solar heat"]] = 1
+    value.loc[["geot heat"]] = 1
+    value.loc[["solid bioE heat"]] = shortage_bioe_non_trad_delayed_1yr()
     return value
 
 

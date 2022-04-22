@@ -5,6 +5,19 @@ Translated using PySD version 3.0.0
 
 
 @component.add(
+    name="FE Elec demand exports TWh",
+    units="TWh",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def fe_elec_demand_exports_twh():
+    """
+    Overdemand generated with the aim of exporting.
+    """
+    return total_fe_elec_demand_twh() * elec_exports_share()
+
+
+@component.add(
     name="EJ per TWh", units="EJ/TWh", comp_type="Constant", comp_subtype="Normal"
 )
 def ej_per_twh():
@@ -66,19 +79,6 @@ def fe_demand_elec_consum_twh():
     Electricity consumption (TWh)
     """
     return float(required_fed_by_fuel().loc["electricity"]) / ej_per_twh()
-
-
-@component.add(
-    name="FE Elec demand exports TWh",
-    units="TWh",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def fe_elec_demand_exports_twh():
-    """
-    Overdemand generated with the aim of exporting.
-    """
-    return total_fe_elec_demand_twh() * elec_exports_share()
 
 
 @component.add(

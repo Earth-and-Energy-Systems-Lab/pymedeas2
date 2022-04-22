@@ -72,6 +72,64 @@ _ext_constant_crash_programme_ctl = ExtConstant(
 
 
 @component.add(
+    name="CTL potential production",
+    units="EJ/Year",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
+def ctl_potential_production():
+    """
+    Annual CTL potential production.
+    """
+    return _integ_ctl_potential_production()
+
+
+_integ_ctl_potential_production = Integ(
+    lambda: replacement_ctl() + variation_ctl() - wear_ctl(),
+    lambda: initial_ctl_production(),
+    "_integ_ctl_potential_production",
+)
+
+
+@component.add(
+    name="Exogenous growth CTL",
+    units="1/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def exogenous_growth_ctl():
+    """
+    If there is not scarcity of liquids, CTL production increases at historical past rates.
+    """
+    return if_then_else(
+        time() < 2015,
+        lambda: hist_growth_ctl(),
+        lambda: if_then_else(
+            crash_programme_ctl() == 0,
+            lambda: p_ctl(),
+            lambda: if_then_else(
+                np.logical_and(crash_programme_ctl() == 1, abundance_liquids() >= 1),
+                lambda: hist_growth_ctl(),
+                lambda: p_ctl(),
+            ),
+        ),
+    )
+
+
+@component.add(
+    name='"FES CTL+GTL EJ"',
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def fes_ctlgtl_ej():
+    """
+    CTL and GTL production.
+    """
+    return np.minimum(ped_nre_liquids(), potential_fes_ctlgtl_ej())
+
+
+@component.add(
     name='"Crash programme GTL?"',
     units="Dmnl",
     comp_type="Constant",
@@ -117,26 +175,6 @@ _ext_constant_ctl_efficiency = ExtConstant(
 
 
 @component.add(
-    name="CTL potential production",
-    units="EJ/Year",
-    comp_type="Stateful",
-    comp_subtype="Integ",
-)
-def ctl_potential_production():
-    """
-    Annual CTL potential production.
-    """
-    return _integ_ctl_potential_production()
-
-
-_integ_ctl_potential_production = Integ(
-    lambda: replacement_ctl() + variation_ctl() - wear_ctl(),
-    lambda: initial_ctl_production(),
-    "_integ_ctl_potential_production",
-)
-
-
-@component.add(
     name="CTL production", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
 )
 def ctl_production():
@@ -154,31 +192,6 @@ def ctlgtl_gb():
     CTL and GTL production.
     """
     return fes_ctlgtl_ej() / gboe_per_ej()
-
-
-@component.add(
-    name="Exogenous growth CTL",
-    units="1/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def exogenous_growth_ctl():
-    """
-    If there is not scarcity of liquids, CTL production increases at historical past rates.
-    """
-    return if_then_else(
-        time() < 2015,
-        lambda: hist_growth_ctl(),
-        lambda: if_then_else(
-            crash_programme_ctl() == 0,
-            lambda: p_ctl(),
-            lambda: if_then_else(
-                np.logical_and(crash_programme_ctl() == 1, abundance_liquids() >= 1),
-                lambda: hist_growth_ctl(),
-                lambda: p_ctl(),
-            ),
-        ),
-    )
 
 
 @component.add(
@@ -204,19 +217,6 @@ def exogenous_growth_gtl():
             ),
         ),
     )
-
-
-@component.add(
-    name='"FES CTL+GTL EJ"',
-    units="EJ/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def fes_ctlgtl_ej():
-    """
-    CTL and GTL production.
-    """
-    return np.minimum(ped_nre_liquids(), potential_fes_ctlgtl_ej())
 
 
 @component.add(

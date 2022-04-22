@@ -122,7 +122,7 @@ _ext_constant_energy_requirements_per_unit_of_water_consumption = ExtConstant(
     "energy_requirements_per_unit_of_water_consumption*",
     {"water0": _subscript_dict["water0"]},
     _root,
-    {"water0": ["clean water", "distilled water"]},
+    {"water0": _subscript_dict["water0"]},
     "_ext_constant_energy_requirements_per_unit_of_water_consumption",
 )
 
@@ -172,14 +172,14 @@ def total_water_for_om_required_by_res_elec_per_techn():
 )
 def total_water_for_om_required_by_res_elec():
     value = xr.DataArray(np.nan, {"water": _subscript_dict["water"]}, ["water"])
-    value.loc[{"water": ["blue water"]}] = sum(
+    value.loc[["blue water"]] = sum(
         total_water_for_om_required_by_res_elec_per_techn().rename(
             {"RES elec": "RES elec!"}
         ),
         dim=["RES elec!"],
     )
-    value.loc[{"water": ["green water"]}] = 0
-    value.loc[{"water": ["gray water"]}] = 0
+    value.loc[["green water"]] = 0
+    value.loc[["gray water"]] = 0
     return value
 
 
@@ -196,17 +196,9 @@ def water_for_om_res_elec():
         {"RES elec": _subscript_dict["RES elec"], "water0": _subscript_dict["water0"]},
         ["RES elec", "water0"],
     )
+    value.loc[_subscript_dict["RES ELEC DISPATCHABLE"], :] = 0
     value.loc[
-        {
-            "RES elec": ["hydro", "geot elec", "solid bioE elec", "oceanic"],
-            "water0": ["clean water", "distilled water"],
-        }
-    ] = 0
-    value.loc[
-        {
-            "RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"],
-            "water0": ["clean water", "distilled water"],
-        }
+        ["wind onshore", "wind offshore", "solar PV", "CSP"], :
     ] = _ext_constant_water_for_om_res_elec().values
     return value
 
@@ -222,7 +214,7 @@ _ext_constant_water_for_om_res_elec = ExtConstant(
     _root,
     {
         "RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"],
-        "water0": ["clean water", "distilled water"],
+        "water0": _subscript_dict["water0"],
     },
     "_ext_constant_water_for_om_res_elec",
 )

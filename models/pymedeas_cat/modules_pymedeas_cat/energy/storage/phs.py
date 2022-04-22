@@ -18,17 +18,15 @@ def adapt_growth_phs():
         time() < 2015,
         lambda: past_phs_capacity_growth(),
         lambda: if_then_else(
-            time() < start_year_p_growth_res_elec(),
-            lambda: past_phs_capacity_growth(),
-            lambda: if_then_else(
-                time() < target_year_p_growth_res_elec(),
-                lambda: past_phs_capacity_growth()
-                + (p_phs_growth() - past_phs_capacity_growth())
-                * (time() - start_year_p_growth_res_elec())
-                / (target_year_p_growth_res_elec() - start_year_p_growth_res_elec()),
-                lambda: p_phs_growth(),
+            time() < start_year_p_growth_res_elec() + 1,
+            lambda: zidz(
+                p_phs_power(start_year_p_growth_res_elec()),
+                table_hist_capacity_phs(2015),
             )
-            * (1 + abundance_storage()),
+            ** (1 / (start_year_p_growth_res_elec() - 2015)),
+            lambda: zidz(
+                p_phs_power(time()) - p_phs_power(time() - 1), p_phs_power(time() - 1)
+            ),
         ),
     )
 
@@ -228,23 +226,24 @@ def output_phs_over_lifetime():
 
 
 @component.add(
-    name="P PHS growth", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="P PHS power", units="Dmnl", comp_type="Lookup", comp_subtype="External"
 )
-def p_phs_growth():
+def p_phs_power(x, final_subs=None):
     """
     Annual growth in relation to the existing installed capacity.
     """
-    return _ext_constant_p_phs_growth()
+    return _ext_lookup_p_phs_power(x, final_subs)
 
 
-_ext_constant_p_phs_growth = ExtConstant(
+_ext_lookup_p_phs_power = ExtLookup(
     "../../scenarios/scen_cat.xlsx",
     "BAU",
-    "p_PHS_growth",
+    "year_RES_power",
+    "p_PHS_power",
     {},
     _root,
     {},
-    "_ext_constant_p_phs_growth",
+    "_ext_lookup_p_phs_power",
 )
 
 

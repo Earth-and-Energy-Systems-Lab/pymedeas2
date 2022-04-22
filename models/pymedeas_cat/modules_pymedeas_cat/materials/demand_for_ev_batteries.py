@@ -90,6 +90,25 @@ def initial_cumulated_material_requirements_for_ev_batteries_1995():
 
 
 @component.add(
+    name="materials required for EV batteries Mt",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def materials_required_for_ev_batteries_mt():
+    """
+    Annual materials required for the fabrication of EV batteries.
+    """
+    return (
+        newreplaced_batteries_tw()
+        * materials_per_new_capacity_installed_ev_batteries()
+        * m_per_t()
+        / kg_per_mt()
+    )
+
+
+@component.add(
     name="materials per new capacity installed EV batteries",
     units="kg/MW",
     subscripts=["materials"],
@@ -109,89 +128,9 @@ _ext_constant_materials_per_new_capacity_installed_ev_batteries = ExtConstant(
     "materials_per_new_capacity_installed_ev_batteries*",
     {"materials": _subscript_dict["materials"]},
     _root,
-    {
-        "materials": [
-            "Adhesive",
-            "Aluminium",
-            "Aluminium mirrors",
-            "Cadmium",
-            "Carbon fiber",
-            "Cement",
-            "Chromium",
-            "Copper",
-            "diesel",
-            "Dy",
-            "electronic components",
-            "Evacuation lines",
-            "Fiberglass",
-            "Foam glass",
-            "Galium",
-            "Glass",
-            "Glass reinforcing plastic",
-            "gravel",
-            "Indium",
-            "Iron",
-            "KNO3 mined",
-            "Asphalt",
-            "Lime",
-            "Limestone",
-            "Lithium",
-            "Lubricant",
-            "Magnesium",
-            "Manganese",
-            "Heavy equipment",
-            "Concrete",
-            "Molybdenum",
-            "NaNO3 mined",
-            "NaNO3 synthetic",
-            "Neodymium",
-            "Nickel",
-            "over grid 15perc",
-            "over grid 5perc",
-            "Paint",
-            "Lead",
-            "Plastics",
-            "Polypropylene",
-            "Rock",
-            "Rock wool",
-            "Sand",
-            "Silicon sand",
-            "Silicon wafer modules",
-            "Silver",
-            "Site preparation",
-            "Tin",
-            "soda ash",
-            "steel",
-            "synthetic oil",
-            "tellurium",
-            "titanium",
-            "titanium dioxide",
-            "vanadium",
-            "wires",
-            "zinc",
-        ]
-    },
+    {"materials": _subscript_dict["materials"]},
     "_ext_constant_materials_per_new_capacity_installed_ev_batteries",
 )
-
-
-@component.add(
-    name="materials required for EV batteries Mt",
-    units="Mt",
-    subscripts=["materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def materials_required_for_ev_batteries_mt():
-    """
-    Annual materials required for the fabrication of EV batteries.
-    """
-    return (
-        newreplaced_batteries_tw()
-        * materials_per_new_capacity_installed_ev_batteries()
-        * m_per_t()
-        / kg_per_mt()
-    )
 
 
 @component.add(

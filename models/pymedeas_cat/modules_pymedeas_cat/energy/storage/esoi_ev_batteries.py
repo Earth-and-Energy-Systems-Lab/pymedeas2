@@ -32,6 +32,16 @@ def energy_intensity_construction_ev_batteries_mjmw():
 
 
 @component.add(
+    name="FEI EV batteries", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
+def fei_ev_batteries():
+    """
+    Final energy invested (equivalent to the denominator of the EROI (=CED*g).
+    """
+    return zidz(output_ev_bateries_for_storage_over_lifetime(), esoi_ev_batteries())
+
+
+@component.add(
     name="ESOI EV batteries", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
 )
 def esoi_ev_batteries():
@@ -52,16 +62,6 @@ def esoi_ev_batteries():
             )
         )
     )
-
-
-@component.add(
-    name="FEI EV batteries", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def fei_ev_batteries():
-    """
-    Final energy invested (equivalent to the denominator of the EROI (=CED*g).
-    """
-    return zidz(output_ev_bateries_for_storage_over_lifetime(), esoi_ev_batteries())
 
 
 @component.add(
@@ -86,16 +86,6 @@ _ext_constant_grid_correction_factor_ev_batteries = ExtConstant(
 
 
 @component.add(
-    name="kW per MW", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
-)
-def kw_per_mw():
-    """
-    1000 kW = 1 MW.
-    """
-    return 1000
-
-
-@component.add(
     name="lifetime EV batteries",
     units="Years",
     comp_type="Auxiliary",
@@ -111,6 +101,16 @@ def lifetime_ev_batteries():
         * mw_in_1_year_to_mj()
         * (kw_per_battery_ev() / kw_per_mw()),
     )
+
+
+@component.add(
+    name="kW per MW", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+)
+def kw_per_mw():
+    """
+    1000 kW = 1 MW.
+    """
+    return 1000
 
 
 @component.add(

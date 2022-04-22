@@ -77,6 +77,94 @@ def b_lineal_regr_rr_rest():
 
 
 @component.add(
+    name="choose targets mineral recycling rates",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def choose_targets_mineral_recycling_rates():
+    """
+    1- Disaggregated by mineral. 2- Common annual variation for all minerals.
+    """
+    return _ext_constant_choose_targets_mineral_recycling_rates()
+
+
+_ext_constant_choose_targets_mineral_recycling_rates = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "choose_targets_mineral_recycling_rates",
+    {},
+    _root,
+    {},
+    "_ext_constant_choose_targets_mineral_recycling_rates",
+)
+
+
+@component.add(
+    name="constrain rr improv for Rest per mineral",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def constrain_rr_improv_for_rest_per_mineral():
+    """
+    Remaining recycling rate improvement for the rest of the economy per material.
+    """
+    return if_then_else(
+        recycling_rates_minerals_rest() < max_recycling_rates_minerals(),
+        lambda: xr.DataArray(
+            1, {"materials": _subscript_dict["materials"]}, ["materials"]
+        ),
+        lambda: xr.DataArray(
+            0, {"materials": _subscript_dict["materials"]}, ["materials"]
+        ),
+    )
+
+
+@component.add(
+    name="current recycling rates minerals",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def current_recycling_rates_minerals():
+    """
+    Current recycling rates minerals of the whole economy (UNEP, 2011).
+    """
+    return _ext_constant_current_recycling_rates_minerals()
+
+
+_ext_constant_current_recycling_rates_minerals = ExtConstant(
+    "../materials.xlsx",
+    "Global",
+    "current_recycling_rates_minerals*",
+    {"materials": _subscript_dict["materials"]},
+    _root,
+    {"materials": _subscript_dict["materials"]},
+    "_ext_constant_current_recycling_rates_minerals",
+)
+
+
+@component.add(
+    name="current recycling rates minerals alt techn",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def current_recycling_rates_minerals_alt_techn():
+    """
+    Current recycling rates of minerales for alternative technologies. Since these technologies are novel and often include materials which are used in small quantities in complex products, the recycling rates of the used minerals are lower than for the whole economy (following the parameter "EOL-RR minerals alt techn RES vs. total economy").
+    """
+    return (
+        current_recycling_rates_minerals()
+        * eolrr_minerals_alt_techn_res_vs_total_economy()
+    )
+
+
+@component.add(
     name="by mineral rr alt techn",
     units="Dmnl",
     subscripts=["materials"],
@@ -195,30 +283,6 @@ def by_mineral_rr_variation_rest():
 
 
 @component.add(
-    name="choose targets mineral recycling rates",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def choose_targets_mineral_recycling_rates():
-    """
-    1- Disaggregated by mineral. 2- Common annual variation for all minerals.
-    """
-    return _ext_constant_choose_targets_mineral_recycling_rates()
-
-
-_ext_constant_choose_targets_mineral_recycling_rates = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "choose_targets_mineral_recycling_rates",
-    {},
-    _root,
-    {},
-    "_ext_constant_choose_targets_mineral_recycling_rates",
-)
-
-
-@component.add(
     name="common rr minerals variation alt techn",
     units="Dmnl",
     subscripts=["materials"],
@@ -285,131 +349,6 @@ def constrain_rr_improv_for_alt_techn_per_mineral():
 
 
 @component.add(
-    name="constrain rr improv for Rest per mineral",
-    units="Dmnl",
-    subscripts=["materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def constrain_rr_improv_for_rest_per_mineral():
-    """
-    Remaining recycling rate improvement for the rest of the economy per material.
-    """
-    return if_then_else(
-        recycling_rates_minerals_rest() < max_recycling_rates_minerals(),
-        lambda: xr.DataArray(
-            1, {"materials": _subscript_dict["materials"]}, ["materials"]
-        ),
-        lambda: xr.DataArray(
-            0, {"materials": _subscript_dict["materials"]}, ["materials"]
-        ),
-    )
-
-
-@component.add(
-    name="current recycling rates minerals",
-    units="Mt",
-    subscripts=["materials"],
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def current_recycling_rates_minerals():
-    """
-    Current recycling rates minerals of the whole economy (UNEP, 2011).
-    """
-    return _ext_constant_current_recycling_rates_minerals()
-
-
-_ext_constant_current_recycling_rates_minerals = ExtConstant(
-    "../materials.xlsx",
-    "Global",
-    "current_recycling_rates_minerals*",
-    {"materials": _subscript_dict["materials"]},
-    _root,
-    {
-        "materials": [
-            "Adhesive",
-            "Aluminium",
-            "Aluminium mirrors",
-            "Cadmium",
-            "Carbon fiber",
-            "Cement",
-            "Chromium",
-            "Copper",
-            "diesel",
-            "Dy",
-            "electronic components",
-            "Evacuation lines",
-            "Fiberglass",
-            "Foam glass",
-            "Galium",
-            "Glass",
-            "Glass reinforcing plastic",
-            "gravel",
-            "Indium",
-            "Iron",
-            "KNO3 mined",
-            "Asphalt",
-            "Lime",
-            "Limestone",
-            "Lithium",
-            "Lubricant",
-            "Magnesium",
-            "Manganese",
-            "Heavy equipment",
-            "Concrete",
-            "Molybdenum",
-            "NaNO3 mined",
-            "NaNO3 synthetic",
-            "Neodymium",
-            "Nickel",
-            "over grid 15perc",
-            "over grid 5perc",
-            "Paint",
-            "Lead",
-            "Plastics",
-            "Polypropylene",
-            "Rock",
-            "Rock wool",
-            "Sand",
-            "Silicon sand",
-            "Silicon wafer modules",
-            "Silver",
-            "Site preparation",
-            "Tin",
-            "soda ash",
-            "steel",
-            "synthetic oil",
-            "tellurium",
-            "titanium",
-            "titanium dioxide",
-            "vanadium",
-            "wires",
-            "zinc",
-        ]
-    },
-    "_ext_constant_current_recycling_rates_minerals",
-)
-
-
-@component.add(
-    name="current recycling rates minerals alt techn",
-    units="Dmnl",
-    subscripts=["materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def current_recycling_rates_minerals_alt_techn():
-    """
-    Current recycling rates of minerales for alternative technologies. Since these technologies are novel and often include materials which are used in small quantities in complex products, the recycling rates of the used minerals are lower than for the whole economy (following the parameter "EOL-RR minerals alt techn RES vs. total economy").
-    """
-    return (
-        current_recycling_rates_minerals()
-        * eolrr_minerals_alt_techn_res_vs_total_economy()
-    )
-
-
-@component.add(
     name='"EOL-RR minerals alt techn RES vs. total economy"',
     units="Dnml",
     comp_type="Constant",
@@ -444,72 +383,7 @@ def historic_improvement_recycling_rates_minerals():
     """
     Due to the large uncertainty and slow evolution of these data, historical recycling rates minerals correspond with the current estimates (UNEP, 2011).
     """
-    return xr.DataArray(
-        0,
-        {
-            "materials": [
-                "Adhesive",
-                "Aluminium",
-                "Aluminium mirrors",
-                "Cadmium",
-                "Carbon fiber",
-                "Cement",
-                "Chromium",
-                "Copper",
-                "diesel",
-                "Dy",
-                "electronic components",
-                "Evacuation lines",
-                "Fiberglass",
-                "Foam glass",
-                "Galium",
-                "Glass",
-                "Glass reinforcing plastic",
-                "gravel",
-                "Indium",
-                "Iron",
-                "KNO3 mined",
-                "Asphalt",
-                "Lime",
-                "Limestone",
-                "Lithium",
-                "Lubricant",
-                "Magnesium",
-                "Manganese",
-                "Heavy equipment",
-                "Concrete",
-                "Molybdenum",
-                "NaNO3 mined",
-                "NaNO3 synthetic",
-                "Neodymium",
-                "Nickel",
-                "over grid 15perc",
-                "over grid 5perc",
-                "Paint",
-                "Lead",
-                "Plastics",
-                "Polypropylene",
-                "Rock",
-                "Rock wool",
-                "Sand",
-                "Silicon sand",
-                "Silicon wafer modules",
-                "Silver",
-                "Site preparation",
-                "Tin",
-                "soda ash",
-                "steel",
-                "synthetic oil",
-                "tellurium",
-                "titanium",
-                "titanium dioxide",
-                "vanadium",
-                "wires",
-                "zinc",
-            ]
-        },
-        ["materials"],
-    )
+    return xr.DataArray(0, {"materials": _subscript_dict["materials"]}, ["materials"])
 
 
 @component.add(
@@ -650,75 +524,29 @@ def p_rr_minerals_alt_techn():
     value = xr.DataArray(
         np.nan, {"materials": _subscript_dict["materials"]}, ["materials"]
     )
+    value.loc[_subscript_dict["MATERIALS NO RECYCABLE"]] = 0
     value.loc[
-        {
-            "materials": [
-                "Adhesive",
-                "Aluminium mirrors",
-                "Carbon fiber",
-                "Cement",
-                "diesel",
-                "Dy",
-                "electronic components",
-                "Evacuation lines",
-                "Fiberglass",
-                "Foam glass",
-                "Glass",
-                "Glass reinforcing plastic",
-                "gravel",
-                "KNO3 mined",
-                "Asphalt",
-                "Lime",
-                "Limestone",
-                "Lubricant",
-                "Heavy equipment",
-                "Concrete",
-                "NaNO3 mined",
-                "NaNO3 synthetic",
-                "Neodymium",
-                "over grid 15perc",
-                "over grid 5perc",
-                "Paint",
-                "Plastics",
-                "Polypropylene",
-                "Rock",
-                "Rock wool",
-                "Sand",
-                "Silicon sand",
-                "Silicon wafer modules",
-                "Site preparation",
-                "soda ash",
-                "steel",
-                "synthetic oil",
-                "titanium dioxide",
-                "wires",
-            ]
-        }
-    ] = 0
-    value.loc[
-        {
-            "materials": [
-                "Aluminium",
-                "Cadmium",
-                "Chromium",
-                "Copper",
-                "Galium",
-                "Indium",
-                "Iron",
-                "Lithium",
-                "Magnesium",
-                "Manganese",
-                "Molybdenum",
-                "Nickel",
-                "Lead",
-                "Silver",
-                "Tin",
-                "tellurium",
-                "titanium",
-                "vanadium",
-                "zinc",
-            ]
-        }
+        [
+            "Aluminium",
+            "Cadmium",
+            "Chromium",
+            "Copper",
+            "Galium",
+            "Indium",
+            "Iron",
+            "Lithium",
+            "Magnesium",
+            "Manganese",
+            "Molybdenum",
+            "Nickel",
+            "Lead",
+            "Silver",
+            "Tin",
+            "tellurium",
+            "titanium",
+            "vanadium",
+            "zinc",
+        ]
     ] = _ext_constant_p_rr_minerals_alt_techn().values
     return value
 
@@ -770,75 +598,29 @@ def p_rr_minerals_rest():
     value = xr.DataArray(
         np.nan, {"materials": _subscript_dict["materials"]}, ["materials"]
     )
+    value.loc[_subscript_dict["MATERIALS NO RECYCABLE"]] = 0
     value.loc[
-        {
-            "materials": [
-                "Adhesive",
-                "Aluminium mirrors",
-                "Carbon fiber",
-                "Cement",
-                "diesel",
-                "Dy",
-                "electronic components",
-                "Evacuation lines",
-                "Fiberglass",
-                "Foam glass",
-                "Glass",
-                "Glass reinforcing plastic",
-                "gravel",
-                "KNO3 mined",
-                "Asphalt",
-                "Lime",
-                "Limestone",
-                "Lubricant",
-                "Heavy equipment",
-                "Concrete",
-                "NaNO3 mined",
-                "NaNO3 synthetic",
-                "Neodymium",
-                "over grid 15perc",
-                "over grid 5perc",
-                "Paint",
-                "Plastics",
-                "Polypropylene",
-                "Rock",
-                "Rock wool",
-                "Sand",
-                "Silicon sand",
-                "Silicon wafer modules",
-                "Site preparation",
-                "soda ash",
-                "steel",
-                "synthetic oil",
-                "titanium dioxide",
-                "wires",
-            ]
-        }
-    ] = 0
-    value.loc[
-        {
-            "materials": [
-                "Aluminium",
-                "Cadmium",
-                "Chromium",
-                "Copper",
-                "Galium",
-                "Indium",
-                "Iron",
-                "Lithium",
-                "Magnesium",
-                "Manganese",
-                "Molybdenum",
-                "Nickel",
-                "Lead",
-                "Silver",
-                "Tin",
-                "tellurium",
-                "titanium",
-                "vanadium",
-                "zinc",
-            ]
-        }
+        [
+            "Aluminium",
+            "Cadmium",
+            "Chromium",
+            "Copper",
+            "Galium",
+            "Indium",
+            "Iron",
+            "Lithium",
+            "Magnesium",
+            "Manganese",
+            "Molybdenum",
+            "Nickel",
+            "Lead",
+            "Silver",
+            "Tin",
+            "tellurium",
+            "titanium",
+            "vanadium",
+            "zinc",
+        ]
     ] = _ext_constant_p_rr_minerals_rest().values
     return value
 

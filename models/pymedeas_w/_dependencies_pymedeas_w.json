@@ -112,6 +112,12 @@
             "historic_water_by_type_intensities_for_households": 1
         }
     },
+    "_delayfixed_installed_capacity_delayed": {
+        "initial": {},
+        "step": {
+            "installed_capacity_res_elec_tw": 1
+        }
+    },
     "_delayfixed_installed_capacity_res_elec_delayed_1yr": {
         "initial": {},
         "step": {
@@ -1455,16 +1461,18 @@
         "time": 3
     },
     "adapt_growth_phs": {
-        "abundance_storage": 1,
-        "p_phs_growth": 2,
-        "past_phs_capacity_growth": 3,
-        "time": 3
+        "p_phs_power": 4,
+        "past_phs_capacity_growth": 1,
+        "start_year_p_growth_res_elec": 3,
+        "table_hist_capacity_phs": 1,
+        "time": 5
     },
     "adapt_growth_res_elec": {
-        "p_res_elec_growth": 16,
-        "past_res_elec_capacity_growth": 24,
-        "start_year_p_growth_res_elec": 16,
-        "time": 24
+        "p_power": 4,
+        "past_res_growth": 1,
+        "start_year_p_growth_res_elec": 3,
+        "table_hist_capacity_res_elec": 1,
+        "time": 5
     },
     "adapt_growth_res_elec_after_allocation": {
         "activate_eroi_allocation_rule": 1,
@@ -4478,6 +4486,9 @@
         "__external__": "_ext_lookup_input_population",
         "__lookup__": "_ext_lookup_input_population"
     },
+    "installed_capacity_delayed": {
+        "_delayfixed_installed_capacity_delayed": 1
+    },
     "installed_capacity_nuclear_tw": {
         "_integ_installed_capacity_nuclear_tw": 1
     },
@@ -5137,13 +5148,12 @@
         "time": 1
     },
     "new_required_capacity_res_elec": {
-        "abundance_res_elec": 1,
-        "adapt_growth_res_elec_after_allocation": 1,
+        "adapt_growth_res_elec": 1,
         "historic_new_required_capacity_res_elec": 1,
         "installed_capacity_res_elec_tw": 1,
-        "potential_generation_res_elec_twh": 1,
-        "potential_res_elec_after_intermitt_twh": 1,
-        "time": 1,
+        "max_potential_res_elec_twe": 1,
+        "p_power": 1,
+        "time": 2,
         "total_time_planconstr_res_elec": 1
     },
     "new_required_phs_capacity": {
@@ -5440,11 +5450,13 @@
     "p_nuclear_scen34": {
         "__external__": "_ext_constant_p_nuclear_scen34"
     },
-    "p_phs_growth": {
-        "__external__": "_ext_constant_p_phs_growth"
+    "p_phs_power": {
+        "__external__": "_ext_lookup_p_phs_power",
+        "__lookup__": "_ext_lookup_p_phs_power"
     },
-    "p_res_elec_growth": {
-        "__external__": "_ext_constant_p_res_elec_growth"
+    "p_power": {
+        "__external__": "_ext_lookup_p_power",
+        "__lookup__": "_ext_lookup_p_power"
     },
     "p_res_for_heat": {
         "p_geothermal_for_heat": 1,
@@ -5501,8 +5513,9 @@
     "past_phs_capacity_growth": {
         "__external__": "_ext_constant_past_phs_capacity_growth"
     },
-    "past_res_elec_capacity_growth": {
-        "__external__": "_ext_constant_past_res_elec_capacity_growth"
+    "past_res_growth": {
+        "table_hist_capacity_res_elec": 3,
+        "time": 3
     },
     "past_res_growth_for_heatcom": {
         "__external__": "_ext_constant_past_res_growth_for_heatcom"
@@ -6718,6 +6731,8 @@
         "leontief_matrix": 1
     },
     "res_elec_capacity_under_construction_tw": {
+        "installed_capacity_delayed": 1,
+        "max_potential_res_elec_twe": 1,
         "res_elec_planned_capacity_tw": 1,
         "time_construction_res_elec": 1
     },

@@ -126,18 +126,7 @@ _ext_constant_employment_factors_new_res_elec = ExtConstant(
     "employment_factors_new_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_employment_factors_new_res_elec",
 )
 
@@ -162,7 +151,7 @@ _ext_constant_employment_factors_new_res_heat = ExtConstant(
     "employment_factors_new_res_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_employment_factors_new_res_heat",
 )
 
@@ -187,18 +176,7 @@ _ext_constant_employment_factors_om_res_elec = ExtConstant(
     "employment_factors_o_m_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_employment_factors_om_res_elec",
 )
 
@@ -223,7 +201,7 @@ _ext_constant_employment_factors_om_res_heat = ExtConstant(
     "employment_factors_o_m_res_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_employment_factors_om_res_heat",
 )
 
@@ -282,18 +260,7 @@ _ext_constant_ratio_total_vs_d_jobs_res_elec = ExtConstant(
     "ratio_total_vs_direct_jobs_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_ratio_total_vs_d_jobs_res_elec",
 )
 
@@ -318,7 +285,7 @@ _ext_constant_ratio_total_vs_d_jobs_res_heat = ExtConstant(
     "ratio_total_vs_direct_jobs_res_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_ratio_total_vs_d_jobs_res_heat",
 )
 

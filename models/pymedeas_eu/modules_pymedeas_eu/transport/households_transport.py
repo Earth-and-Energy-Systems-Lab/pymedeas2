@@ -115,26 +115,16 @@ def aux_hist_h():
         {"Households vehicles": _subscript_dict["Households vehicles"]},
         ["Households vehicles"],
     )
-    value.loc[{"Households vehicles": ["liq 4wheels"]}] = (
+    value.loc[["liq 4wheels"]] = (
         -float(hist_var_percent_h().loc["hib 4wheels"])
         - float(hist_var_percent_h().loc["elec 4wheels"])
         - float(hist_var_percent_h().loc["gas 4wheels"])
     )
-    value.loc[{"Households vehicles": ["hib 4wheels"]}] = float(
-        hist_var_percent_h().loc["hib 4wheels"]
-    )
-    value.loc[{"Households vehicles": ["elec 4wheels"]}] = float(
-        hist_var_percent_h().loc["elec 4wheels"]
-    )
-    value.loc[{"Households vehicles": ["liq 2wheels"]}] = -float(
-        hist_var_percent_h().loc["elec 2wheels"]
-    )
-    value.loc[{"Households vehicles": ["elec 2wheels"]}] = float(
-        hist_var_percent_h().loc["elec 2wheels"]
-    )
-    value.loc[{"Households vehicles": ["gas 4wheels"]}] = float(
-        hist_var_percent_h().loc["gas 4wheels"]
-    )
+    value.loc[["hib 4wheels"]] = float(hist_var_percent_h().loc["hib 4wheels"])
+    value.loc[["elec 4wheels"]] = float(hist_var_percent_h().loc["elec 4wheels"])
+    value.loc[["liq 2wheels"]] = -float(hist_var_percent_h().loc["elec 2wheels"])
+    value.loc[["elec 2wheels"]] = float(hist_var_percent_h().loc["elec 2wheels"])
+    value.loc[["gas 4wheels"]] = float(hist_var_percent_h().loc["gas 4wheels"])
     return value
 
 
@@ -397,7 +387,7 @@ def h_hyb_initial_growth():
     name="hist var percent H",
     units="1/yr",
     subscripts=["Households vehicles"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
 )
 def hist_var_percent_h():
@@ -409,26 +399,26 @@ def hist_var_percent_h():
         {"Households vehicles": _subscript_dict["Households vehicles"]},
         ["Households vehicles"],
     )
-    value.loc[{"Households vehicles": ["liq 4wheels"]}] = 0
-    value.loc[{"Households vehicles": ["hib 4wheels"]}] = if_then_else(
+    value.loc[["liq 4wheels"]] = 0
+    value.loc[["hib 4wheels"]] = if_then_else(
         time() > 2005,
         lambda: (float(percent_h_vehicles_tini().loc["hib 4wheels"]) - 0)
         / (t_hist_h_transp() - 2005),
         lambda: 0,
     )
-    value.loc[{"Households vehicles": ["elec 4wheels"]}] = if_then_else(
+    value.loc[["elec 4wheels"]] = if_then_else(
         time() < 2005,
         lambda: 0,
         lambda: (float(percent_h_vehicles_tini().loc["elec 4wheels"]) - 0)
         / (t_hist_h_transp() - 2005),
     )
-    value.loc[{"Households vehicles": ["gas 4wheels"]}] = if_then_else(
+    value.loc[["gas 4wheels"]] = if_then_else(
         time() < 2005,
         lambda: 0,
         lambda: (float(percent_h_vehicles_tini().loc["gas 4wheels"]) - 0)
         / (t_hist_h_transp() - 2005),
     )
-    value.loc[{"Households vehicles": ["liq 2wheels"]}] = if_then_else(
+    value.loc[["liq 2wheels"]] = if_then_else(
         time() < 2005,
         lambda: 0,
         lambda: (
@@ -436,7 +426,7 @@ def hist_var_percent_h():
         )
         / (t_hist_h_transp() - 2005),
     )
-    value.loc[{"Households vehicles": ["elec 2wheels"]}] = if_then_else(
+    value.loc[["elec 2wheels"]] = if_then_else(
         time() < 2005,
         lambda: 0,
         lambda: (float(percent_h_vehicles_tini().loc["elec 2wheels"]) - 0)
@@ -498,7 +488,7 @@ _ext_constant_initial_energy_intensity_of_households_transport_2009 = ExtConstan
     "initial_energy_intensity_households_transport*",
     {"final sources": _subscript_dict["final sources"]},
     _root,
-    {"final sources": ["electricity", "heat", "liquids", "gases", "solids"]},
+    {"final sources": _subscript_dict["final sources"]},
     "_ext_constant_initial_energy_intensity_of_households_transport_2009",
 )
 
@@ -613,24 +603,18 @@ def p_h_vehicle():
         {"Households vehicles": _subscript_dict["Households vehicles"]},
         ["Households vehicles"],
     )
-    value.loc[{"Households vehicles": ["liq 4wheels"]}] = (
-        1 - p_share_2wheelers() / 100
-    ) * (100 - p_percent_elec_hveh() - p_percent_gas_hveh() - p_percent_hyb_hveh())
-    value.loc[{"Households vehicles": ["elec 4wheels"]}] = p_percent_elec_hveh() * (
+    value.loc[["liq 4wheels"]] = (1 - p_share_2wheelers() / 100) * (
+        100 - p_percent_elec_hveh() - p_percent_gas_hveh() - p_percent_hyb_hveh()
+    )
+    value.loc[["elec 4wheels"]] = p_percent_elec_hveh() * (
         1 - p_share_2wheelers() / 100
     )
-    value.loc[{"Households vehicles": ["hib 4wheels"]}] = p_percent_hyb_hveh() * (
-        1 - p_share_2wheelers() / 100
+    value.loc[["hib 4wheels"]] = p_percent_hyb_hveh() * (1 - p_share_2wheelers() / 100)
+    value.loc[["gas 4wheels"]] = p_percent_gas_hveh() * (1 - p_share_2wheelers() / 100)
+    value.loc[["liq 2wheels"]] = (p_share_2wheelers() / 100) * (
+        100 - p_percent_2w_elec()
     )
-    value.loc[{"Households vehicles": ["gas 4wheels"]}] = p_percent_gas_hveh() * (
-        1 - p_share_2wheelers() / 100
-    )
-    value.loc[{"Households vehicles": ["liq 2wheels"]}] = (
-        p_share_2wheelers() / 100
-    ) * (100 - p_percent_2w_elec())
-    value.loc[{"Households vehicles": ["elec 2wheels"]}] = (
-        p_share_2wheelers() / 100
-    ) * p_percent_2w_elec()
+    value.loc[["elec 2wheels"]] = (p_share_2wheelers() / 100) * p_percent_2w_elec()
     return value
 
 
@@ -819,16 +803,7 @@ _ext_constant_percent_h_vehicles_initial = ExtConstant(
     "percent_H_vehicles_initial*",
     {"Households vehicles": _subscript_dict["Households vehicles"]},
     _root,
-    {
-        "Households vehicles": [
-            "liq 4wheels",
-            "elec 4wheels",
-            "hib 4wheels",
-            "gas 4wheels",
-            "liq 2wheels",
-            "elec 2wheels",
-        ]
-    },
+    {"Households vehicles": _subscript_dict["Households vehicles"]},
     "_ext_constant_percent_h_vehicles_initial",
 )
 
@@ -855,7 +830,7 @@ def percent_h_vehicles_tini():
     name="percents 2w H vehicles",
     units="Dmnl",
     subscripts=["Households vehicles"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
 )
 def percents_2w_h_vehicles():
@@ -867,22 +842,18 @@ def percents_2w_h_vehicles():
         {"Households vehicles": _subscript_dict["Households vehicles"]},
         ["Households vehicles"],
     )
-    value.loc[{"Households vehicles": ["liq 2wheels"]}] = float(
-        percents_h_vehicles().loc["liq 2wheels"]
-    ) / (
+    value.loc[["liq 2wheels"]] = float(percents_h_vehicles().loc["liq 2wheels"]) / (
         float(percents_h_vehicles().loc["elec 2wheels"])
         + float(percents_h_vehicles().loc["liq 2wheels"])
     )
-    value.loc[{"Households vehicles": ["elec 2wheels"]}] = float(
-        percents_h_vehicles().loc["elec 2wheels"]
-    ) / (
+    value.loc[["elec 2wheels"]] = float(percents_h_vehicles().loc["elec 2wheels"]) / (
         float(percents_h_vehicles().loc["elec 2wheels"])
         + float(percents_h_vehicles().loc["liq 2wheels"])
     )
-    value.loc[{"Households vehicles": ["liq 4wheels"]}] = 0
-    value.loc[{"Households vehicles": ["elec 4wheels"]}] = 0
-    value.loc[{"Households vehicles": ["gas 4wheels"]}] = 0
-    value.loc[{"Households vehicles": ["hib 4wheels"]}] = 0
+    value.loc[["liq 4wheels"]] = 0
+    value.loc[["elec 4wheels"]] = 0
+    value.loc[["gas 4wheels"]] = 0
+    value.loc[["hib 4wheels"]] = 0
     return value
 
 
@@ -890,7 +861,7 @@ def percents_2w_h_vehicles():
     name="percents 4w H vehicles",
     units="Dmnl",
     subscripts=["Households vehicles"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
 )
 def percents_4w_h_vehicles():
@@ -902,40 +873,32 @@ def percents_4w_h_vehicles():
         {"Households vehicles": _subscript_dict["Households vehicles"]},
         ["Households vehicles"],
     )
-    value.loc[{"Households vehicles": ["liq 4wheels"]}] = float(
-        percents_h_vehicles().loc["liq 4wheels"]
-    ) / (
+    value.loc[["liq 4wheels"]] = float(percents_h_vehicles().loc["liq 4wheels"]) / (
         float(percents_h_vehicles().loc["elec 4wheels"])
         + float(percents_h_vehicles().loc["hib 4wheels"])
         + float(percents_h_vehicles().loc["gas 4wheels"])
         + float(percents_h_vehicles().loc["liq 4wheels"])
     )
-    value.loc[{"Households vehicles": ["elec 4wheels"]}] = float(
-        percents_h_vehicles().loc["elec 4wheels"]
-    ) / (
+    value.loc[["elec 4wheels"]] = float(percents_h_vehicles().loc["elec 4wheels"]) / (
         float(percents_h_vehicles().loc["elec 4wheels"])
         + float(percents_h_vehicles().loc["hib 4wheels"])
         + float(percents_h_vehicles().loc["gas 4wheels"])
         + float(percents_h_vehicles().loc["liq 4wheels"])
     )
-    value.loc[{"Households vehicles": ["hib 4wheels"]}] = float(
-        percents_h_vehicles().loc["hib 4wheels"]
-    ) / (
+    value.loc[["hib 4wheels"]] = float(percents_h_vehicles().loc["hib 4wheels"]) / (
         float(percents_h_vehicles().loc["elec 4wheels"])
         + float(percents_h_vehicles().loc["hib 4wheels"])
         + float(percents_h_vehicles().loc["gas 4wheels"])
         + float(percents_h_vehicles().loc["liq 4wheels"])
     )
-    value.loc[{"Households vehicles": ["gas 4wheels"]}] = float(
-        percents_h_vehicles().loc["gas 4wheels"]
-    ) / (
+    value.loc[["gas 4wheels"]] = float(percents_h_vehicles().loc["gas 4wheels"]) / (
         float(percents_h_vehicles().loc["elec 4wheels"])
         + float(percents_h_vehicles().loc["hib 4wheels"])
         + float(percents_h_vehicles().loc["gas 4wheels"])
         + float(percents_h_vehicles().loc["liq 4wheels"])
     )
-    value.loc[{"Households vehicles": ["liq 2wheels"]}] = 0
-    value.loc[{"Households vehicles": ["elec 2wheels"]}] = 0
+    value.loc[["liq 2wheels"]] = 0
+    value.loc[["elec 2wheels"]] = 0
     return value
 
 
@@ -955,24 +918,12 @@ def percents_h_vehicles():
         {"Households vehicles": _subscript_dict["Households vehicles"]},
         ["Households vehicles"],
     )
-    value.loc[
-        {"Households vehicles": ["liq 4wheels"]}
-    ] = _integ_percents_h_vehicles().values
-    value.loc[
-        {"Households vehicles": ["elec 4wheels"]}
-    ] = _integ_percents_h_vehicles_1().values
-    value.loc[
-        {"Households vehicles": ["hib 4wheels"]}
-    ] = _integ_percents_h_vehicles_2().values
-    value.loc[
-        {"Households vehicles": ["gas 4wheels"]}
-    ] = _integ_percents_h_vehicles_3().values
-    value.loc[
-        {"Households vehicles": ["liq 2wheels"]}
-    ] = _integ_percents_h_vehicles_4().values
-    value.loc[
-        {"Households vehicles": ["elec 2wheels"]}
-    ] = _integ_percents_h_vehicles_5().values
+    value.loc[["liq 4wheels"]] = _integ_percents_h_vehicles().values
+    value.loc[["elec 4wheels"]] = _integ_percents_h_vehicles_1().values
+    value.loc[["hib 4wheels"]] = _integ_percents_h_vehicles_2().values
+    value.loc[["gas 4wheels"]] = _integ_percents_h_vehicles_3().values
+    value.loc[["liq 2wheels"]] = _integ_percents_h_vehicles_4().values
+    value.loc[["elec 2wheels"]] = _integ_percents_h_vehicles_5().values
     return value
 
 
@@ -1200,7 +1151,7 @@ def var_percents_h_vehicles():
         {"Households vehicles": _subscript_dict["Households vehicles"]},
         ["Households vehicles"],
     )
-    value.loc[{"Households vehicles": ["liq 4wheels"]}] = if_then_else(
+    value.loc[["liq 4wheels"]] = if_then_else(
         time() < t_ini_hveh(),
         lambda: float(aux_hist_h().loc["liq 4wheels"]),
         lambda: -h_elec_adapt_growth()
@@ -1209,27 +1160,27 @@ def var_percents_h_vehicles():
         - h_2w_elec_adapt_growth()
         - h_2w_liq_adapt_growth(),
     )
-    value.loc[{"Households vehicles": ["elec 4wheels"]}] = if_then_else(
+    value.loc[["elec 4wheels"]] = if_then_else(
         time() < t_ini_hveh(),
         lambda: float(aux_hist_h().loc["elec 4wheels"]),
         lambda: h_elec_adapt_growth(),
     )
-    value.loc[{"Households vehicles": ["hib 4wheels"]}] = if_then_else(
+    value.loc[["hib 4wheels"]] = if_then_else(
         time() < t_ini_hveh(),
         lambda: float(aux_hist_h().loc["hib 4wheels"]),
         lambda: h_hyb_adapt_growth(),
     )
-    value.loc[{"Households vehicles": ["gas 4wheels"]}] = if_then_else(
+    value.loc[["gas 4wheels"]] = if_then_else(
         time() < t_ini_hveh(),
         lambda: float(aux_hist_h().loc["gas 4wheels"]),
         lambda: h_gas_adapt_growth(),
     )
-    value.loc[{"Households vehicles": ["liq 2wheels"]}] = if_then_else(
+    value.loc[["liq 2wheels"]] = if_then_else(
         time() < t_ini_hveh(),
         lambda: float(aux_hist_h().loc["liq 2wheels"]),
         lambda: h_2w_liq_adapt_growth(),
     )
-    value.loc[{"Households vehicles": ["elec 2wheels"]}] = if_then_else(
+    value.loc[["elec 2wheels"]] = if_then_else(
         time() < t_ini_hveh(),
         lambda: float(aux_hist_h().loc["elec 2wheels"]),
         lambda: h_2w_elec_adapt_growth(),
@@ -1241,7 +1192,7 @@ def var_percents_h_vehicles():
     name="variation energy intensity of households transport",
     units="EJ/T$/yr",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
 )
 def variation_energy_intensity_of_households_transport():
@@ -1251,15 +1202,15 @@ def variation_energy_intensity_of_households_transport():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["liquids"]}] = (
+    value.loc[["liquids"]] = (
         if_then_else(time() < 2009, lambda: 0, lambda: var_ih_liq2()) * aux_reach_zero()
     )
-    value.loc[{"final sources": ["solids"]}] = 0
-    value.loc[{"final sources": ["gases"]}] = (
+    value.loc[["solids"]] = 0
+    value.loc[["gases"]] = (
         if_then_else(time() > 2009, lambda: var_ih_gas2(), lambda: 0) * aux_reach_zero()
     )
-    value.loc[{"final sources": ["electricity"]}] = (
+    value.loc[["electricity"]] = (
         if_then_else(time() > 2009, lambda: var_ih_e2(), lambda: 0) * aux_reach_zero()
     )
-    value.loc[{"final sources": ["heat"]}] = 0
+    value.loc[["heat"]] = 0
     return value

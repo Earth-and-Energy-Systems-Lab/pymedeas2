@@ -27,6 +27,33 @@ def annual_gdppc_growth_rate():
 
 
 @component.add(
+    name="Desired annual GDP growth rate",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def desired_annual_gdp_growth_rate():
+    """
+    Desired annual GDP growth rate.
+    """
+    return -1 + desire_gdp_next_step() / desired_gdp()
+
+
+@component.add(
+    name="Desired GDPpc", units="$/person", comp_type="Stateful", comp_subtype="Integ"
+)
+def desired_gdppc():
+    return _integ_desired_gdppc()
+
+
+_integ_desired_gdppc = Integ(
+    lambda: desired_variation_gdppc(),
+    lambda: gdppc_initial_year(),
+    "_integ_desired_gdppc",
+)
+
+
+@component.add(
     name="capital share", units="Dmnl", comp_type="Stateful", comp_subtype="Integ"
 )
 def capital_share():
@@ -68,19 +95,6 @@ def cc_total():
 )
 def desire_gdp_next_step():
     return desired_gdp() + desired_variation_gdp()
-
-
-@component.add(
-    name="Desired annual GDP growth rate",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def desired_annual_gdp_growth_rate():
-    """
-    Desired annual GDP growth rate.
-    """
-    return -1 + desire_gdp_next_step() / desired_gdp()
 
 
 @component.add(
@@ -126,20 +140,6 @@ def desired_gdp():
     Desired GDP level for each scenario (user selection).
     """
     return desired_gdppc() * population() / dollars_to_tdollars()
-
-
-@component.add(
-    name="Desired GDPpc", units="$/person", comp_type="Stateful", comp_subtype="Integ"
-)
-def desired_gdppc():
-    return _integ_desired_gdppc()
-
-
-_integ_desired_gdppc = Integ(
-    lambda: desired_variation_gdppc(),
-    lambda: gdppc_initial_year(),
-    "_integ_desired_gdppc",
-)
 
 
 @component.add(
@@ -328,24 +328,7 @@ _ext_lookup_historic_capital_compensation = ExtLookup(
     "historic_capital_compensation",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_lookup_historic_capital_compensation",
 )
 
@@ -439,24 +422,7 @@ _ext_lookup_historic_labour_compensation = ExtLookup(
     "historic_labour_compensation",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_lookup_historic_labour_compensation",
 )
 
@@ -580,21 +546,6 @@ def laborcapital_share_cte():
 
 
 @component.add(
-    name="labour share", units="Dmnl", comp_type="Stateful", comp_subtype="Integ"
-)
-def labour_share():
-    """
-    Ratio 'Labour compensation/GDP'
-    """
-    return _integ_labour_share()
-
-
-_integ_labour_share = Integ(
-    lambda: variation_labour_share(), lambda: 0.509901, "_integ_labour_share"
-)
-
-
-@component.add(
     name="Labour share growth",
     units="Dmnl",
     comp_type="Auxiliary",
@@ -612,6 +563,21 @@ def labour_share_growth():
 @component.add(name="LC", comp_type="Auxiliary", comp_subtype="Normal")
 def lc():
     return labour_share() * gdp_aut() * 1000000.0
+
+
+@component.add(
+    name="labour share", units="Dmnl", comp_type="Stateful", comp_subtype="Integ"
+)
+def labour_share():
+    """
+    Ratio 'Labour compensation/GDP'
+    """
+    return _integ_labour_share()
+
+
+_integ_labour_share = Integ(
+    lambda: variation_labour_share(), lambda: 0.509901, "_integ_labour_share"
+)
 
 
 @component.add(

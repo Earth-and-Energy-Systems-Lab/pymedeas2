@@ -225,12 +225,12 @@ def share_res_elec_generation_curtailedstored():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = 0
-    value.loc[{"RES elec": ["geot elec"]}] = 0
-    value.loc[{"RES elec": ["solid bioE elec"]}] = 0
-    value.loc[{"RES elec": ["oceanic"]}] = 0
-    value.loc[{"RES elec": ["wind onshore"]}] = 0.2
-    value.loc[{"RES elec": ["wind offshore"]}] = 0.2
-    value.loc[{"RES elec": ["solar PV"]}] = 0.2
-    value.loc[{"RES elec": ["CSP"]}] = 0.2
+    value.loc[["hydro"]] = 0
+    value.loc[["geot elec"]] = 0
+    value.loc[["solid bioE elec"]] = 0
+    value.loc[["oceanic"]] = 0
+    value.loc[["wind onshore"]] = 0.2
+    value.loc[["wind offshore"]] = 0.2
+    value.loc[["solar PV"]] = 0.2
+    value.loc[["CSP"]] = 0.2
     return value

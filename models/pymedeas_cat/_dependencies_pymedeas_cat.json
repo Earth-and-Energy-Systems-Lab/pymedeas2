@@ -125,6 +125,12 @@
             "historic_water_by_type_intensities_for_households": 1
         }
     },
+    "_delayfixed_installed_capacity_delayed": {
+        "initial": {},
+        "step": {
+            "installed_capacity_res_elec_tw": 1
+        }
+    },
     "_delayfixed_installed_capacity_res_elec_delayed_1yr": {
         "initial": {},
         "step": {
@@ -1500,9 +1506,6 @@
         "fe_real_tot_generation_res_elec_twh": 2,
         "total_fe_elec_demand_after_priorities_twh": 4
     },
-    "abundance_res_elec2": {
-        "abundance_res_elec": 1
-    },
     "abundance_res_heatcom": {
         "fe_real_supply_res_for_heatcom_tot_ej": 1,
         "fed_heatcom_after_priorities_ej": 3
@@ -1520,10 +1523,6 @@
     "abundance_solids": {
         "ped_solids": 3,
         "pes_solids": 2
-    },
-    "abundance_storage": {
-        "demand_storage_capacity": 2,
-        "total_capacity_elec_storage_tw": 3
     },
     "abundance_total_nat_gas": {
         "__data__": "_data_abundance_total_nat_gas",
@@ -1601,19 +1600,18 @@
         "time": 3
     },
     "adapt_growth_phs": {
-        "abundance_storage": 1,
-        "p_phs_growth": 2,
-        "past_phs_capacity_growth": 4,
+        "p_phs_power": 4,
+        "past_phs_capacity_growth": 1,
         "start_year_p_growth_res_elec": 3,
-        "target_year_p_growth_res_elec": 2,
-        "time": 4
+        "table_hist_capacity_phs": 1,
+        "time": 5
     },
     "adapt_growth_res_elec": {
-        "p_res_elec_growth": 16,
-        "past_res_elec_capacity_growth": 32,
-        "start_year_p_growth_res_elec": 24,
-        "target_year_p_growth_res_elec": 16,
-        "time": 32
+        "p_power": 4,
+        "past_res_growth": 1,
+        "start_year_p_growth_res_elec": 3,
+        "table_hist_capacity_res_elec": 1,
+        "time": 5
     },
     "adapt_growth_res_elec_after_allocation": {
         "activate_eroi_allocation_rule": 1,
@@ -2811,11 +2809,10 @@
         "_integ_desired_gdppc": 1
     },
     "desired_share_installed_pv_urban_vs_tot_pv": {
-        "historic_share_installed_pv_urban_vs_tot_pv": 4,
-        "p_share_installed_pv_urban_vs_tot_pv": 2,
-        "start_year_p_growth_res_elec": 3,
-        "target_year_p_growth_res_elec": 2,
-        "time": 4
+        "historic_share_installed_pv_urban_vs_tot_pv": 2,
+        "p_share_installed_pv_urban_vs_tot_pv": 1,
+        "start_year_p_growth_res_elec": 1,
+        "time": 2
     },
     "desired_variation_gdp": {
         "desired_gdppc": 2,
@@ -5081,6 +5078,9 @@
         "__external__": "_ext_lookup_input_population",
         "__lookup__": "_ext_lookup_input_population"
     },
+    "installed_capacity_delayed": {
+        "_delayfixed_installed_capacity_delayed": 1
+    },
     "installed_capacity_nuclear_tw": {
         "_integ_installed_capacity_nuclear_tw": 1
     },
@@ -5882,12 +5882,12 @@
         "time": 1
     },
     "new_required_capacity_res_elec": {
-        "abundance_res_elec2": 1,
-        "adapt_growth_res_elec_after_allocation": 1,
+        "adapt_growth_res_elec": 1,
         "historic_new_required_capacity_res_elec": 1,
         "installed_capacity_res_elec_tw": 1,
-        "remaining_potential_constraint_on_new_res_elec_capacity": 1,
-        "time": 1,
+        "max_res_elec_twe": 1,
+        "p_power": 1,
+        "time": 2,
         "total_time_planconstr_res_elec": 1
     },
     "new_required_phs_capacity": {
@@ -6114,9 +6114,6 @@
     "p_constraint_growth_extraction_unconv_oil": {
         "__external__": "_ext_constant_p_constraint_growth_extraction_unconv_oil"
     },
-    "p_csp_growth": {
-        "__external__": "_ext_constant_p_csp_growth"
-    },
     "p_ctl": {
         "__external__": "_ext_constant_p_ctl"
     },
@@ -6139,9 +6136,6 @@
     "p_gdppc_asymptote": {
         "__external__": "_ext_constant_p_gdppc_asymptote"
     },
-    "p_geot_growth": {
-        "__external__": "_ext_constant_p_geot_growth"
-    },
     "p_geothermal_for_heat": {
         "__external__": "_ext_constant_p_geothermal_for_heat"
     },
@@ -6154,9 +6148,6 @@
         "p_percent_gas_hveh": 2,
         "p_percent_hyb_hveh": 2,
         "p_share_2wheelers": 6
-    },
-    "p_hydro_growth": {
-        "__external__": "_ext_constant_p_hydro_growth"
     },
     "p_inlandt": {
         "p_percent_bus_elec": 2,
@@ -6183,9 +6174,6 @@
     },
     "p_nuclear_scen34": {
         "__external__": "_ext_constant_p_nuclear_scen34"
-    },
-    "p_oceanic_growth": {
-        "__external__": "_ext_constant_p_oceanic_growth"
     },
     "p_percent_2w_elec": {
         "__external__": "_ext_constant_p_percent_2w_elec"
@@ -6226,21 +6214,16 @@
     "p_percent_train_elec": {
         "__external__": "_ext_constant_p_percent_train_elec"
     },
-    "p_phs_growth": {
-        "__external__": "_ext_constant_p_phs_growth"
+    "p_phs_power": {
+        "__external__": "_ext_lookup_p_phs_power",
+        "__lookup__": "_ext_lookup_p_phs_power"
     },
     "p_pop_asymptote_millions": {
         "__external__": "_ext_constant_p_pop_asymptote_millions"
     },
-    "p_res_elec_growth": {
-        "p_csp_growth": 1,
-        "p_geot_growth": 1,
-        "p_hydro_growth": 1,
-        "p_oceanic_growth": 1,
-        "p_solar_pv_growth": 1,
-        "p_solid_bioeelec_growth": 1,
-        "p_wind_offshore_growth": 1,
-        "p_wind_onshore_growth": 1
+    "p_power": {
+        "__external__": "_ext_lookup_p_power",
+        "__lookup__": "_ext_lookup_p_power"
     },
     "p_res_for_heat": {
         "p_geothermal_for_heat": 1,
@@ -6272,14 +6255,8 @@
     "p_solar_for_heat": {
         "__external__": "_ext_constant_p_solar_for_heat"
     },
-    "p_solar_pv_growth": {
-        "__external__": "_ext_constant_p_solar_pv_growth"
-    },
     "p_solid_bioe_for_heat": {
         "__external__": "_ext_constant_p_solid_bioe_for_heat"
-    },
-    "p_solid_bioeelec_growth": {
-        "__external__": "_ext_constant_p_solid_bioeelec_growth"
     },
     "p_timeseries_gdppc_growth_rate": {
         "__data__": "_ext_data_p_timeseries_gdppc_growth_rate",
@@ -6300,12 +6277,6 @@
     "p_waste_change": {
         "__external__": "_ext_constant_p_waste_change"
     },
-    "p_wind_offshore_growth": {
-        "__external__": "_ext_constant_p_wind_offshore_growth"
-    },
-    "p_wind_onshore_growth": {
-        "__external__": "_ext_constant_p_wind_onshore_growth"
-    },
     "past_biofuels_2gen": {
         "__external__": "_ext_constant_past_biofuels_2gen"
     },
@@ -6315,8 +6286,9 @@
     "past_phs_capacity_growth": {
         "__external__": "_ext_constant_past_phs_capacity_growth"
     },
-    "past_res_elec_capacity_growth": {
-        "__external__": "_ext_constant_past_res_elec_capacity_growth"
+    "past_res_growth": {
+        "table_hist_capacity_res_elec": 3,
+        "time": 3
     },
     "past_res_growth_for_heatcom": {
         "__external__": "_ext_constant_past_res_growth_for_heatcom"
@@ -7914,9 +7886,10 @@
         "domestic_output_required_for_exports_row_by_sector": 1
     },
     "res_elec_capacity_under_construction_tw": {
+        "installed_capacity_delayed": 1,
+        "max_res_elec_twe": 1,
         "res_elec_planned_capacity_tw": 1,
-        "time_construction_res_elec": 1,
-        "time_step": 1
+        "time_construction_res_elec": 1
     },
     "res_elec_planned_capacity_tw": {
         "_integ_res_elec_planned_capacity_tw": 1
@@ -8929,9 +8902,6 @@
     },
     "target_year_gdppc_asymptote": {
         "__external__": "_ext_constant_target_year_gdppc_asymptote"
-    },
-    "target_year_p_growth_res_elec": {
-        "__external__": "_ext_constant_target_year_p_growth_res_elec"
     },
     "target_year_p_growth_res_heat": {
         "__external__": "_ext_constant_target_year_p_growth_res_heat"

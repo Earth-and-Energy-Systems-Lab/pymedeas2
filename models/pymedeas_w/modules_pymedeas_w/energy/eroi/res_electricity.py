@@ -38,7 +38,7 @@ def static_eroi_res_elec():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = if_then_else(
+    value.loc[["hydro"]] = if_then_else(
         float(fei_over_lifetime_res_elec_dispatch().loc["hydro"]) == 0,
         lambda: 0,
         lambda: float(output_elec_over_lifetime_res_elec().loc["hydro"])
@@ -47,7 +47,7 @@ def static_eroi_res_elec():
             * quality_of_electricity()
         ),
     )
-    value.loc[{"RES elec": ["geot elec"]}] = if_then_else(
+    value.loc[["geot elec"]] = if_then_else(
         float(fei_over_lifetime_res_elec_dispatch().loc["geot elec"]) == 0,
         lambda: 0,
         lambda: float(output_elec_over_lifetime_res_elec().loc["geot elec"])
@@ -56,7 +56,7 @@ def static_eroi_res_elec():
             * quality_of_electricity()
         ),
     )
-    value.loc[{"RES elec": ["solid bioE elec"]}] = if_then_else(
+    value.loc[["solid bioE elec"]] = if_then_else(
         float(fei_over_lifetime_res_elec_dispatch().loc["solid bioE elec"]) == 0,
         lambda: 0,
         lambda: float(output_elec_over_lifetime_res_elec().loc["solid bioE elec"])
@@ -65,7 +65,7 @@ def static_eroi_res_elec():
             * quality_of_electricity()
         ),
     )
-    value.loc[{"RES elec": ["oceanic"]}] = if_then_else(
+    value.loc[["oceanic"]] = if_then_else(
         float(fei_over_lifetime_res_elec_dispatch().loc["oceanic"]) == 0,
         lambda: 0,
         lambda: float(output_elec_over_lifetime_res_elec().loc["oceanic"])
@@ -74,25 +74,25 @@ def static_eroi_res_elec():
             * quality_of_electricity()
         ),
     )
-    value.loc[{"RES elec": ["wind onshore"]}] = if_then_else(
+    value.loc[["wind onshore"]] = if_then_else(
         float(fei_over_lifetime_res_elec_var().loc["wind onshore"]) == 0,
         lambda: 0,
         lambda: float(output_elec_over_lifetime_res_elec().loc["wind onshore"])
         / float(fei_over_lifetime_res_elec_var().loc["wind onshore"]),
     )
-    value.loc[{"RES elec": ["wind offshore"]}] = if_then_else(
+    value.loc[["wind offshore"]] = if_then_else(
         float(fei_over_lifetime_res_elec_var().loc["wind offshore"]) == 0,
         lambda: 0,
         lambda: float(output_elec_over_lifetime_res_elec().loc["wind offshore"])
         / float(fei_over_lifetime_res_elec_var().loc["wind offshore"]),
     )
-    value.loc[{"RES elec": ["solar PV"]}] = if_then_else(
+    value.loc[["solar PV"]] = if_then_else(
         float(fei_over_lifetime_res_elec_var().loc["solar PV"]) == 0,
         lambda: 0,
         lambda: float(output_elec_over_lifetime_res_elec().loc["solar PV"])
         / float(fei_over_lifetime_res_elec_var().loc["solar PV"]),
     )
-    value.loc[{"RES elec": ["CSP"]}] = if_then_else(
+    value.loc[["CSP"]] = if_then_else(
         float(fei_over_lifetime_res_elec_var().loc["CSP"]) == 0,
         lambda: 0,
         lambda: float(output_elec_over_lifetime_res_elec().loc["CSP"])
@@ -420,18 +420,7 @@ _ext_constant_eroiini_res_elec_dispatch = ExtConstant(
     "eroi_initial_res_elec_dispatch*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_eroiini_res_elec_dispatch",
 )
 
@@ -450,30 +439,22 @@ def fei_over_lifetime_res_elec():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = float(
-        fei_over_lifetime_res_elec_dispatch().loc["hydro"]
-    )
-    value.loc[{"RES elec": ["geot elec"]}] = float(
+    value.loc[["hydro"]] = float(fei_over_lifetime_res_elec_dispatch().loc["hydro"])
+    value.loc[["geot elec"]] = float(
         fei_over_lifetime_res_elec_dispatch().loc["geot elec"]
     )
-    value.loc[{"RES elec": ["solid bioE elec"]}] = float(
+    value.loc[["solid bioE elec"]] = float(
         fei_over_lifetime_res_elec_dispatch().loc["solid bioE elec"]
     )
-    value.loc[{"RES elec": ["oceanic"]}] = float(
-        fei_over_lifetime_res_elec_dispatch().loc["oceanic"]
-    )
-    value.loc[{"RES elec": ["wind onshore"]}] = float(
+    value.loc[["oceanic"]] = float(fei_over_lifetime_res_elec_dispatch().loc["oceanic"])
+    value.loc[["wind onshore"]] = float(
         fei_over_lifetime_res_elec_var().loc["wind onshore"]
     )
-    value.loc[{"RES elec": ["wind offshore"]}] = float(
+    value.loc[["wind offshore"]] = float(
         fei_over_lifetime_res_elec_var().loc["wind offshore"]
     )
-    value.loc[{"RES elec": ["solar PV"]}] = float(
-        fei_over_lifetime_res_elec_var().loc["solar PV"]
-    )
-    value.loc[{"RES elec": ["CSP"]}] = float(
-        fei_over_lifetime_res_elec_var().loc["CSP"]
-    )
+    value.loc[["solar PV"]] = float(fei_over_lifetime_res_elec_var().loc["solar PV"])
+    value.loc[["CSP"]] = float(fei_over_lifetime_res_elec_var().loc["CSP"])
     return value
 
 
@@ -548,9 +529,9 @@ def grid_correction_factor_res_elec():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro", "geot elec", "solid bioE elec", "oceanic"]}] = 0
+    value.loc[_subscript_dict["RES ELEC DISPATCHABLE"]] = 0
     value.loc[
-        {"RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"]}
+        ["wind onshore", "wind offshore", "solar PV", "CSP"]
     ] = _ext_constant_grid_correction_factor_res_elec().values
     return value
 
@@ -629,9 +610,9 @@ def selfelectricity_consumption_res_elec():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro", "geot elec", "solid bioE elec", "oceanic"]}] = 0
+    value.loc[_subscript_dict["RES ELEC DISPATCHABLE"]] = 0
     value.loc[
-        {"RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"]}
+        ["wind onshore", "wind offshore", "solar PV", "CSP"]
     ] = _ext_constant_selfelectricity_consumption_res_elec().values
     return value
 
@@ -661,9 +642,9 @@ def share_energy_requirements_for_decom_res_elec():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro", "geot elec", "solid bioE elec", "oceanic"]}] = 0
+    value.loc[_subscript_dict["RES ELEC DISPATCHABLE"]] = 0
     value.loc[
-        {"RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"]}
+        ["wind onshore", "wind offshore", "solar PV", "CSP"]
     ] = _ext_constant_share_energy_requirements_for_decom_res_elec().values
     return value
 

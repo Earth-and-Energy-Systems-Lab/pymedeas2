@@ -24,24 +24,7 @@ _ext_constant_beta_0_exp = ExtConstant(
     "beta_0_EXP*",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_constant_beta_0_exp",
 )
 
@@ -66,24 +49,7 @@ _ext_constant_beta_0_gfcf = ExtConstant(
     "beta_0_GFCF*",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_constant_beta_0_gfcf",
 )
 
@@ -223,24 +189,7 @@ _ext_lookup_historic_exports_demand = ExtLookup(
     "historic_exports_demand",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_lookup_historic_exports_demand",
 )
 
@@ -266,24 +215,7 @@ _ext_lookup_historic_gfcf = ExtLookup(
     "historic_GFCF",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_lookup_historic_gfcf",
 )
 

@@ -39,16 +39,6 @@ def adapt_max_share_imports_coal():
 
 
 @component.add(
-    name="check domestic AUT extracted",
-    units="percent",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def check_domestic_aut_extracted():
-    return -1 + zidz(extraction_coal_aut(), historic_coal_domestic_aut_extracted_ej())
-
-
-@component.add(
     name="extraction coal EJ RoW",
     units="EJ",
     comp_type="Auxiliary",
@@ -56,6 +46,16 @@ def check_domestic_aut_extracted():
 )
 def extraction_coal_ej_row():
     return extraction_coal_ej_world() - extraction_coal_aut()
+
+
+@component.add(
+    name="check domestic AUT extracted",
+    units="percent",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def check_domestic_aut_extracted():
+    return -1 + zidz(extraction_coal_aut(), historic_coal_domestic_aut_extracted_ej())
 
 
 @component.add(

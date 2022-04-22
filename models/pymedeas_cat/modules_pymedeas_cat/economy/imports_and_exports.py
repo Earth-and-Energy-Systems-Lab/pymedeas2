@@ -5,19 +5,6 @@ Translated using PySD version 3.0.0
 
 
 @component.add(
-    name="Demand by sector RoEU",
-    units="Tdollars",
-    subscripts=["sectors"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def demand_by_sector_roeu():
-    return if_then_else(
-        time() < 2009, lambda: historic_demand_1(), lambda: real_demand_by_sector_roeu()
-    )
-
-
-@component.add(
     name="Demand by sector RoW",
     units="Tdollars",
     subscripts=["sectors"],
@@ -27,6 +14,19 @@ def demand_by_sector_roeu():
 def demand_by_sector_row():
     return if_then_else(
         time() < 2009, lambda: historic_demand_0(), lambda: real_demand_by_sector_row()
+    )
+
+
+@component.add(
+    name="Demand by sector RoEU",
+    units="Tdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def demand_by_sector_roeu():
+    return if_then_else(
+        time() < 2009, lambda: historic_demand_1(), lambda: real_demand_by_sector_roeu()
     )
 
 
@@ -108,24 +108,7 @@ _ext_data_historic_demand_0 = ExtData(
     None,
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_data_historic_demand_0",
 )
 
@@ -152,24 +135,7 @@ _ext_data_historic_demand_1 = ExtData(
     None,
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_data_historic_demand_1",
 )
 

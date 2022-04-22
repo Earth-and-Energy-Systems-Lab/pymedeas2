@@ -870,23 +870,7 @@ _ext_constant_gwp_100_year = ExtConstant(
     "GWP_100_year*",
     {"GHGs non CO2": _subscript_dict["GHGs non CO2"]},
     _root,
-    {
-        "GHGs non CO2": [
-            "CH4",
-            "N2O",
-            "PFCs",
-            "SF6",
-            "HFC134a",
-            "HFC23",
-            "HFC32",
-            "HFC125",
-            "HFC143a",
-            "HFC152a",
-            "HFC227ea",
-            "HFC245ca",
-            "HFC4310mee",
-        ]
-    },
+    {"GHGs non CO2": _subscript_dict["GHGs non CO2"]},
     "_ext_constant_gwp_100_year",
 )
 
@@ -907,23 +891,7 @@ _ext_constant_gwp_20_year = ExtConstant(
     "GWP_20_year*",
     {"GHGs non CO2": _subscript_dict["GHGs non CO2"]},
     _root,
-    {
-        "GHGs non CO2": [
-            "CH4",
-            "N2O",
-            "PFCs",
-            "SF6",
-            "HFC134a",
-            "HFC23",
-            "HFC32",
-            "HFC125",
-            "HFC143a",
-            "HFC152a",
-            "HFC227ea",
-            "HFC245ca",
-            "HFC4310mee",
-        ]
-    },
+    {"GHGs non CO2": _subscript_dict["GHGs non CO2"]},
     "_ext_constant_gwp_20_year",
 )
 

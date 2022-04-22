@@ -5,36 +5,6 @@ Translated using PySD version 3.0.0
 
 
 @component.add(
-    name="check historic CO2 emissions", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def check_historic_co2_emissions():
-    return if_then_else(
-        time() < 2015,
-        lambda: (total_fe_co2_emissions() - total_co2_emissions_all_fuels())
-        * 100
-        / co2_fossil_fuel_emissions(),
-        lambda: 0,
-    )
-
-
-@component.add(
-    name="CO2 emissions COAL",
-    units="GtCO2",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def co2_emissions_coal():
-    return (
-        modern_solids_bioe_demand_households()
-        * gco2_per_mj_conv_gas()
-        * mj_per_ej()
-        / g_per_gt()
-        + coal_for_elec_co2_emissions()
-        + coal_for_heat_co2_emissions()
-    )
-
-
-@component.add(
     name="CO2 emissions liquids",
     units="GtCO2",
     comp_type="Auxiliary",
@@ -69,6 +39,36 @@ def co2_emissions_liquids():
 )
 def co2_emissions_oil_test():
     return co2_emissions_conv_oil() + co2_emissions_unconv_oil()
+
+
+@component.add(
+    name="check historic CO2 emissions", comp_type="Auxiliary", comp_subtype="Normal"
+)
+def check_historic_co2_emissions():
+    return if_then_else(
+        time() < 2015,
+        lambda: (total_fe_co2_emissions() - total_co2_emissions_all_fuels())
+        * 100
+        / co2_fossil_fuel_emissions(),
+        lambda: 0,
+    )
+
+
+@component.add(
+    name="CO2 emissions COAL",
+    units="GtCO2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def co2_emissions_coal():
+    return (
+        modern_solids_bioe_demand_households()
+        * gco2_per_mj_conv_gas()
+        * mj_per_ej()
+        / g_per_gt()
+        + coal_for_elec_co2_emissions()
+        + coal_for_heat_co2_emissions()
+    )
 
 
 @component.add(
@@ -524,9 +524,9 @@ def total_per_fe_co2_emissions():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["heat"]}] = total_heat_co2_emissions()
-    value.loc[{"final sources": ["liquids"]}] = liquids_fe_co2_emissions()
-    value.loc[{"final sources": ["gases"]}] = gases_fe_co2_emission()
-    value.loc[{"final sources": ["solids"]}] = solids_fe_co2_emissions()
-    value.loc[{"final sources": ["electricity"]}] = total_elec_co2_emissions()
+    value.loc[["heat"]] = total_heat_co2_emissions()
+    value.loc[["liquids"]] = liquids_fe_co2_emissions()
+    value.loc[["gases"]] = gases_fe_co2_emission()
+    value.loc[["solids"]] = solids_fe_co2_emissions()
+    value.loc[["electricity"]] = total_elec_co2_emissions()
     return value

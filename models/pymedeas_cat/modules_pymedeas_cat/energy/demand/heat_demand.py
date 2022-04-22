@@ -23,6 +23,18 @@ def fed_heatcom_after_priorities_ej():
 
 
 @component.add(
+    name='"FED Heat-nc EJ"', units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
+def fed_heatnc_ej():
+    """
+    Final energy (non-commercial) heat demand.
+    """
+    return float(required_fed_by_fuel().loc["heat"]) - float(
+        required_fed_by_fuel_before_heat_correction().loc["heat"]
+    )
+
+
+@component.add(
     name='"FED Heat-com EJ"', units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
 )
 def fed_heatcom_ej():
@@ -62,18 +74,6 @@ def fed_heatcom_plants_fossil_fuels_ej():
         - fes_heatcom_fossil_fuels_chp_plants_ej()
         - fes_heatcom_nuclear_chp_plants_ej(),
         0,
-    )
-
-
-@component.add(
-    name='"FED Heat-nc EJ"', units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def fed_heatnc_ej():
-    """
-    Final energy (non-commercial) heat demand.
-    """
-    return float(required_fed_by_fuel().loc["heat"]) - float(
-        required_fed_by_fuel_before_heat_correction().loc["heat"]
     )
 
 

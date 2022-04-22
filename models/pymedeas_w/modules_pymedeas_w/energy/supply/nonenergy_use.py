@@ -43,7 +43,7 @@ _ext_lookup_historic_nonenergy_use = ExtLookup(
     "historic_non_energy_use",
     {"final sources": _subscript_dict["final sources"]},
     _root,
-    {"final sources": ["electricity", "heat", "liquids", "gases", "solids"]},
+    {"final sources": _subscript_dict["final sources"]},
     "_ext_lookup_historic_nonenergy_use",
 )
 
@@ -68,7 +68,7 @@ _ext_constant_initial_nonenergy_use = ExtConstant(
     "initial_non_energy_use*",
     {"final sources": _subscript_dict["final sources"]},
     _root,
-    {"final sources": ["electricity", "heat", "liquids", "gases", "solids"]},
+    {"final sources": _subscript_dict["final sources"]},
     "_ext_constant_initial_nonenergy_use",
 )
 
@@ -113,26 +113,26 @@ def total_real_nonenergy_use_consumption_ej():
     name="variation nonenergy use",
     units="EJ",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
 )
 def variation_nonenergy_use():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["electricity"]}] = 0
-    value.loc[{"final sources": ["heat"]}] = 0
-    value.loc[{"final sources": ["liquids"]}] = if_then_else(
+    value.loc[["electricity"]] = 0
+    value.loc[["heat"]] = 0
+    value.loc[["liquids"]] = if_then_else(
         float(nonenergy_use_demand_by_final_fuel_ej().loc["liquids"]) > 0.01,
         lambda: 0.461414 * (gdp() - gdp_delayed_1yr()),
         lambda: 0,
     )
-    value.loc[{"final sources": ["gases"]}] = if_then_else(
+    value.loc[["gases"]] = if_then_else(
         float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"]) > 0.01,
         lambda: 0.123925 * (gdp() - gdp_delayed_1yr()),
         lambda: 0,
     )
-    value.loc[{"final sources": ["solids"]}] = if_then_else(
+    value.loc[["solids"]] = if_then_else(
         float(nonenergy_use_demand_by_final_fuel_ej().loc["solids"]) > 0.01,
         lambda: 0.0797511 * (gdp() - gdp_delayed_1yr()),
         lambda: 0,

@@ -67,9 +67,9 @@ _ext_constant_max_pe_geotelec_twth = ExtConstant(
 
 @component.add(
     name="max potential RES elec TWe",
-    units="TWe",
+    units="TW",
     subscripts=["RES elec"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="External, Normal",
 )
 def max_potential_res_elec_twe():
@@ -80,18 +80,18 @@ def max_potential_res_elec_twe():
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[
-        {"RES elec": ["hydro", "oceanic", "wind onshore", "wind offshore"]}
+        ["hydro", "oceanic", "wind onshore", "wind offshore"]
     ] = _ext_constant_max_potential_res_elec_twe().values
-    value.loc[{"RES elec": ["geot elec"]}] = (
+    value.loc[["geot elec"]] = (
         max_pe_geotelec_twth() * efficiency_conversion_geot_pe_to_elec()
     )
-    value.loc[{"RES elec": ["solid bioE elec"]}] = (
+    value.loc[["solid bioE elec"]] = (
         available_potential_fe_solid_bioe_for_elec_ej() * twe_per_twh() / ej_per_twh()
     )
-    value.loc[{"RES elec": ["solar PV"]}] = max_solar_pv_on_land_mha() * float(
+    value.loc[["solar PV"]] = max_solar_pv_on_land_mha() * float(
         power_density_res_elec_twemha().loc["solar PV"]
     )
-    value.loc[{"RES elec": ["CSP"]}] = max_csp_on_land_mha() * float(
+    value.loc[["CSP"]] = max_csp_on_land_mha() * float(
         power_density_res_elec_twemha().loc["CSP"]
     )
     return value

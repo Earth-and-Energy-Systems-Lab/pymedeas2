@@ -17,25 +17,7 @@ def activate_bottom_up_method():
     """
     return xr.DataArray(
         0,
-        {
-            "SECTORS and HOUSEHOLDS": [
-                "Households",
-                "Agriculture",
-                "Mining quarrying and energy supply",
-                "Food Beverages and Tobacco",
-                "Textiles and leather etc",
-                "Coke refined petroleum nuclear fuel and chemicals etc",
-                "Electrical and optical equipment and Transport equipment",
-                "Other manufacturing",
-                "Construction",
-                "Distribution",
-                "Hotels and restaurant",
-                "Transport storage and communication",
-                "Financial Intermediation",
-                "Real estate renting and busine activitie",
-                "Non Market Service",
-            ]
-        },
+        {"SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"]},
         ["SECTORS and HOUSEHOLDS"],
     )
 
@@ -71,30 +53,6 @@ def available_improvement_efficiency():
             ),
         ),
     )
-
-
-@component.add(
-    name="Choose final sectoral energy intensities evolution method",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def choose_final_sectoral_energy_intensities_evolution_method():
-    """
-    0- Dynamic evolution with policies and feedback of final fuel scarcity 1- Constant at 2009 levels 2- Sectoral energy intensity targets defined by user
-    """
-    return _ext_constant_choose_final_sectoral_energy_intensities_evolution_method()
-
-
-_ext_constant_choose_final_sectoral_energy_intensities_evolution_method = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "sectoral_FEI_evolution_method",
-    {},
-    _root,
-    {},
-    "_ext_constant_choose_final_sectoral_energy_intensities_evolution_method",
-)
 
 
 @component.add(
@@ -173,27 +131,6 @@ def decrease_of_intensity_due_to_energy_a_technology_change_top_down():
 
 
 @component.add(
-    name="Efficiency energy acceleration",
-    units="Dmnl",
-    subscripts=["SECTORS and HOUSEHOLDS", "final sources"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def efficiency_energy_acceleration():
-    """
-    This variable represents the acceleration of the process of variation of the energy intensity that can be produced by polítcas or scarcity pressures.
-    """
-    return (
-        -maximum_yearly_acceleration_of_intensity_improvement()
-        * (
-            1
-            + percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities()
-        )
-        * pressure_to_improve_energy_intensity_efficiency()
-    )
-
-
-@component.add(
     name="efficiency rate of substitution",
     units="Dmnl",
     subscripts=["SECTORS and HOUSEHOLDS", "final sources", "final sources1"],
@@ -218,25 +155,9 @@ _ext_constant_efficiency_rate_of_substitution = ExtConstant(
     },
     _root,
     {
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
-        "final sources1": ["electricity", "heat", "liquids", "gases", "solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+        "final sources1": _subscript_dict["final sources1"],
     },
     "_ext_constant_efficiency_rate_of_substitution",
 )
@@ -287,6 +208,77 @@ _ext_constant_efficiency_rate_of_substitution.add(
 
 
 @component.add(
+    name="exp rapid evol change energy",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def exp_rapid_evol_change_energy():
+    """
+    Parameter that define the speed of application of policies in the rapid way.
+    """
+    return 1 / 2
+
+
+@component.add(
+    name="exp slow evol change energy",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def exp_slow_evol_change_energy():
+    """
+    Parameter that define the speed of application of policies in the slow way.
+    """
+    return 2
+
+
+@component.add(
+    name="Choose final sectoral energy intensities evolution method",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def choose_final_sectoral_energy_intensities_evolution_method():
+    """
+    0- Dynamic evolution with policies and feedback of final fuel scarcity 1- Constant at 2009 levels 2- Sectoral energy intensity targets defined by user
+    """
+    return _ext_constant_choose_final_sectoral_energy_intensities_evolution_method()
+
+
+_ext_constant_choose_final_sectoral_energy_intensities_evolution_method = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "sectoral_FEI_evolution_method",
+    {},
+    _root,
+    {},
+    "_ext_constant_choose_final_sectoral_energy_intensities_evolution_method",
+)
+
+
+@component.add(
+    name="Efficiency energy acceleration",
+    units="Dmnl",
+    subscripts=["SECTORS and HOUSEHOLDS", "final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def efficiency_energy_acceleration():
+    """
+    This variable represents the acceleration of the process of variation of the energy intensity that can be produced by polítcas or scarcity pressures.
+    """
+    return (
+        -maximum_yearly_acceleration_of_intensity_improvement()
+        * (
+            1
+            + percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities()
+        )
+        * pressure_to_improve_energy_intensity_efficiency()
+    )
+
+
+@component.add(
     name="Energy intensity target",
     units="EJ/Tdollars",
     subscripts=["SECTORS and HOUSEHOLDS", "final sources"],
@@ -320,24 +312,8 @@ _ext_constant_energy_intensity_target_mdollar = ExtConstant(
     },
     _root,
     {
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
     },
     "_ext_constant_energy_intensity_target_mdollar",
 )
@@ -370,19 +346,6 @@ _integ_evol_final_energy_intensity_by_sector_and_fuel = Integ(
 
 
 @component.add(
-    name="exp rapid evol change energy",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="Normal",
-)
-def exp_rapid_evol_change_energy():
-    """
-    Parameter that define the speed of application of policies in the rapid way.
-    """
-    return 1 / 2
-
-
-@component.add(
     name="exp rapid evol improve efficiency",
     units="Dmnl",
     comp_type="Constant",
@@ -393,19 +356,6 @@ def exp_rapid_evol_improve_efficiency():
     Parameter that define the speed of application of policies in the rapid way.
     """
     return 1 / 2
-
-
-@component.add(
-    name="exp slow evol change energy",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="Normal",
-)
-def exp_slow_evol_change_energy():
-    """
-    Parameter that define the speed of application of policies in the slow way.
-    """
-    return 2
 
 
 @component.add(
@@ -558,24 +508,8 @@ _ext_lookup_historic_final_energy_intensity = ExtLookup(
     },
     _root,
     {
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
+        "final sources": _subscript_dict["final sources"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
     },
     "_ext_lookup_historic_final_energy_intensity",
 )
@@ -649,24 +583,8 @@ _ext_constant_historic_mean_rate_energy_intensity = ExtConstant(
     },
     _root,
     {
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
     },
     "_ext_constant_historic_mean_rate_energy_intensity",
 )
@@ -1382,24 +1300,8 @@ _ext_constant_max_yearly_change_between_sources = ExtConstant(
     },
     _root,
     {
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
     },
     "_ext_constant_max_yearly_change_between_sources",
 )
@@ -1429,24 +1331,8 @@ _ext_constant_maximum_yearly_acceleration_of_intensity_improvement = ExtConstant
     },
     _root,
     {
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
     },
     "_ext_constant_maximum_yearly_acceleration_of_intensity_improvement",
 )
@@ -1508,24 +1394,8 @@ _ext_constant_minimum_fraction_source = ExtConstant(
     },
     _root,
     {
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
     },
     "_ext_constant_minimum_fraction_source",
 )
@@ -1555,24 +1425,8 @@ _ext_constant_policy_change_energy_speed = ExtConstant(
     },
     _root,
     {
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
     },
     "_ext_constant_policy_change_energy_speed",
 )
@@ -1602,24 +1456,8 @@ _ext_constant_policy_to_improve_efficiency_speed = ExtConstant(
     },
     _root,
     {
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
     },
     "_ext_constant_policy_to_improve_efficiency_speed",
 )
@@ -1998,24 +1836,8 @@ _ext_constant_year_policy_change_energy = ExtConstant(
     },
     _root,
     {
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
     },
     "_ext_constant_year_policy_change_energy",
 )
@@ -2044,24 +1866,8 @@ _ext_constant_year_policy_to_improve_efficiency = ExtConstant(
     },
     _root,
     {
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
     },
     "_ext_constant_year_policy_to_improve_efficiency",
 )
@@ -2091,24 +1897,8 @@ _ext_constant_year_to_finish_energy_intensity_policies = ExtConstant(
     },
     _root,
     {
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
     },
     "_ext_constant_year_to_finish_energy_intensity_policies",
 )

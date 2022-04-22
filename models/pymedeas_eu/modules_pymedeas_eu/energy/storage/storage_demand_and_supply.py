@@ -166,18 +166,7 @@ def remaining_potential_elec_storage_by_res_techn():
             / max_capacity_elec_storage(),
             lambda: 0,
         ),
-        {
-            "RES elec": [
-                "hydro",
-                "geot elec",
-                "solid bioE elec",
-                "oceanic",
-                "wind onshore",
-                "wind offshore",
-                "solar PV",
-                "CSP",
-            ]
-        },
+        {"RES elec": _subscript_dict["RES elec"]},
         ["RES elec"],
     )
 

@@ -38,32 +38,6 @@ def b_lineal_regr_phaseout_oil_for_heat():
 
 
 @component.add(
-    name="efficiency coal for heat plants",
-    units="Dmnl",
-    comp_type="Data",
-    comp_subtype="External",
-)
-def efficiency_coal_for_heat_plants():
-    """
-    Efficiency of coal heat plants. We assume constant last data IEA.
-    """
-    return _ext_data_efficiency_coal_for_heat_plants(time())
-
-
-_ext_data_efficiency_coal_for_heat_plants = ExtData(
-    "../energy.xlsx",
-    "Austria",
-    "time_efficiencies",
-    "historic_efficiency_coal_heat_plants",
-    "interpolate",
-    {},
-    _root,
-    {},
-    "_ext_data_efficiency_coal_for_heat_plants",
-)
-
-
-@component.add(
     name="efficiency gases for heat plants",
     units="Dmnl",
     comp_type="Data",
@@ -86,32 +60,6 @@ _ext_data_efficiency_gases_for_heat_plants = ExtData(
     _root,
     {},
     "_ext_data_efficiency_gases_for_heat_plants",
-)
-
-
-@component.add(
-    name="efficiency liquids for heat plants",
-    units="Dmnl",
-    comp_type="Data",
-    comp_subtype="External",
-)
-def efficiency_liquids_for_heat_plants():
-    """
-    Efficiency of liquids heat plants. We assume constant last data IEA.
-    """
-    return _ext_data_efficiency_liquids_for_heat_plants(time())
-
-
-_ext_data_efficiency_liquids_for_heat_plants = ExtData(
-    "../energy.xlsx",
-    "Austria",
-    "time_efficiencies",
-    "historic_efficiency_liquids_heat_plants",
-    "interpolate",
-    {},
-    _root,
-    {},
-    "_ext_data_efficiency_liquids_for_heat_plants",
 )
 
 
@@ -139,6 +87,58 @@ def fed_heat_gas_plants_ej():
     Final energy demand of gas to produce heat.
     """
     return fed_heat_gascoal_ej() * share_gascoalgas_for_heat_plants()
+
+
+@component.add(
+    name="efficiency coal for heat plants",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
+def efficiency_coal_for_heat_plants():
+    """
+    Efficiency of coal heat plants. We assume constant last data IEA.
+    """
+    return _ext_data_efficiency_coal_for_heat_plants(time())
+
+
+_ext_data_efficiency_coal_for_heat_plants = ExtData(
+    "../energy.xlsx",
+    "Austria",
+    "time_efficiencies",
+    "historic_efficiency_coal_heat_plants",
+    "interpolate",
+    {},
+    _root,
+    {},
+    "_ext_data_efficiency_coal_for_heat_plants",
+)
+
+
+@component.add(
+    name="efficiency liquids for heat plants",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+)
+def efficiency_liquids_for_heat_plants():
+    """
+    Efficiency of liquids heat plants. We assume constant last data IEA.
+    """
+    return _ext_data_efficiency_liquids_for_heat_plants(time())
+
+
+_ext_data_efficiency_liquids_for_heat_plants = ExtData(
+    "../energy.xlsx",
+    "Austria",
+    "time_efficiencies",
+    "historic_efficiency_liquids_heat_plants",
+    "interpolate",
+    {},
+    _root,
+    {},
+    "_ext_data_efficiency_liquids_for_heat_plants",
+)
 
 
 @component.add(

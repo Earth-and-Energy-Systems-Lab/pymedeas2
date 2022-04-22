@@ -116,25 +116,6 @@ _delayfixed_check_liquids_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name='"constrain liquids exogenous growth? delayed 1yr"',
-    units="Dmnl",
-    comp_type="Stateful",
-    comp_subtype="DelayFixed",
-)
-def constrain_liquids_exogenous_growth_delayed_1yr():
-    return _delayfixed_constrain_liquids_exogenous_growth_delayed_1yr()
-
-
-_delayfixed_constrain_liquids_exogenous_growth_delayed_1yr = DelayFixed(
-    lambda: constrain_liquids_exogenous_growth(),
-    lambda: 1,
-    lambda: 1,
-    time_step,
-    "_delayfixed_constrain_liquids_exogenous_growth_delayed_1yr",
-)
-
-
-@component.add(
     name="conv oil to leave underground",
     units="EJ",
     comp_type="Auxiliary",
@@ -150,26 +131,6 @@ def conv_oil_to_leave_underground():
         lambda: rurr_conv_oil_until_start_year_plg()
         * share_rurr_conv_oil_to_leave_underground(),
     )
-
-
-@component.add(
-    name="cumulated conv oil extraction",
-    units="EJ",
-    comp_type="Stateful",
-    comp_subtype="Integ",
-)
-def cumulated_conv_oil_extraction():
-    """
-    Cumulated conventional oil extraction.
-    """
-    return _integ_cumulated_conv_oil_extraction()
-
-
-_integ_cumulated_conv_oil_extraction = Integ(
-    lambda: extraction_conv_oil_ej(),
-    lambda: cumulated_conv_oil_extraction_to_1995(),
-    "_integ_cumulated_conv_oil_extraction",
-)
 
 
 @component.add(
@@ -197,22 +158,6 @@ _ext_constant_cumulated_conv_oil_extraction_to_1995 = ExtConstant(
 
 
 @component.add(
-    name="cumulated tot agg extraction to 1995",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def cumulated_tot_agg_extraction_to_1995():
-    """
-    Cumulated total aggregated oil extraction to 1995.
-    """
-    return (
-        cumulated_conv_oil_extraction_to_1995()
-        + cumulated_unconv_oil_extraction_to_1995()
-    )
-
-
-@component.add(
     name="cumulated tot agg oil extraction",
     units="EJ",
     comp_type="Stateful",
@@ -229,26 +174,6 @@ _integ_cumulated_tot_agg_oil_extraction = Integ(
     lambda: extraction_tot_agg_oil_ej(),
     lambda: cumulated_tot_agg_extraction_to_1995(),
     "_integ_cumulated_tot_agg_oil_extraction",
-)
-
-
-@component.add(
-    name="cumulated unconv oil extraction",
-    units="EJ",
-    comp_type="Stateful",
-    comp_subtype="Integ",
-)
-def cumulated_unconv_oil_extraction():
-    """
-    Cumulated unconventional oil extracted.
-    """
-    return _integ_cumulated_unconv_oil_extraction()
-
-
-_integ_cumulated_unconv_oil_extraction = Integ(
-    lambda: extraction_unconv_oil_ej(),
-    lambda: cumulated_unconv_oil_extraction_to_1995(),
-    "_integ_cumulated_unconv_oil_extraction",
 )
 
 
@@ -287,6 +212,113 @@ def demand_conv_oil_ej():
     Demand of conventional oil. It is assumed that conventional oil covers the rest of the liquids demand after accounting for the contributions from other liquids and unconventional oil.
     """
     return np.maximum(ped_total_oil_ej() - extraction_unconv_oil_ej(), 0)
+
+
+@component.add(
+    name='"extraction unconv oil - tot agg"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def extraction_unconv_oil_tot_agg():
+    return extraction_tot_agg_oil_ej() * share_unconv_oil_vs_tot_agg()
+
+
+@component.add(
+    name="extraction unconv oil delayed",
+    units="EJ/Year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
+def extraction_unconv_oil_delayed():
+    """
+    Extraction of unconventional oil delayed 1 year. Data from Mohr et al (2015) for 1989.
+    """
+    return _delayfixed_extraction_unconv_oil_delayed()
+
+
+_delayfixed_extraction_unconv_oil_delayed = DelayFixed(
+    lambda: extraction_unconv_oil_ej(),
+    lambda: time_step(),
+    lambda: 1.09,
+    time_step,
+    "_delayfixed_extraction_unconv_oil_delayed",
+)
+
+
+@component.add(
+    name='"constrain liquids exogenous growth? delayed 1yr"',
+    units="Dmnl",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
+def constrain_liquids_exogenous_growth_delayed_1yr():
+    return _delayfixed_constrain_liquids_exogenous_growth_delayed_1yr()
+
+
+_delayfixed_constrain_liquids_exogenous_growth_delayed_1yr = DelayFixed(
+    lambda: constrain_liquids_exogenous_growth(),
+    lambda: 1,
+    lambda: 1,
+    time_step,
+    "_delayfixed_constrain_liquids_exogenous_growth_delayed_1yr",
+)
+
+
+@component.add(
+    name="cumulated conv oil extraction",
+    units="EJ",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
+def cumulated_conv_oil_extraction():
+    """
+    Cumulated conventional oil extraction.
+    """
+    return _integ_cumulated_conv_oil_extraction()
+
+
+_integ_cumulated_conv_oil_extraction = Integ(
+    lambda: extraction_conv_oil_ej(),
+    lambda: cumulated_conv_oil_extraction_to_1995(),
+    "_integ_cumulated_conv_oil_extraction",
+)
+
+
+@component.add(
+    name="cumulated tot agg extraction to 1995",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def cumulated_tot_agg_extraction_to_1995():
+    """
+    Cumulated total aggregated oil extraction to 1995.
+    """
+    return (
+        cumulated_conv_oil_extraction_to_1995()
+        + cumulated_unconv_oil_extraction_to_1995()
+    )
+
+
+@component.add(
+    name="cumulated unconv oil extraction",
+    units="EJ",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
+def cumulated_unconv_oil_extraction():
+    """
+    Cumulated unconventional oil extracted.
+    """
+    return _integ_cumulated_unconv_oil_extraction()
+
+
+_integ_cumulated_unconv_oil_extraction = Integ(
+    lambda: extraction_unconv_oil_ej(),
+    lambda: cumulated_unconv_oil_extraction_to_1995(),
+    "_integ_cumulated_unconv_oil_extraction",
+)
 
 
 @component.add(
@@ -376,38 +408,6 @@ def extraction_tot_agg_oil_ej():
             ),
         ),
     )
-
-
-@component.add(
-    name='"extraction unconv oil - tot agg"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def extraction_unconv_oil_tot_agg():
-    return extraction_tot_agg_oil_ej() * share_unconv_oil_vs_tot_agg()
-
-
-@component.add(
-    name="extraction unconv oil delayed",
-    units="EJ/Year",
-    comp_type="Stateful",
-    comp_subtype="DelayFixed",
-)
-def extraction_unconv_oil_delayed():
-    """
-    Extraction of unconventional oil delayed 1 year. Data from Mohr et al (2015) for 1989.
-    """
-    return _delayfixed_extraction_unconv_oil_delayed()
-
-
-_delayfixed_extraction_unconv_oil_delayed = DelayFixed(
-    lambda: extraction_unconv_oil_ej(),
-    lambda: time_step(),
-    lambda: 1.09,
-    time_step,
-    "_delayfixed_extraction_unconv_oil_delayed",
-)
 
 
 @component.add(
@@ -710,6 +710,20 @@ _ext_constant_p_constraint_growth_extraction_unconv_oil = ExtConstant(
 
 
 @component.add(
+    name="PEC conv oil", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
+def pec_conv_oil():
+    return real_extraction_conv_oil_ej() + imports_aut_conv_oil_from_row_ej()
+
+
+@component.add(
+    name="PEC unconv oil", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
+def pec_unconv_oil():
+    return real_extraction_unconv_oil_ej() + imports_aut_unconv_oil_from_row_ej()
+
+
+@component.add(
     name="PES oil EJ delayed",
     units="EJ/Year",
     comp_type="Stateful",
@@ -752,20 +766,6 @@ def pes_total_oil_ej_aut():
     Total oil (conventional + unconventional) extraction.
     """
     return real_extraction_conv_oil_ej() + real_extraction_unconv_oil_ej()
-
-
-@component.add(
-    name="PEC conv oil", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def pec_conv_oil():
-    return real_extraction_conv_oil_ej() + imports_aut_conv_oil_from_row_ej()
-
-
-@component.add(
-    name="PEC unconv oil", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def pec_unconv_oil():
-    return real_extraction_unconv_oil_ej() + imports_aut_unconv_oil_from_row_ej()
 
 
 @component.add(

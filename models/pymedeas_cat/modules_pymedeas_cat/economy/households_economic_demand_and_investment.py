@@ -5,6 +5,27 @@ Translated using PySD version 3.0.0
 
 
 @component.add(
+    name="beta 1 HD", units="Dmnl", comp_type="Constant", comp_subtype="External"
+)
+def beta_1_hd():
+    """
+    Beta coefficient of panel data regression of households demand.
+    """
+    return _ext_constant_beta_1_hd()
+
+
+_ext_constant_beta_1_hd = ExtConstant(
+    "../economy.xlsx",
+    "Catalonia",
+    "beta_1_HD",
+    {},
+    _root,
+    {},
+    "_ext_constant_beta_1_hd",
+)
+
+
+@component.add(
     name="beta 0 GFCF",
     units="Dmnl",
     subscripts=["sectors"],
@@ -24,24 +45,7 @@ _ext_constant_beta_0_gfcf = ExtConstant(
     "beta_0_GFCF*",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_constant_beta_0_gfcf",
 )
 
@@ -66,24 +70,7 @@ _ext_constant_beta_0_hd = ExtConstant(
     "beta_0_HD*",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_constant_beta_0_hd",
 )
 
@@ -106,27 +93,6 @@ _ext_constant_beta_1_gfcf = ExtConstant(
     _root,
     {},
     "_ext_constant_beta_1_gfcf",
-)
-
-
-@component.add(
-    name="beta 1 HD", units="Dmnl", comp_type="Constant", comp_subtype="External"
-)
-def beta_1_hd():
-    """
-    Beta coefficient of panel data regression of households demand.
-    """
-    return _ext_constant_beta_1_hd()
-
-
-_ext_constant_beta_1_hd = ExtConstant(
-    "../economy.xlsx",
-    "Catalonia",
-    "beta_1_HD",
-    {},
-    _root,
-    {},
-    "_ext_constant_beta_1_hd",
 )
 
 
@@ -190,24 +156,7 @@ _ext_lookup_historic_gfcf = ExtLookup(
     "historic_GFCF",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_lookup_historic_gfcf",
 )
 
@@ -233,24 +182,7 @@ _ext_lookup_historic_hd = ExtLookup(
     "historic_HD",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_lookup_historic_hd",
 )
 

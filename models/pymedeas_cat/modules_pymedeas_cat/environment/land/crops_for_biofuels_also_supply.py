@@ -122,21 +122,6 @@ _ext_constant_biofuel_production_2015 = ExtConstant(
 
 
 @component.add(
-    name="Biofuels 3gen land compet available",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def biofuels_3gen_land_compet_available():
-    """
-    Remaining potential land available (dedicated to 2nd generation) as given as a fraction of unity. We assume that no new land starts directly to produce biofuels 3rd generation biofuels.
-    """
-    return (
-        max_land_compet_biofuels_2gen() - land_compet_biofuels_3gen_mha()
-    ) / max_land_compet_biofuels_2gen()
-
-
-@component.add(
     name="Biofuels land compet available",
     units="Dmnl",
     comp_type="Auxiliary",
@@ -150,6 +135,31 @@ def biofuels_land_compet_available():
         max_land_compet_biofuels_2gen()
         - land_compet_biofuels_2gen_mha()
         - land_compet_biofuels_3gen_mha()
+    ) / max_land_compet_biofuels_2gen()
+
+
+@component.add(
+    name="EJ per ktoe", units="EJ/ktoe", comp_type="Constant", comp_subtype="Normal"
+)
+def ej_per_ktoe():
+    """
+    1 ktoe = 0.000041868 EJ.
+    """
+    return 4.1868e-05
+
+
+@component.add(
+    name="Biofuels 3gen land compet available",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def biofuels_3gen_land_compet_available():
+    """
+    Remaining potential land available (dedicated to 2nd generation) as given as a fraction of unity. We assume that no new land starts directly to produce biofuels 3rd generation biofuels.
+    """
+    return (
+        max_land_compet_biofuels_2gen() - land_compet_biofuels_3gen_mha()
     ) / max_land_compet_biofuels_2gen()
 
 
@@ -174,16 +184,6 @@ _ext_constant_efficiency_improvement_biofuels_3gen = ExtConstant(
     {},
     "_ext_constant_efficiency_improvement_biofuels_3gen",
 )
-
-
-@component.add(
-    name="EJ per ktoe", units="EJ/ktoe", comp_type="Constant", comp_subtype="Normal"
-)
-def ej_per_ktoe():
-    """
-    1 ktoe = 0.000041868 EJ.
-    """
-    return 4.1868e-05
 
 
 @component.add(
@@ -281,19 +281,6 @@ def land_compet_available_for_biofuels_2gen_2015():
 
 
 @component.add(
-    name="Land compet biofuels 2gen abandonned",
-    units="MHa",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def land_compet_biofuels_2gen_abandonned():
-    """
-    Land previously dedicated to produce biofuels 2nd generation and abandoned due to reduced liquids demand.
-    """
-    return land_compet_biofuels_2gen_mha() * share_biofuels_overcapacity()
-
-
-@component.add(
     name="Land compet biofuels 2gen Mha",
     units="MHa",
     comp_type="Stateful",
@@ -387,6 +374,43 @@ _ext_constant_land_productivity_biofuels_2gen_ej_mha = ExtConstant(
 
 
 @component.add(
+    name='"max additional potential land for biofuels (compet)"',
+    units="MHa",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def max_additional_potential_land_for_biofuels_compet():
+    """
+    Additional (apart from historically used) available land for biofuels in competition with other uses as a share of total agricultural land.
+    """
+    return _ext_constant_max_additional_potential_land_for_biofuels_compet()
+
+
+_ext_constant_max_additional_potential_land_for_biofuels_compet = ExtConstant(
+    "../energy.xlsx",
+    "Austria",
+    "max_additional_pot_land_biofuels",
+    {},
+    _root,
+    {},
+    "_ext_constant_max_additional_potential_land_for_biofuels_compet",
+)
+
+
+@component.add(
+    name="Land compet biofuels 2gen abandonned",
+    units="MHa",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def land_compet_biofuels_2gen_abandonned():
+    """
+    Land previously dedicated to produce biofuels 2nd generation and abandoned due to reduced liquids demand.
+    """
+    return land_compet_biofuels_2gen_mha() * share_biofuels_overcapacity()
+
+
+@component.add(
     name="Land shifted to biofuels 3gen",
     units="MHa/Year",
     comp_type="Auxiliary",
@@ -411,30 +435,6 @@ def land_shifted_to_biofuels_3gen():
             * land_compet_2gen_vs_total_land_compet(),
         ),
     )
-
-
-@component.add(
-    name='"max additional potential land for biofuels (compet)"',
-    units="MHa",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def max_additional_potential_land_for_biofuels_compet():
-    """
-    Additional (apart from historically used) available land for biofuels in competition with other uses as a share of total agricultural land.
-    """
-    return _ext_constant_max_additional_potential_land_for_biofuels_compet()
-
-
-_ext_constant_max_additional_potential_land_for_biofuels_compet = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "max_additional_pot_land_biofuels",
-    {},
-    _root,
-    {},
-    "_ext_constant_max_additional_potential_land_for_biofuels_compet",
-)
 
 
 @component.add(
@@ -573,21 +573,6 @@ _ext_constant_past_biofuels_2gen = ExtConstant(
 
 
 @component.add(
-    name="PEavail tot biofuels land compet EJ",
-    units="EJ/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def peavail_tot_biofuels_land_compet_ej():
-    """
-    Primary energy available of biofuels from dedicated crops -in land competition- (2nd and 3rd generation).
-    """
-    return (
-        peavail_biofuels_2gen_land_compet_ej() + peavail_biofuels_3gen_land_compet_ej()
-    )
-
-
-@component.add(
     name='"PE biofuels prod 2gen+3gen EJ"',
     units="EJ/Year",
     comp_type="Auxiliary",
@@ -629,6 +614,21 @@ def peavail_biofuels_3gen_land_compet_ej():
     """
     return potential_peavail_biofuels_prod_3gen_ej() * (
         1 - share_biofuels_overcapacity()
+    )
+
+
+@component.add(
+    name="PEavail tot biofuels land compet EJ",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def peavail_tot_biofuels_land_compet_ej():
+    """
+    Primary energy available of biofuels from dedicated crops -in land competition- (2nd and 3rd generation).
+    """
+    return (
+        peavail_biofuels_2gen_land_compet_ej() + peavail_biofuels_3gen_land_compet_ej()
     )
 
 

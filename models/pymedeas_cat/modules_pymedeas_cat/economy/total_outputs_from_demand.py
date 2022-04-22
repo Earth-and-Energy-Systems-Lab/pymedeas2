@@ -55,6 +55,32 @@ def annual_gdp_growth_rate_aut():
 
 
 @component.add(
+    name="Energy scarcity feedback shortage coeff AUT",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def energy_scarcity_feedback_shortage_coeff_aut():
+    """
+    MIN(1, real FE consumption by fuel before heat correction[final sources]/Required FED by fuel before heat correction [final sources]) This coefficient adapts the real final energy by fuel to be used by economic sectors taking into account energy availability.
+    """
+    return if_then_else(
+        activate_energy_scarcity_feedback() == 1,
+        lambda: np.minimum(
+            1,
+            zidz(
+                real_fe_consumption_by_fuel_before_heat_correction(),
+                required_fed_by_fuel_before_heat_correction(),
+            ),
+        ),
+        lambda: xr.DataArray(
+            1, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        ),
+    )
+
+
+@component.add(
     name="CC impacts feedback shortage coeff",
     units="Dmnl",
     comp_type="Auxiliary",
@@ -92,32 +118,6 @@ def domestic_demand_by_sector():
     EU28 total final demand by sector
     """
     return demand_by_sector_fd_adjusted()
-
-
-@component.add(
-    name="Energy scarcity feedback shortage coeff AUT",
-    units="Dmnl",
-    subscripts=["final sources"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def energy_scarcity_feedback_shortage_coeff_aut():
-    """
-    MIN(1, real FE consumption by fuel before heat correction[final sources]/Required FED by fuel before heat correction [final sources]) This coefficient adapts the real final energy by fuel to be used by economic sectors taking into account energy availability.
-    """
-    return if_then_else(
-        activate_energy_scarcity_feedback() == 1,
-        lambda: np.minimum(
-            1,
-            zidz(
-                real_fe_consumption_by_fuel_before_heat_correction(),
-                required_fed_by_fuel_before_heat_correction(),
-            ),
-        ),
-        lambda: xr.DataArray(
-            1, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
-        ),
-    )
 
 
 @component.add(
@@ -332,11 +332,11 @@ def real_fe_consumption_by_fuel():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["electricity"]}] = total_fe_elec_consumption_ej()
-    value.loc[{"final sources": ["heat"]}] = total_fe_heat_consumption_ej()
-    value.loc[{"final sources": ["liquids"]}] = real_fe_consumption_liquids_ej()
-    value.loc[{"final sources": ["solids"]}] = real_fe_consumption_solids_ej()
-    value.loc[{"final sources": ["gases"]}] = real_fe_consumption_gases_ej()
+    value.loc[["electricity"]] = total_fe_elec_consumption_ej()
+    value.loc[["heat"]] = total_fe_heat_consumption_ej()
+    value.loc[["liquids"]] = real_fe_consumption_liquids_ej()
+    value.loc[["solids"]] = real_fe_consumption_solids_ej()
+    value.loc[["gases"]] = real_fe_consumption_gases_ej()
     return value
 
 
@@ -351,21 +351,19 @@ def real_fe_consumption_by_fuel_before_heat_correction():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["electricity"]}] = float(
-        real_fe_consumption_by_fuel().loc["electricity"]
+    value.loc[["electricity"]] = float(real_fe_consumption_by_fuel().loc["electricity"])
+    value.loc[["heat"]] = float(real_fe_consumption_by_fuel().loc["heat"]) / (
+        1 + ratio_fed_for_heatnc_vs_fed_for_heatcom()
     )
-    value.loc[{"final sources": ["heat"]}] = float(
-        real_fe_consumption_by_fuel().loc["heat"]
-    ) / (1 + ratio_fed_for_heatnc_vs_fed_for_heatcom())
-    value.loc[{"final sources": ["liquids"]}] = float(
-        real_fe_consumption_by_fuel().loc["liquids"]
-    ) / (1 - float(share_feh_over_fed_by_final_fuel().loc["liquids"]))
-    value.loc[{"final sources": ["gases"]}] = float(
-        real_fe_consumption_by_fuel().loc["gases"]
-    ) / (1 - float(share_feh_over_fed_by_final_fuel().loc["gases"]))
-    value.loc[{"final sources": ["solids"]}] = float(
-        real_fe_consumption_by_fuel().loc["solids"]
-    ) / (1 - float(share_feh_over_fed_by_final_fuel().loc["solids"]))
+    value.loc[["liquids"]] = float(real_fe_consumption_by_fuel().loc["liquids"]) / (
+        1 - float(share_feh_over_fed_by_final_fuel().loc["liquids"])
+    )
+    value.loc[["gases"]] = float(real_fe_consumption_by_fuel().loc["gases"]) / (
+        1 - float(share_feh_over_fed_by_final_fuel().loc["gases"])
+    )
+    value.loc[["solids"]] = float(real_fe_consumption_by_fuel().loc["solids"]) / (
+        1 - float(share_feh_over_fed_by_final_fuel().loc["solids"])
+    )
     return value
 
 
@@ -383,21 +381,19 @@ def real_fec_before_heat_dem_corr():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["electricity"]}] = float(
-        real_fe_consumption_by_fuel().loc["electricity"]
+    value.loc[["electricity"]] = float(real_fe_consumption_by_fuel().loc["electricity"])
+    value.loc[["heat"]] = float(real_fe_consumption_by_fuel().loc["heat"]) / (
+        1 + ratio_fed_for_heatnc_vs_fed_for_heatcom()
     )
-    value.loc[{"final sources": ["heat"]}] = float(
-        real_fe_consumption_by_fuel().loc["heat"]
-    ) / (1 + ratio_fed_for_heatnc_vs_fed_for_heatcom())
-    value.loc[{"final sources": ["liquids"]}] = float(
-        real_fe_consumption_by_fuel().loc["liquids"]
-    ) / (1 - float(share_feh_over_fed_by_final_fuel().loc["liquids"]))
-    value.loc[{"final sources": ["gases"]}] = float(
-        real_fe_consumption_by_fuel().loc["gases"]
-    ) / (1 - float(share_feh_over_fed_by_final_fuel().loc["gases"]))
-    value.loc[{"final sources": ["solids"]}] = float(
-        real_fe_consumption_by_fuel().loc["solids"]
-    ) / (1 - float(share_feh_over_fed_by_final_fuel().loc["solids"]))
+    value.loc[["liquids"]] = float(real_fe_consumption_by_fuel().loc["liquids"]) / (
+        1 - float(share_feh_over_fed_by_final_fuel().loc["liquids"])
+    )
+    value.loc[["gases"]] = float(real_fe_consumption_by_fuel().loc["gases"]) / (
+        1 - float(share_feh_over_fed_by_final_fuel().loc["gases"])
+    )
+    value.loc[["solids"]] = float(real_fe_consumption_by_fuel().loc["solids"]) / (
+        1 - float(share_feh_over_fed_by_final_fuel().loc["solids"])
+    )
     return value
 
 
@@ -571,19 +567,19 @@ def required_fed_by_fuel():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["electricity"]}] = float(
+    value.loc[["electricity"]] = float(
         required_fed_by_fuel_before_heat_correction().loc["electricity"]
     )
-    value.loc[{"final sources": ["heat"]}] = float(
+    value.loc[["heat"]] = float(
         required_fed_by_fuel_before_heat_correction().loc["heat"]
     ) * (1 + ratio_fed_for_heatnc_vs_fed_for_heatcom())
-    value.loc[{"final sources": ["liquids"]}] = float(
+    value.loc[["liquids"]] = float(
         required_fed_by_fuel_before_heat_correction().loc["liquids"]
     ) * (1 - float(share_feh_over_fed_by_final_fuel().loc["liquids"]))
-    value.loc[{"final sources": ["gases"]}] = float(
+    value.loc[["gases"]] = float(
         required_fed_by_fuel_before_heat_correction().loc["gases"]
     ) * (1 - float(share_feh_over_fed_by_final_fuel().loc["gases"]))
-    value.loc[{"final sources": ["solids"]}] = float(
+    value.loc[["solids"]] = float(
         required_fed_by_fuel_before_heat_correction().loc["solids"]
     ) * (1 - float(share_feh_over_fed_by_final_fuel().loc["solids"]))
     return value

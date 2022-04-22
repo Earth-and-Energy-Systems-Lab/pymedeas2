@@ -43,21 +43,6 @@ def coal_to_leave_underground():
 
 
 @component.add(
-    name="consumption UE coal emissions relevant EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def consumption_ue_coal_emissions_relevant_ej():
-    """
-    Consumption of emission-relevant coal, i.e. excepting the resource used for non-energy uses.
-    """
-    return np.maximum(
-        0, pec_coal() - float(nonenergy_use_demand_by_final_fuel_ej().loc["solids"])
-    )
-
-
-@component.add(
     name="Cumulated coal extraction",
     units="EJ",
     comp_type="Stateful",
@@ -75,6 +60,68 @@ _integ_cumulated_coal_extraction = Integ(
     lambda: cumulated_coal_extraction_to_1995(),
     "_integ_cumulated_coal_extraction",
 )
+
+
+@component.add(
+    name="extraction coal AUT", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
+def extraction_coal_aut():
+    """
+    Annual extraction of coal.
+    """
+    return if_then_else(
+        rurr_coal() < 0,
+        lambda: 0,
+        lambda: if_then_else(
+            np.logical_or(
+                time() < 2016,
+                np.logical_or(unlimited_nre() == 1, unlimited_coal() == 1),
+            ),
+            lambda: ped_domestic_aut_coal_ej(),
+            lambda: np.minimum(ped_domestic_aut_coal_ej(), max_extraction_coal_ej()),
+        ),
+    )
+
+
+@component.add(
+    name="extraction coal Mtoe",
+    units="MToe/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def extraction_coal_mtoe():
+    """
+    Annual extraction of coal.
+    """
+    return extraction_coal_aut() * mtoe_per_ej()
+
+
+@component.add(
+    name="extraction coal without CTL EJ",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def extraction_coal_without_ctl_ej():
+    """
+    Extraction of conventional gas excepting the resource used to produce GTL.
+    """
+    return np.maximum(extraction_coal_aut() - extraction_coal_for_ctl(), 0)
+
+
+@component.add(
+    name="consumption UE coal emissions relevant EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def consumption_ue_coal_emissions_relevant_ej():
+    """
+    Consumption of emission-relevant coal, i.e. excepting the resource used for non-energy uses.
+    """
+    return np.maximum(
+        0, pec_coal() - float(nonenergy_use_demand_by_final_fuel_ej().loc["solids"])
+    )
 
 
 @component.add(
@@ -99,27 +146,6 @@ _ext_constant_cumulated_coal_extraction_to_1995 = ExtConstant(
     {},
     "_ext_constant_cumulated_coal_extraction_to_1995",
 )
-
-
-@component.add(
-    name="extraction coal AUT", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def extraction_coal_aut():
-    """
-    Annual extraction of coal.
-    """
-    return if_then_else(
-        rurr_coal() < 0,
-        lambda: 0,
-        lambda: if_then_else(
-            np.logical_or(
-                time() < 2016,
-                np.logical_or(unlimited_nre() == 1, unlimited_coal() == 1),
-            ),
-            lambda: ped_domestic_aut_coal_ej(),
-            lambda: np.minimum(ped_domestic_aut_coal_ej(), max_extraction_coal_ej()),
-        ),
-    )
 
 
 @component.add(
@@ -150,32 +176,6 @@ def extraction_coal_for_ctl():
     Extraction of coal for CTL. CTL demand is given priority over other uses since it is an exogenous assumption depending on the scenario.
     """
     return ped_coal_for_ctl_ej()
-
-
-@component.add(
-    name="extraction coal Mtoe",
-    units="MToe/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def extraction_coal_mtoe():
-    """
-    Annual extraction of coal.
-    """
-    return extraction_coal_aut() * mtoe_per_ej()
-
-
-@component.add(
-    name="extraction coal without CTL EJ",
-    units="EJ/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def extraction_coal_without_ctl_ej():
-    """
-    Extraction of conventional gas excepting the resource used to produce GTL.
-    """
-    return np.maximum(extraction_coal_aut() - extraction_coal_for_ctl(), 0)
 
 
 @component.add(

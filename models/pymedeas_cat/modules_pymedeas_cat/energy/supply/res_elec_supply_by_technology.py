@@ -97,62 +97,6 @@ def mtoe_per_ej():
 
 
 @component.add(
-    name="PE real generation RES elec",
-    units="EJ",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def pe_real_generation_res_elec():
-    """
-    Primary energy supply of electricity production of RES.
-    """
-    value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-    )
-    value.loc[{"RES elec": ["hydro"]}] = (
-        float(real_generation_res_elec_twh().loc["hydro"])
-        * ej_per_twh()
-        * res_to_fossil_accounting()
-    )
-    value.loc[{"RES elec": ["geot elec"]}] = (
-        float(real_generation_res_elec_twh().loc["geot elec"])
-        * ej_per_twh()
-        * res_to_fossil_accounting()
-    )
-    value.loc[{"RES elec": ["solid bioE elec"]}] = (
-        float(real_generation_res_elec_twh().loc["solid bioE elec"])
-        / efficiency_conversion_bioe_to_elec()
-    ) * ej_per_twh()
-    value.loc[{"RES elec": ["oceanic"]}] = (
-        float(real_generation_res_elec_twh().loc["oceanic"])
-        * ej_per_twh()
-        * res_to_fossil_accounting()
-    )
-    value.loc[{"RES elec": ["wind onshore"]}] = (
-        float(real_generation_res_elec_twh().loc["wind onshore"])
-        * ej_per_twh()
-        * res_to_fossil_accounting()
-    )
-    value.loc[{"RES elec": ["wind offshore"]}] = (
-        float(real_generation_res_elec_twh().loc["wind offshore"])
-        * ej_per_twh()
-        * res_to_fossil_accounting()
-    )
-    value.loc[{"RES elec": ["solar PV"]}] = (
-        float(real_generation_res_elec_twh().loc["solar PV"])
-        * ej_per_twh()
-        * res_to_fossil_accounting()
-    )
-    value.loc[{"RES elec": ["CSP"]}] = (
-        float(real_generation_res_elec_twh().loc["CSP"])
-        * ej_per_twh()
-        * res_to_fossil_accounting()
-    )
-    return value
-
-
-@component.add(
     name="PE BioW for Elec generation Mtoe",
     units="MToe/Year",
     comp_type="Auxiliary",
@@ -198,6 +142,62 @@ def pe_losses_bioe_for_elec_ej():
         float(pe_real_generation_res_elec().loc["solid bioE elec"])
         - float(real_generation_res_elec_twh().loc["solid bioE elec"]) * ej_per_twh()
     )
+
+
+@component.add(
+    name="PE real generation RES elec",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def pe_real_generation_res_elec():
+    """
+    Primary energy supply of electricity production of RES.
+    """
+    value = xr.DataArray(
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+    )
+    value.loc[["hydro"]] = (
+        float(real_generation_res_elec_twh().loc["hydro"])
+        * ej_per_twh()
+        * res_to_fossil_accounting()
+    )
+    value.loc[["geot elec"]] = (
+        float(real_generation_res_elec_twh().loc["geot elec"])
+        * ej_per_twh()
+        * res_to_fossil_accounting()
+    )
+    value.loc[["solid bioE elec"]] = (
+        float(real_generation_res_elec_twh().loc["solid bioE elec"])
+        / efficiency_conversion_bioe_to_elec()
+    ) * ej_per_twh()
+    value.loc[["oceanic"]] = (
+        float(real_generation_res_elec_twh().loc["oceanic"])
+        * ej_per_twh()
+        * res_to_fossil_accounting()
+    )
+    value.loc[["wind onshore"]] = (
+        float(real_generation_res_elec_twh().loc["wind onshore"])
+        * ej_per_twh()
+        * res_to_fossil_accounting()
+    )
+    value.loc[["wind offshore"]] = (
+        float(real_generation_res_elec_twh().loc["wind offshore"])
+        * ej_per_twh()
+        * res_to_fossil_accounting()
+    )
+    value.loc[["solar PV"]] = (
+        float(real_generation_res_elec_twh().loc["solar PV"])
+        * ej_per_twh()
+        * res_to_fossil_accounting()
+    )
+    value.loc[["CSP"]] = (
+        float(real_generation_res_elec_twh().loc["CSP"])
+        * ej_per_twh()
+        * res_to_fossil_accounting()
+    )
+    return value
 
 
 @component.add(

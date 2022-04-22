@@ -5,16 +5,6 @@ Translated using PySD version 3.0.0
 
 
 @component.add(
-    name="CH4 emissions COAL test",
-    units="MtCH4",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def ch4_emissions_coal_test():
-    return ch4_emissions_coal_without_ctl() + ch4_emissions_ctl()
-
-
-@component.add(
     name="CH4 emissions extraction coal",
     units="MtCH4",
     comp_type="Auxiliary",
@@ -105,6 +95,16 @@ def ch4_emissions_gas_test():
 )
 def ch4_emissions_oil_test():
     return ch4_emissions_oil()
+
+
+@component.add(
+    name="CH4 emissions COAL test",
+    units="MtCH4",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def ch4_emissions_coal_test():
+    return ch4_emissions_coal_without_ctl() + ch4_emissions_ctl()
 
 
 @component.add(
@@ -462,9 +462,9 @@ def total_per_fe_ch4_emissions():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["electricity"]}] = total_elec_nres_ch4_emissions()
-    value.loc[{"final sources": ["heat"]}] = total_heat_ch4_emissions()
-    value.loc[{"final sources": ["liquids"]}] = liquids_fe_ch4_emissions()
-    value.loc[{"final sources": ["gases"]}] = gases_fe_ch4_emission()
-    value.loc[{"final sources": ["solids"]}] = solids_fe_ch4_emissions()
+    value.loc[["electricity"]] = total_elec_nres_ch4_emissions()
+    value.loc[["heat"]] = total_heat_ch4_emissions()
+    value.loc[["liquids"]] = liquids_fe_ch4_emissions()
+    value.loc[["gases"]] = gases_fe_ch4_emission()
+    value.loc[["solids"]] = solids_fe_ch4_emissions()
     return value

@@ -173,18 +173,7 @@ _ext_data_invest_cost_res_elec = ExtData(
     "interpolate",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_data_invest_cost_res_elec",
 )
 

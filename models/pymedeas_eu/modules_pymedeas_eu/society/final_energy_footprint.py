@@ -15,6 +15,34 @@ def coverage_energy_rate():
 
 
 @component.add(
+    name="Energy embedded in EU exports by sector and fuel",
+    units="EJ",
+    subscripts=["final sources", "sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def energy_embedded_in_eu_exports_by_sector_and_fuel():
+    """
+    Final energy embedded in EU28 exports.Energy required to produce the output necessary to satisfy Rest of the World demand of EU28 products
+    """
+    return (
+        final_energy_intensity_by_sector_and_fuel_eu()
+        * (
+            xr.DataArray(
+                0,
+                {
+                    "final sources": _subscript_dict["final sources"],
+                    "sectors": _subscript_dict["sectors"],
+                },
+                ["final sources", "sectors"],
+            )
+            + total_domestic_output_required_for_exports_by_sector()
+        )
+        / m_per_t()
+    )
+
+
+@component.add(
     name="Energy embedded in EU imports by sector and fuel",
     units="EJ",
     subscripts=["final sources", "sectors"],
@@ -58,34 +86,6 @@ def final_energy_footprint_by_fuel():
         + required_fed_sectors_by_fuel()
         + total_energy_embedded_in_eu28_imports()
         - total_energy_embedded_in_eu28_exports()
-    )
-
-
-@component.add(
-    name="Energy embedded in EU exports by sector and fuel",
-    units="EJ",
-    subscripts=["final sources", "sectors"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def energy_embedded_in_eu_exports_by_sector_and_fuel():
-    """
-    Final energy embedded in EU28 exports.Energy required to produce the output necessary to satisfy Rest of the World demand of EU28 products
-    """
-    return (
-        final_energy_intensity_by_sector_and_fuel_eu()
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "final sources": _subscript_dict["final sources"],
-                    "sectors": _subscript_dict["sectors"],
-                },
-                ["final sources", "sectors"],
-            )
-            + total_domestic_output_required_for_exports_by_sector()
-        )
-        / m_per_t()
     )
 
 

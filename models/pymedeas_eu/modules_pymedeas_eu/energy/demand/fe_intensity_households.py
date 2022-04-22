@@ -44,11 +44,9 @@ def change_total_intensity_to_rest():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["liquids"]}] = 1 - step(__data["time"], 0.78, 2009)
-    value.loc[{"final sources": ["gases"]}] = 1 - step(__data["time"], 0.025, 2009)
-    value.loc[{"final sources": ["electricity"]}] = 1 - step(
-        __data["time"], 0.007, 2009
-    )
+    value.loc[["liquids"]] = 1 - step(__data["time"], 0.78, 2009)
+    value.loc[["gases"]] = 1 - step(__data["time"], 0.025, 2009)
+    value.loc[["electricity"]] = 1 - step(__data["time"], 0.007, 2009)
     return value
 
 
@@ -144,30 +142,26 @@ def energy_intensity_of_households_rest():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["liquids"]}] = if_then_else(
+    value.loc[["liquids"]] = if_then_else(
         float(activate_bottom_up_method().loc["Households"]) == 1,
         lambda: float(evol_final_energy_intensity_h().loc["liquids"])
         * float(change_total_intensity_to_rest().loc["liquids"]),
         lambda: float(evol_final_energy_intensity_h().loc["liquids"]),
     )
-    value.loc[{"final sources": ["solids"]}] = float(
-        evol_final_energy_intensity_h().loc["solids"]
-    )
-    value.loc[{"final sources": ["gases"]}] = if_then_else(
+    value.loc[["solids"]] = float(evol_final_energy_intensity_h().loc["solids"])
+    value.loc[["gases"]] = if_then_else(
         float(activate_bottom_up_method().loc["Households"]) == 1,
         lambda: float(evol_final_energy_intensity_h().loc["gases"])
         * float(change_total_intensity_to_rest().loc["gases"]),
         lambda: float(evol_final_energy_intensity_h().loc["gases"]),
     )
-    value.loc[{"final sources": ["electricity"]}] = if_then_else(
+    value.loc[["electricity"]] = if_then_else(
         float(activate_bottom_up_method().loc["Households"]) == 1,
         lambda: float(evol_final_energy_intensity_h().loc["electricity"])
         * float(change_total_intensity_to_rest().loc["electricity"]),
         lambda: float(evol_final_energy_intensity_h().loc["electricity"]),
     )
-    value.loc[{"final sources": ["heat"]}] = float(
-        evol_final_energy_intensity_h().loc["heat"]
-    )
+    value.loc[["heat"]] = float(evol_final_energy_intensity_h().loc["heat"])
     return value
 
 

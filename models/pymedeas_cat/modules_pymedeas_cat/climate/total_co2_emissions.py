@@ -119,6 +119,106 @@ def afforestation_program_2020_gtco2():
 
 
 @component.add(
+    name="C per CO2", units="GtC/GTCO2e", comp_type="Constant", comp_subtype="Normal"
+)
+def c_per_co2():
+    """
+    1 kg of CO2 contains 3/11 of carbon.
+    """
+    return 3 / 11
+
+
+@component.add(
+    name="CH4 emissions GTL",
+    units="MtCH4",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def ch4_emissions_gtl():
+    """
+    CH4 emissions GTL.
+    """
+    return ped_nat_gas_for_gtl_ej() * gch4_per_mj_gtl() * mj_per_ej() / g_per_mt()
+
+
+@component.add(
+    name="CH4 emissions oil",
+    units="MtCH4",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def ch4_emissions_oil():
+    """
+    CH4 emissions oil.
+    """
+    return pec_total_oil() * gch4_per_mj_oil() * mj_per_ej() / g_per_mt()
+
+
+@component.add(
+    name="CH4 emissions unconv gas",
+    units="MtCH4",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def ch4_emissions_unconv_gas():
+    """
+    CH4 emissions unconventional gas.
+    """
+    return (
+        (
+            pec_unconv_gas()
+            - ped_nat_gas_for_gtl_ej() * (1 - share_conv_vs_total_gas_extraction())
+        )
+        * gch4_per_mj_unconv_gas()
+        * mj_per_ej()
+        / g_per_mt()
+    )
+
+
+@component.add(
+    name="CO2 emissions peat",
+    units="GtCO2/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def co2_emissions_peat():
+    """
+    CO2 emissions from peat.
+    """
+    return pes_peat_ej() * gco2_per_mj_shale_oil() * mj_per_ej() / g_per_gt()
+
+
+@component.add(
+    name="CO2 emissions unconv gas",
+    units="GtCO2/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def co2_emissions_unconv_gas():
+    """
+    CO2 emissions from unconventional gas.
+    """
+    return (
+        real_consumption_unconv_gas_emissions_relevant_ej()
+        * gco2_per_mj_unconv_gas()
+        * mj_per_ej()
+        / g_per_gt()
+    )
+
+
+@component.add(
+    name="CO2 LULCF", units="GtCO2", comp_type="Auxiliary", comp_subtype="Normal"
+)
+def co2_lulcf():
+    """
+    CO2 emissions from Land-Use Change and Forestry.
+    """
+    return past_trends_co2_lucf() * (
+        1 + variation_co2_landuse_change_emissions_vs_past_trends()
+    )
+
+
+@component.add(
     name="BioE CO2 emissions",
     units="GtCO2/Year",
     comp_type="Auxiliary",
@@ -138,16 +238,6 @@ def bioe_co2_emissions():
         * mj_per_ej()
         / g_per_gt()
     )
-
-
-@component.add(
-    name="C per CO2", units="GtC/GTCO2e", comp_type="Constant", comp_subtype="Normal"
-)
-def c_per_co2():
-    """
-    1 kg of CO2 contains 3/11 of carbon.
-    """
-    return 3 / 11
 
 
 @component.add(
@@ -213,53 +303,6 @@ def ch4_emissions_ctl():
     CH4 emissions CTL.
     """
     return extraction_coal_for_ctl() * gch4_per_mj_ctl() * mj_per_ej() / g_per_mt()
-
-
-@component.add(
-    name="CH4 emissions GTL",
-    units="MtCH4",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def ch4_emissions_gtl():
-    """
-    CH4 emissions GTL.
-    """
-    return ped_nat_gas_for_gtl_ej() * gch4_per_mj_gtl() * mj_per_ej() / g_per_mt()
-
-
-@component.add(
-    name="CH4 emissions oil",
-    units="MtCH4",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def ch4_emissions_oil():
-    """
-    CH4 emissions oil.
-    """
-    return pec_total_oil() * gch4_per_mj_oil() * mj_per_ej() / g_per_mt()
-
-
-@component.add(
-    name="CH4 emissions unconv gas",
-    units="MtCH4",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def ch4_emissions_unconv_gas():
-    """
-    CH4 emissions unconventional gas.
-    """
-    return (
-        (
-            pec_unconv_gas()
-            - ped_nat_gas_for_gtl_ej() * (1 - share_conv_vs_total_gas_extraction())
-        )
-        * gch4_per_mj_unconv_gas()
-        * mj_per_ej()
-        / g_per_mt()
-    )
 
 
 @component.add(
@@ -361,37 +404,6 @@ def co2_emissions_gtl():
 
 
 @component.add(
-    name="CO2 emissions peat",
-    units="GtCO2/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def co2_emissions_peat():
-    """
-    CO2 emissions from peat.
-    """
-    return pes_peat_ej() * gco2_per_mj_shale_oil() * mj_per_ej() / g_per_gt()
-
-
-@component.add(
-    name="CO2 emissions unconv gas",
-    units="GtCO2/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def co2_emissions_unconv_gas():
-    """
-    CO2 emissions from unconventional gas.
-    """
-    return (
-        real_consumption_unconv_gas_emissions_relevant_ej()
-        * gco2_per_mj_unconv_gas()
-        * mj_per_ej()
-        / g_per_gt()
-    )
-
-
-@component.add(
     name="CO2 emissions unconv oil",
     units="GtCO2/Year",
     comp_type="Auxiliary",
@@ -433,18 +445,6 @@ def co2_fossil_fuel_emissions():
         + co2_emissions_unconv_oil()
         + co2_emissions_coal_without_ctl()
         + co2_emissions_ctl()
-    )
-
-
-@component.add(
-    name="CO2 LULCF", units="GtCO2", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def co2_lulcf():
-    """
-    CO2 emissions from Land-Use Change and Forestry.
-    """
-    return past_trends_co2_lucf() * (
-        1 + variation_co2_landuse_change_emissions_vs_past_trends()
     )
 
 
@@ -872,23 +872,7 @@ _ext_constant_gwp_100_year = ExtConstant(
     "GWP_100_year*",
     {"GHGs non CO2": _subscript_dict["GHGs non CO2"]},
     _root,
-    {
-        "GHGs non CO2": [
-            "CH4",
-            "N2O",
-            "PFCs",
-            "SF6",
-            "HFC134a",
-            "HFC23",
-            "HFC32",
-            "HFC125",
-            "HFC143a",
-            "HFC152a",
-            "HFC227ea",
-            "HFC245ca",
-            "HFC4310mee",
-        ]
-    },
+    {"GHGs non CO2": _subscript_dict["GHGs non CO2"]},
     "_ext_constant_gwp_100_year",
 )
 
@@ -909,23 +893,7 @@ _ext_constant_gwp_20_year = ExtConstant(
     "GWP_20_year*",
     {"GHGs non CO2": _subscript_dict["GHGs non CO2"]},
     _root,
-    {
-        "GHGs non CO2": [
-            "CH4",
-            "N2O",
-            "PFCs",
-            "SF6",
-            "HFC134a",
-            "HFC23",
-            "HFC32",
-            "HFC125",
-            "HFC143a",
-            "HFC152a",
-            "HFC227ea",
-            "HFC245ca",
-            "HFC4310mee",
-        ]
-    },
+    {"GHGs non CO2": _subscript_dict["GHGs non CO2"]},
     "_ext_constant_gwp_20_year",
 )
 

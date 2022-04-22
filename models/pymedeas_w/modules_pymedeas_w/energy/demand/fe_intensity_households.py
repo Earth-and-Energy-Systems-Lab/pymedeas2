@@ -44,11 +44,9 @@ def change_total_intensity_to_rest():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["liquids"]}] = 1 - step(__data["time"], 0.78, 2009)
-    value.loc[{"final sources": ["gases"]}] = 1 - step(__data["time"], 0.025, 2009)
-    value.loc[{"final sources": ["electricity"]}] = 1 - step(
-        __data["time"], 0.007, 2009
-    )
+    value.loc[["liquids"]] = 1 - step(__data["time"], 0.78, 2009)
+    value.loc[["gases"]] = 1 - step(__data["time"], 0.025, 2009)
+    value.loc[["electricity"]] = 1 - step(__data["time"], 0.007, 2009)
     return value
 
 
@@ -132,25 +130,9 @@ _ext_constant_efficiency_rate_of_substitution = ExtConstant(
     },
     _root,
     {
-        "SECTORS and HOUSEHOLDS": [
-            "Households",
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
-        "final sources1": ["electricity", "heat", "liquids", "gases", "solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+        "final sources1": _subscript_dict["final sources1"],
     },
     "_ext_constant_efficiency_rate_of_substitution",
 )
@@ -237,30 +219,26 @@ def energy_intensity_of_households_rest():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["liquids"]}] = if_then_else(
+    value.loc[["liquids"]] = if_then_else(
         float(activate_bottom_up_method().loc["Households"]) == 1,
         lambda: float(evol_final_energy_intensity_h().loc["liquids"])
         * float(change_total_intensity_to_rest().loc["liquids"]),
         lambda: float(evol_final_energy_intensity_h().loc["liquids"]),
     )
-    value.loc[{"final sources": ["solids"]}] = float(
-        evol_final_energy_intensity_h().loc["solids"]
-    )
-    value.loc[{"final sources": ["gases"]}] = if_then_else(
+    value.loc[["solids"]] = float(evol_final_energy_intensity_h().loc["solids"])
+    value.loc[["gases"]] = if_then_else(
         float(activate_bottom_up_method().loc["Households"]) == 1,
         lambda: float(evol_final_energy_intensity_h().loc["gases"])
         * float(change_total_intensity_to_rest().loc["gases"]),
         lambda: float(evol_final_energy_intensity_h().loc["gases"]),
     )
-    value.loc[{"final sources": ["electricity"]}] = if_then_else(
+    value.loc[["electricity"]] = if_then_else(
         float(activate_bottom_up_method().loc["Households"]) == 1,
         lambda: float(evol_final_energy_intensity_h().loc["electricity"])
         * float(change_total_intensity_to_rest().loc["electricity"]),
         lambda: float(evol_final_energy_intensity_h().loc["electricity"]),
     )
-    value.loc[{"final sources": ["heat"]}] = float(
-        evol_final_energy_intensity_h().loc["heat"]
-    )
+    value.loc[["heat"]] = float(evol_final_energy_intensity_h().loc["heat"])
     return value
 
 

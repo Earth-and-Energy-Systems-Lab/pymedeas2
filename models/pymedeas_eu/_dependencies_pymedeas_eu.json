@@ -1470,9 +1470,6 @@
         "fe_real_tot_generation_res_elec_twh": 2,
         "total_fe_elec_demand_after_priorities_twh": 4
     },
-    "abundance_res_elec2": {
-        "abundance_res_elec": 1
-    },
     "abundance_res_heatcom": {
         "fe_real_supply_res_for_heatcom_tot_ej": 1,
         "fed_heatcom_after_priorities_ej": 3
@@ -1571,19 +1568,18 @@
         "time": 3
     },
     "adapt_growth_phs": {
-        "abundance_storage": 1,
-        "p_phs_growth": 2,
-        "past_phs_capacity_growth": 4,
+        "p_phs_power": 4,
+        "past_phs_capacity_growth": 1,
         "start_year_p_growth_res_elec": 3,
-        "target_year_p_growth_res_elec": 2,
-        "time": 4
+        "table_hist_capacity_phs": 1,
+        "time": 5
     },
     "adapt_growth_res_elec": {
-        "p_res_elec_growth": 16,
-        "past_res_elec_capacity_growth": 32,
-        "start_year_p_growth_res_elec": 24,
-        "target_year_p_growth_res_elec": 16,
-        "time": 32
+        "p_power": 4,
+        "past_res_elec_capacity_growth": 1,
+        "start_year_p_growth_res_elec": 3,
+        "table_hist_capacity_res_elec": 1,
+        "time": 5
     },
     "adapt_growth_res_elec_after_allocation": {
         "activate_eroi_allocation_rule": 1,
@@ -2632,11 +2628,10 @@
         "_integ_desired_gdppc": 1
     },
     "desired_share_installed_pv_urban_vs_tot_pv": {
-        "historic_share_installed_pv_urban_vs_tot_pv": 4,
-        "p_share_installed_pv_urban_vs_tot_pv": 2,
-        "start_year_p_growth_res_elec": 3,
-        "target_year_p_growth_res_elec": 2,
-        "time": 4
+        "historic_share_installed_pv_urban_vs_tot_pv": 2,
+        "p_share_installed_pv_urban_vs_tot_pv": 1,
+        "start_year_p_growth_res_elec": 1,
+        "time": 2
     },
     "desired_variation_gdp": {
         "desired_gdppc": 2,
@@ -5044,10 +5039,6 @@
         "max_solar_on_land_mha": 1,
         "surface_solar_pv_on_land_mha": 1
     },
-    "max_csp_twe": {
-        "max_csp_on_land_mha": 1,
-        "power_density_csp": 1
-    },
     "max_e_forest_available_non_trad": {
         "demand_forest_energy_traditional_ej": 1,
         "max_e_tot_forest_available": 1
@@ -5133,13 +5124,6 @@
         "power_density_solar_thermal_in_urban_twemha": 1,
         "urban_land": 1
     },
-    "max_geotelec_twe": {
-        "efficiency_conversion_geot_pe_to_elec": 1,
-        "max_pe_geotelec_twth": 1
-    },
-    "max_hydro_twe": {
-        "__external__": "_ext_constant_max_hydro_twe"
-    },
     "max_land_compet_biofuels_2gen": {
         "additional_land_compet_available_for_biofuels": 1,
         "historic_land_compet_available_for_biofuels_2gen": 1
@@ -5154,15 +5138,6 @@
     "max_npp_potential_bioe_residues_for_nonbiofuels": {
         "max_npp_potential_bioe_residues": 1,
         "share_cellulosic_biofuels_vs_bioe_residues": 1
-    },
-    "max_oceanic_twe": {
-        "__external__": "_ext_constant_max_oceanic_twe"
-    },
-    "max_offshore_wind_twe": {
-        "__external__": "_ext_constant_max_offshore_wind_twe"
-    },
-    "max_onshore_wind_twe": {
-        "__external__": "_ext_constant_max_onshore_wind_twe"
     },
     "max_pe_biogas_ej": {
         "__external__": "_ext_constant_max_pe_biogas_ej"
@@ -5263,14 +5238,14 @@
         "__external__": "_ext_constant_max_recycling_rates_minerals"
     },
     "max_res_elec_twe": {
+        "__external__": "_ext_constant_max_res_elec_twe",
+        "efficiency_conversion_geot_pe_to_elec": 1,
         "max_bioe_twe": 1,
-        "max_csp_twe": 1,
-        "max_geotelec_twe": 1,
-        "max_hydro_twe": 1,
-        "max_oceanic_twe": 1,
-        "max_offshore_wind_twe": 1,
-        "max_onshore_wind_twe": 1,
-        "max_tot_solar_pv_twe": 1
+        "max_csp_on_land_mha": 1,
+        "max_pe_geotelec_twth": 1,
+        "max_solar_pv_on_land_twe": 1,
+        "max_solar_pv_urban": 1,
+        "power_density_csp": 1
     },
     "max_share_imports_coal": {
         "__external__": "_ext_constant_max_share_imports_coal"
@@ -5308,10 +5283,6 @@
     "max_tot_fe_potential_res_for_heat": {
         "max_fe_potential_biogas_for_heat": 1,
         "max_fe_potential_res_for_heat": 1
-    },
-    "max_tot_solar_pv_twe": {
-        "max_solar_pv_on_land_twe": 1,
-        "max_solar_pv_urban": 1
     },
     "max_unconv_gas_growth_extraction": {
         "p_constraint_growth_extraction_unconv_gas": 1,
@@ -5484,12 +5455,12 @@
         "time": 1
     },
     "new_required_capacity_res_elec": {
-        "abundance_res_elec2": 1,
-        "adapt_growth_res_elec_after_allocation": 1,
+        "adapt_growth_res_elec": 1,
         "historic_new_required_capacity_res_elec": 1,
         "installed_capacity_res_elec_tw": 1,
-        "remaining_potential_constraint_on_new_res_elec_capacity": 1,
-        "time": 1,
+        "max_res_elec_twe": 1,
+        "p_power": 1,
+        "time": 2,
         "total_time_planconstr_res_elec": 1
     },
     "new_required_phs_capacity": {
@@ -5780,14 +5751,16 @@
     "p_percent_train_elec": {
         "__external__": "_ext_constant_p_percent_train_elec"
     },
-    "p_phs_growth": {
-        "__external__": "_ext_constant_p_phs_growth"
+    "p_phs_power": {
+        "__external__": "_ext_lookup_p_phs_power",
+        "__lookup__": "_ext_lookup_p_phs_power"
     },
     "p_pop_asymptote_millions": {
         "__external__": "_ext_constant_p_pop_asymptote_millions"
     },
-    "p_res_elec_growth": {
-        "__external__": "_ext_constant_p_res_elec_growth"
+    "p_power": {
+        "__external__": "_ext_lookup_p_power",
+        "__lookup__": "_ext_lookup_p_power"
     },
     "p_res_for_heat": {
         "p_geothermal_for_heat": 1,
@@ -5851,7 +5824,8 @@
         "__external__": "_ext_constant_past_phs_capacity_growth"
     },
     "past_res_elec_capacity_growth": {
-        "__external__": "_ext_constant_past_res_elec_capacity_growth"
+        "table_hist_capacity_res_elec": 3,
+        "time": 3
     },
     "past_res_growth_for_heatcom": {
         "__external__": "_ext_constant_past_res_growth_for_heatcom"
@@ -7138,10 +7112,6 @@
         "remaining_potential_phs": 2,
         "threshold_remaining_potential_new_capacity": 2
     },
-    "remaining_potential_constraint_on_new_res_elec_capacity": {
-        "remaining_potential_res_elec_after_intermitt": 2,
-        "threshold_remaining_potential_new_capacity": 2
-    },
     "remaining_potential_constraint_on_new_res_heat_capacity": {
         "remaining_potential_res_for_heat": 2,
         "threshold_remaining_potential_new_capacity": 2
@@ -8213,9 +8183,6 @@
     },
     "target_year_gdppc_asymptote": {
         "__external__": "_ext_constant_target_year_gdppc_asymptote"
-    },
-    "target_year_p_growth_res_elec": {
-        "__external__": "_ext_constant_target_year_p_growth_res_elec"
     },
     "target_year_p_growth_res_heat": {
         "__external__": "_ext_constant_target_year_p_growth_res_heat"

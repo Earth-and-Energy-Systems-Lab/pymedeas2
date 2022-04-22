@@ -238,53 +238,6 @@ def compet_land_for_biofuels_rate():
 
 
 @component.add(
-    name="consum forest energy non traditional EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def consum_forest_energy_non_traditional_ej():
-    """
-    Part of the forest biomass extration that goes into non energy uses. P wood-energy uses divides the possible extration into the two uses. Traditional biomass is not restricted
-    """
-    return np.minimum(
-        demand_forest_energy_non_tradition_ej(),
-        forest_consumption_ej()
-        - consum_forest_energy_traditional_ej()
-        - consum_wood_products_ej(),
-    )
-
-
-@component.add(
-    name="consum forest energy traditional EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def consum_forest_energy_traditional_ej():
-    """
-    Consumption of traditional biomass. Traditional wood extraction is got priority over other uses but is limited by forest extraction, which depends on the stock and the policies taken to protect forests.
-    """
-    return np.minimum(forest_consumption_ej(), demand_forest_energy_traditional_ej())
-
-
-@component.add(
-    name="consum wood products EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def consum_wood_products_ej():
-    """
-    Priority to energy uses Part of the forest biomass extration that goes into non energy uses. P wood/energy uses divides the possible extration into the two uses. Traditional uses are not restricted
-    """
-    return np.minimum(
-        demand_wood_products_ej(),
-        forest_consumption_ej() - consum_forest_energy_traditional_ej(),
-    )
-
-
-@component.add(
     name="deficit forest biomass",
     units="Dmnl",
     comp_type="Auxiliary",
@@ -340,6 +293,110 @@ def deforestation_rate():
 
 
 @component.add(
+    name="demand forest wood products pc",
+    units="m3/people",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def demand_forest_wood_products_pc():
+    """
+    Demand of forest non energy products per capita, data FAO2016
+    """
+    return _ext_constant_demand_forest_wood_products_pc()
+
+
+_ext_constant_demand_forest_wood_products_pc = ExtConstant(
+    "../land.xlsx",
+    "Global",
+    "demand_forest_wood_products",
+    {},
+    _root,
+    {},
+    "_ext_constant_demand_forest_wood_products_pc",
+)
+
+
+@component.add(
+    name="demand wood products m3",
+    units="m3",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def demand_wood_products_m3():
+    """
+    Demand of non-energy product forests
+    """
+    return demand_forest_wood_products_pc() * population()
+
+
+@component.add(
+    name="Forest loss to sustain agriculture",
+    units="MHa/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def forest_loss_to_sustain_agriculture():
+    """
+    Forest loss rate to maintain the area dedicated to agriculture in EU in the year 2015.
+    """
+    return (
+        if_then_else(
+            aux_reach_available_land() < 1,
+            lambda: agricultural_land_until_2015() - agricultural_land(),
+            lambda: 0,
+        )
+        * aux_reach_available_forest()
+    )
+
+
+@component.add(
+    name="consum forest energy non traditional EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def consum_forest_energy_non_traditional_ej():
+    """
+    Part of the forest biomass extration that goes into non energy uses. P wood-energy uses divides the possible extration into the two uses. Traditional biomass is not restricted
+    """
+    return np.minimum(
+        demand_forest_energy_non_tradition_ej(),
+        forest_consumption_ej()
+        - consum_forest_energy_traditional_ej()
+        - consum_wood_products_ej(),
+    )
+
+
+@component.add(
+    name="consum forest energy traditional EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def consum_forest_energy_traditional_ej():
+    """
+    Consumption of traditional biomass. Traditional wood extraction is got priority over other uses but is limited by forest extraction, which depends on the stock and the policies taken to protect forests.
+    """
+    return np.minimum(forest_consumption_ej(), demand_forest_energy_traditional_ej())
+
+
+@component.add(
+    name="consum wood products EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def consum_wood_products_ej():
+    """
+    Priority to energy uses Part of the forest biomass extration that goes into non energy uses. P wood/energy uses divides the possible extration into the two uses. Traditional uses are not restricted
+    """
+    return np.minimum(
+        demand_wood_products_ej(),
+        forest_consumption_ej() - consum_forest_energy_traditional_ej(),
+    )
+
+
+@component.add(
     name="demand forest energy non tradition EJ",
     units="EJ",
     comp_type="Auxiliary",
@@ -368,30 +425,6 @@ def demand_forest_energy_traditional_ej():
 
 
 @component.add(
-    name="demand forest wood products pc",
-    units="m3/people",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def demand_forest_wood_products_pc():
-    """
-    Demand of forest non energy products per capita, data FAO2016
-    """
-    return _ext_constant_demand_forest_wood_products_pc()
-
-
-_ext_constant_demand_forest_wood_products_pc = ExtConstant(
-    "../land.xlsx",
-    "Global",
-    "demand_forest_wood_products",
-    {},
-    _root,
-    {},
-    "_ext_constant_demand_forest_wood_products_pc",
-)
-
-
-@component.add(
     name="demand wood products EJ",
     units="EJ",
     comp_type="Auxiliary",
@@ -402,19 +435,6 @@ def demand_wood_products_ej():
     Demand of non energy forest products expressed as energy (to compare with other uses)
     """
     return demand_wood_products_m3() * wood_energy_density()
-
-
-@component.add(
-    name="demand wood products m3",
-    units="m3",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def demand_wood_products_m3():
-    """
-    Demand of non-energy product forests
-    """
-    return demand_forest_wood_products_pc() * population()
 
 
 @component.add(
@@ -485,26 +505,6 @@ _ext_constant_forest_extraction_per_ha = ExtConstant(
     {},
     "_ext_constant_forest_extraction_per_ha",
 )
-
-
-@component.add(
-    name="Forest loss to sustain agriculture",
-    units="MHa/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def forest_loss_to_sustain_agriculture():
-    """
-    Forest loss rate to maintain the area dedicated to agriculture in EU in the year 2015.
-    """
-    return (
-        if_then_else(
-            aux_reach_available_land() < 1,
-            lambda: agricultural_land_until_2015() - agricultural_land(),
-            lambda: 0,
-        )
-        * aux_reach_available_forest()
-    )
 
 
 @component.add(
@@ -917,6 +917,19 @@ _integ_land_for_solar_and_hydro_res = Integ(
 
 
 @component.add(
+    name="Marginal land for biofuels rate",
+    units="MHa/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def marginal_land_for_biofuels_rate():
+    """
+    Biofuels plantation rate on marginal lands.
+    """
+    return new_land_marg_for_biofuels() * aux_reach_available_land()
+
+
+@component.add(
     name='"Land requirements RES elec compet uses t-1"',
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -955,19 +968,6 @@ _integ_marginal_land_for_biofuels = Integ(
     lambda: initial_marginal_land_occupied_by_biofuels(),
     "_integ_marginal_land_for_biofuels",
 )
-
-
-@component.add(
-    name="Marginal land for biofuels rate",
-    units="MHa/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def marginal_land_for_biofuels_rate():
-    """
-    Biofuels plantation rate on marginal lands.
-    """
-    return new_land_marg_for_biofuels() * aux_reach_available_land()
 
 
 @component.add(
@@ -1097,6 +1097,30 @@ _ext_constant_p_minimum_forest = ExtConstant(
 
 
 @component.add(
+    name="P urban land density",
+    units="m2/people",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def p_urban_land_density():
+    """
+    Policy target to set urban land density in a target year.
+    """
+    return _ext_constant_p_urban_land_density()
+
+
+_ext_constant_p_urban_land_density = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "urban_land_density",
+    {},
+    _root,
+    {},
+    "_ext_constant_p_urban_land_density",
+)
+
+
+@component.add(
     name="P variation primary forest",
     units="Dmnl",
     comp_type="Constant",
@@ -1137,30 +1161,6 @@ _integ_permanent_snowsglaciers_area = Integ(
     lambda: 0,
     lambda: initial_permanent_snowsglaciers_area(),
     "_integ_permanent_snowsglaciers_area",
-)
-
-
-@component.add(
-    name="P urban land density",
-    units="m2/people",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def p_urban_land_density():
-    """
-    Policy target to set urban land density in a target year.
-    """
-    return _ext_constant_p_urban_land_density()
-
-
-_ext_constant_p_urban_land_density = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "urban_land_density",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_urban_land_density",
 )
 
 
@@ -1217,14 +1217,14 @@ def shortage_bioe_for_elec():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = 1
-    value.loc[{"RES elec": ["geot elec"]}] = 1
-    value.loc[{"RES elec": ["solid bioE elec"]}] = shortage_bioe_non_trad_delayed_1yr()
-    value.loc[{"RES elec": ["oceanic"]}] = 1
-    value.loc[{"RES elec": ["wind onshore"]}] = 1
-    value.loc[{"RES elec": ["wind offshore"]}] = 1
-    value.loc[{"RES elec": ["solar PV"]}] = 1
-    value.loc[{"RES elec": ["CSP"]}] = 1
+    value.loc[["hydro"]] = 1
+    value.loc[["geot elec"]] = 1
+    value.loc[["solid bioE elec"]] = shortage_bioe_non_trad_delayed_1yr()
+    value.loc[["oceanic"]] = 1
+    value.loc[["wind onshore"]] = 1
+    value.loc[["wind offshore"]] = 1
+    value.loc[["solar PV"]] = 1
+    value.loc[["CSP"]] = 1
     return value
 
 
@@ -1242,9 +1242,9 @@ def shortage_bioe_for_heat():
     value = xr.DataArray(
         np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
-    value.loc[{"RES heat": ["solar heat"]}] = 1
-    value.loc[{"RES heat": ["geot heat"]}] = 1
-    value.loc[{"RES heat": ["solid bioE heat"]}] = shortage_bioe_non_trad_delayed_1yr()
+    value.loc[["solar heat"]] = 1
+    value.loc[["geot heat"]] = 1
+    value.loc[["solid bioE heat"]] = shortage_bioe_non_trad_delayed_1yr()
     return value
 
 

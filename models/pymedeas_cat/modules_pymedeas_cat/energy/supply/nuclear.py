@@ -12,6 +12,30 @@ def cp_limit_nuclear():
 
 
 @component.add(
+    name="efficiency uranium for electricity",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def efficiency_uranium_for_electricity():
+    """
+    Efficiency of uranium in nuclear power centrals. [IEA Balances].
+    """
+    return _ext_constant_efficiency_uranium_for_electricity()
+
+
+_ext_constant_efficiency_uranium_for_electricity = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "efficiency_uranium_for_electricity",
+    {},
+    _root,
+    {},
+    "_ext_constant_efficiency_uranium_for_electricity",
+)
+
+
+@component.add(
     name="Cp nuclear", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
 )
 def cp_nuclear():
@@ -64,30 +88,6 @@ def effects_shortage_uranium():
             lambda: 0,
         ),
     )
-
-
-@component.add(
-    name="efficiency uranium for electricity",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def efficiency_uranium_for_electricity():
-    """
-    Efficiency of uranium in nuclear power centrals. [IEA Balances].
-    """
-    return _ext_constant_efficiency_uranium_for_electricity()
-
-
-_ext_constant_efficiency_uranium_for_electricity = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "efficiency_uranium_for_electricity",
-    {},
-    _root,
-    {},
-    "_ext_constant_efficiency_uranium_for_electricity",
-)
 
 
 @component.add(

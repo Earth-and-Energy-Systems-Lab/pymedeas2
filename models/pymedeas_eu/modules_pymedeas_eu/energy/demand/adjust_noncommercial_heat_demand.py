@@ -8,7 +8,7 @@ Translated using PySD version 3.0.0
     name='"FED by fuel for heat-nc"',
     units="EJ",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
 )
 def fed_by_fuel_for_heatnc():
@@ -18,13 +18,11 @@ def fed_by_fuel_for_heatnc():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["electricity"]}] = 0
-    value.loc[{"final sources": ["heat"]}] = 0
-    value.loc[{"final sources": ["liquids"]}] = fed_oil_for_heatnc()
-    value.loc[{"final sources": ["gases"]}] = fed_nat_gas_for_heatnc()
-    value.loc[{"final sources": ["solids"]}] = (
-        fed_coal_for_heatnc() + fed_solid_bioe_for_heatnc()
-    )
+    value.loc[["electricity"]] = 0
+    value.loc[["heat"]] = 0
+    value.loc[["liquids"]] = fed_oil_for_heatnc()
+    value.loc[["gases"]] = fed_nat_gas_for_heatnc()
+    value.loc[["solids"]] = fed_coal_for_heatnc() + fed_solid_bioe_for_heatnc()
     return value
 
 
@@ -172,7 +170,7 @@ def share_fed_liquids_vs_nre_heatnc():
     name="share FEH over FED by final fuel",
     units="Dmnl",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
 )
 def share_feh_over_fed_by_final_fuel():
@@ -182,13 +180,11 @@ def share_feh_over_fed_by_final_fuel():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["electricity"]}] = 0
-    value.loc[{"final sources": ["heat"]}] = 0
-    value.loc[{"final sources": ["liquids"]}] = share_feh_over_fed_oil()
-    value.loc[{"final sources": ["gases"]}] = share_feh_over_fed_nat_gas()
-    value.loc[{"final sources": ["solids"]}] = (
-        share_feh_over_fed_coal() + share_feh_over_fed_solid_bioe()
-    )
+    value.loc[["electricity"]] = 0
+    value.loc[["heat"]] = 0
+    value.loc[["liquids"]] = share_feh_over_fed_oil()
+    value.loc[["gases"]] = share_feh_over_fed_nat_gas()
+    value.loc[["solids"]] = share_feh_over_fed_coal() + share_feh_over_fed_solid_bioe()
     return value
 
 

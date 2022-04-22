@@ -153,10 +153,8 @@ def heat_in_deep_ocean():
     Heat content of each layer of the deep ocean.
     """
     value = xr.DataArray(np.nan, {"Layers": _subscript_dict["Layers"]}, ["Layers"])
-    value.loc[
-        {"Layers": ["Layer1", "Layer2", "Layer3"]}
-    ] = _integ_heat_in_deep_ocean().values
-    value.loc[{"Layers": ["Layer4"]}] = _integ_heat_in_deep_ocean_1().values
+    value.loc[_subscript_dict["upper"]] = _integ_heat_in_deep_ocean().values
+    value.loc[["Layer4"]] = _integ_heat_in_deep_ocean_1().values
     return value
 
 
@@ -203,12 +201,12 @@ def heat_transfer():
     Heat Transfer from the Atmosphere & Upper Ocean to the Deep Ocean
     """
     value = xr.DataArray(np.nan, {"Layers": _subscript_dict["Layers"]}, ["Layers"])
-    value.loc[{"Layers": ["Layer1"]}] = (
+    value.loc[["Layer1"]] = (
         (temperature_change() - float(relative_deep_ocean_temp().loc["Layer1"]))
         * heat_transfer_coeff()
         / float(mean_depth_of_adjacent_layers().loc["Layer1"])
     )
-    value.loc[{"Layers": ["Layer2", "Layer3", "Layer4"]}] = (
+    value.loc[_subscript_dict["lower"]] = (
         (
             xr.DataArray(
                 relative_deep_ocean_temp()
@@ -232,7 +230,7 @@ def heat_transfer():
 
 @component.add(
     name="Heat Transfer Coeff",
-    units="W/m2/(DegreesC/meter) ",
+    units="W/m2/(DegreesC/meter)",
     limits=(0.0, 1.0),
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -251,7 +249,7 @@ def heat_transfer_coeff():
 
 @component.add(
     name="heat transfer rate",
-    units="W/m2/DegreesC ",
+    units="W/m2/DegreesC",
     limits=(0.0, 2.0),
     comp_type="Constant",
     comp_subtype="External",
@@ -315,7 +313,7 @@ _ext_constant_init_deep_ocean_temperature = ExtConstant(
     "init_deep_ocean_temperature*",
     {"Layers": _subscript_dict["Layers"]},
     _root,
-    {"Layers": ["Layer1", "Layer2", "Layer3", "Layer4"]},
+    {"Layers": _subscript_dict["Layers"]},
     "_ext_constant_init_deep_ocean_temperature",
 )
 

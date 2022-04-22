@@ -35,17 +35,7 @@ def desired_share_installed_pv_urban_vs_tot_pv():
         lambda: if_then_else(
             time() < start_year_p_growth_res_elec(),
             lambda: historic_share_installed_pv_urban_vs_tot_pv(),
-            lambda: if_then_else(
-                time() < target_year_p_growth_res_elec(),
-                lambda: historic_share_installed_pv_urban_vs_tot_pv()
-                + (
-                    p_share_installed_pv_urban_vs_tot_pv()
-                    - historic_share_installed_pv_urban_vs_tot_pv()
-                )
-                * (time() - start_year_p_growth_res_elec())
-                / (target_year_p_growth_res_elec() - start_year_p_growth_res_elec()),
-                lambda: p_share_installed_pv_urban_vs_tot_pv(),
-            ),
+            lambda: p_share_installed_pv_urban_vs_tot_pv(),
         ),
     )
 
@@ -136,16 +126,6 @@ def max_csp_on_land_mha():
 
 
 @component.add(
-    name="max CSP TWe", units="TWe", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def max_csp_twe():
-    """
-    Techno-ecological potential of solar CSP. This potential depends on the assumed land availability for solar CSP power plants ("max solar PV on land MHa") and its power density (1 TWe = 8760 TWh in one year).
-    """
-    return max_csp_on_land_mha() * power_density_csp()
-
-
-@component.add(
     name="max FE potential solid bioE for elec TWe",
     units="TWe",
     comp_type="Auxiliary",
@@ -161,109 +141,6 @@ def max_fe_potential_solid_bioe_for_elec_twe():
         * twe_per_twh()
         / ej_per_twh()
     )
-
-
-@component.add(
-    name='"max geot-elec TWe"',
-    units="TWe",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def max_geotelec_twe():
-    """
-    Techno-ecological potential of electric geothermal (1 TWe = 8760 TWh in one year). We assume that the global potential of 0.2 TWe.
-    """
-    return max_pe_geotelec_twth() * efficiency_conversion_geot_pe_to_elec()
-
-
-@component.add(
-    name="max hydro TWe", units="TWe", comp_type="Constant", comp_subtype="External"
-)
-def max_hydro_twe():
-    """
-    Techno-ecological potential of hydro (1 TWe = 8760 TWh in one year).
-    """
-    return _ext_constant_max_hydro_twe()
-
-
-_ext_constant_max_hydro_twe = ExtConstant(
-    "../energy.xlsx",
-    "Europe",
-    "max_hydro_potential",
-    {},
-    _root,
-    {},
-    "_ext_constant_max_hydro_twe",
-)
-
-
-@component.add(
-    name="max oceanic TWe", units="TWe", comp_type="Constant", comp_subtype="External"
-)
-def max_oceanic_twe():
-    """
-    Techno-ecological potential of oceanic (1 TWe = 8760 TWh in one year).
-    """
-    return _ext_constant_max_oceanic_twe()
-
-
-_ext_constant_max_oceanic_twe = ExtConstant(
-    "../energy.xlsx",
-    "Europe",
-    "max_oceanic_potential",
-    {},
-    _root,
-    {},
-    "_ext_constant_max_oceanic_twe",
-)
-
-
-@component.add(
-    name="max offshore wind TWe",
-    units="TWe",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def max_offshore_wind_twe():
-    """
-    Techno-ecological potential of offshore wind (1 TWe = 8760 TWh in one year).
-    """
-    return _ext_constant_max_offshore_wind_twe()
-
-
-_ext_constant_max_offshore_wind_twe = ExtConstant(
-    "../energy.xlsx",
-    "Europe",
-    "max_offshore_wind_potential",
-    {},
-    _root,
-    {},
-    "_ext_constant_max_offshore_wind_twe",
-)
-
-
-@component.add(
-    name="max onshore wind TWe",
-    units="TWe",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def max_onshore_wind_twe():
-    """
-    Techno-ecological potential of onshore wind (1 TWe = 8760 TWh in one year).
-    """
-    return _ext_constant_max_onshore_wind_twe()
-
-
-_ext_constant_max_onshore_wind_twe = ExtConstant(
-    "../energy.xlsx",
-    "Europe",
-    "max_onshore_wind_potential",
-    {},
-    _root,
-    {},
-    "_ext_constant_max_onshore_wind_twe",
-)
 
 
 @component.add(
@@ -334,26 +211,22 @@ def max_potential_res_elec_twh():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = (
-        float(max_res_elec_twe().loc["hydro"]) / twe_per_twh()
-    )
-    value.loc[{"RES elec": ["geot elec"]}] = (
+    value.loc[["hydro"]] = float(max_res_elec_twe().loc["hydro"]) / twe_per_twh()
+    value.loc[["geot elec"]] = (
         float(max_res_elec_twe().loc["geot elec"]) / twe_per_twh()
     )
-    value.loc[{"RES elec": ["solid bioE elec"]}] = (
+    value.loc[["solid bioE elec"]] = (
         max_fe_potential_solid_bioe_for_elec_twe() / twe_per_twh()
     )
-    value.loc[{"RES elec": ["oceanic"]}] = (
-        float(max_res_elec_twe().loc["oceanic"]) / twe_per_twh()
-    )
-    value.loc[{"RES elec": ["wind onshore"]}] = (
+    value.loc[["oceanic"]] = float(max_res_elec_twe().loc["oceanic"]) / twe_per_twh()
+    value.loc[["wind onshore"]] = (
         float(max_res_elec_twe().loc["wind onshore"]) / twe_per_twh()
     )
-    value.loc[{"RES elec": ["wind offshore"]}] = (
+    value.loc[["wind offshore"]] = (
         float(max_res_elec_twe().loc["wind offshore"]) / twe_per_twh()
     )
-    value.loc[{"RES elec": ["solar PV"]}] = max_potential_solar_pv_twe() / twe_per_twh()
-    value.loc[{"RES elec": ["CSP"]}] = max_potential_csp_twe() / twe_per_twh()
+    value.loc[["solar PV"]] = max_potential_solar_pv_twe() / twe_per_twh()
+    value.loc[["CSP"]] = max_potential_csp_twe() / twe_per_twh()
     return value
 
 
@@ -398,8 +271,8 @@ def max_potential_tot_res_elec_twh():
     name="max RES elec TWe",
     units="TWe",
     subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
+    comp_type="Auxiliary, Constant",
+    comp_subtype="External, Normal",
 )
 def max_res_elec_twe():
     """
@@ -408,15 +281,45 @@ def max_res_elec_twe():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = max_hydro_twe()
-    value.loc[{"RES elec": ["geot elec"]}] = max_geotelec_twe()
-    value.loc[{"RES elec": ["solid bioE elec"]}] = max_bioe_twe()
-    value.loc[{"RES elec": ["oceanic"]}] = max_oceanic_twe()
-    value.loc[{"RES elec": ["wind onshore"]}] = max_onshore_wind_twe()
-    value.loc[{"RES elec": ["wind offshore"]}] = max_offshore_wind_twe()
-    value.loc[{"RES elec": ["solar PV"]}] = max_tot_solar_pv_twe()
-    value.loc[{"RES elec": ["CSP"]}] = max_csp_twe()
+    value.loc[
+        ["hydro", "oceanic", "wind onshore", "wind offshore"]
+    ] = _ext_constant_max_res_elec_twe().values
+    value.loc[["geot elec"]] = (
+        max_pe_geotelec_twth() * efficiency_conversion_geot_pe_to_elec()
+    )
+    value.loc[["solid bioE elec"]] = max_bioe_twe()
+    value.loc[["solar PV"]] = max_solar_pv_on_land_twe() + max_solar_pv_urban()
+    value.loc[["CSP"]] = max_csp_on_land_mha() * power_density_csp()
     return value
+
+
+_ext_constant_max_res_elec_twe = ExtConstant(
+    "../energy.xlsx",
+    "Europe",
+    "max_hydro_potential",
+    {"RES elec": ["hydro"]},
+    _root,
+    {"RES elec": ["hydro", "oceanic", "wind onshore", "wind offshore"]},
+    "_ext_constant_max_res_elec_twe",
+)
+
+_ext_constant_max_res_elec_twe.add(
+    "../energy.xlsx", "Europe", "max_oceanic_potential", {"RES elec": ["oceanic"]}
+)
+
+_ext_constant_max_res_elec_twe.add(
+    "../energy.xlsx",
+    "Europe",
+    "max_onshore_wind_potential",
+    {"RES elec": ["wind onshore"]},
+)
+
+_ext_constant_max_res_elec_twe.add(
+    "../energy.xlsx",
+    "Europe",
+    "max_offshore_wind_potential",
+    {"RES elec": ["wind offshore"]},
+)
 
 
 @component.add(
@@ -443,19 +346,6 @@ def max_solar_pv_on_land_twe():
     Techno-ecological potential of solar PV on land. This potential depends on the assumed land availability for solar PV power plants ("max solar PV on land MHa") and its power density (1 TWe = 8760 TWh in one year).
     """
     return max_solar_pv_on_land_mha() * power_density_solar_pv_on_land_twemha()
-
-
-@component.add(
-    name="max tot solar PV TWe",
-    units="TWe",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def max_tot_solar_pv_twe():
-    """
-    Techno-ecological potential of total solar PV (on land + urban)..
-    """
-    return max_solar_pv_on_land_twe() + max_solar_pv_urban()
 
 
 @component.add(

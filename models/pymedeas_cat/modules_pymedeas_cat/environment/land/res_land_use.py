@@ -157,36 +157,36 @@ def surface_res_elec():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = zidz(
+    value.loc[["hydro"]] = zidz(
         float(potential_generation_res_elec_twh().loc["hydro"]),
         float(power_density_res_elec_twemha().loc["hydro"]) / twe_per_twh(),
     )
-    value.loc[{"RES elec": ["geot elec"]}] = zidz(
+    value.loc[["geot elec"]] = zidz(
         float(potential_generation_res_elec_twh().loc["geot elec"]),
         float(power_density_res_elec_twemha().loc["geot elec"]) / twe_per_twh(),
     )
-    value.loc[{"RES elec": ["solid bioE elec"]}] = zidz(
+    value.loc[["solid bioE elec"]] = zidz(
         float(potential_generation_res_elec_twh().loc["solid bioE elec"]),
         float(power_density_res_elec_twemha().loc["solid bioE elec"]) / twe_per_twh(),
     )
-    value.loc[{"RES elec": ["oceanic"]}] = zidz(
+    value.loc[["oceanic"]] = zidz(
         float(potential_generation_res_elec_twh().loc["oceanic"]),
         float(power_density_res_elec_twemha().loc["oceanic"]) / twe_per_twh(),
     )
-    value.loc[{"RES elec": ["wind onshore"]}] = zidz(
+    value.loc[["wind onshore"]] = zidz(
         float(potential_generation_res_elec_twh().loc["wind onshore"]),
         float(power_density_res_elec_twemha().loc["wind onshore"]) / twe_per_twh(),
     )
-    value.loc[{"RES elec": ["wind offshore"]}] = zidz(
+    value.loc[["wind offshore"]] = zidz(
         float(potential_generation_res_elec_twh().loc["wind offshore"]),
         float(power_density_res_elec_twemha().loc["wind offshore"]) / twe_per_twh(),
     )
-    value.loc[{"RES elec": ["solar PV"]}] = zidz(
+    value.loc[["solar PV"]] = zidz(
         float(potential_generation_res_elec_twh().loc["solar PV"])
         * (1 - real_share_pv_urban_vs_total_pv()),
         float(power_density_res_elec_twemha().loc["solar PV"]) / twe_per_twh(),
     )
-    value.loc[{"RES elec": ["CSP"]}] = zidz(
+    value.loc[["CSP"]] = zidz(
         float(potential_generation_res_elec_twh().loc["CSP"]),
         float(power_density_res_elec_twemha().loc["CSP"]) / twe_per_twh(),
     )

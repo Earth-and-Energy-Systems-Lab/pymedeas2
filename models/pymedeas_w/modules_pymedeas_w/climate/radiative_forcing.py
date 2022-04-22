@@ -423,7 +423,7 @@ _ext_constant_last_historical_rf_year = ExtConstant(
 
 @component.add(
     name="mineral aerosols and land RF",
-    units="W/m2 ",
+    units="W/m2",
     limits=(-1.0, 1.0, 0.01),
     comp_type="Constant",
     comp_subtype="External",
@@ -617,7 +617,7 @@ _ext_data_other_forcings_rcp_scenario = ExtData(
     "interpolate",
     {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
-    {"RCP Scenario": ["RCP26", "RCP45", "RCP60", "RCP85"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     "_ext_data_other_forcings_rcp_scenario",
 )
 
@@ -643,7 +643,7 @@ def rf_from_f_gases():
 
 @component.add(
     name="time to commit RF",
-    units="year ",
+    units="year",
     limits=(1900.0, 2200.0),
     comp_type="Constant",
     comp_subtype="External",

@@ -5,6 +5,32 @@ Translated using PySD version 3.0.0
 
 
 @component.add(
+    name="FED heat gas CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def fed_heat_gas_chp_plants_ej():
+    """
+    Final energy demand of gas to produce heat in CHP plants.
+    """
+    return fed_heat_fossil_fuels_chp_plants_ej() * historic_share_chp_plants_gas()
+
+
+@component.add(
+    name="FED heat liquids CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def fed_heat_liquids_chp_plants_ej():
+    """
+    Final energy demand of oil to produce heat in CHP plants.
+    """
+    return fed_heat_fossil_fuels_chp_plants_ej() * share_chp_plants_oil()
+
+
+@component.add(
     name="efficiency Elec coal CHP plants",
     units="Dmnl",
     comp_type="Data",
@@ -189,32 +215,6 @@ def fed_heat_fossil_fuels_chp_plants_ej():
 
 
 @component.add(
-    name="FED heat gas CHP plants EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def fed_heat_gas_chp_plants_ej():
-    """
-    Final energy demand of gas to produce heat in CHP plants.
-    """
-    return fed_heat_fossil_fuels_chp_plants_ej() * historic_share_chp_plants_gas()
-
-
-@component.add(
-    name="FED heat liquids CHP plants EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def fed_heat_liquids_chp_plants_ej():
-    """
-    Final energy demand of oil to produce heat in CHP plants.
-    """
-    return fed_heat_fossil_fuels_chp_plants_ej() * share_chp_plants_oil()
-
-
-@component.add(
     name='"FED heat-com by NRE CHP plants EJ"',
     units="EJ",
     comp_type="Auxiliary",
@@ -396,6 +396,19 @@ def potential_fe_gen_elec_fossil_fuel_chp_plants_ej():
 
 
 @component.add(
+    name="Potential FE gen Elec gas CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def potential_fe_gen_elec_gas_chp_plants_ej():
+    """
+    Potential electricity generation from CHP plants burning natural gas.
+    """
+    return ped_gas_for_chp_plants_ej() * efficiency_elec_gas_chp_plants()
+
+
+@component.add(
     name="Potential FE gen Elec liquids CHP plants EJ",
     units="EJ",
     comp_type="Auxiliary",
@@ -422,19 +435,6 @@ def potential_fes_heatcom_nuclear_chp_plants_ej():
         fe_nuclear_elec_generation_twh()
         * share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation()
     )
-
-
-@component.add(
-    name="Potential FE gen Elec gas CHP plants EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def potential_fe_gen_elec_gas_chp_plants_ej():
-    """
-    Potential electricity generation from CHP plants burning natural gas.
-    """
-    return ped_gas_for_chp_plants_ej() * efficiency_elec_gas_chp_plants()
 
 
 @component.add(

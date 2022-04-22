@@ -141,41 +141,41 @@ def pe_real_generation_res_elec():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = (
+    value.loc[["hydro"]] = (
         float(real_generation_res_elec_twh().loc["hydro"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )
-    value.loc[{"RES elec": ["geot elec"]}] = (
+    value.loc[["geot elec"]] = (
         float(real_generation_res_elec_twh().loc["geot elec"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )
-    value.loc[{"RES elec": ["solid bioE elec"]}] = (
+    value.loc[["solid bioE elec"]] = (
         float(real_generation_res_elec_twh().loc["solid bioE elec"])
         / efficiency_conversion_bioe_to_elec()
     ) * ej_per_twh()
-    value.loc[{"RES elec": ["oceanic"]}] = (
+    value.loc[["oceanic"]] = (
         float(real_generation_res_elec_twh().loc["oceanic"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )
-    value.loc[{"RES elec": ["wind onshore"]}] = (
+    value.loc[["wind onshore"]] = (
         float(real_generation_res_elec_twh().loc["wind onshore"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )
-    value.loc[{"RES elec": ["wind offshore"]}] = (
+    value.loc[["wind offshore"]] = (
         float(real_generation_res_elec_twh().loc["wind offshore"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )
-    value.loc[{"RES elec": ["solar PV"]}] = (
+    value.loc[["solar PV"]] = (
         float(real_generation_res_elec_twh().loc["solar PV"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )
-    value.loc[{"RES elec": ["CSP"]}] = (
+    value.loc[["CSP"]] = (
         float(real_generation_res_elec_twh().loc["CSP"])
         * ej_per_twh()
         * res_to_fossil_accounting()

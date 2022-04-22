@@ -5,6 +5,24 @@ Translated using PySD version 3.0.0
 
 
 @component.add(
+    name="Start year P growth RES elec", comp_type="Constant", comp_subtype="External"
+)
+def start_year_p_growth_res_elec():
+    return _ext_constant_start_year_p_growth_res_elec()
+
+
+_ext_constant_start_year_p_growth_res_elec = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "start_year_p_growth_RES_elec",
+    {},
+    _root,
+    {},
+    "_ext_constant_start_year_p_growth_res_elec",
+)
+
+
+@component.add(
     name="available max FE solid bioE for elec EJ",
     units="EJ",
     comp_type="Auxiliary",
@@ -35,17 +53,7 @@ def desired_share_installed_pv_urban_vs_tot_pv():
         lambda: if_then_else(
             time() < start_year_p_growth_res_elec(),
             lambda: historic_share_installed_pv_urban_vs_tot_pv(),
-            lambda: if_then_else(
-                time() < target_year_p_growth_res_elec(),
-                lambda: historic_share_installed_pv_urban_vs_tot_pv()
-                + (
-                    p_share_installed_pv_urban_vs_tot_pv()
-                    - historic_share_installed_pv_urban_vs_tot_pv()
-                )
-                * (time() - start_year_p_growth_res_elec())
-                / (target_year_p_growth_res_elec() - start_year_p_growth_res_elec()),
-                lambda: p_share_installed_pv_urban_vs_tot_pv(),
-            ),
+            lambda: p_share_installed_pv_urban_vs_tot_pv(),
         ),
     )
 
@@ -334,26 +342,22 @@ def max_potential_res_elec_twh():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = (
-        float(max_res_elec_twe().loc["hydro"]) / twe_per_twh()
-    )
-    value.loc[{"RES elec": ["geot elec"]}] = (
+    value.loc[["hydro"]] = float(max_res_elec_twe().loc["hydro"]) / twe_per_twh()
+    value.loc[["geot elec"]] = (
         float(max_res_elec_twe().loc["geot elec"]) / twe_per_twh()
     )
-    value.loc[{"RES elec": ["solid bioE elec"]}] = (
+    value.loc[["solid bioE elec"]] = (
         max_fe_potential_solid_bioe_for_elec_twe() / twe_per_twh()
     )
-    value.loc[{"RES elec": ["oceanic"]}] = (
-        float(max_res_elec_twe().loc["oceanic"]) / twe_per_twh()
-    )
-    value.loc[{"RES elec": ["wind onshore"]}] = (
+    value.loc[["oceanic"]] = float(max_res_elec_twe().loc["oceanic"]) / twe_per_twh()
+    value.loc[["wind onshore"]] = (
         float(max_res_elec_twe().loc["wind onshore"]) / twe_per_twh()
     )
-    value.loc[{"RES elec": ["wind offshore"]}] = (
+    value.loc[["wind offshore"]] = (
         float(max_res_elec_twe().loc["wind offshore"]) / twe_per_twh()
     )
-    value.loc[{"RES elec": ["solar PV"]}] = max_potential_solar_pv_twe() / twe_per_twh()
-    value.loc[{"RES elec": ["CSP"]}] = max_potential_csp_twe() / twe_per_twh()
+    value.loc[["solar PV"]] = max_potential_solar_pv_twe() / twe_per_twh()
+    value.loc[["CSP"]] = max_potential_csp_twe() / twe_per_twh()
     return value
 
 
@@ -396,7 +400,7 @@ def max_potential_tot_res_elec_twh():
 
 @component.add(
     name="max RES elec TWe",
-    units="TWe",
+    units="TW",
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -408,14 +412,14 @@ def max_res_elec_twe():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = max_hydro_twe()
-    value.loc[{"RES elec": ["geot elec"]}] = max_geotelec_twe()
-    value.loc[{"RES elec": ["solid bioE elec"]}] = max_bioe_twe()
-    value.loc[{"RES elec": ["oceanic"]}] = max_oceanic_twe()
-    value.loc[{"RES elec": ["wind onshore"]}] = max_onshore_wind_twe()
-    value.loc[{"RES elec": ["wind offshore"]}] = max_offshore_wind_twe()
-    value.loc[{"RES elec": ["solar PV"]}] = max_tot_solar_pv_twe()
-    value.loc[{"RES elec": ["CSP"]}] = max_csp_twe()
+    value.loc[["hydro"]] = max_hydro_twe()
+    value.loc[["geot elec"]] = max_geotelec_twe()
+    value.loc[["solid bioE elec"]] = max_bioe_twe()
+    value.loc[["oceanic"]] = max_oceanic_twe()
+    value.loc[["wind onshore"]] = max_onshore_wind_twe()
+    value.loc[["wind offshore"]] = max_offshore_wind_twe()
+    value.loc[["solar PV"]] = max_tot_solar_pv_twe()
+    value.loc[["CSP"]] = max_csp_twe()
     return value
 
 
@@ -512,6 +516,27 @@ def potential_elec_gen_from_solar_pv_on_land_twh():
 
 
 @component.add(
+    name="Potential elec gen from solar PV urban TWh",
+    units="TWh",
+    comp_type="Stateful",
+    comp_subtype="SampleIfTrue",
+)
+def potential_elec_gen_from_solar_pv_urban_twh():
+    """
+    Potential electricity generation from solar PV in urban areas.
+    """
+    return _sampleiftrue_potential_elec_gen_from_solar_pv_urban_twh()
+
+
+_sampleiftrue_potential_elec_gen_from_solar_pv_urban_twh = SampleIfTrue(
+    lambda: remaining_potential_solar_pv_urban() > 0,
+    lambda: potential_elec_gen_from_solar_pv_urban_unconstrained_twh(),
+    lambda: potential_elec_gen_from_solar_pv_urban_unconstrained_twh(),
+    "_sampleiftrue_potential_elec_gen_from_solar_pv_urban_twh",
+)
+
+
+@component.add(
     name="Potential elec gen from solar PV urban unconstrained TWh",
     units="TWh",
     comp_type="Auxiliary",
@@ -538,27 +563,6 @@ def power_density_csp():
     Power density of CSP power plants.
     """
     return float(power_density_initial_res_elec_twemha().loc["CSP"])
-
-
-@component.add(
-    name="Potential elec gen from solar PV urban TWh",
-    units="TWh",
-    comp_type="Stateful",
-    comp_subtype="SampleIfTrue",
-)
-def potential_elec_gen_from_solar_pv_urban_twh():
-    """
-    Potential electricity generation from solar PV in urban areas.
-    """
-    return _sampleiftrue_potential_elec_gen_from_solar_pv_urban_twh()
-
-
-_sampleiftrue_potential_elec_gen_from_solar_pv_urban_twh = SampleIfTrue(
-    lambda: remaining_potential_solar_pv_urban() > 0,
-    lambda: potential_elec_gen_from_solar_pv_urban_unconstrained_twh(),
-    lambda: potential_elec_gen_from_solar_pv_urban_unconstrained_twh(),
-    "_sampleiftrue_potential_elec_gen_from_solar_pv_urban_twh",
-)
 
 
 @component.add(

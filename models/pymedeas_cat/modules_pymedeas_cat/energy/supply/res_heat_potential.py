@@ -67,15 +67,9 @@ def max_fe_potential_res_for_heat():
     value = xr.DataArray(
         np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
-    value.loc[{"RES heat": ["solar heat"]}] = float(
-        max_fe_res_for_heat().loc["solar heat"]
-    )
-    value.loc[{"RES heat": ["geot heat"]}] = float(
-        max_fe_res_for_heat().loc["geot heat"]
-    )
-    value.loc[
-        {"RES heat": ["solid bioE heat"]}
-    ] = max_pe_potential_solid_bioe_for_heat_ej() * float(
+    value.loc[["solar heat"]] = float(max_fe_res_for_heat().loc["solar heat"])
+    value.loc[["geot heat"]] = float(max_fe_res_for_heat().loc["geot heat"])
+    value.loc[["solid bioE heat"]] = max_pe_potential_solid_bioe_for_heat_ej() * float(
         efficiency_res_heat().loc["solid bioE heat"]
     )
     return value
@@ -95,13 +89,13 @@ def max_fe_res_for_heat():
     value = xr.DataArray(
         np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
-    value.loc[{"RES heat": ["solar heat"]}] = (
+    value.loc[["solar heat"]] = (
         max_fe_solar_thermal_urban_twth() * ej_per_twh() / twe_per_twh()
     )
-    value.loc[{"RES heat": ["geot heat"]}] = float(
-        max_pe_res_for_heat().loc["geot heat"]
-    ) * float(efficiency_res_heat().loc["geot heat"])
-    value.loc[{"RES heat": ["solid bioE heat"]}] = float(
+    value.loc[["geot heat"]] = float(max_pe_res_for_heat().loc["geot heat"]) * float(
+        efficiency_res_heat().loc["geot heat"]
+    )
+    value.loc[["solid bioE heat"]] = float(
         max_pe_res_for_heat().loc["solid bioE heat"]
     ) * float(efficiency_res_heat().loc["solid bioE heat"])
     return value
@@ -131,15 +125,9 @@ def max_pe_potential_res_for_heat():
     value = xr.DataArray(
         np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
-    value.loc[{"RES heat": ["solar heat"]}] = float(
-        max_pe_res_for_heat().loc["solar heat"]
-    )
-    value.loc[{"RES heat": ["geot heat"]}] = float(
-        max_pe_res_for_heat().loc["geot heat"]
-    )
-    value.loc[
-        {"RES heat": ["solid bioE heat"]}
-    ] = max_pe_potential_solid_bioe_for_heat_ej()
+    value.loc[["solar heat"]] = float(max_pe_res_for_heat().loc["solar heat"])
+    value.loc[["geot heat"]] = float(max_pe_res_for_heat().loc["geot heat"])
+    value.loc[["solid bioE heat"]] = max_pe_potential_solid_bioe_for_heat_ej()
     return value
 
 
@@ -173,13 +161,11 @@ def max_pe_res_for_heat():
     value = xr.DataArray(
         np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
-    value.loc[{"RES heat": ["solar heat"]}] = max_fe_solar_thermal_urban_twth() / float(
+    value.loc[["solar heat"]] = max_fe_solar_thermal_urban_twth() / float(
         efficiency_res_heat().loc["solar heat"]
     )
-    value.loc[{"RES heat": ["geot heat"]}] = geot_pe_potential_for_heat_ej()
-    value.loc[
-        {"RES heat": ["solid bioE heat"]}
-    ] = available_max_pe_solid_bioe_for_heat_ej()
+    value.loc[["geot heat"]] = geot_pe_potential_for_heat_ej()
+    value.loc[["solid bioE heat"]] = available_max_pe_solid_bioe_for_heat_ej()
     return value
 
 

@@ -228,6 +228,19 @@ _integ_pe_bioe_residues_nonbiofuels_ej = Integ(
 
 
 @component.add(
+    name="PE cellulosic biofuel EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def pe_cellulosic_biofuel_ej():
+    """
+    Annual primary energy biomass used for cellulosic biofuels.
+    """
+    return potential_pe_cellulosic_biofuel_ej() * (1 - share_biofuels_overcapacity())
+
+
+@component.add(
     name="PEavail cellulosic biofuel EJ",
     units="EJ",
     comp_type="Auxiliary",
@@ -238,6 +251,16 @@ def peavail_cellulosic_biofuel_ej():
     Cellulosic biofuels production from bioenergy-residues.
     """
     return pe_cellulosic_biofuel_ej() * efficiency_bioe_residues_to_cellulosic_liquids()
+
+
+@component.add(
+    name="Potential PE cellulosic biofuel abanndoned",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def potential_pe_cellulosic_biofuel_abanndoned():
+    return potential_pe_cellulosic_biofuel_ej() * share_biofuels_overcapacity()
 
 
 @component.add(
@@ -258,29 +281,6 @@ _integ_potential_pe_cellulosic_biofuel_ej = Integ(
     lambda: 0,
     "_integ_potential_pe_cellulosic_biofuel_ej",
 )
-
-
-@component.add(
-    name="PE cellulosic biofuel EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def pe_cellulosic_biofuel_ej():
-    """
-    Annual primary energy biomass used for cellulosic biofuels.
-    """
-    return potential_pe_cellulosic_biofuel_ej() * (1 - share_biofuels_overcapacity())
-
-
-@component.add(
-    name="Potential PE cellulosic biofuel abanndoned",
-    units="EJ/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def potential_pe_cellulosic_biofuel_abanndoned():
-    return potential_pe_cellulosic_biofuel_ej() * share_biofuels_overcapacity()
 
 
 @component.add(

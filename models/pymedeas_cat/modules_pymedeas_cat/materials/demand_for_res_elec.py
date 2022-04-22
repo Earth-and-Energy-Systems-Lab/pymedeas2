@@ -5,31 +5,6 @@ Translated using PySD version 3.0.0
 
 
 @component.add(
-    name="cum materials requirements for RES elec",
-    units="Mt",
-    subscripts=["materials"],
-    comp_type="Stateful",
-    comp_subtype="Integ",
-)
-def cum_materials_requirements_for_res_elec():
-    """
-    Total cumulative materials requirements for the installation and O&M of RES for electricity generation.
-    """
-    return _integ_cum_materials_requirements_for_res_elec()
-
-
-_integ_cum_materials_requirements_for_res_elec = Integ(
-    lambda: total_materials_required_for_res_elec_mt(),
-    lambda: xr.DataArray(
-        initial_cumulated_material_requirements_for_res_elec_1995(),
-        {"materials": _subscript_dict["materials"]},
-        ["materials"],
-    ),
-    "_integ_cum_materials_requirements_for_res_elec",
-)
-
-
-@component.add(
     name="cum materials to extract for RES elec",
     units="Mt",
     subscripts=["materials"],
@@ -51,6 +26,31 @@ _integ_cum_materials_to_extract_for_res_elec = Integ(
         ["materials"],
     ),
     "_integ_cum_materials_to_extract_for_res_elec",
+)
+
+
+@component.add(
+    name="cum materials requirements for RES elec",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
+def cum_materials_requirements_for_res_elec():
+    """
+    Total cumulative materials requirements for the installation and O&M of RES for electricity generation.
+    """
+    return _integ_cum_materials_requirements_for_res_elec()
+
+
+_integ_cum_materials_requirements_for_res_elec = Integ(
+    lambda: total_materials_required_for_res_elec_mt(),
+    lambda: xr.DataArray(
+        initial_cumulated_material_requirements_for_res_elec_1995(),
+        {"materials": _subscript_dict["materials"]},
+        ["materials"],
+    ),
+    "_integ_cum_materials_requirements_for_res_elec",
 )
 
 
@@ -123,172 +123,6 @@ def m_per_t():
 
 
 @component.add(
-    name="materials for new RES elec per capacity installed",
-    units="kg/MW",
-    subscripts=["RES elec", "materials"],
-    comp_type="Auxiliary, Constant",
-    comp_subtype="Normal",
-)
-def materials_for_new_res_elec_per_capacity_installed():
-    value = xr.DataArray(
-        np.nan,
-        {
-            "RES elec": _subscript_dict["RES elec"],
-            "materials": _subscript_dict["materials"],
-        },
-        ["RES elec", "materials"],
-    )
-    value.loc[
-        {
-            "RES elec": ["hydro", "geot elec", "solid bioE elec", "oceanic"],
-            "materials": [
-                "Adhesive",
-                "Aluminium",
-                "Aluminium mirrors",
-                "Cadmium",
-                "Carbon fiber",
-                "Cement",
-                "Chromium",
-                "Copper",
-                "diesel",
-                "Dy",
-                "electronic components",
-                "Evacuation lines",
-                "Fiberglass",
-                "Foam glass",
-                "Galium",
-                "Glass",
-                "Glass reinforcing plastic",
-                "gravel",
-                "Indium",
-                "Iron",
-                "KNO3 mined",
-                "Asphalt",
-                "Lime",
-                "Limestone",
-                "Lithium",
-                "Lubricant",
-                "Magnesium",
-                "Manganese",
-                "Heavy equipment",
-                "Concrete",
-                "Molybdenum",
-                "NaNO3 mined",
-                "NaNO3 synthetic",
-                "Neodymium",
-                "Nickel",
-                "over grid 15perc",
-                "over grid 5perc",
-                "Paint",
-                "Lead",
-                "Plastics",
-                "Polypropylene",
-                "Rock",
-                "Rock wool",
-                "Sand",
-                "Silicon sand",
-                "Silicon wafer modules",
-                "Silver",
-                "Site preparation",
-                "Tin",
-                "soda ash",
-                "steel",
-                "synthetic oil",
-                "tellurium",
-                "titanium",
-                "titanium dioxide",
-                "vanadium",
-                "wires",
-                "zinc",
-            ],
-        }
-    ] = 0
-    value.loc[
-        {
-            "RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"],
-            "materials": [
-                "Adhesive",
-                "Aluminium",
-                "Aluminium mirrors",
-                "Cadmium",
-                "Carbon fiber",
-                "Cement",
-                "Chromium",
-                "Copper",
-                "diesel",
-                "Dy",
-                "electronic components",
-                "Evacuation lines",
-                "Fiberglass",
-                "Foam glass",
-                "Galium",
-                "Glass",
-                "Glass reinforcing plastic",
-                "gravel",
-                "Indium",
-                "Iron",
-                "KNO3 mined",
-                "Asphalt",
-                "Lime",
-                "Limestone",
-                "Lithium",
-                "Lubricant",
-                "Magnesium",
-                "Manganese",
-                "Heavy equipment",
-                "Concrete",
-                "Molybdenum",
-                "NaNO3 mined",
-                "NaNO3 synthetic",
-                "Neodymium",
-                "Nickel",
-                "over grid 15perc",
-                "over grid 5perc",
-                "Paint",
-                "Lead",
-                "Plastics",
-                "Polypropylene",
-                "Rock",
-                "Rock wool",
-                "Sand",
-                "Silicon sand",
-                "Silicon wafer modules",
-                "Silver",
-                "Site preparation",
-                "Tin",
-                "soda ash",
-                "steel",
-                "synthetic oil",
-                "tellurium",
-                "titanium",
-                "titanium dioxide",
-                "vanadium",
-                "wires",
-                "zinc",
-            ],
-        }
-    ] = (
-        materials_per_new_capacity_installed_res()
-        + (
-            xr.DataArray(
-                0,
-                {
-                    "RES ELEC VARIABLE": _subscript_dict["RES ELEC VARIABLE"],
-                    "materials": _subscript_dict["materials"],
-                },
-                ["RES ELEC VARIABLE", "materials"],
-            )
-            + (
-                materials_per_new_res_elec_capacity_installed_hvdcs()
-                + materials_per_new_res_elec_capacity_installed_material_overgrid_high_power()
-            )
-            * include_materials_for_overgrids()
-        )
-    ).values
-    return value
-
-
-@component.add(
     name='"materials for O&M per capacity installed RES elec"',
     units="kg/MW",
     subscripts=["RES elec", "materials"],
@@ -307,135 +141,9 @@ def materials_for_om_per_capacity_installed_res_elec():
         },
         ["RES elec", "materials"],
     )
+    value.loc[_subscript_dict["RES ELEC DISPATCHABLE"], :] = 0
     value.loc[
-        {
-            "RES elec": ["hydro", "geot elec", "solid bioE elec", "oceanic"],
-            "materials": [
-                "Adhesive",
-                "Aluminium",
-                "Aluminium mirrors",
-                "Cadmium",
-                "Carbon fiber",
-                "Cement",
-                "Chromium",
-                "Copper",
-                "diesel",
-                "Dy",
-                "electronic components",
-                "Evacuation lines",
-                "Fiberglass",
-                "Foam glass",
-                "Galium",
-                "Glass",
-                "Glass reinforcing plastic",
-                "gravel",
-                "Indium",
-                "Iron",
-                "KNO3 mined",
-                "Asphalt",
-                "Lime",
-                "Limestone",
-                "Lithium",
-                "Lubricant",
-                "Magnesium",
-                "Manganese",
-                "Heavy equipment",
-                "Concrete",
-                "Molybdenum",
-                "NaNO3 mined",
-                "NaNO3 synthetic",
-                "Neodymium",
-                "Nickel",
-                "over grid 15perc",
-                "over grid 5perc",
-                "Paint",
-                "Lead",
-                "Plastics",
-                "Polypropylene",
-                "Rock",
-                "Rock wool",
-                "Sand",
-                "Silicon sand",
-                "Silicon wafer modules",
-                "Silver",
-                "Site preparation",
-                "Tin",
-                "soda ash",
-                "steel",
-                "synthetic oil",
-                "tellurium",
-                "titanium",
-                "titanium dioxide",
-                "vanadium",
-                "wires",
-                "zinc",
-            ],
-        }
-    ] = 0
-    value.loc[
-        {
-            "RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"],
-            "materials": [
-                "Adhesive",
-                "Aluminium",
-                "Aluminium mirrors",
-                "Cadmium",
-                "Carbon fiber",
-                "Cement",
-                "Chromium",
-                "Copper",
-                "diesel",
-                "Dy",
-                "electronic components",
-                "Evacuation lines",
-                "Fiberglass",
-                "Foam glass",
-                "Galium",
-                "Glass",
-                "Glass reinforcing plastic",
-                "gravel",
-                "Indium",
-                "Iron",
-                "KNO3 mined",
-                "Asphalt",
-                "Lime",
-                "Limestone",
-                "Lithium",
-                "Lubricant",
-                "Magnesium",
-                "Manganese",
-                "Heavy equipment",
-                "Concrete",
-                "Molybdenum",
-                "NaNO3 mined",
-                "NaNO3 synthetic",
-                "Neodymium",
-                "Nickel",
-                "over grid 15perc",
-                "over grid 5perc",
-                "Paint",
-                "Lead",
-                "Plastics",
-                "Polypropylene",
-                "Rock",
-                "Rock wool",
-                "Sand",
-                "Silicon sand",
-                "Silicon wafer modules",
-                "Silver",
-                "Site preparation",
-                "Tin",
-                "soda ash",
-                "steel",
-                "synthetic oil",
-                "tellurium",
-                "titanium",
-                "titanium dioxide",
-                "vanadium",
-                "wires",
-                "zinc",
-            ],
-        }
+        ["wind onshore", "wind offshore", "solar PV", "CSP"], :
     ] = _ext_constant_materials_for_om_per_capacity_installed_res_elec().values
     return value
 
@@ -451,332 +159,9 @@ _ext_constant_materials_for_om_per_capacity_installed_res_elec = ExtConstant(
     _root,
     {
         "RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"],
-        "materials": [
-            "Adhesive",
-            "Aluminium",
-            "Aluminium mirrors",
-            "Cadmium",
-            "Carbon fiber",
-            "Cement",
-            "Chromium",
-            "Copper",
-            "diesel",
-            "Dy",
-            "electronic components",
-            "Evacuation lines",
-            "Fiberglass",
-            "Foam glass",
-            "Galium",
-            "Glass",
-            "Glass reinforcing plastic",
-            "gravel",
-            "Indium",
-            "Iron",
-            "KNO3 mined",
-            "Asphalt",
-            "Lime",
-            "Limestone",
-            "Lithium",
-            "Lubricant",
-            "Magnesium",
-            "Manganese",
-            "Heavy equipment",
-            "Concrete",
-            "Molybdenum",
-            "NaNO3 mined",
-            "NaNO3 synthetic",
-            "Neodymium",
-            "Nickel",
-            "over grid 15perc",
-            "over grid 5perc",
-            "Paint",
-            "Lead",
-            "Plastics",
-            "Polypropylene",
-            "Rock",
-            "Rock wool",
-            "Sand",
-            "Silicon sand",
-            "Silicon wafer modules",
-            "Silver",
-            "Site preparation",
-            "Tin",
-            "soda ash",
-            "steel",
-            "synthetic oil",
-            "tellurium",
-            "titanium",
-            "titanium dioxide",
-            "vanadium",
-            "wires",
-            "zinc",
-        ],
-    },
-    "_ext_constant_materials_for_om_per_capacity_installed_res_elec",
-)
-
-
-@component.add(
-    name="materials per new capacity installed RES",
-    units="kg/MW",
-    subscripts=["RES ELEC VARIABLE", "materials"],
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def materials_per_new_capacity_installed_res():
-    """
-    Materials requirements per unit of new installed capacity of RES.
-    """
-    return _ext_constant_materials_per_new_capacity_installed_res()
-
-
-_ext_constant_materials_per_new_capacity_installed_res = ExtConstant(
-    "../materials.xlsx",
-    "Global",
-    "materials_per_new_capacity_installed_res*",
-    {
-        "RES ELEC VARIABLE": _subscript_dict["RES ELEC VARIABLE"],
         "materials": _subscript_dict["materials"],
     },
-    _root,
-    {
-        "RES ELEC VARIABLE": ["wind onshore", "wind offshore", "solar PV", "CSP"],
-        "materials": [
-            "Adhesive",
-            "Aluminium",
-            "Aluminium mirrors",
-            "Cadmium",
-            "Carbon fiber",
-            "Cement",
-            "Chromium",
-            "Copper",
-            "diesel",
-            "Dy",
-            "electronic components",
-            "Evacuation lines",
-            "Fiberglass",
-            "Foam glass",
-            "Galium",
-            "Glass",
-            "Glass reinforcing plastic",
-            "gravel",
-            "Indium",
-            "Iron",
-            "KNO3 mined",
-            "Asphalt",
-            "Lime",
-            "Limestone",
-            "Lithium",
-            "Lubricant",
-            "Magnesium",
-            "Manganese",
-            "Heavy equipment",
-            "Concrete",
-            "Molybdenum",
-            "NaNO3 mined",
-            "NaNO3 synthetic",
-            "Neodymium",
-            "Nickel",
-            "over grid 15perc",
-            "over grid 5perc",
-            "Paint",
-            "Lead",
-            "Plastics",
-            "Polypropylene",
-            "Rock",
-            "Rock wool",
-            "Sand",
-            "Silicon sand",
-            "Silicon wafer modules",
-            "Silver",
-            "Site preparation",
-            "Tin",
-            "soda ash",
-            "steel",
-            "synthetic oil",
-            "tellurium",
-            "titanium",
-            "titanium dioxide",
-            "vanadium",
-            "wires",
-            "zinc",
-        ],
-    },
-    "_ext_constant_materials_per_new_capacity_installed_res",
-)
-
-
-@component.add(
-    name="materials per new RES elec capacity installed HVDCs",
-    units="kg/MW",
-    subscripts=["materials"],
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def materials_per_new_res_elec_capacity_installed_hvdcs():
-    """
-    Materials requirements for inter-regional grids (HVDCs) per unit of new installed capacity of RES variable for electricity.
-    """
-    return _ext_constant_materials_per_new_res_elec_capacity_installed_hvdcs()
-
-
-_ext_constant_materials_per_new_res_elec_capacity_installed_hvdcs = ExtConstant(
-    "../materials.xlsx",
-    "Global",
-    "materials_per_new_res_elec_capacity_installed_hvdcs*",
-    {"materials": _subscript_dict["materials"]},
-    _root,
-    {
-        "materials": [
-            "Adhesive",
-            "Aluminium",
-            "Aluminium mirrors",
-            "Cadmium",
-            "Carbon fiber",
-            "Cement",
-            "Chromium",
-            "Copper",
-            "diesel",
-            "Dy",
-            "electronic components",
-            "Evacuation lines",
-            "Fiberglass",
-            "Foam glass",
-            "Galium",
-            "Glass",
-            "Glass reinforcing plastic",
-            "gravel",
-            "Indium",
-            "Iron",
-            "KNO3 mined",
-            "Asphalt",
-            "Lime",
-            "Limestone",
-            "Lithium",
-            "Lubricant",
-            "Magnesium",
-            "Manganese",
-            "Heavy equipment",
-            "Concrete",
-            "Molybdenum",
-            "NaNO3 mined",
-            "NaNO3 synthetic",
-            "Neodymium",
-            "Nickel",
-            "over grid 15perc",
-            "over grid 5perc",
-            "Paint",
-            "Lead",
-            "Plastics",
-            "Polypropylene",
-            "Rock",
-            "Rock wool",
-            "Sand",
-            "Silicon sand",
-            "Silicon wafer modules",
-            "Silver",
-            "Site preparation",
-            "Tin",
-            "soda ash",
-            "steel",
-            "synthetic oil",
-            "tellurium",
-            "titanium",
-            "titanium dioxide",
-            "vanadium",
-            "wires",
-            "zinc",
-        ]
-    },
-    "_ext_constant_materials_per_new_res_elec_capacity_installed_hvdcs",
-)
-
-
-@component.add(
-    name="materials per new RES elec capacity installed material overgrid high power",
-    units="kg/MW",
-    subscripts=["materials"],
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def materials_per_new_res_elec_capacity_installed_material_overgrid_high_power():
-    """
-    Materials requirements for overgrid high power per unit of new installed capacity of RES variable for electricity.
-    """
-    return (
-        _ext_constant_materials_per_new_res_elec_capacity_installed_material_overgrid_high_power()
-    )
-
-
-_ext_constant_materials_per_new_res_elec_capacity_installed_material_overgrid_high_power = ExtConstant(
-    "../materials.xlsx",
-    "Global",
-    "materials_per_new_res_elec_capacity_installed_material_overgrid_high_power*",
-    {"materials": _subscript_dict["materials"]},
-    _root,
-    {
-        "materials": [
-            "Adhesive",
-            "Aluminium",
-            "Aluminium mirrors",
-            "Cadmium",
-            "Carbon fiber",
-            "Cement",
-            "Chromium",
-            "Copper",
-            "diesel",
-            "Dy",
-            "electronic components",
-            "Evacuation lines",
-            "Fiberglass",
-            "Foam glass",
-            "Galium",
-            "Glass",
-            "Glass reinforcing plastic",
-            "gravel",
-            "Indium",
-            "Iron",
-            "KNO3 mined",
-            "Asphalt",
-            "Lime",
-            "Limestone",
-            "Lithium",
-            "Lubricant",
-            "Magnesium",
-            "Manganese",
-            "Heavy equipment",
-            "Concrete",
-            "Molybdenum",
-            "NaNO3 mined",
-            "NaNO3 synthetic",
-            "Neodymium",
-            "Nickel",
-            "over grid 15perc",
-            "over grid 5perc",
-            "Paint",
-            "Lead",
-            "Plastics",
-            "Polypropylene",
-            "Rock",
-            "Rock wool",
-            "Sand",
-            "Silicon sand",
-            "Silicon wafer modules",
-            "Silver",
-            "Site preparation",
-            "Tin",
-            "soda ash",
-            "steel",
-            "synthetic oil",
-            "tellurium",
-            "titanium",
-            "titanium dioxide",
-            "vanadium",
-            "wires",
-            "zinc",
-        ]
-    },
-    "_ext_constant_materials_per_new_res_elec_capacity_installed_material_overgrid_high_power",
+    "_ext_constant_materials_for_om_per_capacity_installed_res_elec",
 )
 
 
@@ -836,6 +221,127 @@ def materials_required_for_om_res_elec_mt():
         * m_per_t()
         / kg_per_mt()
     )
+
+
+@component.add(
+    name="materials for new RES elec per capacity installed",
+    units="kg/MW",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary, Constant",
+    comp_subtype="Normal",
+)
+def materials_for_new_res_elec_per_capacity_installed():
+    value = xr.DataArray(
+        np.nan,
+        {
+            "RES elec": _subscript_dict["RES elec"],
+            "materials": _subscript_dict["materials"],
+        },
+        ["RES elec", "materials"],
+    )
+    value.loc[_subscript_dict["RES ELEC DISPATCHABLE"], :] = 0
+    value.loc[_subscript_dict["RES ELEC VARIABLE"], :] = (
+        materials_per_new_capacity_installed_res()
+        + (
+            xr.DataArray(
+                0,
+                {
+                    "RES ELEC VARIABLE": _subscript_dict["RES ELEC VARIABLE"],
+                    "materials": _subscript_dict["materials"],
+                },
+                ["RES ELEC VARIABLE", "materials"],
+            )
+            + (
+                materials_per_new_res_elec_capacity_installed_hvdcs()
+                + materials_per_new_res_elec_capacity_installed_material_overgrid_high_power()
+            )
+            * include_materials_for_overgrids()
+        )
+    ).values
+    return value
+
+
+@component.add(
+    name="materials per new capacity installed RES",
+    units="kg/MW",
+    subscripts=["RES ELEC VARIABLE", "materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def materials_per_new_capacity_installed_res():
+    """
+    Materials requirements per unit of new installed capacity of RES.
+    """
+    return _ext_constant_materials_per_new_capacity_installed_res()
+
+
+_ext_constant_materials_per_new_capacity_installed_res = ExtConstant(
+    "../materials.xlsx",
+    "Global",
+    "materials_per_new_capacity_installed_res*",
+    {
+        "RES ELEC VARIABLE": _subscript_dict["RES ELEC VARIABLE"],
+        "materials": _subscript_dict["materials"],
+    },
+    _root,
+    {
+        "RES ELEC VARIABLE": _subscript_dict["RES ELEC VARIABLE"],
+        "materials": _subscript_dict["materials"],
+    },
+    "_ext_constant_materials_per_new_capacity_installed_res",
+)
+
+
+@component.add(
+    name="materials per new RES elec capacity installed HVDCs",
+    units="kg/MW",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def materials_per_new_res_elec_capacity_installed_hvdcs():
+    """
+    Materials requirements for inter-regional grids (HVDCs) per unit of new installed capacity of RES variable for electricity.
+    """
+    return _ext_constant_materials_per_new_res_elec_capacity_installed_hvdcs()
+
+
+_ext_constant_materials_per_new_res_elec_capacity_installed_hvdcs = ExtConstant(
+    "../materials.xlsx",
+    "Global",
+    "materials_per_new_res_elec_capacity_installed_hvdcs*",
+    {"materials": _subscript_dict["materials"]},
+    _root,
+    {"materials": _subscript_dict["materials"]},
+    "_ext_constant_materials_per_new_res_elec_capacity_installed_hvdcs",
+)
+
+
+@component.add(
+    name="materials per new RES elec capacity installed material overgrid high power",
+    units="kg/MW",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def materials_per_new_res_elec_capacity_installed_material_overgrid_high_power():
+    """
+    Materials requirements for overgrid high power per unit of new installed capacity of RES variable for electricity.
+    """
+    return (
+        _ext_constant_materials_per_new_res_elec_capacity_installed_material_overgrid_high_power()
+    )
+
+
+_ext_constant_materials_per_new_res_elec_capacity_installed_material_overgrid_high_power = ExtConstant(
+    "../materials.xlsx",
+    "Global",
+    "materials_per_new_res_elec_capacity_installed_material_overgrid_high_power*",
+    {"materials": _subscript_dict["materials"]},
+    _root,
+    {"materials": _subscript_dict["materials"]},
+    "_ext_constant_materials_per_new_res_elec_capacity_installed_material_overgrid_high_power",
+)
 
 
 @component.add(

@@ -5,6 +5,45 @@ Translated using PySD version 3.0.0
 
 
 @component.add(
+    name="Exports demand not covered RoW",
+    units="Mdollars/Year",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def exports_demand_not_covered_row():
+    """
+    Gap between exports required and real exports (after energy-economy feedback)
+    """
+    return if_then_else(
+        time() < 2009,
+        lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
+        lambda: exports_demand_to_row() - real_exports_demand_to_row_by_sector(),
+    )
+
+
+@component.add(
+    name="Exports demand to RoEU",
+    units="Mdollars",
+    subscripts=["sectors"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+)
+def exports_demand_to_roeu():
+    """
+    Sectorial value of exports
+    """
+    return _integ_exports_demand_to_roeu()
+
+
+_integ_exports_demand_to_roeu = Integ(
+    lambda: variation_exports_demand_to_roeu() - exports_demand_not_covered_to_roeu(),
+    lambda: initial_exports_demand_to_roeu(),
+    "_integ_exports_demand_to_roeu",
+)
+
+
+@component.add(
     name="beta 0 EXP 0",
     units="Dmnl",
     subscripts=["sectors"],
@@ -24,24 +63,7 @@ _ext_constant_beta_0_exp_0 = ExtConstant(
     "beta_0_EXP_0*",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_constant_beta_0_exp_0",
 )
 
@@ -66,24 +88,7 @@ _ext_constant_beta_0_exp_1 = ExtConstant(
     "beta_0_EXP_1*",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_constant_beta_0_exp_1",
 )
 
@@ -131,24 +136,6 @@ _ext_constant_beta_1_exp_1 = ExtConstant(
 
 
 @component.add(
-    name="Exports demand not covered RoW",
-    units="Mdollars/Year",
-    subscripts=["sectors"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def exports_demand_not_covered_row():
-    """
-    Gap between exports required and real exports (after energy-economy feedback)
-    """
-    return if_then_else(
-        time() < 2009,
-        lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
-        lambda: exports_demand_to_row() - real_exports_demand_to_row_by_sector(),
-    )
-
-
-@component.add(
     name="Exports demand not covered to RoEU",
     units="Mdollars/Year",
     subscripts=["sectors"],
@@ -164,27 +151,6 @@ def exports_demand_not_covered_to_roeu():
         lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
         lambda: exports_demand_to_roeu() - real_exports_demand_to_roeu_by_sector(),
     )
-
-
-@component.add(
-    name="Exports demand to RoEU",
-    units="Mdollars",
-    subscripts=["sectors"],
-    comp_type="Stateful",
-    comp_subtype="Integ",
-)
-def exports_demand_to_roeu():
-    """
-    Sectorial value of exports
-    """
-    return _integ_exports_demand_to_roeu()
-
-
-_integ_exports_demand_to_roeu = Integ(
-    lambda: variation_exports_demand_to_roeu() - exports_demand_not_covered_to_roeu(),
-    lambda: initial_exports_demand_to_roeu(),
-    "_integ_exports_demand_to_roeu",
-)
 
 
 @component.add(
@@ -234,24 +200,7 @@ _ext_lookup_historic_exports_demand_0 = ExtLookup(
     "historic_exports_demand_0",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_lookup_historic_exports_demand_0",
 )
 
@@ -277,24 +226,7 @@ _ext_lookup_historic_exports_demand_1 = ExtLookup(
     "historic_exports_demand_1",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_lookup_historic_exports_demand_1",
 )
 

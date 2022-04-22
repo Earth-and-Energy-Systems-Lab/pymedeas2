@@ -54,7 +54,7 @@ _ext_data_ch4_anthro_emissions_rcp = ExtData(
     "interpolate",
     {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
-    {"RCP Scenario": ["RCP26", "RCP45", "RCP60", "RCP85"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     "_ext_data_ch4_anthro_emissions_rcp",
 )
 
@@ -129,18 +129,8 @@ _ext_data_hfc_emissions_rcp = ExtData(
     {"RCP Scenario": _subscript_dict["RCP Scenario"], "HFC type": ["HFC134a"]},
     _root,
     {
-        "RCP Scenario": ["RCP26", "RCP45", "RCP60", "RCP85"],
-        "HFC type": [
-            "HFC134a",
-            "HFC23",
-            "HFC32",
-            "HFC125",
-            "HFC143a",
-            "HFC152a",
-            "HFC227ea",
-            "HFC245ca",
-            "HFC4310mee",
-        ],
+        "RCP Scenario": _subscript_dict["RCP Scenario"],
+        "HFC type": _subscript_dict["HFC type"],
     },
     "_ext_data_hfc_emissions_rcp",
 )
@@ -265,7 +255,7 @@ _ext_data_n2o_anthro_emissions_rcp = ExtData(
     "interpolate",
     {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
-    {"RCP Scenario": ["RCP26", "RCP45", "RCP60", "RCP85"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     "_ext_data_n2o_anthro_emissions_rcp",
 )
 
@@ -317,7 +307,7 @@ _ext_data_pfc_emissions_rcp = ExtData(
     "interpolate",
     {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
-    {"RCP Scenario": ["RCP26", "RCP45", "RCP60", "RCP85"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     "_ext_data_pfc_emissions_rcp",
 )
 
@@ -379,6 +369,6 @@ _ext_data_sf6_emissions_rcp = ExtData(
     "interpolate",
     {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
-    {"RCP Scenario": ["RCP26", "RCP45", "RCP60", "RCP85"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     "_ext_data_sf6_emissions_rcp",
 )

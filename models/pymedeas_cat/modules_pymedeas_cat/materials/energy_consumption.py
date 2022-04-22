@@ -5,25 +5,6 @@ Translated using PySD version 3.0.0
 
 
 @component.add(
-    name="Energy cons per unit of material cons for RES elec",
-    units="MJ/kg",
-    subscripts=["materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def energy_cons_per_unit_of_material_cons_for_res_elec():
-    """
-    Average energy consumption per unit of material consumption accounting for recycling rates for RES elec technologies. recycling rates minerals RES elec[materials]*"Initial energy cons per unit of material cons (recycled)"[materials]+(1-recycling rates minerals RES elec[materials])*"Initial energy cons per unit of material cons (virgin)"[materials]
-    """
-    return (
-        recycling_rates_minerals_alt_techn()
-        * initial_energy_cons_per_unit_of_material_cons_recycled()
-        + (1 - recycling_rates_minerals_alt_techn())
-        * initial_energy_cons_per_unit_of_material_cons_virgin()
-    )
-
-
-@component.add(
     name="Energy required for material consumption for EV batteries",
     units="EJ",
     subscripts=["materials"],
@@ -43,18 +24,15 @@ def energy_required_for_material_consumption_for_ev_batteries():
 
 
 @component.add(
-    name="Energy required for material consumption for new RES elec",
+    name='"Energy required for material consumption for O&M RES elec"',
     units="EJ",
     subscripts=["RES elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
 )
-def energy_required_for_material_consumption_for_new_res_elec():
-    """
-    Energy required for material consumption for new RES elec.
-    """
+def energy_required_for_material_consumption_for_om_res_elec():
     return (
-        materials_required_for_new_res_elec_mt()
+        materials_required_for_om_res_elec_mt()
         * (
             xr.DataArray(
                 0,
@@ -72,15 +50,37 @@ def energy_required_for_material_consumption_for_new_res_elec():
 
 
 @component.add(
-    name='"Energy required for material consumption for O&M RES elec"',
+    name="Energy cons per unit of material cons for RES elec",
+    units="MJ/kg",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def energy_cons_per_unit_of_material_cons_for_res_elec():
+    """
+    Average energy consumption per unit of material consumption accounting for recycling rates for RES elec technologies. recycling rates minerals RES elec[materials]*"Initial energy cons per unit of material cons (recycled)"[materials]+(1-recycling rates minerals RES elec[materials])*"Initial energy cons per unit of material cons (virgin)"[materials]
+    """
+    return (
+        recycling_rates_minerals_alt_techn()
+        * initial_energy_cons_per_unit_of_material_cons_recycled()
+        + (1 - recycling_rates_minerals_alt_techn())
+        * initial_energy_cons_per_unit_of_material_cons_virgin()
+    )
+
+
+@component.add(
+    name="Energy required for material consumption for new RES elec",
     units="EJ",
     subscripts=["RES elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
 )
-def energy_required_for_material_consumption_for_om_res_elec():
+def energy_required_for_material_consumption_for_new_res_elec():
+    """
+    Energy required for material consumption for new RES elec.
+    """
     return (
-        materials_required_for_om_res_elec_mt()
+        materials_required_for_new_res_elec_mt()
         * (
             xr.DataArray(
                 0,
@@ -134,68 +134,7 @@ _ext_constant_initial_energy_cons_per_unit_of_material_cons_recycled_data = ExtC
     "initial_energy_cons_per_material_recycled*",
     {"materials": _subscript_dict["materials"]},
     _root,
-    {
-        "materials": [
-            "Adhesive",
-            "Aluminium",
-            "Aluminium mirrors",
-            "Cadmium",
-            "Carbon fiber",
-            "Cement",
-            "Chromium",
-            "Copper",
-            "diesel",
-            "Dy",
-            "electronic components",
-            "Evacuation lines",
-            "Fiberglass",
-            "Foam glass",
-            "Galium",
-            "Glass",
-            "Glass reinforcing plastic",
-            "gravel",
-            "Indium",
-            "Iron",
-            "KNO3 mined",
-            "Asphalt",
-            "Lime",
-            "Limestone",
-            "Lithium",
-            "Lubricant",
-            "Magnesium",
-            "Manganese",
-            "Heavy equipment",
-            "Concrete",
-            "Molybdenum",
-            "NaNO3 mined",
-            "NaNO3 synthetic",
-            "Neodymium",
-            "Nickel",
-            "over grid 15perc",
-            "over grid 5perc",
-            "Paint",
-            "Lead",
-            "Plastics",
-            "Polypropylene",
-            "Rock",
-            "Rock wool",
-            "Sand",
-            "Silicon sand",
-            "Silicon wafer modules",
-            "Silver",
-            "Site preparation",
-            "Tin",
-            "soda ash",
-            "steel",
-            "synthetic oil",
-            "tellurium",
-            "titanium",
-            "titanium dioxide",
-            "vanadium",
-            "wires",
-            "zinc",
-        ]
-    },
+    {"materials": _subscript_dict["materials"]},
     "_ext_constant_initial_energy_cons_per_unit_of_material_cons_recycled_data",
 )
 
@@ -238,68 +177,7 @@ _ext_constant_initial_energy_cons_per_unit_of_material_cons_virgin = ExtConstant
     "initial_energy_cons_per_material_virgin*",
     {"materials": _subscript_dict["materials"]},
     _root,
-    {
-        "materials": [
-            "Adhesive",
-            "Aluminium",
-            "Aluminium mirrors",
-            "Cadmium",
-            "Carbon fiber",
-            "Cement",
-            "Chromium",
-            "Copper",
-            "diesel",
-            "Dy",
-            "electronic components",
-            "Evacuation lines",
-            "Fiberglass",
-            "Foam glass",
-            "Galium",
-            "Glass",
-            "Glass reinforcing plastic",
-            "gravel",
-            "Indium",
-            "Iron",
-            "KNO3 mined",
-            "Asphalt",
-            "Lime",
-            "Limestone",
-            "Lithium",
-            "Lubricant",
-            "Magnesium",
-            "Manganese",
-            "Heavy equipment",
-            "Concrete",
-            "Molybdenum",
-            "NaNO3 mined",
-            "NaNO3 synthetic",
-            "Neodymium",
-            "Nickel",
-            "over grid 15perc",
-            "over grid 5perc",
-            "Paint",
-            "Lead",
-            "Plastics",
-            "Polypropylene",
-            "Rock",
-            "Rock wool",
-            "Sand",
-            "Silicon sand",
-            "Silicon wafer modules",
-            "Silver",
-            "Site preparation",
-            "Tin",
-            "soda ash",
-            "steel",
-            "synthetic oil",
-            "tellurium",
-            "titanium",
-            "titanium dioxide",
-            "vanadium",
-            "wires",
-            "zinc",
-        ]
-    },
+    {"materials": _subscript_dict["materials"]},
     "_ext_constant_initial_energy_cons_per_unit_of_material_cons_virgin",
 )
 

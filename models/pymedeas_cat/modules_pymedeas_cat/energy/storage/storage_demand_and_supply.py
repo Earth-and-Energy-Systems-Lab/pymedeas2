@@ -5,25 +5,6 @@ Translated using PySD version 3.0.0
 
 
 @component.add(
-    name="abundance storage", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def abundance_storage():
-    """
-    Increases the planning of PHS if there is a deficit of electric storage.
-    """
-    return 1 - if_then_else(
-        demand_storage_capacity() <= total_capacity_elec_storage_tw(),
-        lambda: 1,
-        lambda: np.maximum(
-            0,
-            1
-            - (demand_storage_capacity() - total_capacity_elec_storage_tw())
-            / total_capacity_elec_storage_tw(),
-        ),
-    )
-
-
-@component.add(
     name="constraint elec storage availability",
     units="Dmnl",
     subscripts=["RES elec"],
@@ -72,6 +53,19 @@ def cp_ev_batteries_for_elec_storage():
 
 
 @component.add(
+    name="ESOI elec storage", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+)
+def esoi_elec_storage():
+    """
+    ESOI of electric storage (PHS and EV batteries).
+    """
+    return (
+        esoi_phs() * installed_capacity_phs_tw()
+        + esoi_ev_batteries() * used_ev_batteries_for_elec_storage()
+    ) / total_capacity_elec_storage_tw()
+
+
+@component.add(
     name="Cp EV batteries required",
     units="TW",
     comp_type="Auxiliary",
@@ -107,19 +101,6 @@ def demand_storage_capacity():
     return (
         share_capacity_storageres_elec_var() * total_installed_capacity_res_elec_var()
     )
-
-
-@component.add(
-    name="ESOI elec storage", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def esoi_elec_storage():
-    """
-    ESOI of electric storage (PHS and EV batteries).
-    """
-    return (
-        esoi_phs() * installed_capacity_phs_tw()
-        + esoi_ev_batteries() * used_ev_batteries_for_elec_storage()
-    ) / total_capacity_elec_storage_tw()
 
 
 @component.add(
@@ -166,18 +147,7 @@ def remaining_potential_elec_storage_by_res_techn():
             / max_capacity_elec_storage(),
             lambda: 0,
         ),
-        {
-            "RES elec": [
-                "hydro",
-                "geot elec",
-                "solid bioE elec",
-                "oceanic",
-                "wind onshore",
-                "wind offshore",
-                "solar PV",
-                "CSP",
-            ]
-        },
+        {"RES elec": _subscript_dict["RES elec"]},
         ["RES elec"],
     )
 

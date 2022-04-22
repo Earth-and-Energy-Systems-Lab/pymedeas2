@@ -21,59 +21,6 @@ def modern_solids_bioe_demand_households():
 
 
 @component.add(
-    name="PE traditional biomass demand EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def pe_traditional_biomass_demand_ej():
-    """
-    Annual primary energy demand of traditional biomass driven by population and energy intensity evolution. It also includes charcoal and biosolids for solids.
-    """
-    return (
-        float(households_final_energy_demand().loc["solids"])
-        * share_trad_biomass_vs_solids_in_households()
-    )
-
-
-@component.add(
-    name="People relying trad biomass ref",
-    units="people",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def people_relying_trad_biomass_ref():
-    """
-    People relying on traditional biomass in 2008. WEO 2010 reportad that in 2008, 2.5 billion people consumed 724 Mtoe of traditional biomass.
-    """
-    return _ext_constant_people_relying_trad_biomass_ref()
-
-
-_ext_constant_people_relying_trad_biomass_ref = ExtConstant(
-    "../parameters.xlsx",
-    "Austria",
-    "people_relying_on_traditional_biomass",
-    {},
-    _root,
-    {},
-    "_ext_constant_people_relying_trad_biomass_ref",
-)
-
-
-@component.add(
-    name="PEpc consumption people depending on trad biomass",
-    units="MToe/people",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def pepc_consumption_people_depending_on_trad_biomass():
-    """
-    Primary energy per capita consumption of people currently depending on trad biomass.
-    """
-    return zidz(pe_consumption_trad_biomass_ref(), people_relying_trad_biomass_ref())
-
-
-@component.add(
     name="PE consumption trad biomass ref",
     units="EJ/Year",
     comp_type="Constant",
@@ -111,6 +58,22 @@ def pe_traditional_biomass_consum_ej():
 
 
 @component.add(
+    name="PE traditional biomass demand EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def pe_traditional_biomass_demand_ej():
+    """
+    Annual primary energy demand of traditional biomass driven by population and energy intensity evolution. It also includes charcoal and biosolids for solids.
+    """
+    return (
+        float(households_final_energy_demand().loc["solids"])
+        * share_trad_biomass_vs_solids_in_households()
+    )
+
+
+@component.add(
     name="PE traditional biomass EJ delayed 1yr",
     units="EJ/Year",
     comp_type="Stateful",
@@ -130,6 +93,43 @@ _delayfixed_pe_traditional_biomass_ej_delayed_1yr = DelayFixed(
     time_step,
     "_delayfixed_pe_traditional_biomass_ej_delayed_1yr",
 )
+
+
+@component.add(
+    name="People relying trad biomass ref",
+    units="people",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def people_relying_trad_biomass_ref():
+    """
+    People relying on traditional biomass in 2008. WEO 2010 reportad that in 2008, 2.5 billion people consumed 724 Mtoe of traditional biomass.
+    """
+    return _ext_constant_people_relying_trad_biomass_ref()
+
+
+_ext_constant_people_relying_trad_biomass_ref = ExtConstant(
+    "../parameters.xlsx",
+    "Austria",
+    "people_relying_on_traditional_biomass",
+    {},
+    _root,
+    {},
+    "_ext_constant_people_relying_trad_biomass_ref",
+)
+
+
+@component.add(
+    name="PEpc consumption people depending on trad biomass",
+    units="MToe/people",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def pepc_consumption_people_depending_on_trad_biomass():
+    """
+    Primary energy per capita consumption of people currently depending on trad biomass.
+    """
+    return zidz(pe_consumption_trad_biomass_ref(), people_relying_trad_biomass_ref())
 
 
 @component.add(

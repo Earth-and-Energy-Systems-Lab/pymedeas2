@@ -59,18 +59,7 @@ _ext_constant_power_density_res_elec_twemha = ExtConstant(
     "power_density_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_power_density_res_elec_twemha",
 )
 

@@ -6,7 +6,7 @@ Translated using PySD version 3.0.0
 
 @component.add(
     name="atm ocean mixing time",
-    units="year ",
+    units="year",
     limits=(0.25, 10.0, 0.25),
     comp_type="Constant",
     comp_subtype="External",
@@ -65,7 +65,7 @@ def biostim_coeff():
 
 @component.add(
     name="biostim coeff index",
-    units="Dmnl ",
+    units="Dmnl",
     limits=(0.6, 1.7, 0.05),
     comp_type="Constant",
     comp_subtype="External",
@@ -90,7 +90,7 @@ _ext_constant_biostim_coeff_index = ExtConstant(
 
 @component.add(
     name="biostim coeff mean",
-    units="Dmnl ",
+    units="Dmnl",
     limits=(0.3, 0.7),
     comp_type="Constant",
     comp_subtype="External",
@@ -265,10 +265,8 @@ def c_in_deep_ocean():
     Carbon in deep ocean.
     """
     value = xr.DataArray(np.nan, {"Layers": _subscript_dict["Layers"]}, ["Layers"])
-    value.loc[
-        {"Layers": ["Layer1", "Layer2", "Layer3"]}
-    ] = _integ_c_in_deep_ocean().values
-    value.loc[{"Layers": ["Layer4"]}] = _integ_c_in_deep_ocean_1().values
+    value.loc[_subscript_dict["upper"]] = _integ_c_in_deep_ocean().values
+    value.loc[["Layer4"]] = _integ_c_in_deep_ocean_1().values
     return value
 
 
@@ -363,7 +361,7 @@ def c_in_mixed_layer_per_meter():
 
 @component.add(
     name="CH4 generation rate from biomass",
-    units="1/year ",
+    units="1/year",
     limits=(0.0, 0.00014),
     comp_type="Constant",
     comp_subtype="External",
@@ -388,7 +386,7 @@ _ext_constant_ch4_generation_rate_from_biomass = ExtConstant(
 
 @component.add(
     name="CH4 generation rate from humus",
-    units="1/year ",
+    units="1/year",
     limits=(0.0, 0.00016),
     comp_type="Constant",
     comp_subtype="External",
@@ -446,7 +444,7 @@ def diffusion_flux():
     Diffusion flux between ocean layers.
     """
     value = xr.DataArray(np.nan, {"Layers": _subscript_dict["Layers"]}, ["Layers"])
-    value.loc[{"Layers": ["Layer1"]}] = (
+    value.loc[["Layer1"]] = (
         (
             c_in_mixed_layer_per_meter()
             - float(c_in_deep_ocean_per_meter().loc["Layer1"])
@@ -454,7 +452,7 @@ def diffusion_flux():
         * eddy_diffusion_coef()
         / float(mean_depth_of_adjacent_layers().loc["Layer1"])
     )
-    value.loc[{"Layers": ["Layer2", "Layer3", "Layer4"]}] = (
+    value.loc[_subscript_dict["lower"]] = (
         (
             xr.DataArray(
                 c_in_deep_ocean_per_meter()
@@ -491,7 +489,7 @@ def eddy_diffusion_coef():
 
 @component.add(
     name="eddy diffusion coef index",
-    units="Dmnl ",
+    units="Dmnl",
     limits=(0.85, 1.15, 0.05),
     comp_type="Constant",
     comp_subtype="External",
@@ -516,7 +514,7 @@ _ext_constant_eddy_diffusion_coef_index = ExtConstant(
 
 @component.add(
     name="eddy diffusion mean",
-    units="m2/year ",
+    units="m2/year",
     limits=(2000.0, 8000.0),
     comp_type="Constant",
     comp_subtype="External",
@@ -741,7 +739,7 @@ def gtc_per_ppm():
 
 @component.add(
     name="init C in atm",
-    units="GtC ",
+    units="GtC",
     limits=(500.0, 1000.0),
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -794,7 +792,7 @@ _ext_constant_init_c_in_deep_ocean = ExtConstant(
     "init_C_in_deep_ocean*",
     {"Layers": _subscript_dict["Layers"]},
     _root,
-    {"Layers": ["Layer1", "Layer2", "Layer3", "Layer4"]},
+    {"Layers": _subscript_dict["Layers"]},
     "_ext_constant_init_c_in_deep_ocean",
 )
 
@@ -903,7 +901,7 @@ _ext_constant_layer_depth = ExtConstant(
     "layer_depth*",
     {"Layers": _subscript_dict["Layers"]},
     _root,
-    {"Layers": ["Layer1", "Layer2", "Layer3", "Layer4"]},
+    {"Layers": _subscript_dict["Layers"]},
     "_ext_constant_layer_depth",
 )
 
@@ -920,10 +918,10 @@ def layer_time_constant():
     Time constant of exchange between layers.
     """
     value = xr.DataArray(np.nan, {"Layers": _subscript_dict["Layers"]}, ["Layers"])
-    value.loc[{"Layers": ["Layer1"]}] = float(layer_depth().loc["Layer1"]) / (
+    value.loc[["Layer1"]] = float(layer_depth().loc["Layer1"]) / (
         eddy_diffusion_coef() / float(mean_depth_of_adjacent_layers().loc["Layer1"])
     )
-    value.loc[{"Layers": ["Layer2", "Layer3", "Layer4"]}] = (
+    value.loc[_subscript_dict["lower"]] = (
         layer_depth().loc[_subscript_dict["lower"]].rename({"Layers": "lower"})
         / (
             eddy_diffusion_coef()
@@ -947,10 +945,10 @@ def mean_depth_of_adjacent_layers():
     The mean depth of adjacent ocean layers.
     """
     value = xr.DataArray(np.nan, {"Layers": _subscript_dict["Layers"]}, ["Layers"])
-    value.loc[{"Layers": ["Layer1"]}] = (
+    value.loc[["Layer1"]] = (
         mixed_layer_depth() + float(layer_depth().loc["Layer1"])
     ) / 2
-    value.loc[{"Layers": ["Layer2", "Layer3", "Layer4"]}] = (
+    value.loc[_subscript_dict["lower"]] = (
         (
             xr.DataArray(
                 layer_depth()
@@ -1114,7 +1112,7 @@ _ext_constant_reference_temperature_change_for_effect_of_warming_on_ch4_from_res
 
 @component.add(
     name="sensitivity of C uptake to temperature",
-    units="Dmnl ",
+    units="Dmnl",
     limits=(0.0, 2.5, 0.1),
     comp_type="Constant",
     comp_subtype="External",
@@ -1139,7 +1137,7 @@ _ext_constant_sensitivity_of_c_uptake_to_temperature = ExtConstant(
 
 @component.add(
     name="sensitivity of methane emissions to temperature",
-    units="Dmnl ",
+    units="Dmnl",
     limits=(0.0, 2.5, 0.1),
     comp_type="Constant",
     comp_subtype="External",

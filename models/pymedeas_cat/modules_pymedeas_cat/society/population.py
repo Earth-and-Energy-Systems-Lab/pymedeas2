@@ -201,6 +201,27 @@ def pop_asymptote():
 
 
 @component.add(
+    name="pop until P customized year pop evolution",
+    units="Dmnl",
+    comp_type="Stateful",
+    comp_subtype="SampleIfTrue",
+)
+def pop_until_p_customized_year_pop_evolution():
+    """
+    Population until starting customized year of the policy target.
+    """
+    return _sampleiftrue_pop_until_p_customized_year_pop_evolution()
+
+
+_sampleiftrue_pop_until_p_customized_year_pop_evolution = SampleIfTrue(
+    lambda: time() < p_customized_year_pop_evolution(),
+    lambda: population(),
+    lambda: population(),
+    "_sampleiftrue_pop_until_p_customized_year_pop_evolution",
+)
+
+
+@component.add(
     name="pop variation",
     units="people/Year",
     comp_type="Auxiliary",
@@ -241,6 +262,42 @@ def pop_variation_asymptote_scen():
 
 
 @component.add(
+    name="pop variation by scen",
+    units="people/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def pop_variation_by_scen():
+    """
+    Population variation depending on the policy target selected by the user.
+    """
+    return if_then_else(
+        time() < 2014,
+        lambda: variation_historic_pop(),
+        lambda: if_then_else(
+            np.logical_and(
+                select_population_evolution_input() == 3,
+                time() < p_customized_year_pop_evolution(),
+            ),
+            lambda: population() * annual_population_growth_rate(),
+            lambda: if_then_else(
+                select_population_evolution_input() == 0,
+                lambda: population() * annual_population_growth_rate(),
+                lambda: if_then_else(
+                    select_population_evolution_input() == 2,
+                    lambda: population() * annual_population_growth_rate(),
+                    lambda: if_then_else(
+                        select_population_evolution_input() == 3,
+                        lambda: pop_variation_asymptote_scen(),
+                        lambda: population() * annual_population_growth_rate(),
+                    ),
+                ),
+            ),
+        ),
+    )
+
+
+@component.add(
     name="pop variation delay 1 step",
     units="people/Year",
     comp_type="Stateful",
@@ -256,6 +313,25 @@ _delayfixed_pop_variation_delay_1_step = DelayFixed(
     lambda: pop_variation_by_scen(),
     time_step,
     "_delayfixed_pop_variation_delay_1_step",
+)
+
+
+@component.add(
+    name="pop variation delay 2 step",
+    units="people/Year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
+def pop_variation_delay_2_step():
+    return _delayfixed_pop_variation_delay_2_step()
+
+
+_delayfixed_pop_variation_delay_2_step = DelayFixed(
+    lambda: pop_variation_by_scen(),
+    lambda: 1,
+    lambda: pop_variation_by_scen(),
+    time_step,
+    "_delayfixed_pop_variation_delay_2_step",
 )
 
 
@@ -317,97 +393,6 @@ _delayfixed_pop_variation_delay_5_step = DelayFixed(
 
 
 @component.add(
-    name="Population", units="people", comp_type="Stateful", comp_subtype="Integ"
-)
-def population():
-    """
-    Population projection.
-    """
-    return _integ_population()
-
-
-_integ_population = Integ(
-    lambda: pop_variation(), lambda: initial_population(), "_integ_population"
-)
-
-
-@component.add(
-    name="pop until P customized year pop evolution",
-    units="Dmnl",
-    comp_type="Stateful",
-    comp_subtype="SampleIfTrue",
-)
-def pop_until_p_customized_year_pop_evolution():
-    """
-    Population until starting customized year of the policy target.
-    """
-    return _sampleiftrue_pop_until_p_customized_year_pop_evolution()
-
-
-_sampleiftrue_pop_until_p_customized_year_pop_evolution = SampleIfTrue(
-    lambda: time() < p_customized_year_pop_evolution(),
-    lambda: population(),
-    lambda: population(),
-    "_sampleiftrue_pop_until_p_customized_year_pop_evolution",
-)
-
-
-@component.add(
-    name="pop variation by scen",
-    units="people/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def pop_variation_by_scen():
-    """
-    Population variation depending on the policy target selected by the user.
-    """
-    return if_then_else(
-        time() < 2014,
-        lambda: variation_historic_pop(),
-        lambda: if_then_else(
-            np.logical_and(
-                select_population_evolution_input() == 3,
-                time() < p_customized_year_pop_evolution(),
-            ),
-            lambda: population() * annual_population_growth_rate(),
-            lambda: if_then_else(
-                select_population_evolution_input() == 0,
-                lambda: population() * annual_population_growth_rate(),
-                lambda: if_then_else(
-                    select_population_evolution_input() == 2,
-                    lambda: population() * annual_population_growth_rate(),
-                    lambda: if_then_else(
-                        select_population_evolution_input() == 3,
-                        lambda: pop_variation_asymptote_scen(),
-                        lambda: population() * annual_population_growth_rate(),
-                    ),
-                ),
-            ),
-        ),
-    )
-
-
-@component.add(
-    name="pop variation delay 2 step",
-    units="people/Year",
-    comp_type="Stateful",
-    comp_subtype="DelayFixed",
-)
-def pop_variation_delay_2_step():
-    return _delayfixed_pop_variation_delay_2_step()
-
-
-_delayfixed_pop_variation_delay_2_step = DelayFixed(
-    lambda: pop_variation_by_scen(),
-    lambda: 1,
-    lambda: pop_variation_by_scen(),
-    time_step,
-    "_delayfixed_pop_variation_delay_2_step",
-)
-
-
-@component.add(
     name="pop variation delay 6 step",
     units="people/Year",
     comp_type="Stateful",
@@ -423,6 +408,21 @@ _delayfixed_pop_variation_delay_6_step = DelayFixed(
     lambda: pop_variation_by_scen(),
     time_step,
     "_delayfixed_pop_variation_delay_6_step",
+)
+
+
+@component.add(
+    name="Population", units="people", comp_type="Stateful", comp_subtype="Integ"
+)
+def population():
+    """
+    Population projection.
+    """
+    return _integ_population()
+
+
+_integ_population = Integ(
+    lambda: pop_variation(), lambda: initial_population(), "_integ_population"
 )
 
 

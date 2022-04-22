@@ -4,6 +4,23 @@ Translated using PySD version 3.0.0
 """
 
 
+@component.add(name="P PHS power", comp_type="Lookup", comp_subtype="External")
+def p_phs_power(x, final_subs=None):
+    return _ext_lookup_p_phs_power(x, final_subs)
+
+
+_ext_lookup_p_phs_power = ExtLookup(
+    "../../scenarios/scen_eu.xlsx",
+    "BAU",
+    "year_RES_power",
+    "p_PHS_power",
+    {},
+    _root,
+    {},
+    "_ext_lookup_p_phs_power",
+)
+
+
 @component.add(
     name="adapt growth PHS",
     units="1/Year",
@@ -18,17 +35,14 @@ def adapt_growth_phs():
         time() < 2015,
         lambda: past_phs_capacity_growth(),
         lambda: if_then_else(
-            time() < start_year_p_growth_res_elec(),
-            lambda: past_phs_capacity_growth(),
-            lambda: if_then_else(
-                time() < target_year_p_growth_res_elec(),
-                lambda: past_phs_capacity_growth()
-                + (p_phs_growth() - past_phs_capacity_growth())
-                * (time() - start_year_p_growth_res_elec())
-                / (target_year_p_growth_res_elec() - start_year_p_growth_res_elec()),
-                lambda: p_phs_growth(),
+            time() < start_year_p_growth_res_elec() + 1,
+            lambda: zidz(
+                p_phs_power(start_year_p_growth_res_elec()),
+                table_hist_capacity_phs(2015),
             )
-            * (1 + abundance_storage()),
+            ** (1 / (start_year_p_growth_res_elec() - 2015)),
+            lambda: (p_phs_power(time()) - p_phs_power(time() - 1))
+            / p_phs_power(time() - 1),
         ),
     )
 
@@ -228,27 +242,6 @@ def output_phs_over_lifetime():
 
 
 @component.add(
-    name="P PHS growth", units="Dmnl", comp_type="Constant", comp_subtype="External"
-)
-def p_phs_growth():
-    """
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_phs_growth()
-
-
-_ext_constant_p_phs_growth = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
-    "p_PHS_growth",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_phs_growth",
-)
-
-
-@component.add(
     name="past PHS capacity growth",
     units="1/Year",
     comp_type="Constant",
@@ -313,7 +306,6 @@ def real_fe_elec_stored_phs_twh():
 
 @component.add(
     name="remaining potential constraint on new PHS capacity",
-    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
 )
@@ -405,6 +397,16 @@ _ext_lookup_table_hist_capacity_phs = ExtLookup(
     {},
     "_ext_lookup_table_hist_capacity_phs",
 )
+
+
+@component.add(
+    name="threshold remaining potential new capacity",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def threshold_remaining_potential_new_capacity():
+    return 0.5
 
 
 @component.add(

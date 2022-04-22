@@ -67,30 +67,6 @@ def adapt_growth_res_for_heatcom():
 
 
 @component.add(
-    name="Efficiency conversion BioE plants to heat",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def efficiency_conversion_bioe_plants_to_heat():
-    """
-    Efficiency of the transformation from bioenergy to heat in heat and CHP plants (aggregated). Efficiency of the transformation from bioenergy to electricity (estimation for 2014 from the IEA balances.
-    """
-    return _ext_constant_efficiency_conversion_bioe_plants_to_heat()
-
-
-_ext_constant_efficiency_conversion_bioe_plants_to_heat = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "efficiency_conversion_bioe_plants_to_heat",
-    {},
-    _root,
-    {},
-    "_ext_constant_efficiency_conversion_bioe_plants_to_heat",
-)
-
-
-@component.add(
     name="Efficiency geothermal for heat",
     units="Dmnl",
     comp_type="Constant",
@@ -108,54 +84,6 @@ _ext_constant_efficiency_geothermal_for_heat = ExtConstant(
     _root,
     {},
     "_ext_constant_efficiency_geothermal_for_heat",
-)
-
-
-@component.add(
-    name="Efficiency RES heat",
-    units="Dmnl",
-    subscripts=["RES heat"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def efficiency_res_heat():
-    """
-    Efficiency of RES technologies for heat.
-    """
-    value = xr.DataArray(
-        np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
-    )
-    value.loc[{"RES heat": ["solar heat"]}] = (
-        f1_solar_panels_for_heat() * losses_solar_for_heat()
-    )
-    value.loc[{"RES heat": ["geot heat"]}] = efficiency_geothermal_for_heat()
-    value.loc[
-        {"RES heat": ["solid bioE heat"]}
-    ] = efficiency_conversion_bioe_plants_to_heat()
-    return value
-
-
-@component.add(
-    name="f1 solar panels for heat",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def f1_solar_panels_for_heat():
-    """
-    Efficiency solar panels for heat.
-    """
-    return _ext_constant_f1_solar_panels_for_heat()
-
-
-_ext_constant_f1_solar_panels_for_heat = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "efficiency_solar_panels_for_heat",
-    {},
-    _root,
-    {},
-    "_ext_constant_f1_solar_panels_for_heat",
 )
 
 
@@ -190,6 +118,74 @@ def fe_real_supply_res_for_heatcom_tot_ej():
 
 
 @component.add(
+    name="Efficiency conversion BioE plants to heat",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def efficiency_conversion_bioe_plants_to_heat():
+    """
+    Efficiency of the transformation from bioenergy to heat in heat and CHP plants (aggregated). Efficiency of the transformation from bioenergy to electricity (estimation for 2014 from the IEA balances.
+    """
+    return _ext_constant_efficiency_conversion_bioe_plants_to_heat()
+
+
+_ext_constant_efficiency_conversion_bioe_plants_to_heat = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "efficiency_conversion_bioe_plants_to_heat",
+    {},
+    _root,
+    {},
+    "_ext_constant_efficiency_conversion_bioe_plants_to_heat",
+)
+
+
+@component.add(
+    name="Efficiency RES heat",
+    units="Dmnl",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def efficiency_res_heat():
+    """
+    Efficiency of RES technologies for heat.
+    """
+    value = xr.DataArray(
+        np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
+    )
+    value.loc[["solar heat"]] = f1_solar_panels_for_heat() * losses_solar_for_heat()
+    value.loc[["geot heat"]] = efficiency_geothermal_for_heat()
+    value.loc[["solid bioE heat"]] = efficiency_conversion_bioe_plants_to_heat()
+    return value
+
+
+@component.add(
+    name="f1 solar panels for heat",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def f1_solar_panels_for_heat():
+    """
+    Efficiency solar panels for heat.
+    """
+    return _ext_constant_f1_solar_panels_for_heat()
+
+
+_ext_constant_f1_solar_panels_for_heat = ExtConstant(
+    "../energy.xlsx",
+    "Austria",
+    "efficiency_solar_panels_for_heat",
+    {},
+    _root,
+    {},
+    "_ext_constant_f1_solar_panels_for_heat",
+)
+
+
+@component.add(
     name='"Historic RES capacity for heat-com"',
     units="TW",
     subscripts=["RES heat"],
@@ -210,7 +206,7 @@ _ext_lookup_historic_res_capacity_for_heatcom = ExtLookup(
     "historic_res_capacity_for_heat_commercial",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_lookup_historic_res_capacity_for_heatcom",
 )
 
@@ -235,7 +231,7 @@ _ext_constant_initial_value_res_for_heatcom = ExtConstant(
     "initial_res_capacity_for_heat_commercial*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_initial_value_res_for_heatcom",
 )
 
@@ -264,31 +260,6 @@ _integ_installed_capacity_res_heatcom_tw = Integ(
 
 
 @component.add(
-    name="life time RES for heat",
-    units="Year",
-    subscripts=["RES heat"],
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def life_time_res_for_heat():
-    """
-    Lifetime RES thermal technologies and plants.
-    """
-    return _ext_constant_life_time_res_for_heat()
-
-
-_ext_constant_life_time_res_for_heat = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "lifetime_res_for_heat*",
-    {"RES heat": _subscript_dict["RES heat"]},
-    _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
-    "_ext_constant_life_time_res_for_heat",
-)
-
-
-@component.add(
     name="Losses solar for heat",
     units="Dmnl",
     comp_type="Constant",
@@ -309,6 +280,31 @@ _ext_constant_losses_solar_for_heat = ExtConstant(
     _root,
     {},
     "_ext_constant_losses_solar_for_heat",
+)
+
+
+@component.add(
+    name="life time RES for heat",
+    units="Year",
+    subscripts=["RES heat"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def life_time_res_for_heat():
+    """
+    Lifetime RES thermal technologies and plants.
+    """
+    return _ext_constant_life_time_res_for_heat()
+
+
+_ext_constant_life_time_res_for_heat = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "lifetime_res_for_heat*",
+    {"RES heat": _subscript_dict["RES heat"]},
+    _root,
+    {"RES heat": _subscript_dict["RES heat"]},
+    "_ext_constant_life_time_res_for_heat",
 )
 
 
@@ -374,9 +370,9 @@ def p_res_for_heat():
     value = xr.DataArray(
         np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
-    value.loc[{"RES heat": ["solar heat"]}] = p_solar_for_heat()
-    value.loc[{"RES heat": ["geot heat"]}] = p_geothermal_for_heat()
-    value.loc[{"RES heat": ["solid bioE heat"]}] = p_solid_bioe_for_heat()
+    value.loc[["solar heat"]] = p_solar_for_heat()
+    value.loc[["geot heat"]] = p_geothermal_for_heat()
+    value.loc[["solid bioE heat"]] = p_solid_bioe_for_heat()
     return value
 
 
@@ -448,7 +444,7 @@ _ext_constant_past_res_growth_for_heatcom = ExtConstant(
     "historic_growth_res_for_heat_com*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_past_res_growth_for_heatcom",
 )
 
@@ -467,13 +463,13 @@ def pes_dem_res_for_heatcom_by_techn():
     value = xr.DataArray(
         np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
-    value.loc[{"RES heat": ["geot heat"]}] = float(
+    value.loc[["geot heat"]] = float(
         fe_real_generation_res_heatcom_ej().loc["geot heat"]
     )
-    value.loc[{"RES heat": ["solar heat"]}] = float(
+    value.loc[["solar heat"]] = float(
         fe_real_generation_res_heatcom_ej().loc["solar heat"]
     )
-    value.loc[{"RES heat": ["solid bioE heat"]}] = float(
+    value.loc[["solid bioE heat"]] = float(
         fe_real_generation_res_heatcom_ej().loc["solid bioE heat"]
     ) / float(efficiency_res_heat().loc["solid bioE heat"])
     return value
@@ -508,22 +504,6 @@ def potential_fes_res_for_heatcom_ej():
 
 
 @component.add(
-    name='"potential FES tot RES for heat-com EJ"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def potential_fes_tot_res_for_heatcom_ej():
-    """
-    Potential total final energy supply renewables for commercial heat given the installed capacity.
-    """
-    return sum(
-        potential_fes_res_for_heatcom_ej().rename({"RES heat": "RES heat!"}),
-        dim=["RES heat!"],
-    )
-
-
-@component.add(
     name='"potential FES RES for heat-com TWh"',
     units="TWh",
     subscripts=["RES heat"],
@@ -539,6 +519,22 @@ def potential_fes_res_for_heatcom_twh():
         * efficiency_res_heat()
         * cp_res_for_heat()
         / twe_per_twh()
+    )
+
+
+@component.add(
+    name='"potential FES tot RES for heat-com EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def potential_fes_tot_res_for_heatcom_ej():
+    """
+    Potential total final energy supply renewables for commercial heat given the installed capacity.
+    """
+    return sum(
+        potential_fes_res_for_heatcom_ej().rename({"RES heat": "RES heat!"}),
+        dim=["RES heat!"],
     )
 
 
@@ -625,7 +621,7 @@ _ext_constant_replacement_res_for_heatcom = ExtConstant(
     "replacement_rate_res_for_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_replacement_res_for_heatcom",
 )
 

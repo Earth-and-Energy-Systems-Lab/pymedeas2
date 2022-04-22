@@ -5,19 +5,10 @@ Translated using PySD version 3.0.0
 
 
 @component.add(
-    name='"FEC gases+liquids"', units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def fec_gasesliquids():
-    return float(real_fe_consumption_by_fuel().loc["gases"]) + float(
-        real_fe_consumption_by_fuel().loc["liquids"]
-    )
-
-
-@component.add(
     name="Energy distr losses FF EJ",
     units="EJ/Year",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
 )
 def energy_distr_losses_ff_ej():
@@ -27,18 +18,27 @@ def energy_distr_losses_ff_ej():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["liquids"]}] = float(
+    value.loc[["liquids"]] = float(
         pes_fossil_fuel_extraction_delayed().loc["liquids"]
     ) * float(historic_share_of_losses_vs_extraction().loc["liquids"])
-    value.loc[{"final sources": ["solids"]}] = float(
+    value.loc[["solids"]] = float(
         pes_fossil_fuel_extraction_delayed().loc["solids"]
     ) * float(historic_share_of_losses_vs_extraction().loc["solids"])
-    value.loc[{"final sources": ["gases"]}] = float(
+    value.loc[["gases"]] = float(
         pes_fossil_fuel_extraction_delayed().loc["gases"]
     ) * float(historic_share_of_losses_vs_extraction().loc["gases"])
-    value.loc[{"final sources": ["electricity"]}] = 0
-    value.loc[{"final sources": ["heat"]}] = 0
+    value.loc[["electricity"]] = 0
+    value.loc[["heat"]] = 0
     return value
+
+
+@component.add(
+    name='"FEC gases+liquids"', units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
+def fec_gasesliquids():
+    return float(real_fe_consumption_by_fuel().loc["gases"]) + float(
+        real_fe_consumption_by_fuel().loc["liquids"]
+    )
 
 
 @component.add(
@@ -178,15 +178,9 @@ def pes_fossil_fuel_extraction():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["liquids"]}] = (
-        pes_total_oil_ej_eu() + imports_eu_total_oil_from_row_ej()
-    )
-    value.loc[{"final sources": ["solids"]}] = (
-        extraction_coal_ej_eu() + imports_eu_coal_from_row_ej()
-    )
-    value.loc[{"final sources": ["gases"]}] = (
-        pes_nat_gas_eu() + imports_eu_nat_gas_from_row_ej()
-    )
+    value.loc[["liquids"]] = pes_total_oil_ej_eu() + imports_eu_total_oil_from_row_ej()
+    value.loc[["solids"]] = extraction_coal_ej_eu() + imports_eu_coal_from_row_ej()
+    value.loc[["gases"]] = pes_nat_gas_eu() + imports_eu_nat_gas_from_row_ej()
     return value
 
 
@@ -204,15 +198,9 @@ def pes_fossil_fuel_extraction_delayed():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[
-        {"final sources": ["liquids"]}
-    ] = _delayfixed_pes_fossil_fuel_extraction_delayed().values
-    value.loc[
-        {"final sources": ["solids"]}
-    ] = _delayfixed_pes_fossil_fuel_extraction_delayed_1().values
-    value.loc[
-        {"final sources": ["gases"]}
-    ] = _delayfixed_pes_fossil_fuel_extraction_delayed_2().values
+    value.loc[["liquids"]] = _delayfixed_pes_fossil_fuel_extraction_delayed().values
+    value.loc[["solids"]] = _delayfixed_pes_fossil_fuel_extraction_delayed_1().values
+    value.loc[["gases"]] = _delayfixed_pes_fossil_fuel_extraction_delayed_2().values
     return value
 
 
@@ -335,7 +323,7 @@ def total_distribution_losses():
 @component.add(
     name="Transformation FF losses EJ",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
 )
 def transformation_ff_losses_ej():
@@ -345,17 +333,17 @@ def transformation_ff_losses_ej():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["liquids"]}] = float(
+    value.loc[["liquids"]] = float(
         pes_fossil_fuel_extraction_delayed().loc["liquids"]
     ) * float(historic_share_of_transformation_losses_vs_extraction().loc["liquids"])
-    value.loc[{"final sources": ["solids"]}] = float(
+    value.loc[["solids"]] = float(
         pes_fossil_fuel_extraction_delayed().loc["solids"]
     ) * float(historic_share_of_transformation_losses_vs_extraction().loc["solids"])
-    value.loc[{"final sources": ["electricity"]}] = 0
-    value.loc[{"final sources": ["gases"]}] = (
+    value.loc[["electricity"]] = 0
+    value.loc[["gases"]] = (
         float(pes_fossil_fuel_extraction_delayed().loc["solids"])
         * float(historic_share_of_transformation_losses_vs_extraction().loc["solids"])
         * ratio_gain_gas_vs_lose_solids_in_tranf_processes()
     )
-    value.loc[{"final sources": ["heat"]}] = 0
+    value.loc[["heat"]] = 0
     return value

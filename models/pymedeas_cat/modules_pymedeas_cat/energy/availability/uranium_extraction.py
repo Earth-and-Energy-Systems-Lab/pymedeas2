@@ -53,6 +53,48 @@ _ext_constant_av_past_aut_domestic_uranium_extraction = ExtConstant(
 
 
 @component.add(
+    name="extraction uranium EJ AUT",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def extraction_uranium_ej_aut():
+    """
+    Annual extraction of uranium.
+    """
+    return if_then_else(
+        rurr_uranium() < 0,
+        lambda: 0,
+        lambda: if_then_else(
+            time() < 2016,
+            lambda: historic_uranium_domestic_extracted()
+            / (kt_uranium_per_ej() * tonnes_per_kt()),
+            lambda: if_then_else(
+                np.logical_or(unlimited_nre() == 1, unlimited_uranium() == 1),
+                lambda: pe_demand_uranium_aut_ej(),
+                lambda: np.minimum(
+                    pe_demand_uranium_aut_ej(), max_extraction_uranium_ej()
+                ),
+            ),
+        ),
+    )
+
+
+@component.add(
+    name="extraction uranium RoW",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def extraction_uranium_row():
+    return if_then_else(
+        extraction_uranium_ej_world() > imports_aut_uranium_from_row(),
+        lambda: imports_aut_uranium_from_row(),
+        lambda: extraction_uranium_ej_world(),
+    )
+
+
+@component.add(
     name="Cumulated uranium extraction",
     units="EJ",
     comp_type="Stateful",
@@ -94,48 +136,6 @@ _ext_constant_cumulated_uranium_extraction_to_1995 = ExtConstant(
     {},
     "_ext_constant_cumulated_uranium_extraction_to_1995",
 )
-
-
-@component.add(
-    name="extraction uranium EJ AUT",
-    units="EJ/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def extraction_uranium_ej_aut():
-    """
-    Annual extraction of uranium.
-    """
-    return if_then_else(
-        rurr_uranium() < 0,
-        lambda: 0,
-        lambda: if_then_else(
-            time() < 2016,
-            lambda: historic_uranium_domestic_extracted()
-            / (kt_uranium_per_ej() * tonnes_per_kt()),
-            lambda: if_then_else(
-                np.logical_or(unlimited_nre() == 1, unlimited_uranium() == 1),
-                lambda: pe_demand_uranium_aut_ej(),
-                lambda: np.minimum(
-                    pe_demand_uranium_aut_ej(), max_extraction_uranium_ej()
-                ),
-            ),
-        ),
-    )
-
-
-@component.add(
-    name="extraction uranium RoW",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def extraction_uranium_row():
-    return if_then_else(
-        extraction_uranium_ej_world() > imports_aut_uranium_from_row(),
-        lambda: imports_aut_uranium_from_row(),
-        lambda: extraction_uranium_ej_world(),
-    )
 
 
 @component.add(

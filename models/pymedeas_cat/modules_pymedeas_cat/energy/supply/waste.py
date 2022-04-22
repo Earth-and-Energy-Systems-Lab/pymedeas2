@@ -27,6 +27,30 @@ def adapt_growth_waste():
 
 
 @component.add(
+    name="efficiency waste for heat plants",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def efficiency_waste_for_heat_plants():
+    """
+    Efficiency of the transformation of waste in heat plants.
+    """
+    return _ext_constant_efficiency_waste_for_heat_plants()
+
+
+_ext_constant_efficiency_waste_for_heat_plants = ExtConstant(
+    "../energy.xlsx",
+    "Austria",
+    "efficiency_waste_for_heat_plants",
+    {},
+    _root,
+    {},
+    "_ext_constant_efficiency_waste_for_heat_plants",
+)
+
+
+@component.add(
     name="efficiency waste for elec CHP plants",
     units="Dmnl",
     comp_type="Constant",
@@ -95,30 +119,6 @@ _ext_constant_efficiency_waste_for_heat_chp_plants = ExtConstant(
     _root,
     {},
     "_ext_constant_efficiency_waste_for_heat_chp_plants",
-)
-
-
-@component.add(
-    name="efficiency waste for heat plants",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def efficiency_waste_for_heat_plants():
-    """
-    Efficiency of the transformation of waste in heat plants.
-    """
-    return _ext_constant_efficiency_waste_for_heat_plants()
-
-
-_ext_constant_efficiency_waste_for_heat_plants = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "efficiency_waste_for_heat_plants",
-    {},
-    _root,
-    {},
-    "_ext_constant_efficiency_waste_for_heat_plants",
 )
 
 
@@ -363,6 +363,23 @@ _ext_constant_past_waste_growth = ExtConstant(
 
 
 @component.add(
+    name="PES tot waste for elec",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def pes_tot_waste_for_elec():
+    """
+    Total primary energy supply for generating electricity from biogas (including CHP plants).
+    """
+    return (
+        pes_waste_for_elec_plants()
+        + fes_elec_from_waste_in_chp_plants()
+        + losses_chp_waste() * share_efficiency_waste_for_elec_in_chp_plants()
+    )
+
+
+@component.add(
     name='"PES tot waste for heat-com"',
     units="EJ",
     comp_type="Auxiliary",
@@ -431,23 +448,6 @@ def pes_waste_for_heatcom_plants():
     Primary energy supply of commercial heat in Heat plants from waste.
     """
     return pes_waste_ej() * share_pes_waste_for_heatcom_plants()
-
-
-@component.add(
-    name="PES tot waste for elec",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def pes_tot_waste_for_elec():
-    """
-    Total primary energy supply for generating electricity from biogas (including CHP plants).
-    """
-    return (
-        pes_waste_for_elec_plants()
-        + fes_elec_from_waste_in_chp_plants()
-        + losses_chp_waste() * share_efficiency_waste_for_elec_in_chp_plants()
-    )
 
 
 @component.add(

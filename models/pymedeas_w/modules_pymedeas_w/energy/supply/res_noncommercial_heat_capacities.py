@@ -90,7 +90,7 @@ _ext_constant_cpini_res_for_heat = ExtConstant(
     "cp_initial_res_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_cpini_res_for_heat",
 )
 
@@ -145,7 +145,7 @@ _ext_lookup_historic_res_capacity_for_heatnc = ExtLookup(
     "historic_res_capacity_for_heat_non_commercial",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_lookup_historic_res_capacity_for_heatnc",
 )
 
@@ -170,7 +170,7 @@ _ext_constant_initial_value_res_for_heatnc = ExtConstant(
     "initial_res_capacity_for_heat_non_commercial*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_initial_value_res_for_heatnc",
 )
 
@@ -242,7 +242,7 @@ _ext_constant_past_res_growth_for_heatnc = ExtConstant(
     "historic_growth_res_for_heat_nc*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_past_res_growth_for_heatnc",
 )
 
@@ -261,15 +261,15 @@ def pes_res_for_heatnc_by_techn():
     value = xr.DataArray(
         np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
-    value.loc[{"RES heat": ["geot heat"]}] = float(
+    value.loc[["geot heat"]] = float(
         fe_real_generation_res_heatnc_ej().loc["geot heat"]
     ) / float(efficiency_res_heat().loc["geot heat"])
-    value.loc[{"RES heat": ["solar heat"]}] = (
+    value.loc[["solar heat"]] = (
         float(fe_real_generation_res_heatnc_ej().loc["solar heat"])
         * efficiency_solar_panels_for_heat()
         / float(efficiency_res_heat().loc["solar heat"])
     )
-    value.loc[{"RES heat": ["solid bioE heat"]}] = float(
+    value.loc[["solid bioE heat"]] = float(
         fe_real_generation_res_heatnc_ej().loc["solid bioE heat"]
     ) / float(efficiency_res_heat().loc["solid bioE heat"])
     return value
@@ -362,7 +362,7 @@ _ext_constant_replacement_res_for_heatnc = ExtConstant(
     "replacement_rate_res_for_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_replacement_res_for_heatnc",
 )
 

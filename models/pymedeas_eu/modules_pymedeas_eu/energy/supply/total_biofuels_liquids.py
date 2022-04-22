@@ -18,6 +18,23 @@ def additional_pe_production_of_bioenergy_for_biofuels():
 
 
 @component.add(
+    name="FES total biofuels production EJ",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def fes_total_biofuels_production_ej():
+    """
+    Final energy supply total biofuels liquids production. Equivalent to "FES total biofuels production EJ 2" but obtained disaggregately.
+    """
+    return (
+        peavail_tot_biofuels_land_compet_ej()
+        + peavail_biofuels_land_marg_ej()
+        + peavail_cellulosic_biofuel_ej()
+    )
+
+
+@component.add(
     name="FES total biofuels production EJ 2",
     units="EJ/Year",
     comp_type="Auxiliary",
@@ -41,23 +58,6 @@ def fes_total_biofuels_production_mbd():
     Final energy supply total biofuels liquids production.
     """
     return fes_total_biofuels_production_ej() * mbd_per_ejyear()
-
-
-@component.add(
-    name="FES total biofuels production EJ",
-    units="EJ/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def fes_total_biofuels_production_ej():
-    """
-    Final energy supply total biofuels liquids production. Equivalent to "FES total biofuels production EJ 2" but obtained disaggregately.
-    """
-    return (
-        peavail_tot_biofuels_land_compet_ej()
-        + peavail_biofuels_land_marg_ej()
-        + peavail_cellulosic_biofuel_ej()
-    )
 
 
 @component.add(

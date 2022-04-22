@@ -67,6 +67,21 @@ def adapt_growth_res_for_heatnc():
 
 
 @component.add(
+    name='"FE real supply RES for heat-nc tot EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def fe_real_supply_res_for_heatnc_tot_ej():
+    """
+    Total final energy supply delivered by RES for non-commercial heat.
+    """
+    return np.minimum(
+        np.maximum(total_fed_heatnc_ej(), 0), potential_fes_tot_res_for_heatnc_ej()
+    )
+
+
+@component.add(
     name="Cp RES for heat",
     units="Dmnl",
     subscripts=["RES heat"],
@@ -94,7 +109,7 @@ _ext_constant_cpini_res_for_heat = ExtConstant(
     "cp_initial_res_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_cpini_res_for_heat",
 )
 
@@ -111,21 +126,6 @@ def fe_real_generation_res_heatnc_ej():
     Non-commercial heat generation by RES technology.
     """
     return potential_fes_res_for_heatnc_ej() * (1 - res_heatnc_tot_overcapacity())
-
-
-@component.add(
-    name='"FE real supply RES for heat-nc tot EJ"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def fe_real_supply_res_for_heatnc_tot_ej():
-    """
-    Total final energy supply delivered by RES for non-commercial heat.
-    """
-    return np.minimum(
-        np.maximum(total_fed_heatnc_ej(), 0), potential_fes_tot_res_for_heatnc_ej()
-    )
 
 
 @component.add(
@@ -149,7 +149,7 @@ _ext_lookup_historic_res_capacity_for_heatnc = ExtLookup(
     "historic_res_capacity_for_heat_non_commercial",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_lookup_historic_res_capacity_for_heatnc",
 )
 
@@ -174,7 +174,7 @@ _ext_constant_initial_value_res_for_heatnc = ExtConstant(
     "initial_res_capacity_for_heat_non_commercial*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_initial_value_res_for_heatnc",
 )
 
@@ -246,7 +246,7 @@ _ext_constant_past_res_growth_for_heatnc = ExtConstant(
     "historic_growth_res_for_heat_nc*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_past_res_growth_for_heatnc",
 )
 
@@ -265,13 +265,13 @@ def pes_dem_res_for_heatnc_by_techn():
     value = xr.DataArray(
         np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
-    value.loc[{"RES heat": ["geot heat"]}] = float(
+    value.loc[["geot heat"]] = float(
         fe_real_generation_res_heatnc_ej().loc["geot heat"]
     )
-    value.loc[{"RES heat": ["solar heat"]}] = float(
+    value.loc[["solar heat"]] = float(
         fe_real_generation_res_heatnc_ej().loc["solar heat"]
     )
-    value.loc[{"RES heat": ["solid bioE heat"]}] = float(
+    value.loc[["solid bioE heat"]] = float(
         fe_real_generation_res_heatnc_ej().loc["solid bioE heat"]
     ) / float(efficiency_res_heat().loc["solid bioE heat"])
     return value
@@ -306,22 +306,6 @@ def potential_fes_res_for_heatnc_ej():
 
 
 @component.add(
-    name='"potential FES tot RES for heat-nc EJ"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def potential_fes_tot_res_for_heatnc_ej():
-    """
-    Potential total final energy supply renewables for non-commercial heat given the installed capacity.
-    """
-    return sum(
-        potential_fes_res_for_heatnc_ej().rename({"RES heat": "RES heat!"}),
-        dim=["RES heat!"],
-    )
-
-
-@component.add(
     name='"potential FES RES for heat-nc TWh"',
     units="TWh",
     subscripts=["RES heat"],
@@ -337,6 +321,22 @@ def potential_fes_res_for_heatnc_twh():
         * efficiency_res_heat()
         * cp_res_for_heat()
         / twe_per_twh()
+    )
+
+
+@component.add(
+    name='"potential FES tot RES for heat-nc EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def potential_fes_tot_res_for_heatnc_ej():
+    """
+    Potential total final energy supply renewables for non-commercial heat given the installed capacity.
+    """
+    return sum(
+        potential_fes_res_for_heatnc_ej().rename({"RES heat": "RES heat!"}),
+        dim=["RES heat!"],
     )
 
 
@@ -379,7 +379,7 @@ _ext_constant_replacement_res_for_heatnc = ExtConstant(
     "replacement_rate_res_for_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES heat": ["solar heat", "geot heat", "solid bioE heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_replacement_res_for_heatnc",
 )
 

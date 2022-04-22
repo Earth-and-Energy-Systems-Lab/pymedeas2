@@ -70,6 +70,43 @@ def decrease_share_oil_for_elec():
 
 
 @component.add(
+    name="Efficiency improv gas for electricity",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def efficiency_improv_gas_for_electricity():
+    """
+    Annual efficiency improvement in percentage of the gas power centrals for electricity production.
+    """
+    return _ext_constant_efficiency_improv_gas_for_electricity()
+
+
+_ext_constant_efficiency_improv_gas_for_electricity = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "efficiency_improv_gas_for_electricity",
+    {},
+    _root,
+    {},
+    "_ext_constant_efficiency_improv_gas_for_electricity",
+)
+
+
+@component.add(
+    name="FE demand gas Elec plants TWh",
+    units="TWh/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def fe_demand_gas_elec_plants_twh():
+    """
+    Final energy demand of natural gas for electricity consumption (TWh).
+    """
+    return share_gascoal_gas_for_elec() * demand_elec_gas_and_coal_twh()
+
+
+@component.add(
     name="demand Elec gas and coal TWh", comp_type="Auxiliary", comp_subtype="Normal"
 )
 def demand_elec_gas_and_coal_twh():
@@ -149,30 +186,6 @@ _integ_efficiency_gas_for_electricity = Integ(
 
 
 @component.add(
-    name="Efficiency improv gas for electricity",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def efficiency_improv_gas_for_electricity():
-    """
-    Annual efficiency improvement in percentage of the gas power centrals for electricity production.
-    """
-    return _ext_constant_efficiency_improv_gas_for_electricity()
-
-
-_ext_constant_efficiency_improv_gas_for_electricity = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "efficiency_improv_gas_for_electricity",
-    {},
-    _root,
-    {},
-    "_ext_constant_efficiency_improv_gas_for_electricity",
-)
-
-
-@component.add(
     name="efficiency liquids for electricity",
     units="Dmnl",
     comp_type="Constant",
@@ -207,19 +220,6 @@ def fe_demand_coal_elec_plants_twh():
     Final energy demand of coal for electricity consumption (TWh).
     """
     return share_coal_for_elec() * demand_elec_gas_and_coal_twh()
-
-
-@component.add(
-    name="FE demand gas Elec plants TWh",
-    units="TWh/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def fe_demand_gas_elec_plants_twh():
-    """
-    Final energy demand of natural gas for electricity consumption (TWh).
-    """
-    return share_gascoal_gas_for_elec() * demand_elec_gas_and_coal_twh()
 
 
 @component.add(

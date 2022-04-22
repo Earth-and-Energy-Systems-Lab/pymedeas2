@@ -27,6 +27,19 @@ def adapt_growth_biogas():
 
 
 @component.add(
+    name='"FES heat-com from biogas in CHP plants"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def fes_heatcom_from_biogas_in_chp_plants():
+    """
+    Final energy supply of commercial heat in CHP plants from biogas.
+    """
+    return pes_biogas_for_chp() * efficiency_biogas_for_heat_chp_plants()
+
+
+@component.add(
     name="efficiency biogas for elec CHP plants",
     units="Dmnl",
     comp_type="Constant",
@@ -214,19 +227,6 @@ def fes_heatcom_from_biogas_ej():
 
 
 @component.add(
-    name='"FES heat-com from biogas in CHP plants"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def fes_heatcom_from_biogas_in_chp_plants():
-    """
-    Final energy supply of commercial heat in CHP plants from biogas.
-    """
-    return pes_biogas_for_chp() * efficiency_biogas_for_heat_chp_plants()
-
-
-@component.add(
     name="Historic biogas PES",
     units="EJ/Year",
     comp_type="Lookup",
@@ -410,23 +410,6 @@ def pes_biogas_for_heatcom_plants():
 
 
 @component.add(
-    name='"PES tot biogas for heat-com"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def pes_tot_biogas_for_heatcom():
-    """
-    Total primary energy supply for generating commercial heat from biogas (including CHP plants).
-    """
-    return (
-        pes_biogas_for_heatcom_plants()
-        + fes_heatcom_from_biogas_in_chp_plants()
-        + losses_chp_biogas() * (1 - share_efficiency_biogas_for_elec_in_chp_plants())
-    )
-
-
-@component.add(
     name="PES biogas for TFC", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
 )
 def pes_biogas_for_tfc():
@@ -450,6 +433,23 @@ def pes_tot_biogas_for_elec():
         pes_biogas_for_elec_plants()
         + fes_elec_from_biogas_in_chp_plants()
         + losses_chp_biogas() * share_efficiency_biogas_for_elec_in_chp_plants()
+    )
+
+
+@component.add(
+    name='"PES tot biogas for heat-com"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def pes_tot_biogas_for_heatcom():
+    """
+    Total primary energy supply for generating commercial heat from biogas (including CHP plants).
+    """
+    return (
+        pes_biogas_for_heatcom_plants()
+        + fes_heatcom_from_biogas_in_chp_plants()
+        + losses_chp_biogas() * (1 - share_efficiency_biogas_for_elec_in_chp_plants())
     )
 
 

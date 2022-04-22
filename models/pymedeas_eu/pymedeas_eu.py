@@ -8,18 +8,18 @@ import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
-    if_then_else,
+    step,
+    sum,
     xidz,
     invert_matrix,
-    sum,
-    step,
-    zidz,
     integer,
+    zidz,
+    if_then_else,
 )
-from pysd.py_backend.statefuls import Smooth, SampleIfTrue, DelayFixed, Integ, Initial
-from pysd.py_backend.external import ExtLookup, ExtData, ExtConstant
+from pysd.py_backend.statefuls import Initial, Integ, Smooth, DelayFixed, SampleIfTrue
+from pysd.py_backend.external import ExtConstant, ExtLookup, ExtData
 from pysd.py_backend.data import TabData
-from pysd.py_backend.utils import load_model_data, load_modules
+from pysd.py_backend.utils import load_modules, load_model_data
 from pysd import Component
 
 __pysd_version__ = "3.0.0"
@@ -79,8 +79,8 @@ def initial_time():
 
 @component.add(
     name="SAVEPER",
-    units="Year ",
-    limits=(0.0, None),
+    units="Year",
+    limits=(0.0, np.nan),
     comp_type="Constant",
     comp_subtype="Normal",
 )
@@ -93,8 +93,8 @@ def saveper():
 
 @component.add(
     name="TIME STEP",
-    units="Year ",
-    limits=(0.0, None),
+    units="Year",
+    limits=(0.0, np.nan),
     comp_type="Constant",
     comp_subtype="Normal",
 )

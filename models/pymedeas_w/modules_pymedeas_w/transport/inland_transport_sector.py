@@ -86,7 +86,7 @@ _ext_constant_adjust_energy_for_transport_to_inland_transport = ExtConstant(
     name="Efects shortage inlandT",
     units="Dmnl",
     subscripts=["vehicleT"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
 )
 def efects_shortage_inlandt():
@@ -96,19 +96,19 @@ def efects_shortage_inlandt():
     value = xr.DataArray(
         np.nan, {"vehicleT": _subscript_dict["vehicleT"]}, ["vehicleT"]
     )
-    value.loc[{"vehicleT": ["HV liq"]}] = 1
-    value.loc[{"vehicleT": ["HV hib"]}] = 1
-    value.loc[{"vehicleT": ["HV gas"]}] = effects_shortage_gas()
-    value.loc[{"vehicleT": ["LV liq"]}] = 1
-    value.loc[{"vehicleT": ["LV elec"]}] = effects_shortage_elec_on_ev()
-    value.loc[{"vehicleT": ["LV gas"]}] = effects_shortage_gas()
-    value.loc[{"vehicleT": ["bus liq"]}] = 1
-    value.loc[{"vehicleT": ["bus elec"]}] = effects_shortage_elec_on_ev()
-    value.loc[{"vehicleT": ["bus hib"]}] = 1
-    value.loc[{"vehicleT": ["bus gas"]}] = effects_shortage_gas()
-    value.loc[{"vehicleT": ["train liq"]}] = 1
-    value.loc[{"vehicleT": ["train elec"]}] = effects_shortage_elec_on_ev()
-    value.loc[{"vehicleT": ["LV hib"]}] = 1
+    value.loc[["HV liq"]] = 1
+    value.loc[["HV hib"]] = 1
+    value.loc[["HV gas"]] = effects_shortage_gas()
+    value.loc[["LV liq"]] = 1
+    value.loc[["LV elec"]] = effects_shortage_elec_on_ev()
+    value.loc[["LV gas"]] = effects_shortage_gas()
+    value.loc[["bus liq"]] = 1
+    value.loc[["bus elec"]] = effects_shortage_elec_on_ev()
+    value.loc[["bus hib"]] = 1
+    value.loc[["bus gas"]] = effects_shortage_gas()
+    value.loc[["train liq"]] = 1
+    value.loc[["train elec"]] = effects_shortage_elec_on_ev()
+    value.loc[["LV hib"]] = 1
     return value
 
 
@@ -147,23 +147,7 @@ _ext_constant_energy_initial_inland_transport = ExtConstant(
     "energy_initial_inland_transport*",
     {"vehicleT": _subscript_dict["vehicleT"]},
     _root,
-    {
-        "vehicleT": [
-            "HV liq",
-            "HV hib",
-            "HV gas",
-            "LV liq",
-            "LV elec",
-            "LV hib",
-            "LV gas",
-            "bus liq",
-            "bus elec",
-            "bus hib",
-            "bus gas",
-            "train liq",
-            "train elec",
-        ]
-    },
+    {"vehicleT": _subscript_dict["vehicleT"]},
     "_ext_constant_energy_initial_inland_transport",
 )
 
@@ -182,39 +166,39 @@ def energy_per_x_t():
     value = xr.DataArray(
         np.nan, {"vehicleT": _subscript_dict["vehicleT"]}, ["vehicleT"]
     )
-    value.loc[{"vehicleT": ["HV liq"]}] = liquids_per_x_hv() * float(
+    value.loc[["HV liq"]] = liquids_per_x_hv() * float(
         saving_ratios_vehicles().loc["HV liq"]
     )
-    value.loc[{"vehicleT": ["HV hib"]}] = liquids_per_x_hv() * float(
+    value.loc[["HV hib"]] = liquids_per_x_hv() * float(
         saving_ratios_vehicles().loc["HV hib"]
     )
-    value.loc[{"vehicleT": ["HV gas"]}] = liquids_per_x_hv() * float(
+    value.loc[["HV gas"]] = liquids_per_x_hv() * float(
         saving_ratios_vehicles().loc["HV gas"]
     )
-    value.loc[{"vehicleT": ["LV liq"]}] = liquids_per_x_lv() * float(
+    value.loc[["LV liq"]] = liquids_per_x_lv() * float(
         saving_ratios_vehicles().loc["LV liq"]
     )
-    value.loc[{"vehicleT": ["LV elec"]}] = liquids_per_x_lv() * float(
+    value.loc[["LV elec"]] = liquids_per_x_lv() * float(
         saving_ratios_vehicles().loc["LV elec"]
     )
-    value.loc[{"vehicleT": ["LV hib"]}] = liquids_per_x_lv() * float(
+    value.loc[["LV hib"]] = liquids_per_x_lv() * float(
         saving_ratios_vehicles().loc["LV hib"]
     )
-    value.loc[{"vehicleT": ["LV gas"]}] = liquids_per_x_lv() * float(
+    value.loc[["LV gas"]] = liquids_per_x_lv() * float(
         saving_ratios_vehicles().loc["LV gas"]
     )
-    value.loc[{"vehicleT": ["bus liq"]}] = liquids_per_x_bus() * float(
+    value.loc[["bus liq"]] = liquids_per_x_bus() * float(
         saving_ratios_vehicles().loc["bus liq"]
     )
-    value.loc[{"vehicleT": ["bus hib"]}] = liquids_per_x_bus() * float(
+    value.loc[["bus hib"]] = liquids_per_x_bus() * float(
         saving_ratios_vehicles().loc["bus hib"]
     )
-    value.loc[{"vehicleT": ["bus gas"]}] = liquids_per_x_bus() * float(
+    value.loc[["bus gas"]] = liquids_per_x_bus() * float(
         saving_ratios_vehicles().loc["bus gas"]
     )
-    value.loc[{"vehicleT": ["train liq"]}] = energy_per_x_train() * 0.8
-    value.loc[{"vehicleT": ["train elec"]}] = energy_per_x_train() * 0.2
-    value.loc[{"vehicleT": ["bus elec"]}] = liquids_per_x_bus() * float(
+    value.loc[["train liq"]] = energy_per_x_train() * 0.8
+    value.loc[["train elec"]] = energy_per_x_train() * 0.2
+    value.loc[["bus elec"]] = liquids_per_x_bus() * float(
         saving_ratios_vehicles().loc["bus elec"]
     )
     return value
@@ -248,27 +232,7 @@ def hist_var_inlandt():
     """
     Historical growth of alternative percentages of transport vehicles. For inland transport vehicles the initial percentages of vehicles are neglictible in 2015.
     """
-    return xr.DataArray(
-        0,
-        {
-            "vehicleT": [
-                "HV liq",
-                "HV hib",
-                "HV gas",
-                "LV liq",
-                "LV elec",
-                "LV hib",
-                "LV gas",
-                "bus liq",
-                "bus elec",
-                "bus hib",
-                "bus gas",
-                "train liq",
-                "train elec",
-            ]
-        },
-        ["vehicleT"],
-    )
+    return xr.DataArray(0, {"vehicleT": _subscript_dict["vehicleT"]}, ["vehicleT"])
 
 
 @component.add(
@@ -291,23 +255,7 @@ _ext_constant_initial_percent_t_vehicles = ExtConstant(
     "initial_percent_T_vehicles*",
     {"vehicleT": _subscript_dict["vehicleT"]},
     _root,
-    {
-        "vehicleT": [
-            "HV liq",
-            "HV hib",
-            "HV gas",
-            "LV liq",
-            "LV elec",
-            "LV hib",
-            "LV gas",
-            "bus liq",
-            "bus elec",
-            "bus hib",
-            "bus gas",
-            "train liq",
-            "train elec",
-        ]
-    },
+    {"vehicleT": _subscript_dict["vehicleT"]},
     "_ext_constant_initial_percent_t_vehicles",
 )
 
@@ -332,23 +280,7 @@ _ext_constant_initial_vehicles_inland = ExtConstant(
     "initial_vehicles_inland*",
     {"vehicleT": _subscript_dict["vehicleT"]},
     _root,
-    {
-        "vehicleT": [
-            "HV liq",
-            "HV hib",
-            "HV gas",
-            "LV liq",
-            "LV elec",
-            "LV hib",
-            "LV gas",
-            "bus liq",
-            "bus elec",
-            "bus hib",
-            "bus gas",
-            "train liq",
-            "train elec",
-        ]
-    },
+    {"vehicleT": _subscript_dict["vehicleT"]},
     "_ext_constant_initial_vehicles_inland",
 )
 
@@ -394,24 +326,7 @@ _ext_constant_inland_transport_fraction = ExtConstant(
     "inland_transport_fraction",
     {"sectors": _subscript_dict["sectors"]},
     _root,
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "_ext_constant_inland_transport_fraction",
 )
 
@@ -430,11 +345,11 @@ def inland_transport_variation_intensity():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["electricity"]}] = var_i_inland_elec()
-    value.loc[{"final sources": ["heat"]}] = 0
-    value.loc[{"final sources": ["liquids"]}] = var_i_inlandt_liq()
-    value.loc[{"final sources": ["solids"]}] = 0
-    value.loc[{"final sources": ["gases"]}] = var_i_inlandt_gas()
+    value.loc[["electricity"]] = var_i_inland_elec()
+    value.loc[["heat"]] = 0
+    value.loc[["liquids"]] = var_i_inlandt_liq()
+    value.loc[["solids"]] = 0
+    value.loc[["gases"]] = var_i_inlandt_gas()
     return value
 
 
@@ -563,19 +478,19 @@ def nx0_vehicles_per_xinland_t():
     value = xr.DataArray(
         np.nan, {"vehicleT": _subscript_dict["vehicleT"]}, ["vehicleT"]
     )
-    value.loc[{"vehicleT": ["HV liq"]}] = nx_hv_inland_t()
-    value.loc[{"vehicleT": ["HV hib"]}] = nx_hv_inland_t()
-    value.loc[{"vehicleT": ["HV gas"]}] = nx_hv_inland_t()
-    value.loc[{"vehicleT": ["LV liq"]}] = nx_lv_inland_t()
-    value.loc[{"vehicleT": ["LV elec"]}] = nx_lv_inland_t()
-    value.loc[{"vehicleT": ["LV hib"]}] = nx_lv_inland_t()
-    value.loc[{"vehicleT": ["LV gas"]}] = nx_lv_inland_t()
-    value.loc[{"vehicleT": ["bus liq"]}] = nx_bus_inlandt()
-    value.loc[{"vehicleT": ["bus hib"]}] = nx_bus_inlandt()
-    value.loc[{"vehicleT": ["bus gas"]}] = nx_bus_inlandt()
-    value.loc[{"vehicleT": ["train liq"]}] = nx_train_inland_t()
-    value.loc[{"vehicleT": ["train elec"]}] = nx_train_inland_t()
-    value.loc[{"vehicleT": ["bus elec"]}] = nx_bus_inlandt()
+    value.loc[["HV liq"]] = nx_hv_inland_t()
+    value.loc[["HV hib"]] = nx_hv_inland_t()
+    value.loc[["HV gas"]] = nx_hv_inland_t()
+    value.loc[["LV liq"]] = nx_lv_inland_t()
+    value.loc[["LV elec"]] = nx_lv_inland_t()
+    value.loc[["LV hib"]] = nx_lv_inland_t()
+    value.loc[["LV gas"]] = nx_lv_inland_t()
+    value.loc[["bus liq"]] = nx_bus_inlandt()
+    value.loc[["bus hib"]] = nx_bus_inlandt()
+    value.loc[["bus gas"]] = nx_bus_inlandt()
+    value.loc[["train liq"]] = nx_train_inland_t()
+    value.loc[["train elec"]] = nx_train_inland_t()
+    value.loc[["bus elec"]] = nx_bus_inlandt()
     return value
 
 
@@ -698,19 +613,19 @@ def p_inlandt():
     value = xr.DataArray(
         np.nan, {"vehicleT": _subscript_dict["vehicleT"]}, ["vehicleT"]
     )
-    value.loc[{"vehicleT": ["HV liq"]}] = -p_hv_gas() - p_hv_hyb()
-    value.loc[{"vehicleT": ["HV hib"]}] = p_hv_hyb()
-    value.loc[{"vehicleT": ["HV gas"]}] = p_hv_gas()
-    value.loc[{"vehicleT": ["LV liq"]}] = -p_lv_elec() - p_lv_hyb() - p_lv_gas()
-    value.loc[{"vehicleT": ["LV elec"]}] = p_lv_elec()
-    value.loc[{"vehicleT": ["LV gas"]}] = p_lv_gas()
-    value.loc[{"vehicleT": ["bus liq"]}] = -p_bus_hyb() - p_bus_gas() - p_bus_elec()
-    value.loc[{"vehicleT": ["bus elec"]}] = p_bus_elec()
-    value.loc[{"vehicleT": ["bus hib"]}] = p_bus_hyb()
-    value.loc[{"vehicleT": ["bus gas"]}] = p_bus_gas()
-    value.loc[{"vehicleT": ["train liq"]}] = -p_train_elec()
-    value.loc[{"vehicleT": ["train elec"]}] = p_train_elec()
-    value.loc[{"vehicleT": ["LV hib"]}] = p_lv_hyb()
+    value.loc[["HV liq"]] = -p_hv_gas() - p_hv_hyb()
+    value.loc[["HV hib"]] = p_hv_hyb()
+    value.loc[["HV gas"]] = p_hv_gas()
+    value.loc[["LV liq"]] = -p_lv_elec() - p_lv_hyb() - p_lv_gas()
+    value.loc[["LV elec"]] = p_lv_elec()
+    value.loc[["LV gas"]] = p_lv_gas()
+    value.loc[["bus liq"]] = -p_bus_hyb() - p_bus_gas() - p_bus_elec()
+    value.loc[["bus elec"]] = p_bus_elec()
+    value.loc[["bus hib"]] = p_bus_hyb()
+    value.loc[["bus gas"]] = p_bus_gas()
+    value.loc[["train liq"]] = -p_train_elec()
+    value.loc[["train elec"]] = p_train_elec()
+    value.loc[["LV hib"]] = p_lv_hyb()
     return value
 
 
@@ -856,23 +771,7 @@ _ext_constant_saving_ratios_vehicles = ExtConstant(
     "saving_ratios_vehicles*",
     {"vehicleT": _subscript_dict["vehicleT"]},
     _root,
-    {
-        "vehicleT": [
-            "HV liq",
-            "HV hib",
-            "HV gas",
-            "LV liq",
-            "LV elec",
-            "LV hib",
-            "LV gas",
-            "bus liq",
-            "bus elec",
-            "bus hib",
-            "bus gas",
-            "train liq",
-            "train elec",
-        ]
-    },
+    {"vehicleT": _subscript_dict["vehicleT"]},
     "_ext_constant_saving_ratios_vehicles",
 )
 
@@ -891,64 +790,60 @@ def shares_available_t():
     value = xr.DataArray(
         np.nan, {"vehicleT": _subscript_dict["vehicleT"]}, ["vehicleT"]
     )
-    value.loc[{"vehicleT": ["HV liq"]}] = 1 - (
+    value.loc[["HV liq"]] = 1 - (
         float(percent_t_vehicles().loc["HV hib"])
         + float(percent_t_vehicles().loc["HV gas"])
     )
-    value.loc[{"vehicleT": ["HV hib"]}] = 1 - (
+    value.loc[["HV hib"]] = 1 - (
         float(percent_t_vehicles().loc["HV hib"])
         + float(percent_t_vehicles().loc["HV gas"])
     )
-    value.loc[{"vehicleT": ["HV gas"]}] = 1 - (
+    value.loc[["HV gas"]] = 1 - (
         float(percent_t_vehicles().loc["HV hib"])
         + float(percent_t_vehicles().loc["HV gas"])
     )
-    value.loc[{"vehicleT": ["LV liq"]}] = 1 - (
+    value.loc[["LV liq"]] = 1 - (
         float(percent_t_vehicles().loc["LV elec"])
         + float(percent_t_vehicles().loc["LV hib"])
         + float(percent_t_vehicles().loc["LV gas"])
     )
-    value.loc[{"vehicleT": ["LV elec"]}] = 1 - (
+    value.loc[["LV elec"]] = 1 - (
         float(percent_t_vehicles().loc["LV elec"])
         + float(percent_t_vehicles().loc["LV hib"])
         + float(percent_t_vehicles().loc["LV gas"])
     )
-    value.loc[{"vehicleT": ["LV gas"]}] = 1 - (
+    value.loc[["LV gas"]] = 1 - (
         float(percent_t_vehicles().loc["LV elec"])
         + float(percent_t_vehicles().loc["LV hib"])
         + float(percent_t_vehicles().loc["LV gas"])
     )
-    value.loc[{"vehicleT": ["LV hib"]}] = 1 - (
+    value.loc[["LV hib"]] = 1 - (
         float(percent_t_vehicles().loc["LV elec"])
         + float(percent_t_vehicles().loc["LV hib"])
         + float(percent_t_vehicles().loc["LV gas"])
     )
-    value.loc[{"vehicleT": ["bus liq"]}] = 1 - (
+    value.loc[["bus liq"]] = 1 - (
         float(percent_t_vehicles().loc["bus elec"])
         + float(percent_t_vehicles().loc["bus hib"])
         + float(percent_t_vehicles().loc["bus gas"])
     )
-    value.loc[{"vehicleT": ["bus elec"]}] = 1 - (
+    value.loc[["bus elec"]] = 1 - (
         float(percent_t_vehicles().loc["bus elec"])
         + float(percent_t_vehicles().loc["bus hib"])
         + float(percent_t_vehicles().loc["bus gas"])
     )
-    value.loc[{"vehicleT": ["bus hib"]}] = 1 - (
+    value.loc[["bus hib"]] = 1 - (
         float(percent_t_vehicles().loc["bus elec"])
         + float(percent_t_vehicles().loc["bus hib"])
         + float(percent_t_vehicles().loc["bus gas"])
     )
-    value.loc[{"vehicleT": ["bus gas"]}] = 1 - (
+    value.loc[["bus gas"]] = 1 - (
         float(percent_t_vehicles().loc["bus elec"])
         + float(percent_t_vehicles().loc["bus hib"])
         + float(percent_t_vehicles().loc["bus gas"])
     )
-    value.loc[{"vehicleT": ["train liq"]}] = 1 - float(
-        percent_t_vehicles().loc["train elec"]
-    )
-    value.loc[{"vehicleT": ["train elec"]}] = 1 - float(
-        percent_t_vehicles().loc["train elec"]
-    )
+    value.loc[["train liq"]] = 1 - float(percent_t_vehicles().loc["train elec"])
+    value.loc[["train elec"]] = 1 - float(percent_t_vehicles().loc["train elec"])
     return value
 
 
@@ -1076,33 +971,29 @@ def var_percent_t_vehicles():
     value = xr.DataArray(
         np.nan, {"vehicleT": _subscript_dict["vehicleT"]}, ["vehicleT"]
     )
-    value.loc[{"vehicleT": ["HV liq"]}] = -float(
-        adapt_var_inlandt().loc["HV hib"]
-    ) - float(adapt_var_inlandt().loc["HV gas"])
-    value.loc[{"vehicleT": ["HV hib"]}] = float(adapt_var_inlandt().loc["HV hib"])
-    value.loc[{"vehicleT": ["HV gas"]}] = float(adapt_var_inlandt().loc["HV gas"])
-    value.loc[{"vehicleT": ["LV liq"]}] = (
+    value.loc[["HV liq"]] = -float(adapt_var_inlandt().loc["HV hib"]) - float(
+        adapt_var_inlandt().loc["HV gas"]
+    )
+    value.loc[["HV hib"]] = float(adapt_var_inlandt().loc["HV hib"])
+    value.loc[["HV gas"]] = float(adapt_var_inlandt().loc["HV gas"])
+    value.loc[["LV liq"]] = (
         -float(adapt_var_inlandt().loc["LV hib"])
         - float(adapt_var_inlandt().loc["LV elec"])
         - float(adapt_var_inlandt().loc["LV gas"])
     )
-    value.loc[{"vehicleT": ["LV elec"]}] = float(adapt_var_inlandt().loc["LV elec"])
-    value.loc[{"vehicleT": ["LV hib"]}] = float(adapt_var_inlandt().loc["LV hib"])
-    value.loc[{"vehicleT": ["LV gas"]}] = float(adapt_var_inlandt().loc["LV gas"])
-    value.loc[{"vehicleT": ["bus liq"]}] = (
+    value.loc[["LV elec"]] = float(adapt_var_inlandt().loc["LV elec"])
+    value.loc[["LV hib"]] = float(adapt_var_inlandt().loc["LV hib"])
+    value.loc[["LV gas"]] = float(adapt_var_inlandt().loc["LV gas"])
+    value.loc[["bus liq"]] = (
         -float(adapt_var_inlandt().loc["bus elec"])
         - float(adapt_var_inlandt().loc["bus hib"])
         - float(adapt_var_inlandt().loc["bus gas"])
     )
-    value.loc[{"vehicleT": ["bus hib"]}] = float(adapt_var_inlandt().loc["bus hib"])
-    value.loc[{"vehicleT": ["bus gas"]}] = float(adapt_var_inlandt().loc["bus gas"])
-    value.loc[{"vehicleT": ["train liq"]}] = -float(
-        adapt_var_inlandt().loc["train elec"]
-    )
-    value.loc[{"vehicleT": ["train elec"]}] = float(
-        adapt_var_inlandt().loc["train elec"]
-    )
-    value.loc[{"vehicleT": ["bus elec"]}] = float(adapt_var_inlandt().loc["bus elec"])
+    value.loc[["bus hib"]] = float(adapt_var_inlandt().loc["bus hib"])
+    value.loc[["bus gas"]] = float(adapt_var_inlandt().loc["bus gas"])
+    value.loc[["train liq"]] = -float(adapt_var_inlandt().loc["train elec"])
+    value.loc[["train elec"]] = float(adapt_var_inlandt().loc["train elec"])
+    value.loc[["bus elec"]] = float(adapt_var_inlandt().loc["bus elec"])
     return value
 
 

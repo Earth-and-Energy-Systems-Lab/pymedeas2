@@ -324,6 +324,13 @@ def other_gases_required():
 
 
 @component.add(
+    name='"PEC nat. gas"', units="EJ/Year", comp_type="Auxiliary", comp_subtype="Normal"
+)
+def pec_nat_gas():
+    return pes_nat_gas_aut_1() + imports_aut_nat_gas_from_row_ej()
+
+
+@component.add(
     name='"PED AUT nat. gas from RoW"',
     units="EJ",
     comp_type="Auxiliary",
@@ -399,13 +406,6 @@ def pes_gases():
     Primary energy supply gas.
     """
     return pec_nat_gas() + pes_biogas_for_tfc()
-
-
-@component.add(
-    name='"PEC nat. gas"', units="EJ/Year", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def pec_nat_gas():
-    return pes_nat_gas_aut_1() + imports_aut_nat_gas_from_row_ej()
 
 
 @component.add(

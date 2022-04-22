@@ -31,39 +31,6 @@ def gen_losses_vs_pe_for_elec():
 
 
 @component.add(
-    name="PE losses NRE elec generation",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def pe_losses_nre_elec_generation():
-    """
-    Losses for electricity generation from non-renewable energy resources.
-    """
-    return (
-        pe_losses_coal_for_elec_ej()
-        + pe_losses_conv_gas_for_elec_ej()
-        + pe_losses_oil_for_elec_ej()
-        + pe_losses_uncon_gas_for_elec_ej()
-        + pe_losses_uranium_for_elec_ej()
-    )
-
-
-@component.add(
-    name="PE losses RES for elec",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def pe_losses_res_for_elec():
-    return (
-        pe_losses_bioe_for_elec_ej()
-        + pe_losses_biogas_for_elec()
-        + pe_losses_waste_for_elec()
-    )
-
-
-@component.add(
     name="PE losses biogas for elec",
     units="EJ",
     comp_type="Auxiliary",
@@ -108,6 +75,25 @@ def pe_losses_conv_gas_for_elec_ej():
 
 
 @component.add(
+    name="PE losses NRE elec generation",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def pe_losses_nre_elec_generation():
+    """
+    Losses for electricity generation from non-renewable energy resources.
+    """
+    return (
+        pe_losses_coal_for_elec_ej()
+        + pe_losses_conv_gas_for_elec_ej()
+        + pe_losses_oil_for_elec_ej()
+        + pe_losses_uncon_gas_for_elec_ej()
+        + pe_losses_uranium_for_elec_ej()
+    )
+
+
+@component.add(
     name="PE losses oil for Elec EJ",
     units="EJ/Year",
     comp_type="Auxiliary",
@@ -121,6 +107,20 @@ def pe_losses_oil_for_elec_ej():
         (pes_total_oil_ej_aut() + imports_aut_total_oil_from_row_ej())
         * share_oil_dem_for_elec()
         * (1 - efficiency_liquids_for_electricity())
+    )
+
+
+@component.add(
+    name="PE losses RES for elec",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def pe_losses_res_for_elec():
+    return (
+        pe_losses_bioe_for_elec_ej()
+        + pe_losses_biogas_for_elec()
+        + pe_losses_waste_for_elec()
     )
 
 

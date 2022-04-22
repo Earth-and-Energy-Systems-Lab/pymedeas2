@@ -218,6 +218,16 @@ _ext_constant_p_biofuels_marg_lands = ExtConstant(
 
 
 @component.add(
+    name="PE biofuels land marg EJ", comp_type="Auxiliary", comp_subtype="Normal"
+)
+def pe_biofuels_land_marg_ej():
+    """
+    Total annual primary energy biomass for biofuel production in marginal lands.
+    """
+    return peavail_biofuels_land_marg_ej() / conv_efficiency_from_npp_to_biofuels()
+
+
+@component.add(
     name="PEavail biofuels land marg EJ",
     units="EJ",
     comp_type="Auxiliary",
@@ -257,6 +267,16 @@ _ext_constant_potential_marginal_lands_mha = ExtConstant(
 
 
 @component.add(
+    name="Potential PEavail biofuels land marg abandonned",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def potential_peavail_biofuels_land_marg_abandonned():
+    return potential_peavail_biofuels_land_marg_ej() * share_biofuels_overcapacity()
+
+
+@component.add(
     name="Potential PEavail biofuels land marg EJ",
     units="EJ/Year",
     comp_type="Stateful",
@@ -275,26 +295,6 @@ _integ_potential_peavail_biofuels_land_marg_ej = Integ(
     lambda: 0,
     "_integ_potential_peavail_biofuels_land_marg_ej",
 )
-
-
-@component.add(
-    name="PE biofuels land marg EJ", comp_type="Auxiliary", comp_subtype="Normal"
-)
-def pe_biofuels_land_marg_ej():
-    """
-    Total annual primary energy biomass for biofuel production in marginal lands.
-    """
-    return peavail_biofuels_land_marg_ej() / conv_efficiency_from_npp_to_biofuels()
-
-
-@component.add(
-    name="Potential PEavail biofuels land marg abandonned",
-    units="EJ/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def potential_peavail_biofuels_land_marg_abandonned():
-    return potential_peavail_biofuels_land_marg_ej() * share_biofuels_overcapacity()
 
 
 @component.add(

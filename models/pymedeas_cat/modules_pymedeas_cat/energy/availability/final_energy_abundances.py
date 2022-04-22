@@ -14,36 +14,12 @@ def abundance_final_fuels():
     value = xr.DataArray(
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
-    value.loc[{"final sources": ["liquids"]}] = abundance_liquids()
-    value.loc[{"final sources": ["gases"]}] = abundance_gases()
-    value.loc[{"final sources": ["solids"]}] = abundance_solids()
-    value.loc[{"final sources": ["electricity"]}] = abundance_electricity()
-    value.loc[{"final sources": ["heat"]}] = abundance_heat()
+    value.loc[["liquids"]] = abundance_liquids()
+    value.loc[["gases"]] = abundance_gases()
+    value.loc[["solids"]] = abundance_solids()
+    value.loc[["electricity"]] = abundance_electricity()
+    value.loc[["heat"]] = abundance_heat()
     return value
-
-
-@component.add(
-    name="energy scarcity forgetting time",
-    units="Year",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def energy_scarcity_forgetting_time():
-    """
-    Time in years that society takes to forget the percepticon of scarcity for economic sectors.
-    """
-    return _ext_constant_energy_scarcity_forgetting_time()
-
-
-_ext_constant_energy_scarcity_forgetting_time = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "energy_scarcity_forgetting_time",
-    {},
-    _root,
-    {},
-    "_ext_constant_energy_scarcity_forgetting_time",
-)
 
 
 @component.add(
@@ -67,6 +43,30 @@ _ext_constant_energy_scarcity_forgetting_time_h = ExtConstant(
     _root,
     {},
     "_ext_constant_energy_scarcity_forgetting_time_h",
+)
+
+
+@component.add(
+    name="energy scarcity forgetting time",
+    units="Year",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def energy_scarcity_forgetting_time():
+    """
+    Time in years that society takes to forget the percepticon of scarcity for economic sectors.
+    """
+    return _ext_constant_energy_scarcity_forgetting_time()
+
+
+_ext_constant_energy_scarcity_forgetting_time = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "energy_scarcity_forgetting_time",
+    {},
+    _root,
+    {},
+    "_ext_constant_energy_scarcity_forgetting_time",
 )
 
 

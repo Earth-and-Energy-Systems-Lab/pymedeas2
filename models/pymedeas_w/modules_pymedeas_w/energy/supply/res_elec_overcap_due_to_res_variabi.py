@@ -36,16 +36,14 @@ def cp_exogenous_res_elec_reduction():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = cp_exogenous_res_elec_dispatch_reduction()
-    value.loc[{"RES elec": ["geot elec"]}] = cp_exogenous_res_elec_dispatch_reduction()
-    value.loc[
-        {"RES elec": ["solid bioE elec"]}
-    ] = cp_exogenous_res_elec_dispatch_reduction()
-    value.loc[{"RES elec": ["oceanic"]}] = cp_exogenous_res_elec_dispatch_reduction()
-    value.loc[{"RES elec": ["wind onshore"]}] = cp_exogenous_res_elec_var_reduction()
-    value.loc[{"RES elec": ["wind offshore"]}] = cp_exogenous_res_elec_var_reduction()
-    value.loc[{"RES elec": ["solar PV"]}] = cp_exogenous_res_elec_var_reduction()
-    value.loc[{"RES elec": ["CSP"]}] = cp_exogenous_res_elec_var_reduction()
+    value.loc[["hydro"]] = cp_exogenous_res_elec_dispatch_reduction()
+    value.loc[["geot elec"]] = cp_exogenous_res_elec_dispatch_reduction()
+    value.loc[["solid bioE elec"]] = cp_exogenous_res_elec_dispatch_reduction()
+    value.loc[["oceanic"]] = cp_exogenous_res_elec_dispatch_reduction()
+    value.loc[["wind onshore"]] = cp_exogenous_res_elec_var_reduction()
+    value.loc[["wind offshore"]] = cp_exogenous_res_elec_var_reduction()
+    value.loc[["solar PV"]] = cp_exogenous_res_elec_var_reduction()
+    value.loc[["CSP"]] = cp_exogenous_res_elec_var_reduction()
     return value
 
 

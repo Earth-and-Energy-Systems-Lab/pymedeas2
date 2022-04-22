@@ -463,27 +463,6 @@ def flow_conv_oil_left_in_ground():
 
 
 @component.add(
-    name="Flow unconv oil left in ground",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def flow_unconv_oil_left_in_ground():
-    """
-    Flow of unconventional oil left in the ground. We assume that this amount is removed from the stock of unconventional oil available in 1 year.
-    """
-    return if_then_else(
-        time() < start_policy_leave_in_ground_unconv_oil(),
-        lambda: 0,
-        lambda: if_then_else(
-            time() >= start_policy_leave_in_ground_unconv_oil() + 1,
-            lambda: 0,
-            lambda: unconv_oil_to_leave_underground(),
-        ),
-    )
-
-
-@component.add(
     name="Flow tot agg oil left in ground",
     units="EJ",
     comp_type="Auxiliary",
@@ -500,6 +479,27 @@ def flow_tot_agg_oil_left_in_ground():
             time() >= start_policy_leave_in_ground_tot_agg_oil() + 1,
             lambda: 0,
             lambda: tot_agg_oil_to_leave_underground(),
+        ),
+    )
+
+
+@component.add(
+    name="Flow unconv oil left in ground",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def flow_unconv_oil_left_in_ground():
+    """
+    Flow of unconventional oil left in the ground. We assume that this amount is removed from the stock of unconventional oil available in 1 year.
+    """
+    return if_then_else(
+        time() < start_policy_leave_in_ground_unconv_oil(),
+        lambda: 0,
+        lambda: if_then_else(
+            time() >= start_policy_leave_in_ground_unconv_oil() + 1,
+            lambda: 0,
+            lambda: unconv_oil_to_leave_underground(),
         ),
     )
 

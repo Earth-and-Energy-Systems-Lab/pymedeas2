@@ -31,19 +31,6 @@ def abundance_res_elec():
 
 
 @component.add(
-    name="abundance RES elec2",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def abundance_res_elec2():
-    """
-    Adaptation of the parameter abundance for better behaviour of the model.
-    """
-    return np.sqrt(abundance_res_elec())
-
-
-@component.add(
     name="activate EROI allocation rule",
     units="Dmnl",
     comp_type="Constant",
@@ -58,171 +45,24 @@ def activate_eroi_allocation_rule():
 
 @component.add(
     name="adapt growth RES elec",
-    units="1/Year",
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
 )
 def adapt_growth_res_elec():
-    """
-    Annual growth per RES elec technology. Modeling of a soft transition from current historic annual growth to reach the policy-objective in the target year. TODO
-    """
-    value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-    )
-    value.loc[{"RES elec": ["hydro"]}] = if_then_else(
+    return if_then_else(
         time() < 2015,
-        lambda: float(past_res_elec_capacity_growth().loc["hydro"]),
+        lambda: past_res_growth(),
         lambda: if_then_else(
-            time() < start_year_p_growth_res_elec(),
-            lambda: float(past_res_elec_capacity_growth().loc["hydro"]),
-            lambda: if_then_else(
-                time() < target_year_p_growth_res_elec(),
-                lambda: float(past_res_elec_capacity_growth().loc["hydro"])
-                + (
-                    float(p_res_elec_growth().loc["hydro"])
-                    - float(past_res_elec_capacity_growth().loc["hydro"])
-                )
-                * (time() - start_year_p_growth_res_elec())
-                / (target_year_p_growth_res_elec() - start_year_p_growth_res_elec()),
-                lambda: float(p_res_elec_growth().loc["hydro"]),
-            ),
+            time() < start_year_p_growth_res_elec() + 1,
+            lambda: zidz(
+                p_power(start_year_p_growth_res_elec()),
+                table_hist_capacity_res_elec(2015),
+            )
+            ** (1 / (start_year_p_growth_res_elec() - 2015)),
+            lambda: zidz(p_power(time()) - p_power(time() - 1), p_power(time() - 1)),
         ),
     )
-    value.loc[{"RES elec": ["geot elec"]}] = if_then_else(
-        time() < 2013,
-        lambda: float(past_res_elec_capacity_growth().loc["geot elec"]),
-        lambda: if_then_else(
-            time() < start_year_p_growth_res_elec(),
-            lambda: float(past_res_elec_capacity_growth().loc["geot elec"]),
-            lambda: if_then_else(
-                time() < target_year_p_growth_res_elec(),
-                lambda: float(past_res_elec_capacity_growth().loc["geot elec"])
-                + (
-                    float(p_res_elec_growth().loc["geot elec"])
-                    - float(past_res_elec_capacity_growth().loc["geot elec"])
-                )
-                * (time() - start_year_p_growth_res_elec())
-                / (target_year_p_growth_res_elec() - start_year_p_growth_res_elec()),
-                lambda: float(p_res_elec_growth().loc["geot elec"]),
-            ),
-        ),
-    )
-    value.loc[{"RES elec": ["solid bioE elec"]}] = if_then_else(
-        time() < 2013,
-        lambda: float(past_res_elec_capacity_growth().loc["solid bioE elec"]),
-        lambda: if_then_else(
-            time() < start_year_p_growth_res_elec(),
-            lambda: float(past_res_elec_capacity_growth().loc["solid bioE elec"]),
-            lambda: if_then_else(
-                time() < target_year_p_growth_res_elec(),
-                lambda: float(past_res_elec_capacity_growth().loc["solid bioE elec"])
-                + (
-                    float(p_res_elec_growth().loc["solid bioE elec"])
-                    - float(past_res_elec_capacity_growth().loc["solid bioE elec"])
-                )
-                * (time() - start_year_p_growth_res_elec())
-                / (target_year_p_growth_res_elec() - start_year_p_growth_res_elec()),
-                lambda: float(p_res_elec_growth().loc["solid bioE elec"]),
-            ),
-        ),
-    )
-    value.loc[{"RES elec": ["oceanic"]}] = if_then_else(
-        time() < 2014,
-        lambda: float(past_res_elec_capacity_growth().loc["oceanic"]),
-        lambda: if_then_else(
-            time() < start_year_p_growth_res_elec(),
-            lambda: float(past_res_elec_capacity_growth().loc["oceanic"]),
-            lambda: if_then_else(
-                time() < target_year_p_growth_res_elec(),
-                lambda: float(past_res_elec_capacity_growth().loc["oceanic"])
-                + (
-                    float(p_res_elec_growth().loc["oceanic"])
-                    - float(past_res_elec_capacity_growth().loc["oceanic"])
-                )
-                * (time() - start_year_p_growth_res_elec())
-                / (target_year_p_growth_res_elec() - start_year_p_growth_res_elec()),
-                lambda: float(p_res_elec_growth().loc["oceanic"]),
-            ),
-        ),
-    )
-    value.loc[{"RES elec": ["wind onshore"]}] = if_then_else(
-        time() < 2015,
-        lambda: float(past_res_elec_capacity_growth().loc["wind onshore"]),
-        lambda: if_then_else(
-            time() < start_year_p_growth_res_elec(),
-            lambda: float(past_res_elec_capacity_growth().loc["wind onshore"]),
-            lambda: if_then_else(
-                time() < target_year_p_growth_res_elec(),
-                lambda: float(past_res_elec_capacity_growth().loc["wind onshore"])
-                + (
-                    float(p_res_elec_growth().loc["wind onshore"])
-                    - float(past_res_elec_capacity_growth().loc["wind onshore"])
-                )
-                * (time() - start_year_p_growth_res_elec())
-                / (target_year_p_growth_res_elec() - start_year_p_growth_res_elec()),
-                lambda: float(p_res_elec_growth().loc["wind onshore"]),
-            ),
-        ),
-    )
-    value.loc[{"RES elec": ["wind offshore"]}] = if_then_else(
-        time() < 2014,
-        lambda: float(past_res_elec_capacity_growth().loc["wind offshore"]),
-        lambda: if_then_else(
-            time() < start_year_p_growth_res_elec(),
-            lambda: float(past_res_elec_capacity_growth().loc["wind offshore"]),
-            lambda: if_then_else(
-                time() < target_year_p_growth_res_elec(),
-                lambda: float(past_res_elec_capacity_growth().loc["wind offshore"])
-                + (
-                    float(p_res_elec_growth().loc["wind offshore"])
-                    - float(past_res_elec_capacity_growth().loc["wind offshore"])
-                )
-                * (time() - start_year_p_growth_res_elec())
-                / (target_year_p_growth_res_elec() - start_year_p_growth_res_elec()),
-                lambda: float(p_res_elec_growth().loc["wind offshore"]),
-            ),
-        ),
-    )
-    value.loc[{"RES elec": ["solar PV"]}] = if_then_else(
-        time() < 2014,
-        lambda: float(past_res_elec_capacity_growth().loc["solar PV"]),
-        lambda: if_then_else(
-            time() < start_year_p_growth_res_elec(),
-            lambda: float(past_res_elec_capacity_growth().loc["solar PV"]),
-            lambda: if_then_else(
-                time() < target_year_p_growth_res_elec(),
-                lambda: float(past_res_elec_capacity_growth().loc["solar PV"])
-                + (
-                    float(p_res_elec_growth().loc["solar PV"])
-                    - float(past_res_elec_capacity_growth().loc["solar PV"])
-                )
-                * (time() - start_year_p_growth_res_elec())
-                / (target_year_p_growth_res_elec() - start_year_p_growth_res_elec()),
-                lambda: float(p_res_elec_growth().loc["solar PV"]),
-            ),
-        ),
-    )
-    value.loc[{"RES elec": ["CSP"]}] = if_then_else(
-        time() < 2014,
-        lambda: float(past_res_elec_capacity_growth().loc["CSP"]),
-        lambda: if_then_else(
-            time() < start_year_p_growth_res_elec(),
-            lambda: float(past_res_elec_capacity_growth().loc["CSP"]),
-            lambda: if_then_else(
-                time() < target_year_p_growth_res_elec(),
-                lambda: float(past_res_elec_capacity_growth().loc["CSP"])
-                + (
-                    float(p_res_elec_growth().loc["CSP"])
-                    - float(past_res_elec_capacity_growth().loc["CSP"])
-                )
-                * (time() - start_year_p_growth_res_elec())
-                / (target_year_p_growth_res_elec() - start_year_p_growth_res_elec()),
-                lambda: float(p_res_elec_growth().loc["CSP"]),
-            ),
-        ),
-    )
-    return value
 
 
 @component.add(
@@ -247,17 +87,6 @@ def adapt_growth_res_elec_after_allocation():
 
 
 @component.add(
-    name="Cp baseload reduction",
-    units="Dmnl",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def cp_baseload_reduction():
-    return cp_res_elec() / cpini_res_elec()
-
-
-@component.add(
     name="Cp RES elec",
     units="Dmnl",
     subscripts=["RES elec"],
@@ -272,6 +101,30 @@ def cp_res_elec():
         min_cp_baseload_res(),
         cpini_res_elec() * cp_exogenous_res_elec_reduction() * shortage_bioe_for_elec(),
     )
+
+
+@component.add(
+    name="FE real tot generation RES elec TWh",
+    units="TWh",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def fe_real_tot_generation_res_elec_twh():
+    return np.minimum(
+        np.maximum(total_fe_elec_demand_after_priorities_twh(), 0),
+        potential_tot_generation_res_elec_twh(),
+    )
+
+
+@component.add(
+    name="Cp baseload reduction",
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def cp_baseload_reduction():
+    return cp_res_elec() / cpini_res_elec()
 
 
 @component.add(
@@ -294,33 +147,9 @@ _ext_constant_cpini_res_elec = ExtConstant(
     "cp_initial_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_cpini_res_elec",
 )
-
-
-@component.add(
-    name="FE real tot generation RES elec TWh",
-    units="TWh",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def fe_real_tot_generation_res_elec_twh():
-    return np.minimum(
-        np.maximum(total_fe_elec_demand_after_priorities_twh(), 0),
-        potential_tot_generation_res_elec_twh(),
-    )
 
 
 @component.add(
@@ -399,18 +228,7 @@ _ext_constant_initial_instal_cap_res_elec = ExtConstant(
     "initial_installed_capacity_res_for_electricity*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_initial_instal_cap_res_elec",
 )
 
@@ -427,6 +245,26 @@ def initial_required_capacity_res_elec():
     Initial required capacity of RES by technology (year 1995). We assume that it is the same than the additional installed capacity between 1995 and 1996.
     """
     return table_hist_capacity_res_elec(1996) - table_hist_capacity_res_elec(1995)
+
+
+@component.add(
+    name="installed capacity delayed",
+    units="TW",
+    subscripts=["RES elec"],
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+)
+def installed_capacity_delayed():
+    return _delayfixed_installed_capacity_delayed()
+
+
+_delayfixed_installed_capacity_delayed = DelayFixed(
+    lambda: installed_capacity_res_elec_tw(),
+    lambda: 0.03125,
+    lambda: xr.DataArray(0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]),
+    time_step,
+    "_delayfixed_installed_capacity_delayed",
+)
 
 
 @component.add(
@@ -493,18 +331,7 @@ _ext_constant_lifetime_res_elec = ExtConstant(
     "lifetime_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_lifetime_res_elec",
 )
 
@@ -529,18 +356,7 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     "minimum_cp_baseload_res*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_min_cp_baseload_res",
 )
 
@@ -573,12 +389,15 @@ def new_required_capacity_res_elec():
     New required capacity of RES technologies for electricity generation. We assume 100% of the required infraestructure is planned and constructed.
     """
     return if_then_else(
-        time() < 2015 - total_time_planconstr_res_elec(),
+        time() < 2014 - total_time_planconstr_res_elec(),
         lambda: historic_new_required_capacity_res_elec(),
-        lambda: installed_capacity_res_elec_tw()
-        * adapt_growth_res_elec_after_allocation()
-        * remaining_potential_constraint_on_new_res_elec_capacity()
-        * abundance_res_elec2(),
+        lambda: if_then_else(
+            max_res_elec_twe() > installed_capacity_res_elec_tw(),
+            lambda: p_power(time() - 1) * adapt_growth_res_elec(),
+            lambda: xr.DataArray(
+                0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+            ),
+        ),
     )
 
 
@@ -601,171 +420,40 @@ def new_res_elec_capacity_under_planning():
 
 
 @component.add(
-    name="P CSP growth", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="P power",
+    units="TW",
+    subscripts=["RES elec"],
+    comp_type="Lookup",
+    comp_subtype="External",
 )
-def p_csp_growth():
-    """
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_csp_growth()
+def p_power(x, final_subs=None):
+    return _ext_lookup_p_power(x, final_subs)
 
 
-_ext_constant_p_csp_growth = ExtConstant(
+_ext_lookup_p_power = ExtLookup(
     "../../scenarios/scen_cat.xlsx",
     "BAU",
-    "p_CSP_growth",
-    {},
+    "year_RES_power",
+    "p_RES_power",
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {},
-    "_ext_constant_p_csp_growth",
+    {"RES elec": _subscript_dict["RES elec"]},
+    "_ext_lookup_p_power",
 )
 
 
 @component.add(
-    name="P geot growth", units="Dmnl", comp_type="Constant", comp_subtype="External"
-)
-def p_geot_growth():
-    """
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_geot_growth()
-
-
-_ext_constant_p_geot_growth = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "p_geot_elect_growth",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_geot_growth",
-)
-
-
-@component.add(
-    name="P hydro growth", units="Dmnl", comp_type="Constant", comp_subtype="External"
-)
-def p_hydro_growth():
-    """
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_hydro_growth()
-
-
-_ext_constant_p_hydro_growth = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "p_hydro_growth",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_hydro_growth",
-)
-
-
-@component.add(
-    name="P oceanic growth", units="Dmnl", comp_type="Constant", comp_subtype="External"
-)
-def p_oceanic_growth():
-    """
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_oceanic_growth()
-
-
-_ext_constant_p_oceanic_growth = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "p_oceanic_growth",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_oceanic_growth",
-)
-
-
-@component.add(
-    name="P RES elec growth",
+    name="past RES growth",
+    units="Dmnl",
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
 )
-def p_res_elec_growth():
-    """
-    For hydro, geot-elec and solid bioenergy this variable represents the projected annual growth in relation to past growth trends, for the rest of RES elec (oceanic, wind & solar), it represents the annual growth in relation to the existing installed capacity.
-    """
-    value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+def past_res_growth():
+    return zidz(
+        table_hist_capacity_res_elec(time()) - table_hist_capacity_res_elec(time() - 1),
+        table_hist_capacity_res_elec(time() - 1),
     )
-    value.loc[{"RES elec": ["hydro"]}] = p_hydro_growth()
-    value.loc[{"RES elec": ["geot elec"]}] = p_geot_growth()
-    value.loc[{"RES elec": ["solid bioE elec"]}] = p_solid_bioeelec_growth()
-    value.loc[{"RES elec": ["oceanic"]}] = p_oceanic_growth()
-    value.loc[{"RES elec": ["wind onshore"]}] = p_wind_onshore_growth()
-    value.loc[{"RES elec": ["wind offshore"]}] = p_wind_offshore_growth()
-    value.loc[{"RES elec": ["solar PV"]}] = p_solar_pv_growth()
-    value.loc[{"RES elec": ["CSP"]}] = p_csp_growth()
-    return value
-
-
-@component.add(
-    name="P solar PV growth",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def p_solar_pv_growth():
-    """
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_solar_pv_growth()
-
-
-_ext_constant_p_solar_pv_growth = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "p_solar_PV",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_solar_pv_growth",
-)
-
-
-@component.add(
-    name="past RES elec capacity growth",
-    units="1/Year",
-    subscripts=["RES elec"],
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def past_res_elec_capacity_growth():
-    """
-    Current growth levels.
-    """
-    return _ext_constant_past_res_elec_capacity_growth()
-
-
-_ext_constant_past_res_elec_capacity_growth = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "historic_growth_res_for_electricity*",
-    {"RES elec": _subscript_dict["RES elec"]},
-    _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
-    "_ext_constant_past_res_elec_capacity_growth",
-)
 
 
 @component.add(
@@ -783,6 +471,20 @@ def potential_generation_res_elec_twh():
 
 
 @component.add(
+    name="potential RES elec after intermitt TWh",
+    units="TWh",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+)
+def potential_res_elec_after_intermitt_twh():
+    """
+    Potential of RES for electricity per technology after accounting for the reduction of the maximal potential given the reduction of the Cp.
+    """
+    return max_res_elec_twe() * cp_baseload_reduction() / twe_per_twh()
+
+
+@component.add(
     name="potential tot generation RES elec TWh",
     units="TWh",
     comp_type="Auxiliary",
@@ -796,92 +498,6 @@ def potential_tot_generation_res_elec_twh():
         potential_generation_res_elec_twh().rename({"RES elec": "RES elec!"}),
         dim=["RES elec!"],
     )
-
-
-@component.add(
-    name='"P solid bioE-elec growth"',
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def p_solid_bioeelec_growth():
-    """
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_solid_bioeelec_growth()
-
-
-_ext_constant_p_solid_bioeelec_growth = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "p_solid_bioe_elect_growth",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_solid_bioeelec_growth",
-)
-
-
-@component.add(
-    name="P wind offshore growth",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def p_wind_offshore_growth():
-    """
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_wind_offshore_growth()
-
-
-_ext_constant_p_wind_offshore_growth = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "p_wind_offshore_growth",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_wind_offshore_growth",
-)
-
-
-@component.add(
-    name="P wind onshore growth",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def p_wind_onshore_growth():
-    """
-    Annual growth in relation to the existing installed capacity.
-    """
-    return _ext_constant_p_wind_onshore_growth()
-
-
-_ext_constant_p_wind_onshore_growth = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "p_wind_onshore_growth",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_wind_onshore_growth",
-)
-
-
-@component.add(
-    name="potential RES elec after intermitt TWh",
-    units="TWh",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def potential_res_elec_after_intermitt_twh():
-    """
-    Potential of RES for electricity per technology after accounting for the reduction of the maximal potential given the reduction of the Cp.
-    """
-    return max_res_elec_twe() * cp_baseload_reduction() / twe_per_twh()
 
 
 @component.add(
@@ -1082,8 +698,12 @@ def res_elec_capacity_under_construction_tw():
     """
     RES infraestructure for electricity generation capacity under construction.
     """
-    return res_elec_planned_capacity_tw() / np.maximum(
-        time_construction_res_elec(), time_step()
+    return if_then_else(
+        installed_capacity_delayed() < max_res_elec_twe(),
+        lambda: res_elec_planned_capacity_tw() / time_construction_res_elec(),
+        lambda: xr.DataArray(
+            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        ),
     )
 
 
@@ -1132,30 +752,6 @@ def res_elec_tot_overcapacity():
 
 
 @component.add(
-    name="Start year P growth RES elec",
-    units="Year",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def start_year_p_growth_res_elec():
-    """
-    Start year of the policy growth of RES technologies for generating electricity.
-    """
-    return _ext_constant_start_year_p_growth_res_elec()
-
-
-_ext_constant_start_year_p_growth_res_elec = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "start_year_p_growth_RES_elec",
-    {},
-    _root,
-    {},
-    "_ext_constant_start_year_p_growth_res_elec",
-)
-
-
-@component.add(
     name="table hist capacity RES elec",
     units="TW/Year",
     subscripts=["RES elec"],
@@ -1173,43 +769,8 @@ _ext_lookup_table_hist_capacity_res_elec = ExtLookup(
     "historic_installed_capacity_res_for_electricity",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_lookup_table_hist_capacity_res_elec",
-)
-
-
-@component.add(
-    name="Target year P growth RES elec",
-    units="Year",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def target_year_p_growth_res_elec():
-    """
-    Target year of the policy growth of RES technologies for generating electricity.
-    """
-    return _ext_constant_target_year_p_growth_res_elec()
-
-
-_ext_constant_target_year_p_growth_res_elec = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "target_year_p_growth_RES_elec",
-    {},
-    _root,
-    {},
-    "_ext_constant_target_year_p_growth_res_elec",
 )
 
 
@@ -1266,18 +827,7 @@ _ext_constant_time_construction_res_elec = ExtConstant(
     "construction_time_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_time_construction_res_elec",
 )
 
@@ -1302,18 +852,7 @@ _ext_constant_time_planification_res_elec = ExtConstant(
     "planning_time_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_time_planification_res_elec",
 )
 

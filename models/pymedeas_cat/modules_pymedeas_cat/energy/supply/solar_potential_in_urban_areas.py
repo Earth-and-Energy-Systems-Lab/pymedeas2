@@ -26,6 +26,54 @@ _ext_constant_av_solar_i = ExtConstant(
 
 
 @component.add(
+    name='"f1-ini solar PV"',
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def f1ini_solar_pv():
+    """
+    Current cell efficiency conversion of solar PV.
+    """
+    return _ext_constant_f1ini_solar_pv()
+
+
+_ext_constant_f1ini_solar_pv = ExtConstant(
+    "../energy.xlsx",
+    "Austria",
+    "cell_efficiency_conversion_of_solar_pv",
+    {},
+    _root,
+    {},
+    "_ext_constant_f1ini_solar_pv",
+)
+
+
+@component.add(
+    name="f3 solar PV on land",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def f3_solar_pv_on_land():
+    """
+    Land occupation ratio (f3).
+    """
+    return _ext_constant_f3_solar_pv_on_land()
+
+
+_ext_constant_f3_solar_pv_on_land = ExtConstant(
+    "../energy.xlsx",
+    "Austria",
+    "land_occupation_ratio_of_solar_pv",
+    {},
+    _root,
+    {},
+    "_ext_constant_f3_solar_pv_on_land",
+)
+
+
+@component.add(
     name="f1 PV solar in target year",
     units="Dmnl",
     comp_type="Constant",
@@ -75,30 +123,6 @@ def f1_solar_pv():
 
 
 @component.add(
-    name='"f1-ini solar PV"',
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def f1ini_solar_pv():
-    """
-    Current cell efficiency conversion of solar PV.
-    """
-    return _ext_constant_f1ini_solar_pv()
-
-
-_ext_constant_f1ini_solar_pv = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "cell_efficiency_conversion_of_solar_pv",
-    {},
-    _root,
-    {},
-    "_ext_constant_f1ini_solar_pv",
-)
-
-
-@component.add(
     name="f2 PF solar PV", units="Dmnl", comp_type="Constant", comp_subtype="External"
 )
 def f2_pf_solar_pv():
@@ -116,30 +140,6 @@ _ext_constant_f2_pf_solar_pv = ExtConstant(
     _root,
     {},
     "_ext_constant_f2_pf_solar_pv",
-)
-
-
-@component.add(
-    name="f3 solar PV on land",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def f3_solar_pv_on_land():
-    """
-    Land occupation ratio (f3).
-    """
-    return _ext_constant_f3_solar_pv_on_land()
-
-
-_ext_constant_f3_solar_pv_on_land = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "land_occupation_ratio_of_solar_pv",
-    {},
-    _root,
-    {},
-    "_ext_constant_f3_solar_pv_on_land",
 )
 
 
@@ -188,6 +188,31 @@ def max_solar_pv_urban():
 
 
 @component.add(
+    name='"power density initial RES elec TWe/Mha"',
+    units="TWe/MHa",
+    subscripts=["RES elec"],
+    comp_type="Constant",
+    comp_subtype="External",
+)
+def power_density_initial_res_elec_twemha():
+    """
+    Input parameter: power density per RES technology for delivering electricity.
+    """
+    return _ext_constant_power_density_initial_res_elec_twemha()
+
+
+_ext_constant_power_density_initial_res_elec_twemha = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "power_density_res_elec*",
+    {"RES elec": _subscript_dict["RES elec"]},
+    _root,
+    {"RES elec": _subscript_dict["RES elec"]},
+    "_ext_constant_power_density_initial_res_elec_twemha",
+)
+
+
+@component.add(
     name='"power density RES elec TWe/Mha"',
     units="TWe/MHa",
     subscripts=["RES elec"],
@@ -201,41 +226,41 @@ def power_density_res_elec_twemha():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[{"RES elec": ["hydro"]}] = float(
+    value.loc[["hydro"]] = float(
         power_density_initial_res_elec_twemha().loc["hydro"]
     ) * (float(cp_res_elec().loc["hydro"]) / float(cpini_res_elec().loc["hydro"]))
-    value.loc[{"RES elec": ["geot elec"]}] = float(
+    value.loc[["geot elec"]] = float(
         power_density_initial_res_elec_twemha().loc["geot elec"]
     ) * (
         float(cp_res_elec().loc["geot elec"]) / float(cpini_res_elec().loc["geot elec"])
     )
-    value.loc[{"RES elec": ["solid bioE elec"]}] = float(
+    value.loc[["solid bioE elec"]] = float(
         power_density_initial_res_elec_twemha().loc["solid bioE elec"]
     ) * (
         float(cp_res_elec().loc["solid bioE elec"])
         / float(cpini_res_elec().loc["solid bioE elec"])
     )
-    value.loc[{"RES elec": ["oceanic"]}] = float(
+    value.loc[["oceanic"]] = float(
         power_density_initial_res_elec_twemha().loc["oceanic"]
     ) * (float(cp_res_elec().loc["oceanic"]) / float(cpini_res_elec().loc["oceanic"]))
-    value.loc[{"RES elec": ["wind onshore"]}] = float(
+    value.loc[["wind onshore"]] = float(
         power_density_initial_res_elec_twemha().loc["wind onshore"]
     ) * (
         float(cp_res_elec().loc["wind onshore"])
         / float(cpini_res_elec().loc["wind onshore"])
     )
-    value.loc[{"RES elec": ["wind offshore"]}] = float(
+    value.loc[["wind offshore"]] = float(
         power_density_initial_res_elec_twemha().loc["wind offshore"]
     ) * (
         float(cp_res_elec().loc["wind offshore"])
         / float(cpini_res_elec().loc["wind offshore"])
     )
-    value.loc[{"RES elec": ["solar PV"]}] = power_density_solar_pv_on_land_twemha() * (
+    value.loc[["solar PV"]] = power_density_solar_pv_on_land_twemha() * (
         float(cp_res_elec().loc["solar PV"]) / float(cpini_res_elec().loc["solar PV"])
     )
-    value.loc[{"RES elec": ["CSP"]}] = float(
-        power_density_initial_res_elec_twemha().loc["CSP"]
-    ) * (float(cp_res_elec().loc["CSP"]) / float(cpini_res_elec().loc["CSP"]))
+    value.loc[["CSP"]] = float(power_density_initial_res_elec_twemha().loc["CSP"]) * (
+        float(cp_res_elec().loc["CSP"]) / float(cpini_res_elec().loc["CSP"])
+    )
     return value
 
 
@@ -296,42 +321,6 @@ def power_density_solar_thermal_in_urban_twemha():
         * share_available_roof_for_solar_thermal()
         * twhmha_per_wem2()
     )
-
-
-@component.add(
-    name='"power density initial RES elec TWe/Mha"',
-    units="TWe/MHa",
-    subscripts=["RES elec"],
-    comp_type="Constant",
-    comp_subtype="External",
-)
-def power_density_initial_res_elec_twemha():
-    """
-    Input parameter: power density per RES technology for delivering electricity.
-    """
-    return _ext_constant_power_density_initial_res_elec_twemha()
-
-
-_ext_constant_power_density_initial_res_elec_twemha = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "power_density_res_elec*",
-    {"RES elec": _subscript_dict["RES elec"]},
-    _root,
-    {
-        "RES elec": [
-            "hydro",
-            "geot elec",
-            "solid bioE elec",
-            "oceanic",
-            "wind onshore",
-            "wind offshore",
-            "solar PV",
-            "CSP",
-        ]
-    },
-    "_ext_constant_power_density_initial_res_elec_twemha",
-)
 
 
 @component.add(

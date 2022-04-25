@@ -10,7 +10,7 @@ from pysd.py_backend.utils import load_outputs
 class DataContainer:
     """Class for containing all data objects"""
     def __init__(self):
-        self.data_objects = set()
+        self.data_objects = []
         self._variable_list = set()
         self.current_var = None
         self.dimensions = None
@@ -27,7 +27,7 @@ class DataContainer:
 
     def add(self, data):
         """Add data from a new experiment"""
-        self.data_objects.add(data)
+        self.data_objects.append(data)
         self.variable_list = data.variable_list
 
     def set_var(self, var_name):
@@ -54,7 +54,7 @@ class DataContainer:
             data.clear()
             del data
 
-        self.data_objects = set()
+        self.data_objects = []
         self._variable_list = set()
 
 

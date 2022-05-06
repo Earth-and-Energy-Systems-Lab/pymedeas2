@@ -1,11 +1,15 @@
 """
 Module solar_potential_in_urban_areas
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="av solar I", units="We/m2", comp_type="Constant", comp_subtype="External"
+    name="av solar I",
+    units="We/m2",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_av_solar_i"},
 )
 def av_solar_i():
     """
@@ -30,6 +34,7 @@ _ext_constant_av_solar_i = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_f1ini_solar_pv"},
 )
 def f1ini_solar_pv():
     """
@@ -54,6 +59,7 @@ _ext_constant_f1ini_solar_pv = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_f3_solar_pv_on_land"},
 )
 def f3_solar_pv_on_land():
     """
@@ -78,6 +84,7 @@ _ext_constant_f3_solar_pv_on_land = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_f1_pv_solar_in_target_year"},
 )
 def f1_pv_solar_in_target_year():
     """
@@ -98,7 +105,17 @@ _ext_constant_f1_pv_solar_in_target_year = ExtConstant(
 
 
 @component.add(
-    name="f1 solar PV", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="f1 solar PV",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 4,
+        "f1ini_solar_pv": 4,
+        "f1_pv_solar_in_target_year": 2,
+        "target_year_f1_solar_pv": 2,
+        "start_year_p_f1_solar_pv": 3,
+    },
 )
 def f1_solar_pv():
     """
@@ -123,7 +140,11 @@ def f1_solar_pv():
 
 
 @component.add(
-    name="f2 PF solar PV", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="f2 PF solar PV",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_f2_pf_solar_pv"},
 )
 def f2_pf_solar_pv():
     """
@@ -161,6 +182,12 @@ def land_module_activated():
     units="TWth",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "land_module_activated": 1,
+        "urban_land": 1,
+        "power_density_solar_thermal_in_urban_twemha": 2,
+        "urban_surface_2015": 1,
+    },
 )
 def max_fe_solar_thermal_urban_twth():
     """
@@ -174,7 +201,16 @@ def max_fe_solar_thermal_urban_twth():
 
 
 @component.add(
-    name="max solar PV urban", units="TWe", comp_type="Auxiliary", comp_subtype="Normal"
+    name="max solar PV urban",
+    units="TWe",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "land_module_activated": 1,
+        "urban_land": 1,
+        "power_density_solar_pv_in_urban_twemha": 2,
+        "urban_surface_2015": 1,
+    },
 )
 def max_solar_pv_urban():
     """
@@ -193,6 +229,7 @@ def max_solar_pv_urban():
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_power_density_initial_res_elec_twemha"},
 )
 def power_density_initial_res_elec_twemha():
     """
@@ -218,6 +255,12 @@ _ext_constant_power_density_initial_res_elec_twemha = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "power_density_initial_res_elec_twemha": 7,
+        "cp_res_elec": 8,
+        "cpini_res_elec": 8,
+        "power_density_solar_pv_on_land_twemha": 1,
+    },
 )
 def power_density_res_elec_twemha():
     """
@@ -269,6 +312,14 @@ def power_density_res_elec_twemha():
     units="TWe/MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "av_solar_i": 1,
+        "f1_solar_pv": 1,
+        "f2_pf_solar_pv": 1,
+        "share_available_roof": 1,
+        "share_available_roof_for_rooftop_pv": 1,
+        "twhmha_per_wem2": 1,
+    },
 )
 def power_density_solar_pv_in_urban_twemha():
     """
@@ -289,6 +340,13 @@ def power_density_solar_pv_in_urban_twemha():
     units="TWe/MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "av_solar_i": 1,
+        "f1_solar_pv": 1,
+        "f2_pf_solar_pv": 1,
+        "f3_solar_pv_on_land": 1,
+        "twhmha_per_wem2": 1,
+    },
 )
 def power_density_solar_pv_on_land_twemha():
     """
@@ -308,6 +366,14 @@ def power_density_solar_pv_on_land_twemha():
     units="TWe/MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "av_solar_i": 1,
+        "f1_solar_panels_for_heat": 1,
+        "losses_solar_for_heat": 1,
+        "share_available_roof": 1,
+        "share_available_roof_for_solar_thermal": 1,
+        "twhmha_per_wem2": 1,
+    },
 )
 def power_density_solar_thermal_in_urban_twemha():
     """
@@ -328,6 +394,7 @@ def power_density_solar_thermal_in_urban_twemha():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_available_roof"},
 )
 def share_available_roof():
     """
@@ -352,6 +419,7 @@ _ext_constant_share_available_roof = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_available_roof_for_rooftop_pv"},
 )
 def share_available_roof_for_rooftop_pv():
     """
@@ -376,6 +444,7 @@ _ext_constant_share_available_roof_for_rooftop_pv = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_available_roof_for_solar_thermal"},
 )
 def share_available_roof_for_solar_thermal():
     """
@@ -400,6 +469,7 @@ _ext_constant_share_available_roof_for_solar_thermal = ExtConstant(
     units="Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_start_year_p_f1_solar_pv"},
 )
 def start_year_p_f1_solar_pv():
     """
@@ -424,6 +494,7 @@ _ext_constant_start_year_p_f1_solar_pv = ExtConstant(
     units="Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_target_year_f1_solar_pv"},
 )
 def target_year_f1_solar_pv():
     """

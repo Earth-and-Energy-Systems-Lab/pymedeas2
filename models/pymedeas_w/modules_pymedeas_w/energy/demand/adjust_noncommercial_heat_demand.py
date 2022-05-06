@@ -1,6 +1,6 @@
 """
 Module adjust_noncommercial_heat_demand
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -8,8 +8,14 @@ Translated using PySD version 3.0.0
     name='"FED by fuel for heat-nc"',
     units="EJ",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={
+        "fed_oil_for_heatnc": 1,
+        "fed_nat_gas_for_heatnc": 1,
+        "fed_coal_for_heatnc": 1,
+        "fed_solid_bioe_for_heatnc": 1,
+    },
 )
 def fed_by_fuel_for_heatnc():
     """
@@ -31,6 +37,13 @@ def fed_by_fuel_for_heatnc():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "required_fed_by_fuel_before_heat_correction": 1,
+        "share_feh_over_fed_solid_bioe": 1,
+        "share_feh_over_fed_by_final_fuel": 1,
+        "efficiency_coal_for_heat_plants": 1,
+        "share_heat_distribution_losses": 1,
+    },
 )
 def fed_coal_for_heatnc():
     """
@@ -52,6 +65,12 @@ def fed_coal_for_heatnc():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "required_fed_by_fuel_before_heat_correction": 1,
+        "share_feh_over_fed_by_final_fuel": 1,
+        "efficiency_gases_for_heat_plants": 1,
+        "share_heat_distribution_losses": 1,
+    },
 )
 def fed_nat_gas_for_heatnc():
     """
@@ -70,6 +89,11 @@ def fed_nat_gas_for_heatnc():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fed_coal_for_heatnc": 1,
+        "fed_nat_gas_for_heatnc": 1,
+        "fed_oil_for_heatnc": 1,
+    },
 )
 def fed_nre_for_heatnc():
     return fed_coal_for_heatnc() + fed_nat_gas_for_heatnc() + fed_oil_for_heatnc()
@@ -80,6 +104,12 @@ def fed_nre_for_heatnc():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "required_fed_by_fuel_before_heat_correction": 1,
+        "share_feh_over_fed_by_final_fuel": 1,
+        "efficiency_liquids_for_heat_plants": 1,
+        "share_heat_distribution_losses": 1,
+    },
 )
 def fed_oil_for_heatnc():
     """
@@ -98,6 +128,12 @@ def fed_oil_for_heatnc():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "required_fed_by_fuel_before_heat_correction": 1,
+        "share_feh_over_fed_solid_bioe": 1,
+        "efficiency_conversion_bioe_plants_to_heat": 1,
+        "share_heat_distribution_losses": 1,
+    },
 )
 def fed_solid_bioe_for_heatnc():
     """
@@ -116,6 +152,10 @@ def fed_solid_bioe_for_heatnc():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fed_by_fuel_for_heatnc": 1,
+        "required_fed_by_fuel_before_heat_correction": 1,
+    },
 )
 def ratio_fed_for_heatnc_vs_fed_for_heatcom():
     """
@@ -132,6 +172,7 @@ def ratio_fed_for_heatnc_vs_fed_for_heatcom():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fed_coal_for_heatnc": 1, "fed_nre_for_heatnc": 1},
 )
 def share_fed_coal_vs_nre_heatnc():
     """
@@ -145,6 +186,7 @@ def share_fed_coal_vs_nre_heatnc():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fed_nat_gas_for_heatnc": 1, "fed_nre_for_heatnc": 1},
 )
 def share_fed_gas_vs_nre_heatnc():
     """
@@ -158,6 +200,7 @@ def share_fed_gas_vs_nre_heatnc():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fed_oil_for_heatnc": 1, "fed_nre_for_heatnc": 1},
 )
 def share_fed_liquids_vs_nre_heatnc():
     """
@@ -170,8 +213,14 @@ def share_fed_liquids_vs_nre_heatnc():
     name="share FEH over FED by final fuel",
     units="Dmnl",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={
+        "share_feh_over_fed_oil": 1,
+        "share_feh_over_fed_nat_gas": 1,
+        "share_feh_over_fed_coal": 1,
+        "share_feh_over_fed_solid_bioe": 1,
+    },
 )
 def share_feh_over_fed_by_final_fuel():
     """
@@ -193,6 +242,7 @@ def share_feh_over_fed_by_final_fuel():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_feh_over_fed_coal"},
 )
 def share_feh_over_fed_coal():
     """
@@ -217,6 +267,7 @@ _ext_constant_share_feh_over_fed_coal = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_feh_over_fed_nat_gas"},
 )
 def share_feh_over_fed_nat_gas():
     """
@@ -241,6 +292,7 @@ _ext_constant_share_feh_over_fed_nat_gas = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_feh_over_fed_oil"},
 )
 def share_feh_over_fed_oil():
     """
@@ -265,6 +317,7 @@ _ext_constant_share_feh_over_fed_oil = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_feh_over_fed_solid_bioe"},
 )
 def share_feh_over_fed_solid_bioe():
     """

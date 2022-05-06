@@ -1,6 +1,6 @@
 """
 Module biomass_for_electricity_and_heat
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,10 @@ Translated using PySD version 3.0.0
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_pe_solid_bioe_potential_heatelec_ej": 1,
+        "pes_res_for_heat_by_techn": 1,
+    },
 )
 def available_max_pe_solid_bioe_for_elec_ej():
     """
@@ -26,6 +30,10 @@ def available_max_pe_solid_bioe_for_elec_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_pe_solid_bioe_potential_heatelec_ej": 1,
+        "pe_real_generation_res_elec": 1,
+    },
 )
 def available_max_pe_solid_bioe_for_heat_ej():
     """
@@ -43,6 +51,10 @@ def available_max_pe_solid_bioe_for_heat_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_pe_solid_bioe_potential_heatelec_ej": 1,
+        "share_solids_bioe_for_elec_vs_heat": 1,
+    },
 )
 def max_pe_potential_solid_bioe_for_elec_ej():
     """
@@ -59,6 +71,10 @@ def max_pe_potential_solid_bioe_for_elec_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_pe_solid_bioe_potential_heatelec_ej": 1,
+        "share_solids_bioe_for_elec_vs_heat": 1,
+    },
 )
 def max_pe_potential_solid_bioe_for_heat_ej():
     """
@@ -74,6 +90,7 @@ def max_pe_potential_solid_bioe_for_heat_ej():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pe_real_generation_res_elec": 2, "pes_res_for_heat_by_techn": 1},
 )
 def share_solids_bioe_for_elec_vs_heat():
     """
@@ -90,6 +107,7 @@ def share_solids_bioe_for_elec_vs_heat():
     name="Total PE solid bioE potential EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_e_forest_energy_non_trad": 1},
 )
 def total_pe_solid_bioe_potential_ej():
     """
@@ -103,6 +121,10 @@ def total_pe_solid_bioe_potential_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_pe_solid_bioe_potential_ej": 1,
+        "modern_solids_bioe_demand_households": 1,
+    },
 )
 def total_pe_solid_bioe_potential_heatelec_ej():
     return np.maximum(

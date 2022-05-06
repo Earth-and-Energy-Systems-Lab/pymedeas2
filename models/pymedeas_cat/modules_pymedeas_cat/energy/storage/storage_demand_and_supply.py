@@ -1,6 +1,6 @@
 """
 Module storage_demand_and_supply
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,11 @@ Translated using PySD version 3.0.0
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "res_elec_variables": 1,
+        "demand_storage_capacity": 2,
+        "total_capacity_elec_storage_tw": 3,
+    },
 )
 def constraint_elec_storage_availability():
     """
@@ -42,6 +47,10 @@ def constraint_elec_storage_availability():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "cp_ev_batteries_required": 1,
+        "max_cp_ev_batteries_for_elec_storage": 1,
+    },
 )
 def cp_ev_batteries_for_elec_storage():
     """
@@ -53,7 +62,17 @@ def cp_ev_batteries_for_elec_storage():
 
 
 @component.add(
-    name="ESOI elec storage", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="ESOI elec storage",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "esoi_phs": 1,
+        "installed_capacity_phs_tw": 1,
+        "used_ev_batteries_for_elec_storage": 1,
+        "esoi_ev_batteries": 1,
+        "total_capacity_elec_storage_tw": 1,
+    },
 )
 def esoi_elec_storage():
     """
@@ -70,6 +89,7 @@ def esoi_elec_storage():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"demand_ev_batteries_for_elec_storage": 1, "ev_batteries_tw": 1},
 )
 def cp_ev_batteries_required():
     return np.maximum(0, demand_ev_batteries_for_elec_storage() / ev_batteries_tw())
@@ -80,6 +100,7 @@ def cp_ev_batteries_required():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"demand_storage_capacity": 1, "installed_capacity_phs_tw": 1},
 )
 def demand_ev_batteries_for_elec_storage():
     """
@@ -93,6 +114,10 @@ def demand_ev_batteries_for_elec_storage():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "share_capacity_storageres_elec_var": 1,
+        "total_installed_capacity_res_elec_var": 1,
+    },
 )
 def demand_storage_capacity():
     """
@@ -108,6 +133,10 @@ def demand_storage_capacity():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_capacity_potential_phs": 1,
+        "used_ev_batteries_for_elec_storage": 1,
+    },
 )
 def max_capacity_elec_storage():
     """
@@ -121,6 +150,7 @@ def max_capacity_elec_storage():
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"used_ev_batteries_for_elec_storage": 1, "twe_per_twh": 1},
 )
 def real_fe_elec_stored_ev_batteries_twh():
     """
@@ -135,6 +165,7 @@ def real_fe_elec_stored_ev_batteries_twh():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_capacity_elec_storage": 3, "demand_storage_capacity": 2},
 )
 def remaining_potential_elec_storage_by_res_techn():
     """
@@ -157,6 +188,13 @@ def remaining_potential_elec_storage_by_res_techn():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "rt_storage_efficiency_phs": 1,
+        "installed_capacity_phs_tw": 1,
+        "rt_storage_efficiency_ev_batteries": 1,
+        "used_ev_batteries_for_elec_storage": 1,
+        "total_capacity_elec_storage_tw": 1,
+    },
 )
 def rt_elec_storage_efficiency():
     """
@@ -173,6 +211,7 @@ def rt_elec_storage_efficiency():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_rt_storage_efficiency_ev_batteries"},
 )
 def rt_storage_efficiency_ev_batteries():
     """
@@ -197,6 +236,7 @@ _ext_constant_rt_storage_efficiency_ev_batteries = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_rt_storage_efficiency_phs"},
 )
 def rt_storage_efficiency_phs():
     """
@@ -221,6 +261,7 @@ _ext_constant_rt_storage_efficiency_phs = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_elec_demand_covered_by_res": 1},
 )
 def share_capacity_storageres_elec_var():
     """
@@ -234,6 +275,10 @@ def share_capacity_storageres_elec_var():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_phs_tw": 1,
+        "used_ev_batteries_for_elec_storage": 1,
+    },
 )
 def total_capacity_elec_storage_tw():
     """
@@ -247,6 +292,7 @@ def total_capacity_elec_storage_tw():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"installed_capacity_res_elec_tw": 4},
 )
 def total_installed_capacity_res_elec_var():
     """
@@ -265,6 +311,7 @@ def total_installed_capacity_res_elec_var():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ev_batteries_tw": 1, "cp_ev_batteries_for_elec_storage": 1},
 )
 def used_ev_batteries_for_elec_storage():
     """

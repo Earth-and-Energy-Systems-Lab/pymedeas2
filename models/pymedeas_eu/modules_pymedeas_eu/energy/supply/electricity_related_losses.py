@@ -1,6 +1,6 @@
 """
 Module electricity_related_losses
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pe_losses_nre_elec_generation": 1, "pe_losses_res_for_elec": 1},
 )
 def elec_gen_related_losses_ej():
     """
@@ -22,6 +23,10 @@ def elec_gen_related_losses_ej():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "elec_gen_related_losses_ej": 1,
+        "total_pe_for_electricity_consumption_ej": 1,
+    },
 )
 def gen_losses_vs_pe_for_elec():
     """
@@ -35,6 +40,7 @@ def gen_losses_vs_pe_for_elec():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_tot_biogas_for_elec": 1, "fes_elec_from_biogas_ej": 1},
 )
 def pe_losses_biogas_for_elec():
     return pes_tot_biogas_for_elec() - fes_elec_from_biogas_ej()
@@ -45,6 +51,12 @@ def pe_losses_biogas_for_elec():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extraction_coal_ej_eu": 1,
+        "imports_eu_coal_from_row_ej": 1,
+        "share_coal_dem_for_elec": 1,
+        "efficiency_coal_for_electricity": 1,
+    },
 )
 def pe_losses_coal_for_elec_ej():
     """
@@ -62,6 +74,12 @@ def pe_losses_coal_for_elec_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_extraction_conv_gas_ej": 1,
+        "imports_eu_conv_gas_from_row_ej": 1,
+        "share_nat_gas_dem_for_elec": 1,
+        "efficiency_gas_for_electricity": 1,
+    },
 )
 def pe_losses_conv_gas_for_elec_ej():
     """
@@ -79,6 +97,13 @@ def pe_losses_conv_gas_for_elec_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_losses_coal_for_elec_ej": 1,
+        "pe_losses_conv_gas_for_elec_ej": 1,
+        "pe_losses_oil_for_elec_ej": 1,
+        "pe_losses_uncon_gas_for_elec_ej": 1,
+        "pe_losses_uranium_for_elec_ej": 1,
+    },
 )
 def pe_losses_nre_elec_generation():
     """
@@ -98,6 +123,12 @@ def pe_losses_nre_elec_generation():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_total_oil_ej_eu": 1,
+        "imports_eu_total_oil_from_row_ej": 1,
+        "share_oil_dem_for_elec": 1,
+        "efficiency_liquids_for_electricity": 1,
+    },
 )
 def pe_losses_oil_for_elec_ej():
     """
@@ -115,6 +146,11 @@ def pe_losses_oil_for_elec_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_losses_bioe_for_elec_ej": 1,
+        "pe_losses_biogas_for_elec": 1,
+        "pe_losses_waste_for_elec": 1,
+    },
 )
 def pe_losses_res_for_elec():
     return (
@@ -129,6 +165,12 @@ def pe_losses_res_for_elec():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_extraction_unconv_gas_ej": 1,
+        "imports_eu_unconv_gas_from_row_ej": 1,
+        "share_nat_gas_dem_for_elec": 1,
+        "efficiency_gas_for_electricity": 1,
+    },
 )
 def pe_losses_uncon_gas_for_elec_ej():
     """
@@ -146,6 +188,11 @@ def pe_losses_uncon_gas_for_elec_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extraction_uranium": 1,
+        "extraction_uranium_row": 1,
+        "efficiency_uranium_for_electricity": 1,
+    },
 )
 def pe_losses_uranium_for_elec_ej():
     """
@@ -161,6 +208,7 @@ def pe_losses_uranium_for_elec_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_tot_waste_for_elec": 1, "fes_elec_from_waste_ej": 1},
 )
 def pe_losses_waste_for_elec():
     return pes_tot_waste_for_elec() - fes_elec_from_waste_ej()
@@ -171,6 +219,11 @@ def pe_losses_waste_for_elec():
     units="EJ/Tdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_fe_elec_demand_ej": 1,
+        "elec_gen_related_losses_ej": 1,
+        "gdp_eu": 1,
+    },
 )
 def real_ped_intensity_of_electricity():
     """
@@ -184,6 +237,10 @@ def real_ped_intensity_of_electricity():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "elec_gen_related_losses_ej": 1,
+        "electrical_distribution_losses_ej": 1,
+    },
 )
 def total_electrical_losses_ej():
     """
@@ -197,6 +254,7 @@ def total_electrical_losses_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_fe_elec_demand_ej": 1, "elec_gen_related_losses_ej": 1},
 )
 def total_pe_for_electricity_consumption_ej():
     """

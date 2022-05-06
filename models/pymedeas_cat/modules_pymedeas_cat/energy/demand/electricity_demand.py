@@ -1,6 +1,6 @@
 """
 Module electricity_demand
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_fe_elec_demand_twh": 1, "elec_exports_share": 1},
 )
 def fe_elec_demand_exports_twh():
     """
@@ -32,6 +33,7 @@ def ej_per_twh():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 1, "hist_elec_exports_share": 1, "p_export_share": 1},
 )
 def elec_exports_share():
     """
@@ -47,6 +49,7 @@ def elec_exports_share():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"electrical_distribution_losses_twh": 1, "ej_per_twh": 1},
 )
 def electrical_distribution_losses_ej():
     """
@@ -60,6 +63,7 @@ def electrical_distribution_losses_ej():
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_fe_elec_demand_twh": 1, "share_transmdistr_elec_losses": 1},
 )
 def electrical_distribution_losses_twh():
     """
@@ -73,6 +77,7 @@ def electrical_distribution_losses_twh():
     units="TWh/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"required_fed_by_fuel": 1, "ej_per_twh": 1},
 )
 def fe_demand_elec_consum_twh():
     """
@@ -86,6 +91,11 @@ def fe_demand_elec_consum_twh():
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_hist_elec_exports_share",
+        "__data__": "_ext_data_hist_elec_exports_share",
+        "time": 1,
+    },
 )
 def hist_elec_exports_share():
     """
@@ -112,6 +122,7 @@ _ext_data_hist_elec_exports_share = ExtData(
     units="Dnml",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_transmdistr_elec_losses_initial": 1},
 )
 def max_share_transmdistr_elec_losses():
     """
@@ -137,6 +148,10 @@ def p_export_share():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_share_transmdistr_elec_losses": 2,
+        "share_transmdistr_elec_losses": 1,
+    },
 )
 def remaining_share_transmdistr_elec_losses():
     """
@@ -152,6 +167,7 @@ def remaining_share_transmdistr_elec_losses():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_transmdistr_elec_losses_initial"},
 )
 def share_transmdistr_elec_losses_initial():
     """
@@ -176,6 +192,13 @@ _ext_constant_share_transmdistr_elec_losses_initial = ExtConstant(
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_share_transmdistr_elec_losses": 1},
+    other_deps={
+        "_integ_share_transmdistr_elec_losses": {
+            "initial": {"share_transmdistr_elec_losses_initial": 1},
+            "step": {"variation_share_transmdistr_elec_losses": 1},
+        }
+    },
 )
 def share_transmdistr_elec_losses():
     """
@@ -196,6 +219,7 @@ _integ_share_transmdistr_elec_losses = Integ(
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_fe_elec_demand_twh": 1, "ej_per_twh": 1},
 )
 def total_fe_elec_demand_ej():
     """
@@ -209,6 +233,11 @@ def total_fe_elec_demand_ej():
     units="TWh/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_demand_elec_consum_twh": 1,
+        "share_transmdistr_elec_losses": 1,
+        "elec_exports_share": 1,
+    },
 )
 def total_fe_elec_demand_twh():
     """
@@ -226,6 +255,11 @@ def total_fe_elec_demand_twh():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "variation_share_transmdistr_losses_elec": 1,
+        "remaining_share_transmdistr_elec_losses": 1,
+    },
 )
 def variation_share_transmdistr_elec_losses():
     """
@@ -244,6 +278,10 @@ def variation_share_transmdistr_elec_losses():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "share_transmdistr_elec_losses_initial": 1,
+        "share_res_electricity_generation": 1,
+    },
 )
 def variation_share_transmdistr_losses_elec():
     """

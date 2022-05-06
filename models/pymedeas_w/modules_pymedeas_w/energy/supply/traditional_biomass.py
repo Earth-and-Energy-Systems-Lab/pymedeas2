@@ -1,6 +1,6 @@
 """
 Module traditional_biomass
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,10 @@ Translated using PySD version 3.0.0
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "households_final_energy_demand": 1,
+        "pe_traditional_biomass_consum_ej": 1,
+    },
 )
 def modern_bioe_in_households():
     return (
@@ -22,6 +26,7 @@ def modern_bioe_in_households():
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_pe_consumption_trad_biomass_ref"},
 )
 def pe_consumption_trad_biomass_ref():
     """
@@ -46,6 +51,7 @@ _ext_constant_pe_consumption_trad_biomass_ref = ExtConstant(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pe_traditional_biomass_demand_ej": 1},
 )
 def pe_traditional_biomass_consum_ej():
     """
@@ -59,6 +65,10 @@ def pe_traditional_biomass_consum_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "households_final_energy_demand": 1,
+        "share_trad_biomass_vs_solids_in_households": 1,
+    },
 )
 def pe_traditional_biomass_demand_ej():
     """
@@ -75,6 +85,13 @@ def pe_traditional_biomass_demand_ej():
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_pe_traditional_biomass_ej_delayed_1yr": 1},
+    other_deps={
+        "_delayfixed_pe_traditional_biomass_ej_delayed_1yr": {
+            "initial": {},
+            "step": {"pe_traditional_biomass_consum_ej": 1},
+        }
+    },
 )
 def pe_traditional_biomass_ej_delayed_1yr():
     """
@@ -97,6 +114,7 @@ _delayfixed_pe_traditional_biomass_ej_delayed_1yr = DelayFixed(
     units="people",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_people_relying_trad_biomass_ref"},
 )
 def people_relying_trad_biomass_ref():
     """
@@ -121,6 +139,10 @@ _ext_constant_people_relying_trad_biomass_ref = ExtConstant(
     units="MToe/people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_consumption_trad_biomass_ref": 1,
+        "people_relying_trad_biomass_ref": 1,
+    },
 )
 def pepc_consumption_people_depending_on_trad_biomass():
     """
@@ -134,6 +156,10 @@ def pepc_consumption_people_depending_on_trad_biomass():
     units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_traditional_biomass_consum_ej": 1,
+        "pepc_consumption_people_depending_on_trad_biomass": 1,
+    },
 )
 def population_dependent_on_trad_biomass():
     """
@@ -150,6 +176,7 @@ def population_dependent_on_trad_biomass():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"population_dependent_on_trad_biomass": 1, "population": 1},
 )
 def share_global_pop_dependent_on_trad_biomass():
     return population_dependent_on_trad_biomass() / population()
@@ -160,6 +187,9 @@ def share_global_pop_dependent_on_trad_biomass():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_share_trad_biomass_vs_solids_in_households"
+    },
 )
 def share_trad_biomass_vs_solids_in_households():
     return _ext_constant_share_trad_biomass_vs_solids_in_households()

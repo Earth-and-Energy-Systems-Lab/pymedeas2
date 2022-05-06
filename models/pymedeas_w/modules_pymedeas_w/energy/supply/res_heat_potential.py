@@ -1,6 +1,6 @@
 """
 Module res_heat_potential
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_fe_solar_potential_for_heat"},
 )
 def fe_solar_potential_for_heat():
     """
@@ -33,6 +34,11 @@ _ext_constant_fe_solar_potential_for_heat = ExtConstant(
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "geot_pe_potential_for_heat_twth": 1,
+        "ej_per_twh": 1,
+        "twe_per_twh": 1,
+    },
 )
 def geot_pe_potential_for_heat_ej():
     """
@@ -46,6 +52,7 @@ def geot_pe_potential_for_heat_ej():
     units="TWth",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_geot_pe_potential_for_heat_twth"},
 )
 def geot_pe_potential_for_heat_twth():
     """
@@ -71,6 +78,7 @@ _ext_constant_geot_pe_potential_for_heat_twth = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_pe_potential_res_for_heat": 3, "efficiency_res_heat": 3},
 )
 def max_fe_potential_res_for_heat():
     """
@@ -97,6 +105,7 @@ def max_fe_potential_res_for_heat():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_biogas_ej": 1, "share_pes_biogas_for_heat": 1},
 )
 def max_pe_potential_biogas_for_heat():
     """
@@ -111,6 +120,11 @@ def max_pe_potential_biogas_for_heat():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_solar_potential_for_heat": 1,
+        "geot_pe_potential_for_heat_ej": 1,
+        "available_pe_potential_solid_bioe_for_heat_ej": 1,
+    },
 )
 def max_pe_potential_res_for_heat():
     """
@@ -130,6 +144,10 @@ def max_pe_potential_res_for_heat():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_pe_potential_biogas_for_heat": 1,
+        "max_pe_potential_res_for_heat": 1,
+    },
 )
 def max_pe_potential_tot_res_heat_ej():
     """
@@ -146,6 +164,7 @@ def max_pe_potential_tot_res_heat_ej():
     units="percent",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"remaining_potential_tot_res_heat": 1},
 )
 def percent_remaining_potential_tot_res_heat():
     """
@@ -159,6 +178,11 @@ def percent_remaining_potential_tot_res_heat():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_res_for_heatcom_by_techn": 1,
+        "pes_res_for_heatnc_by_techn": 1,
+        "pes_tot_biogas_for_heatcom": 1,
+    },
 )
 def pes_tot_res_for_heat():
     """
@@ -182,6 +206,7 @@ def pes_tot_res_for_heat():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_pe_potential_tot_res_heat_ej": 3, "pes_tot_res_for_heat": 2},
 )
 def remaining_potential_tot_res_heat():
     """

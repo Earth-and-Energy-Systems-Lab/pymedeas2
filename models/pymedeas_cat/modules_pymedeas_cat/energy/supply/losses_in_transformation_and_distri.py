@@ -1,6 +1,6 @@
 """
 Module losses_in_transformation_and_distri
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -8,8 +8,12 @@ Translated using PySD version 3.0.0
     name="Energy distr losses FF EJ",
     units="EJ",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_fossil_fuel_extraction_delayed": 3,
+        "historic_share_of_losses_vs_extraction": 3,
+    },
 )
 def energy_distr_losses_ff_ej():
     """
@@ -33,7 +37,11 @@ def energy_distr_losses_ff_ej():
 
 
 @component.add(
-    name='"FEC gases+liquids"', units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name='"FEC gases+liquids"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"real_fe_consumption_by_fuel": 2},
 )
 def fec_gasesliquids():
     return float(real_fe_consumption_by_fuel().loc["gases"]) + float(
@@ -46,6 +54,10 @@ def fec_gasesliquids():
     units="EJ",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_pipeline_transport",
+        "__lookup__": "_ext_lookup_historic_pipeline_transport",
+    },
 )
 def historic_pipeline_transport(x, final_subs=None):
     """
@@ -72,6 +84,11 @@ _ext_lookup_historic_pipeline_transport = ExtLookup(
     subscripts=["final sources"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_share_of_losses_vs_extraction",
+        "__data__": "_ext_data_historic_share_of_losses_vs_extraction",
+        "time": 1,
+    },
 )
 def historic_share_of_losses_vs_extraction():
     """
@@ -117,6 +134,11 @@ _ext_data_historic_share_of_losses_vs_extraction.add(
     subscripts=["final sources"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_share_of_transformation_losses_vs_extraction",
+        "__data__": "_ext_data_historic_share_of_transformation_losses_vs_extraction",
+        "time": 1,
+    },
 )
 def historic_share_of_transformation_losses_vs_extraction():
     """
@@ -152,6 +174,7 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction.add(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "fec_gasesliquids": 1, "historic_pipeline_transport": 1},
 )
 def historic_share_pipeline_transport():
     """
@@ -170,6 +193,14 @@ def historic_share_pipeline_transport():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_total_oil_ej_aut": 1,
+        "imports_aut_total_oil_from_row_ej": 1,
+        "extraction_coal_aut": 1,
+        "imports_aut_coal_from_row_ej": 1,
+        "pes_nat_gas_aut_1": 1,
+        "imports_aut_nat_gas_from_row_ej": 1,
+    },
 )
 def pes_fossil_fuel_extraction():
     """
@@ -192,6 +223,25 @@ def pes_fossil_fuel_extraction():
     subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={
+        "_delayfixed_pes_fossil_fuel_extraction_delayed": 1,
+        "_delayfixed_pes_fossil_fuel_extraction_delayed_1": 1,
+        "_delayfixed_pes_fossil_fuel_extraction_delayed_2": 1,
+    },
+    other_deps={
+        "_delayfixed_pes_fossil_fuel_extraction_delayed": {
+            "initial": {"time_step": 1},
+            "step": {"pes_fossil_fuel_extraction": 1},
+        },
+        "_delayfixed_pes_fossil_fuel_extraction_delayed_1": {
+            "initial": {"time_step": 1},
+            "step": {"pes_fossil_fuel_extraction": 1},
+        },
+        "_delayfixed_pes_fossil_fuel_extraction_delayed_2": {
+            "initial": {"time_step": 1},
+            "step": {"pes_fossil_fuel_extraction": 1},
+        },
+    },
 )
 def pes_fossil_fuel_extraction_delayed():
     """
@@ -244,7 +294,11 @@ _delayfixed_pes_fossil_fuel_extraction_delayed_2 = DelayFixed(
 
 
 @component.add(
-    name="Pipeline transport", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Pipeline transport",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"share_pipeline_transport_fecgl_in_2015": 1, "fec_gasesliquids": 1},
 )
 def pipeline_transport():
     """
@@ -258,6 +312,11 @@ def pipeline_transport():
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes",
+        "__data__": "_ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes",
+        "time": 1,
+    },
 )
 def ratio_gain_gas_vs_lose_solids_in_tranf_processes():
     """
@@ -284,6 +343,13 @@ _ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes = ExtData(
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_share_pipeline_transport_fecgl_in_2015": 1},
+    other_deps={
+        "_sampleiftrue_share_pipeline_transport_fecgl_in_2015": {
+            "initial": {"historic_share_pipeline_transport": 1},
+            "step": {"time": 1, "historic_share_pipeline_transport": 1},
+        }
+    },
 )
 def share_pipeline_transport_fecgl_in_2015():
     """
@@ -305,6 +371,13 @@ _sampleiftrue_share_pipeline_transport_fecgl_in_2015 = SampleIfTrue(
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "electrical_distribution_losses_ej": 1,
+        "heatcom_distribution_losses": 1,
+        "heatnc_distribution_losses": 1,
+        "pipeline_transport": 1,
+        "energy_distr_losses_ff_ej": 1,
+    },
 )
 def total_distribution_losses():
     """
@@ -326,8 +399,13 @@ def total_distribution_losses():
     name="Transformation FF losses EJ",
     units="EJ",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_fossil_fuel_extraction_delayed": 3,
+        "historic_share_of_transformation_losses_vs_extraction": 3,
+        "ratio_gain_gas_vs_lose_solids_in_tranf_processes": 1,
+    },
 )
 def transformation_ff_losses_ej():
     """

@@ -1,18 +1,30 @@
 """
 Module heat_total_pes_delete
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="PES NRE heat", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PES NRE heat",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pes_nre_heatcom": 1, "pes_nre_heatnc": 1},
 )
 def pes_nre_heat():
     return pes_nre_heatcom() + pes_nre_heatnc()
 
 
 @component.add(
-    name='"PES NRE Heat-com"', units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name='"PES NRE Heat-com"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "pes_coal_for_heatcom_plants": 1,
+        "pes_nat_gas_for_heatcom_plants": 1,
+        "pes_oil_for_heatcom_plants": 1,
+    },
 )
 def pes_nre_heatcom():
     return (
@@ -23,7 +35,15 @@ def pes_nre_heatcom():
 
 
 @component.add(
-    name='"PES NRE Heat-nc"', units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name='"PES NRE Heat-nc"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "pes_coal_for_heatnc_plants": 1,
+        "pes_nat_gas_for_heatnc_plants": 1,
+        "pes_oil_for_heatnc_plants": 1,
+    },
 )
 def pes_nre_heatnc():
     return (
@@ -39,6 +59,10 @@ def pes_nre_heatnc():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_dem_res_for_heatcom_by_techn": 1,
+        "pes_dem_res_for_heatnc_by_techn": 1,
+    },
 )
 def pes_res_for_heat_by_techn():
     """
@@ -52,6 +76,7 @@ def pes_res_for_heat_by_techn():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_tot_biogas_for_heatcom": 1, "pes_res_for_heat_by_techn": 1},
 )
 def pes_tot_res_for_heat():
     """
@@ -63,7 +88,15 @@ def pes_tot_res_for_heat():
 
 
 @component.add(
-    name="TPES heat", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="TPES heat",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "pes_nre_heat": 1,
+        "pes_tot_res_for_heat": 1,
+        "pes_tot_waste_for_heatcom": 1,
+    },
 )
 def tpes_heat():
     return pes_nre_heat() + pes_tot_res_for_heat() + pes_tot_waste_for_heatcom()

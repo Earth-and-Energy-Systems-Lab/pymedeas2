@@ -1,6 +1,6 @@
 """
 Module losses_in_transformation_and_distri
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -8,8 +8,12 @@ Translated using PySD version 3.0.0
     name="Energy distr losses FF EJ",
     units="EJ/year",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={
+        "pes_fossil_fuel_extraction_delayed": 3,
+        "historic_share_of_losses_vs_extraction": 3,
+    },
 )
 def energy_distr_losses_ff_ej():
     """
@@ -38,6 +42,11 @@ def energy_distr_losses_ff_ej():
     subscripts=["final sources"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_share_of_losses_vs_extraction",
+        "__data__": "_ext_data_historic_share_of_losses_vs_extraction",
+        "time": 1,
+    },
 )
 def historic_share_of_losses_vs_extraction():
     """
@@ -83,6 +92,11 @@ _ext_data_historic_share_of_losses_vs_extraction.add(
     subscripts=["final sources"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_share_of_transformation_losses_vs_extraction",
+        "__data__": "_ext_data_historic_share_of_transformation_losses_vs_extraction",
+        "time": 1,
+    },
 )
 def historic_share_of_transformation_losses_vs_extraction():
     """
@@ -119,6 +133,7 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction.add(
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_oil_ej": 1, "extraction_coal_ej": 1, "pes_nat_gas": 1},
 )
 def pes_fossil_fuel_extraction():
     """
@@ -139,6 +154,25 @@ def pes_fossil_fuel_extraction():
     subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={
+        "_delayfixed_pes_fossil_fuel_extraction_delayed": 1,
+        "_delayfixed_pes_fossil_fuel_extraction_delayed_1": 1,
+        "_delayfixed_pes_fossil_fuel_extraction_delayed_2": 1,
+    },
+    other_deps={
+        "_delayfixed_pes_fossil_fuel_extraction_delayed": {
+            "initial": {"time_step": 1},
+            "step": {"pes_fossil_fuel_extraction": 1},
+        },
+        "_delayfixed_pes_fossil_fuel_extraction_delayed_1": {
+            "initial": {"time_step": 1},
+            "step": {"pes_fossil_fuel_extraction": 1},
+        },
+        "_delayfixed_pes_fossil_fuel_extraction_delayed_2": {
+            "initial": {"time_step": 1},
+            "step": {"pes_fossil_fuel_extraction": 1},
+        },
+    },
 )
 def pes_fossil_fuel_extraction_delayed():
     """
@@ -208,6 +242,11 @@ def pipeline_transport_constant_26_ej_in_2014():
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes",
+        "__data__": "_ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes",
+        "time": 1,
+    },
 )
 def ratio_gain_gas_vs_lose_solids_in_tranf_processes():
     """
@@ -234,6 +273,13 @@ _ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes = ExtData(
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "electrical_distribution_losses_ej": 1,
+        "heatcom_distribution_losses": 1,
+        "heatnc_distribution_losses": 1,
+        "pipeline_transport_constant_26_ej_in_2014": 1,
+        "energy_distr_losses_ff_ej": 1,
+    },
 )
 def total_distribution_losses():
     """
@@ -254,8 +300,13 @@ def total_distribution_losses():
 @component.add(
     name="Transformation FF losses EJ",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={
+        "pes_fossil_fuel_extraction_delayed": 3,
+        "historic_share_of_transformation_losses_vs_extraction": 3,
+        "ratio_gain_gas_vs_lose_solids_in_tranf_processes": 1,
+    },
 )
 def transformation_ff_losses_ej():
     """

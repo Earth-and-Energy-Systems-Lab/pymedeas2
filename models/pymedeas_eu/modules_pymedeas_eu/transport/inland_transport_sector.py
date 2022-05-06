@@ -1,6 +1,6 @@
 """
 Module inland_transport_sector
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     subscripts=["vehicleT"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 1, "t_ini_inlandt": 1, "time_step": 1, "percent_t_vehicles": 1},
 )
 def aaux_tveh():
     return if_then_else(
@@ -25,6 +26,7 @@ def aaux_tveh():
     subscripts=["vehicleT"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"aaux_tveh": 1, "aaux_tveh_t": 1},
 )
 def aaux_tveh_ini():
     return np.maximum(aaux_tveh(), aaux_tveh_t())
@@ -35,6 +37,13 @@ def aaux_tveh_ini():
     subscripts=["vehicleT"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_aaux_tveh_t": 1},
+    other_deps={
+        "_delayfixed_aaux_tveh_t": {
+            "initial": {"time_step": 1},
+            "step": {"aaux_tveh_ini": 1},
+        }
+    },
 )
 def aaux_tveh_t():
     return _delayfixed_aaux_tveh_t()
@@ -54,6 +63,7 @@ _delayfixed_aaux_tveh_t = DelayFixed(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_activate_policy_inlandt"},
 )
 def activate_policy_inlandt():
     """
@@ -79,6 +89,15 @@ _ext_constant_activate_policy_inlandt = ExtConstant(
     subscripts=["vehicleT"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "t_fin_inlandt": 2,
+        "t_ini_inlandt": 2,
+        "hist_var_inlandt": 1,
+        "activate_policy_inlandt": 1,
+        "percent_t_veh_tini": 1,
+        "p_inlandt": 1,
+    },
 )
 def adapt_var_inlandt():
     """
@@ -103,6 +122,9 @@ def adapt_var_inlandt():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_adjust_energy_for_transport_to_inland_transport"
+    },
 )
 def adjust_energy_for_transport_to_inland_transport():
     """
@@ -128,6 +150,7 @@ _ext_constant_adjust_energy_for_transport_to_inland_transport = ExtConstant(
     subscripts=["vehicleT"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"hist_var_percent_tveh": 17},
 )
 def aux_hist_tveh():
     """
@@ -167,6 +190,7 @@ def aux_hist_tveh():
     subscripts=["vehicleT"],
     comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={"effects_shortage_gas": 3, "effects_shortage_elec_on_ev": 3},
 )
 def efects_shortage_inlandt():
     """
@@ -196,6 +220,7 @@ def efects_shortage_inlandt():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_gases": 2},
 )
 def effects_shortage_gas():
     """
@@ -212,6 +237,7 @@ def effects_shortage_gas():
     subscripts=["vehicleT"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_energy_initial_inland_transport"},
 )
 def energy_initial_inland_transport():
     """
@@ -237,6 +263,13 @@ _ext_constant_energy_initial_inland_transport = ExtConstant(
     subscripts=["vehicleT"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "liquids_per_x_hv": 3,
+        "saving_ratios_vehicles": 11,
+        "liquids_per_x_lv": 4,
+        "liquids_per_x_bus": 4,
+        "energy_per_x_train": 2,
+    },
 )
 def energy_per_x_t():
     """
@@ -288,6 +321,11 @@ def energy_per_x_t():
     units="EJ/T$",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "energy_initial_inland_transport": 1,
+        "adjust_energy_for_transport_to_inland_transport": 1,
+        "initial_xt_inland": 1,
+    },
 )
 def energy_per_x_train():
     """
@@ -320,6 +358,7 @@ def hist_var_inlandt():
     subscripts=["vehicleT"],
     comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={"time": 8, "t_hist_inlandt": 8, "initial_percent_t_vehicles": 8},
 )
 def hist_var_percent_tveh():
     """
@@ -390,6 +429,7 @@ def hist_var_percent_tveh():
     subscripts=["vehicleT"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_percent_t_vehicles"},
 )
 def initial_percent_t_vehicles():
     """
@@ -415,6 +455,7 @@ _ext_constant_initial_percent_t_vehicles = ExtConstant(
     subscripts=["vehicleT"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_vehicles_inland"},
 )
 def initial_vehicles_inland():
     """
@@ -435,7 +476,11 @@ _ext_constant_initial_vehicles_inland = ExtConstant(
 
 
 @component.add(
-    name="initial Xt inland", units="T$", comp_type="Constant", comp_subtype="External"
+    name="initial Xt inland",
+    units="T$",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_xt_inland"},
 )
 def initial_xt_inland():
     """
@@ -461,6 +506,7 @@ _ext_constant_initial_xt_inland = ExtConstant(
     subscripts=["sectors"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_inland_transport_fraction"},
 )
 def inland_transport_fraction():
     return _ext_constant_inland_transport_fraction()
@@ -483,6 +529,7 @@ _ext_constant_inland_transport_fraction = ExtConstant(
     subscripts=["final sources"],
     comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={"var_i_inland_elec": 1, "var_i_inlandt_liq": 1, "var_i_inlandt_gas": 1},
 )
 def inland_transport_variation_intensity():
     """
@@ -504,6 +551,11 @@ def inland_transport_variation_intensity():
     units="EJ/T$",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "energy_initial_inland_transport": 1,
+        "adjust_energy_for_transport_to_inland_transport": 1,
+        "initial_xt_inland": 1,
+    },
 )
 def liquids_per_x_bus():
     """
@@ -517,7 +569,15 @@ def liquids_per_x_bus():
 
 
 @component.add(
-    name="liquids per X HV", units="EJ/T$", comp_type="Auxiliary", comp_subtype="Normal"
+    name="liquids per X HV",
+    units="EJ/T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "energy_initial_inland_transport": 1,
+        "adjust_energy_for_transport_to_inland_transport": 1,
+        "initial_xt_inland": 1,
+    },
 )
 def liquids_per_x_hv():
     """
@@ -531,7 +591,15 @@ def liquids_per_x_hv():
 
 
 @component.add(
-    name="liquids per X LV", units="EJ/T$", comp_type="Auxiliary", comp_subtype="Normal"
+    name="liquids per X LV",
+    units="EJ/T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "energy_initial_inland_transport": 1,
+        "adjust_energy_for_transport_to_inland_transport": 1,
+        "initial_xt_inland": 1,
+    },
 )
 def liquids_per_x_lv():
     """
@@ -549,6 +617,7 @@ def liquids_per_x_lv():
     units="Mvehicles/Mdollar",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"initial_vehicles_inland": 4, "initial_xt_inland": 1},
 )
 def nx_bus_inlandt():
     """
@@ -567,6 +636,7 @@ def nx_bus_inlandt():
     units="vehicles/T$",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"initial_vehicles_inland": 3, "initial_xt_inland": 1},
 )
 def nx_hv_inland_t():
     """
@@ -584,6 +654,7 @@ def nx_hv_inland_t():
     units="vehicles/Tdollar",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"initial_vehicles_inland": 4, "initial_xt_inland": 1},
 )
 def nx_lv_inland_t():
     """
@@ -602,6 +673,7 @@ def nx_lv_inland_t():
     units="vehicles/Tdollar",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"initial_xt_inland": 1},
 )
 def nx_train_inland_t():
     """
@@ -616,6 +688,12 @@ def nx_train_inland_t():
     subscripts=["vehicleT"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "nx_hv_inland_t": 3,
+        "nx_lv_inland_t": 4,
+        "nx_bus_inlandt": 4,
+        "nx_train_inland_t": 2,
+    },
 )
 def nx0_vehicles_per_xinland_t():
     """
@@ -646,6 +724,17 @@ def nx0_vehicles_per_xinland_t():
     subscripts=["vehicleT"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "p_percent_hv_gas": 2,
+        "p_percent_hv_hyb": 2,
+        "p_percent_lv_hyb": 2,
+        "p_percent_lv_gas": 2,
+        "p_percent_lv_elec": 2,
+        "p_percent_bus_gas": 2,
+        "p_percent_bus_hyb": 2,
+        "p_percent_bus_elec": 2,
+        "p_percent_train_elec": 2,
+    },
 )
 def p_inlandt():
     """
@@ -679,6 +768,7 @@ def p_inlandt():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_percent_bus_elec"},
 )
 def p_percent_bus_elec():
     """
@@ -703,6 +793,7 @@ _ext_constant_p_percent_bus_elec = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_percent_bus_gas"},
 )
 def p_percent_bus_gas():
     """
@@ -727,6 +818,7 @@ _ext_constant_p_percent_bus_gas = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_percent_bus_hyb"},
 )
 def p_percent_bus_hyb():
     """
@@ -747,7 +839,11 @@ _ext_constant_p_percent_bus_hyb = ExtConstant(
 
 
 @component.add(
-    name="P percent HV gas", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="P percent HV gas",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_percent_hv_gas"},
 )
 def p_percent_hv_gas():
     """
@@ -768,7 +864,11 @@ _ext_constant_p_percent_hv_gas = ExtConstant(
 
 
 @component.add(
-    name="P percent HV hyb", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="P percent HV hyb",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_percent_hv_hyb"},
 )
 def p_percent_hv_hyb():
     """
@@ -793,6 +893,7 @@ _ext_constant_p_percent_hv_hyb = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_percent_lv_elec"},
 )
 def p_percent_lv_elec():
     """
@@ -813,7 +914,11 @@ _ext_constant_p_percent_lv_elec = ExtConstant(
 
 
 @component.add(
-    name="P percent LV gas", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="P percent LV gas",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_percent_lv_gas"},
 )
 def p_percent_lv_gas():
     """
@@ -834,7 +939,11 @@ _ext_constant_p_percent_lv_gas = ExtConstant(
 
 
 @component.add(
-    name="P percent LV hyb", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="P percent LV hyb",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_percent_lv_hyb"},
 )
 def p_percent_lv_hyb():
     """
@@ -859,6 +968,7 @@ _ext_constant_p_percent_lv_hyb = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_percent_train_elec"},
 )
 def p_percent_train_elec():
     """
@@ -884,6 +994,12 @@ _ext_constant_p_percent_train_elec = ExtConstant(
     subscripts=["vehicleT"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "t_ini_hveh": 1,
+        "initial_percent_t_vehicles": 1,
+        "aaux_tveh_ini": 1,
+    },
 )
 def percent_t_veh_tini():
     """
@@ -902,6 +1018,13 @@ def percent_t_veh_tini():
     subscripts=["vehicleT"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_percent_t_vehicles": 1},
+    other_deps={
+        "_integ_percent_t_vehicles": {
+            "initial": {"percent_tveh_1995": 1},
+            "step": {"var_percent_t_vehicles": 1},
+        }
+    },
 )
 def percent_t_vehicles():
     """
@@ -922,6 +1045,7 @@ _integ_percent_t_vehicles = Integ(
     subscripts=["vehicleT"],
     comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={"initial_percent_t_vehicles": 2},
 )
 def percent_tveh_1995():
     """
@@ -951,6 +1075,7 @@ def percent_tveh_1995():
     subscripts=["vehicleT"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"var_percent_t_vehicles": 1},
 )
 def ratio_var_t_vehicles():
     return var_percent_t_vehicles() / 100
@@ -961,6 +1086,7 @@ def ratio_var_t_vehicles():
     units="T$",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_total_output_by_sector_eu": 1, "inland_transport_fraction": 1},
 )
 def real_total_output_inland_transport():
     """
@@ -982,6 +1108,7 @@ def real_total_output_inland_transport():
     subscripts=["vehicleT"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_saving_ratios_vehicles"},
 )
 def saving_ratios_vehicles():
     """
@@ -1002,7 +1129,11 @@ _ext_constant_saving_ratios_vehicles = ExtConstant(
 
 
 @component.add(
-    name="T fin inlandT", units="Year", comp_type="Constant", comp_subtype="External"
+    name="T fin inlandT",
+    units="Year",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_t_fin_inlandt"},
 )
 def t_fin_inlandt():
     """
@@ -1033,7 +1164,11 @@ def t_hist_inlandt():
 
 
 @component.add(
-    name="T ini inlandT", units="Year", comp_type="Constant", comp_subtype="External"
+    name="T ini inlandT",
+    units="Year",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_t_ini_inlandt"},
 )
 def t_ini_inlandt():
     """
@@ -1058,6 +1193,7 @@ _ext_constant_t_ini_inlandt = ExtConstant(
     units="EJ/T$/yr",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"energy_per_x_t": 3, "ratio_var_t_vehicles": 3},
 )
 def var_i_inland_elec():
     """
@@ -1078,6 +1214,7 @@ def var_i_inland_elec():
     units="EJ/T$/yr",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"energy_per_x_t": 3, "ratio_var_t_vehicles": 3},
 )
 def var_i_inlandt_gas():
     """
@@ -1098,6 +1235,7 @@ def var_i_inlandt_gas():
     units="EJ/T$/yr",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"energy_per_x_t": 7, "ratio_var_t_vehicles": 7},
 )
 def var_i_inlandt_liq():
     """
@@ -1127,6 +1265,12 @@ def var_i_inlandt_liq():
     subscripts=["vehicleT"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 12,
+        "t_ini_inlandt": 12,
+        "aux_hist_tveh": 12,
+        "adapt_var_inlandt": 18,
+    },
 )
 def var_percent_t_vehicles():
     """
@@ -1210,6 +1354,11 @@ def var_percent_t_vehicles():
     subscripts=["vehicleT"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "percent_t_vehicles": 1,
+        "real_total_output_inland_transport": 1,
+        "nx0_vehicles_per_xinland_t": 1,
+    },
 )
 def vehicles_inlandt():
     """

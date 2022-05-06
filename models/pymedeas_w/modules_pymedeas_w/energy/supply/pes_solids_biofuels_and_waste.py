@@ -1,6 +1,6 @@
 """
 Module pes_solids_biofuels_and_waste
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,11 @@ Translated using PySD version 3.0.0
     units="EJ",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_losses_in_charcoal_plants_ej",
+        "__data__": "_ext_data_losses_in_charcoal_plants_ej",
+        "time": 1,
+    },
 )
 def losses_in_charcoal_plants_ej():
     """
@@ -35,6 +40,7 @@ _ext_data_losses_in_charcoal_plants_ej = ExtData(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_solids_bioe_ej": 1, "pes_waste_ej": 1},
 )
 def pes_solids_bioe_waste_ej():
     """
@@ -48,6 +54,13 @@ def pes_solids_bioe_waste_ej():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "losses_in_charcoal_plants_ej": 1,
+        "pe_real_generation_res_elec": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "pes_res_for_heatcom_by_techn": 1,
+        "pes_res_for_heatnc_by_techn": 1,
+    },
 )
 def pes_solids_bioe_ej():
     """
@@ -67,6 +80,11 @@ def pes_solids_bioe_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_real_generation_res_elec": 1,
+        "pes_res_for_heatcom_by_techn": 1,
+        "pes_res_for_heatnc_by_techn": 1,
+    },
 )
 def solid_biofuels_emissions_relevant_ej():
     """

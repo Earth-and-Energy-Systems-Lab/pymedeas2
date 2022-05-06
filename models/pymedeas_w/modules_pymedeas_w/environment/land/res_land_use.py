@@ -1,6 +1,6 @@
 """
 Module res_land_use
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_global_arable_land"},
 )
 def global_arable_land():
     """
@@ -34,6 +35,7 @@ _ext_constant_global_arable_land = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"power_density_res_elec_twemha": 1, "cpini_res_elec": 1},
 )
 def power_density_res_elec_twmha():
     return power_density_res_elec_twemha() / cpini_res_elec()
@@ -45,6 +47,7 @@ def power_density_res_elec_twmha():
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_power_density_res_elec_twemha"},
 )
 def power_density_res_elec_twemha():
     """
@@ -65,7 +68,13 @@ _ext_constant_power_density_res_elec_twemha = ExtConstant(
 
 
 @component.add(
-    name="Share land compet biofuels", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Share land compet biofuels",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "land_compet_required_dedicated_crops_for_biofuels": 1,
+        "global_arable_land": 1,
+    },
 )
 def share_land_compet_biofuels():
     """
@@ -79,6 +88,11 @@ def share_land_compet_biofuels():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "land_compet_required_dedicated_crops_for_biofuels": 1,
+        "surface_solar_pv_mha": 1,
+        "global_arable_land": 1,
+    },
 )
 def share_land_res_land_compet_vs_arable():
     """
@@ -94,6 +108,7 @@ def share_land_res_land_compet_vs_arable():
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_land_requirements_renew_mha": 1, "global_arable_land": 1},
 )
 def share_land_total_res_vs_arable():
     """
@@ -106,6 +121,7 @@ def share_land_total_res_vs_arable():
     name="share land total RES vs urban surface",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_land_requirements_renew_mha": 1, "urban_surface_2008": 1},
 )
 def share_land_total_res_vs_urban_surface():
     """
@@ -115,7 +131,11 @@ def share_land_total_res_vs_urban_surface():
 
 
 @component.add(
-    name="surface CSP Mha", units="MHa", comp_type="Auxiliary", comp_subtype="Normal"
+    name="surface CSP Mha",
+    units="MHa",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"surface_res_elec": 1},
 )
 def surface_csp_mha():
     """
@@ -125,7 +145,11 @@ def surface_csp_mha():
 
 
 @component.add(
-    name="surface hydro Mha", units="MHa", comp_type="Auxiliary", comp_subtype="Normal"
+    name="surface hydro Mha",
+    units="MHa",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"surface_res_elec": 1},
 )
 def surface_hydro_mha():
     """
@@ -139,6 +163,7 @@ def surface_hydro_mha():
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"surface_res_elec": 1},
 )
 def surface_onshore_wind_mha():
     """
@@ -153,6 +178,7 @@ def surface_onshore_wind_mha():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"power_density_res_elec_twmha": 2, "installed_capacity_res_elec_tw": 1},
 )
 def surface_res_elec():
     return if_then_else(
@@ -169,6 +195,7 @@ def surface_res_elec():
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"surface_res_elec": 1},
 )
 def surface_solar_pv_mha():
     """
@@ -182,6 +209,14 @@ def surface_solar_pv_mha():
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "surface_solar_pv_mha": 1,
+        "surface_csp_mha": 1,
+        "surface_hydro_mha": 1,
+        "land_compet_required_dedicated_crops_for_biofuels": 1,
+        "land_required_biofuels_land_marg": 1,
+        "surface_onshore_wind_mha": 1,
+    },
 )
 def total_land_requirements_renew_mha():
     """
@@ -202,6 +237,7 @@ def total_land_requirements_renew_mha():
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_urban_surface_2008"},
 )
 def urban_surface_2008():
     """

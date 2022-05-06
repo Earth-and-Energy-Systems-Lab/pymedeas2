@@ -1,11 +1,14 @@
 """
 Module res_elec_potentials
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="Start year P growth RES elec", comp_type="Constant", comp_subtype="External"
+    name="Start year P growth RES elec",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_start_year_p_growth_res_elec"},
 )
 def start_year_p_growth_res_elec():
     return _ext_constant_start_year_p_growth_res_elec()
@@ -27,6 +30,10 @@ _ext_constant_start_year_p_growth_res_elec = ExtConstant(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "available_max_pe_solid_bioe_for_elec_ej": 1,
+        "efficiency_conversion_bioe_to_elec": 1,
+    },
 )
 def available_max_fe_solid_bioe_for_elec_ej():
     """
@@ -42,6 +49,12 @@ def available_max_fe_solid_bioe_for_elec_ej():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "historic_share_installed_pv_urban_vs_tot_pv": 2,
+        "start_year_p_growth_res_elec": 1,
+        "p_share_installed_pv_urban_vs_tot_pv": 1,
+    },
 )
 def desired_share_installed_pv_urban_vs_tot_pv():
     """
@@ -63,6 +76,7 @@ def desired_share_installed_pv_urban_vs_tot_pv():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_conversion_geot_pe_to_elec"},
 )
 def efficiency_conversion_geot_pe_to_elec():
     """
@@ -87,6 +101,10 @@ _ext_constant_efficiency_conversion_geot_pe_to_elec = ExtConstant(
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_generation_res_elec_twh": 1,
+        "real_share_pv_urban_vs_total_pv": 1,
+    },
 )
 def fe_elec_gen_from_solar_pv_on_land_twh():
     """
@@ -102,6 +120,11 @@ def fe_elec_gen_from_solar_pv_on_land_twh():
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_share_installed_pv_urban_vs_tot_pv",
+        "__data__": "_ext_data_historic_share_installed_pv_urban_vs_tot_pv",
+        "time": 1,
+    },
 )
 def historic_share_installed_pv_urban_vs_tot_pv():
     return _ext_data_historic_share_installed_pv_urban_vs_tot_pv(time())
@@ -121,7 +144,15 @@ _ext_data_historic_share_installed_pv_urban_vs_tot_pv = ExtData(
 
 
 @component.add(
-    name="max BioE TWe", units="TWe", comp_type="Auxiliary", comp_subtype="Normal"
+    name="max BioE TWe",
+    units="TWe",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "available_max_fe_solid_bioe_for_elec_ej": 1,
+        "twe_per_twh": 1,
+        "ej_per_twh": 1,
+    },
 )
 def max_bioe_twe():
     """
@@ -135,6 +166,7 @@ def max_bioe_twe():
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_solar_on_land_mha": 1, "surface_solar_pv_on_land_mha": 1},
 )
 def max_csp_on_land_mha():
     """
@@ -144,7 +176,11 @@ def max_csp_on_land_mha():
 
 
 @component.add(
-    name="max CSP TWe", units="TWe", comp_type="Auxiliary", comp_subtype="Normal"
+    name="max CSP TWe",
+    units="TWe",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"max_csp_on_land_mha": 1, "power_density_csp": 1},
 )
 def max_csp_twe():
     """
@@ -158,6 +194,12 @@ def max_csp_twe():
     units="TWe",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_pe_potential_solid_bioe_for_elec_ej": 1,
+        "efficiency_conversion_bioe_to_elec": 1,
+        "twe_per_twh": 1,
+        "ej_per_twh": 1,
+    },
 )
 def max_fe_potential_solid_bioe_for_elec_twe():
     """
@@ -176,6 +218,7 @@ def max_fe_potential_solid_bioe_for_elec_twe():
     units="TWe",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_pe_geotelec_twth": 1, "efficiency_conversion_geot_pe_to_elec": 1},
 )
 def max_geotelec_twe():
     """
@@ -185,7 +228,11 @@ def max_geotelec_twe():
 
 
 @component.add(
-    name="max hydro TWe", units="TWe", comp_type="Constant", comp_subtype="External"
+    name="max hydro TWe",
+    units="TWe",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_hydro_twe"},
 )
 def max_hydro_twe():
     """
@@ -206,7 +253,11 @@ _ext_constant_max_hydro_twe = ExtConstant(
 
 
 @component.add(
-    name="max oceanic TWe", units="TWe", comp_type="Constant", comp_subtype="External"
+    name="max oceanic TWe",
+    units="TWe",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_oceanic_twe"},
 )
 def max_oceanic_twe():
     """
@@ -231,6 +282,7 @@ _ext_constant_max_oceanic_twe = ExtConstant(
     units="TWe",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_offshore_wind_twe"},
 )
 def max_offshore_wind_twe():
     """
@@ -255,6 +307,7 @@ _ext_constant_max_offshore_wind_twe = ExtConstant(
     units="TWe",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_onshore_wind_twe"},
 )
 def max_onshore_wind_twe():
     """
@@ -279,6 +332,7 @@ _ext_constant_max_onshore_wind_twe = ExtConstant(
     units="TWe",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_pe_geotelec_twth"},
 )
 def max_pe_geotelec_twth():
     """
@@ -303,6 +357,7 @@ _ext_constant_max_pe_geotelec_twth = ExtConstant(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_pe_biogas_ej": 1, "share_pes_biogas_for_elec": 1},
 )
 def max_pe_potential_biogas_for_elec():
     """
@@ -316,6 +371,11 @@ def max_pe_potential_biogas_for_elec():
     units="TWe",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_solar_on_land_mha": 1,
+        "power_density_csp": 1,
+        "share_solar_pv_vs_tot_solar_gen": 1,
+    },
 )
 def max_potential_csp_twe():
     """
@@ -334,6 +394,13 @@ def max_potential_csp_twe():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_res_elec_twe": 5,
+        "twe_per_twh": 8,
+        "max_fe_potential_solid_bioe_for_elec_twe": 1,
+        "max_potential_solar_pv_twe": 1,
+        "max_potential_csp_twe": 1,
+    },
 )
 def max_potential_res_elec_twh():
     """
@@ -366,6 +433,11 @@ def max_potential_res_elec_twh():
     units="TWe",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_solar_on_land_mha": 1,
+        "power_density_solar_pv_on_land_twemha": 1,
+        "share_solar_pv_vs_tot_solar_gen": 1,
+    },
 )
 def max_potential_solar_pv_twe():
     """
@@ -383,6 +455,13 @@ def max_potential_solar_pv_twe():
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_potential_res_elec_twh": 1,
+        "max_potential_phs_twe": 1,
+        "twe_per_twh": 1,
+        "max_pe_potential_biogas_for_elec": 1,
+        "ej_per_twh": 1,
+    },
 )
 def max_potential_tot_res_elec_twh():
     """
@@ -404,6 +483,16 @@ def max_potential_tot_res_elec_twh():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_hydro_twe": 1,
+        "max_geotelec_twe": 1,
+        "max_bioe_twe": 1,
+        "max_oceanic_twe": 1,
+        "max_onshore_wind_twe": 1,
+        "max_offshore_wind_twe": 1,
+        "max_tot_solar_pv_twe": 1,
+        "max_csp_twe": 1,
+    },
 )
 def max_res_elec_twe():
     """
@@ -428,6 +517,7 @@ def max_res_elec_twe():
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_solar_on_land_mha": 1, "surface_csp_mha": 1},
 )
 def max_solar_pv_on_land_mha():
     """
@@ -441,6 +531,10 @@ def max_solar_pv_on_land_mha():
     units="TWe",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_solar_pv_on_land_mha": 1,
+        "power_density_solar_pv_on_land_twemha": 1,
+    },
 )
 def max_solar_pv_on_land_twe():
     """
@@ -454,6 +548,7 @@ def max_solar_pv_on_land_twe():
     units="TWe",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_solar_pv_on_land_twe": 1, "max_solar_pv_urban": 1},
 )
 def max_tot_solar_pv_twe():
     """
@@ -467,6 +562,7 @@ def max_tot_solar_pv_twe():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_share_installed_pv_urban_vs_tot_pv"},
 )
 def p_share_installed_pv_urban_vs_tot_pv():
     """
@@ -491,6 +587,7 @@ _ext_constant_p_share_installed_pv_urban_vs_tot_pv = ExtConstant(
     units="percent",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"remaining_potential_tot_res_elec": 1},
 )
 def percent_remaining_potential_tot_res_elec():
     """
@@ -504,6 +601,10 @@ def percent_remaining_potential_tot_res_elec():
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_generation_res_elec_twh": 1,
+        "potential_elec_gen_from_solar_pv_urban_twh": 1,
+    },
 )
 def potential_elec_gen_from_solar_pv_on_land_twh():
     """
@@ -520,6 +621,16 @@ def potential_elec_gen_from_solar_pv_on_land_twh():
     units="TWh",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_potential_elec_gen_from_solar_pv_urban_twh": 1},
+    other_deps={
+        "_sampleiftrue_potential_elec_gen_from_solar_pv_urban_twh": {
+            "initial": {"potential_elec_gen_from_solar_pv_urban_unconstrained_twh": 1},
+            "step": {
+                "remaining_potential_solar_pv_urban": 1,
+                "potential_elec_gen_from_solar_pv_urban_unconstrained_twh": 1,
+            },
+        }
+    },
 )
 def potential_elec_gen_from_solar_pv_urban_twh():
     """
@@ -541,6 +652,10 @@ _sampleiftrue_potential_elec_gen_from_solar_pv_urban_twh = SampleIfTrue(
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_generation_res_elec_twh": 1,
+        "desired_share_installed_pv_urban_vs_tot_pv": 1,
+    },
 )
 def potential_elec_gen_from_solar_pv_urban_unconstrained_twh():
     """
@@ -557,6 +672,7 @@ def potential_elec_gen_from_solar_pv_urban_unconstrained_twh():
     units="TWe/MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"power_density_initial_res_elec_twemha": 1},
 )
 def power_density_csp():
     """
@@ -570,6 +686,10 @@ def power_density_csp():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_elec_gen_from_solar_pv_urban_twh": 1,
+        "real_generation_res_elec_twh": 1,
+    },
 )
 def real_share_pv_urban_vs_total_pv():
     """
@@ -590,6 +710,7 @@ def real_share_pv_urban_vs_total_pv():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_potential_res_elec_twh": 3, "real_generation_res_elec_twh": 2},
 )
 def remaining_potential_res_elec():
     """
@@ -610,6 +731,12 @@ def remaining_potential_res_elec():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_solar_pv_urban": 2,
+        "twe_per_twh": 2,
+        "desired_share_installed_pv_urban_vs_tot_pv": 1,
+        "potential_generation_res_elec_twh": 1,
+    },
 )
 def remaining_potential_solar_pv_urban():
     """
@@ -631,6 +758,10 @@ def remaining_potential_solar_pv_urban():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_potential_tot_res_elec_twh": 3,
+        "fe_tot_generation_all_res_elec_twh": 2,
+    },
 )
 def remaining_potential_tot_res_elec():
     """
@@ -651,6 +782,10 @@ def remaining_potential_tot_res_elec():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_elec_gen_from_solar_pv_on_land_twh": 2,
+        "real_generation_res_elec_twh": 1,
+    },
 )
 def share_solar_pv_vs_tot_solar_gen():
     """

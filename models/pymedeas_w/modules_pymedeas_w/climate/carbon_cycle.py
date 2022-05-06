@@ -1,6 +1,6 @@
 """
 Module carbon_cycle
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,7 @@ Translated using PySD version 3.0.0
     limits=(0.25, 10.0, 0.25),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_atm_ocean_mixing_time"},
 )
 def atm_ocean_mixing_time():
     """
@@ -34,6 +35,7 @@ _ext_constant_atm_ocean_mixing_time = ExtConstant(
     units="year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_biomass_residence_time"},
 )
 def biomass_residence_time():
     """
@@ -54,7 +56,11 @@ _ext_constant_biomass_residence_time = ExtConstant(
 
 
 @component.add(
-    name="biostim coeff", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="biostim coeff",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"biostim_coeff_index": 1, "biostim_coeff_mean": 1},
 )
 def biostim_coeff():
     """
@@ -69,6 +75,7 @@ def biostim_coeff():
     limits=(0.6, 1.7, 0.05),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_biostim_coeff_index"},
 )
 def biostim_coeff_index():
     """
@@ -94,6 +101,7 @@ _ext_constant_biostim_coeff_index = ExtConstant(
     limits=(0.3, 0.7),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_biostim_coeff_mean"},
 )
 def biostim_coeff_mean():
     """
@@ -114,7 +122,11 @@ _ext_constant_biostim_coeff_mean = ExtConstant(
 
 
 @component.add(
-    name="buffer C coeff", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="buffer C coeff",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_buffer_c_coeff"},
 )
 def buffer_c_coeff():
     """
@@ -135,7 +147,22 @@ _ext_constant_buffer_c_coeff = ExtConstant(
 
 
 @component.add(
-    name="Buffer Factor", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Buffer Factor",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"_active_initial_buffer_factor": 1},
+    other_deps={
+        "_active_initial_buffer_factor": {
+            "initial": {"ref_buffer_factor": 1},
+            "step": {
+                "ref_buffer_factor": 1,
+                "c_in_mixed_layer": 1,
+                "preindustrial_c_in_mixed_layer": 1,
+                "buffer_c_coeff": 1,
+            },
+        }
+    },
 )
 def buffer_factor():
     """
@@ -154,6 +181,7 @@ def buffer_factor():
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ch4_uptake": 1, "ch4_per_c": 1, "mt_per_gt": 1},
 )
 def c_from_ch4_oxidation():
     """
@@ -167,6 +195,7 @@ def c_from_ch4_oxidation():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_c_humification_fraction"},
 )
 def c_humification_fraction():
     """
@@ -191,6 +220,7 @@ _ext_constant_c_humification_fraction = ExtConstant(
     units="year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_c_humus_residence_time"},
 )
 def c_humus_residence_time():
     """
@@ -211,7 +241,25 @@ _ext_constant_c_humus_residence_time = ExtConstant(
 
 
 @component.add(
-    name="C in Atmosphere", units="GtC", comp_type="Stateful", comp_subtype="Integ"
+    name="C in Atmosphere",
+    units="GtC",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_c_in_atmosphere": 1},
+    other_deps={
+        "_integ_c_in_atmosphere": {
+            "initial": {"init_c_in_atm": 1},
+            "step": {
+                "c_from_ch4_oxidation": 1,
+                "flux_biomass_to_atmosphere": 1,
+                "flux_humus_to_atmosphere": 1,
+                "total_c_anthro_emissions": 1,
+                "flux_atm_to_biomass": 1,
+                "flux_atm_to_ocean": 1,
+                "flux_c_from_permafrost_release": 1,
+            },
+        }
+    },
 )
 def c_in_atmosphere():
     """
@@ -234,7 +282,22 @@ _integ_c_in_atmosphere = Integ(
 
 
 @component.add(
-    name="C in Biomass", units="GtC", comp_type="Stateful", comp_subtype="Integ"
+    name="C in Biomass",
+    units="GtC",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_c_in_biomass": 1},
+    other_deps={
+        "_integ_c_in_biomass": {
+            "initial": {"init_c_in_biomass": 1},
+            "step": {
+                "flux_atm_to_biomass": 1,
+                "flux_biomass_to_atmosphere": 1,
+                "flux_biomass_to_ch4": 1,
+                "flux_biomass_to_humus": 1,
+            },
+        }
+    },
 )
 def c_in_biomass():
     """
@@ -259,6 +322,17 @@ _integ_c_in_biomass = Integ(
     subscripts=["Layers"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_c_in_deep_ocean": 1, "_integ_c_in_deep_ocean_1": 1},
+    other_deps={
+        "_integ_c_in_deep_ocean": {
+            "initial": {"init_c_in_deep_ocean": 1, "layer_depth": 1},
+            "step": {"diffusion_flux": 2},
+        },
+        "_integ_c_in_deep_ocean_1": {
+            "initial": {"init_c_in_deep_ocean": 1, "layer_depth": 1},
+            "step": {"diffusion_flux": 1},
+        },
+    },
 )
 def c_in_deep_ocean():
     """
@@ -307,6 +381,7 @@ _integ_c_in_deep_ocean_1 = Integ(
     subscripts=["Layers"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"c_in_deep_ocean": 1, "layer_depth": 1},
 )
 def c_in_deep_ocean_per_meter():
     """
@@ -316,7 +391,21 @@ def c_in_deep_ocean_per_meter():
 
 
 @component.add(
-    name="C in Humus", units="GtC", comp_type="Stateful", comp_subtype="Integ"
+    name="C in Humus",
+    units="GtC",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_c_in_humus": 1},
+    other_deps={
+        "_integ_c_in_humus": {
+            "initial": {"init_c_in_humus": 1},
+            "step": {
+                "flux_biomass_to_humus": 1,
+                "flux_humus_to_atmosphere": 1,
+                "flux_humus_to_ch4": 1,
+            },
+        }
+    },
 )
 def c_in_humus():
     """
@@ -333,7 +422,17 @@ _integ_c_in_humus = Integ(
 
 
 @component.add(
-    name="C in Mixed Layer", units="GtC", comp_type="Stateful", comp_subtype="Integ"
+    name="C in Mixed Layer",
+    units="GtC",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_c_in_mixed_layer": 1},
+    other_deps={
+        "_integ_c_in_mixed_layer": {
+            "initial": {"init_c_in_mixed_ocean": 1, "mixed_layer_depth": 1},
+            "step": {"flux_atm_to_ocean": 1, "diffusion_flux": 1},
+        }
+    },
 )
 def c_in_mixed_layer():
     """
@@ -354,6 +453,7 @@ _integ_c_in_mixed_layer = Integ(
     units="GtC/meter",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"c_in_mixed_layer": 1, "mixed_layer_depth": 1},
 )
 def c_in_mixed_layer_per_meter():
     return c_in_mixed_layer() / mixed_layer_depth()
@@ -365,6 +465,7 @@ def c_in_mixed_layer_per_meter():
     limits=(0.0, 0.00014),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ch4_generation_rate_from_biomass"},
 )
 def ch4_generation_rate_from_biomass():
     """
@@ -390,6 +491,7 @@ _ext_constant_ch4_generation_rate_from_biomass = ExtConstant(
     limits=(0.0, 0.00016),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ch4_generation_rate_from_humus"},
 )
 def ch4_generation_rate_from_humus():
     """
@@ -424,6 +526,7 @@ def ch4_per_c():
     units="ppm",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"c_in_atmosphere": 1},
 )
 def co2_ppm_concentrations():
     """
@@ -438,6 +541,12 @@ def co2_ppm_concentrations():
     subscripts=["Layers"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "c_in_mixed_layer_per_meter": 1,
+        "c_in_deep_ocean_per_meter": 3,
+        "eddy_diffusion_coef": 2,
+        "mean_depth_of_adjacent_layers": 2,
+    },
 )
 def diffusion_flux():
     """
@@ -479,6 +588,7 @@ def diffusion_flux():
     units="m2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"eddy_diffusion_coef_index": 1, "eddy_diffusion_mean": 1},
 )
 def eddy_diffusion_coef():
     """
@@ -493,6 +603,7 @@ def eddy_diffusion_coef():
     limits=(0.85, 1.15, 0.05),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_eddy_diffusion_coef_index"},
 )
 def eddy_diffusion_coef_index():
     """
@@ -518,6 +629,7 @@ _ext_constant_eddy_diffusion_coef_index = ExtConstant(
     limits=(2000.0, 8000.0),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_eddy_diffusion_mean"},
 )
 def eddy_diffusion_mean():
     """
@@ -542,6 +654,7 @@ _ext_constant_eddy_diffusion_mean = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"sensitivity_of_pco2_dic_to_temperature": 1, "temperature_change": 1},
 )
 def effect_of_temp_on_dic_pco2():
     """
@@ -555,6 +668,10 @@ def effect_of_temp_on_dic_pco2():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "strength_of_temp_effect_on_c_flux_to_land": 1,
+        "temperature_change": 1,
+    },
 )
 def effect_of_warming_on_c_flux_to_biomass():
     """
@@ -568,6 +685,11 @@ def effect_of_warming_on_c_flux_to_biomass():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "sensitivity_of_methane_emissions_to_temperature": 1,
+        "temperature_change": 1,
+        "reference_temperature_change_for_effect_of_warming_on_ch4_from_respiration": 1,
+    },
 )
 def effect_of_warming_on_ch4_release_from_biological_activity():
     """
@@ -586,6 +708,13 @@ def effect_of_warming_on_ch4_release_from_biological_activity():
     units="GtC",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "preindustrial_c_in_mixed_layer": 1,
+        "effect_of_temp_on_dic_pco2": 1,
+        "buffer_factor": 1,
+        "c_in_atmosphere": 1,
+        "preindustrial_c": 1,
+    },
 )
 def equil_c_in_mixed_layer():
     """
@@ -603,6 +732,7 @@ def equil_c_in_mixed_layer():
     units="GtC/meter",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"equil_c_in_mixed_layer": 1, "mixed_layer_depth": 1},
 )
 def equilibrium_c_per_meter_in_mixed_layer():
     """
@@ -616,6 +746,13 @@ def equilibrium_c_per_meter_in_mixed_layer():
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "init_npp": 1,
+        "biostim_coeff": 1,
+        "c_in_atmosphere": 1,
+        "preindustrial_c": 1,
+        "effect_of_warming_on_c_flux_to_biomass": 1,
+    },
 )
 def flux_atm_to_biomass():
     """
@@ -633,6 +770,11 @@ def flux_atm_to_biomass():
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "equil_c_in_mixed_layer": 1,
+        "c_in_mixed_layer": 1,
+        "atm_ocean_mixing_time": 1,
+    },
 )
 def flux_atm_to_ocean():
     """
@@ -646,6 +788,11 @@ def flux_atm_to_ocean():
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "c_in_biomass": 1,
+        "biomass_residence_time": 1,
+        "c_humification_fraction": 1,
+    },
 )
 def flux_biomass_to_atmosphere():
     """
@@ -659,6 +806,11 @@ def flux_biomass_to_atmosphere():
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "c_in_biomass": 1,
+        "ch4_generation_rate_from_biomass": 1,
+        "effect_of_warming_on_ch4_release_from_biological_activity": 1,
+    },
 )
 def flux_biomass_to_ch4():
     """
@@ -676,6 +828,11 @@ def flux_biomass_to_ch4():
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "c_in_biomass": 1,
+        "biomass_residence_time": 1,
+        "c_humification_fraction": 1,
+    },
 )
 def flux_biomass_to_humus():
     """
@@ -689,6 +846,7 @@ def flux_biomass_to_humus():
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"flux_biomass_to_ch4": 1, "flux_humus_to_ch4": 1},
 )
 def flux_biosphere_to_ch4():
     """
@@ -702,6 +860,7 @@ def flux_biosphere_to_ch4():
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"c_in_humus": 1, "c_humus_residence_time": 1},
 )
 def flux_humus_to_atmosphere():
     """
@@ -715,6 +874,11 @@ def flux_humus_to_atmosphere():
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "c_in_humus": 1,
+        "ch4_generation_rate_from_humus": 1,
+        "effect_of_warming_on_ch4_release_from_biological_activity": 1,
+    },
 )
 def flux_humus_to_ch4():
     """
@@ -743,6 +907,7 @@ def gtc_per_ppm():
     limits=(500.0, 1000.0),
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"init_co2_in_atm_ppm": 1, "gtc_per_ppm": 1},
 )
 def init_c_in_atm():
     """
@@ -752,7 +917,11 @@ def init_c_in_atm():
 
 
 @component.add(
-    name="init C in biomass", units="GtC", comp_type="Constant", comp_subtype="External"
+    name="init C in biomass",
+    units="GtC",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_init_c_in_biomass"},
 )
 def init_c_in_biomass():
     """
@@ -778,6 +947,7 @@ _ext_constant_init_c_in_biomass = ExtConstant(
     subscripts=["Layers"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_init_c_in_deep_ocean"},
 )
 def init_c_in_deep_ocean():
     """
@@ -798,7 +968,11 @@ _ext_constant_init_c_in_deep_ocean = ExtConstant(
 
 
 @component.add(
-    name="init C in humus", units="GtC", comp_type="Constant", comp_subtype="External"
+    name="init C in humus",
+    units="GtC",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_init_c_in_humus"},
 )
 def init_c_in_humus():
     """
@@ -823,6 +997,7 @@ _ext_constant_init_c_in_humus = ExtConstant(
     units="GtC/meter",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_init_c_in_mixed_ocean"},
 )
 def init_c_in_mixed_ocean():
     """
@@ -847,6 +1022,7 @@ _ext_constant_init_c_in_mixed_ocean = ExtConstant(
     units="ppm",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_init_co2_in_atm_ppm"},
 )
 def init_co2_in_atm_ppm():
     """
@@ -867,7 +1043,11 @@ _ext_constant_init_co2_in_atm_ppm = ExtConstant(
 
 
 @component.add(
-    name="init NPP", units="GtC/year", comp_type="Constant", comp_subtype="External"
+    name="init NPP",
+    units="GtC/year",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_init_npp"},
 )
 def init_npp():
     """
@@ -887,6 +1067,7 @@ _ext_constant_init_npp = ExtConstant(
     subscripts=["Layers"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_layer_depth"},
 )
 def layer_depth():
     """
@@ -912,6 +1093,11 @@ _ext_constant_layer_depth = ExtConstant(
     subscripts=["Layers"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "layer_depth": 2,
+        "eddy_diffusion_coef": 2,
+        "mean_depth_of_adjacent_layers": 2,
+    },
 )
 def layer_time_constant():
     """
@@ -939,6 +1125,7 @@ def layer_time_constant():
     subscripts=["Layers"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"mixed_layer_depth": 1, "layer_depth": 3},
 )
 def mean_depth_of_adjacent_layers():
     """
@@ -970,6 +1157,7 @@ def mean_depth_of_adjacent_layers():
     units="meter",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_mixed_layer_depth"},
 )
 def mixed_layer_depth():
     """
@@ -994,6 +1182,7 @@ _ext_constant_mixed_layer_depth = ExtConstant(
     units="Mt/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"flux_biosphere_to_ch4": 1, "ch4_per_c": 1, "mt_per_gt": 1},
 )
 def natural_ch4_emissions():
     """
@@ -1003,7 +1192,11 @@ def natural_ch4_emissions():
 
 
 @component.add(
-    name="preindustrial C", units="GtC", comp_type="Constant", comp_subtype="External"
+    name="preindustrial C",
+    units="GtC",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_preindustrial_c"},
 )
 def preindustrial_c():
     """
@@ -1028,6 +1221,7 @@ _ext_constant_preindustrial_c = ExtConstant(
     units="GtC",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"preindustrial_c_in_ocean": 1, "mixed_layer_depth": 1},
 )
 def preindustrial_c_in_mixed_layer():
     """
@@ -1041,6 +1235,7 @@ def preindustrial_c_in_mixed_layer():
     units="GtC/m",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_preindustrial_c_in_ocean"},
 )
 def preindustrial_c_in_ocean():
     """
@@ -1065,6 +1260,7 @@ _ext_constant_preindustrial_c_in_ocean = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ref_buffer_factor"},
 )
 def ref_buffer_factor():
     """
@@ -1089,6 +1285,9 @@ _ext_constant_ref_buffer_factor = ExtConstant(
     units="ºC",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_reference_temperature_change_for_effect_of_warming_on_ch4_from_respiration"
+    },
 )
 def reference_temperature_change_for_effect_of_warming_on_ch4_from_respiration():
     """
@@ -1116,6 +1315,7 @@ _ext_constant_reference_temperature_change_for_effect_of_warming_on_ch4_from_res
     limits=(0.0, 2.5, 0.1),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_sensitivity_of_c_uptake_to_temperature"},
 )
 def sensitivity_of_c_uptake_to_temperature():
     """
@@ -1141,6 +1341,9 @@ _ext_constant_sensitivity_of_c_uptake_to_temperature = ExtConstant(
     limits=(0.0, 2.5, 0.1),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_sensitivity_of_methane_emissions_to_temperature"
+    },
 )
 def sensitivity_of_methane_emissions_to_temperature():
     """
@@ -1165,6 +1368,10 @@ _ext_constant_sensitivity_of_methane_emissions_to_temperature = ExtConstant(
     units="1/ºC",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "sensitivity_of_c_uptake_to_temperature": 1,
+        "sensitivity_of_pco2_dic_to_temperature_mean": 1,
+    },
 )
 def sensitivity_of_pco2_dic_to_temperature():
     """
@@ -1181,6 +1388,9 @@ def sensitivity_of_pco2_dic_to_temperature():
     units="1/ºC",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_sensitivity_of_pco2_dic_to_temperature_mean"
+    },
 )
 def sensitivity_of_pco2_dic_to_temperature_mean():
     """
@@ -1205,6 +1415,10 @@ _ext_constant_sensitivity_of_pco2_dic_to_temperature_mean = ExtConstant(
     units="1/ºC",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "sensitivity_of_c_uptake_to_temperature": 1,
+        "strength_of_temp_effect_on_land_c_flux_mean": 1,
+    },
 )
 def strength_of_temp_effect_on_c_flux_to_land():
     """
@@ -1221,6 +1435,9 @@ def strength_of_temp_effect_on_c_flux_to_land():
     units="1/ºC",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_strength_of_temp_effect_on_land_c_flux_mean"
+    },
 )
 def strength_of_temp_effect_on_land_c_flux_mean():
     """
@@ -1245,6 +1462,7 @@ _ext_constant_strength_of_temp_effect_on_land_c_flux_mean = ExtConstant(
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_co2_emissions_gtco2": 1, "c_per_co2": 1},
 )
 def total_c_anthro_emissions():
     """

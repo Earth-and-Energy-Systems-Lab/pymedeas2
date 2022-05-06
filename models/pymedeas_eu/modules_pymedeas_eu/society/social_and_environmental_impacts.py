@@ -1,6 +1,6 @@
 """
 Module social_and_environmental_impacts
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     units="tCO2/person",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_co2_emissions_gtco2": 1, "t_per_gt": 1, "population": 1},
 )
 def carbon_footprint_tco2person():
     """
@@ -22,6 +23,7 @@ def carbon_footprint_tco2person():
     units="tonnesC/person",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"carbon_footprint_tco2person": 1, "c_per_co2": 1},
 )
 def carbon_footprint_tonnescperson():
     """
@@ -35,6 +37,7 @@ def carbon_footprint_tonnescperson():
     units="GtCO2/(Year*T$)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_co2_emissions_gtco2": 1, "gdp_eu": 1},
 )
 def co2_emissions_per_value_added():
     """
@@ -44,7 +47,11 @@ def co2_emissions_per_value_added():
 
 
 @component.add(
-    name="Potential max HDI", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Potential max HDI",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"net_tfec_per_capita": 2},
 )
 def potential_max_hdi():
     """
@@ -72,6 +79,7 @@ def t_per_gt():
     units="dam3/person",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_water_use": 1, "population": 1},
 )
 def total_water_use_per_capita():
     """
@@ -86,6 +94,7 @@ def total_water_use_per_capita():
     subscripts=["water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_water_use_by_type": 1, "population": 1},
 )
 def water_use_per_type_per_capita():
     """

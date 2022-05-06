@@ -1,6 +1,6 @@
 """
 Module total_ghg_emissions
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_activate_afforestation_program"},
 )
 def activate_afforestation_program():
     """
@@ -33,6 +34,7 @@ _ext_constant_activate_afforestation_program = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 4},
 )
 def adapt_co2_emissions_unconv_gas():
     """
@@ -54,6 +56,7 @@ def adapt_co2_emissions_unconv_gas():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 4},
 )
 def adapt_emissions_shale_oil():
     """
@@ -75,6 +78,11 @@ def adapt_emissions_shale_oil():
     units="MtC/year",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_afforestation_program_2020",
+        "__data__": "_ext_data_afforestation_program_2020",
+        "time": 1,
+    },
 )
 def afforestation_program_2020():
     """
@@ -101,6 +109,12 @@ _ext_data_afforestation_program_2020 = ExtData(
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "afforestation_program_2020": 1,
+        "activate_afforestation_program": 1,
+        "mt_per_gt": 1,
+        "c_per_co2": 1,
+    },
 )
 def afforestation_program_2020_gtco2():
     """
@@ -118,6 +132,14 @@ def afforestation_program_2020_gtco2():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "gco2_per_mj_conv_gas": 1,
+        "solid_biofuels_emissions_relevant_ej": 1,
+        "oil_liquids_saved_by_biofuels_ej": 1,
+        "pes_tot_biogas_for_heatcom": 1,
+        "mj_per_ej": 1,
+        "g_per_gt": 1,
+    },
 )
 def bioe_co2_emissions():
     """
@@ -150,6 +172,7 @@ def c_per_co2():
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_co2_emissions_gtco2": 1, "c_per_co2": 1},
 )
 def carbon_emissions_gtc():
     """
@@ -163,6 +186,12 @@ def carbon_emissions_gtc():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extraction_coal_emissions_relevant": 1,
+        "gch4_per_mj_coal": 1,
+        "mj_per_ej": 1,
+        "g_per_mt": 1,
+    },
 )
 def ch4_emissions_coal_without_ctl():
     """
@@ -181,6 +210,14 @@ def ch4_emissions_coal_without_ctl():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_extraction_conv_gas_ej": 1,
+        "share_conv_vs_total_gas_extraction": 1,
+        "ped_nat_gas_for_gtl_ej": 1,
+        "gch4_per_mj_conv_gas": 1,
+        "mj_per_ej": 1,
+        "g_per_mt": 1,
+    },
 )
 def ch4_emissions_conv_gas_without_gtl():
     """
@@ -202,6 +239,12 @@ def ch4_emissions_conv_gas_without_gtl():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extraction_coal_for_ctl": 1,
+        "gch4_per_mj_ctl": 1,
+        "mj_per_ej": 1,
+        "g_per_mt": 1,
+    },
 )
 def ch4_emissions_ctl():
     """
@@ -215,6 +258,12 @@ def ch4_emissions_ctl():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ped_nat_gas_for_gtl_ej": 1,
+        "gch4_per_mj_gtl": 1,
+        "mj_per_ej": 1,
+        "g_per_mt": 1,
+    },
 )
 def ch4_emissions_gtl():
     """
@@ -228,6 +277,7 @@ def ch4_emissions_gtl():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_oil_ej": 1, "gch4_per_mj_oil": 1, "mj_per_ej": 1, "g_per_mt": 1},
 )
 def ch4_emissions_oil():
     """
@@ -241,6 +291,14 @@ def ch4_emissions_oil():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_extraction_unconv_gas_ej": 1,
+        "share_conv_vs_total_gas_extraction": 1,
+        "ped_nat_gas_for_gtl_ej": 1,
+        "gch4_per_mj_unconv_gas": 1,
+        "mj_per_ej": 1,
+        "g_per_mt": 1,
+    },
 )
 def ch4_emissions_unconv_gas():
     """
@@ -262,6 +320,12 @@ def ch4_emissions_unconv_gas():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extraction_coal_emissions_relevant": 1,
+        "gco2_per_mj_coal": 1,
+        "mj_per_ej": 1,
+        "g_per_gt": 1,
+    },
 )
 def co2_emissions_coal_without_ctl():
     """
@@ -280,6 +344,12 @@ def co2_emissions_coal_without_ctl():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_extraction_conv_gas_emissions_relevant_ej": 1,
+        "gco2_per_mj_conv_gas": 1,
+        "mj_per_ej": 1,
+        "g_per_gt": 1,
+    },
 )
 def co2_emissions_conv_gas_without_gtl():
     """
@@ -298,6 +368,12 @@ def co2_emissions_conv_gas_without_gtl():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_extraction_conv_oil_emissions_relevant_ej": 1,
+        "gco2_per_mj_conv_oil": 1,
+        "mj_per_ej": 1,
+        "g_per_gt": 1,
+    },
 )
 def co2_emissions_conv_oil():
     """
@@ -316,6 +392,12 @@ def co2_emissions_conv_oil():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "gco2_per_mj_ctl": 1,
+        "extraction_coal_for_ctl": 1,
+        "mj_per_ej": 1,
+        "g_per_gt": 1,
+    },
 )
 def co2_emissions_ctl():
     """
@@ -329,6 +411,12 @@ def co2_emissions_ctl():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ped_nat_gas_for_gtl_ej": 1,
+        "gco2_per_mj_gtl": 1,
+        "mj_per_ej": 1,
+        "g_per_gt": 1,
+    },
 )
 def co2_emissions_gtl():
     """
@@ -342,6 +430,12 @@ def co2_emissions_gtl():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_peat_ej": 1,
+        "gco2_per_mj_shale_oil": 1,
+        "mj_per_ej": 1,
+        "g_per_gt": 1,
+    },
 )
 def co2_emissions_peat():
     """
@@ -355,6 +449,12 @@ def co2_emissions_peat():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_extraction_unconv_gas_emissions_relevant_ej": 1,
+        "gco2_per_mj_unconv_gas": 1,
+        "mj_per_ej": 1,
+        "g_per_gt": 1,
+    },
 )
 def co2_emissions_unconv_gas():
     """
@@ -373,6 +473,14 @@ def co2_emissions_unconv_gas():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_extraction_unconv_oil_emissions_relevant_ej": 1,
+        "adapt_emissions_shale_oil": 1,
+        "gco2_per_mj_unconv_oil": 2,
+        "gco2_per_mj_shale_oil": 1,
+        "mj_per_ej": 1,
+        "g_per_gt": 1,
+    },
 )
 def co2_emissions_unconv_oil():
     """
@@ -397,6 +505,15 @@ def co2_emissions_unconv_oil():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "co2_emissions_conv_gas_without_gtl": 1,
+        "co2_emissions_unconv_gas": 1,
+        "co2_emissions_gtl": 1,
+        "co2_emissions_conv_oil": 1,
+        "co2_emissions_unconv_oil": 1,
+        "co2_emissions_coal_without_ctl": 1,
+        "co2_emissions_ctl": 1,
+    },
 )
 def co2_fossil_fuel_emissions():
     """
@@ -418,6 +535,7 @@ def co2_fossil_fuel_emissions():
     units="GtCO2/year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_co2_landuse_change_emissions_exogenous"},
 )
 def co2_landuse_change_emissions_exogenous():
     """
@@ -442,6 +560,7 @@ _ext_constant_co2_landuse_change_emissions_exogenous = ExtConstant(
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"co2_landuse_change_emissions_exogenous": 1},
 )
 def co2_soilluc_emissions():
     """
@@ -468,6 +587,13 @@ def correction_factor_all_ghgs():
     units="GTCO2e/year",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_cumulative_co2e_ghg_emissions": 1},
+    other_deps={
+        "_integ_cumulative_co2e_ghg_emissions": {
+            "initial": {},
+            "step": {"total_ce_all_ghg": 1},
+        }
+    },
 )
 def cumulative_co2e_ghg_emissions():
     return _integ_cumulative_co2e_ghg_emissions()
@@ -483,6 +609,7 @@ _integ_cumulative_co2e_ghg_emissions = Integ(
     units="GtC",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_cumulative_emissions_to_1995"},
 )
 def cumulative_emissions_to_1995():
     """
@@ -527,6 +654,7 @@ def g_per_mt():
     units="GtCO2/MToe",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gch4_per_mj_coal"},
 )
 def gch4_per_mj_coal():
     """
@@ -551,6 +679,7 @@ _ext_constant_gch4_per_mj_coal = ExtConstant(
     units="GtCO2/MToe",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gch4_per_mj_conv_gas"},
 )
 def gch4_per_mj_conv_gas():
     """
@@ -575,6 +704,7 @@ _ext_constant_gch4_per_mj_conv_gas = ExtConstant(
     units="GtCO2/MToe",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gch4_per_mj_ctl"},
 )
 def gch4_per_mj_ctl():
     """
@@ -599,6 +729,7 @@ _ext_constant_gch4_per_mj_ctl = ExtConstant(
     units="GtCO2/MToe",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gch4_per_mj_gtl"},
 )
 def gch4_per_mj_gtl():
     """
@@ -623,6 +754,7 @@ _ext_constant_gch4_per_mj_gtl = ExtConstant(
     units="GtCO2/MToe",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gch4_per_mj_oil"},
 )
 def gch4_per_mj_oil():
     """
@@ -647,6 +779,7 @@ _ext_constant_gch4_per_mj_oil = ExtConstant(
     units="GtCO2/MToe",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gch4_per_mj_unconv_gas"},
 )
 def gch4_per_mj_unconv_gas():
     """
@@ -671,6 +804,7 @@ _ext_constant_gch4_per_mj_unconv_gas = ExtConstant(
     units="gCO2/MJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gco2_per_mj_coal"},
 )
 def gco2_per_mj_coal():
     """
@@ -695,6 +829,7 @@ _ext_constant_gco2_per_mj_coal = ExtConstant(
     units="gCO2/MJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gco2_per_mj_conv_gas"},
 )
 def gco2_per_mj_conv_gas():
     """
@@ -719,6 +854,7 @@ _ext_constant_gco2_per_mj_conv_gas = ExtConstant(
     units="gCO2/MJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gco2_per_mj_conv_oil"},
 )
 def gco2_per_mj_conv_oil():
     """
@@ -743,6 +879,7 @@ _ext_constant_gco2_per_mj_conv_oil = ExtConstant(
     units="gCO2/MJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gco2_per_mj_ctl"},
 )
 def gco2_per_mj_ctl():
     """
@@ -767,6 +904,7 @@ _ext_constant_gco2_per_mj_ctl = ExtConstant(
     units="gCO2/MJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gco2_per_mj_gtl"},
 )
 def gco2_per_mj_gtl():
     """
@@ -791,6 +929,7 @@ _ext_constant_gco2_per_mj_gtl = ExtConstant(
     units="gCO2/MJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gco2_per_mj_shale_oil"},
 )
 def gco2_per_mj_shale_oil():
     """
@@ -815,6 +954,7 @@ _ext_constant_gco2_per_mj_shale_oil = ExtConstant(
     units="gCO2/MJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gco2_per_mj_unconv_gas"},
 )
 def gco2_per_mj_unconv_gas():
     """
@@ -839,6 +979,7 @@ _ext_constant_gco2_per_mj_unconv_gas = ExtConstant(
     units="gCO2/MJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_gco2_per_mj_unconv_oil"},
 )
 def gco2_per_mj_unconv_oil():
     """
@@ -874,7 +1015,11 @@ def mt_per_gt():
 
 
 @component.add(
-    name="new C GtC", units="GtC/year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="new C GtC",
+    units="GtC/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"carbon_emissions_gtc": 1},
 )
 def new_c_gtc():
     """
@@ -888,6 +1033,11 @@ def new_c_gtc():
     units="GTCe/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_co2e_gwp100_years": 1,
+        "correction_factor_all_ghgs": 1,
+        "c_per_co2": 1,
+    },
 )
 def total_ce_all_ghg():
     return total_co2e_gwp100_years() * correction_factor_all_ghgs() * c_per_co2()
@@ -898,6 +1048,14 @@ def total_ce_all_ghg():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ch4_emissions_conv_gas_without_gtl": 1,
+        "ch4_emissions_unconv_gas": 1,
+        "ch4_emissions_coal_without_ctl": 1,
+        "ch4_emissions_oil": 1,
+        "ch4_emissions_ctl": 1,
+        "ch4_emissions_gtl": 1,
+    },
 )
 def total_ch4_emissions_fossil_fuels():
     """
@@ -918,6 +1076,13 @@ def total_ch4_emissions_fossil_fuels():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "co2_fossil_fuel_emissions": 1,
+        "co2_soilluc_emissions": 1,
+        "bioe_co2_emissions": 1,
+        "co2_emissions_peat": 1,
+        "afforestation_program_2020_gtco2": 1,
+    },
 )
 def total_co2_emissions_gtco2():
     """
@@ -937,6 +1102,11 @@ def total_co2_emissions_gtco2():
     units="GTCO2e/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_ch4_emissions_fossil_fuels": 1,
+        "gwp_100_years_ch4": 1,
+        "total_co2_emissions_gtco2": 1,
+    },
 )
 def total_co2e_gwp100_years():
     return (
@@ -950,6 +1120,7 @@ def total_co2e_gwp100_years():
     units="GTCO2e/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_co2e_gwp100_years": 1, "correction_factor_all_ghgs": 1},
 )
 def total_co2e_all_ghg():
     return total_co2e_gwp100_years() * correction_factor_all_ghgs()
@@ -960,6 +1131,13 @@ def total_co2e_all_ghg():
     units="GtC",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_total_cumulative_emissions_gtc": 1},
+    other_deps={
+        "_integ_total_cumulative_emissions_gtc": {
+            "initial": {"cumulative_emissions_to_1995": 1},
+            "step": {"new_c_gtc": 1},
+        }
+    },
 )
 def total_cumulative_emissions_gtc():
     """
@@ -980,6 +1158,7 @@ _integ_total_cumulative_emissions_gtc = Integ(
     units="GtCO2",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_cumulative_emissions_gtc": 1, "c_per_co2": 1},
 )
 def total_cumulative_emissions_gtco2():
     """

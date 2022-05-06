@@ -1,6 +1,6 @@
 """
 Module grid_allocation_res_elec
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,12 @@ Translated using PySD version 3.0.0
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "static_eroi_res_elec": 2,
+        "rt_elec_storage_efficiency": 2,
+        "share_res_elec_generation_curtailedstored": 3,
+        "esoi_elec_storage": 1,
+    },
 )
 def static_eroigrid_res_elec():
     """
@@ -39,6 +45,10 @@ def static_eroigrid_res_elec():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "output_elec_over_lifetime_res_elec_for_allocation2": 1,
+        "fei_over_lifetime_res_elec_for_allocation": 1,
+    },
 )
 def static_eroigrid_toteffective_for_allocation_res_elec():
     """
@@ -65,6 +75,10 @@ def static_eroigrid_toteffective_for_allocation_res_elec():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "output_elec_over_lifetime_res_elec_for_allocation": 1,
+        "fei_over_lifetime_res_elec_for_allocation": 1,
+    },
 )
 def static_eroitoteffective_for_allocation_res_elec():
     """
@@ -92,6 +106,7 @@ def static_eroitoteffective_for_allocation_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 1, "ratio_eroi_per_techn_vs_eroitot_static": 3},
 )
 def eroi_allocation_rule_per_res_elec():
     """
@@ -124,6 +139,10 @@ def eroi_allocation_rule_per_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fei_over_lifetime_res_elec": 1,
+        "remaining_potential_res_elec_switch": 1,
+    },
 )
 def fei_over_lifetime_res_elec_for_allocation():
     """
@@ -138,6 +157,10 @@ def fei_over_lifetime_res_elec_for_allocation():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "output_elec_over_lifetime_res_elec": 1,
+        "remaining_potential_res_elec_switch": 1,
+    },
 )
 def output_elec_over_lifetime_res_elec_for_allocation():
     return output_elec_over_lifetime_res_elec() * remaining_potential_res_elec_switch()
@@ -148,6 +171,11 @@ def output_elec_over_lifetime_res_elec_for_allocation():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "static_eroigrid_res_elec": 1,
+        "fei_over_lifetime_res_elec_for_allocation": 1,
+        "gquality_of_electricity": 1,
+    },
 )
 def output_elec_over_lifetime_res_elec_for_allocation2():
     return (
@@ -163,12 +191,20 @@ def output_elec_over_lifetime_res_elec_for_allocation2():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "static_eroigrid_res_elec": 1,
+        "static_eroigrid_toteffective_for_allocation_res_elec": 1,
+    },
 )
 def ratio_eroi_per_techn_vs_eroitot_static():
     return xidz(
         static_eroigrid_res_elec(),
-        static_eroigrid_toteffective_for_allocation_res_elec(),
-        xr.DataArray(0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]),
+        xr.DataArray(
+            static_eroigrid_toteffective_for_allocation_res_elec(),
+            {"RES elec": _subscript_dict["RES elec"]},
+            ["RES elec"],
+        ),
+        0,
     )
 
 
@@ -178,6 +214,7 @@ def ratio_eroi_per_techn_vs_eroitot_static():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"static_eroi_res_elec": 2, "static_eroigrid_res_elec": 1},
 )
 def ratio_eroigrid_vs_eroi_static():
     return if_then_else(
@@ -195,6 +232,7 @@ def ratio_eroigrid_vs_eroi_static():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"remaining_potential_res_elec_after_intermitt": 1},
 )
 def remaining_potential_res_elec_switch():
     """

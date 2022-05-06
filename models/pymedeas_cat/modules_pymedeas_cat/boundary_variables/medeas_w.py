@@ -1,10 +1,15 @@
 """
 Module medeas_w
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
-@component.add(name="abundance coal", comp_type="Data", comp_subtype="Normal")
+@component.add(
+    name="abundance coal",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_abundance_coal"},
+)
 def abundance_coal():
     return _data_abundance_coal(time())
 
@@ -13,13 +18,21 @@ _data_abundance_coal = TabData("abundance coal", "abundance_coal", {}, "interpol
 
 
 @component.add(
-    name="abundance coal World", comp_type="Auxiliary", comp_subtype="Normal"
+    name="abundance coal World",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"abundance_coal": 1},
 )
 def abundance_coal_world():
     return abundance_coal()
 
 
-@component.add(name="abundance total nat gas", comp_type="Data", comp_subtype="Normal")
+@component.add(
+    name="abundance total nat gas",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_abundance_total_nat_gas"},
+)
 def abundance_total_nat_gas():
     return _data_abundance_total_nat_gas(time())
 
@@ -33,12 +46,18 @@ _data_abundance_total_nat_gas = TabData(
     name='"abundance total nat. gas World"',
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_total_nat_gas": 1},
 )
 def abundance_total_nat_gas_world():
     return abundance_total_nat_gas()
 
 
-@component.add(name="abundance total oil", comp_type="Data", comp_subtype="Normal")
+@component.add(
+    name="abundance total oil",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_abundance_total_oil"},
+)
 def abundance_total_oil():
     return _data_abundance_total_oil(time())
 
@@ -49,13 +68,21 @@ _data_abundance_total_oil = TabData(
 
 
 @component.add(
-    name="abundance total oil World", comp_type="Auxiliary", comp_subtype="Normal"
+    name="abundance total oil World",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"abundance_total_oil": 1},
 )
 def abundance_total_oil_world():
     return abundance_total_oil()
 
 
-@component.add(name="Annual GDP growth rate", comp_type="Data", comp_subtype="Normal")
+@component.add(
+    name="Annual GDP growth rate",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_annual_gdp_growth_rate"},
+)
 def annual_gdp_growth_rate():
     """
     Annual GDP growth rate. Source: global model.
@@ -73,6 +100,7 @@ _data_annual_gdp_growth_rate = TabData(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"annual_gdp_growth_rate": 1},
 )
 def annual_gdp_growth_rate_world():
     """
@@ -81,7 +109,12 @@ def annual_gdp_growth_rate_world():
     return annual_gdp_growth_rate()
 
 
-@component.add(name="extraction coal EJ", comp_type="Data", comp_subtype="Normal")
+@component.add(
+    name="extraction coal EJ",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_extraction_coal_ej"},
+)
 def extraction_coal_ej():
     """
     Global primary energy supply. Source: global model.
@@ -99,6 +132,7 @@ _data_extraction_coal_ej = TabData(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_nat_gas": 1},
 )
 def extraction_nat_gas_ej_world():
     """
@@ -112,6 +146,7 @@ def extraction_nat_gas_ej_world():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_oil_ej": 1},
 )
 def extraction_oil_ej_world():
     """
@@ -120,7 +155,12 @@ def extraction_oil_ej_world():
     return pes_oil_ej()
 
 
-@component.add(name="extraction uranium EJ", comp_type="Data", comp_subtype="Normal")
+@component.add(
+    name="extraction uranium EJ",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_extraction_uranium_ej"},
+)
 def extraction_uranium_ej():
     """
     Global uranium extracted. Source: global model.
@@ -138,6 +178,7 @@ _data_extraction_uranium_ej = TabData(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"extraction_uranium_ej": 1},
 )
 def extraction_uranium_ej_world():
     """
@@ -151,6 +192,7 @@ def extraction_uranium_ej_world():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"extraction_coal_ej": 1},
 )
 def extraction_coal_ej_world():
     """
@@ -159,7 +201,12 @@ def extraction_coal_ej_world():
     return extraction_coal_ej()
 
 
-@component.add(name="PES nat gas", comp_type="Data", comp_subtype="Normal")
+@component.add(
+    name="PES nat gas",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_pes_nat_gas"},
+)
 def pes_nat_gas():
     """
     Global primary energy supply of natural gas. Source: global model.
@@ -170,7 +217,12 @@ def pes_nat_gas():
 _data_pes_nat_gas = TabData("PES nat gas", "pes_nat_gas", {}, "interpolate")
 
 
-@component.add(name="PES oil EJ", comp_type="Data", comp_subtype="Normal")
+@component.add(
+    name="PES oil EJ",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_pes_oil_ej"},
+)
 def pes_oil_ej():
     """
     Global primary energy supply of oil. Source: global model.
@@ -187,6 +239,7 @@ _data_pes_oil_ej = TabData("PES oil EJ", "pes_oil_ej", {}, "interpolate")
     subscripts=["sectors"],
     comp_type="Data",
     comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_real_demand_by_sector"},
 )
 def real_demand_by_sector():
     """
@@ -226,6 +279,7 @@ _data_real_demand_by_sector = TabData(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_demand_by_sector": 1},
 )
 def real_demand_by_sector_world():
     """
@@ -239,6 +293,7 @@ def real_demand_by_sector_world():
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_demand_by_sector_world": 1},
 )
 def real_demand_world():
     """
@@ -254,6 +309,7 @@ def real_demand_world():
     subscripts=["final sources", "sectors"],
     comp_type="Data",
     comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_real_final_energy_by_sector_and_fuel"},
 )
 def real_final_energy_by_sector_and_fuel():
     """
@@ -293,6 +349,7 @@ _data_real_final_energy_by_sector_and_fuel = TabData(
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_final_energy_by_sector_and_fuel": 1},
 )
 def real_final_energy_by_sector_and_fuel_world():
     """
@@ -307,6 +364,7 @@ def real_final_energy_by_sector_and_fuel_world():
     subscripts=["sectors"],
     comp_type="Data",
     comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_real_total_output_by_sector"},
 )
 def real_total_output_by_sector():
     """
@@ -346,6 +404,7 @@ _data_real_total_output_by_sector = TabData(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_total_output_by_sector": 1},
 )
 def real_total_output_by_sector_world():
     """
@@ -355,7 +414,10 @@ def real_total_output_by_sector_world():
 
 
 @component.add(
-    name="share conv vs total gas extraction", comp_type="Data", comp_subtype="Normal"
+    name="share conv vs total gas extraction",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_share_conv_vs_total_gas_extraction"},
 )
 def share_conv_vs_total_gas_extraction():
     """
@@ -377,6 +439,7 @@ _data_share_conv_vs_total_gas_extraction = TabData(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_conv_vs_total_gas_extraction": 1},
 )
 def share_conv_vs_total_gas_extraction_world():
     """
@@ -386,7 +449,10 @@ def share_conv_vs_total_gas_extraction_world():
 
 
 @component.add(
-    name="share conv vs total oil extraction", comp_type="Data", comp_subtype="Normal"
+    name="share conv vs total oil extraction",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_share_conv_vs_total_oil_extraction"},
 )
 def share_conv_vs_total_oil_extraction():
     """
@@ -408,6 +474,7 @@ _data_share_conv_vs_total_oil_extraction = TabData(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_conv_vs_total_oil_extraction": 1},
 )
 def share_conv_vs_total_oil_extraction_world():
     """
@@ -416,7 +483,12 @@ def share_conv_vs_total_oil_extraction_world():
     return share_conv_vs_total_oil_extraction()
 
 
-@component.add(name="share E losses CC", comp_type="Data", comp_subtype="Normal")
+@component.add(
+    name="share E losses CC",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_share_e_losses_cc"},
+)
 def share_e_losses_cc():
     """
     Energy losses due to climate change impacts. Source: global model.
@@ -430,7 +502,11 @@ _data_share_e_losses_cc = TabData(
 
 
 @component.add(
-    name="Temperature change", units="Mdollars", comp_type="Data", comp_subtype="Normal"
+    name="Temperature change",
+    units="Mdollars",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_temperature_change"},
 )
 def temperature_change():
     """
@@ -445,7 +521,11 @@ _data_temperature_change = TabData(
 
 
 @component.add(
-    name="Total extraction NRE EJ", units="EJ", comp_type="Data", comp_subtype="Normal"
+    name="Total extraction NRE EJ",
+    units="EJ",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "__data__": "_data_total_extraction_nre_ej"},
 )
 def total_extraction_nre_ej():
     """
@@ -464,6 +544,7 @@ _data_total_extraction_nre_ej = TabData(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_extraction_nre_ej": 1},
 )
 def total_extraction_nre_ej_world():
     """

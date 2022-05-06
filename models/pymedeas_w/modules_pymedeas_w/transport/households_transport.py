@@ -1,11 +1,21 @@
 """
 Module households_transport
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="A1 coef tH", units="EJ/T$", comp_type="Auxiliary", comp_subtype="Normal"
+    name="A1 coef tH",
+    units="EJ/T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "liq_4w": 1,
+        "demand_h": 1,
+        "percent_2w_liq": 1,
+        "a2_coef_th": 1,
+        "percent_4w_liq": 1,
+    },
 )
 def a1_coef_th():
     """
@@ -15,7 +25,16 @@ def a1_coef_th():
 
 
 @component.add(
-    name="A2 coef tH", units="EJ/T$", comp_type="Auxiliary", comp_subtype="Normal"
+    name="A2 coef tH",
+    units="EJ/T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "electricity_2we": 1,
+        "percent_h_vehicles_initial": 1,
+        "demand_h": 1,
+        "saving_ratio_2we": 1,
+    },
 )
 def a2_coef_th():
     """
@@ -33,6 +52,7 @@ def a2_coef_th():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_activate_policy_h_transp"},
 )
 def activate_policy_h_transp():
     """
@@ -58,6 +78,7 @@ _ext_constant_activate_policy_h_transp = ExtConstant(
     subscripts=["Households vehicles"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"hist_var_percent_h": 8},
 )
 def aux_hist_h():
     """
@@ -82,7 +103,11 @@ def aux_hist_h():
 
 
 @component.add(
-    name="Demand H", units="T$", comp_type="Constant", comp_subtype="External"
+    name="Demand H",
+    units="T$",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_demand_h"},
 )
 def demand_h():
     """
@@ -107,6 +132,7 @@ _ext_constant_demand_h = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_electricity": 2},
 )
 def effects_shortage_elec_on_ev():
     """
@@ -124,6 +150,7 @@ def effects_shortage_elec_on_ev():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_gases": 2},
 )
 def effects_shortage_gas_h_veh():
     """
@@ -135,7 +162,11 @@ def effects_shortage_gas_h_veh():
 
 
 @component.add(
-    name="Electricity 2wE", units="EJ", comp_type="Constant", comp_subtype="External"
+    name="Electricity 2wE",
+    units="EJ",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_electricity_2we"},
 )
 def electricity_2we():
     """
@@ -161,6 +192,13 @@ _ext_constant_electricity_2we = ExtConstant(
     subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_energy_intensity_of_households_transport": 1},
+    other_deps={
+        "_integ_energy_intensity_of_households_transport": {
+            "initial": {"initial_energy_intensity_of_households_transport_2009": 1},
+            "step": {"variation_energy_intensity_of_households_transport": 1},
+        }
+    },
 )
 def energy_intensity_of_households_transport():
     return _integ_energy_intensity_of_households_transport()
@@ -173,7 +211,20 @@ _integ_energy_intensity_of_households_transport = Integ(
 )
 
 
-@component.add(name="H 2w initial growth", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="H 2w initial growth",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "t_fin_h_veh": 2,
+        "t_ini_h_veh": 2,
+        "percent_h_vehicles_initial": 1,
+        "aux_hist_h": 1,
+        "activate_policy_h_transp": 1,
+        "p_h_vehicle": 1,
+    },
+)
 def h_2w_initial_growth():
     """
     Growth of percent of electric 2w without restrictions derived from saturation and shortage of electricity Percent relative to total number of vehicles 2w+4w.
@@ -198,6 +249,7 @@ def h_2w_initial_growth():
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"h_2w_initial_growth": 1},
 )
 def h_2we_adapt_growth():
     """
@@ -211,6 +263,15 @@ def h_2we_adapt_growth():
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "t_fin_h_veh": 2,
+        "t_ini_h_veh": 2,
+        "percent_h_vehicles_initial": 1,
+        "aux_hist_h": 1,
+        "activate_policy_h_transp": 1,
+        "p_h_vehicle": 1,
+    },
 )
 def h_elec_initial_growth():
     """
@@ -236,6 +297,7 @@ def h_elec_initial_growth():
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"h_elec_initial_growth": 1, "effects_shortage_elec_on_ev": 1},
 )
 def h_ev_adapt_growth():
     """
@@ -249,6 +311,7 @@ def h_ev_adapt_growth():
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"h_gas_initial_growth": 1, "effects_shortage_gas_h_veh": 1},
 )
 def h_gas_adapt_growth():
     """
@@ -262,6 +325,15 @@ def h_gas_adapt_growth():
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "t_fin_h_veh": 2,
+        "t_ini_h_veh": 2,
+        "percent_h_vehicles_initial": 1,
+        "aux_hist_h": 1,
+        "activate_policy_h_transp": 1,
+        "p_h_vehicle": 1,
+    },
 )
 def h_gas_initial_growth():
     """
@@ -287,6 +359,7 @@ def h_gas_initial_growth():
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"h_hyb_initial_growth": 1},
 )
 def h_hyb_adapt_growth():
     """
@@ -300,6 +373,15 @@ def h_hyb_adapt_growth():
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "t_fin_h_veh": 2,
+        "t_ini_h_veh": 2,
+        "percent_h_vehicles_initial": 1,
+        "aux_hist_h": 1,
+        "activate_policy_h_transp": 1,
+        "p_h_vehicle": 1,
+    },
 )
 def h_hyb_initial_growth():
     """
@@ -324,8 +406,9 @@ def h_hyb_initial_growth():
     name="hist var percent H",
     units="1/yr",
     subscripts=["Households vehicles"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={"time": 4, "percent_h_vehicles_initial": 4, "t_hist_h_transp": 4},
 )
 def hist_var_percent_h():
     """
@@ -371,6 +454,11 @@ def hist_var_percent_h():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "energy_intensity_of_households_transport": 1,
+        "initial_energy_intensity_of_households_transport_2009": 1,
+        "household_demand_total": 1,
+    },
 )
 def increase_households_energy_final_demand_for_transp():
     return (
@@ -388,6 +476,7 @@ def increase_households_energy_final_demand_for_transp():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"percent_h_vehicles_initial": 2},
 )
 def initial_2w_percent():
     """
@@ -404,6 +493,9 @@ def initial_2w_percent():
     subscripts=["final sources"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_initial_energy_intensity_of_households_transport_2009"
+    },
 )
 def initial_energy_intensity_of_households_transport_2009():
     """
@@ -423,7 +515,13 @@ _ext_constant_initial_energy_intensity_of_households_transport_2009 = ExtConstan
 )
 
 
-@component.add(name="Liq 4w", units="EJ", comp_type="Constant", comp_subtype="External")
+@component.add(
+    name="Liq 4w",
+    units="EJ",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_liq_4w"},
+)
 def liq_4w():
     """
     liquids userd in households 4 wheelers in the initial year of policy (2015 default) 45.9341
@@ -441,6 +539,13 @@ _ext_constant_liq_4w = ExtConstant(
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_max_percent_2_wheels": 1},
+    other_deps={
+        "_integ_max_percent_2_wheels": {
+            "initial": {"initial_2w_percent": 1},
+            "step": {"rate_4w_to_2w": 1},
+        }
+    },
 )
 def max_percent_2_wheels():
     """
@@ -459,6 +564,13 @@ _integ_max_percent_2_wheels = Integ(
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_max_percent_4_wheels": 1},
+    other_deps={
+        "_integ_max_percent_4_wheels": {
+            "initial": {"initial_2w_percent": 1},
+            "step": {"rate_4w_to_2w": 1},
+        }
+    },
 )
 def max_percent_4_wheels():
     """
@@ -475,7 +587,11 @@ _integ_max_percent_4_wheels = Integ(
 
 
 @component.add(
-    name="N vehicles H", units="vehicles", comp_type="Constant", comp_subtype="External"
+    name="N vehicles H",
+    units="vehicles",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_n_vehicles_h"},
 )
 def n_vehicles_h():
     """
@@ -496,7 +612,11 @@ _ext_constant_n_vehicles_h = ExtConstant(
 
 
 @component.add(
-    name="Number 2w", units="vehicles", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Number 2w",
+    units="vehicles",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"number_vehicles_h": 2},
 )
 def number_2w():
     """
@@ -508,7 +628,11 @@ def number_2w():
 
 
 @component.add(
-    name="Number 4w", units="vehicles", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Number 4w",
+    units="vehicles",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"number_vehicles_h": 4},
 )
 def number_4w():
     """
@@ -528,6 +652,11 @@ def number_4w():
     subscripts=["Households vehicles"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ratio_n_veh_demand_h": 1,
+        "household_demand_total": 1,
+        "percents_h_vehicles": 1,
+    },
 )
 def number_vehicles_h():
     """
@@ -542,7 +671,11 @@ def number_vehicles_h():
 
 
 @component.add(
-    name="P 2wE", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="P 2wE",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_2we"},
 )
 def p_2we():
     """
@@ -563,7 +696,11 @@ _ext_constant_p_2we = ExtConstant(
 
 
 @component.add(
-    name="P elec", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="P elec",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_elec"},
 )
 def p_elec():
     """
@@ -584,7 +721,11 @@ _ext_constant_p_elec = ExtConstant(
 
 
 @component.add(
-    name="P gas", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="P gas",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_gas"},
 )
 def p_gas():
     """
@@ -610,6 +751,13 @@ _ext_constant_p_gas = ExtConstant(
     subscripts=["Households vehicles"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "p_share_2_wheelers": 6,
+        "p_hyb": 2,
+        "p_elec": 2,
+        "p_gas": 2,
+        "p_2we": 2,
+    },
 )
 def p_h_vehicle():
     """
@@ -632,7 +780,11 @@ def p_h_vehicle():
 
 
 @component.add(
-    name="P hyb", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="P hyb",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_hyb"},
 )
 def p_hyb():
     """
@@ -657,6 +809,7 @@ _ext_constant_p_hyb = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_share_2_wheelers"},
 )
 def p_share_2_wheelers():
     """
@@ -677,7 +830,11 @@ _ext_constant_p_share_2_wheelers = ExtConstant(
 
 
 @component.add(
-    name="percent 2w", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="percent 2w",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"percents_h_vehicles": 2},
 )
 def percent_2w():
     """
@@ -688,7 +845,12 @@ def percent_2w():
     )
 
 
-@component.add(name="percent 2w liq", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="percent 2w liq",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"percent_h_vehicles_initial": 1},
+)
 def percent_2w_liq():
     """
     Percent of 2wheelers of liquids in the initial year of policy (2015 default). percents relative to total number 4w+2w DEFAULT: 0.2712
@@ -697,7 +859,11 @@ def percent_2w_liq():
 
 
 @component.add(
-    name="percent 4w", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="percent 4w",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"percents_h_vehicles": 4},
 )
 def percent_4w():
     """
@@ -712,7 +878,11 @@ def percent_4w():
 
 
 @component.add(
-    name="percent 4w liq", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="percent 4w liq",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"percent_h_vehicles_initial": 1},
 )
 def percent_4w_liq():
     """
@@ -727,6 +897,7 @@ def percent_4w_liq():
     subscripts=["Households vehicles"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_percent_h_vehicles_initial"},
 )
 def percent_h_vehicles_initial():
     """
@@ -750,8 +921,9 @@ _ext_constant_percent_h_vehicles_initial = ExtConstant(
     name="percents 2w H vehicles",
     units="Dmnl",
     subscripts=["Households vehicles"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={"percents_h_vehicles": 6},
 )
 def percents_2w_h_vehicles():
     """
@@ -781,8 +953,9 @@ def percents_2w_h_vehicles():
     name="percents 4w H vehicles",
     units="Dmnl",
     subscripts=["Households vehicles"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={"percents_h_vehicles": 20},
 )
 def percents_4w_h_vehicles():
     """
@@ -828,6 +1001,40 @@ def percents_4w_h_vehicles():
     subscripts=["Households vehicles"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={
+        "_integ_percents_h_vehicles": 1,
+        "_integ_percents_h_vehicles_1": 1,
+        "_integ_percents_h_vehicles_2": 1,
+        "_integ_percents_h_vehicles_3": 1,
+        "_integ_percents_h_vehicles_4": 1,
+        "_integ_percents_h_vehicles_5": 1,
+    },
+    other_deps={
+        "_integ_percents_h_vehicles": {
+            "initial": {"initial_2w_percent": 1},
+            "step": {"var_percents_h_vehicles": 1},
+        },
+        "_integ_percents_h_vehicles_1": {
+            "initial": {},
+            "step": {"var_percents_h_vehicles": 1},
+        },
+        "_integ_percents_h_vehicles_2": {
+            "initial": {},
+            "step": {"var_percents_h_vehicles": 1},
+        },
+        "_integ_percents_h_vehicles_3": {
+            "initial": {},
+            "step": {"var_percents_h_vehicles": 1},
+        },
+        "_integ_percents_h_vehicles_4": {
+            "initial": {"initial_2w_percent": 1},
+            "step": {"var_percents_h_vehicles": 1},
+        },
+        "_integ_percents_h_vehicles_5": {
+            "initial": {},
+            "step": {"var_percents_h_vehicles": 1},
+        },
+    },
 )
 def percents_h_vehicles():
     """
@@ -924,7 +1131,19 @@ _integ_percents_h_vehicles_5 = Integ(
 )
 
 
-@component.add(name="policy 2wheels", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="policy 2wheels",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "t_fin_h_veh": 2,
+        "t_ini_h_veh": 2,
+        "initial_2w_percent": 1,
+        "p_share_2_wheelers": 1,
+        "activate_policy_h_transp": 1,
+    },
+)
 def policy_2wheels():
     """
     Growth of percent of all types of 2wheelers relative to the total amount of vehicles. relative to all vehicles 2w+4w
@@ -942,7 +1161,11 @@ def policy_2wheels():
 
 
 @component.add(
-    name="rate 4w to 2w", units="1/year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="rate 4w to 2w",
+    units="1/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"policy_2wheels": 1},
 )
 def rate_4w_to_2w():
     """
@@ -956,6 +1179,7 @@ def rate_4w_to_2w():
     units="vehicles/T$",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"n_vehicles_h": 1, "demand_h": 1},
 )
 def ratio_n_veh_demand_h():
     """
@@ -965,7 +1189,11 @@ def ratio_n_veh_demand_h():
 
 
 @component.add(
-    name="saving ratio 2wE", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="saving ratio 2wE",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_saving_ratio_2we"},
 )
 def saving_ratio_2we():
     """
@@ -990,6 +1218,7 @@ _ext_constant_saving_ratio_2we = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_percent_2_wheels": 2, "percents_h_vehicles": 1},
 )
 def share_available_2w():
     """
@@ -1005,6 +1234,7 @@ def share_available_2w():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_percent_4_wheels": 2, "sum_4w_shares": 1},
 )
 def share_available_4w():
     """
@@ -1014,7 +1244,11 @@ def share_available_4w():
 
 
 @component.add(
-    name="sum 4w shares", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="sum 4w shares",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"percents_h_vehicles": 3},
 )
 def sum_4w_shares():
     """
@@ -1028,7 +1262,11 @@ def sum_4w_shares():
 
 
 @component.add(
-    name="T fin H veh", units="year", comp_type="Constant", comp_subtype="External"
+    name="T fin H veh",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_t_fin_h_veh"},
 )
 def t_fin_h_veh():
     """
@@ -1059,7 +1297,11 @@ def t_hist_h_transp():
 
 
 @component.add(
-    name="T ini H veh", units="year", comp_type="Constant", comp_subtype="External"
+    name="T ini H veh",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_t_ini_h_veh"},
 )
 def t_ini_h_veh():
     """
@@ -1080,7 +1322,17 @@ _ext_constant_t_ini_h_veh = ExtConstant(
 
 
 @component.add(
-    name="var IH E2", units="EJ/T$/yr", comp_type="Auxiliary", comp_subtype="Normal"
+    name="var IH E2",
+    units="EJ/T$/yr",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "a1_coef_th": 1,
+        "var_percents_h_vehicles": 2,
+        "saving_ratios_vehicles": 1,
+        "a2_coef_th": 1,
+        "saving_ratio_2we": 1,
+    },
 )
 def var_ih_e2():
     """
@@ -1097,7 +1349,15 @@ def var_ih_e2():
 
 
 @component.add(
-    name="var IH gas2", units="EJ/T$/yr", comp_type="Auxiliary", comp_subtype="Normal"
+    name="var IH gas2",
+    units="EJ/T$/yr",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "a1_coef_th": 1,
+        "var_percents_h_vehicles": 1,
+        "saving_ratios_vehicles": 1,
+    },
 )
 def var_ih_gas2():
     """
@@ -1111,7 +1371,11 @@ def var_ih_gas2():
 
 
 @component.add(
-    name="var IH liq2", units="EJ/T$/yr", comp_type="Auxiliary", comp_subtype="Normal"
+    name="var IH liq2",
+    units="EJ/T$/yr",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"a1_coef_th": 2, "var_percents_h_vehicles": 3, "a2_coef_th": 1},
 )
 def var_ih_liq2():
     """
@@ -1130,6 +1394,16 @@ def var_ih_liq2():
     subscripts=["Households vehicles"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 6,
+        "t_ini_h_veh": 6,
+        "aux_hist_h": 6,
+        "h_ev_adapt_growth": 2,
+        "h_gas_adapt_growth": 2,
+        "rate_4w_to_2w": 2,
+        "h_hyb_adapt_growth": 2,
+        "h_2we_adapt_growth": 2,
+    },
 )
 def var_percents_h_vehicles():
     """
@@ -1180,8 +1454,9 @@ def var_percents_h_vehicles():
     name="variation energy intensity of households transport",
     units="EJ/T$/yr",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={"time": 3, "var_ih_liq2": 1, "var_ih_gas2": 1, "var_ih_e2": 1},
 )
 def variation_energy_intensity_of_households_transport():
     """

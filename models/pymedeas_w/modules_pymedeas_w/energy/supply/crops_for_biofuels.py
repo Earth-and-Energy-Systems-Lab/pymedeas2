@@ -1,6 +1,6 @@
 """
 Module crops_for_biofuels
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,10 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_peavail_potential_biofuels_marginal_lands": 2,
+        "potential_peavail_biofuels_land_marg_ej": 1,
+    },
 )
 def bioe_gen_land_marg_available():
     """
@@ -25,6 +29,7 @@ def bioe_gen_land_marg_available():
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_bioe_potential_npp_marginal_lands"},
 )
 def bioe_potential_npp_marginal_lands():
     """
@@ -49,6 +54,7 @@ _ext_constant_bioe_potential_npp_marginal_lands = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_conv_efficiency_from_npp_to_biofuels"},
 )
 def conv_efficiency_from_npp_to_biofuels():
     """
@@ -73,6 +79,9 @@ _ext_constant_conv_efficiency_from_npp_to_biofuels = ExtConstant(
     units="MHa/EJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_land_occupation_ratio_biofuels_marg_land"
+    },
 )
 def land_occupation_ratio_biofuels_marg_land():
     """
@@ -97,6 +106,7 @@ _ext_constant_land_occupation_ratio_biofuels_marg_land = ExtConstant(
     units="EJ/MHa",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_land_productivity_biofuels_marg_ej_mha"},
 )
 def land_productivity_biofuels_marg_ej_mha():
     """
@@ -121,6 +131,11 @@ _ext_constant_land_productivity_biofuels_marg_ej_mha = ExtConstant(
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_peavail_biofuels_land_marg_ej": 1,
+        "land_occupation_ratio_biofuels_marg_land": 1,
+        "conv_efficiency_from_npp_to_biofuels": 1,
+    },
 )
 def land_required_biofuels_land_marg():
     """
@@ -138,6 +153,10 @@ def land_required_biofuels_land_marg():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "bioe_potential_npp_marginal_lands": 1,
+        "conv_efficiency_from_npp_to_biofuels": 1,
+    },
 )
 def max_peavail_potential_biofuels_marginal_lands():
     """
@@ -151,6 +170,18 @@ def max_peavail_potential_biofuels_marginal_lands():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 3,
+        "start_year_biofuels_land_marg": 3,
+        "constrain_liquids_exogenous_growth": 1,
+        "bioe_gen_land_marg_available": 1,
+        "ratio_land_productivity_2gen_vs_marg": 1,
+        "potential_peavail_biofuels_land_marg_ej": 2,
+        "start_production_biofuels": 1,
+        "adapt_growth_biofuels_2gen": 1,
+        "ej_per_ktoe": 1,
+        "check_liquids": 1,
+    },
 )
 def new_biofuels_land_marg():
     """
@@ -177,7 +208,13 @@ def new_biofuels_land_marg():
 
 
 @component.add(
-    name="PE biofuels land marg EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PE biofuels land marg EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "peavail_biofuels_land_marg_ej": 1,
+        "conv_efficiency_from_npp_to_biofuels": 1,
+    },
 )
 def pe_biofuels_land_marg_ej():
     """
@@ -191,6 +228,10 @@ def pe_biofuels_land_marg_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_peavail_biofuels_land_marg_ej": 1,
+        "share_biofuels_overcapacity": 1,
+    },
 )
 def peavail_biofuels_land_marg_ej():
     """
@@ -206,6 +247,13 @@ def peavail_biofuels_land_marg_ej():
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_potential_peavail_biofuels_land_marg_ej": 1},
+    other_deps={
+        "_integ_potential_peavail_biofuels_land_marg_ej": {
+            "initial": {},
+            "step": {"new_biofuels_land_marg": 1},
+        }
+    },
 )
 def potential_peavail_biofuels_land_marg_ej():
     """
@@ -226,6 +274,10 @@ _integ_potential_peavail_biofuels_land_marg_ej = Integ(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "land_productivity_biofuels_2gen_ej_mha": 1,
+        "land_productivity_biofuels_marg_ej_mha": 1,
+    },
 )
 def ratio_land_productivity_2gen_vs_marg():
     """
@@ -242,6 +294,10 @@ def ratio_land_productivity_2gen_vs_marg():
     units="ktoe/year",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_start_production_biofuels",
+        "__lookup__": "_ext_lookup_start_production_biofuels",
+    },
 )
 def start_production_biofuels(x, final_subs=None):
     """
@@ -267,6 +323,7 @@ _ext_lookup_start_production_biofuels = ExtLookup(
     units="year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_start_year_biofuels_land_marg"},
 )
 def start_year_biofuels_land_marg():
     """

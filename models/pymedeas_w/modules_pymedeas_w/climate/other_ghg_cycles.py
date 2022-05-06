@@ -1,6 +1,6 @@
 """
 Module other_ghg_cycles
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -15,7 +15,11 @@ def cf4_molar_mass():
 
 
 @component.add(
-    name="CH4 atm conc", units="ppb", comp_type="Auxiliary", comp_subtype="Normal"
+    name="CH4 atm conc",
+    units="ppb",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"ch4_in_atm": 1, "ppb_ch4_per_mt_ch4": 1},
 )
 def ch4_atm_conc():
     return ch4_in_atm() * ppb_ch4_per_mt_ch4()
@@ -26,6 +30,12 @@ def ch4_atm_conc():
     units="Mt/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "sensitivity_of_methane_emissions_to_permafrost_and_clathrate": 1,
+        "reference_sensitivity_of_ch4_from_permafrost_and_clathrate_to_temperature": 1,
+        "temperature_change": 1,
+        "temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate": 1,
+    },
 )
 def ch4_emissions_from_permafrost_and_clathrate():
     """
@@ -48,6 +58,13 @@ def ch4_emissions_from_permafrost_and_clathrate():
     limits=(5.0, 15.0, 0.1),
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "reference_ch4_time_constant": 1,
+        "tropospheric_ch4_path_share": 2,
+        "stratospheric_ch4_path_share": 2,
+        "ch4_in_atm": 1,
+        "preindustrial_ch4": 1,
+    },
 )
 def ch4_fractional_uptake():
     """
@@ -74,6 +91,17 @@ def ch4_fractional_uptake():
     limits=(3.01279e-43, np.nan),
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_ch4_in_atm": 1},
+    other_deps={
+        "_integ_ch4_in_atm": {
+            "initial": {"initial_ch4": 1},
+            "step": {
+                "ch4_emissions_from_permafrost_and_clathrate": 1,
+                "global_ch4_emissions": 1,
+                "ch4_uptake": 1,
+            },
+        }
+    },
 )
 def ch4_in_atm():
     return _integ_ch4_in_atm()
@@ -99,14 +127,22 @@ def ch4_molar_mass():
 
 
 @component.add(
-    name="CH4 Uptake", units="Mt/year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="CH4 Uptake",
+    units="Mt/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"ch4_in_atm": 1, "ch4_fractional_uptake": 1},
 )
 def ch4_uptake():
     return ch4_in_atm() * ch4_fractional_uptake()
 
 
 @component.add(
-    name="Choose RCP", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="Choose RCP",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_choose_rcp"},
 )
 def choose_rcp():
     """
@@ -131,6 +167,12 @@ _ext_constant_choose_rcp = ExtConstant(
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "sensitivity_of_methane_emissions_to_permafrost_and_clathrate": 1,
+        "reference_sensitivity_of_c_from_permafrost_and_clathrate_to_temperature": 1,
+        "temperature_change": 1,
+        "temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate": 1,
+    },
 )
 def flux_c_from_permafrost_release():
     return (
@@ -156,6 +198,11 @@ def g_per_t():
     units="Mt/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_ch4_emissions_fossil_fuels": 1,
+        "choose_rcp": 3,
+        "global_ch4_anthro_emissions_rcp": 4,
+    },
 )
 def global_ch4_anthro_emissions():
     """
@@ -182,6 +229,11 @@ def global_ch4_anthro_emissions():
     subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_global_ch4_anthro_emissions_rcp",
+        "__data__": "_ext_data_global_ch4_anthro_emissions_rcp",
+        "time": 1,
+    },
 )
 def global_ch4_anthro_emissions_rcp():
     """
@@ -208,6 +260,7 @@ _ext_data_global_ch4_anthro_emissions_rcp = ExtData(
     units="Mt/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"global_ch4_anthro_emissions": 1, "natural_ch4_emissions": 1},
 )
 def global_ch4_emissions():
     return global_ch4_anthro_emissions() + natural_ch4_emissions()
@@ -219,6 +272,7 @@ def global_ch4_emissions():
     subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"choose_rcp": 3, "global_hfc_emissions_rcp": 4},
 )
 def global_hfc_emissions():
     """
@@ -249,6 +303,11 @@ def global_hfc_emissions():
     subscripts=["RCP Scenario", "HFC type"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_global_hfc_emissions_rcp",
+        "__data__": "_ext_data_global_hfc_emissions_rcp",
+        "time": 1,
+    },
 )
 def global_hfc_emissions_rcp():
     """
@@ -350,6 +409,7 @@ _ext_data_global_hfc_emissions_rcp.add(
     units="Mt N/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"choose_rcp": 3, "global_n2o_anthro_emissions_rcp": 4},
 )
 def global_n2o_anthro_emissions():
     """
@@ -376,6 +436,11 @@ def global_n2o_anthro_emissions():
     subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_global_n2o_anthro_emissions_rcp",
+        "__data__": "_ext_data_global_n2o_anthro_emissions_rcp",
+        "time": 1,
+    },
 )
 def global_n2o_anthro_emissions_rcp():
     """
@@ -402,6 +467,7 @@ _ext_data_global_n2o_anthro_emissions_rcp = ExtData(
     units="Mt/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"global_n2o_anthro_emissions": 1, "natural_n2o_emissions": 1},
 )
 def global_n2o_emissions():
     return global_n2o_anthro_emissions() + natural_n2o_emissions()
@@ -412,6 +478,7 @@ def global_n2o_emissions():
     units="t/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"choose_rcp": 3, "global_pfc_emissions_rcp": 4},
 )
 def global_pfc_emissions():
     """
@@ -438,6 +505,11 @@ def global_pfc_emissions():
     subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_global_pfc_emissions_rcp",
+        "__data__": "_ext_data_global_pfc_emissions_rcp",
+        "time": 1,
+    },
 )
 def global_pfc_emissions_rcp():
     """
@@ -464,6 +536,7 @@ _ext_data_global_pfc_emissions_rcp = ExtData(
     units="t/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"choose_rcp": 3, "global_sf6_emissions_rcp": 4},
 )
 def global_sf6_emissions():
     """
@@ -490,6 +563,11 @@ def global_sf6_emissions():
     subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_global_sf6_emissions_rcp",
+        "__data__": "_ext_data_global_sf6_emissions_rcp",
+        "time": 1,
+    },
 )
 def global_sf6_emissions_rcp():
     """
@@ -516,6 +594,7 @@ _ext_data_global_sf6_emissions_rcp = ExtData(
     units="t/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"global_pfc_emissions": 1, "natural_pfc_emissions": 1},
 )
 def global_total_pfc_emissions():
     return global_pfc_emissions() + natural_pfc_emissions()
@@ -527,6 +606,7 @@ def global_total_pfc_emissions():
     subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"hfc_in_atm": 1, "ppt_hfc_per_tons_hfc": 1},
 )
 def hfc_atm_conc():
     return hfc_in_atm() * ppt_hfc_per_tons_hfc()
@@ -539,6 +619,13 @@ def hfc_atm_conc():
     subscripts=["HFC type"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_hfc_in_atm": 1},
+    other_deps={
+        "_integ_hfc_in_atm": {
+            "initial": {"initial_hfc": 1},
+            "step": {"global_hfc_emissions": 1, "hfc_uptake": 1},
+        }
+    },
 )
 def hfc_in_atm():
     return _integ_hfc_in_atm()
@@ -575,6 +662,7 @@ def hfc_molar_mass():
     subscripts=["HFC type"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_hfc_radiative_efficiency"},
 )
 def hfc_radiative_efficiency():
     """
@@ -600,6 +688,12 @@ _ext_constant_hfc_radiative_efficiency = ExtConstant(
     subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "hfc_atm_conc": 1,
+        "preindustrial_hfc_conc": 1,
+        "hfc_radiative_efficiency": 1,
+        "ppt_per_ppb": 1,
+    },
 )
 def hfc_rf():
     return (
@@ -615,13 +709,18 @@ def hfc_rf():
     subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"hfc_in_atm": 1, "time_const_for_hfc": 1},
 )
 def hfc_uptake():
     return hfc_in_atm() / time_const_for_hfc()
 
 
 @component.add(
-    name="init PFC in atm", units="t", comp_type="Auxiliary", comp_subtype="Normal"
+    name="init PFC in atm",
+    units="t",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"init_pfc_in_atm_con": 1, "ppt_pfc_per_tons_pfc": 1},
 )
 def init_pfc_in_atm():
     return init_pfc_in_atm_con() / ppt_pfc_per_tons_pfc()
@@ -632,6 +731,7 @@ def init_pfc_in_atm():
     units="ppt",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_init_pfc_in_atm_con"},
 )
 def init_pfc_in_atm_con():
     """
@@ -657,6 +757,7 @@ _ext_constant_init_pfc_in_atm_con = ExtConstant(
     subscripts=["HFC type"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_inital_hfc_con"},
 )
 def inital_hfc_con():
     return _ext_constant_inital_hfc_con()
@@ -674,14 +775,22 @@ _ext_constant_inital_hfc_con = ExtConstant(
 
 
 @component.add(
-    name="initial CH4", units="Mt", comp_type="Auxiliary", comp_subtype="Normal"
+    name="initial CH4",
+    units="Mt",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"initial_ch4_conc": 1, "ppb_ch4_per_mt_ch4": 1},
 )
 def initial_ch4():
     return initial_ch4_conc() / ppb_ch4_per_mt_ch4()
 
 
 @component.add(
-    name="initial CH4 conc", units="ppb", comp_type="Constant", comp_subtype="External"
+    name="initial CH4 conc",
+    units="ppb",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_ch4_conc"},
 )
 def initial_ch4_conc():
     """
@@ -707,20 +816,29 @@ _ext_constant_initial_ch4_conc = ExtConstant(
     subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"inital_hfc_con": 1, "ppt_hfc_per_tons_hfc": 1},
 )
 def initial_hfc():
     return inital_hfc_con() / ppt_hfc_per_tons_hfc()
 
 
 @component.add(
-    name="initial N2O", units="Mt N", comp_type="Auxiliary", comp_subtype="Normal"
+    name="initial N2O",
+    units="Mt N",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"initial_n2o_conc": 1, "ppb_n2o_per_mtonn": 1},
 )
 def initial_n2o():
     return initial_n2o_conc() / ppb_n2o_per_mtonn()
 
 
 @component.add(
-    name="initial N2O conc", units="ppb", comp_type="Constant", comp_subtype="External"
+    name="initial N2O conc",
+    units="ppb",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_n2o_conc"},
 )
 def initial_n2o_conc():
     """
@@ -741,14 +859,22 @@ _ext_constant_initial_n2o_conc = ExtConstant(
 
 
 @component.add(
-    name="initial SF6", units="t", comp_type="Auxiliary", comp_subtype="Normal"
+    name="initial SF6",
+    units="t",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"initial_sf6_conc": 1, "ppt_sf6_per_tons_sf6": 1},
 )
 def initial_sf6():
     return initial_sf6_conc() / ppt_sf6_per_tons_sf6()
 
 
 @component.add(
-    name="initial SF6 conc", units="ppt", comp_type="Constant", comp_subtype="External"
+    name="initial SF6 conc",
+    units="ppt",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_sf6_conc"},
 )
 def initial_sf6_conc():
     """
@@ -769,7 +895,11 @@ _ext_constant_initial_sf6_conc = ExtConstant(
 
 
 @component.add(
-    name="N2O atm conc", units="ppb", comp_type="Auxiliary", comp_subtype="Normal"
+    name="N2O atm conc",
+    units="ppb",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"n2o_in_atm": 1, "ppb_n2o_per_mtonn": 1},
 )
 def n2o_atm_conc():
     return n2o_in_atm() * ppb_n2o_per_mtonn()
@@ -781,6 +911,13 @@ def n2o_atm_conc():
     limits=(3.01279e-43, np.nan),
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_n2o_in_atm": 1},
+    other_deps={
+        "_integ_n2o_in_atm": {
+            "initial": {"initial_n2o": 1},
+            "step": {"global_n2o_emissions": 1, "n2o_uptake": 1},
+        }
+    },
 )
 def n2o_in_atm():
     return _integ_n2o_in_atm()
@@ -794,7 +931,11 @@ _integ_n2o_in_atm = Integ(
 
 
 @component.add(
-    name="N2O Uptake", units="Mt/year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="N2O Uptake",
+    units="Mt/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"n2o_in_atm": 1, "time_const_for_n2o": 1},
 )
 def n2o_uptake():
     return n2o_in_atm() / time_const_for_n2o()
@@ -819,6 +960,7 @@ def n2on_molar_mass():
     limits=(0.0, 20.0, 0.1),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_natural_n2o_emissions"},
 )
 def natural_n2o_emissions():
     """
@@ -843,13 +985,18 @@ _ext_constant_natural_n2o_emissions = ExtConstant(
     units="t/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"preindustrial_pfc": 1, "time_const_for_pfc": 1},
 )
 def natural_pfc_emissions():
     return preindustrial_pfc() / time_const_for_pfc()
 
 
 @component.add(
-    name="PFC atm conc", units="ppt", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PFC atm conc",
+    units="ppt",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pfc_in_atm": 1, "ppt_pfc_per_tons_pfc": 1},
 )
 def pfc_atm_conc():
     return pfc_in_atm() * ppt_pfc_per_tons_pfc()
@@ -861,6 +1008,13 @@ def pfc_atm_conc():
     limits=(3.01279e-43, np.nan),
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_pfc_in_atm": 1},
+    other_deps={
+        "_integ_pfc_in_atm": {
+            "initial": {"init_pfc_in_atm": 1},
+            "step": {"global_total_pfc_emissions": 1, "pfc_uptake": 1},
+        }
+    },
 )
 def pfc_in_atm():
     return _integ_pfc_in_atm()
@@ -878,6 +1032,7 @@ _integ_pfc_in_atm = Integ(
     units="W/(ppb*m2)",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_pfc_radiative_efficiency"},
 )
 def pfc_radiative_efficiency():
     """
@@ -898,7 +1053,16 @@ _ext_constant_pfc_radiative_efficiency = ExtConstant(
 
 
 @component.add(
-    name="PFC RF", units="W/m2", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PFC RF",
+    units="W/m2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "pfc_atm_conc": 1,
+        "preindustrial_pfc_conc": 1,
+        "pfc_radiative_efficiency": 1,
+        "ppt_per_ppb": 1,
+    },
 )
 def pfc_rf():
     return (
@@ -909,7 +1073,11 @@ def pfc_rf():
 
 
 @component.add(
-    name="PFC uptake", units="t/year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PFC uptake",
+    units="t/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pfc_in_atm": 1, "time_const_for_pfc": 1},
 )
 def pfc_uptake():
     return pfc_in_atm() / time_const_for_pfc()
@@ -920,6 +1088,13 @@ def pfc_uptake():
     units="ppb/Mt",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ppt_per_mol": 1,
+        "ch4_molar_mass": 1,
+        "g_per_t": 1,
+        "t_per_mt": 1,
+        "ppt_per_ppb": 1,
+    },
 )
 def ppb_ch4_per_mt_ch4():
     return ppt_per_mol() / ch4_molar_mass() * g_per_t() * t_per_mt() / ppt_per_ppb()
@@ -930,6 +1105,13 @@ def ppb_ch4_per_mt_ch4():
     units="ppb/Mt",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ppt_per_mol": 1,
+        "n2on_molar_mass": 1,
+        "g_per_t": 1,
+        "t_per_mt": 1,
+        "ppt_per_ppb": 1,
+    },
 )
 def ppb_n2o_per_mtonn():
     return ppt_per_mol() / n2on_molar_mass() * g_per_t() * t_per_mt() / ppt_per_ppb()
@@ -941,6 +1123,7 @@ def ppb_n2o_per_mtonn():
     subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ppt_per_mol": 1, "hfc_molar_mass": 1, "g_per_t": 1},
 )
 def ppt_hfc_per_tons_hfc():
     return ppt_per_mol() / hfc_molar_mass() * g_per_t()
@@ -971,6 +1154,7 @@ def ppt_per_ppb():
     units="ppt/t",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ppt_per_mol": 1, "cf4_molar_mass": 1, "g_per_t": 1},
 )
 def ppt_pfc_per_tons_pfc():
     """
@@ -984,13 +1168,18 @@ def ppt_pfc_per_tons_pfc():
     units="ppt/t",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ppt_per_mol": 1, "sf6_molar_mass": 1, "g_per_t": 1},
 )
 def ppt_sf6_per_tons_sf6():
     return ppt_per_mol() / sf6_molar_mass() * g_per_t()
 
 
 @component.add(
-    name="preindustrial CH4", units="Mt", comp_type="Constant", comp_subtype="External"
+    name="preindustrial CH4",
+    units="Mt",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_preindustrial_ch4"},
 )
 def preindustrial_ch4():
     """
@@ -1015,6 +1204,7 @@ _ext_constant_preindustrial_ch4 = ExtConstant(
     units="ppt",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_preindustrial_hfc_conc"},
 )
 def preindustrial_hfc_conc():
     return _ext_constant_preindustrial_hfc_conc()
@@ -1032,7 +1222,11 @@ _ext_constant_preindustrial_hfc_conc = ExtConstant(
 
 
 @component.add(
-    name="preindustrial PFC", units="t", comp_type="Auxiliary", comp_subtype="Normal"
+    name="preindustrial PFC",
+    units="t",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"preindustrial_pfc_conc": 1, "ppt_pfc_per_tons_pfc": 1},
 )
 def preindustrial_pfc():
     return preindustrial_pfc_conc() / ppt_pfc_per_tons_pfc()
@@ -1043,6 +1237,7 @@ def preindustrial_pfc():
     units="ppt",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_preindustrial_pfc_conc"},
 )
 def preindustrial_pfc_conc():
     return _ext_constant_preindustrial_pfc_conc()
@@ -1064,6 +1259,7 @@ _ext_constant_preindustrial_pfc_conc = ExtConstant(
     units="ppt",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_preindustrial_sf6_conc"},
 )
 def preindustrial_sf6_conc():
     return _ext_constant_preindustrial_sf6_conc()
@@ -1086,6 +1282,7 @@ _ext_constant_preindustrial_sf6_conc = ExtConstant(
     limits=(8.0, 10.0, 0.1),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_reference_ch4_time_constant"},
 )
 def reference_ch4_time_constant():
     """
@@ -1110,6 +1307,9 @@ _ext_constant_reference_ch4_time_constant = ExtConstant(
     units="GtC/year/ºC",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_reference_sensitivity_of_c_from_permafrost_and_clathrate_to_temperature"
+    },
 )
 def reference_sensitivity_of_c_from_permafrost_and_clathrate_to_temperature():
     return (
@@ -1133,6 +1333,9 @@ _ext_constant_reference_sensitivity_of_c_from_permafrost_and_clathrate_to_temper
     units="Mt/year/ºC",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_reference_sensitivity_of_ch4_from_permafrost_and_clathrate_to_temperature"
+    },
 )
 def reference_sensitivity_of_ch4_from_permafrost_and_clathrate_to_temperature():
     """
@@ -1160,6 +1363,9 @@ _ext_constant_reference_sensitivity_of_ch4_from_permafrost_and_clathrate_to_temp
     limits=(0.0, 1.0, 0.1),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_sensitivity_of_methane_emissions_to_permafrost_and_clathrate"
+    },
 )
 def sensitivity_of_methane_emissions_to_permafrost_and_clathrate():
     """
@@ -1187,6 +1393,13 @@ _ext_constant_sensitivity_of_methane_emissions_to_permafrost_and_clathrate = (
     limits=(3.01279e-43, np.nan),
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_sf6": 1},
+    other_deps={
+        "_integ_sf6": {
+            "initial": {"initial_sf6": 1},
+            "step": {"global_sf6_emissions": 1, "sf6_uptake": 1},
+        }
+    },
 )
 def sf6():
     return _integ_sf6()
@@ -1198,7 +1411,11 @@ _integ_sf6 = Integ(
 
 
 @component.add(
-    name="SF6 atm conc", units="ppt", comp_type="Auxiliary", comp_subtype="Normal"
+    name="SF6 atm conc",
+    units="ppt",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"sf6": 1, "ppt_sf6_per_tons_sf6": 1},
 )
 def sf6_atm_conc():
     return sf6() * ppt_sf6_per_tons_sf6()
@@ -1219,6 +1436,7 @@ def sf6_molar_mass():
     units="W/(ppb*m2)",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_sf6_radiative_efficiency"},
 )
 def sf6_radiative_efficiency():
     """
@@ -1239,7 +1457,16 @@ _ext_constant_sf6_radiative_efficiency = ExtConstant(
 
 
 @component.add(
-    name="SF6 RF", units="W/m2", comp_type="Auxiliary", comp_subtype="Normal"
+    name="SF6 RF",
+    units="W/m2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "sf6_atm_conc": 1,
+        "preindustrial_sf6_conc": 1,
+        "sf6_radiative_efficiency": 1,
+        "ppt_per_ppb": 1,
+    },
 )
 def sf6_rf():
     return (
@@ -1250,7 +1477,11 @@ def sf6_rf():
 
 
 @component.add(
-    name="SF6 uptake", units="t/year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="SF6 uptake",
+    units="t/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"sf6": 1, "time_const_for_sf6": 1},
 )
 def sf6_uptake():
     return sf6() / time_const_for_sf6()
@@ -1262,6 +1493,7 @@ def sf6_uptake():
     limits=(0.0, 1.0),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_stratospheric_ch4_path_share"},
 )
 def stratospheric_ch4_path_share():
     """
@@ -1294,6 +1526,9 @@ def t_per_mt():
     limits=(0.0, 4.0, 0.1),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate"
+    },
 )
 def temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate():
     """
@@ -1321,6 +1556,7 @@ _ext_constant_temperature_threshold_for_methane_emissions_from_permafrost_and_cl
     limits=(5.0, 15.0, 0.1),
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ch4_fractional_uptake": 1},
 )
 def time_const_for_ch4():
     return 1 / ch4_fractional_uptake()
@@ -1332,6 +1568,7 @@ def time_const_for_ch4():
     subscripts=["HFC type"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_time_const_for_hfc"},
 )
 def time_const_for_hfc():
     """
@@ -1356,6 +1593,7 @@ _ext_constant_time_const_for_hfc = ExtConstant(
     units="years",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_time_const_for_n2o"},
 )
 def time_const_for_n2o():
     """
@@ -1380,6 +1618,7 @@ _ext_constant_time_const_for_n2o = ExtConstant(
     units="years",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_time_const_for_pfc"},
 )
 def time_const_for_pfc():
     """
@@ -1404,6 +1643,7 @@ _ext_constant_time_const_for_pfc = ExtConstant(
     units="years",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_time_const_for_sf6"},
 )
 def time_const_for_sf6():
     """
@@ -1428,6 +1668,18 @@ _ext_constant_time_const_for_sf6 = ExtConstant(
     units="GtC",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_total_c_from_permafrost": 1},
+    other_deps={
+        "_integ_total_c_from_permafrost": {
+            "initial": {},
+            "step": {
+                "flux_c_from_permafrost_release": 1,
+                "ch4_emissions_from_permafrost_and_clathrate": 1,
+                "mt_per_gt": 1,
+                "ch4_per_c": 1,
+            },
+        }
+    },
 )
 def total_c_from_permafrost():
     """
@@ -1445,7 +1697,21 @@ _integ_total_c_from_permafrost = Integ(
 
 
 @component.add(
-    name="Total CH4 released", units="GtC", comp_type="Stateful", comp_subtype="Integ"
+    name="Total CH4 released",
+    units="GtC",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_total_ch4_released": 1},
+    other_deps={
+        "_integ_total_ch4_released": {
+            "initial": {},
+            "step": {
+                "ch4_emissions_from_permafrost_and_clathrate": 1,
+                "ch4_per_c": 1,
+                "mt_per_gt": 1,
+            },
+        }
+    },
 )
 def total_ch4_released():
     """
@@ -1467,6 +1733,7 @@ _integ_total_ch4_released = Integ(
     limits=(0.0, 1.0),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_tropospheric_ch4_path_share"},
 )
 def tropospheric_ch4_path_share():
     """

@@ -1,6 +1,6 @@
 """
 Module res_elec_supply_by_technology
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,11 @@ Translated using PySD version 3.0.0
     units="TWh/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_fe_elec_demand_twh": 1,
+        "fe_tot_generation_all_res_elec_twh": 1,
+        "fes_elec_from_waste_twh": 1,
+    },
 )
 def demand_elec_nre_twh():
     """
@@ -27,6 +32,7 @@ def demand_elec_nre_twh():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_conversion_bioe_to_elec"},
 )
 def efficiency_conversion_bioe_to_elec():
     """
@@ -51,6 +57,10 @@ _ext_constant_efficiency_conversion_bioe_to_elec = ExtConstant(
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_real_tot_generation_res_elec_twh": 1,
+        "fes_elec_from_res_with_priority_twh": 1,
+    },
 )
 def fe_tot_generation_all_res_elec_twh():
     """
@@ -64,13 +74,23 @@ def fe_tot_generation_all_res_elec_twh():
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fes_elec_from_biogas_twh": 1},
 )
 def fes_elec_from_res_with_priority_twh():
     return fes_elec_from_biogas_twh()
 
 
 @component.add(
-    name='"imports/exports electricity"', comp_type="Auxiliary", comp_subtype="Normal"
+    name='"imports/exports electricity"',
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "fe_elec_demand_exports_twh": 2,
+        "total_fe_elec_generation_twh_eu28": 2,
+        "demand_elec_nre_twh": 2,
+        "real_fe_demand_nre": 2,
+    },
 )
 def importsexports_electricity():
     return if_then_else(
@@ -101,6 +121,7 @@ def mtoe_per_ej():
     units="MToe/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pe_real_generation_res_elec": 1, "mtoe_per_ej": 1},
 )
 def pe_biow_for_elec_generation_mtoe():
     """
@@ -114,6 +135,7 @@ def pe_biow_for_elec_generation_mtoe():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pe_real_generation_res_elec": 1, "pes_tot_biogas_for_elec": 1},
 )
 def pe_elec_generation_from_res_ej():
     """
@@ -133,6 +155,11 @@ def pe_elec_generation_from_res_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_real_generation_res_elec": 1,
+        "real_generation_res_elec_twh": 1,
+        "ej_per_twh": 1,
+    },
 )
 def pe_losses_bioe_for_elec_ej():
     """
@@ -150,6 +177,12 @@ def pe_losses_bioe_for_elec_ej():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_generation_res_elec_twh": 8,
+        "ej_per_twh": 8,
+        "res_to_fossil_accounting": 7,
+        "efficiency_conversion_bioe_to_elec": 1,
+    },
 )
 def pe_real_generation_res_elec():
     """
@@ -205,6 +238,14 @@ def pe_real_generation_res_elec():
     units="TWh/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_demand_coal_elec_plants_twh": 1,
+        "fe_demand_gas_elec_plants_twh": 1,
+        "fe_demand_oil_elec_plants_twh": 1,
+        "fe_nuclear_elec_generation_twh": 1,
+        "ej_per_twh": 1,
+        "fes_elec_fossil_fuel_chp_plants_ej": 1,
+    },
 )
 def real_fe_demand_nre():
     return (
@@ -234,6 +275,7 @@ def res_to_fossil_accounting():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_fe_elec_demand_twh": 2, "fe_tot_generation_all_res_elec_twh": 1},
 )
 def share_elec_demand_covered_by_res():
     """
@@ -253,6 +295,11 @@ def share_elec_demand_covered_by_res():
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_fe_elec_demand_twh": 1,
+        "fes_elec_from_res_with_priority_twh": 1,
+        "fes_elec_from_waste_twh": 1,
+    },
 )
 def total_fe_elec_demand_after_priorities_twh():
     return np.maximum(

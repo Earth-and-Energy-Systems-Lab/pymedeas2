@@ -1,6 +1,6 @@
 """
 Module energy_indicators
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     units="kWh/people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_fe_elec_consumption_twh": 1, "kwh_per_twh": 1, "population": 1},
 )
 def average_elec_consumption_per_capita():
     """
@@ -22,6 +23,7 @@ def average_elec_consumption_per_capita():
     units="GJ/(year*people)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"tpes_ej": 1, "gj_per_ej": 1, "population": 1},
 )
 def average_tpes_per_capita():
     """
@@ -35,6 +37,11 @@ def average_tpes_per_capita():
     units="GJ/people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "tpes_without_trad_biomass": 1,
+        "gj_per_ej": 1,
+        "pop_not_dependent_on_trad_biomass": 1,
+    },
 )
 def average_tpespc_without_trad_biomass():
     """
@@ -70,6 +77,7 @@ def kwh_per_twh():
     units="GJ/person",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_tfec": 1, "gj_per_ej": 1, "population": 1},
 )
 def net_tfec_per_capita():
     return zidz(real_tfec() * gj_per_ej(), population())
@@ -80,6 +88,7 @@ def net_tfec_per_capita():
     units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"population": 1, "population_dependent_on_trad_biomass": 1},
 )
 def pop_not_dependent_on_trad_biomass():
     """
@@ -93,6 +102,7 @@ def pop_not_dependent_on_trad_biomass():
     units="GJ/person",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"tfec_res_ej": 1, "gj_per_ej": 1, "population": 1},
 )
 def tfec_from_res_per_capita():
     return zidz(tfec_res_ej() * gj_per_ej(), population())
@@ -103,13 +113,24 @@ def tfec_from_res_per_capita():
     units="GJ/person",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_tfec": 1, "gj_per_ej": 1, "population": 1},
 )
 def tfec_per_capita():
     return zidz(real_tfec() * gj_per_ej(), population())
 
 
 @component.add(
-    name="TFEC RES EJ", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="TFEC RES EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "fe_tot_generation_all_res_elec_ej": 1,
+        "fes_res_for_heat_ej": 1,
+        "pe_traditional_biomass_consum_ej": 1,
+        "fes_total_biofuels": 1,
+        "fes_total_biogas": 1,
+    },
 )
 def tfec_res_ej():
     """
@@ -129,6 +150,7 @@ def tfec_res_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"tpes_ej": 1, "pe_traditional_biomass_ej_delayed_1yr": 1},
 )
 def tpes_without_trad_biomass():
     """

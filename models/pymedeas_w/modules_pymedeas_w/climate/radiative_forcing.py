@@ -1,6 +1,6 @@
 """
 Module radiative_forcing
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,12 @@ Translated using PySD version 3.0.0
     units="W/m2",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "other_forcings": 1,
+        "time": 1,
+        "mineral_aerosols_and_land_rf": 1,
+        "last_historical_rf_year": 1,
+    },
 )
 def adjusted_other_forcings():
     """
@@ -26,6 +32,16 @@ def adjusted_other_forcings():
     units="W/m2",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ch4_n2o_interaction_coef_1": 1,
+        "ch4_atm_conc": 3,
+        "ch4_n2o_interaction_coef_2": 1,
+        "ch4_n2o_interaction_coef_3": 1,
+        "n2o_reference_conc": 2,
+        "ch4_n2o_interaction_exp_1": 1,
+        "ch4_n2o_unit_adj": 5,
+        "ch4_n2o_interaction_exp_2": 1,
+    },
 )
 def adjustment_for_ch4_and_n2oref():
     """
@@ -59,6 +75,16 @@ def adjustment_for_ch4_and_n2oref():
     units="W/m2",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ch4_n2o_interaction_coef_1": 1,
+        "ch4_n2o_interaction_exp_1": 1,
+        "ch4_reference_conc": 3,
+        "ch4_n2o_interaction_coef_2": 1,
+        "ch4_n2o_interaction_coef_3": 1,
+        "n2o_atm_conc": 2,
+        "ch4_n2o_unit_adj": 5,
+        "ch4_n2o_interaction_exp_2": 1,
+    },
 )
 def adjustment_for_ch4ref_and_n2o():
     """
@@ -92,6 +118,16 @@ def adjustment_for_ch4ref_and_n2o():
     units="W/m2",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ch4_n2o_interaction_coef_1": 1,
+        "ch4_reference_conc": 3,
+        "ch4_n2o_interaction_coef_2": 1,
+        "ch4_n2o_interaction_coef_3": 1,
+        "n2o_reference_conc": 2,
+        "ch4_n2o_interaction_exp_1": 1,
+        "ch4_n2o_unit_adj": 5,
+        "ch4_n2o_interaction_exp_2": 1,
+    },
 )
 def adjustment_for_ch4ref_and_n2oref():
     """
@@ -125,6 +161,7 @@ def adjustment_for_ch4ref_and_n2oref():
     units="W/m2",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ch4_radiative_forcing": 1, "n2o_radiative_forcing": 1},
 )
 def ch4_and_n2o_radiative_forcing():
     """
@@ -138,6 +175,7 @@ def ch4_and_n2o_radiative_forcing():
     units="W/m2",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ch4_n2o_interaction_coef_1"},
 )
 def ch4_n2o_interaction_coef_1():
     """
@@ -162,6 +200,7 @@ _ext_constant_ch4_n2o_interaction_coef_1 = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ch4_n2o_interaction_coef_2"},
 )
 def ch4_n2o_interaction_coef_2():
     """
@@ -186,6 +225,7 @@ _ext_constant_ch4_n2o_interaction_coef_2 = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ch4_n2o_interaction_coef_3"},
 )
 def ch4_n2o_interaction_coef_3():
     """
@@ -210,6 +250,7 @@ _ext_constant_ch4_n2o_interaction_coef_3 = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ch4_n2o_interaction_exp_1"},
 )
 def ch4_n2o_interaction_exp_1():
     """
@@ -234,6 +275,7 @@ _ext_constant_ch4_n2o_interaction_exp_1 = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ch4_n2o_interaction_exp_2"},
 )
 def ch4_n2o_interaction_exp_2():
     """
@@ -258,6 +300,7 @@ _ext_constant_ch4_n2o_interaction_exp_2 = ExtConstant(
     units="1/ppb",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ch4_n2o_unit_adj"},
 )
 def ch4_n2o_unit_adj():
     """
@@ -282,6 +325,7 @@ _ext_constant_ch4_n2o_unit_adj = ExtConstant(
     units="W/m2",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ch4_radiative_efficiency_coef"},
 )
 def ch4_radiative_efficiency_coef():
     """
@@ -306,6 +350,14 @@ _ext_constant_ch4_radiative_efficiency_coef = ExtConstant(
     units="W/m2",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ch4_radiative_efficiency_coef": 1,
+        "ch4_reference_conc": 1,
+        "ch4_n2o_unit_adj": 2,
+        "ch4_atm_conc": 1,
+        "adjustment_for_ch4_and_n2oref": 1,
+        "adjustment_for_ch4ref_and_n2oref": 1,
+    },
 )
 def ch4_radiative_forcing():
     """
@@ -322,6 +374,7 @@ def ch4_radiative_forcing():
     units="ppb",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ch4_reference_conc"},
 )
 def ch4_reference_conc():
     """
@@ -346,6 +399,11 @@ _ext_constant_ch4_reference_conc = ExtConstant(
     units="W/m2",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "reference_co2_radiative_forcing": 1,
+        "c_in_atmosphere": 1,
+        "preindustrial_c": 1,
+    },
 )
 def co2_radiative_forcing():
     """
@@ -361,6 +419,13 @@ def co2_radiative_forcing():
     units="W/m2",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_effective_radiative_forcing": 1},
+    other_deps={
+        "_sampleiftrue_effective_radiative_forcing": {
+            "initial": {"total_radiative_forcing": 1},
+            "step": {"time": 1, "time_to_commit_rf": 1, "total_radiative_forcing": 1},
+        }
+    },
 )
 def effective_radiative_forcing():
     """
@@ -378,7 +443,11 @@ _sampleiftrue_effective_radiative_forcing = SampleIfTrue(
 
 
 @component.add(
-    name="Halocarbon RF", units="W/m2", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Halocarbon RF",
+    units="W/m2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"rf_from_f_gases": 1, "mp_rf_total": 1},
 )
 def halocarbon_rf():
     """
@@ -388,7 +457,11 @@ def halocarbon_rf():
 
 
 @component.add(
-    name="HFC RF total", units="W/m2", comp_type="Auxiliary", comp_subtype="Normal"
+    name="HFC RF total",
+    units="W/m2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"hfc_rf": 1},
 )
 def hfc_rf_total():
     """
@@ -402,6 +475,7 @@ def hfc_rf_total():
     units="year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_last_historical_rf_year"},
 )
 def last_historical_rf_year():
     """
@@ -427,6 +501,7 @@ _ext_constant_last_historical_rf_year = ExtConstant(
     limits=(-1.0, 1.0, 0.01),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_mineral_aerosols_and_land_rf"},
 )
 def mineral_aerosols_and_land_rf():
     """
@@ -447,7 +522,15 @@ _ext_constant_mineral_aerosols_and_land_rf = ExtConstant(
 
 
 @component.add(
-    name="MP RF total", units="W/m2", comp_type="Data", comp_subtype="External"
+    name="MP RF total",
+    units="W/m2",
+    comp_type="Data",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_mp_rf_total",
+        "__data__": "_ext_data_mp_rf_total",
+        "time": 1,
+    },
 )
 def mp_rf_total():
     """
@@ -474,6 +557,7 @@ _ext_data_mp_rf_total = ExtData(
     units="W/m2",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_n2o_radiative_efficiency_coeff"},
 )
 def n2o_radiative_efficiency_coeff():
     """
@@ -498,6 +582,14 @@ _ext_constant_n2o_radiative_efficiency_coeff = ExtConstant(
     units="W/m2",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "n2o_radiative_efficiency_coeff": 1,
+        "ch4_n2o_unit_adj": 2,
+        "n2o_reference_conc": 1,
+        "n2o_atm_conc": 1,
+        "adjustment_for_ch4ref_and_n2oref": 1,
+        "adjustment_for_ch4ref_and_n2o": 1,
+    },
 )
 def n2o_radiative_forcing():
     """
@@ -514,6 +606,7 @@ def n2o_radiative_forcing():
     units="ppb",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_n2o_reference_conc"},
 )
 def n2o_reference_conc():
     """
@@ -534,7 +627,16 @@ _ext_constant_n2o_reference_conc = ExtConstant(
 
 
 @component.add(
-    name="other forcings", units="W/m2", comp_type="Auxiliary", comp_subtype="Normal"
+    name="other forcings",
+    units="W/m2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "last_historical_rf_year": 1,
+        "other_forcings_history": 1,
+        "other_forcings_rcp": 1,
+    },
 )
 def other_forcings():
     """
@@ -552,6 +654,11 @@ def other_forcings():
     units="W/m2",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_other_forcings_history",
+        "__data__": "_ext_data_other_forcings_history",
+        "time": 1,
+    },
 )
 def other_forcings_history():
     """
@@ -574,7 +681,11 @@ _ext_data_other_forcings_history = ExtData(
 
 
 @component.add(
-    name="other forcings RCP", units="W/m2", comp_type="Data", comp_subtype="Normal"
+    name="other forcings RCP",
+    units="W/m2",
+    comp_type="Data",
+    comp_subtype="Normal",
+    depends_on={"choose_rcp": 3, "other_forcings_rcp_scenario": 4},
 )
 def other_forcings_rcp():
     """
@@ -601,6 +712,11 @@ def other_forcings_rcp():
     subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_other_forcings_rcp_scenario",
+        "__data__": "_ext_data_other_forcings_rcp_scenario",
+        "time": 1,
+    },
 )
 def other_forcings_rcp_scenario():
     """
@@ -626,13 +742,18 @@ _ext_data_other_forcings_rcp_scenario = ExtData(
     name='"Other GHG Rad Forcing (non CO2)"',
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_radiative_forcing": 1, "co2_radiative_forcing": 1},
 )
 def other_ghg_rad_forcing_non_co2():
     return total_radiative_forcing() - co2_radiative_forcing()
 
 
 @component.add(
-    name="RF from F gases", units="W/m2", comp_type="Auxiliary", comp_subtype="Normal"
+    name="RF from F gases",
+    units="W/m2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pfc_rf": 1, "sf6_rf": 1, "hfc_rf_total": 1},
 )
 def rf_from_f_gases():
     """
@@ -647,6 +768,7 @@ def rf_from_f_gases():
     limits=(1900.0, 2200.0),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_time_to_commit_rf"},
 )
 def time_to_commit_rf():
     """
@@ -671,6 +793,7 @@ _ext_constant_time_to_commit_rf = ExtConstant(
     units="W/m2",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"wellmixed_ghg_forcing": 1, "adjusted_other_forcings": 1},
 )
 def total_radiative_forcing():
     return wellmixed_ghg_forcing() + adjusted_other_forcings()
@@ -681,6 +804,11 @@ def total_radiative_forcing():
     units="W/m2",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "co2_radiative_forcing": 1,
+        "ch4_and_n2o_radiative_forcing": 1,
+        "halocarbon_rf": 1,
+    },
 )
 def wellmixed_ghg_forcing():
     return co2_radiative_forcing() + ch4_and_n2o_radiative_forcing() + halocarbon_rf()

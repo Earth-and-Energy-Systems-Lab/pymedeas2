@@ -1,11 +1,15 @@
 """
 Module total_fe_heat_generation
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="Abundance heat", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Abundance heat",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"total_fe_heat_generation_ej": 2, "total_fed_heat_ej": 3},
 )
 def abundance_heat():
     """
@@ -26,6 +30,7 @@ def abundance_heat():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fes_res_for_heat_ej": 1, "fes_res_for_heat_delayed_1yr": 1},
 )
 def annual_growth_rate_res_for_heat():
     """
@@ -35,7 +40,16 @@ def annual_growth_rate_res_for_heat():
 
 
 @component.add(
-    name="FES heat from BioW", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="FES heat from BioW",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "fe_real_supply_res_for_heatcom_tot_ej": 1,
+        "fe_real_supply_res_for_heatnc_tot_ej": 1,
+        "fes_heatcom_from_biogas_ej": 1,
+        "fes_heatcom_from_waste_ej": 1,
+    },
 )
 def fes_heat_from_biow():
     """
@@ -50,7 +64,15 @@ def fes_heat_from_biow():
 
 
 @component.add(
-    name="FES Heat from coal", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="FES Heat from coal",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "pes_coal_for_heatcom_plants": 1,
+        "pes_coal_for_heatnc_plants": 1,
+        "efficiency_coal_for_heat_plants": 1,
+    },
 )
 def fes_heat_from_coal():
     """
@@ -66,6 +88,11 @@ def fes_heat_from_coal():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_nat_gas_for_heatcom_plants": 1,
+        "pes_nat_gas_for_heatnc_plants": 1,
+        "efficiency_gases_for_heat_plants": 1,
+    },
 )
 def fes_heat_from_nat_gas():
     """
@@ -77,7 +104,15 @@ def fes_heat_from_nat_gas():
 
 
 @component.add(
-    name="FES Heat from oil", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="FES Heat from oil",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "pes_oil_for_heatcom_plants": 1,
+        "pes_oil_for_heatnc_plants": 1,
+        "efficiency_liquids_for_heat_plants": 1,
+    },
 )
 def fes_heat_from_oil():
     """
@@ -89,7 +124,17 @@ def fes_heat_from_oil():
 
 
 @component.add(
-    name="FES NRE for heat", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="FES NRE for heat",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "fes_heatcom_fossil_fuels_chp_plants_ej": 1,
+        "fes_heat_from_coal": 1,
+        "fes_heat_from_nat_gas": 1,
+        "fes_heat_from_oil": 1,
+        "fes_heatcom_nuclear_chp_plants_ej": 1,
+    },
 )
 def fes_nre_for_heat():
     """
@@ -109,6 +154,13 @@ def fes_nre_for_heat():
     units="Tdollars/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_fes_res_for_heat_delayed_1yr": 1},
+    other_deps={
+        "_delayfixed_fes_res_for_heat_delayed_1yr": {
+            "initial": {},
+            "step": {"fes_res_for_heat_ej": 1},
+        }
+    },
 )
 def fes_res_for_heat_delayed_1yr():
     """
@@ -127,7 +179,15 @@ _delayfixed_fes_res_for_heat_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="FES RES for heat EJ", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="FES RES for heat EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "fe_real_supply_res_for_heatcom_tot_ej": 1,
+        "fe_real_supply_res_for_heatnc_tot_ej": 1,
+        "fes_heatcom_from_biogas_ej": 1,
+    },
 )
 def fes_res_for_heat_ej():
     """
@@ -145,6 +205,7 @@ def fes_res_for_heat_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"extraction_coal_ej": 1, "share_coal_dem_for_heatcom": 1},
 )
 def pes_coal_for_heatcom_plants():
     """
@@ -158,6 +219,7 @@ def pes_coal_for_heatcom_plants():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"extraction_coal_ej": 1, "share_coal_dem_for_heatnc": 1},
 )
 def pes_coal_for_heatnc_plants():
     """
@@ -171,6 +233,7 @@ def pes_coal_for_heatnc_plants():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_nat_gas": 1, "share_nat_gas_dem_for_heatcom": 1},
 )
 def pes_nat_gas_for_heatcom_plants():
     """
@@ -184,6 +247,11 @@ def pes_nat_gas_for_heatcom_plants():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_gases": 1,
+        "ped_nat_gas_for_gtl_ej": 1,
+        "share_gases_dem_for_heatnc": 1,
+    },
 )
 def pes_nat_gas_for_heatnc_plants():
     """
@@ -197,6 +265,7 @@ def pes_nat_gas_for_heatnc_plants():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_oil_ej": 1, "share_oil_dem_for_heatcom": 1},
 )
 def pes_oil_for_heatcom_plants():
     """
@@ -210,6 +279,7 @@ def pes_oil_for_heatcom_plants():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_liquids_ej": 1, "share_liquids_dem_for_heatnc": 1},
 )
 def pes_oil_for_heatnc_plants():
     """
@@ -223,6 +293,7 @@ def pes_oil_for_heatnc_plants():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fes_res_for_heat_ej": 1, "total_fe_heat_generation_ej": 1},
 )
 def share_res_heat_generation():
     """
@@ -236,6 +307,11 @@ def share_res_heat_generation():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fes_res_for_heat_ej": 1,
+        "fes_heatcom_from_waste_ej": 1,
+        "fes_nre_for_heat": 1,
+    },
 )
 def total_fe_heat_generation_ej():
     """
@@ -249,6 +325,7 @@ def total_fe_heat_generation_ej():
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_heat": 1, "time": 1},
 )
 def year_scarcity_heat():
     """

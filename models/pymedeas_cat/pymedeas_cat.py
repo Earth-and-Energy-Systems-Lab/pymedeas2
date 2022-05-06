@@ -8,27 +8,27 @@ import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
+    zidz,
+    sum,
+    step,
+    invert_matrix,
     xidz,
     if_then_else,
-    invert_matrix,
     integer,
-    zidz,
-    step,
-    sum,
 )
-from pysd.py_backend.statefuls import Initial, DelayFixed, Smooth, SampleIfTrue, Integ
-from pysd.py_backend.external import ExtLookup, ExtData, ExtConstant
+from pysd.py_backend.statefuls import Initial, DelayFixed, Integ, SampleIfTrue, Smooth
+from pysd.py_backend.external import ExtLookup, ExtConstant, ExtData
 from pysd.py_backend.data import TabData
-from pysd.py_backend.utils import load_modules, load_model_data
+from pysd.py_backend.utils import load_model_data, load_modules
 from pysd import Component
 
-__pysd_version__ = "3.0.0"
+__pysd_version__ = "3.0.0-dev"
 
 __data = {"scope": None, "time": lambda: 0}
 
 _root = Path(__file__).parent
 
-_subscript_dict, _dependencies, _modules = load_model_data(_root, "pymedeas_cat")
+_subscript_dict, _modules = load_model_data(_root, "pymedeas_cat")
 
 component = Component()
 

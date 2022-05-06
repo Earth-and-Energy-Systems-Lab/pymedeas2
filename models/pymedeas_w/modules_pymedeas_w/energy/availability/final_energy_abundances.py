@@ -1,6 +1,6 @@
 """
 Module final_energy_abundances
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,13 @@ Translated using PySD version 3.0.0
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "abundance_liquids": 1,
+        "abundance_gases": 1,
+        "abundance_solids": 1,
+        "abundance_electricity": 1,
+        "abundance_heat": 1,
+    },
 )
 def abundance_final_fuels():
     value = xr.DataArray(
@@ -27,6 +34,7 @@ def abundance_final_fuels():
     units="year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_energy_scarcity_forgetting_time"},
 )
 def energy_scarcity_forgetting_time():
     """
@@ -51,6 +59,7 @@ _ext_constant_energy_scarcity_forgetting_time = ExtConstant(
     units="year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_energy_scarcity_forgetting_time_h"},
 )
 def energy_scarcity_forgetting_time_h():
     """
@@ -76,6 +85,11 @@ _ext_constant_energy_scarcity_forgetting_time_h = ExtConstant(
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "scarcity_final_fuels": 1,
+        "sensitivity_to_scarcity": 1,
+        "perception_of_final_energy_scarcity": 1,
+    },
 )
 def increase_in_perception_fe_scarcity():
     """
@@ -94,6 +108,11 @@ def increase_in_perception_fe_scarcity():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "scarcity_final_fuels_h": 1,
+        "sensitivity_to_scarcity_h": 1,
+        "perception_of_final_energy_scarcity_h": 1,
+    },
 )
 def increase_in_perception_fe_scarcity_h():
     """
@@ -112,6 +131,16 @@ def increase_in_perception_fe_scarcity_h():
     subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_perception_of_final_energy_scarcity": 1},
+    other_deps={
+        "_integ_perception_of_final_energy_scarcity": {
+            "initial": {},
+            "step": {
+                "increase_in_perception_fe_scarcity": 1,
+                "reduction_in_perception_fe_scarcity": 1,
+            },
+        }
+    },
 )
 def perception_of_final_energy_scarcity():
     """
@@ -136,6 +165,16 @@ _integ_perception_of_final_energy_scarcity = Integ(
     subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_perception_of_final_energy_scarcity_h": 1},
+    other_deps={
+        "_integ_perception_of_final_energy_scarcity_h": {
+            "initial": {},
+            "step": {
+                "increase_in_perception_fe_scarcity_h": 1,
+                "reduction_in_perception_fe_scarcity_h": 1,
+            },
+        }
+    },
 )
 def perception_of_final_energy_scarcity_h():
     """
@@ -160,19 +199,16 @@ _integ_perception_of_final_energy_scarcity_h = Integ(
     subscripts=["final sources", "final sources1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "sensitivity_to_scarcity_h": 1,
+        "perception_of_final_energy_scarcity_h": 2,
+    },
 )
 def perception_of_interfuel_final_energy_scarcities_h():
     """
     Socieconomic perception of final energy scarcity between fuels for households. Matrix 5x5. This perception drives the fuel replacement and efficiency improvement.
     """
-    return xr.DataArray(
-        0,
-        {
-            "final sources": _subscript_dict["final sources"],
-            "final sources1": _subscript_dict["final sources1"],
-        },
-        ["final sources", "final sources1"],
-    ) + if_then_else(
+    return if_then_else(
         sensitivity_to_scarcity_h() == 0,
         lambda: xr.DataArray(
             0,
@@ -183,33 +219,13 @@ def perception_of_interfuel_final_energy_scarcities_h():
             ["final sources1", "final sources"],
         ),
         lambda: zidz(
-            (
-                xr.DataArray(
-                    0,
-                    {
-                        "final sources1": _subscript_dict["final sources1"],
-                        "final sources": _subscript_dict["final sources"],
-                    },
-                    ["final sources1", "final sources"],
-                )
-                + perception_of_final_energy_scarcity_h().rename(
-                    {"final sources": "final sources1"}
-                )
+            perception_of_final_energy_scarcity_h().rename(
+                {"final sources": "final sources1"}
             )
-            - (
-                xr.DataArray(
-                    0,
-                    {
-                        "final sources1": _subscript_dict["final sources1"],
-                        "final sources": _subscript_dict["final sources"],
-                    },
-                    ["final sources1", "final sources"],
-                )
-                + perception_of_final_energy_scarcity_h()
-            ),
+            - perception_of_final_energy_scarcity_h(),
             1,
         ),
-    )
+    ).transpose("final sources", "final sources1")
 
 
 @component.add(
@@ -218,19 +234,13 @@ def perception_of_interfuel_final_energy_scarcities_h():
     subscripts=["final sources", "final sources1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"sensitivity_to_scarcity": 1, "perception_of_final_energy_scarcity": 2},
 )
 def perception_of_interfuel_final_energy_scarcities():
     """
     Perception of economic sectors of final energy scarcity between fuels. Matrix 5x5. This perception drives the fuel replacement and efficiency improvement.
     """
-    return xr.DataArray(
-        0,
-        {
-            "final sources": _subscript_dict["final sources"],
-            "final sources1": _subscript_dict["final sources1"],
-        },
-        ["final sources", "final sources1"],
-    ) + if_then_else(
+    return if_then_else(
         sensitivity_to_scarcity() == 0,
         lambda: xr.DataArray(
             0,
@@ -241,33 +251,13 @@ def perception_of_interfuel_final_energy_scarcities():
             ["final sources1", "final sources"],
         ),
         lambda: zidz(
-            (
-                xr.DataArray(
-                    0,
-                    {
-                        "final sources1": _subscript_dict["final sources1"],
-                        "final sources": _subscript_dict["final sources"],
-                    },
-                    ["final sources1", "final sources"],
-                )
-                + perception_of_final_energy_scarcity().rename(
-                    {"final sources": "final sources1"}
-                )
+            perception_of_final_energy_scarcity().rename(
+                {"final sources": "final sources1"}
             )
-            - (
-                xr.DataArray(
-                    0,
-                    {
-                        "final sources1": _subscript_dict["final sources1"],
-                        "final sources": _subscript_dict["final sources"],
-                    },
-                    ["final sources1", "final sources"],
-                )
-                + perception_of_final_energy_scarcity()
-            ),
+            - perception_of_final_energy_scarcity(),
             1,
         ),
-    )
+    ).transpose("final sources", "final sources1")
 
 
 @component.add(
@@ -276,6 +266,10 @@ def perception_of_interfuel_final_energy_scarcities():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "perception_of_final_energy_scarcity": 1,
+        "energy_scarcity_forgetting_time": 1,
+    },
 )
 def reduction_in_perception_fe_scarcity():
     """
@@ -290,6 +284,10 @@ def reduction_in_perception_fe_scarcity():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "perception_of_final_energy_scarcity_h": 1,
+        "energy_scarcity_forgetting_time_h": 1,
+    },
 )
 def reduction_in_perception_fe_scarcity_h():
     """
@@ -304,6 +302,7 @@ def reduction_in_perception_fe_scarcity_h():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_final_fuels": 1},
 )
 def scarcity_final_fuels():
     """
@@ -317,6 +316,13 @@ def scarcity_final_fuels():
     subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_scarcity_final_fuels_counter": 1},
+    other_deps={
+        "_integ_scarcity_final_fuels_counter": {
+            "initial": {},
+            "step": {"scarcity_final_fuels_flags": 1},
+        }
+    },
 )
 def scarcity_final_fuels_counter():
     return _integ_scarcity_final_fuels_counter()
@@ -344,6 +350,7 @@ _integ_scarcity_final_fuels_counter = Integ(
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_final_fuels": 1},
 )
 def scarcity_final_fuels_flags():
     return if_then_else(
@@ -363,6 +370,7 @@ def scarcity_final_fuels_flags():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_final_fuels": 1},
 )
 def scarcity_final_fuels_h():
     """
@@ -376,6 +384,7 @@ def scarcity_final_fuels_h():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"scarcity_final_fuels_counter": 1},
 )
 def scarcity_fuels_flag():
     """
@@ -397,6 +406,13 @@ def scarcity_fuels_flag():
     subscripts=["materials"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_scarcity_reserves_counter": 1},
+    other_deps={
+        "_integ_scarcity_reserves_counter": {
+            "initial": {},
+            "step": {"materials_availability_reserves": 1},
+        }
+    },
 )
 def scarcity_reserves_counter():
     return _integ_scarcity_reserves_counter()
@@ -422,6 +438,7 @@ _integ_scarcity_reserves_counter = Integ(
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"scarcity_reserves_counter": 1},
 )
 def scarcity_reserves_flag():
     """
@@ -443,6 +460,13 @@ def scarcity_reserves_flag():
     subscripts=["materials"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_scarcity_resources_counter": 1},
+    other_deps={
+        "_integ_scarcity_resources_counter": {
+            "initial": {},
+            "step": {"materials_availability_resources": 1},
+        }
+    },
 )
 def scarcity_resources_counter():
     return _integ_scarcity_resources_counter()
@@ -468,6 +492,7 @@ _integ_scarcity_resources_counter = Integ(
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"scarcity_resources_counter": 1},
 )
 def scarcity_resources_flag():
     """
@@ -489,6 +514,7 @@ def scarcity_resources_flag():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_sensitivity_to_energy_scarcity_high"},
 )
 def sensitivity_to_energy_scarcity_high():
     """
@@ -513,6 +539,7 @@ _ext_constant_sensitivity_to_energy_scarcity_high = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_sensitivity_to_energy_scarcity_low"},
 )
 def sensitivity_to_energy_scarcity_low():
     """
@@ -537,6 +564,7 @@ _ext_constant_sensitivity_to_energy_scarcity_low = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_sensitivity_to_energy_scarcity_medium"},
 )
 def sensitivity_to_energy_scarcity_medium():
     """
@@ -561,6 +589,12 @@ _ext_constant_sensitivity_to_energy_scarcity_medium = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "sensitivity_to_scarcity_option": 2,
+        "sensitivity_to_energy_scarcity_low": 1,
+        "sensitivity_to_energy_scarcity_medium": 1,
+        "sensitivity_to_energy_scarcity_high": 1,
+    },
 )
 def sensitivity_to_scarcity():
     """
@@ -582,6 +616,12 @@ def sensitivity_to_scarcity():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "sensitivity_to_scarcity_option_h": 2,
+        "sensitivity_to_energy_scarcity_low": 1,
+        "sensitivity_to_energy_scarcity_medium": 1,
+        "sensitivity_to_energy_scarcity_high": 1,
+    },
 )
 def sensitivity_to_scarcity_h():
     """
@@ -603,6 +643,7 @@ def sensitivity_to_scarcity_h():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_sensitivity_to_scarcity_option"},
 )
 def sensitivity_to_scarcity_option():
     """
@@ -627,6 +668,7 @@ _ext_constant_sensitivity_to_scarcity_option = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_sensitivity_to_scarcity_option_h"},
 )
 def sensitivity_to_scarcity_option_h():
     """
@@ -651,6 +693,7 @@ _ext_constant_sensitivity_to_scarcity_option_h = ExtConstant(
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"scarcity_final_fuels_flags": 1, "time": 1, "time_step": 1},
 )
 def year_final_scarcity_final_fuels():
     """
@@ -674,6 +717,7 @@ def year_final_scarcity_final_fuels():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"scarcity_reserves_counter": 2, "year_init_scarcity_reserves": 1},
 )
 def year_final_scarcity_reserves():
     """
@@ -693,6 +737,7 @@ def year_final_scarcity_reserves():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"scarcity_resources_counter": 2, "year_init_scarcity_resources": 1},
 )
 def year_final_scarcity_resources():
     """
@@ -712,6 +757,18 @@ def year_final_scarcity_resources():
     subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_year_init_scarcity_final_fuels": 1},
+    other_deps={
+        "_integ_year_init_scarcity_final_fuels": {
+            "initial": {},
+            "step": {
+                "scarcity_final_fuels_flags": 1,
+                "scarcity_final_fuels_counter": 1,
+                "time": 1,
+                "time_step": 1,
+            },
+        }
+    },
 )
 def year_init_scarcity_final_fuels():
     """
@@ -752,6 +809,13 @@ _integ_year_init_scarcity_final_fuels = Integ(
     subscripts=["materials"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_year_init_scarcity_reserves": 1},
+    other_deps={
+        "_integ_year_init_scarcity_reserves": {
+            "initial": {},
+            "step": {"materials_availability_reserves": 1, "time": 1, "time_step": 1},
+        }
+    },
 )
 def year_init_scarcity_reserves():
     """
@@ -782,6 +846,13 @@ _integ_year_init_scarcity_reserves = Integ(
     subscripts=["materials"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_year_init_scarcity_resources": 1},
+    other_deps={
+        "_integ_year_init_scarcity_resources": {
+            "initial": {},
+            "step": {"materials_availability_resources": 1, "time": 1, "time_step": 1},
+        }
+    },
 )
 def year_init_scarcity_resources():
     """

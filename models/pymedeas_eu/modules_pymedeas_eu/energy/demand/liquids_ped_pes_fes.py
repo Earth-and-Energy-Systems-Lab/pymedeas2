@@ -1,11 +1,15 @@
 """
 Module liquids_ped_pes_fes
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="abundance liquids", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="abundance liquids",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"ped_liquids_ej": 3, "pes_liquids_ej": 2},
 )
 def abundance_liquids():
     """
@@ -19,7 +23,14 @@ def abundance_liquids():
 
 
 @component.add(
-    name="adapt max share imports oil", comp_type="Auxiliary", comp_subtype="Normal"
+    name="adapt max share imports oil",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 3,
+        "historic_share_net_imports_oil_until_2016": 3,
+        "max_share_imports_oil": 2,
+    },
 )
 def adapt_max_share_imports_oil():
     return if_then_else(
@@ -36,7 +47,11 @@ def adapt_max_share_imports_oil():
 
 
 @component.add(
-    name="check liquids", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="check liquids",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"ped_liquids_ej": 1, "pes_liquids_ej": 2},
 )
 def check_liquids():
     """
@@ -50,6 +65,7 @@ def check_liquids():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"check_liquids": 2},
 )
 def constrain_liquids_exogenous_growth():
     """
@@ -63,6 +79,7 @@ def constrain_liquids_exogenous_growth():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_biofuel_in_pes": 1, "real_fe_consumption_liquids_ej": 1},
 )
 def fes_total_biofuels():
     return share_biofuel_in_pes() * real_fe_consumption_liquids_ej()
@@ -73,6 +90,11 @@ def fes_total_biofuels():
     units="EJ",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_conv_oil_domestic_eu_extracted_ej",
+        "__data__": "_ext_data_historic_conv_oil_domestic_eu_extracted_ej",
+        "time": 1,
+    },
 )
 def historic_conv_oil_domestic_eu_extracted_ej():
     return _ext_data_historic_conv_oil_domestic_eu_extracted_ej(time())
@@ -96,6 +118,11 @@ _ext_data_historic_conv_oil_domestic_eu_extracted_ej = ExtData(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ped_liquids_ej": 1,
+        "historic_conv_oil_domestic_eu_extracted_ej": 1,
+        "historic_unconv_oil_domestic_eu_extracted_ej": 1,
+    },
 )
 def historic_net_imports_oil_eu():
     return (
@@ -110,6 +137,7 @@ def historic_net_imports_oil_eu():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_conv_oil_domestic_eu_extracted_ej": 1, "ped_liquids_ej": 1},
 )
 def historic_share_conv_oil_domestic_eu_extraction():
     return zidz(historic_conv_oil_domestic_eu_extracted_ej(), ped_liquids_ej())
@@ -119,6 +147,15 @@ def historic_share_conv_oil_domestic_eu_extraction():
     name='"Historic share conv. oil domestic EU extraction\\" until 2016"',
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={
+        "_sampleiftrue_historic_share_conv_oil_domestic_eu_extraction_until_2016": 1
+    },
+    other_deps={
+        "_sampleiftrue_historic_share_conv_oil_domestic_eu_extraction_until_2016": {
+            "initial": {"historic_share_conv_oil_domestic_eu_extraction": 1},
+            "step": {"time": 1, "historic_share_conv_oil_domestic_eu_extraction": 1},
+        }
+    },
 )
 def historic_share_conv_oil_domestic_eu_extraction_until_2016():
     return _sampleiftrue_historic_share_conv_oil_domestic_eu_extraction_until_2016()
@@ -137,6 +174,17 @@ _sampleiftrue_historic_share_conv_oil_domestic_eu_extraction_until_2016 = Sample
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_historic_share_net_imports_oil_until_2016": 1},
+    other_deps={
+        "_sampleiftrue_historic_share_net_imports_oil_until_2016": {
+            "initial": {"historic_net_imports_oil_eu": 1, "extraction_oil_ej_world": 1},
+            "step": {
+                "time": 1,
+                "historic_net_imports_oil_eu": 1,
+                "extraction_oil_ej_world": 1,
+            },
+        }
+    },
 )
 def historic_share_net_imports_oil_until_2016():
     return _sampleiftrue_historic_share_net_imports_oil_until_2016()
@@ -154,6 +202,15 @@ _sampleiftrue_historic_share_net_imports_oil_until_2016 = SampleIfTrue(
     name='"Historic share unconv. oil domestric EU extraction until 2016"',
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={
+        "_sampleiftrue_historic_share_unconv_oil_domestric_eu_extraction_until_2016": 1
+    },
+    other_deps={
+        "_sampleiftrue_historic_share_unconv_oil_domestric_eu_extraction_until_2016": {
+            "initial": {"historic_share_unconv_oil_domestric_eu_extraction": 1},
+            "step": {"time": 1, "historic_share_unconv_oil_domestric_eu_extraction": 1},
+        }
+    },
 )
 def historic_share_unconv_oil_domestric_eu_extraction_until_2016():
     return _sampleiftrue_historic_share_unconv_oil_domestric_eu_extraction_until_2016()
@@ -173,6 +230,7 @@ _sampleiftrue_historic_share_unconv_oil_domestric_eu_extraction_until_2016 = (
     name='"Historic share unconv. oil domestric EU extraction"',
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_unconv_oil_domestic_eu_extracted_ej": 1, "ped_liquids_ej": 1},
 )
 def historic_share_unconv_oil_domestric_eu_extraction():
     return zidz(historic_unconv_oil_domestic_eu_extracted_ej(), ped_liquids_ej())
@@ -183,6 +241,11 @@ def historic_share_unconv_oil_domestric_eu_extraction():
     units="EJ",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_unconv_oil_domestic_eu_extracted_ej",
+        "__data__": "_ext_data_historic_unconv_oil_domestic_eu_extracted_ej",
+        "time": 1,
+    },
 )
 def historic_unconv_oil_domestic_eu_extracted_ej():
     return _ext_data_historic_unconv_oil_domestic_eu_extracted_ej(time())
@@ -206,6 +269,10 @@ _ext_data_historic_unconv_oil_domestic_eu_extracted_ej = ExtData(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "imports_eu_total_oil_from_row_ej": 1,
+        "share_conv_vs_total_oil_extraction_world": 1,
+    },
 )
 def imports_eu_conv_oil_from_row_ej():
     return (
@@ -218,6 +285,14 @@ def imports_eu_conv_oil_from_row_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "ped_eu_total_oil_from_row": 5,
+        "historic_share_net_imports_oil_until_2016": 1,
+        "extraction_oil_ej_world": 2,
+        "limit_oil_imports_from_row": 3,
+        "adapt_max_share_imports_oil": 1,
+    },
 )
 def imports_eu_total_oil_from_row_ej():
     return if_then_else(
@@ -251,6 +326,10 @@ def imports_eu_total_oil_from_row_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "imports_eu_total_oil_from_row_ej": 1,
+        "share_conv_vs_total_oil_extraction_world": 1,
+    },
 )
 def imports_eu_unconv_oil_from_row_ej():
     return imports_eu_total_oil_from_row_ej() * (
@@ -263,6 +342,7 @@ def imports_eu_unconv_oil_from_row_ej():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_limit_oil_imports_from_row"},
 )
 def limit_oil_imports_from_row():
     """
@@ -287,6 +367,7 @@ _ext_constant_limit_oil_imports_from_row = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_share_imports_oil"},
 )
 def max_share_imports_oil():
     return _ext_constant_max_share_imports_oil()
@@ -308,6 +389,11 @@ _ext_constant_max_share_imports_oil = ExtConstant(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "energy_distr_losses_ff_ej": 1,
+        "transformation_ff_losses_ej": 1,
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
+    },
 )
 def other_liquids_required_ej():
     return (
@@ -322,6 +408,11 @@ def other_liquids_required_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "oil_refinery_gains_ej": 1,
+        "fes_ctlgtl_ej": 1,
+        "fes_total_biofuels_production_ej": 1,
+    },
 )
 def other_liquids_supply_ej():
     """
@@ -333,7 +424,11 @@ def other_liquids_supply_ej():
 
 
 @component.add(
-    name="PEC total oil", units="EJ/Year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PEC total oil",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pes_total_oil_ej_eu": 1, "imports_eu_total_oil_from_row_ej": 1},
 )
 def pec_total_oil():
     return pes_total_oil_ej_eu() + imports_eu_total_oil_from_row_ej()
@@ -344,6 +439,10 @@ def pec_total_oil():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ped_total_oil_ej": 1,
+        "historic_share_conv_oil_domestic_eu_extraction_until_2016": 1,
+    },
 )
 def ped_domestic_eu_conv_oil_ej():
     return (
@@ -356,6 +455,11 @@ def ped_domestic_eu_conv_oil_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ped_total_oil_ej": 1,
+        "historic_share_conv_oil_domestic_eu_extraction_until_2016": 1,
+        "historic_share_unconv_oil_domestric_eu_extraction_until_2016": 1,
+    },
 )
 def ped_domestic_eu_total_oil_ej():
     return ped_total_oil_ej() * (
@@ -369,13 +473,25 @@ def ped_domestic_eu_total_oil_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_total_oil_ej": 1, "pes_total_oil_ej_eu": 1},
 )
 def ped_eu_total_oil_from_row():
     return np.maximum(0, ped_total_oil_ej() - pes_total_oil_ej_eu())
 
 
 @component.add(
-    name="PED liquids EJ", units="EJ/Year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PED liquids EJ",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "required_fed_by_liquids_ej": 1,
+        "other_liquids_required_ej": 1,
+        "pe_demand_oil_elec_plants_ej": 1,
+        "ped_oil_for_heat_plants_ej": 1,
+        "ped_oil_for_chp_plants_ej": 1,
+        "ped_liquids_heatnc": 1,
+    },
 )
 def ped_liquids_ej():
     """
@@ -393,7 +509,11 @@ def ped_liquids_ej():
 
 
 @component.add(
-    name="PED NRE Liquids", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PED NRE Liquids",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"ped_liquids_ej": 1, "fes_total_biofuels_production_ej": 1},
 )
 def ped_nre_liquids():
     """
@@ -407,6 +527,7 @@ def ped_nre_liquids():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_nre_liquids": 1, "fes_ctlgtl_ej": 1, "oil_refinery_gains_ej": 1},
 )
 def ped_total_oil_ej():
     """
@@ -416,7 +537,11 @@ def ped_total_oil_ej():
 
 
 @component.add(
-    name="PES Liquids EJ", units="EJ/Year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PES Liquids EJ",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pec_total_oil": 1, "other_liquids_supply_ej": 1},
 )
 def pes_liquids_ej():
     """
@@ -430,6 +555,11 @@ def pes_liquids_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_liquids_ej": 1,
+        "other_liquids_required_ej": 1,
+        "share_liquids_for_final_energy": 1,
+    },
 )
 def real_fe_consumption_liquids_ej():
     """
@@ -445,6 +575,7 @@ def real_fe_consumption_liquids_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"required_fed_by_fuel": 1},
 )
 def required_fed_by_liquids_ej():
     """
@@ -458,6 +589,7 @@ def required_fed_by_liquids_ej():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fes_total_biofuels_production_ej": 1, "pes_liquids_ej": 1},
 )
 def share_biofuel_in_pes():
     return zidz(fes_total_biofuels_production_ej(), pes_liquids_ej())
@@ -468,6 +600,7 @@ def share_biofuel_in_pes():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"imports_eu_total_oil_from_row_ej": 1, "extraction_oil_ej_world": 1},
 )
 def share_imports_eu_tot_oil_from_row_vs_extraction_world():
     """
@@ -481,6 +614,7 @@ def share_imports_eu_tot_oil_from_row_vs_extraction_world():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_liquids_heatnc": 1, "pes_liquids_ej": 1},
 )
 def share_liquids_dem_for_heatnc():
     """
@@ -494,6 +628,11 @@ def share_liquids_dem_for_heatnc():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "required_fed_by_liquids_ej": 1,
+        "ped_liquids_ej": 1,
+        "other_liquids_required_ej": 1,
+    },
 )
 def share_liquids_for_final_energy():
     """
@@ -509,6 +648,7 @@ def share_liquids_for_final_energy():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_total_oil_ej": 2, "pe_demand_oil_elec_plants_ej": 1},
 )
 def share_oil_dem_for_elec():
     """
@@ -526,6 +666,7 @@ def share_oil_dem_for_elec():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_total_oil_ej": 2, "ped_oil_for_heat_plants_ej": 1},
 )
 def share_oil_dem_for_heatcom():
     """
@@ -543,6 +684,7 @@ def share_oil_dem_for_heatcom():
     units="Mb/d",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_liquids_ej": 1, "mbd_per_ejyear": 1},
 )
 def total_demand_liquids_mbd():
     """
@@ -556,6 +698,7 @@ def total_demand_liquids_mbd():
     units="Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_liquids": 1, "time": 1},
 )
 def year_scarcity_liquids():
     """

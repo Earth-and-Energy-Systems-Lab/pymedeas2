@@ -1,11 +1,15 @@
 """
 Module tpes
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="abundance TPE", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="abundance TPE",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"tpes_ej": 2, "tped_by_fuel": 3},
 )
 def abundance_tpe():
     """
@@ -23,6 +27,11 @@ def abundance_tpe():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "staticdynamic_quality_of_electricity": 1,
+        "quality_of_electricity_2015": 1,
+        "share_total_final_energy_vs_tpes": 1,
+    },
 )
 def gquality_of_electricity():
     """
@@ -40,6 +49,7 @@ def gquality_of_electricity():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 1, "share_total_final_energy_vs_tpes": 2},
 )
 def quality_of_electricity_2015():
     """
@@ -57,6 +67,7 @@ def quality_of_electricity_2015():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_imports_eu_nre_from_row": 1, "total_extraction_nre_ej_world": 1},
 )
 def share_imports_eu_nre_from_row_vs_world_extraction():
     return total_imports_eu_nre_from_row() / total_extraction_nre_ej_world()
@@ -67,6 +78,7 @@ def share_imports_eu_nre_from_row_vs_world_extraction():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_imports_eu_nre_from_row": 1, "tpes_ej": 1},
 )
 def share_imports_eu_nre_vs_tpec():
     return total_imports_eu_nre_from_row() / tpes_ej()
@@ -77,6 +89,11 @@ def share_imports_eu_nre_vs_tpec():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_tfec": 1,
+        "total_real_nonenergy_use_consumption_ej": 1,
+        "tpes_ej": 1,
+    },
 )
 def share_total_final_energy_vs_tpes():
     """
@@ -103,6 +120,18 @@ def staticdynamic_quality_of_electricity():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extraction_coal_ej_eu": 1,
+        "imports_eu_coal_from_row_ej": 1,
+        "real_extraction_conv_gas_ej": 1,
+        "real_extraction_conv_oil_ej": 1,
+        "real_extraction_unconv_gas_ej": 1,
+        "real_extraction_unconv_oil_ej": 1,
+        "extraction_uranium": 1,
+        "imports_eu_nat_gas_from_row_ej": 1,
+        "imports_eu_total_oil_from_row_ej": 1,
+        "extraction_uranium_row": 1,
+    },
 )
 def total_consumption_nre_ej():
     """
@@ -127,6 +156,12 @@ def total_consumption_nre_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extraction_uranium_row": 1,
+        "imports_eu_coal_from_row_ej": 1,
+        "imports_eu_nat_gas_from_row_ej": 1,
+        "imports_eu_total_oil_from_row_ej": 1,
+    },
 )
 def total_imports_eu_nre_from_row():
     return (
@@ -142,6 +177,7 @@ def total_imports_eu_nre_from_row():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pe_elec_generation_from_res_ej": 1, "pe_supply_res_nonelec_ej": 1},
 )
 def tpe_from_res_ej():
     """
@@ -151,7 +187,19 @@ def tpe_from_res_ej():
 
 
 @component.add(
-    name="TPED by fuel", units="EJ/Year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="TPED by fuel",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "extraction_uranium": 1,
+        "pe_supply_res_nonelec_ej": 1,
+        "pe_elec_generation_from_res_ej": 1,
+        "ped_total_oil_ej": 1,
+        "ped_coal_ej": 1,
+        "ped_nat_gas_ej": 1,
+        "pes_waste_ej": 1,
+    },
 )
 def tped_by_fuel():
     """
@@ -169,7 +217,11 @@ def tped_by_fuel():
 
 
 @component.add(
-    name="TPES EJ", units="EJ/Year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="TPES EJ",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"total_consumption_nre_ej": 1, "tpe_from_res_ej": 1, "pes_waste_ej": 1},
 )
 def tpes_ej():
     """
@@ -179,7 +231,11 @@ def tpes_ej():
 
 
 @component.add(
-    name="Year scarcity TPE", units="Year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Year scarcity TPE",
+    units="Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"abundance_tpe": 1, "time": 1},
 )
 def year_scarcity_tpe():
     """

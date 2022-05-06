@@ -1,6 +1,6 @@
 """
 Module res_elec_overcap_due_to_res_variabi
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,10 @@ Translated using PySD version 3.0.0
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "cp_exogenous_res_elec_dispatch_reduction": 4,
+        "cp_exogenous_res_elec_var_reduction": 4,
+    },
 )
 def cp_exogenous_res_elec_reduction():
     """
@@ -34,6 +38,7 @@ def cp_exogenous_res_elec_reduction():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_variable_res_elec_generation_vs_total_gen": 2},
 )
 def cp_exogenous_res_elec_dispatch_reduction():
     """
@@ -52,6 +57,7 @@ def cp_exogenous_res_elec_dispatch_reduction():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_variable_res_elec_generation_vs_total_gen": 1},
 )
 def cp_exogenous_res_elec_var_reduction():
     """
@@ -67,6 +73,7 @@ def cp_exogenous_res_elec_var_reduction():
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_generation_res_elec_twh": 1, "fes_elec_from_biogas_twh": 1},
 )
 def elec_generation_dispatch_from_res_twh():
     """
@@ -88,6 +95,7 @@ def elec_generation_dispatch_from_res_twh():
     units="TWh/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_generation_res_elec_twh": 1},
 )
 def elec_generation_variable_from_res_twh():
     """
@@ -106,6 +114,10 @@ def elec_generation_variable_from_res_twh():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "share_variable_res_elec_generation_vs_total": 1,
+        "share_variable_res_elec_vs_total_generation_delayed_1yr": 1,
+    },
 )
 def increase_variable_res_share_elec_vs_total_generation():
     return (
@@ -132,6 +144,11 @@ def initial_share_variable_res_elec_gen_vs_total():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_elec_generation_from_nre_twh": 2,
+        "elec_generation_variable_from_res_twh": 3,
+        "elec_generation_dispatch_from_res_twh": 2,
+    },
 )
 def share_variable_res_elec_generation_vs_total():
     """
@@ -157,6 +174,13 @@ def share_variable_res_elec_generation_vs_total():
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_share_variable_res_elec_generation_vs_total_gen": 1},
+    other_deps={
+        "_integ_share_variable_res_elec_generation_vs_total_gen": {
+            "initial": {"initial_share_variable_res_elec_gen_vs_total": 1},
+            "step": {"increase_variable_res_share_elec_vs_total_generation": 1},
+        }
+    },
 )
 def share_variable_res_elec_generation_vs_total_gen():
     """
@@ -177,6 +201,15 @@ _integ_share_variable_res_elec_generation_vs_total_gen = Integ(
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={
+        "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr": 1
+    },
+    other_deps={
+        "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr": {
+            "initial": {},
+            "step": {"share_variable_res_elec_generation_vs_total": 1},
+        }
+    },
 )
 def share_variable_res_elec_vs_total_generation_delayed_1yr():
     """

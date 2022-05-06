@@ -1,6 +1,6 @@
 """
 Module total_number_vehicles
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,11 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_number_hybrid_light_vehicles": 1,
+        "total_number_elec_light_vehicles": 1,
+        "total_number_light_vehicles": 1,
+    },
 )
 def share_elechyb_light_vehicles():
     """
@@ -24,6 +29,10 @@ def share_elechyb_light_vehicles():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_number_elec_light_vehicles": 1,
+        "total_number_light_vehicles": 1,
+    },
 )
 def share_of_electric_light_vehicles():
     """
@@ -37,6 +46,7 @@ def share_of_electric_light_vehicles():
     units="vehicle",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"number_vehicles_h": 1, "vehicles_inlandt": 1},
 )
 def total_number_elec_light_vehicles():
     """
@@ -52,6 +62,7 @@ def total_number_elec_light_vehicles():
     units="vehicle",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"number_vehicles_h": 1, "vehicles_inlandt": 1},
 )
 def total_number_gas_light_vehicles():
     """
@@ -67,6 +78,7 @@ def total_number_gas_light_vehicles():
     units="vehicle",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"number_vehicles_h": 1, "vehicles_inlandt": 1},
 )
 def total_number_hybrid_light_vehicles():
     """
@@ -82,6 +94,7 @@ def total_number_hybrid_light_vehicles():
     units="Mvehicles",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"number_vehicles_h": 4, "vehicles_inlandt": 4},
 )
 def total_number_light_vehicles():
     """

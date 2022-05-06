@@ -1,6 +1,6 @@
 """
 Module ch4_emissions_mix
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,17 @@ Translated using PySD version 3.0.0
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "coal_in_fec_aut": 1,
+        "pe_demand_coal_elec_plants_ej": 1,
+        "ped_coal_for_chp_plants_ej": 1,
+        "ped_coal_for_ctl_ej": 1,
+        "ped_coal_for_heat_plants_ej": 1,
+        "ped_coal_heatnc": 1,
+        "mj_per_ej": 1,
+        "gch4_per_mj_coal": 1,
+        "g_per_mt": 1,
+    },
 )
 def ch4_emissions_extraction_coal():
     return (
@@ -31,6 +42,19 @@ def ch4_emissions_extraction_coal():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_nat_gas_consumption": 2,
+        "pe_demand_gas_elec_plants_ej": 2,
+        "ped_gas_for_chp_plants_ej": 2,
+        "ped_gas_heatnc": 2,
+        "ped_gases_for_heat_plants_ej": 2,
+        "ped_nat_gas_for_gtl_ej": 2,
+        "share_unconv_tot_gas": 2,
+        "mj_per_ej": 2,
+        "gch4_per_mj_conv_gas": 1,
+        "g_per_mt": 2,
+        "gch4_per_mj_unconv_gas": 1,
+    },
 )
 def ch4_emissions_extraction_gas():
     return (
@@ -57,6 +81,16 @@ def ch4_emissions_extraction_gas():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fed_oil": 1,
+        "pe_demand_oil_elec_plants_ej": 1,
+        "ped_liquids_heatnc": 1,
+        "ped_oil_for_chp_plants_ej": 1,
+        "ped_oil_for_heat_plants_ej": 1,
+        "mj_per_ej": 1,
+        "gch4_per_mj_oil": 1,
+        "g_per_mt": 1,
+    },
 )
 def ch4_emissions_extraction_oil():
     return (
@@ -78,6 +112,11 @@ def ch4_emissions_extraction_oil():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ch4_emissions_conv_gas_without_gtl": 1,
+        "ch4_emissions_gtl": 1,
+        "ch4_emissions_unconv_gas": 1,
+    },
 )
 def ch4_emissions_gas_test():
     return (
@@ -92,6 +131,7 @@ def ch4_emissions_gas_test():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ch4_emissions_oil": 1},
 )
 def ch4_emissions_oil_test():
     return ch4_emissions_oil()
@@ -102,13 +142,21 @@ def ch4_emissions_oil_test():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ch4_emissions_coal_without_ctl": 1, "ch4_emissions_ctl": 1},
 )
 def ch4_emissions_coal_test():
     return ch4_emissions_coal_without_ctl() + ch4_emissions_ctl()
 
 
 @component.add(
-    name="check hist CH4 emissions", comp_type="Auxiliary", comp_subtype="Normal"
+    name="check hist CH4 emissions",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "total_ch4_emissions_fossil_fuels": 2,
+        "total_fe_ch4_emissions": 1,
+    },
 )
 def check_hist_ch4_emissions():
     return if_then_else(
@@ -125,6 +173,13 @@ def check_hist_ch4_emissions():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_demand_coal_elec_plants_ej": 1,
+        "ped_coal_for_chp_plants_ej": 1,
+        "mj_per_ej": 1,
+        "gch4_per_mj_coal": 1,
+        "g_per_mt": 1,
+    },
 )
 def coal_for_elec_ch4_emissions():
     return (
@@ -140,6 +195,13 @@ def coal_for_elec_ch4_emissions():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ped_coal_heatnc": 1,
+        "ped_coal_for_heat_plants_ej": 1,
+        "mj_per_ej": 1,
+        "gch4_per_mj_coal": 1,
+        "g_per_mt": 1,
+    },
 )
 def coal_for_heat_ch4_emissions():
     return (
@@ -155,20 +217,35 @@ def coal_for_heat_ch4_emissions():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "share_biogas_total_pes_gases_aut": 1,
+        "real_fe_consumption_gases_ej": 1,
+    },
 )
 def fe_nat_gas_consumption():
     return (1 - share_biogas_total_pes_gases_aut()) * real_fe_consumption_gases_ej()
 
 
 @component.add(
-    name="FEC oil 2", units="EJ/Year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="FEC oil 2",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "real_fe_consumption_liquids_ej": 1,
+        "fes_total_biofuels_production_ej": 1,
+    },
 )
 def fec_oil_2():
     return real_fe_consumption_liquids_ej() - fes_total_biofuels_production_ej()
 
 
 @component.add(
-    name="FED oil", units="EJ/Year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="FED oil",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pec_total_oil": 1, "total_demand_oil_other_fed": 1},
 )
 def fed_oil():
     return pec_total_oil() - total_demand_oil_other_fed()
@@ -179,6 +256,13 @@ def fed_oil():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_demand_gas_elec_plants_ej": 1,
+        "ped_gas_for_chp_plants_ej": 1,
+        "mj_per_ej": 1,
+        "gch4_per_mj_conv_gas": 1,
+        "g_per_mt": 1,
+    },
 )
 def gas_for_elec_ch4_emissions():
     return (
@@ -194,6 +278,13 @@ def gas_for_elec_ch4_emissions():
     units="GtCO2/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ped_gases_for_heat_plants_ej": 1,
+        "ped_gas_heatnc": 1,
+        "mj_per_ej": 1,
+        "gch4_per_mj_conv_gas": 1,
+        "g_per_mt": 1,
+    },
 )
 def gas_for_heat_ch4_emissions():
     return (
@@ -209,6 +300,12 @@ def gas_for_heat_ch4_emissions():
     units="GtCO2/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_nat_gas_consumption": 1,
+        "mj_per_ej": 1,
+        "gch4_per_mj_conv_gas": 1,
+        "g_per_mt": 1,
+    },
 )
 def gases_fe_ch4_emission():
     return fe_nat_gas_consumption() * mj_per_ej() * gch4_per_mj_conv_gas() / g_per_mt()
@@ -219,6 +316,16 @@ def gases_fe_ch4_emission():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fed_oil": 1,
+        "mj_per_ej": 3,
+        "gch4_per_mj_oil": 1,
+        "g_per_mt": 3,
+        "gch4_per_mj_ctl": 1,
+        "ped_coal_for_ctl_ej": 1,
+        "ped_nat_gas_for_gtl_ej": 1,
+        "gch4_per_mj_gtl": 1,
+    },
 )
 def liquids_fe_ch4_emissions():
     return (
@@ -233,6 +340,13 @@ def liquids_fe_ch4_emissions():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_demand_oil_elec_plants_ej": 1,
+        "ped_oil_for_chp_plants_ej": 1,
+        "mj_per_ej": 1,
+        "gch4_per_mj_oil": 1,
+        "g_per_mt": 1,
+    },
 )
 def oil_for_elec_ch4_emissions():
     return (
@@ -248,6 +362,13 @@ def oil_for_elec_ch4_emissions():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ped_oil_for_heat_plants_ej": 1,
+        "ped_liquids_heatnc": 1,
+        "mj_per_ej": 1,
+        "gch4_per_mj_oil": 1,
+        "g_per_mt": 1,
+    },
 )
 def oil_for_heat_ch4_emissions():
     return (
@@ -259,7 +380,18 @@ def oil_for_heat_ch4_emissions():
 
 
 @component.add(
-    name="PES oil 2", units="EJ/Year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PES oil 2",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "ped_nre_liquids": 1,
+        "other_liquids_required_ej": 1,
+        "pe_demand_oil_elec_plants_ej": 1,
+        "ped_liquids_heatnc": 1,
+        "ped_oil_for_chp_plants_ej": 1,
+        "ped_oil_for_heat_plants_ej": 1,
+    },
 )
 def pes_oil_2():
     return (
@@ -277,6 +409,7 @@ def pes_oil_2():
     units="MtCH4/EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_elec_nres_ch4_emissions": 1, "total_fe_elec_consumption_ej": 1},
 )
 def ratio_elec_ch4_emissions():
     return zidz(total_elec_nres_ch4_emissions(), total_fe_elec_consumption_ej())
@@ -287,6 +420,7 @@ def ratio_elec_ch4_emissions():
     units="MtCH4/EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"gases_fe_ch4_emission": 1, "real_fe_consumption_gases_ej": 1},
 )
 def ratio_gases_ch4_emissions():
     return zidz(gases_fe_ch4_emission(), real_fe_consumption_gases_ej())
@@ -297,6 +431,7 @@ def ratio_gases_ch4_emissions():
     units="MtCH4/EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_heat_ch4_emissions": 1, "total_fed_heat_ej": 1},
 )
 def ratio_heat_ch4_emissions():
     return zidz(total_heat_ch4_emissions(), total_fed_heat_ej())
@@ -307,6 +442,7 @@ def ratio_heat_ch4_emissions():
     units="MtCH4/EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"liquids_fe_ch4_emissions": 1, "total_fec_liquids": 1},
 )
 def ratio_liquids_ch4_emissions():
     return zidz(liquids_fe_ch4_emissions(), total_fec_liquids())
@@ -317,6 +453,7 @@ def ratio_liquids_ch4_emissions():
     units="MtCH4/EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"solids_fe_ch4_emissions": 1, "required_fed_solids": 1},
 )
 def ratio_solids_ch4_emissions():
     return zidz(solids_fe_ch4_emissions(), required_fed_solids())
@@ -327,6 +464,7 @@ def ratio_solids_ch4_emissions():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"coal_for_elec_ch4_emissions": 1, "total_elec_nres_ch4_emissions": 1},
 )
 def share_coal_for_elec_ch4_emissions():
     return zidz(coal_for_elec_ch4_emissions(), total_elec_nres_ch4_emissions())
@@ -337,6 +475,7 @@ def share_coal_for_elec_ch4_emissions():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"gas_for_elec_ch4_emissions": 1, "total_elec_nres_ch4_emissions": 1},
 )
 def share_gas_for_elec_ch4_emissions():
     return zidz(gas_for_elec_ch4_emissions(), total_elec_nres_ch4_emissions())
@@ -347,6 +486,7 @@ def share_gas_for_elec_ch4_emissions():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"oil_for_elec_ch4_emissions": 1, "total_elec_nres_ch4_emissions": 1},
 )
 def share_oil_for_elec_ch4_emissions():
     return zidz(oil_for_elec_ch4_emissions(), total_elec_nres_ch4_emissions())
@@ -357,6 +497,12 @@ def share_oil_for_elec_ch4_emissions():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "coal_in_fec_aut": 1,
+        "mj_per_ej": 1,
+        "gch4_per_mj_coal": 1,
+        "g_per_mt": 1,
+    },
 )
 def solids_fe_ch4_emissions():
     return coal_in_fec_aut() * mj_per_ej() * gch4_per_mj_coal() / g_per_mt()
@@ -367,6 +513,11 @@ def solids_fe_ch4_emissions():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ch4_emissions_extraction_coal": 1,
+        "ch4_emissions_extraction_gas": 1,
+        "ch4_emissions_extraction_oil": 1,
+    },
 )
 def total_ch4_emission_sper_sector():
     return (
@@ -381,6 +532,11 @@ def total_ch4_emission_sper_sector():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ch4_emissions_coal_test": 1,
+        "ch4_emissions_gas_test": 1,
+        "ch4_emissions_oil_test": 1,
+    },
 )
 def total_ch4_emissions():
     return (
@@ -393,6 +549,12 @@ def total_ch4_emissions():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_demand_oil_elec_plants_ej": 1,
+        "ped_oil_for_chp_plants_ej": 1,
+        "ped_oil_for_heat_plants_ej": 1,
+        "ped_liquids_heatnc": 1,
+    },
 )
 def total_demand_oil_other_fed():
     return (
@@ -408,6 +570,11 @@ def total_demand_oil_other_fed():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "coal_for_elec_ch4_emissions": 1,
+        "gas_for_elec_ch4_emissions": 1,
+        "oil_for_elec_ch4_emissions": 1,
+    },
 )
 def total_elec_nres_ch4_emissions():
     return (
@@ -422,6 +589,7 @@ def total_elec_nres_ch4_emissions():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_per_fe_ch4_emissions": 1},
 )
 def total_fe_ch4_emissions():
     return sum(
@@ -431,7 +599,15 @@ def total_fe_ch4_emissions():
 
 
 @component.add(
-    name="Total FEC liquids", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Total FEC liquids",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "real_fe_consumption_liquids_ej": 1,
+        "ctl_production": 1,
+        "gtl_production": 1,
+    },
 )
 def total_fec_liquids():
     return real_fe_consumption_liquids_ej() + ctl_production() + gtl_production()
@@ -442,6 +618,11 @@ def total_fec_liquids():
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "coal_for_heat_ch4_emissions": 1,
+        "gas_for_heat_ch4_emissions": 1,
+        "oil_for_heat_ch4_emissions": 1,
+    },
 )
 def total_heat_ch4_emissions():
     return (
@@ -457,6 +638,13 @@ def total_heat_ch4_emissions():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_elec_nres_ch4_emissions": 1,
+        "total_heat_ch4_emissions": 1,
+        "liquids_fe_ch4_emissions": 1,
+        "gases_fe_ch4_emission": 1,
+        "solids_fe_ch4_emissions": 1,
+    },
 )
 def total_per_fe_ch4_emissions():
     value = xr.DataArray(

@@ -1,6 +1,6 @@
 """
 Module nonenergy_use
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,7 @@ Translated using PySD version 3.0.0
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 3, "variation_nonenergy_use": 1, "historic_nonenergy_use": 2},
 )
 def annual_variation_nonenergy_use():
     """
@@ -28,6 +29,10 @@ def annual_variation_nonenergy_use():
     subscripts=["final sources"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_nonenergy_use",
+        "__lookup__": "_ext_lookup_historic_nonenergy_use",
+    },
 )
 def historic_nonenergy_use(x, final_subs=None):
     """
@@ -54,6 +59,7 @@ _ext_lookup_historic_nonenergy_use = ExtLookup(
     subscripts=["final sources"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_nonenergy_use"},
 )
 def initial_nonenergy_use():
     """
@@ -79,6 +85,13 @@ _ext_constant_initial_nonenergy_use = ExtConstant(
     subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_nonenergy_use_demand_by_final_fuel_ej": 1},
+    other_deps={
+        "_integ_nonenergy_use_demand_by_final_fuel_ej": {
+            "initial": {"initial_nonenergy_use": 1},
+            "step": {"annual_variation_nonenergy_use": 1},
+        }
+    },
 )
 def nonenergy_use_demand_by_final_fuel_ej():
     """
@@ -99,6 +112,7 @@ _integ_nonenergy_use_demand_by_final_fuel_ej = Integ(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"nonenergy_use_demand_by_final_fuel_ej": 1},
 )
 def total_real_nonenergy_use_consumption_ej():
     return sum(
@@ -113,8 +127,13 @@ def total_real_nonenergy_use_consumption_ej():
     name="variation nonenergy use",
     units="EJ",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={
+        "nonenergy_use_demand_by_final_fuel_ej": 3,
+        "gdp": 3,
+        "gdp_delayed_1yr": 3,
+    },
 )
 def variation_nonenergy_use():
     value = xr.DataArray(

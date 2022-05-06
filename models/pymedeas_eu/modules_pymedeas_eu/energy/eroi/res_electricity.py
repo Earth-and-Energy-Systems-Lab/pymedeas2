@@ -1,6 +1,6 @@
 """
 Module res_electricity
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,7 @@ Translated using PySD version 3.0.0
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fei_res_elec_var": 2, "real_generation_res_elec_ej": 1},
 )
 def dynamic_eroi_res_elec_var():
     """
@@ -30,6 +31,12 @@ def dynamic_eroi_res_elec_var():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fei_over_lifetime_res_elec_dispatch": 8,
+        "output_elec_over_lifetime_res_elec": 8,
+        "gquality_of_electricity": 4,
+        "fei_over_lifetime_res_elec_var": 8,
+    },
 )
 def static_eroi_res_elec():
     """
@@ -106,6 +113,10 @@ def static_eroi_res_elec():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fei_over_lifetime_res_elec": 2,
+        "output_elec_over_lifetime_res_elec": 1,
+    },
 )
 def static_eroitot_res_elec():
     """
@@ -135,6 +146,12 @@ def static_eroitot_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "share_energy_requirements_for_decom_res_elec": 1,
+        "cedtot_new_cap_res_elec_var": 1,
+        "wear_res_elec": 1,
+        "res_elec_capacity_under_construction_tw": 1,
+    },
 )
 def ced_decom_res_elec_capacity():
     """
@@ -154,6 +171,12 @@ def ced_decom_res_elec_capacity():
     subscripts=["RES elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "materials_required_for_new_res_elec_mt": 1,
+        "energy_cons_per_unit_of_material_cons_for_res_elec": 1,
+        "kg_per_mt": 1,
+        "mj_per_ej": 1,
+    },
 )
 def ced_new_cap_per_material_res_elec_var():
     """
@@ -161,17 +184,7 @@ def ced_new_cap_per_material_res_elec_var():
     """
     return (
         materials_required_for_new_res_elec_mt()
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "RES elec": _subscript_dict["RES elec"],
-                    "materials": _subscript_dict["materials"],
-                },
-                ["RES elec", "materials"],
-            )
-            + energy_cons_per_unit_of_material_cons_for_res_elec()
-        )
+        * energy_cons_per_unit_of_material_cons_for_res_elec()
         * kg_per_mt()
         / mj_per_ej()
     )
@@ -183,46 +196,25 @@ def ced_new_cap_per_material_res_elec_var():
     subscripts=["RES elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "res_elec_capacity_under_construction_tw": 1,
+        "materials_for_om_per_capacity_installed_res_elec": 1,
+        "energy_cons_per_unit_of_material_cons_for_res_elec": 1,
+        "lifetime_res_elec": 1,
+        "kg_per_mt": 2,
+        "m_per_t": 1,
+        "mj_per_ej": 1,
+    },
 )
 def ced_om_over_lifetime_per_material_res_elec_var():
     """
     Cumulative energy demand per material for O&M of RES variables per technology over all the lifetime of the infrastructure.
     """
     return (
-        (
-            xr.DataArray(
-                0,
-                {
-                    "RES elec": _subscript_dict["RES elec"],
-                    "materials": _subscript_dict["materials"],
-                },
-                ["RES elec", "materials"],
-            )
-            + res_elec_capacity_under_construction_tw()
-        )
+        res_elec_capacity_under_construction_tw()
         * materials_for_om_per_capacity_installed_res_elec()
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "RES elec": _subscript_dict["RES elec"],
-                    "materials": _subscript_dict["materials"],
-                },
-                ["RES elec", "materials"],
-            )
-            + energy_cons_per_unit_of_material_cons_for_res_elec()
-        )
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "RES elec": _subscript_dict["RES elec"],
-                    "materials": _subscript_dict["materials"],
-                },
-                ["RES elec", "materials"],
-            )
-            + lifetime_res_elec()
-        )
+        * energy_cons_per_unit_of_material_cons_for_res_elec()
+        * lifetime_res_elec()
         * (m_per_t() / kg_per_mt())
         * (kg_per_mt() / mj_per_ej())
     )
@@ -234,6 +226,10 @@ def ced_om_over_lifetime_per_material_res_elec_var():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ced_om_over_lifetime_per_material_res_elec_var": 1,
+        "ced_om_over_lifetime_per_water_res_elec_var": 1,
+    },
 )
 def ced_om_over_lifetime_res_elec_var():
     """
@@ -256,6 +252,12 @@ def ced_om_over_lifetime_res_elec_var():
     subscripts=["RES elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "materials_required_for_om_res_elec_mt": 1,
+        "energy_cons_per_unit_of_material_cons_for_res_elec": 1,
+        "kg_per_mt": 1,
+        "mj_per_ej": 1,
+    },
 )
 def ced_om_per_material_res_elec_var():
     """
@@ -263,17 +265,7 @@ def ced_om_per_material_res_elec_var():
     """
     return (
         materials_required_for_om_res_elec_mt()
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "RES elec": _subscript_dict["RES elec"],
-                    "materials": _subscript_dict["materials"],
-                },
-                ["RES elec", "materials"],
-            )
-            + energy_cons_per_unit_of_material_cons_for_res_elec()
-        )
+        * energy_cons_per_unit_of_material_cons_for_res_elec()
         * kg_per_mt()
         / mj_per_ej()
     )
@@ -285,6 +277,7 @@ def ced_om_per_material_res_elec_var():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ced_new_cap_per_material_res_elec_var": 1},
 )
 def cedtot_new_cap_res_elec_var():
     """
@@ -302,6 +295,10 @@ def cedtot_new_cap_res_elec_var():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ced_om_per_material_res_elec_var": 1,
+        "total_energy_requirements_om_for_water_consumption_res_elec": 1,
+    },
 )
 def cedtot_om_res_elec_var():
     """
@@ -322,6 +319,10 @@ def cedtot_om_res_elec_var():
     subscripts=["RES elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ced_new_cap_per_material_res_elec_var": 1,
+        "ced_om_over_lifetime_per_material_res_elec_var": 1,
+    },
 )
 def cedtot_per_material_res_elec_var():
     """
@@ -339,6 +340,15 @@ def cedtot_per_material_res_elec_var():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "res_elec_variables": 1,
+        "ej_per_twh": 1,
+        "lifetime_res_elec": 1,
+        "twe_per_twh": 1,
+        "cpini_res_elec": 1,
+        "quality_of_electricity_2015": 1,
+        "eroiini_res_elec_dispatch": 1,
+    },
 )
 def cedtot_per_tw_over_lifetime_res_elec_dispatch():
     """
@@ -357,6 +367,10 @@ def cedtot_per_tw_over_lifetime_res_elec_dispatch():
     subscripts=["RES elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "cedtot_per_material_res_elec_var": 1,
+        "res_elec_capacity_under_construction_tw": 1,
+    },
 )
 def cedtot_per_tw_per_material_res_elec_var():
     """
@@ -364,16 +378,8 @@ def cedtot_per_tw_per_material_res_elec_var():
     """
     return zidz(
         cedtot_per_material_res_elec_var(),
-        (
-            xr.DataArray(
-                0,
-                {
-                    "RES elec": _subscript_dict["RES elec"],
-                    "materials": _subscript_dict["materials"],
-                },
-                ["RES elec", "materials"],
-            )
-            + res_elec_capacity_under_construction_tw()
+        res_elec_capacity_under_construction_tw().expand_dims(
+            {"materials": _subscript_dict["materials"]}, 1
         ),
     )
 
@@ -384,6 +390,7 @@ def cedtot_per_tw_per_material_res_elec_var():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"cedtot_per_tw_per_material_res_elec_var": 1},
 )
 def cedtot_per_tw_res_elec_var():
     """
@@ -401,7 +408,11 @@ def cedtot_per_tw_res_elec_var():
 
 
 @component.add(
-    name="CEDtot solar PV", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="CEDtot solar PV",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"fei_res_elec_var": 1},
 )
 def cedtot_solar_pv():
     return float(fei_res_elec_var().loc["solar PV"])
@@ -413,6 +424,7 @@ def cedtot_solar_pv():
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_eroiini_res_elec_dispatch"},
 )
 def eroiini_res_elec_dispatch():
     """
@@ -438,6 +450,10 @@ _ext_constant_eroiini_res_elec_dispatch = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fei_over_lifetime_res_elec_dispatch": 4,
+        "fei_over_lifetime_res_elec_var": 4,
+    },
 )
 def fei_over_lifetime_res_elec():
     """
@@ -471,6 +487,10 @@ def fei_over_lifetime_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "cedtot_per_tw_over_lifetime_res_elec_dispatch": 1,
+        "res_elec_capacity_under_construction_tw": 1,
+    },
 )
 def fei_over_lifetime_res_elec_dispatch():
     """
@@ -488,6 +508,15 @@ def fei_over_lifetime_res_elec_dispatch():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "cedtot_new_cap_res_elec_var": 1,
+        "grid_correction_factor_res_elec": 1,
+        "share_energy_requirements_for_decom_res_elec": 1,
+        "ced_om_over_lifetime_res_elec_var": 1,
+        "gquality_of_electricity": 1,
+        "output_elec_over_lifetime_res_elec": 1,
+        "selfelectricity_consumption_res_elec": 1,
+    },
 )
 def fei_over_lifetime_res_elec_var():
     """
@@ -510,6 +539,15 @@ def fei_over_lifetime_res_elec_var():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "cedtot_new_cap_res_elec_var": 1,
+        "grid_correction_factor_res_elec": 1,
+        "ced_decom_res_elec_capacity": 1,
+        "cedtot_om_res_elec_var": 1,
+        "gquality_of_electricity": 1,
+        "real_generation_res_elec_ej": 1,
+        "selfelectricity_consumption_res_elec": 1,
+    },
 )
 def fei_res_elec_var():
     """
@@ -527,7 +565,8 @@ def fei_res_elec_var():
     units="Dmnl",
     subscripts=["RES elec"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
+    depends_on={"__external__": "_ext_constant_grid_correction_factor_res_elec"},
 )
 def grid_correction_factor_res_elec():
     """
@@ -560,6 +599,13 @@ _ext_constant_grid_correction_factor_res_elec = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_cp_res_elec": 1,
+        "res_elec_capacity_under_construction_tw": 1,
+        "twe_per_twh": 1,
+        "lifetime_res_elec": 1,
+        "ej_per_twh": 1,
+    },
 )
 def output_elec_over_lifetime_res_elec():
     """
@@ -580,6 +626,7 @@ def output_elec_over_lifetime_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_generation_res_elec_twh": 1, "ej_per_twh": 1},
 )
 def real_generation_res_elec_ej():
     """
@@ -611,7 +658,8 @@ def res_elec_variables():
     units="Dmnl",
     subscripts=["RES elec"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
+    depends_on={"__external__": "_ext_constant_selfelectricity_consumption_res_elec"},
 )
 def selfelectricity_consumption_res_elec():
     value = xr.DataArray(
@@ -640,7 +688,10 @@ _ext_constant_selfelectricity_consumption_res_elec = ExtConstant(
     units="Dmnl",
     subscripts=["RES elec"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
+    depends_on={
+        "__external__": "_ext_constant_share_energy_requirements_for_decom_res_elec"
+    },
 )
 def share_energy_requirements_for_decom_res_elec():
     """

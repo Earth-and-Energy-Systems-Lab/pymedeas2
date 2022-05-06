@@ -1,6 +1,6 @@
 """
 Module phs
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,13 @@ Translated using PySD version 3.0.0
     units="1/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 5,
+        "past_phs_capacity_growth": 1,
+        "p_phs_power": 4,
+        "table_hist_capacity_phs": 1,
+        "start_year_p_growth_res_elec": 3,
+    },
 )
 def adapt_growth_phs():
     """
@@ -32,7 +39,11 @@ def adapt_growth_phs():
 
 
 @component.add(
-    name="Cp PHS", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="Cp PHS",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_cp_phs"},
 )
 def cp_phs():
     """
@@ -51,6 +62,11 @@ _ext_constant_cp_phs = ExtConstant(
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "total_time_planconstr_res_elec": 2,
+        "table_hist_capacity_phs": 2,
+    },
 )
 def historic_new_required_capacity_phs():
     """
@@ -68,6 +84,7 @@ def historic_new_required_capacity_phs():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"initial_required_capacity_phs": 1},
 )
 def initial_capacity_in_construction_phs():
     """
@@ -81,6 +98,7 @@ def initial_capacity_in_construction_phs():
     units="TW",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_instal_cap_phs"},
 )
 def initial_instal_cap_phs():
     """
@@ -105,6 +123,7 @@ _ext_constant_initial_instal_cap_phs = ExtConstant(
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"table_hist_capacity_phs": 2},
 )
 def initial_required_capacity_phs():
     """
@@ -118,6 +137,13 @@ def initial_required_capacity_phs():
     units="TW",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_installed_capacity_phs_tw": 1},
+    other_deps={
+        "_integ_installed_capacity_phs_tw": {
+            "initial": {"initial_instal_cap_phs": 1},
+            "step": {"phs_capacity_under_construction": 1, "wear_phs": 1},
+        }
+    },
 )
 def installed_capacity_phs_tw():
     return _integ_installed_capacity_phs_tw()
@@ -135,6 +161,7 @@ _integ_installed_capacity_phs_tw = Integ(
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_potential_phs_twe": 1, "cp_phs": 1},
 )
 def max_capacity_potential_phs():
     """
@@ -148,6 +175,7 @@ def max_capacity_potential_phs():
     units="TWe",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_potential_phs_twe"},
 )
 def max_potential_phs_twe():
     """
@@ -172,6 +200,7 @@ _ext_constant_max_potential_phs_twe = ExtConstant(
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_capacity_potential_phs": 1, "cp_phs": 1, "twe_per_twh": 1},
 )
 def max_potential_phs_twh():
     return max_capacity_potential_phs() * cp_phs() / twe_per_twh()
@@ -182,6 +211,7 @@ def max_potential_phs_twh():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"required_capacity_phs": 1, "time_planification_res_elec": 1},
 )
 def new_phs_capacity_under_planning():
     return required_capacity_phs() / float(time_planification_res_elec().loc["hydro"])
@@ -192,6 +222,14 @@ def new_phs_capacity_under_planning():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "total_time_planconstr_res_elec": 1,
+        "historic_new_required_capacity_phs": 1,
+        "adapt_growth_phs": 1,
+        "installed_capacity_phs_tw": 1,
+        "remaining_potential_constraint_on_new_phs_capacity": 1,
+    },
 )
 def new_required_phs_capacity():
     """
@@ -211,6 +249,13 @@ def new_required_phs_capacity():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "cp_phs": 1,
+        "phs_capacity_under_construction": 1,
+        "twe_per_twh": 1,
+        "lifetime_res_elec": 1,
+        "ej_per_twh": 1,
+    },
 )
 def output_phs_over_lifetime():
     """
@@ -226,7 +271,14 @@ def output_phs_over_lifetime():
 
 
 @component.add(
-    name="P PHS power", units="Dmnl", comp_type="Lookup", comp_subtype="External"
+    name="P PHS power",
+    units="Dmnl",
+    comp_type="Lookup",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_p_phs_power",
+        "__lookup__": "_ext_lookup_p_phs_power",
+    },
 )
 def p_phs_power(x, final_subs=None):
     """
@@ -252,6 +304,7 @@ _ext_lookup_p_phs_power = ExtLookup(
     units="1/Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_past_phs_capacity_growth"},
 )
 def past_phs_capacity_growth():
     """
@@ -276,13 +329,28 @@ _ext_constant_past_phs_capacity_growth = ExtConstant(
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"phs_planned_capacity": 1, "time_construction_res_elec": 1},
 )
 def phs_capacity_under_construction():
     return phs_planned_capacity() / float(time_construction_res_elec().loc["hydro"])
 
 
 @component.add(
-    name="PHS planned capacity", units="TW", comp_type="Stateful", comp_subtype="Integ"
+    name="PHS planned capacity",
+    units="TW",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_phs_planned_capacity": 1},
+    other_deps={
+        "_integ_phs_planned_capacity": {
+            "initial": {"initial_capacity_in_construction_phs": 1},
+            "step": {
+                "new_phs_capacity_under_planning": 1,
+                "replacement_capacity_phs": 1,
+                "phs_capacity_under_construction": 1,
+            },
+        }
+    },
 )
 def phs_planned_capacity():
     return _integ_phs_planned_capacity()
@@ -302,6 +370,7 @@ _integ_phs_planned_capacity = Integ(
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"installed_capacity_phs_tw": 1, "cp_phs": 1, "twe_per_twh": 1},
 )
 def real_fe_elec_stored_phs_twh():
     """
@@ -315,6 +384,10 @@ def real_fe_elec_stored_phs_twh():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "remaining_potential_phs": 2,
+        "threshold_remaining_potential_new_capacity": 2,
+    },
 )
 def remaining_potential_constraint_on_new_phs_capacity():
     return if_then_else(
@@ -330,6 +403,7 @@ def remaining_potential_constraint_on_new_phs_capacity():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_capacity_potential_phs": 3, "installed_capacity_phs_tw": 2},
 )
 def remaining_potential_phs():
     return if_then_else(
@@ -345,6 +419,7 @@ def remaining_potential_phs():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 1, "replacement_rate_phs": 1, "wear_phs": 1},
 )
 def replacement_capacity_phs():
     """
@@ -360,6 +435,7 @@ def replacement_capacity_phs():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_fe_elec_stored_phs_twh": 1, "max_potential_phs_twh": 1},
 )
 def replacement_rate_phs():
     """
@@ -371,7 +447,20 @@ def replacement_rate_phs():
 
 
 @component.add(
-    name="required capacity PHS", units="TW", comp_type="Stateful", comp_subtype="Integ"
+    name="required capacity PHS",
+    units="TW",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_required_capacity_phs": 1},
+    other_deps={
+        "_integ_required_capacity_phs": {
+            "initial": {"initial_required_capacity_phs": 1},
+            "step": {
+                "new_required_phs_capacity": 1,
+                "new_phs_capacity_under_planning": 1,
+            },
+        }
+    },
 )
 def required_capacity_phs():
     return _integ_required_capacity_phs()
@@ -389,6 +478,10 @@ _integ_required_capacity_phs = Integ(
     units="TW/Year",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_table_hist_capacity_phs",
+        "__lookup__": "_ext_lookup_table_hist_capacity_phs",
+    },
 )
 def table_hist_capacity_phs(x, final_subs=None):
     return _ext_lookup_table_hist_capacity_phs(x, final_subs)
@@ -407,7 +500,11 @@ _ext_lookup_table_hist_capacity_phs = ExtLookup(
 
 
 @component.add(
-    name="wear PHS", units="TW", comp_type="Auxiliary", comp_subtype="Normal"
+    name="wear PHS",
+    units="TW",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "installed_capacity_phs_tw": 1, "lifetime_res_elec": 1},
 )
 def wear_phs():
     return if_then_else(

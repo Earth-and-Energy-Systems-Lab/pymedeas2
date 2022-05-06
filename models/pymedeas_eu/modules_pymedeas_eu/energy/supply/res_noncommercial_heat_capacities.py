@@ -1,6 +1,6 @@
 """
 Module res_noncommercial_heat_capacities
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_fed_heatnc_ej": 3, "fe_real_supply_res_for_heatnc_tot_ej": 1},
 )
 def abundance_res_heatnc():
     """
@@ -29,6 +30,7 @@ def abundance_res_heatnc():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_res_heatnc": 1},
 )
 def abundance_res_heatnc2():
     """
@@ -43,6 +45,13 @@ def abundance_res_heatnc2():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 4,
+        "past_res_growth_for_heatnc": 4,
+        "start_year_p_growth_res_heat": 3,
+        "target_year_p_growth_res_heat": 2,
+        "p_res_for_heat": 2,
+    },
 )
 def adapt_growth_res_for_heatnc():
     """
@@ -72,6 +81,7 @@ def adapt_growth_res_for_heatnc():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"cpini_res_for_heat": 1, "shortage_bioe_for_heat": 1},
 )
 def cp_res_for_heat():
     return cpini_res_for_heat() * shortage_bioe_for_heat()
@@ -83,6 +93,7 @@ def cp_res_for_heat():
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_cpini_res_for_heat"},
 )
 def cpini_res_for_heat():
     return _ext_constant_cpini_res_for_heat()
@@ -105,6 +116,7 @@ _ext_constant_cpini_res_for_heat = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"potential_fes_res_for_heatnc_ej": 1, "res_heatnc_tot_overcapacity": 1},
 )
 def fe_real_generation_res_heatnc_ej():
     """
@@ -118,6 +130,7 @@ def fe_real_generation_res_heatnc_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_fed_heatnc_ej": 1, "potential_fes_tot_res_for_heatnc_ej": 1},
 )
 def fe_real_supply_res_for_heatnc_tot_ej():
     """
@@ -134,6 +147,10 @@ def fe_real_supply_res_for_heatnc_tot_ej():
     subscripts=["RES heat"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_res_capacity_for_heatnc",
+        "__lookup__": "_ext_lookup_historic_res_capacity_for_heatnc",
+    },
 )
 def historic_res_capacity_for_heatnc(x, final_subs=None):
     """
@@ -160,6 +177,7 @@ _ext_lookup_historic_res_capacity_for_heatnc = ExtLookup(
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_value_res_for_heatnc"},
 )
 def initial_value_res_for_heatnc():
     """
@@ -185,6 +203,17 @@ _ext_constant_initial_value_res_for_heatnc = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_installed_capacity_res_heatnc_tw": 1},
+    other_deps={
+        "_integ_installed_capacity_res_heatnc_tw": {
+            "initial": {"initial_value_res_for_heatnc": 1},
+            "step": {
+                "new_res_capacity_for_heatnc_tw": 1,
+                "replacement_res_for_heatnc_tw": 1,
+                "wear_res_capacity_for_heatnc_tw": 1,
+            },
+        }
+    },
 )
 def installed_capacity_res_heatnc_tw():
     """
@@ -208,6 +237,14 @@ _integ_installed_capacity_res_heatnc_tw = Integ(
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 3,
+        "historic_res_capacity_for_heatnc": 2,
+        "installed_capacity_res_heatnc_tw": 1,
+        "adapt_growth_res_for_heatnc": 1,
+        "remaining_potential_constraint_on_new_res_heat_capacity": 1,
+        "abundance_res_heatnc2": 1,
+    },
 )
 def new_res_capacity_for_heatnc_tw():
     """
@@ -232,6 +269,7 @@ def new_res_capacity_for_heatnc_tw():
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_past_res_growth_for_heatnc"},
 )
 def past_res_growth_for_heatnc():
     """
@@ -257,6 +295,7 @@ _ext_constant_past_res_growth_for_heatnc = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fe_real_generation_res_heatnc_ej": 3, "efficiency_res_heat": 1},
 )
 def pes_dem_res_for_heatnc_by_techn():
     """
@@ -283,6 +322,7 @@ def pes_dem_res_for_heatnc_by_techn():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fe_real_generation_res_heatnc_ej": 1, "efficiency_res_heat": 1},
 )
 def pes_res_for_heatnc_by_techn():
     """
@@ -297,6 +337,7 @@ def pes_res_for_heatnc_by_techn():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"potential_fes_res_for_heatnc_twh": 1, "ej_per_twh": 1},
 )
 def potential_fes_res_for_heatnc_ej():
     """
@@ -311,6 +352,12 @@ def potential_fes_res_for_heatnc_ej():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_res_heatnc_tw": 1,
+        "efficiency_res_heat": 1,
+        "cp_res_for_heat": 1,
+        "twe_per_twh": 1,
+    },
 )
 def potential_fes_res_for_heatnc_twh():
     """
@@ -329,6 +376,7 @@ def potential_fes_res_for_heatnc_twh():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"potential_fes_res_for_heatnc_ej": 1},
 )
 def potential_fes_tot_res_for_heatnc_ej():
     """
@@ -346,6 +394,12 @@ def potential_fes_tot_res_for_heatnc_ej():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "wear_res_capacity_for_heatnc_tw": 1,
+        "replacement_res_for_heatnc": 1,
+        "res_heatnc_tot_overcapacity": 1,
+        "shortage_bioe_for_heat": 1,
+    },
 )
 def replacement_res_for_heatnc_tw():
     """
@@ -365,6 +419,7 @@ def replacement_res_for_heatnc_tw():
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_replacement_res_for_heatnc"},
 )
 def replacement_res_for_heatnc():
     """
@@ -389,6 +444,10 @@ _ext_constant_replacement_res_for_heatnc = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_fes_tot_res_for_heatnc_ej": 3,
+        "fe_real_supply_res_for_heatnc_tot_ej": 1,
+    },
 )
 def res_heatnc_tot_overcapacity():
     """
@@ -411,6 +470,7 @@ def res_heatnc_tot_overcapacity():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"installed_capacity_res_heatnc_tw": 1, "life_time_res_for_heat": 1},
 )
 def wear_res_capacity_for_heatnc_tw():
     """

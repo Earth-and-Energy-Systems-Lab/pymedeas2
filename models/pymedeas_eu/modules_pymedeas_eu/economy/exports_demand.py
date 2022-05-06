@@ -1,6 +1,6 @@
 """
 Module exports_demand
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,7 @@ Translated using PySD version 3.0.0
     subscripts=["sectors"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_0_exp"},
 )
 def beta_0_exp():
     """
@@ -35,6 +36,7 @@ _ext_constant_beta_0_exp = ExtConstant(
     subscripts=["sectors"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_0_gfcf"},
 )
 def beta_0_gfcf():
     """
@@ -55,7 +57,11 @@ _ext_constant_beta_0_gfcf = ExtConstant(
 
 
 @component.add(
-    name="beta 1 EXP", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="beta 1 EXP",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_1_exp"},
 )
 def beta_1_exp():
     """
@@ -70,7 +76,11 @@ _ext_constant_beta_1_exp = ExtConstant(
 
 
 @component.add(
-    name="beta 1 GFCF", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="beta 1 GFCF",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_1_gfcf"},
 )
 def beta_1_gfcf():
     """
@@ -96,6 +106,13 @@ _ext_constant_beta_1_gfcf = ExtConstant(
     subscripts=["sectors"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_exports_demand": 1},
+    other_deps={
+        "_integ_exports_demand": {
+            "initial": {"initial_exports_demand": 1},
+            "step": {"variation_exports_demand": 1, "exports_demand_not_covered": 1},
+        }
+    },
 )
 def exports_demand():
     """
@@ -117,6 +134,7 @@ _integ_exports_demand = Integ(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 1, "exports_demand": 1, "real_exports_demand_by_sector": 1},
 )
 def exports_demand_not_covered():
     """
@@ -135,6 +153,11 @@ def exports_demand_not_covered():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "gross_fixed_capital_formation": 1,
+        "real_gfcf_by_sector": 1,
+    },
 )
 def gfcf_not_covered():
     """
@@ -153,6 +176,13 @@ def gfcf_not_covered():
     subscripts=["sectors"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_gross_fixed_capital_formation": 1},
+    other_deps={
+        "_integ_gross_fixed_capital_formation": {
+            "initial": {"initial_gfcf": 1},
+            "step": {"variation_gfcf": 1, "gfcf_not_covered": 1},
+        }
+    },
 )
 def gross_fixed_capital_formation():
     """
@@ -174,6 +204,10 @@ _integ_gross_fixed_capital_formation = Integ(
     subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_exports_demand",
+        "__lookup__": "_ext_lookup_historic_exports_demand",
+    },
 )
 def historic_exports_demand(x, final_subs=None):
     """
@@ -200,6 +234,10 @@ _ext_lookup_historic_exports_demand = ExtLookup(
     subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_gfcf",
+        "__lookup__": "_ext_lookup_historic_gfcf",
+    },
 )
 def historic_gfcf(x, final_subs=None):
     """
@@ -226,6 +264,7 @@ _ext_lookup_historic_gfcf = ExtLookup(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_exports_demand": 1},
 )
 def initial_exports_demand():
     """
@@ -240,6 +279,7 @@ def initial_exports_demand():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_gfcf": 1},
 )
 def initial_gfcf():
     """
@@ -249,14 +289,21 @@ def initial_gfcf():
 
 
 @component.add(
-    name="real demand world next step", comp_type="Auxiliary", comp_subtype="Normal"
+    name="real demand world next step",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"real_demand_world": 1, "annual_gdp_growth_rate_world": 1},
 )
 def real_demand_world_next_step():
     return real_demand_world() * (1 + annual_gdp_growth_rate_world())
 
 
 @component.add(
-    name="Total exports", units="Mdollars", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Total exports",
+    units="Mdollars",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"exports_demand": 1},
 )
 def total_exports():
     """
@@ -266,7 +313,11 @@ def total_exports():
 
 
 @component.add(
-    name="Total GFCF", units="Mdollars", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Total GFCF",
+    units="Mdollars",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"gross_fixed_capital_formation": 1},
 )
 def total_gfcf():
     """
@@ -284,6 +335,15 @@ def total_gfcf():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "exports_demand": 1,
+        "beta_1_exp": 2,
+        "real_demand_world": 1,
+        "beta_0_exp": 1,
+        "time": 1,
+        "real_demand_world_next_step": 1,
+        "variation_historic_exports_demand": 1,
+    },
 )
 def variation_exports_demand():
     """
@@ -310,6 +370,15 @@ def variation_exports_demand():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "gross_fixed_capital_formation": 1,
+        "beta_0_gfcf": 1,
+        "variation_cc": 1,
+        "cc_total": 2,
+        "beta_1_gfcf": 2,
+        "time": 1,
+        "variation_historic_gfcf": 1,
+    },
 )
 def variation_gfcf():
     """
@@ -336,6 +405,7 @@ def variation_gfcf():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "historic_exports_demand": 2},
 )
 def variation_historic_exports_demand():
     """
@@ -352,6 +422,7 @@ def variation_historic_exports_demand():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "historic_gfcf": 2},
 )
 def variation_historic_gfcf():
     """

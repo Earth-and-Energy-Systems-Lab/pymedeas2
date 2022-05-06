@@ -1,6 +1,6 @@
 """
 Module gdp_desired_labour_and_capital_share
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,14 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "select_gdppc_evolution_input": 2,
+        "input_gdppc_annual_growth": 1,
+        "p_customized_cte_gdppc_variation": 1,
+        "time": 1,
+        "p_timeseries_gdppc_growth_rate": 2,
+        "p_customized_year_gdppc_evolution": 1,
+    },
 )
 def annual_gdppc_growth_rate():
     return if_then_else(
@@ -31,6 +39,7 @@ def annual_gdppc_growth_rate():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"desire_gdp_next_step": 1, "desired_gdp": 1},
 )
 def desired_annual_gdp_growth_rate():
     """
@@ -40,7 +49,17 @@ def desired_annual_gdp_growth_rate():
 
 
 @component.add(
-    name="Desired GDPpc", units="$/person", comp_type="Stateful", comp_subtype="Integ"
+    name="Desired GDPpc",
+    units="$/person",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_desired_gdppc": 1},
+    other_deps={
+        "_integ_desired_gdppc": {
+            "initial": {"gdppc_initial_year": 1},
+            "step": {"desired_variation_gdppc": 1},
+        }
+    },
 )
 def desired_gdppc():
     return _integ_desired_gdppc()
@@ -54,7 +73,14 @@ _integ_desired_gdppc = Integ(
 
 
 @component.add(
-    name="capital share", units="Dmnl", comp_type="Stateful", comp_subtype="Integ"
+    name="capital share",
+    units="Dmnl",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_capital_share": 1},
+    other_deps={
+        "_integ_capital_share": {"initial": {}, "step": {"variation_capital_share": 1}}
+    },
 )
 def capital_share():
     """
@@ -73,6 +99,12 @@ _integ_capital_share = Integ(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "p_capital_share": 1,
+        "initial_capital_share": 1,
+        "year_final_capial_share": 1,
+        "year_initial_capital_share": 1,
+    },
 )
 def capital_share_growth():
     """
@@ -84,14 +116,21 @@ def capital_share_growth():
 
 
 @component.add(
-    name="CC total", units="Mdollars", comp_type="Auxiliary", comp_subtype="Normal"
+    name="CC total",
+    units="Mdollars",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"gdp_aut": 1, "capital_share": 1},
 )
 def cc_total():
     return gdp_aut() * capital_share() * 1000000.0
 
 
 @component.add(
-    name="Desire GDP next step", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Desire GDP next step",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"desired_gdp": 1, "desired_variation_gdp": 1},
 )
 def desire_gdp_next_step():
     return desired_gdp() + desired_variation_gdp()
@@ -102,6 +141,7 @@ def desire_gdp_next_step():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"desired_annual_gdp_growth_rate": 1},
 )
 def desired_annual_total_demand_growth_rate():
     """
@@ -115,6 +155,13 @@ def desired_annual_total_demand_growth_rate():
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_desired_annual_total_demand_growth_rate_delayed_1_yr": 1},
+    other_deps={
+        "_delayfixed_desired_annual_total_demand_growth_rate_delayed_1_yr": {
+            "initial": {},
+            "step": {"desired_annual_total_demand_growth_rate": 1},
+        }
+    },
 )
 def desired_annual_total_demand_growth_rate_delayed_1_yr():
     """
@@ -133,7 +180,11 @@ _delayfixed_desired_annual_total_demand_growth_rate_delayed_1_yr = DelayFixed(
 
 
 @component.add(
-    name="Desired GDP", units="T$", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Desired GDP",
+    units="T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"desired_gdppc": 1, "population": 1, "dollars_to_tdollars": 1},
 )
 def desired_gdp():
     """
@@ -143,7 +194,19 @@ def desired_gdp():
 
 
 @component.add(
-    name="Desired variation GDP", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Desired variation GDP",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "desired_gdppc": 2,
+        "population": 2,
+        "variation_historic_gdppc": 2,
+        "dollars_to_tdollars": 6,
+        "variation_historic_pop": 2,
+        "pop_variation": 2,
+        "desired_variation_gdppc": 2,
+    },
 )
 def desired_variation_gdp():
     return if_then_else(
@@ -162,6 +225,11 @@ def desired_variation_gdp():
     units="$/person",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "desired_variation_gdppc_per_scen": 1,
+        "smooth_desired_variation_gdppc": 1,
+    },
 )
 def desired_variation_gdppc():
     """
@@ -179,6 +247,15 @@ def desired_variation_gdppc():
     units="$/person",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "variation_historic_gdppc": 1,
+        "gdppc_variation_asymptote_scen": 1,
+        "desired_gdppc": 4,
+        "annual_gdppc_growth_rate": 4,
+        "p_customized_year_gdppc_evolution": 1,
+        "select_gdppc_evolution_input": 4,
+    },
 )
 def desired_variation_gdppc_per_scen():
     """
@@ -228,6 +305,7 @@ def dollar_per_mdollar():
     units="$/person",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_gdp": 1, "historic_population": 1, "dollar_per_mdollar": 1},
 )
 def gdppc_initial_year():
     return historic_gdp(1995) / historic_population(1995) * dollar_per_mdollar()
@@ -238,6 +316,17 @@ def gdppc_initial_year():
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_gdppc_until_p_customized_year_gdppc_evolution": 1},
+    other_deps={
+        "_sampleiftrue_gdppc_until_p_customized_year_gdppc_evolution": {
+            "initial": {"desired_gdppc": 1},
+            "step": {
+                "time": 1,
+                "p_customized_year_gdppc_evolution": 1,
+                "desired_gdppc": 1,
+            },
+        }
+    },
 )
 def gdppc_until_p_customized_year_gdppc_evolution():
     """
@@ -259,6 +348,13 @@ _sampleiftrue_gdppc_until_p_customized_year_gdppc_evolution = SampleIfTrue(
     units="$/(Year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "gdppc_until_p_customized_year_gdppc_evolution": 1,
+        "p_gdppc_asymptote": 1,
+        "t_asymptote_gdppc": 2,
+        "time": 1,
+        "p_customized_year_gdppc_evolution": 1,
+    },
 )
 def gdppc_variation_asymptote_scen():
     """
@@ -272,7 +368,15 @@ def gdppc_variation_asymptote_scen():
 
 
 @component.add(
-    name="growth capital share", comp_type="Auxiliary", comp_subtype="Normal"
+    name="growth capital share",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "laborcapital_share_cte": 1,
+        "capital_share_growth": 1,
+        "historic_capital_share_growth": 1,
+    },
 )
 def growth_capital_share():
     return if_then_else(
@@ -291,6 +395,12 @@ def growth_capital_share():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "laborcapital_share_cte": 1,
+        "labour_share_growth": 1,
+        "historic_labour_share_growth": 1,
+    },
 )
 def growth_labour_share():
     """
@@ -313,6 +423,10 @@ def growth_labour_share():
     subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_capital_compensation",
+        "__lookup__": "_ext_lookup_historic_capital_compensation",
+    },
 )
 def historic_capital_compensation(x, final_subs=None):
     """
@@ -338,6 +452,7 @@ _ext_lookup_historic_capital_compensation = ExtLookup(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "historic_capital_compensation": 1, "historic_gdp": 1},
 )
 def historic_capital_share():
     """
@@ -354,6 +469,7 @@ def historic_capital_share():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_capital_share_next_step": 1, "historic_capital_share": 2},
 )
 def historic_capital_share_growth():
     """
@@ -368,6 +484,7 @@ def historic_capital_share_growth():
     name="historic capital share next step",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "historic_capital_compensation": 1, "historic_gdp": 1},
 )
 def historic_capital_share_next_step():
     """
@@ -380,7 +497,14 @@ def historic_capital_share_next_step():
 
 
 @component.add(
-    name="historic GDP", units="Mdollars", comp_type="Lookup", comp_subtype="External"
+    name="historic GDP",
+    units="Mdollars",
+    comp_type="Lookup",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_gdp",
+        "__lookup__": "_ext_lookup_historic_gdp",
+    },
 )
 def historic_gdp(x, final_subs=None):
     """
@@ -407,6 +531,10 @@ _ext_lookup_historic_gdp = ExtLookup(
     subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_labour_compensation",
+        "__lookup__": "_ext_lookup_historic_labour_compensation",
+    },
 )
 def historic_labour_compensation(x, final_subs=None):
     """
@@ -432,6 +560,7 @@ _ext_lookup_historic_labour_compensation = ExtLookup(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "historic_labour_compensation": 1, "historic_gdp": 1},
 )
 def historic_labour_share():
     """
@@ -448,6 +577,7 @@ def historic_labour_share():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_labour_share_next_step": 1, "historic_labour_share": 2},
 )
 def historic_labour_share_growth():
     """
@@ -463,6 +593,7 @@ def historic_labour_share_growth():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "historic_labour_compensation": 1, "historic_gdp": 1},
 )
 def historic_labour_share_next_step():
     """
@@ -479,6 +610,7 @@ def historic_labour_share_next_step():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_capital_compensation": 1, "historic_gdp": 1},
 )
 def initial_capital_share():
     """
@@ -495,6 +627,7 @@ def initial_capital_share():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_labour_compensation": 1, "historic_gdp": 1},
 )
 def initial_labour_share():
     """
@@ -511,6 +644,11 @@ def initial_labour_share():
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_input_gdppc_annual_growth",
+        "__data__": "_ext_data_input_gdppc_annual_growth",
+        "time": 1,
+    },
 )
 def input_gdppc_annual_growth():
     """
@@ -550,6 +688,12 @@ def laborcapital_share_cte():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "p_labour_share": 1,
+        "initial_labour_share": 1,
+        "year_final_labour_share": 1,
+        "year_initial_labour_share": 1,
+    },
 )
 def labour_share_growth():
     """
@@ -560,13 +704,25 @@ def labour_share_growth():
     ) - 1
 
 
-@component.add(name="LC", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="LC",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"labour_share": 1, "gdp_aut": 1},
+)
 def lc():
     return labour_share() * gdp_aut() * 1000000.0
 
 
 @component.add(
-    name="labour share", units="Dmnl", comp_type="Stateful", comp_subtype="Integ"
+    name="labour share",
+    units="Dmnl",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_labour_share": 1},
+    other_deps={
+        "_integ_labour_share": {"initial": {}, "step": {"variation_labour_share": 1}}
+    },
 )
 def labour_share():
     """
@@ -581,7 +737,11 @@ _integ_labour_share = Integ(
 
 
 @component.add(
-    name="P capital share", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="P capital share",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_capital_share"},
 )
 def p_capital_share():
     """
@@ -606,6 +766,7 @@ _ext_constant_p_capital_share = ExtConstant(
     units="1/Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_customized_cte_gdppc_variation"},
 )
 def p_customized_cte_gdppc_variation():
     """
@@ -630,6 +791,7 @@ _ext_constant_p_customized_cte_gdppc_variation = ExtConstant(
     units="Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_customized_year_gdppc_evolution"},
 )
 def p_customized_year_gdppc_evolution():
     """
@@ -654,6 +816,7 @@ _ext_constant_p_customized_year_gdppc_evolution = ExtConstant(
     units="$/person",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_gdppc_asymptote"},
 )
 def p_gdppc_asymptote():
     """
@@ -674,7 +837,11 @@ _ext_constant_p_gdppc_asymptote = ExtConstant(
 
 
 @component.add(
-    name="P labour share", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="P labour share",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_labour_share"},
 )
 def p_labour_share():
     """
@@ -699,6 +866,11 @@ _ext_constant_p_labour_share = ExtConstant(
     units="1/Year",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_p_timeseries_gdppc_growth_rate",
+        "__data__": "_ext_data_p_timeseries_gdppc_growth_rate",
+        "time": 1,
+    },
 )
 def p_timeseries_gdppc_growth_rate():
     """
@@ -725,6 +897,7 @@ _ext_data_p_timeseries_gdppc_growth_rate = ExtData(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_select_gdppc_evolution_input"},
 )
 def select_gdppc_evolution_input():
     """
@@ -744,7 +917,18 @@ _ext_constant_select_gdppc_evolution_input = ExtConstant(
 )
 
 
-@component.add(name="smooth Desired GDPpc", comp_type="Stateful", comp_subtype="Smooth")
+@component.add(
+    name="smooth Desired GDPpc",
+    comp_type="Stateful",
+    comp_subtype="Smooth",
+    depends_on={"_smooth_smooth_desired_gdppc": 1},
+    other_deps={
+        "_smooth_smooth_desired_gdppc": {
+            "initial": {"desired_variation_gdppc_per_scen": 1},
+            "step": {"desired_variation_gdppc_per_scen": 1},
+        }
+    },
+)
 def smooth_desired_gdppc():
     return _smooth_smooth_desired_gdppc()
 
@@ -763,6 +947,12 @@ _smooth_smooth_desired_gdppc = Smooth(
     units="$/person",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "p_customized_year_gdppc_evolution": 1,
+        "desired_variation_gdppc_per_scen": 1,
+        "smooth_desired_gdppc": 1,
+    },
 )
 def smooth_desired_variation_gdppc():
     return if_then_else(
@@ -772,13 +962,24 @@ def smooth_desired_variation_gdppc():
     )
 
 
-@component.add(name="T asymptote GDPpc", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="T asymptote GDPpc",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "target_year_gdppc_asymptote": 1,
+        "p_customized_year_gdppc_evolution": 1,
+    },
+)
 def t_asymptote_gdppc():
     return (target_year_gdppc_asymptote() - p_customized_year_gdppc_evolution()) / 3
 
 
 @component.add(
-    name="Target year GDPpc asymptote", comp_type="Constant", comp_subtype="External"
+    name="Target year GDPpc asymptote",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_target_year_gdppc_asymptote"},
 )
 def target_year_gdppc_asymptote():
     return _ext_constant_target_year_gdppc_asymptote()
@@ -800,6 +1001,7 @@ _ext_constant_target_year_gdppc_asymptote = ExtConstant(
     units="1/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"capital_share": 1, "growth_capital_share": 1},
 )
 def variation_capital_share():
     """
@@ -808,7 +1010,17 @@ def variation_capital_share():
     return capital_share() * growth_capital_share()
 
 
-@component.add(name="variation CC", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="variation CC",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "gdp_aut": 1,
+        "capital_share": 1,
+        "growth_capital_share": 2,
+        "desired_annual_total_demand_growth_rate": 2,
+    },
+)
 def variation_cc():
     return (
         gdp_aut()
@@ -827,6 +1039,12 @@ def variation_cc():
     units="$/(person*Year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 5,
+        "dollar_per_mdollar": 1,
+        "historic_population": 2,
+        "historic_gdp": 2,
+    },
 )
 def variation_historic_gdppc():
     """
@@ -848,6 +1066,7 @@ def variation_historic_gdppc():
     units="1/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"growth_labour_share": 1, "labour_share": 1},
 )
 def variation_labour_share():
     """
@@ -856,7 +1075,17 @@ def variation_labour_share():
     return growth_labour_share() * labour_share()
 
 
-@component.add(name="variation LC", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="variation LC",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "gdp_aut": 1,
+        "labour_share": 1,
+        "growth_labour_share": 2,
+        "desired_annual_total_demand_growth_rate": 2,
+    },
+)
 def variation_lc():
     return (
         gdp_aut()

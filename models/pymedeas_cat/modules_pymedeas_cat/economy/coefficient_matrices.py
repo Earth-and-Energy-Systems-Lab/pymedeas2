@@ -1,6 +1,6 @@
 """
 Module coefficient_matrices
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,7 @@ Translated using PySD version 3.0.0
     subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_historic_a_matrix"},
 )
 def historic_a_matrix():
     """
@@ -251,43 +252,15 @@ _ext_constant_historic_a_matrix.add(
     subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"i_matrix": 1, "historic_a_matrix": 1},
 )
 def historic_ia_matrix():
     return (
-        xr.DataArray(
-            0,
-            {
-                "economic years": _subscript_dict["economic years"],
-                "sectors A matrix": _subscript_dict["sectors A matrix"],
-                "sectors A matrix1": _subscript_dict["sectors A matrix1"],
-            },
-            ["economic years", "sectors A matrix", "sectors A matrix1"],
+        i_matrix()
+        - historic_a_matrix().transpose(
+            "sectors A matrix", "sectors A matrix1", "economic years"
         )
-        + (
-            xr.DataArray(
-                0,
-                {
-                    "sectors A matrix": _subscript_dict["sectors A matrix"],
-                    "sectors A matrix1": _subscript_dict["sectors A matrix1"],
-                    "economic years": _subscript_dict["economic years"],
-                },
-                ["sectors A matrix", "sectors A matrix1", "economic years"],
-            )
-            + i_matrix()
-        )
-        - (
-            xr.DataArray(
-                0,
-                {
-                    "sectors A matrix": _subscript_dict["sectors A matrix"],
-                    "sectors A matrix1": _subscript_dict["sectors A matrix1"],
-                    "economic years": _subscript_dict["economic years"],
-                },
-                ["sectors A matrix", "sectors A matrix1", "economic years"],
-            )
-            + historic_a_matrix()
-        )
-    )
+    ).transpose("economic years", "sectors A matrix", "sectors A matrix1")
 
 
 @component.add(
@@ -295,6 +268,7 @@ def historic_ia_matrix():
     subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_ia_matrix": 1},
 )
 def historic_leontief_matrix():
     return invert_matrix(historic_ia_matrix())
@@ -308,35 +282,15 @@ def historic_leontief_matrix():
 )
 def i_matrix():
     return if_then_else(
-        (
-            xr.DataArray(
-                0,
-                {
-                    "sectors A matrix": _subscript_dict["sectors A matrix"],
-                    "sectors A matrix1": _subscript_dict["sectors A matrix1"],
-                },
-                ["sectors A matrix", "sectors A matrix1"],
-            )
-            + xr.DataArray(
-                np.arange(1, len(_subscript_dict["sectors A matrix"]) + 1),
-                {"sectors A matrix": _subscript_dict["sectors A matrix"]},
-                ["sectors A matrix"],
-            )
+        xr.DataArray(
+            np.arange(1, len(_subscript_dict["sectors A matrix"]) + 1),
+            {"sectors A matrix": _subscript_dict["sectors A matrix"]},
+            ["sectors A matrix"],
         )
-        == (
-            xr.DataArray(
-                0,
-                {
-                    "sectors A matrix": _subscript_dict["sectors A matrix"],
-                    "sectors A matrix1": _subscript_dict["sectors A matrix1"],
-                },
-                ["sectors A matrix", "sectors A matrix1"],
-            )
-            + xr.DataArray(
-                np.arange(1, len(_subscript_dict["sectors A matrix1"]) + 1),
-                {"sectors A matrix1": _subscript_dict["sectors A matrix1"]},
-                ["sectors A matrix1"],
-            )
+        == xr.DataArray(
+            np.arange(1, len(_subscript_dict["sectors A matrix1"]) + 1),
+            {"sectors A matrix1": _subscript_dict["sectors A matrix1"]},
+            ["sectors A matrix1"],
         ),
         lambda: xr.DataArray(
             1,
@@ -362,6 +316,7 @@ def i_matrix():
     subscripts=["sectors A matrix", "sectors A matrix1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 14, "historic_ia_matrix": 15},
 )
 def ia_matrix():
     return if_then_else(
@@ -454,6 +409,7 @@ def ia_matrix():
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ia_matrix": 1},
 )
 def ia_matrix_domestic():
     return xr.DataArray(
@@ -474,6 +430,7 @@ def ia_matrix_domestic():
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ia_matrix": 1},
 )
 def ia_matrix_exports_0():
     return xr.DataArray(
@@ -494,6 +451,7 @@ def ia_matrix_exports_0():
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ia_matrix": 1},
 )
 def ia_matrix_exports_1():
     return xr.DataArray(
@@ -514,6 +472,7 @@ def ia_matrix_exports_1():
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ia_matrix": 1},
 )
 def ia_matrix_imports_0():
     return xr.DataArray(
@@ -534,6 +493,7 @@ def ia_matrix_imports_0():
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ia_matrix": 1},
 )
 def ia_matrix_imports_1():
     return xr.DataArray(
@@ -554,6 +514,7 @@ def ia_matrix_imports_1():
     subscripts=["sectors A matrix", "sectors A matrix1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 14, "historic_leontief_matrix": 15},
 )
 def leontief_matrix():
     return if_then_else(
@@ -650,6 +611,7 @@ def leontief_matrix():
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"leontief_matrix": 1},
 )
 def leontief_matrix_exports_0():
     return xr.DataArray(
@@ -670,6 +632,7 @@ def leontief_matrix_exports_0():
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"leontief_matrix": 1},
 )
 def leontief_matrix_exports_1():
     return xr.DataArray(
@@ -690,6 +653,7 @@ def leontief_matrix_exports_1():
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"leontief_matrix": 1},
 )
 def leontief_matrix_domestic():
     return xr.DataArray(
@@ -710,6 +674,7 @@ def leontief_matrix_domestic():
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"leontief_matrix": 1},
 )
 def leontief_matrix_imports_0():
     return xr.DataArray(
@@ -730,6 +695,7 @@ def leontief_matrix_imports_0():
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"leontief_matrix": 1},
 )
 def leontief_matrix_imports_1():
     return xr.DataArray(

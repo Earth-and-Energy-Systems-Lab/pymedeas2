@@ -1,6 +1,6 @@
 """
 Module esoi_ev_batteries
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -19,6 +19,12 @@ def cp_ev_batteries_for_transp():
     units="MJ/MW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_energy_required_for_total_material_consumption_for_ev_batteries": 1,
+        "mj_per_ej": 1,
+        "m_per_t": 1,
+        "newreplaced_batteries_tw": 1,
+    },
 )
 def energy_intensity_construction_ev_batteries_mjmw():
     """
@@ -32,7 +38,19 @@ def energy_intensity_construction_ev_batteries_mjmw():
 
 
 @component.add(
-    name="ESOI EV batteries", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="ESOI EV batteries",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "lifetime_ev_batteries": 1,
+        "cp_ev_batteries_for_elec_storage": 1,
+        "mw_in_1_year_to_mj": 1,
+        "grid_correction_factor_ev_batteries": 1,
+        "energy_intensity_construction_ev_batteries_mjmw": 1,
+        "share_energy_requirements_for_decom_ev_batteries": 1,
+        "gquality_of_electricity": 1,
+    },
 )
 def esoi_ev_batteries():
     """
@@ -55,7 +73,14 @@ def esoi_ev_batteries():
 
 
 @component.add(
-    name="FEI EV batteries", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="FEI EV batteries",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "output_ev_bateries_for_storage_over_lifetime": 1,
+        "esoi_ev_batteries": 1,
+    },
 )
 def fei_ev_batteries():
     """
@@ -69,6 +94,7 @@ def fei_ev_batteries():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_grid_correction_factor_ev_batteries"},
 )
 def grid_correction_factor_ev_batteries():
     return _ext_constant_grid_correction_factor_ev_batteries()
@@ -100,6 +126,14 @@ def kw_per_mw():
     units="Years",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "net_stored_energy_ev_battery_over_lifetime": 1,
+        "kw_per_battery_ev": 1,
+        "cp_ev_batteries_for_elec_storage": 1,
+        "kw_per_mw": 1,
+        "mw_in_1_year_to_mj": 1,
+        "cp_ev_batteries_for_transp": 1,
+    },
 )
 def lifetime_ev_batteries():
     """
@@ -118,6 +152,13 @@ def lifetime_ev_batteries():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "net_stored_energy_ev_battery_over_lifetime": 1,
+        "min_lifetime_ev_batteries": 1,
+        "mw_in_1_year_to_mj": 1,
+        "kw_per_mw": 1,
+        "kw_per_battery_ev": 1,
+    },
 )
 def max_cp_ev_batteries():
     """
@@ -135,6 +176,7 @@ def max_cp_ev_batteries():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"cp_ev_batteries_for_transp": 1},
 )
 def max_cp_ev_batteries_for_elec_storage():
     """
@@ -148,6 +190,7 @@ def max_cp_ev_batteries_for_elec_storage():
     units="Years",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_min_lifetime_ev_batteries"},
 )
 def min_lifetime_ev_batteries():
     """
@@ -182,6 +225,9 @@ def mw_in_1_year_to_mj():
     units="MJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_net_stored_energy_ev_battery_over_lifetime"
+    },
 )
 def net_stored_energy_ev_battery_over_lifetime():
     """
@@ -206,6 +252,13 @@ _ext_constant_net_stored_energy_ev_battery_over_lifetime = ExtConstant(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "cp_ev_batteries_for_elec_storage": 1,
+        "newreplaced_batteries_tw": 1,
+        "twe_per_twh": 1,
+        "lifetime_ev_batteries": 1,
+        "ej_per_twh": 1,
+    },
 )
 def output_ev_bateries_for_storage_over_lifetime():
     """
@@ -225,6 +278,9 @@ def output_ev_bateries_for_storage_over_lifetime():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_share_energy_requirements_for_decom_ev_batteries"
+    },
 )
 def share_energy_requirements_for_decom_ev_batteries():
     return _ext_constant_share_energy_requirements_for_decom_ev_batteries()

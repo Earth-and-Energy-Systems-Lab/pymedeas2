@@ -1,6 +1,6 @@
 """
 Module population
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,14 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "select_population_evolution_input": 2,
+        "variation_input_pop": 1,
+        "p_customized_cte_pop_variation": 1,
+        "time": 1,
+        "p_customized_year_pop_evolution": 1,
+        "p_timeseries_pop_growth_rate": 2,
+    },
 )
 def annual_population_growth_rate():
     return if_then_else(
@@ -31,6 +39,10 @@ def annual_population_growth_rate():
     units="people",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_population",
+        "__lookup__": "_ext_lookup_historic_population",
+    },
 )
 def historic_population(x, final_subs=None):
     """
@@ -56,6 +68,7 @@ _ext_lookup_historic_population = ExtLookup(
     units="people",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_population"},
 )
 def initial_population():
     """
@@ -80,6 +93,10 @@ _ext_constant_initial_population = ExtConstant(
     units="Mpeople",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_input_population",
+        "__lookup__": "_ext_lookup_input_population",
+    },
 )
 def input_population(x, final_subs=None):
     """
@@ -105,6 +122,7 @@ _ext_lookup_input_population = ExtLookup(
     units="year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_customized_cte_pop_variation"},
 )
 def p_customized_cte_pop_variation():
     """
@@ -129,6 +147,7 @@ _ext_constant_p_customized_cte_pop_variation = ExtConstant(
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_customized_year_pop_evolution"},
 )
 def p_customized_year_pop_evolution():
     """
@@ -153,6 +172,11 @@ _ext_constant_p_customized_year_pop_evolution = ExtConstant(
     units="1/year",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_p_timeseries_pop_growth_rate",
+        "__data__": "_ext_data_p_timeseries_pop_growth_rate",
+        "time": 1,
+    },
 )
 def p_timeseries_pop_growth_rate():
     """
@@ -179,6 +203,12 @@ _ext_data_p_timeseries_pop_growth_rate = ExtData(
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "variation_historic_pop": 1,
+        "population": 1,
+        "annual_population_growth_rate": 1,
+    },
 )
 def pop_variation():
     """
@@ -192,7 +222,17 @@ def pop_variation():
 
 
 @component.add(
-    name="Population", units="people", comp_type="Stateful", comp_subtype="Integ"
+    name="Population",
+    units="people",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_population": 1},
+    other_deps={
+        "_integ_population": {
+            "initial": {"initial_population": 1},
+            "step": {"pop_variation": 1},
+        }
+    },
 )
 def population():
     """
@@ -211,6 +251,7 @@ _integ_population = Integ(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_select_population_evolution_input"},
 )
 def select_population_evolution_input():
     """
@@ -235,6 +276,7 @@ _ext_constant_select_population_evolution_input = ExtConstant(
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 3, "historic_population": 2},
 )
 def variation_historic_pop():
     """
@@ -252,6 +294,7 @@ def variation_historic_pop():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 3, "input_population": 2},
 )
 def variation_input_pop():
     return if_then_else(

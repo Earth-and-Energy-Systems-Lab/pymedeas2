@@ -1,6 +1,6 @@
 """
 Module coal_extraction
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,11 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extraction_coal_aut": 2,
+        "imports_aut_coal_from_row_ej": 2,
+        "ped_coal_ej": 3,
+    },
 )
 def abundance_coal_aut():
     """
@@ -30,6 +35,12 @@ def abundance_coal_aut():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "start_policy_leave_in_ground_coal": 1,
+        "share_rurr_coal_to_leave_underground": 1,
+        "rurr_coal_start_year_plg": 1,
+    },
 )
 def coal_to_leave_underground():
     """
@@ -47,6 +58,13 @@ def coal_to_leave_underground():
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_cumulated_coal_extraction": 1},
+    other_deps={
+        "_integ_cumulated_coal_extraction": {
+            "initial": {"cumulated_coal_extraction_to_1995": 1},
+            "step": {"extraction_coal_aut": 1},
+        }
+    },
 )
 def cumulated_coal_extraction():
     """
@@ -63,7 +81,18 @@ _integ_cumulated_coal_extraction = Integ(
 
 
 @component.add(
-    name="extraction coal AUT", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="extraction coal AUT",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "rurr_coal": 1,
+        "unlimited_nre": 1,
+        "ped_domestic_aut_coal_ej": 2,
+        "unlimited_coal": 1,
+        "max_extraction_coal_ej": 1,
+        "time": 1,
+    },
 )
 def extraction_coal_aut():
     """
@@ -88,6 +117,7 @@ def extraction_coal_aut():
     units="MToe/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"extraction_coal_aut": 1, "mtoe_per_ej": 1},
 )
 def extraction_coal_mtoe():
     """
@@ -101,6 +131,7 @@ def extraction_coal_mtoe():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"extraction_coal_aut": 1, "extraction_coal_for_ctl": 1},
 )
 def extraction_coal_without_ctl_ej():
     """
@@ -114,6 +145,7 @@ def extraction_coal_without_ctl_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pec_coal": 1, "nonenergy_use_demand_by_final_fuel_ej": 1},
 )
 def consumption_ue_coal_emissions_relevant_ej():
     """
@@ -129,6 +161,7 @@ def consumption_ue_coal_emissions_relevant_ej():
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_cumulated_coal_extraction_to_1995"},
 )
 def cumulated_coal_extraction_to_1995():
     """
@@ -153,6 +186,10 @@ _ext_constant_cumulated_coal_extraction_to_1995 = ExtConstant(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extraction_coal_without_ctl_ej": 1,
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
+    },
 )
 def extraction_coal_emissions_relevant_ej():
     """
@@ -170,6 +207,7 @@ def extraction_coal_emissions_relevant_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_coal_for_ctl_ej": 1},
 )
 def extraction_coal_for_ctl():
     """
@@ -183,6 +221,11 @@ def extraction_coal_for_ctl():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "start_policy_leave_in_ground_coal": 2,
+        "coal_to_leave_underground": 1,
+    },
 )
 def flow_coal_left_in_ground():
     """
@@ -199,7 +242,10 @@ def flow_coal_left_in_ground():
 
 
 @component.add(
-    name="max extraction coal EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="max extraction coal EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"tot_rurr_coal": 1, "table_max_extraction_coal": 1},
 )
 def max_extraction_coal_ej():
     """
@@ -213,6 +259,7 @@ def max_extraction_coal_ej():
     units="MToe/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_extraction_coal_ej": 1, "mtoe_per_ej": 1},
 )
 def max_extraction_coal_mtoe():
     """
@@ -226,6 +273,7 @@ def max_extraction_coal_mtoe():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_coal_ej": 1, "ped_coal_for_ctl_ej": 1},
 )
 def ped_coal_without_ctl():
     """
@@ -234,7 +282,19 @@ def ped_coal_without_ctl():
     return ped_coal_ej() - ped_coal_for_ctl_ej()
 
 
-@component.add(name="RURR coal", units="EJ", comp_type="Stateful", comp_subtype="Integ")
+@component.add(
+    name="RURR coal",
+    units="EJ",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_rurr_coal": 1},
+    other_deps={
+        "_integ_rurr_coal": {
+            "initial": {"urr_coal": 1, "cumulated_coal_extraction_to_1995": 1},
+            "step": {"extraction_coal_aut": 1, "flow_coal_left_in_ground": 1},
+        }
+    },
+)
 def rurr_coal():
     """
     RURR coal. 4400 EJ extracted before 1990.
@@ -254,6 +314,13 @@ _integ_rurr_coal = Integ(
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_rurr_coal_start_year_plg": 1},
+    other_deps={
+        "_sampleiftrue_rurr_coal_start_year_plg": {
+            "initial": {"rurr_coal": 1},
+            "step": {"time": 1, "start_policy_leave_in_ground_coal": 1, "rurr_coal": 1},
+        }
+    },
 )
 def rurr_coal_start_year_plg():
     """
@@ -275,6 +342,7 @@ _sampleiftrue_rurr_coal_start_year_plg = SampleIfTrue(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_rurr_coal_to_leave_underground"},
 )
 def share_rurr_coal_to_leave_underground():
     """
@@ -299,6 +367,7 @@ _ext_constant_share_rurr_coal_to_leave_underground = ExtConstant(
     units="Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_start_policy_leave_in_ground_coal"},
 )
 def start_policy_leave_in_ground_coal():
     """
@@ -323,6 +392,10 @@ _ext_constant_start_policy_leave_in_ground_coal = ExtConstant(
     units="EJ/Year",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_table_max_extraction_coal",
+        "__lookup__": "_ext_lookup_table_max_extraction_coal",
+    },
 )
 def table_max_extraction_coal(x, final_subs=None):
     return _ext_lookup_table_max_extraction_coal(x, final_subs)
@@ -341,7 +414,11 @@ _ext_lookup_table_max_extraction_coal = ExtLookup(
 
 
 @component.add(
-    name="Tot RURR coal", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Tot RURR coal",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"rurr_coal": 1, "total_coal_left_in_ground": 1},
 )
 def tot_rurr_coal():
     """
@@ -355,6 +432,13 @@ def tot_rurr_coal():
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_total_coal_left_in_ground": 1},
+    other_deps={
+        "_integ_total_coal_left_in_ground": {
+            "initial": {},
+            "step": {"flow_coal_left_in_ground": 1},
+        }
+    },
 )
 def total_coal_left_in_ground():
     return _integ_total_coal_left_in_ground()
@@ -370,6 +454,7 @@ _integ_total_coal_left_in_ground = Integ(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_unlimited_coal"},
 )
 def unlimited_coal():
     """
@@ -390,7 +475,11 @@ _ext_constant_unlimited_coal = ExtConstant(
 
 
 @component.add(
-    name="URR coal", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="URR coal",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"unlimited_nre": 1, "unlimited_coal": 1, "urr_coal_input": 1},
 )
 def urr_coal():
     """
@@ -404,7 +493,11 @@ def urr_coal():
 
 
 @component.add(
-    name="URR coal input", units="EJ", comp_type="Constant", comp_subtype="External"
+    name="URR coal input",
+    units="EJ",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_urr_coal_input"},
 )
 def urr_coal_input():
     return _ext_constant_urr_coal_input()
@@ -426,6 +519,7 @@ _ext_constant_urr_coal_input = ExtConstant(
     units="Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_coal_aut": 1, "time": 1},
 )
 def year_scarcity_coal():
     """

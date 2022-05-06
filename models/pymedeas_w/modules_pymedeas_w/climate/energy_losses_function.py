@@ -1,11 +1,15 @@
 """
 Module energy_losses_function
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="a logistic", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="a logistic",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_a_logistic"},
 )
 def a_logistic():
     """
@@ -26,7 +30,11 @@ _ext_constant_a_logistic = ExtConstant(
 
 
 @component.add(
-    name="activate ELF", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="activate ELF",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_activate_elf"},
 )
 def activate_elf():
     """
@@ -47,7 +55,11 @@ _ext_constant_activate_elf = ExtConstant(
 
 
 @component.add(
-    name="b logistic", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="b logistic",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_b_logistic"},
 )
 def b_logistic():
     """
@@ -67,7 +79,18 @@ _ext_constant_b_logistic = ExtConstant(
 )
 
 
-@component.add(name="ELF", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="ELF",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "activate_elf": 1,
+        "b_logistic": 1,
+        "a_logistic": 1,
+        "co2_ppm_concentrations": 1,
+    },
+)
 def elf():
     return if_then_else(
         activate_elf(),
@@ -77,7 +100,15 @@ def elf():
     )
 
 
-@component.add(name="ELF 2015", comp_type="Stateful", comp_subtype="SampleIfTrue")
+@component.add(
+    name="ELF 2015",
+    comp_type="Stateful",
+    comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_elf_2015": 1},
+    other_deps={
+        "_sampleiftrue_elf_2015": {"initial": {"elf": 1}, "step": {"time": 1, "elf": 1}}
+    },
+)
 def elf_2015():
     return _sampleiftrue_elf_2015()
 
@@ -88,7 +119,11 @@ _sampleiftrue_elf_2015 = SampleIfTrue(
 
 
 @component.add(
-    name="share E losses CC", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="share E losses CC",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"elf": 1, "elf_2015": 1},
 )
 def share_e_losses_cc():
     """

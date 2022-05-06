@@ -1,6 +1,6 @@
 """
 Module res_employment
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,10 @@ Translated using PySD version 3.0.0
     units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_solids_bioe_ej": 1,
+        "employment_factor_fuel_supply_solids_bioe": 1,
+    },
 )
 def d_jobs_fuel_supply_solids_bioe():
     """
@@ -23,6 +27,11 @@ def d_jobs_fuel_supply_solids_bioe():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "res_elec_capacity_under_construction_tw": 1,
+        "employment_factors_new_res_elec": 1,
+        "m_per_t": 1,
+    },
 )
 def d_jobs_new_installed_res_elec_per_techn():
     """
@@ -41,6 +50,14 @@ def d_jobs_new_installed_res_elec_per_techn():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "new_res_capacity_for_heatcom_tw": 1,
+        "replacement_res_for_heatcom_tw": 1,
+        "new_res_capacity_for_heatnc_tw": 1,
+        "replacement_res_for_heatnc_tw": 1,
+        "employment_factors_new_res_heat": 1,
+        "m_per_t": 1,
+    },
 )
 def d_jobs_new_installed_res_heat_per_techn():
     """
@@ -63,6 +80,7 @@ def d_jobs_new_installed_res_heat_per_techn():
     units="people/EJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_employment_factor_biofuels"},
 )
 def employment_factor_biofuels():
     """
@@ -87,6 +105,9 @@ _ext_constant_employment_factor_biofuels = ExtConstant(
     units="people/EJ",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_employment_factor_fuel_supply_solids_bioe"
+    },
 )
 def employment_factor_fuel_supply_solids_bioe():
     """
@@ -112,6 +133,7 @@ _ext_constant_employment_factor_fuel_supply_solids_bioe = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_employment_factors_new_res_elec"},
 )
 def employment_factors_new_res_elec():
     """
@@ -137,6 +159,7 @@ _ext_constant_employment_factors_new_res_elec = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_employment_factors_new_res_heat"},
 )
 def employment_factors_new_res_heat():
     """
@@ -162,6 +185,7 @@ _ext_constant_employment_factors_new_res_heat = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_employment_factors_om_res_elec"},
 )
 def employment_factors_om_res_elec():
     """
@@ -187,6 +211,7 @@ _ext_constant_employment_factors_om_res_elec = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_employment_factors_om_res_heat"},
 )
 def employment_factors_om_res_heat():
     """
@@ -212,6 +237,11 @@ _ext_constant_employment_factors_om_res_heat = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_res_elec_tw": 1,
+        "employment_factors_om_res_elec": 1,
+        "m_per_t": 1,
+    },
 )
 def jobs_om_res_elec_per_techn():
     """
@@ -228,6 +258,12 @@ def jobs_om_res_elec_per_techn():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_res_heatcom_tw": 1,
+        "installed_capacity_res_heatnc_tw": 1,
+        "employment_factors_om_res_heat": 1,
+        "m_per_t": 1,
+    },
 )
 def jobs_om_res_heat_per_techn():
     """
@@ -246,6 +282,7 @@ def jobs_om_res_heat_per_techn():
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ratio_total_vs_d_jobs_res_elec"},
 )
 def ratio_total_vs_d_jobs_res_elec():
     """
@@ -271,6 +308,7 @@ _ext_constant_ratio_total_vs_d_jobs_res_elec = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_ratio_total_vs_d_jobs_res_heat"},
 )
 def ratio_total_vs_d_jobs_res_heat():
     """
@@ -296,6 +334,10 @@ _ext_constant_ratio_total_vs_d_jobs_res_heat = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "d_jobs_new_installed_res_elec_per_techn": 1,
+        "jobs_om_res_elec_per_techn": 1,
+    },
 )
 def total_d_jobs_res_elec_per_techn():
     """
@@ -310,6 +352,10 @@ def total_d_jobs_res_elec_per_techn():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "d_jobs_new_installed_res_heat_per_techn": 1,
+        "jobs_om_res_heat_per_techn": 1,
+    },
 )
 def total_d_jobs_res_heat_per_techn():
     """
@@ -324,6 +370,10 @@ def total_d_jobs_res_heat_per_techn():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_d_jobs_res_elec_per_techn": 1,
+        "ratio_total_vs_d_jobs_res_elec": 1,
+    },
 )
 def total_di_jobs_res_elec_per_techn():
     """
@@ -338,6 +388,10 @@ def total_di_jobs_res_elec_per_techn():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_d_jobs_res_heat_per_techn": 1,
+        "ratio_total_vs_d_jobs_res_heat": 1,
+    },
 )
 def total_di_jobs_res_heat_per_techn():
     """
@@ -351,6 +405,7 @@ def total_di_jobs_res_heat_per_techn():
     units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"employment_factor_biofuels": 1, "fes_total_biofuels_production_ej": 1},
 )
 def total_jobs_biofuels():
     """
@@ -360,7 +415,16 @@ def total_jobs_biofuels():
 
 
 @component.add(
-    name="Total jobs RES", units="people", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Total jobs RES",
+    units="people",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "total_jobs_res_elec": 1,
+        "total_jobs_res_heat": 1,
+        "d_jobs_fuel_supply_solids_bioe": 1,
+        "total_jobs_biofuels": 1,
+    },
 )
 def total_jobs_res():
     """
@@ -379,6 +443,7 @@ def total_jobs_res():
     units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_di_jobs_res_elec_per_techn": 1},
 )
 def total_jobs_res_elec():
     """
@@ -395,6 +460,7 @@ def total_jobs_res_elec():
     units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_di_jobs_res_heat_per_techn": 1},
 )
 def total_jobs_res_heat():
     """

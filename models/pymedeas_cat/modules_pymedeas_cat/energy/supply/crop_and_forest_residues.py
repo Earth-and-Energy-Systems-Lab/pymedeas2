@@ -1,6 +1,6 @@
 """
 Module crop_and_forest_residues
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,10 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_npp_potential_bioe_residues_for_nonbiofuels": 2,
+        "pe_bioe_residues_nonbiofuels_ej": 1,
+    },
 )
 def bioe_residues_for_nonbiofuels_available():
     """
@@ -26,6 +30,10 @@ def bioe_residues_for_nonbiofuels_available():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_npp_potential_bioe_residues_for_cellulosic_biofuels": 2,
+        "potential_pe_cellulosic_biofuel_ej": 1,
+    },
 )
 def cellulosic_biofuels_available():
     """
@@ -43,6 +51,7 @@ def cellulosic_biofuels_available():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"conv_efficiency_from_npp_to_biofuels": 1},
 )
 def efficiency_bioe_residues_to_cellulosic_liquids():
     """
@@ -56,6 +65,7 @@ def efficiency_bioe_residues_to_cellulosic_liquids():
     units="EJ/Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_npp_potential_bioe_residues"},
 )
 def max_npp_potential_bioe_residues():
     """
@@ -80,6 +90,10 @@ _ext_constant_max_npp_potential_bioe_residues = ExtConstant(
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_npp_potential_bioe_residues": 1,
+        "share_cellulosic_biofuels_vs_bioe_residues": 1,
+    },
 )
 def max_npp_potential_bioe_residues_for_cellulosic_biofuels():
     """
@@ -95,6 +109,10 @@ def max_npp_potential_bioe_residues_for_cellulosic_biofuels():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_npp_potential_bioe_residues": 1,
+        "share_cellulosic_biofuels_vs_bioe_residues": 1,
+    },
 )
 def max_npp_potential_bioe_residues_for_nonbiofuels():
     """
@@ -110,6 +128,10 @@ def max_npp_potential_bioe_residues_for_nonbiofuels():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_npp_potential_bioe_residues_for_cellulosic_biofuels": 1,
+        "efficiency_bioe_residues_to_cellulosic_liquids": 1,
+    },
 )
 def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
     return (
@@ -123,6 +145,16 @@ def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
     units="EJ/(Year*Year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 3,
+        "start_year_bioe_residues_for_nonbiofuels": 3,
+        "max_npp_potential_bioe_residues": 1,
+        "ej_per_ktoe": 1,
+        "p_bioe_residues": 1,
+        "start_production_biofuels": 1,
+        "bioe_residues_for_nonbiofuels_available": 1,
+        "pe_bioe_residues_nonbiofuels_ej": 1,
+    },
 )
 def new_bioe_residues_for_nonbiofuels():
     """
@@ -153,6 +185,18 @@ def new_bioe_residues_for_nonbiofuels():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 3,
+        "start_year_3gen_cellulosic_biofuels": 3,
+        "max_npp_potential_bioe_residues": 1,
+        "ej_per_ktoe": 1,
+        "cellulosic_biofuels_available": 1,
+        "p_bioe_residues": 1,
+        "start_production_biofuels": 1,
+        "potential_pe_cellulosic_biofuel_ej": 2,
+        "constrain_liquids_exogenous_growth": 1,
+        "check_liquids": 1,
+    },
 )
 def new_cellulosic_biofuels():
     """
@@ -188,6 +232,7 @@ def new_cellulosic_biofuels():
     units="1/Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_bioe_residues"},
 )
 def p_bioe_residues():
     """
@@ -212,6 +257,13 @@ _ext_constant_p_bioe_residues = ExtConstant(
     units="EJ/Year",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_pe_bioe_residues_nonbiofuels_ej": 1},
+    other_deps={
+        "_integ_pe_bioe_residues_nonbiofuels_ej": {
+            "initial": {},
+            "step": {"new_bioe_residues_for_nonbiofuels": 1},
+        }
+    },
 )
 def pe_bioe_residues_nonbiofuels_ej():
     """
@@ -232,6 +284,10 @@ _integ_pe_bioe_residues_nonbiofuels_ej = Integ(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_pe_cellulosic_biofuel_ej": 1,
+        "share_biofuels_overcapacity": 1,
+    },
 )
 def pe_cellulosic_biofuel_ej():
     """
@@ -245,6 +301,10 @@ def pe_cellulosic_biofuel_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_cellulosic_biofuel_ej": 1,
+        "efficiency_bioe_residues_to_cellulosic_liquids": 1,
+    },
 )
 def peavail_cellulosic_biofuel_ej():
     """
@@ -258,6 +318,10 @@ def peavail_cellulosic_biofuel_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_pe_cellulosic_biofuel_ej": 1,
+        "share_biofuels_overcapacity": 1,
+    },
 )
 def potential_pe_cellulosic_biofuel_abanndoned():
     return potential_pe_cellulosic_biofuel_ej() * share_biofuels_overcapacity()
@@ -268,6 +332,16 @@ def potential_pe_cellulosic_biofuel_abanndoned():
     units="EJ/Year",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_potential_pe_cellulosic_biofuel_ej": 1},
+    other_deps={
+        "_integ_potential_pe_cellulosic_biofuel_ej": {
+            "initial": {},
+            "step": {
+                "new_cellulosic_biofuels": 1,
+                "potential_pe_cellulosic_biofuel_abanndoned": 1,
+            },
+        }
+    },
 )
 def potential_pe_cellulosic_biofuel_ej():
     """
@@ -288,6 +362,10 @@ _integ_potential_pe_cellulosic_biofuel_ej = Integ(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_pe_cellulosic_biofuel_ej": 1,
+        "conv_efficiency_from_npp_to_biofuels": 1,
+    },
 )
 def potential_peavail_cellulosic_biofuel_ej():
     return potential_pe_cellulosic_biofuel_ej() * conv_efficiency_from_npp_to_biofuels()
@@ -298,6 +376,9 @@ def potential_peavail_cellulosic_biofuel_ej():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_share_cellulosic_biofuels_vs_bioe_residues"
+    },
 )
 def share_cellulosic_biofuels_vs_bioe_residues():
     """
@@ -322,6 +403,9 @@ _ext_constant_share_cellulosic_biofuels_vs_bioe_residues = ExtConstant(
     units="Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_start_year_bioe_residues_for_nonbiofuels"
+    },
 )
 def start_year_bioe_residues_for_nonbiofuels():
     """

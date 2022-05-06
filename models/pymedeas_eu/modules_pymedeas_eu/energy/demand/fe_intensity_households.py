@@ -1,6 +1,6 @@
 """
 Module fe_intensity_households
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,12 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "min_energy_intensity_vs_intial_h": 2,
+        "initial_global_energy_intensity_2009": 2,
+        "global_energy_intensity_h": 1,
+    },
 )
 def available_improvement_efficiency_h():
     """
@@ -36,6 +42,7 @@ def available_improvement_efficiency_h():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 3},
 )
 def change_total_intensity_to_rest():
     """
@@ -55,6 +62,7 @@ def change_total_intensity_to_rest():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_choose_energy_intensity_target_method"},
 )
 def choose_energy_intensity_target_method():
     """
@@ -80,6 +88,14 @@ _ext_constant_choose_energy_intensity_target_method = ExtConstant(
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "evol_final_energy_intensity_h": 2,
+        "global_energy_intensity_h": 1,
+        "minimum_fraction_source": 1,
+        "pressure_to_change_energy_technology_h": 1,
+        "max_yearly_change_between_sources": 1,
+        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
+    },
 )
 def decrease_of_intensity_due_to_change_energy_technology_h_top_down():
     """
@@ -111,6 +127,12 @@ def decrease_of_intensity_due_to_change_energy_technology_h_top_down():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "energy_intensity_of_households_rest": 3,
+        "activate_bottom_up_method": 1,
+        "energy_intensity_of_households_transport": 1,
+    },
 )
 def energy_intensity_of_households():
     """
@@ -134,6 +156,11 @@ def energy_intensity_of_households():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "activate_bottom_up_method": 3,
+        "change_total_intensity_to_rest": 3,
+        "evol_final_energy_intensity_h": 8,
+    },
 )
 def energy_intensity_of_households_rest():
     """
@@ -171,6 +198,17 @@ def energy_intensity_of_households_rest():
     subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_evol_final_energy_intensity_h": 1},
+    other_deps={
+        "_integ_evol_final_energy_intensity_h": {
+            "initial": {"initial_energy_intensity_1995": 1},
+            "step": {
+                "increase_of_intensity_due_to_change_energy_technology_h_top_down": 1,
+                "inertial_rate_energy_intensity_h_top_down": 1,
+                "decrease_of_intensity_due_to_change_energy_technology_h_top_down": 1,
+            },
+        }
+    },
 )
 def evol_final_energy_intensity_h():
     """
@@ -196,6 +234,17 @@ _integ_evol_final_energy_intensity_h = Integ(
     subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_final_energy_intensity_2020_h": 1},
+    other_deps={
+        "_sampleiftrue_final_energy_intensity_2020_h": {
+            "initial": {"evol_final_energy_intensity_h": 1},
+            "step": {
+                "time": 1,
+                "year_energy_intensity_target": 1,
+                "evol_final_energy_intensity_h": 1,
+            },
+        }
+    },
 )
 def final_energy_intensity_2020_h():
     """
@@ -222,6 +271,10 @@ _sampleiftrue_final_energy_intensity_2020_h = SampleIfTrue(
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "scarcity_feedback_final_fuel_replacement_flag": 1,
+        "perception_of_final_energy_scarcity_h": 1,
+    },
 )
 def fuel_scarcity_pressure_h():
     """
@@ -241,6 +294,7 @@ def fuel_scarcity_pressure_h():
     units="EJ/Tdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"evol_final_energy_intensity_h": 1},
 )
 def global_energy_intensity_h():
     """
@@ -258,6 +312,7 @@ def global_energy_intensity_h():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"household_demand_total": 1, "energy_intensity_of_households": 1},
 )
 def households_final_energy_demand():
     """
@@ -272,6 +327,10 @@ def households_final_energy_demand():
     subscripts=["final sources1", "final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "efficiency_rate_of_substitution": 2,
+        "increase_of_intensity_due_to_change_energy_technology_net_h": 2,
+    },
 )
 def increase_of_intensity_due_to_change_energy_technology_eff_h():
     """
@@ -298,6 +357,7 @@ def increase_of_intensity_due_to_change_energy_technology_eff_h():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"increase_of_intensity_due_to_change_energy_technology_eff_h": 1},
 )
 def increase_of_intensity_due_to_change_energy_technology_h_top_down():
     """
@@ -317,39 +377,19 @@ def increase_of_intensity_due_to_change_energy_technology_h_top_down():
     subscripts=["final sources1", "final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "decrease_of_intensity_due_to_change_energy_technology_h_top_down": 1,
+        "share_tech_change_fuel_h": 1,
+    },
 )
 def increase_of_intensity_due_to_change_energy_technology_net_h():
     """
     Increase of intensity due to change a energy technology without considering efficieny rate of susbsitution by fuel
     """
-    return xr.DataArray(
-        0,
-        {
-            "final sources1": _subscript_dict["final sources1"],
-            "final sources": _subscript_dict["final sources"],
-        },
-        ["final sources1", "final sources"],
-    ) + (
-        xr.DataArray(
-            0,
-            {
-                "final sources": _subscript_dict["final sources"],
-                "final sources1": _subscript_dict["final sources1"],
-            },
-            ["final sources", "final sources1"],
-        )
-        + decrease_of_intensity_due_to_change_energy_technology_h_top_down()
-    ) * (
-        xr.DataArray(
-            0,
-            {
-                "final sources": _subscript_dict["final sources"],
-                "final sources1": _subscript_dict["final sources1"],
-            },
-            ["final sources", "final sources1"],
-        )
-        + share_tech_change_fuel_h()
-    )
+    return (
+        decrease_of_intensity_due_to_change_energy_technology_h_top_down()
+        * share_tech_change_fuel_h().transpose("final sources", "final sources1")
+    ).transpose("final sources1", "final sources")
 
 
 @component.add(
@@ -358,6 +398,18 @@ def increase_of_intensity_due_to_change_energy_technology_net_h():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "historic_rate_final_energy_intensity": 1,
+        "evol_final_energy_intensity_h": 4,
+        "initial_energy_intensity_1995": 4,
+        "choose_final_sectoral_energy_intensities_evolution_method": 2,
+        "historic_mean_rate_energy_intensity": 6,
+        "efficiency_energy_acceleration": 12,
+        "available_improvement_efficiency_h": 4,
+        "year_energy_intensity_target": 1,
+        "variation_energy_intensity_target_h": 1,
+    },
 )
 def inertial_rate_energy_intensity_h_top_down():
     """
@@ -481,6 +533,10 @@ def inertial_rate_energy_intensity_h_top_down():
     subscripts=["final sources", "final sources1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "scarcity_feedback_final_fuel_replacement_flag": 1,
+        "perception_of_interfuel_final_energy_scarcities_h": 1,
+    },
 )
 def interfuel_scarcity_pressure_h():
     """
@@ -505,6 +561,7 @@ def interfuel_scarcity_pressure_h():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_min_energy_intensity_vs_intial_h"},
 )
 def min_energy_intensity_vs_intial_h():
     """
@@ -529,6 +586,7 @@ _ext_constant_min_energy_intensity_vs_intial_h = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_pct_change_energy_intensity_target"},
 )
 def pct_change_energy_intensity_target():
     """
@@ -553,6 +611,9 @@ _ext_constant_pct_change_energy_intensity_target = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities"
+    },
 )
 def percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities():
     """
@@ -580,6 +641,11 @@ _ext_constant_percentage_of_change_over_the_historic_maximun_variation_of_energy
     subscripts=["final sources", "final sources1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "efficiency_rate_of_substitution": 1,
+        "interfuel_scarcity_pressure_h": 2,
+        "implementation_policy_to_change_final_energy": 1,
+    },
 )
 def pressure_to_change_energy_technology_by_fuel_h():
     """
@@ -594,20 +660,10 @@ def pressure_to_change_energy_technology_by_fuel_h():
         lambda: np.minimum(
             np.maximum(
                 interfuel_scarcity_pressure_h()
-                + (
-                    xr.DataArray(
-                        0,
-                        {
-                            "final sources": _subscript_dict["final sources"],
-                            "final sources1": _subscript_dict["final sources1"],
-                        },
-                        ["final sources", "final sources1"],
-                    )
-                    + implementation_policy_to_change_final_energy()
-                    .loc["Households", :]
-                    .reset_coords(drop=True)
-                    .rename({"final sources": "final sources1"})
-                ),
+                + implementation_policy_to_change_final_energy()
+                .loc["Households", :]
+                .reset_coords(drop=True)
+                .rename({"final sources": "final sources1"}),
                 0,
             ),
             1,
@@ -621,6 +677,7 @@ def pressure_to_change_energy_technology_by_fuel_h():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pressure_to_change_energy_technology_by_fuel_h": 1},
 )
 def pressure_to_change_energy_technology_h():
     """
@@ -643,6 +700,7 @@ def pressure_to_change_energy_technology_h():
     subscripts=["final sources1", "final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pressure_to_change_energy_technology_by_fuel_h": 2},
 )
 def share_tech_change_fuel_h():
     """
@@ -652,30 +710,20 @@ def share_tech_change_fuel_h():
         pressure_to_change_energy_technology_by_fuel_h().rename(
             {"final sources": "final sources1", "final sources1": "final sources"}
         ),
-        (
-            xr.DataArray(
-                0,
-                {
-                    "final sources1": _subscript_dict["final sources1"],
-                    "final sources": _subscript_dict["final sources"],
-                },
-                ["final sources1", "final sources"],
-            )
-            + sum(
-                pressure_to_change_energy_technology_by_fuel_h().rename(
-                    {
-                        "final sources": "final sources1!",
-                        "final sources1": "final sources",
-                    }
-                ),
-                dim=["final sources1!"],
-            )
-        ),
+        sum(
+            pressure_to_change_energy_technology_by_fuel_h().rename(
+                {"final sources": "final sources1!", "final sources1": "final sources"}
+            ),
+            dim=["final sources1!"],
+        ).expand_dims({"final sources1": _subscript_dict["final sources1"]}, 0),
     )
 
 
 @component.add(
-    name="start year modification EI", comp_type="Constant", comp_subtype="External"
+    name="start year modification EI",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_start_year_modification_ei"},
 )
 def start_year_modification_ei():
     return _ext_constant_start_year_modification_ei()
@@ -697,6 +745,7 @@ _ext_constant_start_year_modification_ei = ExtConstant(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"households_final_energy_demand": 1},
 )
 def total_fed_households():
     """
@@ -713,6 +762,7 @@ def total_fed_households():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"transport_households_final_energy_demand": 1},
 )
 def total_fed_trasnport_households():
     """
@@ -732,6 +782,10 @@ def total_fed_trasnport_households():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "energy_intensity_of_households_transport": 1,
+        "household_demand_total": 1,
+    },
 )
 def transport_households_final_energy_demand():
     """
@@ -749,6 +803,16 @@ def transport_households_final_energy_demand():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "choose_energy_intensity_target_method": 1,
+        "evol_final_energy_intensity_h": 2,
+        "time": 6,
+        "energy_intensity_target": 1,
+        "final_year_energy_intensity_target": 4,
+        "year_energy_intensity_target": 2,
+        "pct_change_energy_intensity_target": 1,
+        "final_energy_intensity_2020_h": 1,
+    },
 )
 def variation_energy_intensity_target_h():
     """
@@ -809,6 +873,9 @@ def variation_energy_intensity_target_h():
     units="Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_year_change_pct_energy_intensity_target"
+    },
 )
 def year_change_pct_energy_intensity_target():
     """
@@ -833,6 +900,11 @@ _ext_constant_year_change_pct_energy_intensity_target = ExtConstant(
     units="Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "choose_energy_intensity_target_method": 1,
+        "start_year_modification_ei": 1,
+        "year_change_pct_energy_intensity_target": 1,
+    },
 )
 def year_energy_intensity_target():
     """

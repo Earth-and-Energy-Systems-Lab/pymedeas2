@@ -1,6 +1,6 @@
 """
 Module ped_from_nonelectric_res
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,10 @@ Translated using PySD version 3.0.0
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_pe_potential_tot_res_heat_ej": 1,
+        "max_peavail_biofuels_potential": 1,
+    },
 )
 def max_potential_pe_nonelectric_res():
     """
@@ -22,6 +26,11 @@ def max_potential_pe_nonelectric_res():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_tot_res_for_heat": 1,
+        "fes_total_biofuels_production_ej": 1,
+        "pes_biogas_for_tfc": 1,
+    },
 )
 def pe_supply_from_res_nonelec_without_trad_bioe_ej():
     """
@@ -39,6 +48,11 @@ def pe_supply_from_res_nonelec_without_trad_bioe_ej():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_supply_from_res_nonelec_without_trad_bioe_ej": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "losses_in_charcoal_plants_ej": 1,
+    },
 )
 def pe_supply_res_nonelec_ej():
     """

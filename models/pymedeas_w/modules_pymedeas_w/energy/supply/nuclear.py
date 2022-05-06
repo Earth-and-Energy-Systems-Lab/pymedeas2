@@ -1,18 +1,26 @@
 """
 Module nuclear
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="Cp limit nuclear", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Cp limit nuclear",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"cp_nuclear": 1, "min_cp_nuclear": 1},
 )
 def cp_limit_nuclear():
     return if_then_else(cp_nuclear() > min_cp_nuclear(), lambda: 1, lambda: 0)
 
 
 @component.add(
-    name="Cp nuclear", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Cp nuclear",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"cp_nuclear_initial": 1, "cp_exogenous_res_elec_dispatch_reduction": 1},
 )
 def cp_nuclear():
     """
@@ -26,6 +34,7 @@ def cp_nuclear():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_cp_nuclear_initial"},
 )
 def cp_nuclear_initial():
     """
@@ -50,6 +59,7 @@ _ext_constant_cp_nuclear_initial = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"extraction_uranium_ej": 1, "abundance_uranium": 2},
 )
 def effects_shortage_uranium():
     """
@@ -71,6 +81,7 @@ def effects_shortage_uranium():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_uranium_for_electricity"},
 )
 def efficiency_uranium_for_electricity():
     """
@@ -95,6 +106,10 @@ _ext_constant_efficiency_uranium_for_electricity = ExtConstant(
     units="TWh/year",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_nuclear_generation_twh",
+        "__lookup__": "_ext_lookup_historic_nuclear_generation_twh",
+    },
 )
 def historic_nuclear_generation_twh(x, final_subs=None):
     """
@@ -133,6 +148,7 @@ def initial_capacity_in_construction_nuclear():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"initial_gen_nuclear": 1, "twe_per_twh": 1, "cp_nuclear_initial": 1},
 )
 def initial_capacity_installed_nuclear():
     """
@@ -146,6 +162,7 @@ def initial_capacity_installed_nuclear():
     units="TWh",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_gen_nuclear"},
 )
 def initial_gen_nuclear():
     """
@@ -183,6 +200,17 @@ def initial_required_capacity_nuclear():
     units="TW",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_installed_capacity_nuclear_tw": 1},
+    other_deps={
+        "_integ_installed_capacity_nuclear_tw": {
+            "initial": {"initial_capacity_installed_nuclear": 1},
+            "step": {
+                "nuclear_capacity_under_construction": 1,
+                "nuclear_capacity_phaseout": 1,
+                "wear_nuclear": 1,
+            },
+        }
+    },
 )
 def installed_capacity_nuclear_tw():
     """
@@ -205,6 +233,11 @@ _integ_installed_capacity_nuclear_tw = Integ(
     units="Tdollars/TWe",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_invest_cost_nuclear",
+        "__data__": "_ext_data_invest_cost_nuclear",
+        "time": 1,
+    },
 )
 def invest_cost_nuclear():
     """
@@ -231,6 +264,11 @@ _ext_data_invest_cost_nuclear = ExtData(
     units="Tdollars/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "nuclear_capacity_under_construction": 2,
+        "replacement_nuclear_capacity": 1,
+        "invest_cost_nuclear": 1,
+    },
 )
 def invest_nuclear_tdolar():
     return np.maximum(
@@ -252,6 +290,7 @@ def invest_nuclear_tdolar():
     units="year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_life_time_nuclear"},
 )
 def life_time_nuclear():
     """
@@ -272,7 +311,11 @@ _ext_constant_life_time_nuclear = ExtConstant(
 
 
 @component.add(
-    name="min Cp nuclear", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="min Cp nuclear",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_min_cp_nuclear"},
 )
 def min_cp_nuclear():
     """
@@ -297,6 +340,7 @@ _ext_constant_min_cp_nuclear = ExtConstant(
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"required_capacity_nuclear_tw": 1, "time_planification_nuclear": 1},
 )
 def new_nuclear_capacity_under_planning():
     """
@@ -310,6 +354,14 @@ def new_nuclear_capacity_under_planning():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "demand_elec_nre_twh": 1,
+        "p_nuclear_elec_gen": 1,
+        "installed_capacity_nuclear_tw": 1,
+        "effects_shortage_uranium": 1,
+        "cp_limit_nuclear": 1,
+    },
 )
 def new_required_capacity_nuclear():
     """
@@ -334,6 +386,13 @@ def new_required_capacity_nuclear():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "selection_of_nuclear_scenario": 1,
+        "time": 1,
+        "installed_capacity_nuclear_tw": 1,
+        "p_nuclear_scen34": 1,
+        "start_year_nuclear_growth_scen34": 1,
+    },
 )
 def nuclear_capacity_phaseout():
     """
@@ -355,6 +414,14 @@ def nuclear_capacity_phaseout():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 3,
+        "historic_nuclear_generation_twh": 2,
+        "twe_per_twh": 1,
+        "cp_nuclear": 1,
+        "time_construction_nuclear": 1,
+        "planned_nuclear_capacity_tw": 1,
+    },
 )
 def nuclear_capacity_under_construction():
     """
@@ -377,6 +444,10 @@ def nuclear_capacity_under_construction():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_generation_nuclear_elec_twh": 3,
+        "fe_nuclear_elec_generation_twh": 1,
+    },
 )
 def nuclear_overcapacity():
     """
@@ -397,6 +468,12 @@ def nuclear_overcapacity():
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "selection_of_nuclear_scenario": 3,
+        "time": 1,
+        "p_nuclear_scen34": 1,
+        "start_year_nuclear_growth_scen34": 1,
+    },
 )
 def p_nuclear_elec_gen():
     """
@@ -424,6 +501,7 @@ def p_nuclear_elec_gen():
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_nuclear_scen34"},
 )
 def p_nuclear_scen34():
     """
@@ -448,6 +526,11 @@ _ext_constant_p_nuclear_scen34 = ExtConstant(
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_generation_nuclear_elec_twh": 1,
+        "ej_per_twh": 1,
+        "efficiency_uranium_for_electricity": 1,
+    },
 )
 def pe_demand_uranium():
     """
@@ -465,6 +548,17 @@ def pe_demand_uranium():
     units="TW",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_planned_nuclear_capacity_tw": 1},
+    other_deps={
+        "_integ_planned_nuclear_capacity_tw": {
+            "initial": {"initial_capacity_in_construction_nuclear": 1},
+            "step": {
+                "new_nuclear_capacity_under_planning": 1,
+                "replacement_nuclear_capacity": 1,
+                "nuclear_capacity_under_construction": 1,
+            },
+        }
+    },
 )
 def planned_nuclear_capacity_tw():
     """
@@ -487,6 +581,12 @@ _integ_planned_nuclear_capacity_tw = Integ(
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_nuclear_tw": 1,
+        "cp_nuclear": 1,
+        "twe_per_twh": 1,
+        "demand_elec_nre_twh": 1,
+    },
 )
 def potential_generation_nuclear_elec_twh():
     """
@@ -503,6 +603,15 @@ def potential_generation_nuclear_elec_twh():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "nuclear_capacity_under_construction": 1,
+        "selection_of_nuclear_scenario": 2,
+        "nuclear_overcapacity": 1,
+        "replacement_rate_nuclear": 1,
+        "wear_nuclear": 1,
+        "cp_limit_nuclear": 1,
+    },
 )
 def replacement_nuclear_capacity():
     """
@@ -532,6 +641,7 @@ def replacement_nuclear_capacity():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_replacement_rate_nuclear"},
 )
 def replacement_rate_nuclear():
     """
@@ -556,6 +666,16 @@ _ext_constant_replacement_rate_nuclear = ExtConstant(
     units="TW",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_required_capacity_nuclear_tw": 1},
+    other_deps={
+        "_integ_required_capacity_nuclear_tw": {
+            "initial": {"initial_required_capacity_nuclear": 1},
+            "step": {
+                "new_required_capacity_nuclear": 1,
+                "new_nuclear_capacity_under_planning": 1,
+            },
+        }
+    },
 )
 def required_capacity_nuclear_tw():
     """
@@ -576,6 +696,7 @@ _integ_required_capacity_nuclear_tw = Integ(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_selection_of_nuclear_scenario"},
 )
 def selection_of_nuclear_scenario():
     """
@@ -600,6 +721,7 @@ _ext_constant_selection_of_nuclear_scenario = ExtConstant(
     units="year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_start_year_nuclear_growth_scen34"},
 )
 def start_year_nuclear_growth_scen34():
     """
@@ -624,6 +746,7 @@ _ext_constant_start_year_nuclear_growth_scen34 = ExtConstant(
     units="Time",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_time_construction_nuclear"},
 )
 def time_construction_nuclear():
     """
@@ -648,6 +771,7 @@ _ext_constant_time_construction_nuclear = ExtConstant(
     units="year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_time_planification_nuclear"},
 )
 def time_planification_nuclear():
     """
@@ -681,7 +805,11 @@ def twe_per_twh():
 
 
 @component.add(
-    name="wear nuclear", units="TW", comp_type="Auxiliary", comp_subtype="Normal"
+    name="wear nuclear",
+    units="TW",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "installed_capacity_nuclear_tw": 1, "life_time_nuclear": 1},
 )
 def wear_nuclear():
     """

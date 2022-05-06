@@ -1,6 +1,6 @@
 """
 Module energy_consumption
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,12 @@ Translated using PySD version 3.0.0
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "materials_required_for_ev_batteries_mt": 1,
+        "energy_cons_per_unit_of_material_cons_for_res_elec": 1,
+        "kg_per_mt": 1,
+        "mj_per_ej": 1,
+    },
 )
 def energy_required_for_material_consumption_for_ev_batteries():
     """
@@ -29,21 +35,17 @@ def energy_required_for_material_consumption_for_ev_batteries():
     subscripts=["RES elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "materials_required_for_om_res_elec_mt": 1,
+        "energy_cons_per_unit_of_material_cons_for_res_elec": 1,
+        "kg_per_mt": 1,
+        "mj_per_ej": 1,
+    },
 )
 def energy_required_for_material_consumption_for_om_res_elec():
     return (
         materials_required_for_om_res_elec_mt()
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "RES elec": _subscript_dict["RES elec"],
-                    "materials": _subscript_dict["materials"],
-                },
-                ["RES elec", "materials"],
-            )
-            + energy_cons_per_unit_of_material_cons_for_res_elec()
-        )
+        * energy_cons_per_unit_of_material_cons_for_res_elec()
         * kg_per_mt()
         / mj_per_ej()
     )
@@ -55,6 +57,11 @@ def energy_required_for_material_consumption_for_om_res_elec():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "recycling_rates_minerals_alt_techn": 2,
+        "initial_energy_cons_per_unit_of_material_cons_recycled": 1,
+        "initial_energy_cons_per_unit_of_material_cons_virgin": 1,
+    },
 )
 def energy_cons_per_unit_of_material_cons_for_res_elec():
     """
@@ -74,6 +81,12 @@ def energy_cons_per_unit_of_material_cons_for_res_elec():
     subscripts=["RES elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "materials_required_for_new_res_elec_mt": 1,
+        "energy_cons_per_unit_of_material_cons_for_res_elec": 1,
+        "kg_per_mt": 1,
+        "mj_per_ej": 1,
+    },
 )
 def energy_required_for_material_consumption_for_new_res_elec():
     """
@@ -81,17 +94,7 @@ def energy_required_for_material_consumption_for_new_res_elec():
     """
     return (
         materials_required_for_new_res_elec_mt()
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "RES elec": _subscript_dict["RES elec"],
-                    "materials": _subscript_dict["materials"],
-                },
-                ["RES elec", "materials"],
-            )
-            + energy_cons_per_unit_of_material_cons_for_res_elec()
-        )
+        * energy_cons_per_unit_of_material_cons_for_res_elec()
         * kg_per_mt()
         / mj_per_ej()
     )
@@ -103,6 +106,10 @@ def energy_required_for_material_consumption_for_new_res_elec():
     subscripts=["RES elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "energy_required_for_material_consumption_for_om_res_elec": 1,
+        "energy_required_for_material_consumption_for_new_res_elec": 1,
+    },
 )
 def energy_required_for_material_consumption_per_res_elec():
     """
@@ -120,6 +127,9 @@ def energy_required_for_material_consumption_per_res_elec():
     subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_initial_energy_cons_per_unit_of_material_cons_recycled_data"
+    },
 )
 def initial_energy_cons_per_unit_of_material_cons_recycled_data():
     """
@@ -145,6 +155,10 @@ _ext_constant_initial_energy_cons_per_unit_of_material_cons_recycled_data = ExtC
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "initial_energy_cons_per_unit_of_material_cons_recycled_data": 2,
+        "initial_energy_cons_per_unit_of_material_cons_virgin": 1,
+    },
 )
 def initial_energy_cons_per_unit_of_material_cons_recycled():
     """
@@ -163,6 +177,9 @@ def initial_energy_cons_per_unit_of_material_cons_recycled():
     subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_initial_energy_cons_per_unit_of_material_cons_virgin"
+    },
 )
 def initial_energy_cons_per_unit_of_material_cons_virgin():
     """
@@ -194,6 +211,10 @@ def mj_per_ej():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "tfe_required_for_total_material_consumption_for_alt_techn": 1,
+        "real_tfec": 1,
+    },
 )
 def share_energy_for_material_consumption_for_alt_techn_vs_tfec():
     """
@@ -207,6 +228,10 @@ def share_energy_for_material_consumption_for_alt_techn_vs_tfec():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_energy_required_for_material_consumption_for_res_elec": 1,
+        "total_energy_required_for_total_material_consumption_for_ev_batteries": 1,
+    },
 )
 def tfe_required_for_total_material_consumption_for_alt_techn():
     """
@@ -223,6 +248,7 @@ def tfe_required_for_total_material_consumption_for_alt_techn():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"energy_required_for_material_consumption_per_res_elec": 1},
 )
 def total_energy_required_for_material_consumption_for_res_elec():
     """
@@ -242,6 +268,7 @@ def total_energy_required_for_material_consumption_for_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"energy_required_for_material_consumption_per_res_elec": 1},
 )
 def total_energy_required_for_material_consumption_per_res_elec():
     """
@@ -260,6 +287,7 @@ def total_energy_required_for_material_consumption_per_res_elec():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"energy_required_for_material_consumption_for_ev_batteries": 1},
 )
 def total_energy_required_for_total_material_consumption_for_ev_batteries():
     """
@@ -279,6 +307,10 @@ def total_energy_required_for_total_material_consumption_for_ev_batteries():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "energy_required_for_material_consumption_per_res_elec": 1,
+        "energy_required_for_material_consumption_for_ev_batteries": 1,
+    },
 )
 def total_energy_required_per_material_for_alt_techn():
     """

@@ -1,6 +1,6 @@
 """
 Module res_elec_total_monetary_investment
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,11 @@ Translated using PySD version 3.0.0
     units="Tdollars/TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "share_variable_res_elec_generation_vs_total": 1,
+        "balancing_costs_ref": 1,
+        "m_per_t": 1,
+    },
 )
 def balancing_costs():
     """
@@ -24,6 +29,10 @@ def balancing_costs():
     units="dollars/MWh",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_balancing_costs_ref",
+        "__lookup__": "_ext_lookup_balancing_costs_ref",
+    },
 )
 def balancing_costs_ref(x, final_subs=None):
     """
@@ -49,6 +58,13 @@ _ext_lookup_balancing_costs_ref = ExtLookup(
     units="Tdollars",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_cumulated_invest_e_grid": 1},
+    other_deps={
+        "_integ_cumulated_invest_e_grid": {
+            "initial": {},
+            "step": {"extra_monet_invest_to_cope_with_variable_elec_res": 1},
+        }
+    },
 )
 def cumulated_invest_e_grid():
     """
@@ -69,6 +85,13 @@ _integ_cumulated_invest_e_grid = Integ(
     units="Tdollars",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_cumulated_total_monet_invest_res_for_elec": 1},
+    other_deps={
+        "_integ_cumulated_total_monet_invest_res_for_elec": {
+            "initial": {},
+            "step": {"total_monet_invest_res_for_elec_tdolar": 1},
+        }
+    },
 )
 def cumulated_total_monet_invest_res_for_elec():
     """
@@ -89,6 +112,11 @@ _integ_cumulated_total_monet_invest_res_for_elec = Integ(
     units="Tdollars/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_generation_res_elec_twh": 2,
+        "balancing_costs": 1,
+        "grid_reinforcement_costs_tdollar": 1,
+    },
 )
 def extra_monet_invest_to_cope_with_variable_elec_res():
     """
@@ -112,6 +140,7 @@ def g_per_t():
     units="dollars/kW",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_grid_reinforcement_costs"},
 )
 def grid_reinforcement_costs():
     """
@@ -136,6 +165,11 @@ _ext_constant_grid_reinforcement_costs = ExtConstant(
     units="Tdollar",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "grid_reinforcement_costs": 1,
+        "new_capacity_installed_onshore_wind_tw": 1,
+        "g_per_t": 1,
+    },
 )
 def grid_reinforcement_costs_tdollar():
     """
@@ -154,6 +188,11 @@ def grid_reinforcement_costs_tdollar():
     subscripts=["RES elec"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_invest_cost_res_elec",
+        "__data__": "_ext_data_invest_cost_res_elec",
+        "time": 1,
+    },
 )
 def invest_cost_res_elec():
     """
@@ -180,6 +219,10 @@ _ext_data_invest_cost_res_elec = ExtData(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "res_elec_capacity_under_construction_tw": 1,
+        "invest_cost_res_elec": 1,
+    },
 )
 def invest_res_elec_tdolar():
     return res_elec_capacity_under_construction_tw() * invest_cost_res_elec()
@@ -190,6 +233,7 @@ def invest_res_elec_tdolar():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"new_res_elec_capacity_under_planning": 1},
 )
 def new_capacity_installed_onshore_wind_tw():
     return float(new_res_elec_capacity_under_planning().loc["wind onshore"])
@@ -199,6 +243,7 @@ def new_capacity_installed_onshore_wind_tw():
     name="Percent tot monet invest RESelec vs GDP",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_tot_monet_invest_elec_res_vs_gdp": 1},
 )
 def percent_tot_monet_invest_reselec_vs_gdp():
     """
@@ -211,6 +256,10 @@ def percent_tot_monet_invest_reselec_vs_gdp():
     name="share extra monet invest to cope with variable Elec RES",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extra_monet_invest_to_cope_with_variable_elec_res": 1,
+        "total_monet_invest_res_for_elec_tdolar": 1,
+    },
 )
 def share_extra_monet_invest_to_cope_with_variable_elec_res():
     """
@@ -227,6 +276,7 @@ def share_extra_monet_invest_to_cope_with_variable_elec_res():
     units="1/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_monet_invest_res_for_elec_tdolar": 1, "gdp_eu": 1},
 )
 def share_tot_monet_invest_elec_res_vs_gdp():
     """
@@ -240,6 +290,10 @@ def share_tot_monet_invest_elec_res_vs_gdp():
     units="Tdollars/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "invest_res_elec_tdolar": 1,
+        "extra_monet_invest_to_cope_with_variable_elec_res": 1,
+    },
 )
 def total_monet_invest_res_for_elec_tdolar():
     """

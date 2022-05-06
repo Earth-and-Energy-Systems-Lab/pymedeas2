@@ -1,6 +1,6 @@
 """
 Module exports_demand
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,11 @@ Translated using PySD version 3.0.0
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "real_exports_demand_to_row_by_sector": 1,
+        "exports_demand_to_row": 1,
+    },
 )
 def exports_demand_not_covered_row():
     """
@@ -28,6 +33,16 @@ def exports_demand_not_covered_row():
     subscripts=["sectors"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_exports_demand_to_roeu": 1},
+    other_deps={
+        "_integ_exports_demand_to_roeu": {
+            "initial": {"initial_exports_demand_to_roeu": 1},
+            "step": {
+                "variation_exports_demand_to_roeu": 1,
+                "exports_demand_not_covered_to_roeu": 1,
+            },
+        }
+    },
 )
 def exports_demand_to_roeu():
     """
@@ -49,6 +64,7 @@ _integ_exports_demand_to_roeu = Integ(
     subscripts=["sectors"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_0_exp_0"},
 )
 def beta_0_exp_0():
     """
@@ -74,6 +90,7 @@ _ext_constant_beta_0_exp_0 = ExtConstant(
     subscripts=["sectors"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_0_exp_1"},
 )
 def beta_0_exp_1():
     """
@@ -94,7 +111,11 @@ _ext_constant_beta_0_exp_1 = ExtConstant(
 
 
 @component.add(
-    name="beta 1 EXP 0", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="beta 1 EXP 0",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_1_exp_0"},
 )
 def beta_1_exp_0():
     """
@@ -115,7 +136,11 @@ _ext_constant_beta_1_exp_0 = ExtConstant(
 
 
 @component.add(
-    name="beta 1 EXP 1", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="beta 1 EXP 1",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_1_exp_1"},
 )
 def beta_1_exp_1():
     """
@@ -141,6 +166,11 @@ _ext_constant_beta_1_exp_1 = ExtConstant(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "real_exports_demand_to_roeu_by_sector": 1,
+        "exports_demand_to_roeu": 1,
+    },
 )
 def exports_demand_not_covered_to_roeu():
     """
@@ -159,6 +189,16 @@ def exports_demand_not_covered_to_roeu():
     subscripts=["sectors"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_exports_demand_to_row": 1},
+    other_deps={
+        "_integ_exports_demand_to_row": {
+            "initial": {"initial_exports_demand_to_row": 1},
+            "step": {
+                "variation_exports_demand_to_row": 1,
+                "exports_demand_not_covered_row": 1,
+            },
+        }
+    },
 )
 def exports_demand_to_row():
     """
@@ -174,7 +214,12 @@ _integ_exports_demand_to_row = Integ(
 )
 
 
-@component.add(name="GDP EU28 next step", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="GDP EU28 next step",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"gdp_eu28": 1, "annual_gdp_growth_rate_eu28": 1},
+)
 def gdp_eu28_next_step():
     return gdp_eu28() * (1 + annual_gdp_growth_rate_eu28())
 
@@ -185,6 +230,10 @@ def gdp_eu28_next_step():
     subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_exports_demand_0",
+        "__lookup__": "_ext_lookup_historic_exports_demand_0",
+    },
 )
 def historic_exports_demand_0(x, final_subs=None):
     """
@@ -211,6 +260,10 @@ _ext_lookup_historic_exports_demand_0 = ExtLookup(
     subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_exports_demand_1",
+        "__lookup__": "_ext_lookup_historic_exports_demand_1",
+    },
 )
 def historic_exports_demand_1(x, final_subs=None):
     """
@@ -237,6 +290,7 @@ _ext_lookup_historic_exports_demand_1 = ExtLookup(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_exports_demand_1": 1},
 )
 def initial_exports_demand_to_roeu():
     """
@@ -251,6 +305,7 @@ def initial_exports_demand_to_roeu():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_exports_demand_0": 1},
 )
 def initial_exports_demand_to_row():
     """
@@ -264,12 +319,18 @@ def initial_exports_demand_to_row():
     units="Mdollar",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_demand_world": 1, "annual_gdp_growth_rate_world": 1},
 )
 def real_demand_world_next_step():
     return real_demand_world() * (1 + annual_gdp_growth_rate_world())
 
 
-@component.add(name="Total exports", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="Total exports",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"total_exports_to_roeu": 1, "total_exports_to_row": 1},
+)
 def total_exports():
     return total_exports_to_roeu() + total_exports_to_row()
 
@@ -279,6 +340,7 @@ def total_exports():
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"exports_demand_to_roeu": 1},
 )
 def total_exports_to_roeu():
     """
@@ -294,6 +356,7 @@ def total_exports_to_roeu():
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"exports_demand_to_row": 1},
 )
 def total_exports_to_row():
     """
@@ -310,6 +373,15 @@ def total_exports_to_row():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "exports_demand_to_roeu": 1,
+        "gdp_eu28": 1,
+        "variation_historic_exports_demand_to_roeu": 1,
+        "beta_1_exp_1": 2,
+        "gdp_eu28_next_step": 1,
+        "beta_0_exp_1": 1,
+        "time": 1,
+    },
 )
 def variation_exports_demand_to_roeu():
     """
@@ -333,6 +405,15 @@ def variation_exports_demand_to_roeu():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "exports_demand_to_row": 1,
+        "real_demand_world_next_step": 1,
+        "beta_1_exp_0": 2,
+        "beta_0_exp_0": 1,
+        "real_demand_world": 1,
+        "variation_historic_exports_demand_row": 1,
+        "time": 1,
+    },
 )
 def variation_exports_demand_to_row():
     """
@@ -359,6 +440,7 @@ def variation_exports_demand_to_row():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "historic_exports_demand_0": 2},
 )
 def variation_historic_exports_demand_row():
     """
@@ -375,6 +457,7 @@ def variation_historic_exports_demand_row():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "historic_exports_demand_1": 2},
 )
 def variation_historic_exports_demand_to_roeu():
     """

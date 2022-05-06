@@ -1,11 +1,15 @@
 """
 Module temperature_change
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name='"2x CO2 Forcing"', units="W/m2", comp_type="Auxiliary", comp_subtype="Normal"
+    name='"2x CO2 Forcing"',
+    units="W/m2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"reference_co2_radiative_forcing": 1},
 )
 def nvs_2x_co2_forcing():
     return reference_co2_radiative_forcing() * np.log(2)
@@ -16,6 +20,11 @@ def nvs_2x_co2_forcing():
     units="W*year/m2/DegreesC",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "upper_layer_volume_vu": 1,
+        "volumetric_heat_capacity": 1,
+        "earth_surface_area": 1,
+    },
 )
 def atm_and_upper_ocean_heat_cap():
     """
@@ -29,6 +38,7 @@ def atm_and_upper_ocean_heat_cap():
     units="(W/m2)/DegreesC",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"nvs_2x_co2_forcing": 1, "climate_sensitivity_to_2x_co2": 1},
 )
 def climate_feedback_param():
     """
@@ -42,6 +52,7 @@ def climate_feedback_param():
     units="ºC",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_climate_sensitivity_to_2x_co2"},
 )
 def climate_sensitivity_to_2x_co2():
     """
@@ -67,6 +78,11 @@ _ext_constant_climate_sensitivity_to_2x_co2 = ExtConstant(
     subscripts=["Layers"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "lower_layer_volume_vu": 1,
+        "volumetric_heat_capacity": 1,
+        "earth_surface_area": 1,
+    },
 )
 def deep_ocean_heat_cap():
     """
@@ -86,7 +102,11 @@ def earth_surface_area():
 
 
 @component.add(
-    name="Feedback Cooling", units="W/m2", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Feedback Cooling",
+    units="W/m2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"temperature_change": 1, "climate_feedback_param": 1},
 )
 def feedback_cooling():
     """
@@ -100,6 +120,7 @@ def feedback_cooling():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_heat_diffusion_covar"},
 )
 def heat_diffusion_covar():
     """
@@ -124,6 +145,20 @@ _ext_constant_heat_diffusion_covar = ExtConstant(
     units="W*year/m2",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_heat_in_atmosphere_and_upper_ocean": 1},
+    other_deps={
+        "_integ_heat_in_atmosphere_and_upper_ocean": {
+            "initial": {
+                "init_atm_uppocean_temperature_ano": 1,
+                "atm_and_upper_ocean_heat_cap": 1,
+            },
+            "step": {
+                "effective_radiative_forcing": 1,
+                "feedback_cooling": 1,
+                "heat_transfer": 1,
+            },
+        }
+    },
 )
 def heat_in_atmosphere_and_upper_ocean():
     """
@@ -147,6 +182,17 @@ _integ_heat_in_atmosphere_and_upper_ocean = Integ(
     subscripts=["Layers"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_heat_in_deep_ocean": 1, "_integ_heat_in_deep_ocean_1": 1},
+    other_deps={
+        "_integ_heat_in_deep_ocean": {
+            "initial": {"init_deep_ocean_temperature": 1, "deep_ocean_heat_cap": 1},
+            "step": {"heat_transfer": 2},
+        },
+        "_integ_heat_in_deep_ocean_1": {
+            "initial": {"init_deep_ocean_temperature": 1, "deep_ocean_heat_cap": 1},
+            "step": {"heat_transfer": 1},
+        },
+    },
 )
 def heat_in_deep_ocean():
     """
@@ -195,6 +241,12 @@ _integ_heat_in_deep_ocean_1 = Integ(
     subscripts=["Layers"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "temperature_change": 1,
+        "relative_deep_ocean_temp": 3,
+        "heat_transfer_coeff": 2,
+        "mean_depth_of_adjacent_layers": 2,
+    },
 )
 def heat_transfer():
     """
@@ -234,6 +286,13 @@ def heat_transfer():
     limits=(0.0, 1.0),
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "heat_transfer_rate": 1,
+        "mean_depth_of_adjacent_layers": 1,
+        "eddy_diffusion_mean": 1,
+        "heat_diffusion_covar": 2,
+        "eddy_diffusion_coef": 1,
+    },
 )
 def heat_transfer_coeff():
     """
@@ -253,6 +312,7 @@ def heat_transfer_coeff():
     limits=(0.0, 2.0),
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_heat_transfer_rate"},
 )
 def heat_transfer_rate():
     return _ext_constant_heat_transfer_rate()
@@ -274,6 +334,7 @@ _ext_constant_heat_transfer_rate = ExtConstant(
     units="DegreesC",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_init_atm_uppocean_temperature_ano"},
 )
 def init_atm_uppocean_temperature_ano():
     """
@@ -299,6 +360,7 @@ _ext_constant_init_atm_uppocean_temperature_ano = ExtConstant(
     subscripts=["Layers"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_init_deep_ocean_temperature"},
 )
 def init_deep_ocean_temperature():
     """
@@ -329,7 +391,11 @@ def land_area_fraction():
 
 
 @component.add(
-    name="land thickness", units="m", comp_type="Constant", comp_subtype="External"
+    name="land thickness",
+    units="m",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_land_thickness"},
 )
 def land_thickness():
     """
@@ -355,6 +421,7 @@ _ext_constant_land_thickness = ExtConstant(
     subscripts=["Layers"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"earth_surface_area": 1, "land_area_fraction": 1, "layer_depth": 1},
 )
 def lower_layer_volume_vu():
     """
@@ -368,6 +435,7 @@ def lower_layer_volume_vu():
     units="W/m2",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_reference_co2_radiative_forcing"},
 )
 def reference_co2_radiative_forcing():
     """
@@ -393,6 +461,7 @@ _ext_constant_reference_co2_radiative_forcing = ExtConstant(
     subscripts=["Layers"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"heat_in_deep_ocean": 1, "deep_ocean_heat_cap": 1},
 )
 def relative_deep_ocean_temp():
     """
@@ -406,6 +475,10 @@ def relative_deep_ocean_temp():
     units="DegreesC",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "heat_in_atmosphere_and_upper_ocean": 1,
+        "atm_and_upper_ocean_heat_cap": 1,
+    },
 )
 def temperature_change():
     """
@@ -419,6 +492,12 @@ def temperature_change():
     units="m3",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "earth_surface_area": 1,
+        "land_area_fraction": 2,
+        "mixed_layer_depth": 1,
+        "land_thickness": 1,
+    },
 )
 def upper_layer_volume_vu():
     """

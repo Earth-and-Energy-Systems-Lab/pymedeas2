@@ -1,6 +1,6 @@
 """
 Module res_commercial_heat_capacities
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,10 @@ Translated using PySD version 3.0.0
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "remaining_potential_res_for_heat": 2,
+        "threshold_remaining_potential_new_capacity": 2,
+    },
 )
 def remaining_potential_constraint_on_new_res_heat_capacity():
     """
@@ -31,6 +35,10 @@ def remaining_potential_constraint_on_new_res_heat_capacity():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fed_heatcom_after_priorities_ej": 3,
+        "fe_real_supply_res_for_heatcom_tot_ej": 1,
+    },
 )
 def abundance_res_heatcom():
     """
@@ -51,6 +59,7 @@ def abundance_res_heatcom():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_res_heatcom": 1},
 )
 def abundance_res_heatcom2():
     """
@@ -65,6 +74,12 @@ def abundance_res_heatcom2():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 3,
+        "past_res_growth_for_heatcom": 3,
+        "start_year_p_growth_res_heat": 2,
+        "p_res_for_heat": 2,
+    },
 )
 def adapt_growth_res_for_heatcom():
     """
@@ -89,6 +104,9 @@ def adapt_growth_res_for_heatcom():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_efficiency_conversion_bioe_plants_to_heat"
+    },
 )
 def efficiency_conversion_bioe_plants_to_heat():
     """
@@ -113,6 +131,7 @@ _ext_constant_efficiency_conversion_bioe_plants_to_heat = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_geothermal_for_heat"},
 )
 def efficiency_geothermal_for_heat():
     return _ext_constant_efficiency_geothermal_for_heat()
@@ -135,6 +154,12 @@ _ext_constant_efficiency_geothermal_for_heat = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "efficiency_solar_panels_for_heat": 1,
+        "losses_solar_for_heat": 1,
+        "efficiency_geothermal_for_heat": 1,
+        "efficiency_conversion_bioe_plants_to_heat": 1,
+    },
 )
 def efficiency_res_heat():
     value = xr.DataArray(
@@ -153,6 +178,7 @@ def efficiency_res_heat():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_solar_panels_for_heat"},
 )
 def efficiency_solar_panels_for_heat():
     return _ext_constant_efficiency_solar_panels_for_heat()
@@ -175,6 +201,10 @@ _ext_constant_efficiency_solar_panels_for_heat = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_fes_res_for_heatcom_ej": 1,
+        "res_heatcom_tot_overcapacity": 1,
+    },
 )
 def fe_real_generation_res_heatcom_ej():
     """
@@ -188,6 +218,10 @@ def fe_real_generation_res_heatcom_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fed_heatcom_after_priorities_ej": 1,
+        "potential_fes_tot_res_for_heatcom_ej": 1,
+    },
 )
 def fe_real_supply_res_for_heatcom_tot_ej():
     """
@@ -205,6 +239,10 @@ def fe_real_supply_res_for_heatcom_tot_ej():
     subscripts=["RES heat"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_res_capacity_for_heatcom",
+        "__lookup__": "_ext_lookup_historic_res_capacity_for_heatcom",
+    },
 )
 def historic_res_capacity_for_heatcom(x, final_subs=None):
     """
@@ -231,6 +269,7 @@ _ext_lookup_historic_res_capacity_for_heatcom = ExtLookup(
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_value_res_for_heatcom"},
 )
 def initial_value_res_for_heatcom():
     """
@@ -256,6 +295,17 @@ _ext_constant_initial_value_res_for_heatcom = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_installed_capacity_res_heatcom_tw": 1},
+    other_deps={
+        "_integ_installed_capacity_res_heatcom_tw": {
+            "initial": {"initial_value_res_for_heatcom": 1},
+            "step": {
+                "new_res_capacity_for_heatcom_tw": 1,
+                "replacement_res_for_heatcom_tw": 1,
+                "wear_res_capacity_for_heatcom_tw": 1,
+            },
+        }
+    },
 )
 def installed_capacity_res_heatcom_tw():
     """
@@ -279,6 +329,7 @@ _integ_installed_capacity_res_heatcom_tw = Integ(
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_life_time_res_for_heat"},
 )
 def life_time_res_for_heat():
     """
@@ -303,6 +354,7 @@ _ext_constant_life_time_res_for_heat = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_losses_solar_for_heat"},
 )
 def losses_solar_for_heat():
     return _ext_constant_losses_solar_for_heat()
@@ -325,6 +377,14 @@ _ext_constant_losses_solar_for_heat = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 3,
+        "historic_res_capacity_for_heatcom": 2,
+        "installed_capacity_res_heatcom_tw": 1,
+        "adapt_growth_res_for_heatcom": 1,
+        "remaining_potential_constraint_on_new_res_heat_capacity": 1,
+        "abundance_res_heatcom2": 1,
+    },
 )
 def new_res_capacity_for_heatcom_tw():
     """
@@ -348,6 +408,7 @@ def new_res_capacity_for_heatcom_tw():
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_geothermal_for_heat"},
 )
 def p_geothermal_for_heat():
     """
@@ -373,6 +434,11 @@ _ext_constant_p_geothermal_for_heat = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "p_solar_for_heat": 1,
+        "p_geothermal_for_heat": 1,
+        "p_solid_bioe_for_heat": 1,
+    },
 )
 def p_res_for_heat():
     """
@@ -392,6 +458,7 @@ def p_res_for_heat():
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_solar_for_heat"},
 )
 def p_solar_for_heat():
     """
@@ -416,6 +483,7 @@ _ext_constant_p_solar_for_heat = ExtConstant(
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_solid_bioe_for_heat"},
 )
 def p_solid_bioe_for_heat():
     """
@@ -441,6 +509,7 @@ _ext_constant_p_solid_bioe_for_heat = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_past_res_growth_for_heatcom"},
 )
 def past_res_growth_for_heatcom():
     """
@@ -466,6 +535,11 @@ _ext_constant_past_res_growth_for_heatcom = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_real_generation_res_heatcom_ej": 3,
+        "efficiency_res_heat": 3,
+        "efficiency_solar_panels_for_heat": 1,
+    },
 )
 def pes_res_for_heatcom_by_techn():
     """
@@ -494,6 +568,7 @@ def pes_res_for_heatcom_by_techn():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"potential_fes_res_for_heatcom_twh": 1, "ej_per_twh": 1},
 )
 def potential_fes_res_for_heatcom_ej():
     """
@@ -508,6 +583,12 @@ def potential_fes_res_for_heatcom_ej():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_res_heatcom_tw": 1,
+        "efficiency_res_heat": 1,
+        "cp_res_for_heat": 1,
+        "twe_per_twh": 1,
+    },
 )
 def potential_fes_res_for_heatcom_twh():
     """
@@ -526,6 +607,7 @@ def potential_fes_res_for_heatcom_twh():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"potential_fes_res_for_heatcom_ej": 1},
 )
 def potential_fes_tot_res_for_heatcom_ej():
     """
@@ -543,6 +625,11 @@ def potential_fes_tot_res_for_heatcom_ej():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_fe_potential_res_for_heat": 2,
+        "potential_fes_res_for_heatcom_ej": 1,
+        "potential_fes_res_for_heatnc_ej": 1,
+    },
 )
 def remaining_potential_res_for_heat():
     """
@@ -565,6 +652,11 @@ def remaining_potential_res_for_heat():
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "wear_res_capacity_for_heatcom_tw": 1,
+        "replacement_res_for_heatcom": 1,
+        "res_heatcom_tot_overcapacity": 1,
+    },
 )
 def replacement_res_for_heatcom_tw():
     """
@@ -583,6 +675,7 @@ def replacement_res_for_heatcom_tw():
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_replacement_res_for_heatcom"},
 )
 def replacement_res_for_heatcom():
     """
@@ -607,6 +700,10 @@ _ext_constant_replacement_res_for_heatcom = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_fes_tot_res_for_heatcom_ej": 3,
+        "fe_real_supply_res_for_heatcom_tot_ej": 1,
+    },
 )
 def res_heatcom_tot_overcapacity():
     """
@@ -628,6 +725,7 @@ def res_heatcom_tot_overcapacity():
     units="year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_start_year_p_growth_res_heat"},
 )
 def start_year_p_growth_res_heat():
     """
@@ -653,6 +751,7 @@ _ext_constant_start_year_p_growth_res_heat = ExtConstant(
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"installed_capacity_res_heatcom_tw": 1, "life_time_res_for_heat": 1},
 )
 def wear_res_capacity_for_heatcom_tw():
     """

@@ -1,6 +1,6 @@
 """
 Module transport_electric_batteries
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"number_vehicles_h": 1, "bateries_ratio_2w_e": 1},
 )
 def bat_number_2w():
     """
@@ -22,6 +23,11 @@ def bat_number_2w():
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "number_vehicles_h": 1,
+        "vehicles_inlandt": 2,
+        "bateries_ratio_bus_e": 1,
+    },
 )
 def bat_number_ev():
     """
@@ -39,6 +45,13 @@ def bat_number_ev():
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "vehicles_inlandt": 3,
+        "bateries_ratio_hib_lv": 2,
+        "bateries_ratio_hib_hv": 1,
+        "bateries_ratio_hib_bus": 1,
+        "number_vehicles_h": 1,
+    },
 )
 def bat_number_hib():
     """
@@ -53,7 +66,10 @@ def bat_number_hib():
 
 
 @component.add(
-    name="bateries ratio 2w E", comp_type="Constant", comp_subtype="External"
+    name="bateries ratio 2w E",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_bateries_ratio_2w_e"},
 )
 def bateries_ratio_2w_e():
     """
@@ -78,6 +94,7 @@ _ext_constant_bateries_ratio_2w_e = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_bateries_ratio_bus_e"},
 )
 def bateries_ratio_bus_e():
     """
@@ -102,6 +119,7 @@ _ext_constant_bateries_ratio_bus_e = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_bateries_ratio_hib_bus"},
 )
 def bateries_ratio_hib_bus():
     """
@@ -126,6 +144,7 @@ _ext_constant_bateries_ratio_hib_bus = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_bateries_ratio_hib_hv"},
 )
 def bateries_ratio_hib_hv():
     """
@@ -146,7 +165,10 @@ _ext_constant_bateries_ratio_hib_hv = ExtConstant(
 
 
 @component.add(
-    name="bateries ratio hib LV", comp_type="Constant", comp_subtype="External"
+    name="bateries ratio hib LV",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_bateries_ratio_hib_lv"},
 )
 def bateries_ratio_hib_lv():
     """
@@ -171,6 +193,17 @@ _ext_constant_bateries_ratio_hib_lv = ExtConstant(
     units="batteries",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_batteries_evhib2we": 1},
+    other_deps={
+        "_integ_batteries_evhib2we": {
+            "initial": {},
+            "step": {
+                "new_batteries": 1,
+                "replacement_batteries": 1,
+                "discarded_batteries": 1,
+            },
+        }
+    },
 )
 def batteries_evhib2we():
     """
@@ -191,6 +224,7 @@ _integ_batteries_evhib2we = Integ(
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"batteries_evhib2we": 1, "lifetime_ev_batteries": 1},
 )
 def discarded_batteries():
     """
@@ -200,7 +234,11 @@ def discarded_batteries():
 
 
 @component.add(
-    name="EV batteries TW", units="TW", comp_type="Auxiliary", comp_subtype="Normal"
+    name="EV batteries TW",
+    units="TW",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"batteries_evhib2we": 1, "kw_per_battery_ev": 1, "kwh_per_twh": 1},
 )
 def ev_batteries_tw():
     """
@@ -214,6 +252,7 @@ def ev_batteries_tw():
     units="kW/battery",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_kw_per_battery_ev"},
 )
 def kw_per_battery_ev():
     """
@@ -238,6 +277,7 @@ _ext_constant_kw_per_battery_ev = ExtConstant(
     units="batteries/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"required_number_standard_batteries": 1, "batteries_evhib2we": 1},
 )
 def new_batteries():
     """
@@ -251,6 +291,12 @@ def new_batteries():
     units="batteries/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "new_batteries": 1,
+        "replacement_batteries": 1,
+        "kw_per_battery_ev": 1,
+        "kwh_per_twh": 1,
+    },
 )
 def newreplaced_batteries_tw():
     """
@@ -268,6 +314,7 @@ def newreplaced_batteries_tw():
     units="batteries/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"discarded_batteries": 1},
 )
 def replacement_batteries():
     """
@@ -281,6 +328,7 @@ def replacement_batteries():
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"bat_number_2w": 1, "bat_number_ev": 1, "bat_number_hib": 1},
 )
 def required_number_standard_batteries():
     """

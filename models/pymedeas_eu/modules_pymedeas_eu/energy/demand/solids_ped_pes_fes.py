@@ -1,11 +1,15 @@
 """
 Module solids_ped_pes_fes
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="abundance solids", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="abundance solids",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pes_solids": 2, "ped_solids": 3},
 )
 def abundance_solids():
     """
@@ -19,7 +23,14 @@ def abundance_solids():
 
 
 @component.add(
-    name="adapt max share imports coal", comp_type="Auxiliary", comp_subtype="Normal"
+    name="adapt max share imports coal",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 3,
+        "historic_share_net_imports_coal_eu_until_2016": 3,
+        "max_share_imports_coal": 2,
+    },
 )
 def adapt_max_share_imports_coal():
     return if_then_else(
@@ -43,6 +54,7 @@ def adapt_max_share_imports_coal():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"extraction_coal_ej_world": 1, "extraction_coal_ej_eu": 1},
 )
 def extraction_coal_ej_row():
     return extraction_coal_ej_world() - extraction_coal_ej_eu()
@@ -53,6 +65,11 @@ def extraction_coal_ej_row():
     units="EJ",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_coal_domestic_eu_extracted_ej",
+        "__data__": "_ext_data_historic_coal_domestic_eu_extracted_ej",
+        "time": 1,
+    },
 )
 def historic_coal_domestic_eu_extracted_ej():
     return _ext_data_historic_coal_domestic_eu_extracted_ej(time())
@@ -76,13 +93,22 @@ _ext_data_historic_coal_domestic_eu_extracted_ej = ExtData(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_coal_ej": 1, "historic_coal_domestic_eu_extracted_ej": 1},
 )
 def historic_net_imports_coal_eu():
     return ped_coal_ej() - historic_coal_domestic_eu_extracted_ej()
 
 
 @component.add(
-    name="Historic PES peat EJ", units="EJ", comp_type="Data", comp_subtype="External"
+    name="Historic PES peat EJ",
+    units="EJ",
+    comp_type="Data",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_pes_peat_ej",
+        "__data__": "_ext_data_historic_pes_peat_ej",
+        "time": 1,
+    },
 )
 def historic_pes_peat_ej():
     """
@@ -109,6 +135,7 @@ _ext_data_historic_pes_peat_ej = ExtData(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_coal_domestic_eu_extracted_ej": 1, "ped_coal_ej": 1},
 )
 def historic_share_coal_domestic_ue_extraction():
     return zidz(historic_coal_domestic_eu_extracted_ej(), ped_coal_ej())
@@ -119,6 +146,15 @@ def historic_share_coal_domestic_ue_extraction():
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={
+        "_sampleiftrue_historic_share_coal_domestic_ue_extraction_until_2016": 1
+    },
+    other_deps={
+        "_sampleiftrue_historic_share_coal_domestic_ue_extraction_until_2016": {
+            "initial": {"historic_share_coal_domestic_ue_extraction": 1},
+            "step": {"time": 1, "historic_share_coal_domestic_ue_extraction": 1},
+        }
+    },
 )
 def historic_share_coal_domestic_ue_extraction_until_2016():
     return _sampleiftrue_historic_share_coal_domestic_ue_extraction_until_2016()
@@ -137,6 +173,20 @@ _sampleiftrue_historic_share_coal_domestic_ue_extraction_until_2016 = SampleIfTr
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_historic_share_net_imports_coal_eu_until_2016": 1},
+    other_deps={
+        "_sampleiftrue_historic_share_net_imports_coal_eu_until_2016": {
+            "initial": {
+                "historic_net_imports_coal_eu": 1,
+                "extraction_coal_ej_world": 1,
+            },
+            "step": {
+                "time": 1,
+                "extraction_coal_ej_world": 1,
+                "historic_net_imports_coal_eu": 1,
+            },
+        }
+    },
 )
 def historic_share_net_imports_coal_eu_until_2016():
     return _sampleiftrue_historic_share_net_imports_coal_eu_until_2016()
@@ -155,6 +205,14 @@ _sampleiftrue_historic_share_net_imports_coal_eu_until_2016 = SampleIfTrue(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "ped_eu_coal_from_row": 5,
+        "extraction_coal_ej_world": 2,
+        "limit_coal_imports_from_row": 3,
+        "adapt_max_share_imports_coal": 1,
+        "historic_share_net_imports_coal_eu_until_2016": 1,
+    },
 )
 def imports_eu_coal_from_row_ej():
     """
@@ -191,6 +249,7 @@ def imports_eu_coal_from_row_ej():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_limit_coal_imports_from_row"},
 )
 def limit_coal_imports_from_row():
     """
@@ -215,6 +274,7 @@ _ext_constant_limit_coal_imports_from_row = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_share_imports_coal"},
 )
 def max_share_imports_coal():
     return _ext_constant_max_share_imports_coal()
@@ -236,6 +296,11 @@ _ext_constant_max_share_imports_coal = ExtConstant(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "transformation_ff_losses_ej": 1,
+        "energy_distr_losses_ff_ej": 1,
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
+    },
 )
 def other_solids_required():
     return (
@@ -246,14 +311,29 @@ def other_solids_required():
 
 
 @component.add(
-    name="PEC coal", units="EJ/Year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PEC coal",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"extraction_coal_ej_eu": 1, "imports_eu_coal_from_row_ej": 1},
 )
 def pec_coal():
     return extraction_coal_ej_eu() + imports_eu_coal_from_row_ej()
 
 
 @component.add(
-    name="PED coal EJ", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PED coal EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "ped_solids": 1,
+        "modern_solids_bioe_demand_households": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "losses_in_charcoal_plants_ej": 1,
+        "pes_peat_ej": 1,
+        "pes_waste_for_tfc": 1,
+    },
 )
 def ped_coal_ej():
     return np.maximum(
@@ -274,6 +354,10 @@ def ped_coal_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ped_coal_ej": 1,
+        "historic_share_coal_domestic_ue_extraction_until_2016": 1,
+    },
 )
 def ped_domestic_eu_coal_ej():
     return ped_coal_ej() * historic_share_coal_domestic_ue_extraction_until_2016()
@@ -284,13 +368,26 @@ def ped_domestic_eu_coal_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_coal_ej": 1, "extraction_coal_ej_eu": 1},
 )
 def ped_eu_coal_from_row():
     return np.maximum(0, ped_coal_ej() - extraction_coal_ej_eu())
 
 
 @component.add(
-    name="PED solids", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PED solids",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "required_fed_solids": 1,
+        "ped_coal_for_ctl_ej": 1,
+        "pe_demand_coal_elec_plants_ej": 1,
+        "ped_coal_for_heat_plants_ej": 1,
+        "ped_coal_for_chp_plants_ej": 1,
+        "ped_coal_heatnc": 1,
+        "other_solids_required": 1,
+    },
 )
 def ped_solids():
     """
@@ -308,13 +405,23 @@ def ped_solids():
     )
 
 
-@component.add(name="PED2", units="EJ", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="PED2",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"ped_solids": 1, "transformation_ff_losses_ej": 1},
+)
 def ped2():
     return ped_solids() - float(transformation_ff_losses_ej().loc["solids"])
 
 
 @component.add(
-    name="PES peat EJ", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PES peat EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"time": 2, "historic_pes_peat_ej": 1},
 )
 def pes_peat_ej():
     return np.maximum(
@@ -328,7 +435,18 @@ def pes_peat_ej():
 
 
 @component.add(
-    name="PES solids", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PES solids",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "pec_coal": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "pes_peat_ej": 1,
+        "pes_waste_for_tfc": 1,
+        "losses_in_charcoal_plants_ej": 1,
+        "modern_solids_bioe_demand_households": 1,
+    },
 )
 def pes_solids():
     """
@@ -349,6 +467,18 @@ def pes_solids():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extraction_coal_ej_eu": 1,
+        "imports_eu_coal_from_row_ej": 1,
+        "modern_solids_bioe_demand_households": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "losses_in_charcoal_plants_ej": 1,
+        "pes_peat_ej": 1,
+        "pes_waste_for_tfc": 1,
+        "ped_coal_for_ctl_ej": 1,
+        "other_solids_required": 1,
+        "share_solids_for_final_energy": 1,
+    },
 )
 def real_fe_consumption_solids_ej():
     """
@@ -370,7 +500,11 @@ def real_fe_consumption_solids_ej():
 
 
 @component.add(
-    name="Required FED solids", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Required FED solids",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"required_fed_by_fuel": 1},
 )
 def required_fed_solids():
     """
@@ -384,6 +518,7 @@ def required_fed_solids():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_coal_ej": 2, "pe_demand_coal_elec_plants_ej": 1},
 )
 def share_coal_dem_for_elec():
     """
@@ -401,6 +536,7 @@ def share_coal_dem_for_elec():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_coal_ej": 2, "ped_coal_for_heat_plants_ej": 1},
 )
 def share_coal_dem_for_heatcom():
     """
@@ -418,6 +554,7 @@ def share_coal_dem_for_heatcom():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_coal_heatnc": 1, "ped_coal_ej": 1},
 )
 def share_coal_dem_for_heatnc():
     """
@@ -431,6 +568,7 @@ def share_coal_dem_for_heatnc():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"imports_eu_coal_from_row_ej": 1, "extraction_coal_ej_world": 1},
 )
 def share_imports_eu_coal_from_row_vs_extraction_world():
     """
@@ -444,6 +582,12 @@ def share_imports_eu_coal_from_row_vs_extraction_world():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "required_fed_solids": 1,
+        "ped_coal_for_ctl_ej": 1,
+        "other_solids_required": 1,
+        "ped_solids": 1,
+    },
 )
 def share_solids_for_final_energy():
     """

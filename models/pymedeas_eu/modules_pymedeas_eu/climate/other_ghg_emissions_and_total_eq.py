@@ -1,6 +1,6 @@
 """
 Module other_ghg_emissions_and_total_eq
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,12 @@ Translated using PySD version 3.0.0
     units="Mton/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_ch4_emissions_fossil_fuels": 1,
+        "choose_rcp": 3,
+        "ratio_power_plants_energy_conversion_extraction_and_distribution_vs_total_ch4_emissions": 1,
+        "ch4_anthro_emissions_rcp": 4,
+    },
 )
 def ch4_anthro_emissions():
     """
@@ -38,6 +44,11 @@ def ch4_anthro_emissions():
     subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_ch4_anthro_emissions_rcp",
+        "__data__": "_ext_data_ch4_anthro_emissions_rcp",
+        "time": 1,
+    },
 )
 def ch4_anthro_emissions_rcp():
     """
@@ -60,7 +71,11 @@ _ext_data_ch4_anthro_emissions_rcp = ExtData(
 
 
 @component.add(
-    name="Choose RCP", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="Choose RCP",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_choose_rcp"},
 )
 def choose_rcp():
     """
@@ -86,6 +101,7 @@ _ext_constant_choose_rcp = ExtConstant(
     subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"choose_rcp": 3, "hfc_emissions_rcp": 4},
 )
 def hfc_emissions():
     """
@@ -112,6 +128,11 @@ def hfc_emissions():
     subscripts=["RCP Scenario", "HFC type"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_hfc_emissions_rcp",
+        "__data__": "_ext_data_hfc_emissions_rcp",
+        "time": 1,
+    },
 )
 def hfc_emissions_rcp():
     """
@@ -213,6 +234,7 @@ _ext_data_hfc_emissions_rcp.add(
     units="Mton N/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"choose_rcp": 3, "n2o_anthro_emissions_rcp": 4},
 )
 def n2o_anthro_emissions():
     """
@@ -239,6 +261,11 @@ def n2o_anthro_emissions():
     subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_n2o_anthro_emissions_rcp",
+        "__data__": "_ext_data_n2o_anthro_emissions_rcp",
+        "time": 1,
+    },
 )
 def n2o_anthro_emissions_rcp():
     """
@@ -265,6 +292,7 @@ _ext_data_n2o_anthro_emissions_rcp = ExtData(
     units="tons/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"choose_rcp": 3, "pfc_emissions_rcp": 4},
 )
 def pfc_emissions():
     """
@@ -291,6 +319,11 @@ def pfc_emissions():
     subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_pfc_emissions_rcp",
+        "__data__": "_ext_data_pfc_emissions_rcp",
+        "time": 1,
+    },
 )
 def pfc_emissions_rcp():
     """
@@ -327,6 +360,7 @@ def ratio_power_plants_energy_conversion_extraction_and_distribution_vs_total_ch
     units="tons/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"choose_rcp": 3, "sf6_emissions_rcp": 4},
 )
 def sf6_emissions():
     """
@@ -353,6 +387,11 @@ def sf6_emissions():
     subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_sf6_emissions_rcp",
+        "__data__": "_ext_data_sf6_emissions_rcp",
+        "time": 1,
+    },
 )
 def sf6_emissions_rcp():
     """

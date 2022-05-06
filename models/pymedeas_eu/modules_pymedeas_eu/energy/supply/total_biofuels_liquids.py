@@ -1,6 +1,6 @@
 """
 Module total_biofuels_liquids
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,10 @@ Translated using PySD version 3.0.0
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_biomass_for_biofuels_production_ej": 1,
+        "oil_liquids_saved_by_biofuels_ej": 1,
+    },
 )
 def additional_pe_production_of_bioenergy_for_biofuels():
     """
@@ -22,6 +26,11 @@ def additional_pe_production_of_bioenergy_for_biofuels():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "peavail_tot_biofuels_land_compet_ej": 1,
+        "peavail_biofuels_land_marg_ej": 1,
+        "peavail_cellulosic_biofuel_ej": 1,
+    },
 )
 def fes_total_biofuels_production_ej():
     """
@@ -39,6 +48,7 @@ def fes_total_biofuels_production_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_liquids_ej": 1, "potential_peavail_total_biofuels": 1},
 )
 def fes_total_biofuels_production_ej_2():
     """
@@ -52,6 +62,7 @@ def fes_total_biofuels_production_ej_2():
     units="Mb/d",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fes_total_biofuels_production_ej": 1, "mbd_per_ejyear": 1},
 )
 def fes_total_biofuels_production_mbd():
     """
@@ -65,6 +76,11 @@ def fes_total_biofuels_production_mbd():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_peavail_potential_bioe_residues_for_cellulosic_biofuels": 1,
+        "max_peavail_potential_biofuels_land_compet": 1,
+        "max_peavail_potential_biofuels_marginal_lands": 1,
+    },
 )
 def max_peavail_biofuels_potential():
     """
@@ -82,6 +98,7 @@ def max_peavail_biofuels_potential():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fes_total_biofuels_production_ej": 1},
 )
 def oil_liquids_saved_by_biofuels_ej():
     """
@@ -95,6 +112,11 @@ def oil_liquids_saved_by_biofuels_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_biofuels_land_marg_ej": 1,
+        "pe_cellulosic_biofuel_ej": 1,
+        "pe_biofuels_prod_2gen3gen_ej": 1,
+    },
 )
 def pe_biomass_for_biofuels_production_ej():
     """
@@ -112,6 +134,12 @@ def pe_biomass_for_biofuels_production_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_peavail_biofuels_2gen_land_compet_ej": 1,
+        "potential_peavail_biofuels_prod_3gen_ej": 1,
+        "potential_peavail_biofuels_land_marg_ej": 1,
+        "potential_peavail_cellulosic_biofuel_ej": 1,
+    },
 )
 def potential_peavail_total_biofuels():
     return (
@@ -127,6 +155,10 @@ def potential_peavail_total_biofuels():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_peavail_biofuels_potential": 3,
+        "fes_total_biofuels_production_ej": 2,
+    },
 )
 def remaining_potential_biofuels():
     """
@@ -145,6 +177,10 @@ def remaining_potential_biofuels():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_peavail_total_biofuels": 2,
+        "fes_total_biofuels_production_ej_2": 1,
+    },
 )
 def share_biofuels_overcapacity():
     return zidz(

@@ -1,11 +1,25 @@
 """
 Module land_use
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="\"'Available land'\"", units="MHa", comp_type="Stateful", comp_subtype="Integ"
+    name="\"'Available land'\"",
+    units="MHa",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_available_land": 1},
+    other_deps={
+        "_integ_available_land": {
+            "initial": {"initial_available_land": 1},
+            "step": {
+                "land_for_res_elec_rate": 1,
+                "increase_agricultural_land": 1,
+                "marginal_land_for_biofuels_rate": 1,
+            },
+        }
+    },
 )
 def available_land():
     """
@@ -28,6 +42,17 @@ _integ_available_land = Integ(
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_available_forest_area": 1},
+    other_deps={
+        "_integ_available_forest_area": {
+            "initial": {"initial_available_forest_area": 1},
+            "step": {
+                "deforestation_rate": 1,
+                "forest_loss_to_sustain_agriculture": 1,
+                "available_to_primary_forest_rate": 1,
+            },
+        }
+    },
 )
 def available_forest_area():
     """
@@ -50,6 +75,15 @@ _integ_available_forest_area = Integ(
     units="MHa/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "hist_variation_primary_forest": 1,
+        "p_variation_primary_forest": 1,
+        "historic_av_variation_primary_forests_area": 1,
+        "start_year_p_variation_primary_forest": 1,
+        "primary_forests_area": 2,
+        "aux_reach_available_forest": 1,
+    },
 )
 def available_to_primary_forest_rate():
     """
@@ -78,7 +112,23 @@ def nvs_1_to_m():
 
 
 @component.add(
-    name="Agricultural land", units="MHa", comp_type="Stateful", comp_subtype="Integ"
+    name="Agricultural land",
+    units="MHa",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_agricultural_land": 1},
+    other_deps={
+        "_integ_agricultural_land": {
+            "initial": {"initial_agricultural_area": 1},
+            "step": {
+                "deforestation_rate": 1,
+                "forest_loss_to_sustain_agriculture": 1,
+                "increase_agricultural_land": 1,
+                "compet_land_for_biofuels_rate": 1,
+                "urban_land_rate": 1,
+            },
+        }
+    },
 )
 def agricultural_land():
     """
@@ -103,6 +153,7 @@ _integ_agricultural_land = Integ(
     units="Ha/person",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"agricultural_land": 1, "nvs_1_to_m": 1, "population": 1},
 )
 def agricultural_land_pc():
     """
@@ -116,6 +167,13 @@ def agricultural_land_pc():
     units="Ha/person",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_agricultural_land_pc_until_2015": 1},
+    other_deps={
+        "_sampleiftrue_agricultural_land_pc_until_2015": {
+            "initial": {"agricultural_land_pc": 1},
+            "step": {"time": 1, "agricultural_land_pc": 1},
+        }
+    },
 )
 def agricultural_land_pc_until_2015():
     """
@@ -137,6 +195,13 @@ _sampleiftrue_agricultural_land_pc_until_2015 = SampleIfTrue(
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_agricultural_land_until_2015": 1},
+    other_deps={
+        "_sampleiftrue_agricultural_land_until_2015": {
+            "initial": {"agricultural_land": 1},
+            "step": {"time": 1, "agricultural_land": 1},
+        }
+    },
 )
 def agricultural_land_until_2015():
     """
@@ -158,6 +223,7 @@ _sampleiftrue_agricultural_land_until_2015 = SampleIfTrue(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="with Lookup",
+    depends_on={"agricultural_land": 1},
 )
 def aux_reach_ag_land():
     """
@@ -175,6 +241,7 @@ def aux_reach_ag_land():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="with Lookup",
+    depends_on={"available_forest_area": 1},
 )
 def aux_reach_available_forest():
     """
@@ -192,6 +259,7 @@ def aux_reach_available_forest():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="with Lookup",
+    depends_on={"available_land": 1},
 )
 def aux_reach_available_land():
     """
@@ -209,6 +277,13 @@ def aux_reach_available_land():
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_compet_agricultural_land_for_biofuels": 1},
+    other_deps={
+        "_integ_compet_agricultural_land_for_biofuels": {
+            "initial": {"initial_value_land_compet_biofuels_2gen_mha": 1},
+            "step": {"compet_land_for_biofuels_rate": 1},
+        }
+    },
 )
 def compet_agricultural_land_for_biofuels():
     """
@@ -229,6 +304,7 @@ _integ_compet_agricultural_land_for_biofuels = Integ(
     units="MHa/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"new_biofuels_2gen_land_compet": 1},
 )
 def compet_land_for_biofuels_rate():
     """
@@ -242,6 +318,10 @@ def compet_land_for_biofuels_rate():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_sustainable_forest_extraction_ej": 2,
+        "total_demand_forest_biomass_ej": 3,
+    },
 )
 def deficit_forest_biomass():
     """
@@ -262,6 +342,7 @@ def deficit_forest_biomass():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"demand_wood_products_ej": 2, "consum_wood_products_ej": 1},
 )
 def deficit_wood_products():
     """
@@ -277,6 +358,12 @@ def deficit_wood_products():
     units="MHa/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "available_forest_area": 1,
+        "p_minimum_forest": 1,
+        "unsustainable_loggin": 1,
+        "aux_reach_available_forest": 1,
+    },
 )
 def deforestation_rate():
     """
@@ -297,6 +384,7 @@ def deforestation_rate():
     units="m3/people",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_demand_forest_wood_products_pc"},
 )
 def demand_forest_wood_products_pc():
     """
@@ -321,6 +409,7 @@ _ext_constant_demand_forest_wood_products_pc = ExtConstant(
     units="m3",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"demand_forest_wood_products_pc": 1, "population": 1},
 )
 def demand_wood_products_m3():
     """
@@ -334,6 +423,12 @@ def demand_wood_products_m3():
     units="MHa/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "aux_reach_available_land": 1,
+        "agricultural_land": 1,
+        "agricultural_land_until_2015": 1,
+        "aux_reach_available_forest": 1,
+    },
 )
 def forest_loss_to_sustain_agriculture():
     """
@@ -354,6 +449,12 @@ def forest_loss_to_sustain_agriculture():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "demand_forest_energy_non_tradition_ej": 1,
+        "consum_forest_energy_traditional_ej": 1,
+        "forest_consumption_ej": 1,
+        "consum_wood_products_ej": 1,
+    },
 )
 def consum_forest_energy_non_traditional_ej():
     """
@@ -372,6 +473,7 @@ def consum_forest_energy_non_traditional_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"forest_consumption_ej": 1, "demand_forest_energy_traditional_ej": 1},
 )
 def consum_forest_energy_traditional_ej():
     """
@@ -385,6 +487,11 @@ def consum_forest_energy_traditional_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "demand_wood_products_ej": 1,
+        "forest_consumption_ej": 1,
+        "consum_forest_energy_traditional_ej": 1,
+    },
 )
 def consum_wood_products_ej():
     """
@@ -401,6 +508,10 @@ def consum_wood_products_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "solid_bioe_emissions_relevant_ej": 1,
+        "pe_bioe_residues_nonbiofuels_ej": 1,
+    },
 )
 def demand_forest_energy_non_tradition_ej():
     """
@@ -416,6 +527,7 @@ def demand_forest_energy_non_tradition_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pe_traditional_biomass_demand_ej": 1},
 )
 def demand_forest_energy_traditional_ej():
     """
@@ -429,6 +541,7 @@ def demand_forest_energy_traditional_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"demand_wood_products_m3": 1, "wood_energy_density": 1},
 )
 def demand_wood_products_ej():
     """
@@ -442,6 +555,7 @@ def demand_wood_products_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_demand_forest_biomass_ej": 1, "forest_extraction_ej": 1},
 )
 def eu_forest_energy_imports_from_row():
     """
@@ -455,6 +569,7 @@ def eu_forest_energy_imports_from_row():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"forest_extraction_ej": 1, "eu_forest_energy_imports_from_row": 1},
 )
 def forest_consumption_ej():
     """
@@ -468,6 +583,14 @@ def forest_consumption_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "available_forest_area": 1,
+        "p_minimum_forest": 1,
+        "forest_extraction_per_ha": 1,
+        "total_demand_forest_biomass_ej": 1,
+        "p_forest_overexplotation": 1,
+        "max_sustainable_forest_extraction_ej": 1,
+    },
 )
 def forest_extraction_ej():
     """
@@ -488,6 +611,7 @@ def forest_extraction_ej():
     units="EJ/MHa",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_forest_extraction_per_ha"},
 )
 def forest_extraction_per_ha():
     """
@@ -512,6 +636,11 @@ _ext_constant_forest_extraction_per_ha = ExtConstant(
     units="MHa/EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "growing_stock_forest_per_ha": 1,
+        "nvs_1_to_m": 1,
+        "wood_energy_density": 1,
+    },
 )
 def forest_stock_ratio():
     """
@@ -525,6 +654,7 @@ def forest_stock_ratio():
     units="m3/Ha",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_growing_stock_forest_per_ha"},
 )
 def growing_stock_forest_per_ha():
     """
@@ -549,6 +679,7 @@ _ext_constant_growing_stock_forest_per_ha = ExtConstant(
     units="MHa/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 3, "historic_primary_forest": 2},
 )
 def hist_variation_primary_forest():
     """
@@ -567,6 +698,7 @@ def hist_variation_primary_forest():
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 3, "historic_urban_land": 2},
 )
 def hist_variation_urban_land():
     """
@@ -585,6 +717,9 @@ def hist_variation_urban_land():
     units="MHa/Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_historic_av_variation_primary_forests_area"
+    },
 )
 def historic_av_variation_primary_forests_area():
     """
@@ -609,6 +744,10 @@ _ext_constant_historic_av_variation_primary_forests_area = ExtConstant(
     units="MHa",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_primary_forest",
+        "__lookup__": "_ext_lookup_historic_primary_forest",
+    },
 )
 def historic_primary_forest(x, final_subs=None):
     """
@@ -630,7 +769,14 @@ _ext_lookup_historic_primary_forest = ExtLookup(
 
 
 @component.add(
-    name="Historic urban land", units="MHa", comp_type="Lookup", comp_subtype="External"
+    name="Historic urban land",
+    units="MHa",
+    comp_type="Lookup",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_urban_land",
+        "__lookup__": "_ext_lookup_historic_urban_land",
+    },
 )
 def historic_urban_land(x, final_subs=None):
     """
@@ -656,6 +802,12 @@ _ext_lookup_historic_urban_land = ExtLookup(
     units="m2/people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "historic_urban_land": 1,
+        "mha_to_m2": 1,
+        "historic_population": 1,
+    },
 )
 def historic_urban_land_density():
     """
@@ -665,7 +817,15 @@ def historic_urban_land_density():
 
 
 @component.add(
-    name="increase agricultural land", comp_type="Auxiliary", comp_subtype="Normal"
+    name="increase agricultural land",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "agricultural_land": 1,
+        "agricultural_land_until_2015": 1,
+        "aux_reach_available_land": 1,
+    },
 )
 def increase_agricultural_land():
     return (
@@ -683,6 +843,7 @@ def increase_agricultural_land():
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_available_land"},
 )
 def initial_available_land():
     """
@@ -707,6 +868,10 @@ _ext_constant_initial_available_land = ExtConstant(
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "initial_planted_forests": 1,
+        "initial_other_naturally_regen_forest": 1,
+    },
 )
 def initial_available_forest_area():
     """
@@ -720,6 +885,7 @@ def initial_available_forest_area():
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_agricultural_area"},
 )
 def initial_agricultural_area():
     return _ext_constant_initial_agricultural_area()
@@ -754,6 +920,7 @@ def initial_marginal_land_occupied_by_biofuels():
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_other_naturally_regen_forest"},
 )
 def initial_other_naturally_regen_forest():
     """
@@ -778,6 +945,7 @@ _ext_constant_initial_other_naturally_regen_forest = ExtConstant(
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_permanent_snowsglaciers_area"},
 )
 def initial_permanent_snowsglaciers_area():
     """
@@ -802,6 +970,7 @@ _ext_constant_initial_permanent_snowsglaciers_area = ExtConstant(
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_planted_forests"},
 )
 def initial_planted_forests():
     """
@@ -826,6 +995,7 @@ _ext_constant_initial_planted_forests = ExtConstant(
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_primary_forest_area"},
 )
 def initial_primary_forest_area():
     """
@@ -850,6 +1020,7 @@ _ext_constant_initial_primary_forest_area = ExtConstant(
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_urban_land"},
 )
 def initial_urban_land():
     """
@@ -874,6 +1045,7 @@ _ext_constant_initial_urban_land = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"aux_reach_available_land": 1},
 )
 def land_availability_constraint():
     """
@@ -887,6 +1059,11 @@ def land_availability_constraint():
     units="MHa/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "land_requirements_res_elec_compet_uses": 1,
+        "land_requirements_res_elec_compet_uses_t1": 1,
+        "aux_reach_available_land": 1,
+    },
 )
 def land_for_res_elec_rate():
     """
@@ -903,6 +1080,13 @@ def land_for_res_elec_rate():
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_land_for_solar_and_hydro_res": 1},
+    other_deps={
+        "_integ_land_for_solar_and_hydro_res": {
+            "initial": {},
+            "step": {"land_for_res_elec_rate": 1},
+        }
+    },
 )
 def land_for_solar_and_hydro_res():
     """
@@ -921,6 +1105,7 @@ _integ_land_for_solar_and_hydro_res = Integ(
     units="MHa/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"new_land_marg_for_biofuels": 1, "aux_reach_available_land": 1},
 )
 def marginal_land_for_biofuels_rate():
     """
@@ -933,6 +1118,13 @@ def marginal_land_for_biofuels_rate():
     name='"Land requirements RES elec compet uses t-1"',
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_land_requirements_res_elec_compet_uses_t1": 1},
+    other_deps={
+        "_delayfixed_land_requirements_res_elec_compet_uses_t1": {
+            "initial": {},
+            "step": {"land_requirements_res_elec_compet_uses": 1},
+        }
+    },
 )
 def land_requirements_res_elec_compet_uses_t1():
     """
@@ -955,6 +1147,13 @@ _delayfixed_land_requirements_res_elec_compet_uses_t1 = DelayFixed(
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_marginal_land_for_biofuels": 1},
+    other_deps={
+        "_integ_marginal_land_for_biofuels": {
+            "initial": {"initial_marginal_land_occupied_by_biofuels": 1},
+            "step": {"marginal_land_for_biofuels_rate": 1},
+        }
+    },
 )
 def marginal_land_for_biofuels():
     """
@@ -975,6 +1174,10 @@ _integ_marginal_land_for_biofuels = Integ(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_e_tot_forest_available": 1,
+        "demand_forest_energy_traditional_ej": 1,
+    },
 )
 def max_e_forest_available_non_trad():
     """
@@ -990,6 +1193,7 @@ def max_e_forest_available_non_trad():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_e_forest_available_non_trad": 1, "consum_wood_products_ej": 1},
 )
 def max_e_forest_energy_non_trad():
     """
@@ -1003,6 +1207,11 @@ def max_e_forest_energy_non_trad():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "available_forest_area": 1,
+        "forest_extraction_per_ha": 1,
+        "p_forest_overexplotation": 1,
+    },
 )
 def max_e_tot_forest_available():
     """
@@ -1020,6 +1229,11 @@ def max_e_tot_forest_available():
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "available_land": 1,
+        "surface_csp_mha": 1,
+        "surface_solar_pv_on_land_mha": 1,
+    },
 )
 def max_solar_on_land_mha():
     """
@@ -1033,6 +1247,7 @@ def max_solar_on_land_mha():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"available_forest_area": 1, "forest_extraction_per_ha": 1},
 )
 def max_sustainable_forest_extraction_ej():
     """
@@ -1056,6 +1271,7 @@ def mha_to_m2():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_forest_overexplotation"},
 )
 def p_forest_overexplotation():
     """
@@ -1076,7 +1292,11 @@ _ext_constant_p_forest_overexplotation = ExtConstant(
 
 
 @component.add(
-    name="P minimum forest", units="MHa", comp_type="Constant", comp_subtype="External"
+    name="P minimum forest",
+    units="MHa",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_minimum_forest"},
 )
 def p_minimum_forest():
     """
@@ -1101,6 +1321,7 @@ _ext_constant_p_minimum_forest = ExtConstant(
     units="m2/people",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_urban_land_density"},
 )
 def p_urban_land_density():
     """
@@ -1125,6 +1346,7 @@ _ext_constant_p_urban_land_density = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_variation_primary_forest"},
 )
 def p_variation_primary_forest():
     """
@@ -1149,6 +1371,13 @@ _ext_constant_p_variation_primary_forest = ExtConstant(
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_permanent_snowsglaciers_area": 1},
+    other_deps={
+        "_integ_permanent_snowsglaciers_area": {
+            "initial": {"initial_permanent_snowsglaciers_area": 1},
+            "step": {},
+        }
+    },
 )
 def permanent_snowsglaciers_area():
     """
@@ -1165,7 +1394,17 @@ _integ_permanent_snowsglaciers_area = Integ(
 
 
 @component.add(
-    name="Primary forests area", units="MHa", comp_type="Stateful", comp_subtype="Integ"
+    name="Primary forests area",
+    units="MHa",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_primary_forests_area": 1},
+    other_deps={
+        "_integ_primary_forests_area": {
+            "initial": {"initial_primary_forest_area": 1},
+            "step": {"available_to_primary_forest_rate": 1},
+        }
+    },
 )
 def primary_forests_area():
     """
@@ -1186,6 +1425,12 @@ _integ_primary_forests_area = Integ(
     units="Ha/person",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "aux_reach_ag_land": 1,
+        "threshold_scarcity_ag_land": 1,
+        "agricultural_land_pc_until_2015": 1,
+        "agricultural_land_pc": 1,
+    },
 )
 def scarcity_agricultural_land():
     """
@@ -1207,8 +1452,9 @@ def scarcity_agricultural_land():
     name="shortage BioE for elec",
     units="Dmnl",
     subscripts=["RES elec"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
+    depends_on={"shortage_bioe_non_trad_delayed_1yr": 1},
 )
 def shortage_bioe_for_elec():
     """
@@ -1232,8 +1478,9 @@ def shortage_bioe_for_elec():
     name="shortage BioE for heat",
     units="Dmnl",
     subscripts=["RES heat"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
+    depends_on={"shortage_bioe_non_trad_delayed_1yr": 1},
 )
 def shortage_bioe_for_heat():
     """
@@ -1253,6 +1500,10 @@ def shortage_bioe_for_heat():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "consum_forest_energy_non_traditional_ej": 1,
+        "demand_forest_energy_non_tradition_ej": 1,
+    },
 )
 def shortage_bioe_non_trad():
     """
@@ -1269,6 +1520,13 @@ def shortage_bioe_non_trad():
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_shortage_bioe_non_trad_delayed_1yr": 1},
+    other_deps={
+        "_delayfixed_shortage_bioe_non_trad_delayed_1yr": {
+            "initial": {},
+            "step": {"shortage_bioe_non_trad": 1},
+        }
+    },
 )
 def shortage_bioe_non_trad_delayed_1yr():
     """
@@ -1291,6 +1549,7 @@ _delayfixed_shortage_bioe_non_trad_delayed_1yr = DelayFixed(
     units="Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_start_year_p_urban_land_density"},
 )
 def start_year_p_urban_land_density():
     """
@@ -1315,6 +1574,7 @@ _ext_constant_start_year_p_urban_land_density = ExtConstant(
     units="Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_start_year_p_variation_primary_forest"},
 )
 def start_year_p_variation_primary_forest():
     """
@@ -1339,6 +1599,7 @@ _ext_constant_start_year_p_variation_primary_forest = ExtConstant(
     units="Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_target_year_p_urban_land_density"},
 )
 def target_year_p_urban_land_density():
     """
@@ -1376,6 +1637,17 @@ def threshold_scarcity_ag_land():
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "agricultural_land": 1,
+        "compet_agricultural_land_for_biofuels": 1,
+        "available_forest_area": 1,
+        "land_for_solar_and_hydro_res": 1,
+        "marginal_land_for_biofuels": 1,
+        "permanent_snowsglaciers_area": 1,
+        "primary_forests_area": 1,
+        "urban_land": 1,
+        "available_land": 1,
+    },
 )
 def total_aut_land_endogenous():
     return (
@@ -1396,6 +1668,10 @@ def total_aut_land_endogenous():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "demand_forest_energy_non_tradition_ej": 1,
+        "demand_forest_energy_traditional_ej": 1,
+    },
 )
 def total_demand_energy_forest_ej():
     """
@@ -1411,6 +1687,11 @@ def total_demand_energy_forest_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "demand_forest_energy_non_tradition_ej": 1,
+        "demand_forest_energy_traditional_ej": 1,
+        "demand_wood_products_ej": 1,
+    },
 )
 def total_demand_forest_biomass_ej():
     """
@@ -1428,6 +1709,11 @@ def total_demand_forest_biomass_ej():
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "compet_agricultural_land_for_biofuels": 1,
+        "land_for_solar_and_hydro_res": 1,
+        "marginal_land_for_biofuels": 1,
+    },
 )
 def total_land_occupied_by_res():
     """
@@ -1445,6 +1731,11 @@ def total_land_occupied_by_res():
     units="MHa/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "forest_extraction_ej": 1,
+        "max_sustainable_forest_extraction_ej": 1,
+        "forest_stock_ratio": 1,
+    },
 )
 def unsustainable_loggin():
     """
@@ -1458,7 +1749,17 @@ def unsustainable_loggin():
 
 
 @component.add(
-    name="Urban land", units="MHa", comp_type="Stateful", comp_subtype="Integ"
+    name="Urban land",
+    units="MHa",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_urban_land": 1},
+    other_deps={
+        "_integ_urban_land": {
+            "initial": {"initial_urban_land": 1},
+            "step": {"urban_land_rate": 1},
+        }
+    },
 )
 def urban_land():
     """
@@ -1477,6 +1778,13 @@ _integ_urban_land = Integ(
     units="m2/people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 4,
+        "historic_urban_land_density": 4,
+        "target_year_p_urban_land_density": 2,
+        "p_urban_land_density": 2,
+        "start_year_p_urban_land_density": 3,
+    },
 )
 def urban_land_density():
     """
@@ -1508,6 +1816,13 @@ def urban_land_density():
     units="m2/person",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_urban_land_density_t1": 1},
+    other_deps={
+        "_delayfixed_urban_land_density_t1": {
+            "initial": {},
+            "step": {"urban_land_density": 1},
+        }
+    },
 )
 def urban_land_density_t1():
     """
@@ -1530,6 +1845,7 @@ _delayfixed_urban_land_density_t1 = DelayFixed(
     units="m2/people/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"urban_land_density": 1, "urban_land_density_t1": 1},
 )
 def urban_land_density_variation():
     """
@@ -1543,6 +1859,13 @@ def urban_land_density_variation():
     units="MHa/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "hist_variation_urban_land": 1,
+        "pop_variation": 1,
+        "urban_land_density_variation": 1,
+        "aux_reach_ag_land": 1,
+    },
 )
 def urban_land_rate():
     """
@@ -1564,6 +1887,7 @@ def urban_land_rate():
     units="EJ/m3",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_wood_energy_density"},
 )
 def wood_energy_density():
     """

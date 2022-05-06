@@ -1,6 +1,6 @@
 """
 Module electricity_demand_ff
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -8,6 +8,12 @@ Translated using PySD version 3.0.0
     name='"a lineal regr phase-out oil for elec"',
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "share_in_target_year_oil_for_elec": 1,
+        "hist_share_oilff_elec": 1,
+        "start_year_policy_phaseout_oil_for_elec": 1,
+        "target_year_policy_phaseout_oil_for_elec": 1,
+    },
 )
 def a_lineal_regr_phaseout_oil_for_elec():
     """
@@ -23,8 +29,13 @@ def a_lineal_regr_phaseout_oil_for_elec():
     name="Abundance primary sources",
     units="Dmnl",
     subscripts=["primary sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
+    depends_on={
+        "abundance_coal": 1,
+        "abundance_total_oil": 1,
+        "abundance_total_nat_gas": 1,
+    },
 )
 def abundance_primary_sources():
     """
@@ -46,6 +57,11 @@ def abundance_primary_sources():
     name='"b lineal regr phase-out oil for elec"',
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "share_in_target_year_oil_for_elec": 1,
+        "target_year_policy_phaseout_oil_for_elec": 1,
+        "a_lineal_regr_phaseout_oil_for_elec": 1,
+    },
 )
 def b_lineal_regr_phaseout_oil_for_elec():
     """
@@ -63,6 +79,11 @@ def b_lineal_regr_phaseout_oil_for_elec():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_auxiliar_elec": 1,
+        "perception_of_interfuel_ps_scarcity_coalgas": 1,
+        "future_share_gascoalgas_for_elec": 1,
+    },
 )
 def decrease_share_gas_for_elec():
     """
@@ -80,6 +101,11 @@ def decrease_share_gas_for_elec():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_auxiliar_elec": 1,
+        "perception_of_interfuel_ps_scarcity_ffoil": 1,
+        "future_share_oilff_for_elec": 1,
+    },
 )
 def decrease_share_oil_for_elec():
     """
@@ -93,7 +119,16 @@ def decrease_share_oil_for_elec():
 
 
 @component.add(
-    name="demand Elec gas and coal TWh", comp_type="Auxiliary", comp_subtype="Normal"
+    name="demand Elec gas and coal TWh",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "switch_scarcityps_elec_substit": 1,
+        "demand_elec_plants_fossil_fuels_twh": 3,
+        "hist_share_oilff_elec": 2,
+        "time": 1,
+        "future_share_gascoalff_for_elec": 1,
+    },
 )
 def demand_elec_gas_and_coal_twh():
     return if_then_else(
@@ -114,6 +149,11 @@ def demand_elec_gas_and_coal_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "demand_elec_nre_twh": 1,
+        "fe_nuclear_elec_generation_twh": 1,
+        "fes_elec_fossil_fuel_chp_plants_twh": 1,
+    },
 )
 def demand_elec_plants_fossil_fuels_twh():
     """
@@ -132,6 +172,7 @@ def demand_elec_plants_fossil_fuels_twh():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_coal_for_electricity"},
 )
 def efficiency_coal_for_electricity():
     """
@@ -156,6 +197,16 @@ _ext_constant_efficiency_coal_for_electricity = ExtConstant(
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_efficiency_gas_for_electricity": 1},
+    other_deps={
+        "_integ_efficiency_gas_for_electricity": {
+            "initial": {
+                "initial_efficiency_gas_for_electricity": 1,
+                "percent_to_share": 1,
+            },
+            "step": {"improvement_efficiency_gas_for_electricity": 1},
+        }
+    },
 )
 def efficiency_gas_for_electricity():
     """
@@ -176,6 +227,7 @@ _integ_efficiency_gas_for_electricity = Integ(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_improv_gas_for_electricity"},
 )
 def efficiency_improv_gas_for_electricity():
     """
@@ -200,6 +252,7 @@ _ext_constant_efficiency_improv_gas_for_electricity = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_liquids_for_electricity"},
 )
 def efficiency_liquids_for_electricity():
     """
@@ -224,6 +277,7 @@ _ext_constant_efficiency_liquids_for_electricity = ExtConstant(
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_coal_for_elec": 1, "demand_elec_gas_and_coal_twh": 1},
 )
 def fe_demand_coal_elec_plants_twh():
     """
@@ -237,6 +291,7 @@ def fe_demand_coal_elec_plants_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_gascoal_gas_for_elec": 1, "demand_elec_gas_and_coal_twh": 1},
 )
 def fe_demand_gas_elec_plants_twh():
     """
@@ -250,6 +305,7 @@ def fe_demand_gas_elec_plants_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_oil_for_elec": 1, "demand_elec_plants_fossil_fuels_twh": 1},
 )
 def fe_demand_oil_elec_plants_twh():
     """
@@ -263,6 +319,7 @@ def fe_demand_oil_elec_plants_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fes_elec_fossil_fuel_chp_plants_ej": 1, "ej_per_twh": 1},
 )
 def fes_elec_fossil_fuel_chp_plants_twh():
     """
@@ -276,6 +333,7 @@ def fes_elec_fossil_fuel_chp_plants_twh():
     units="Dnml",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"future_share_oilff_for_elec": 1},
 )
 def future_share_gascoalff_for_elec():
     return 1 - future_share_oilff_for_elec()
@@ -286,6 +344,16 @@ def future_share_gascoalff_for_elec():
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_future_share_gascoalgas_for_elec": 1},
+    other_deps={
+        "_integ_future_share_gascoalgas_for_elec": {
+            "initial": {"share_gascoalgas_for_elec_in_2014": 1},
+            "step": {
+                "increase_share_gas_for_elec": 1,
+                "decrease_share_gas_for_elec": 1,
+            },
+        }
+    },
 )
 def future_share_gascoalgas_for_elec():
     """
@@ -306,6 +374,16 @@ _integ_future_share_gascoalgas_for_elec = Integ(
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_future_share_oilff_for_elec": 1},
+    other_deps={
+        "_integ_future_share_oilff_for_elec": {
+            "initial": {"share_oilff_for_elec_in_2015": 1},
+            "step": {
+                "increase_share_oil_for_elec": 1,
+                "decrease_share_oil_for_elec": 1,
+            },
+        }
+    },
 )
 def future_share_oilff_for_elec():
     """
@@ -326,6 +404,11 @@ _integ_future_share_oilff_for_elec = Integ(
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_hist_share_gascoal_gas_elec",
+        "__data__": "_ext_data_hist_share_gascoal_gas_elec",
+        "time": 1,
+    },
 )
 def hist_share_gascoal_gas_elec():
     """
@@ -352,6 +435,11 @@ _ext_data_hist_share_gascoal_gas_elec = ExtData(
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_hist_share_oilff_elec",
+        "__data__": "_ext_data_hist_share_oilff_elec",
+        "time": 1,
+    },
 )
 def hist_share_oilff_elec():
     """
@@ -378,6 +466,10 @@ _ext_data_hist_share_oilff_elec = ExtData(
     units="percent",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_efficiency_gas_for_electricity",
+        "__lookup__": "_ext_lookup_historic_efficiency_gas_for_electricity",
+    },
 )
 def historic_efficiency_gas_for_electricity(x, final_subs=None):
     """
@@ -403,6 +495,14 @@ _ext_lookup_historic_efficiency_gas_for_electricity = ExtLookup(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 3,
+        "percent_to_share": 1,
+        "historic_efficiency_gas_for_electricity": 2,
+        "efficiency_gas_for_electricity": 1,
+        "remaining_efficiency_improv_gas_for_electricity": 1,
+        "efficiency_improv_gas_for_electricity": 1,
+    },
 )
 def improvement_efficiency_gas_for_electricity():
     """
@@ -427,6 +527,11 @@ def improvement_efficiency_gas_for_electricity():
     subscripts=["primary sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "scarcity_primary_sources": 1,
+        "sensitivity_to_scarcity": 1,
+        "perception_in_primary_sources_scarcity": 1,
+    },
 )
 def increase_in_perception_ps_scarcity():
     """
@@ -444,6 +549,11 @@ def increase_in_perception_ps_scarcity():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_auxiliar_elec": 1,
+        "perception_of_interfuel_ps_scarcity_gascoal": 1,
+        "future_share_gascoalgas_for_elec": 1,
+    },
 )
 def increase_share_gas_for_elec():
     """
@@ -461,6 +571,11 @@ def increase_share_gas_for_elec():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_auxiliar_elec": 1,
+        "perception_of_interfuel_ps_scarcity_oilff": 1,
+        "future_share_oilff_for_elec": 1,
+    },
 )
 def increase_share_oil_for_elec():
     """
@@ -478,6 +593,7 @@ def increase_share_oil_for_elec():
     units="percent",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_efficiency_gas_for_electricity"},
 )
 def initial_efficiency_gas_for_electricity():
     """
@@ -512,6 +628,7 @@ def max_auxiliar_elec():
     units="Dnml",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_efficiency_gas_power_plants"},
 )
 def max_efficiency_gas_power_plants():
     """
@@ -536,6 +653,11 @@ _ext_constant_max_efficiency_gas_power_plants = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "a_lineal_regr_phaseout_oil_for_elec": 1,
+        "time": 1,
+        "b_lineal_regr_phaseout_oil_for_elec": 1,
+    },
 )
 def p_share_oil_for_elec():
     """
@@ -553,6 +675,11 @@ def p_share_oil_for_elec():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_demand_coal_elec_plants_twh": 1,
+        "efficiency_coal_for_electricity": 1,
+        "ej_per_twh": 1,
+    },
 )
 def pe_demand_coal_elec_plants_ej():
     """
@@ -568,6 +695,11 @@ def pe_demand_coal_elec_plants_ej():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_demand_gas_elec_plants_twh": 1,
+        "efficiency_gas_for_electricity": 1,
+        "ej_per_twh": 1,
+    },
 )
 def pe_demand_gas_elec_plants_ej():
     """
@@ -583,6 +715,11 @@ def pe_demand_gas_elec_plants_ej():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_demand_oil_elec_plants_twh": 1,
+        "efficiency_liquids_for_electricity": 1,
+        "ej_per_twh": 1,
+    },
 )
 def pe_demand_oil_elec_plants_ej():
     """
@@ -609,6 +746,16 @@ def percent_to_share():
     subscripts=["primary sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_perception_in_primary_sources_scarcity": 1},
+    other_deps={
+        "_integ_perception_in_primary_sources_scarcity": {
+            "initial": {},
+            "step": {
+                "increase_in_perception_ps_scarcity": 1,
+                "reduction_in_perception_ps_scarcity": 1,
+            },
+        }
+    },
 )
 def perception_in_primary_sources_scarcity():
     """
@@ -633,6 +780,10 @@ _integ_perception_in_primary_sources_scarcity = Integ(
     subscripts=["primary sources1", "primary sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "sensitivity_to_scarcity": 4,
+        "perception_in_primary_sources_scarcity": 8,
+    },
 )
 def perception_of_interfuel_primary_sources_scarcity():
     """
@@ -647,15 +798,7 @@ def perception_of_interfuel_primary_sources_scarcity():
         ["primary sources1", "primary sources"],
     )
     value.loc[["coal"], :] = (
-        xr.DataArray(
-            0,
-            {
-                "primary sources1": ["coal"],
-                "primary sources": _subscript_dict["primary sources"],
-            },
-            ["primary sources1", "primary sources"],
-        )
-        + if_then_else(
+        if_then_else(
             sensitivity_to_scarcity() == 0,
             lambda: xr.DataArray(
                 0,
@@ -668,17 +811,11 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-    ).values
+        .expand_dims({"primary sources1": ["coal"]}, 0)
+        .values
+    )
     value.loc[["oil"], :] = (
-        xr.DataArray(
-            0,
-            {
-                "primary sources1": ["oil"],
-                "primary sources": _subscript_dict["primary sources"],
-            },
-            ["primary sources1", "primary sources"],
-        )
-        + if_then_else(
+        if_then_else(
             sensitivity_to_scarcity() == 0,
             lambda: xr.DataArray(
                 0,
@@ -691,17 +828,11 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-    ).values
+        .expand_dims({"primary sources1": ["oil"]}, 0)
+        .values
+    )
     value.loc[["natural gas"], :] = (
-        xr.DataArray(
-            0,
-            {
-                "primary sources1": ["natural gas"],
-                "primary sources": _subscript_dict["primary sources"],
-            },
-            ["primary sources1", "primary sources"],
-        )
-        + if_then_else(
+        if_then_else(
             sensitivity_to_scarcity() == 0,
             lambda: xr.DataArray(
                 0,
@@ -714,17 +845,11 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-    ).values
+        .expand_dims({"primary sources1": ["natural gas"]}, 0)
+        .values
+    )
     value.loc[["others"], :] = (
-        xr.DataArray(
-            0,
-            {
-                "primary sources1": ["others"],
-                "primary sources": _subscript_dict["primary sources"],
-            },
-            ["primary sources1", "primary sources"],
-        )
-        + if_then_else(
+        if_then_else(
             sensitivity_to_scarcity() == 0,
             lambda: xr.DataArray(
                 0,
@@ -737,7 +862,9 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-    ).values
+        .expand_dims({"primary sources1": ["others"]}, 0)
+        .values
+    )
     return value
 
 
@@ -746,6 +873,7 @@ def perception_of_interfuel_primary_sources_scarcity():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"perception_of_interfuel_primary_sources_scarcity": 1},
 )
 def perception_of_interfuel_ps_scarcity_coalgas():
     """
@@ -766,6 +894,7 @@ def perception_of_interfuel_ps_scarcity_coalgas():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"perception_of_interfuel_primary_sources_scarcity": 1},
 )
 def perception_of_interfuel_ps_scarcity_coaloil():
     """
@@ -781,6 +910,10 @@ def perception_of_interfuel_ps_scarcity_coaloil():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "perception_of_interfuel_ps_scarcity_coaloil": 1,
+        "perception_of_interfuel_ps_scarcity_nat_gasoil": 1,
+    },
 )
 def perception_of_interfuel_ps_scarcity_ffoil():
     """
@@ -797,6 +930,7 @@ def perception_of_interfuel_ps_scarcity_ffoil():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"perception_of_interfuel_primary_sources_scarcity": 1},
 )
 def perception_of_interfuel_ps_scarcity_gascoal():
     """
@@ -817,6 +951,7 @@ def perception_of_interfuel_ps_scarcity_gascoal():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"perception_of_interfuel_primary_sources_scarcity": 1},
 )
 def perception_of_interfuel_ps_scarcity_nat_gasoil():
     """
@@ -835,6 +970,7 @@ def perception_of_interfuel_ps_scarcity_nat_gasoil():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"perception_of_interfuel_primary_sources_scarcity": 1},
 )
 def perception_of_interfuel_ps_scarcity_oilcoal():
     """
@@ -850,6 +986,10 @@ def perception_of_interfuel_ps_scarcity_oilcoal():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "perception_of_interfuel_ps_scarcity_oilcoal": 1,
+        "perception_of_interfuel_ps_scarcity_oilnatgas": 1,
+    },
 )
 def perception_of_interfuel_ps_scarcity_oilff():
     """
@@ -866,6 +1006,7 @@ def perception_of_interfuel_ps_scarcity_oilff():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"perception_of_interfuel_primary_sources_scarcity": 1},
 )
 def perception_of_interfuel_ps_scarcity_oilnatgas():
     """
@@ -884,6 +1025,7 @@ def perception_of_interfuel_ps_scarcity_oilnatgas():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_phaseout_oil_for_electricity"},
 )
 def phaseout_oil_for_electricity():
     """
@@ -909,6 +1051,10 @@ _ext_constant_phaseout_oil_for_electricity = ExtConstant(
     subscripts=["primary sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "perception_in_primary_sources_scarcity": 1,
+        "energy_scarcity_forgetting_time": 1,
+    },
 )
 def reduction_in_perception_ps_scarcity():
     """
@@ -922,6 +1068,10 @@ def reduction_in_perception_ps_scarcity():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_efficiency_gas_power_plants": 2,
+        "efficiency_gas_for_electricity": 1,
+    },
 )
 def remaining_efficiency_improv_gas_for_electricity():
     """
@@ -938,6 +1088,7 @@ def remaining_efficiency_improv_gas_for_electricity():
     subscripts=["primary sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_primary_sources": 1},
 )
 def scarcity_primary_sources():
     """
@@ -951,6 +1102,7 @@ def scarcity_primary_sources():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_gascoal_gas_for_elec": 1},
 )
 def share_coal_for_elec():
     """
@@ -964,6 +1116,12 @@ def share_coal_for_elec():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "switch_scarcityps_elec_substit": 1,
+        "hist_share_gascoal_gas_elec": 2,
+        "time": 1,
+        "future_share_gascoalgas_for_elec": 1,
+    },
 )
 def share_gascoal_gas_for_elec():
     """
@@ -985,6 +1143,7 @@ def share_gascoal_gas_for_elec():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_gascoalgas_for_elec_in_2014"},
 )
 def share_gascoalgas_for_elec_in_2014():
     """
@@ -1009,6 +1168,7 @@ _ext_constant_share_gascoalgas_for_elec_in_2014 = ExtConstant(
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_in_target_year_oil_for_elec"},
 )
 def share_in_target_year_oil_for_elec():
     """
@@ -1033,6 +1193,15 @@ _ext_constant_share_in_target_year_oil_for_elec = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "switch_scarcityps_elec_substit": 1,
+        "hist_share_oilff_elec": 3,
+        "start_year_policy_phaseout_oil_for_elec": 1,
+        "future_share_oilff_for_elec": 1,
+        "phaseout_oil_for_electricity": 1,
+        "p_share_oil_for_elec": 1,
+        "time": 2,
+    },
 )
 def share_oil_for_elec():
     """
@@ -1062,6 +1231,7 @@ def share_oil_for_elec():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_oilff_for_elec_in_2015"},
 )
 def share_oilff_for_elec_in_2015():
     """
@@ -1086,6 +1256,9 @@ _ext_constant_share_oilff_for_elec_in_2015 = ExtConstant(
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_start_year_policy_phaseout_oil_for_elec"
+    },
 )
 def start_year_policy_phaseout_oil_for_elec():
     """
@@ -1123,6 +1296,9 @@ def switch_scarcityps_elec_substit():
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_target_year_policy_phaseout_oil_for_elec"
+    },
 )
 def target_year_policy_phaseout_oil_for_elec():
     """
@@ -1147,6 +1323,16 @@ _ext_constant_target_year_policy_phaseout_oil_for_elec = ExtConstant(
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pe_demand_gas_elec_plants_ej": 1,
+        "efficiency_gas_for_electricity": 1,
+        "efficiency_coal_for_electricity": 1,
+        "pe_demand_coal_elec_plants_ej": 1,
+        "efficiency_liquids_for_electricity": 1,
+        "pe_demand_oil_elec_plants_ej": 1,
+        "pe_losses_uranium_for_elec_ej": 1,
+        "pe_losses_bioe_for_elec_ej": 1,
+    },
 )
 def total_gen_losses_demand_for_elec_plants_ej():
     """

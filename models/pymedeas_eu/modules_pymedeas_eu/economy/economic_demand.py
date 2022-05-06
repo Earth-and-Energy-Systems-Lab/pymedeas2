@@ -1,6 +1,6 @@
 """
 Module economic_demand
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,7 @@ Translated using PySD version 3.0.0
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"demand_by_sector_fd_eu": 1, "diff_demand_eu": 1},
 )
 def demand_by_sector_fd_adjusted():
     """
@@ -24,6 +25,16 @@ def demand_by_sector_fd_adjusted():
     subscripts=["sectors"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_demand_by_sector_fd_eu": 1},
+    other_deps={
+        "_integ_demand_by_sector_fd_eu": {
+            "initial": {"initial_demand": 1},
+            "step": {
+                "variation_demand_flow_fd_eu": 1,
+                "demand_not_covered_by_sector_fd_eu": 1,
+            },
+        }
+    },
 )
 def demand_by_sector_fd_eu():
     """
@@ -45,6 +56,11 @@ _integ_demand_by_sector_fd_eu = Integ(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "demand_by_sector_fd_eu": 1,
+        "real_final_demand_by_sector_eu": 1,
+    },
 )
 def demand_not_covered_by_sector_fd_eu():
     """
@@ -62,6 +78,7 @@ def demand_not_covered_by_sector_fd_eu():
     units="Mdollars/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"demand_not_covered_by_sector_fd_eu": 1},
 )
 def demand_not_covered_total_fd():
     return sum(
@@ -71,7 +88,16 @@ def demand_not_covered_total_fd():
 
 
 @component.add(
-    name="diff demand EU", units="Dmnl", comp_type="Auxiliary", comp_subtype="Normal"
+    name="diff demand EU",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "total_demand": 1,
+        "desired_annual_total_demand_growth_rate_delayed_1_yr": 1,
+        "real_demand_delayed_1yr": 1,
+    },
 )
 def diff_demand_eu():
     """
@@ -94,6 +120,10 @@ def diff_demand_eu():
     subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_change_in_inventories",
+        "__lookup__": "_ext_lookup_historic_change_in_inventories",
+    },
 )
 def historic_change_in_inventories(x, final_subs=None):
     """
@@ -120,6 +150,14 @@ _ext_lookup_historic_change_in_inventories = ExtLookup(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 5,
+        "historic_gfcf": 1,
+        "historic_hd": 1,
+        "historic_goverment_expenditures": 1,
+        "historic_change_in_inventories": 1,
+        "historic_exports_demand": 1,
+    },
 )
 def historic_demand():
     """
@@ -139,6 +177,14 @@ def historic_demand():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 5,
+        "historic_gfcf": 1,
+        "historic_hd": 1,
+        "historic_goverment_expenditures": 1,
+        "historic_change_in_inventories": 1,
+        "historic_exports_demand": 1,
+    },
 )
 def historic_demand_next_year():
     """
@@ -159,6 +205,10 @@ def historic_demand_next_year():
     subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_goverment_expenditures",
+        "__lookup__": "_ext_lookup_historic_goverment_expenditures",
+    },
 )
 def historic_goverment_expenditures(x, final_subs=None):
     """
@@ -185,6 +235,7 @@ _ext_lookup_historic_goverment_expenditures = ExtLookup(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_demand_next_year": 1, "historic_demand": 1},
 )
 def historic_variation_demand():
     """
@@ -199,6 +250,10 @@ def historic_variation_demand():
     subscripts=["sectors"],
     comp_type="Stateful",
     comp_subtype="Initial",
+    depends_on={"_initial_initial_demand": 1},
+    other_deps={
+        "_initial_initial_demand": {"initial": {"historic_demand": 1}, "step": {}}
+    },
 )
 def initial_demand():
     return _initial_initial_demand()
@@ -212,6 +267,11 @@ _initial_initial_demand = Initial(lambda: historic_demand(), "_initial_initial_d
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_final_demand_by_sector_eu": 1,
+        "share_consum_goverment_and_inventories": 1,
+        "share_exp_vs_gfcfhdexp": 1,
+    },
 )
 def real_exports_demand_by_sector():
     """
@@ -230,6 +290,11 @@ def real_exports_demand_by_sector():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_final_demand_by_sector_eu": 1,
+        "share_consum_goverment_and_inventories": 1,
+        "share_gfcf_vs_gfcfhdexp": 1,
+    },
 )
 def real_gfcf_by_sector():
     """
@@ -248,6 +313,12 @@ def real_gfcf_by_sector():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_final_demand_by_sector_eu": 1,
+        "share_consum_goverment_and_inventories": 1,
+        "share_gfcf_vs_gfcfhdexp": 1,
+        "share_exp_vs_gfcfhdexp": 1,
+    },
 )
 def real_household_demand_by_sector():
     """
@@ -266,6 +337,12 @@ def real_household_demand_by_sector():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "historic_goverment_expenditures": 1,
+        "historic_change_in_inventories": 1,
+        "historic_demand": 1,
+    },
 )
 def share_consum_goverment_and_inventories():
     """
@@ -281,6 +358,11 @@ def share_consum_goverment_and_inventories():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "exports_demand": 2,
+        "gross_fixed_capital_formation": 1,
+        "household_demand": 1,
+    },
 )
 def share_exp_vs_gfcfhdexp():
     """
@@ -297,6 +379,11 @@ def share_exp_vs_gfcfhdexp():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "gross_fixed_capital_formation": 2,
+        "exports_demand": 1,
+        "household_demand": 1,
+    },
 )
 def share_gfcf_vs_gfcfhdexp():
     """
@@ -308,7 +395,11 @@ def share_gfcf_vs_gfcfhdexp():
 
 
 @component.add(
-    name="total demand", units="Tdollars", comp_type="Auxiliary", comp_subtype="Normal"
+    name="total demand",
+    units="Tdollars",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"demand_by_sector_fd_eu": 1},
 )
 def total_demand():
     """
@@ -325,6 +416,7 @@ def total_demand():
     units="Tdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"demand_by_sector_fd_adjusted": 1},
 )
 def total_demand_adjusted():
     """
@@ -345,6 +437,14 @@ def total_demand_adjusted():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "historic_variation_demand": 1,
+        "share_consum_goverment_and_inventories": 1,
+        "variation_exports_demand": 1,
+        "variation_gfcf": 1,
+        "variation_household_demand": 1,
+    },
 )
 def variation_demand_flow_fd_eu():
     """

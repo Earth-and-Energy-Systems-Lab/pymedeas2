@@ -1,6 +1,6 @@
 """
 Module imports_and_exports
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,7 @@ Translated using PySD version 3.0.0
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 1, "historic_demand_row": 1, "real_demand_by_sector_row": 1},
 )
 def demand_by_sector_row():
     return if_then_else(
@@ -25,6 +26,7 @@ def demand_by_sector_row():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"leontief_matrix_exports": 1, "demand_by_sector_row": 1},
 )
 def domestic_output_required_for_exports_by_sector():
     """
@@ -32,17 +34,7 @@ def domestic_output_required_for_exports_by_sector():
     """
     return sum(
         leontief_matrix_exports().rename({"sectors1": "sectors1!"})
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "sectors": _subscript_dict["sectors"],
-                    "sectors1!": _subscript_dict["sectors1"],
-                },
-                ["sectors", "sectors1!"],
-            )
-            + demand_by_sector_row().rename({"sectors": "sectors1!"})
-        ),
+        * demand_by_sector_row().rename({"sectors": "sectors1!"}),
         dim=["sectors1!"],
     )
 
@@ -53,6 +45,11 @@ def domestic_output_required_for_exports_by_sector():
     subscripts=["sectors"],
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_demand_row",
+        "__data__": "_ext_data_historic_demand_row",
+        "time": 1,
+    },
 )
 def historic_demand_row():
     """
@@ -80,6 +77,7 @@ _ext_data_historic_demand_row = ExtData(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ic_exports_eu_matrix": 1},
 )
 def ic_exports_eu():
     """
@@ -96,21 +94,14 @@ def ic_exports_eu():
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ia_matrix_exports": 1, "real_total_output_by_sector_row": 1},
 )
 def ic_exports_eu_matrix():
     """
     Intermediate products exports by sector
     """
-    return -ia_matrix_exports() * (
-        xr.DataArray(
-            0,
-            {
-                "sectors": _subscript_dict["sectors"],
-                "sectors1": _subscript_dict["sectors1"],
-            },
-            ["sectors", "sectors1"],
-        )
-        + real_total_output_by_sector_row().rename({"sectors": "sectors1"})
+    return -ia_matrix_exports() * real_total_output_by_sector_row().rename(
+        {"sectors": "sectors1"}
     )
 
 
@@ -120,6 +111,7 @@ def ic_exports_eu_matrix():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ic_imports_eu_matrix": 1},
 )
 def ic_imports_eu():
     """
@@ -137,21 +129,14 @@ def ic_imports_eu():
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ia_matrix_imports": 1, "real_total_output_by_sector_eu": 1},
 )
 def ic_imports_eu_matrix():
     """
     Intermediate products imports by sector
     """
-    return -ia_matrix_imports() * (
-        xr.DataArray(
-            0,
-            {
-                "sectors": _subscript_dict["sectors"],
-                "sectors1": _subscript_dict["sectors1"],
-            },
-            ["sectors", "sectors1"],
-        )
-        + real_total_output_by_sector_eu().rename({"sectors": "sectors1"})
+    return -ia_matrix_imports() * real_total_output_by_sector_eu().rename(
+        {"sectors": "sectors1"}
     )
 
 
@@ -161,6 +146,10 @@ def ic_imports_eu_matrix():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_demand_by_sector_world": 1,
+        "real_demand_by_sector_delayed_eu": 1,
+    },
 )
 def real_demand_by_sector_row():
     return real_demand_by_sector_world() - real_demand_by_sector_delayed_eu()
@@ -172,6 +161,7 @@ def real_demand_by_sector_row():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ia_matrix_exports": 1, "real_total_output_by_sector_row": 1},
 )
 def real_final_demand_of_exports():
     """
@@ -179,17 +169,7 @@ def real_final_demand_of_exports():
     """
     return sum(
         ia_matrix_exports().rename({"sectors1": "sectors1!"})
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "sectors": _subscript_dict["sectors"],
-                    "sectors1!": _subscript_dict["sectors1"],
-                },
-                ["sectors", "sectors1!"],
-            )
-            + real_total_output_by_sector_row().rename({"sectors": "sectors1!"})
-        ),
+        * real_total_output_by_sector_row().rename({"sectors": "sectors1!"}),
         dim=["sectors1!"],
     )
 
@@ -200,6 +180,10 @@ def real_final_demand_of_exports():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_total_output_by_sector_world": 1,
+        "real_total_output_by_sector_eu": 1,
+    },
 )
 def real_total_output_by_sector_row():
     """
@@ -214,6 +198,7 @@ def real_total_output_by_sector_row():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"domestic_output_required_for_exports_by_sector": 1},
 )
 def total_domestic_output_required_for_exports_by_sector():
     """

@@ -1,11 +1,14 @@
 """
 Module final_energy_footprint
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="Coverage energy rate", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Coverage energy rate",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"total_final_energy_footprint": 1, "real_tfec": 1},
 )
 def coverage_energy_rate():
     """
@@ -20,6 +23,10 @@ def coverage_energy_rate():
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "energy_embedded_in_aut_imports_from_roeu_by_sector_and_fuel": 1,
+        "enery_embedded_in_aut_imports_from_row_by_sector_and_fuel": 1,
+    },
 )
 def energy_embedded_in_aut_imports_by_sector_and_fuel():
     """
@@ -36,21 +43,16 @@ def energy_embedded_in_aut_imports_by_sector_and_fuel():
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "final_energy_intensity_by_sector_and_fuel_row_0": 1,
+        "roeu_output_required_for_aut_imports_by_sector": 1,
+        "m_per_t": 1,
+    },
 )
 def energy_embedded_in_aut_imports_from_roeu_by_sector_and_fuel():
     return (
         final_energy_intensity_by_sector_and_fuel_row_0()
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "final sources": _subscript_dict["final sources"],
-                    "sectors": _subscript_dict["sectors"],
-                },
-                ["final sources", "sectors"],
-            )
-            + roeu_output_required_for_aut_imports_by_sector()
-        )
+        * roeu_output_required_for_aut_imports_by_sector()
         / m_per_t()
     )
 
@@ -61,6 +63,11 @@ def energy_embedded_in_aut_imports_from_roeu_by_sector_and_fuel():
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "final_energy_intensity_by_sector_and_fuel_eu": 1,
+        "required_total_output_for_exports": 1,
+        "m_per_t": 1,
+    },
 )
 def energy_embedded_in_eu_exports_by_sector_and_fuel():
     """
@@ -68,17 +75,7 @@ def energy_embedded_in_eu_exports_by_sector_and_fuel():
     """
     return (
         final_energy_intensity_by_sector_and_fuel_eu()
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "final sources": _subscript_dict["final sources"],
-                    "sectors": _subscript_dict["sectors"],
-                },
-                ["final sources", "sectors"],
-            )
-            + required_total_output_for_exports()
-        )
+        * required_total_output_for_exports()
         / m_per_t()
     )
 
@@ -88,21 +85,16 @@ def energy_embedded_in_eu_exports_by_sector_and_fuel():
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "final_energy_intensity_by_sector_and_fuel_row": 1,
+        "row_output_required_for_aut_imports_by_sector": 1,
+        "m_per_t": 1,
+    },
 )
 def enery_embedded_in_aut_imports_from_row_by_sector_and_fuel():
     return (
         final_energy_intensity_by_sector_and_fuel_row()
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "final sources": _subscript_dict["final sources"],
-                    "sectors": _subscript_dict["sectors"],
-                },
-                ["final sources", "sectors"],
-            )
-            + row_output_required_for_aut_imports_by_sector()
-        )
+        * row_output_required_for_aut_imports_by_sector()
         / m_per_t()
     )
 
@@ -113,6 +105,12 @@ def enery_embedded_in_aut_imports_from_row_by_sector_and_fuel():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "households_final_energy_demand": 1,
+        "required_fed_sectors_by_fuel": 1,
+        "total_energy_embedded_in_eu28_imports": 1,
+        "total_energy_embedded_in_eu28_exports": 1,
+    },
 )
 def final_energy_footprint_by_fuel():
     """
@@ -132,6 +130,10 @@ def final_energy_footprint_by_fuel():
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_final_energy_by_sector_and_fuel_row": 1,
+        "real_total_output_by_sector_row": 1,
+    },
 )
 def final_energy_intensity_by_sector_and_fuel_row():
     """
@@ -139,17 +141,7 @@ def final_energy_intensity_by_sector_and_fuel_row():
     """
     return (
         real_final_energy_by_sector_and_fuel_row()
-        / (
-            xr.DataArray(
-                0,
-                {
-                    "final sources": _subscript_dict["final sources"],
-                    "sectors": _subscript_dict["sectors"],
-                },
-                ["final sources", "sectors"],
-            )
-            + real_total_output_by_sector_row()
-        )
+        / real_total_output_by_sector_row()
         * 1000000.0
     )
 
@@ -160,6 +152,10 @@ def final_energy_intensity_by_sector_and_fuel_row():
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_final_energy_by_sector_and_fuel_roeu": 1,
+        "real_total_output_by_sector_roeu": 1,
+    },
 )
 def final_energy_intensity_by_sector_and_fuel_row_0():
     """
@@ -167,17 +163,7 @@ def final_energy_intensity_by_sector_and_fuel_row_0():
     """
     return (
         real_final_energy_by_sector_and_fuel_roeu()
-        / (
-            xr.DataArray(
-                0,
-                {
-                    "final sources": _subscript_dict["final sources"],
-                    "sectors": _subscript_dict["sectors"],
-                },
-                ["final sources", "sectors"],
-            )
-            + real_total_output_by_sector_roeu()
-        )
+        / real_total_output_by_sector_roeu()
         * 1000000.0
     )
 
@@ -187,6 +173,10 @@ def final_energy_intensity_by_sector_and_fuel_row_0():
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_final_energy_by_sector_and_fuel_eu28": 1,
+        "real_final_energy_by_sector_and_fuel_aut": 1,
+    },
 )
 def real_final_energy_by_sector_and_fuel_roeu():
     """
@@ -203,6 +193,10 @@ def real_final_energy_by_sector_and_fuel_roeu():
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_final_energy_by_sector_and_fuel_world": 1,
+        "real_final_energy_by_sector_and_fuel_eu28": 1,
+    },
 )
 def real_final_energy_by_sector_and_fuel_row():
     """
@@ -220,6 +214,7 @@ def real_final_energy_by_sector_and_fuel_row():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"leontief_matrix_imports_1": 1, "real_final_demand_by_sector_aut": 1},
 )
 def roeu_output_required_for_aut_imports_by_sector():
     """
@@ -227,17 +222,7 @@ def roeu_output_required_for_aut_imports_by_sector():
     """
     return sum(
         leontief_matrix_imports_1().rename({"sectors1": "sectors1!"})
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "sectors": _subscript_dict["sectors"],
-                    "sectors1!": _subscript_dict["sectors1"],
-                },
-                ["sectors", "sectors1!"],
-            )
-            + real_final_demand_by_sector_aut().rename({"sectors": "sectors1!"})
-        ),
+        * real_final_demand_by_sector_aut().rename({"sectors": "sectors1!"}),
         dim=["sectors1!"],
     )
 
@@ -248,6 +233,7 @@ def roeu_output_required_for_aut_imports_by_sector():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"leontief_matrix_imports_0": 1, "real_final_demand_by_sector_aut": 1},
 )
 def row_output_required_for_aut_imports_by_sector():
     """
@@ -255,17 +241,7 @@ def row_output_required_for_aut_imports_by_sector():
     """
     return sum(
         leontief_matrix_imports_0().rename({"sectors1": "sectors1!"})
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "sectors": _subscript_dict["sectors"],
-                    "sectors1!": _subscript_dict["sectors1"],
-                },
-                ["sectors", "sectors1!"],
-            )
-            + real_final_demand_by_sector_aut().rename({"sectors": "sectors1!"})
-        ),
+        * real_final_demand_by_sector_aut().rename({"sectors": "sectors1!"}),
         dim=["sectors1!"],
     )
 
@@ -276,6 +252,7 @@ def row_output_required_for_aut_imports_by_sector():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"energy_embedded_in_eu_exports_by_sector_and_fuel": 1},
 )
 def total_energy_embedded_in_eu28_exports():
     """
@@ -295,6 +272,7 @@ def total_energy_embedded_in_eu28_exports():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"energy_embedded_in_aut_imports_by_sector_and_fuel": 1},
 )
 def total_energy_embedded_in_eu28_imports():
     """
@@ -313,6 +291,7 @@ def total_energy_embedded_in_eu28_imports():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"final_energy_footprint_by_fuel": 1},
 )
 def total_final_energy_footprint():
     """

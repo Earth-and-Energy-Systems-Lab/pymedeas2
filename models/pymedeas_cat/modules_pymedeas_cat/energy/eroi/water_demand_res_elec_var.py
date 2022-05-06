@@ -1,6 +1,6 @@
 """
 Module water_demand_res_elec_var
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,46 +10,25 @@ Translated using PySD version 3.0.0
     subscripts=["RES elec", "water0"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "res_elec_capacity_under_construction_tw": 1,
+        "water_for_om_res_elec": 1,
+        "energy_requirements_per_unit_of_water_consumption": 1,
+        "lifetime_res_elec": 1,
+        "m_per_t": 1,
+        "kg_per_mt": 2,
+        "mj_per_ej": 1,
+    },
 )
 def ced_om_over_lifetime_per_water_res_elec_var():
     """
     Cumulative energy demand per water type for O&M of RES variables per technology over all the lifetime of the infrastructure.
     """
     return (
-        (
-            xr.DataArray(
-                0,
-                {
-                    "RES elec": _subscript_dict["RES elec"],
-                    "water0": _subscript_dict["water0"],
-                },
-                ["RES elec", "water0"],
-            )
-            + res_elec_capacity_under_construction_tw()
-        )
+        res_elec_capacity_under_construction_tw()
         * water_for_om_res_elec()
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "RES elec": _subscript_dict["RES elec"],
-                    "water0": _subscript_dict["water0"],
-                },
-                ["RES elec", "water0"],
-            )
-            + energy_requirements_per_unit_of_water_consumption()
-        )
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "RES elec": _subscript_dict["RES elec"],
-                    "water0": _subscript_dict["water0"],
-                },
-                ["RES elec", "water0"],
-            )
-            + lifetime_res_elec()
-        )
+        * energy_requirements_per_unit_of_water_consumption()
+        * lifetime_res_elec()
         * (m_per_t() / kg_per_mt())
         * (kg_per_mt() / mj_per_ej())
     )
@@ -61,45 +40,23 @@ def ced_om_over_lifetime_per_water_res_elec_var():
     subscripts=["RES elec", "water0"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "energy_requirements_per_unit_of_water_consumption": 1,
+        "water_for_om_required_for_res_elec": 1,
+        "kg_per_mt": 1,
+        "mj_per_ej": 1,
+    },
 )
 def energy_requirements_for_om_for_water_consumption_res_elec():
     """
     Energy requirements for operation and maintenance of water consumption by RES technology for generating electricity.
     """
     return (
-        xr.DataArray(
-            0,
-            {
-                "RES elec": _subscript_dict["RES elec"],
-                "water0": _subscript_dict["water0"],
-            },
-            ["RES elec", "water0"],
-        )
-        + (
-            xr.DataArray(
-                0,
-                {
-                    "water0": _subscript_dict["water0"],
-                    "RES elec": _subscript_dict["RES elec"],
-                },
-                ["water0", "RES elec"],
-            )
-            + energy_requirements_per_unit_of_water_consumption()
-        )
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "water0": _subscript_dict["water0"],
-                    "RES elec": _subscript_dict["RES elec"],
-                },
-                ["water0", "RES elec"],
-            )
-            + water_for_om_required_for_res_elec()
-        )
+        energy_requirements_per_unit_of_water_consumption()
+        * water_for_om_required_for_res_elec().transpose("water0", "RES elec")
         * kg_per_mt()
         / mj_per_ej()
-    )
+    ).transpose("RES elec", "water0")
 
 
 @component.add(
@@ -108,6 +65,9 @@ def energy_requirements_for_om_for_water_consumption_res_elec():
     subscripts=["water0"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_energy_requirements_per_unit_of_water_consumption"
+    },
 )
 def energy_requirements_per_unit_of_water_consumption():
     """
@@ -133,6 +93,7 @@ _ext_constant_energy_requirements_per_unit_of_water_consumption = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"energy_requirements_for_om_for_water_consumption_res_elec": 1},
 )
 def total_energy_requirements_om_for_water_consumption_res_elec():
     """
@@ -152,6 +113,7 @@ def total_energy_requirements_om_for_water_consumption_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"water_for_om_required_for_res_elec": 1},
 )
 def total_water_for_om_required_by_res_elec_per_techn():
     """
@@ -167,8 +129,9 @@ def total_water_for_om_required_by_res_elec_per_techn():
     name='"Total water for O&M required by RES elec"',
     units="Mt",
     subscripts=["water"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_water_for_om_required_by_res_elec_per_techn": 1},
 )
 def total_water_for_om_required_by_res_elec():
     value = xr.DataArray(np.nan, {"water": _subscript_dict["water"]}, ["water"])
@@ -189,6 +152,7 @@ def total_water_for_om_required_by_res_elec():
     subscripts=["RES elec", "water0"],
     comp_type="Constant",
     comp_subtype="External, Normal",
+    depends_on={"__external__": "_ext_constant_water_for_om_res_elec"},
 )
 def water_for_om_res_elec():
     value = xr.DataArray(
@@ -226,23 +190,19 @@ _ext_constant_water_for_om_res_elec = ExtConstant(
     subscripts=["RES elec", "water0"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_res_elec_tw": 1,
+        "water_for_om_res_elec": 1,
+        "m_per_t": 1,
+        "kg_per_mt": 1,
+    },
 )
 def water_for_om_required_for_res_elec():
     """
     Annual water required for the operation and maintenance of the capacity of RES for electricity in operation by technology.
     """
     return (
-        (
-            xr.DataArray(
-                0,
-                {
-                    "RES elec": _subscript_dict["RES elec"],
-                    "water0": _subscript_dict["water0"],
-                },
-                ["RES elec", "water0"],
-            )
-            + installed_capacity_res_elec_tw()
-        )
+        installed_capacity_res_elec_tw()
         * water_for_om_res_elec()
         * m_per_t()
         / kg_per_mt()

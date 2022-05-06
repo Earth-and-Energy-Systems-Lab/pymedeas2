@@ -1,7 +1,28 @@
 """
 Module total_outputs_from_demand
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
+
+
+@component.add(
+    name="required FED sectors by fuel",
+    units="EJ",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "required_final_energy_by_sector_and_fuel": 1,
+        "cc_impacts_feedback_shortage_coeff": 1,
+    },
+)
+def required_fed_sectors_by_fuel():
+    return (
+        sum(
+            required_final_energy_by_sector_and_fuel().rename({"sectors": "sectors!"}),
+            dim=["sectors!"],
+        )
+        * cc_impacts_feedback_shortage_coeff()
+    )
 
 
 @component.add(
@@ -22,6 +43,7 @@ def activate_energy_scarcity_feedback():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"gdp": 1, "gdp_delayed_1yr": 1},
 )
 def annual_gdp_growth_rate():
     """
@@ -35,12 +57,13 @@ def annual_gdp_growth_rate():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_e_losses_cc": 1},
 )
 def cc_impacts_feedback_shortage_coeff():
     """
     This coefficient adapts the real final energy by fuel to be used by economic sectors taking into account climate change impacts.
     """
-    return 1 - share_e_losses_cc()
+    return 1 + share_e_losses_cc()
 
 
 @component.add(
@@ -49,6 +72,7 @@ def cc_impacts_feedback_shortage_coeff():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"demand_by_sector_fd_adjusted": 1},
 )
 def demand_by_sector():
     return demand_by_sector_fd_adjusted()
@@ -73,6 +97,11 @@ def dollars_to_tdollars():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "activate_energy_scarcity_feedback": 1,
+        "required_fed_by_fuel_before_heat_correction": 1,
+        "real_fe_consumption_by_fuel_before_heat_correction": 1,
+    },
 )
 def energy_scarcity_feedback_shortage_coeff():
     """
@@ -99,25 +128,24 @@ def energy_scarcity_feedback_shortage_coeff():
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"evol_final_energy_intensity_by_sector_and_fuel": 1},
 )
 def final_energy_intensity_by_sector_and_fuel():
     """
     Evolution of final energy intensity by sector and fuel. (1+("Activate EROI tot FC feedback through intensities?"*EROI FC tot from 2015*1-1)): to test method of EROI feedback through the variation of energy intensities. "EROI FC tot from 2015*1", ese "*1" si aumento el factor a por ejemplo 2 entonces se ve el efecto de que se reduce el GDP progresivamente.
     """
-    return (
-        xr.DataArray(
-            0,
-            {
-                "final sources": _subscript_dict["final sources"],
-                "sectors": _subscript_dict["sectors"],
-            },
-            ["final sources", "sectors"],
-        )
-        + evol_final_energy_intensity_by_sector_and_fuel()
+    return evol_final_energy_intensity_by_sector_and_fuel().transpose(
+        "final sources", "sectors"
     )
 
 
-@component.add(name="GDP", units="T$", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="GDP",
+    units="T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"real_demand": 1},
+)
 def gdp():
     """
     Global GDP in T1995T$.
@@ -130,6 +158,8 @@ def gdp():
     units="Tdollars/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_gdp_delayed_1yr": 1},
+    other_deps={"_delayfixed_gdp_delayed_1yr": {"initial": {}, "step": {"gdp": 1}}},
 )
 def gdp_delayed_1yr():
     """
@@ -144,7 +174,11 @@ _delayfixed_gdp_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="GDPpc", units="$/people", comp_type="Auxiliary", comp_subtype="Normal"
+    name="GDPpc",
+    units="$/people",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"gdp": 1, "dollars_to_tdollars": 1, "population": 1},
 )
 def gdppc():
     """
@@ -154,7 +188,11 @@ def gdppc():
 
 
 @component.add(
-    name="Real demand", units="Mdollars", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Real demand",
+    units="Mdollars",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"real_demand_by_sector": 1},
 )
 def real_demand():
     """
@@ -171,6 +209,7 @@ def real_demand():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ia_matrix": 1, "real_total_output_by_sector": 1},
 )
 def real_demand_by_sector():
     """
@@ -180,17 +219,7 @@ def real_demand_by_sector():
         0,
         sum(
             ia_matrix().rename({"sectors1": "sectors1!"})
-            * (
-                xr.DataArray(
-                    0,
-                    {
-                        "sectors": _subscript_dict["sectors"],
-                        "sectors1!": _subscript_dict["sectors1"],
-                    },
-                    ["sectors", "sectors1!"],
-                )
-                + real_total_output_by_sector().rename({"sectors": "sectors1!"})
-            ),
+            * real_total_output_by_sector().rename({"sectors": "sectors1!"}),
             dim=["sectors1!"],
         ),
     )
@@ -202,6 +231,13 @@ def real_demand_by_sector():
     subscripts=["sectors"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_real_demand_by_sector_delayed": 1},
+    other_deps={
+        "_delayfixed_real_demand_by_sector_delayed": {
+            "initial": {},
+            "step": {"real_demand_by_sector": 1},
+        }
+    },
 )
 def real_demand_by_sector_delayed():
     return _delayfixed_real_demand_by_sector_delayed()
@@ -222,6 +258,27 @@ _delayfixed_real_demand_by_sector_delayed = DelayFixed(
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_fe_elec_consumption_twh": 1,
+        "ej_per_twh": 1,
+        "total_fe_heat_generation_ej": 1,
+        "share_heat_distribution_losses": 1,
+        "share_gases_for_final_energy": 1,
+        "ped_nat_gas_for_gtl_ej": 1,
+        "pes_gases": 1,
+        "other_gases_required": 1,
+        "pes_liquids_ej": 1,
+        "other_liquids_required_ej": 1,
+        "share_liquids_for_final_energy": 1,
+        "ped_coal_for_ctl_ej": 1,
+        "share_solids_for_final_energy": 1,
+        "extraction_coal_ej": 1,
+        "losses_in_charcoal_plants_ej": 1,
+        "pes_waste_for_tfc": 1,
+        "pes_peat_ej": 1,
+        "other_solids_required": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
+    },
 )
 def real_fe_consumption_by_fuel():
     """
@@ -260,6 +317,11 @@ def real_fe_consumption_by_fuel():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_fe_consumption_by_fuel": 5,
+        "ratio_fed_for_heatnc_vs_fed_for_heatcom": 1,
+        "share_feh_over_fed_by_final_fuel": 3,
+    },
 )
 def real_fe_consumption_by_fuel_before_heat_correction():
     value = xr.DataArray(
@@ -287,6 +349,10 @@ def real_fe_consumption_by_fuel_before_heat_correction():
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "required_final_energy_by_sector_and_fuel": 1,
+        "energy_scarcity_feedback_shortage_coeff": 1,
+    },
 )
 def real_final_energy_by_sector_and_fuel():
     """
@@ -294,23 +360,16 @@ def real_final_energy_by_sector_and_fuel():
     """
     return (
         required_final_energy_by_sector_and_fuel()
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "final sources": _subscript_dict["final sources"],
-                    "sectors": _subscript_dict["sectors"],
-                },
-                ["final sources", "sectors"],
-            )
-            + energy_scarcity_feedback_shortage_coeff()
-        )
-        * cc_impacts_feedback_shortage_coeff()
+        * energy_scarcity_feedback_shortage_coeff()
     )
 
 
 @component.add(
-    name="Real TFEC", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Real TFEC",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"real_fe_consumption_by_fuel": 1},
 )
 def real_tfec():
     """
@@ -327,6 +386,7 @@ def real_tfec():
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_total_output_by_sector": 1},
 )
 def real_total_output():
     """
@@ -343,6 +403,11 @@ def real_total_output():
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_final_energy_by_sector_and_fuel": 1,
+        "final_energy_intensity_by_sector_and_fuel": 1,
+        "required_total_output_by_sector": 1,
+    },
 )
 def real_total_output_by_fuel_and_sector():
     """
@@ -352,16 +417,8 @@ def real_total_output_by_fuel_and_sector():
         xidz(
             real_final_energy_by_sector_and_fuel(),
             final_energy_intensity_by_sector_and_fuel(),
-            (
-                xr.DataArray(
-                    0,
-                    {
-                        "final sources": _subscript_dict["final sources"],
-                        "sectors": _subscript_dict["sectors"],
-                    },
-                    ["final sources", "sectors"],
-                )
-                + required_total_output_by_sector() / 1000000.0
+            (required_total_output_by_sector() / 1000000.0).expand_dims(
+                {"final sources": _subscript_dict["final sources"]}, 0
             ),
         )
         * 1000000.0
@@ -374,6 +431,7 @@ def real_total_output_by_fuel_and_sector():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"real_total_output_by_fuel_and_sector": 1},
 )
 def real_total_output_by_sector():
     """
@@ -393,6 +451,11 @@ def real_total_output_by_sector():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "required_fed_by_fuel_before_heat_correction": 5,
+        "ratio_fed_for_heatnc_vs_fed_for_heatcom": 1,
+        "share_feh_over_fed_by_final_fuel": 3,
+    },
 )
 def required_fed_by_fuel():
     """
@@ -425,6 +488,7 @@ def required_fed_by_fuel():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"required_fed_sectors_by_fuel": 1, "households_final_energy_demand": 1},
 )
 def required_fed_by_fuel_before_heat_correction():
     """
@@ -434,63 +498,27 @@ def required_fed_by_fuel_before_heat_correction():
 
 
 @component.add(
-    name="required FED sectors by fuel",
-    units="EJ",
-    subscripts=["final sources"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-)
-def required_fed_sectors_by_fuel():
-    return sum(
-        required_final_energy_by_sector_and_fuel().rename({"sectors": "sectors!"}),
-        dim=["sectors!"],
-    )
-
-
-@component.add(
     name="Required final energy by sector and fuel",
     units="EJ",
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "required_total_output_by_sector": 1,
+        "final_energy_intensity_by_sector_and_fuel": 1,
+    },
 )
 def required_final_energy_by_sector_and_fuel():
     """
     Required final energy by sector and fuel (35 WIOD sectors & 5 final sources).
     """
     return (
-        xr.DataArray(
-            0,
-            {
-                "final sources": _subscript_dict["final sources"],
-                "sectors": _subscript_dict["sectors"],
-            },
-            ["final sources", "sectors"],
-        )
-        + (
-            xr.DataArray(
-                0,
-                {
-                    "sectors": _subscript_dict["sectors"],
-                    "final sources": _subscript_dict["final sources"],
-                },
-                ["sectors", "final sources"],
-            )
-            + required_total_output_by_sector()
-        )
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "sectors": _subscript_dict["sectors"],
-                    "final sources": _subscript_dict["final sources"],
-                },
-                ["sectors", "final sources"],
-            )
-            + final_energy_intensity_by_sector_and_fuel()
+        required_total_output_by_sector()
+        * final_energy_intensity_by_sector_and_fuel().transpose(
+            "sectors", "final sources"
         )
         / 1000000.0
-    )
+    ).transpose("final sources", "sectors")
 
 
 @component.add(
@@ -499,6 +527,7 @@ def required_final_energy_by_sector_and_fuel():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"leontief_matrix": 1, "demand_by_sector": 1},
 )
 def required_total_output_by_sector():
     """
@@ -506,23 +535,17 @@ def required_total_output_by_sector():
     """
     return sum(
         leontief_matrix().rename({"sectors1": "sectors1!"})
-        * (
-            xr.DataArray(
-                0,
-                {
-                    "sectors": _subscript_dict["sectors"],
-                    "sectors1!": _subscript_dict["sectors1"],
-                },
-                ["sectors", "sectors1!"],
-            )
-            + demand_by_sector().rename({"sectors": "sectors1!"})
-        ),
+        * demand_by_sector().rename({"sectors": "sectors1!"}),
         dim=["sectors1!"],
     )
 
 
 @component.add(
-    name="TFEI sectors", units="EJ/T$", comp_type="Auxiliary", comp_subtype="Normal"
+    name="TFEI sectors",
+    units="EJ/T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"final_energy_intensity_by_sector_and_fuel": 1},
 )
 def tfei_sectors():
     """

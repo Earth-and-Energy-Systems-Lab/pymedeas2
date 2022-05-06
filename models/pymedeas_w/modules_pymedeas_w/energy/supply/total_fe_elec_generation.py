@@ -1,6 +1,6 @@
 """
 Module total_fe_elec_generation
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_fe_elec_generation_twh": 2, "total_fe_elec_demand_twh": 3},
 )
 def abundance_electricity():
     """
@@ -30,6 +31,10 @@ def abundance_electricity():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_tot_generation_all_res_elec_twh": 1,
+        "fe_tot_generation_all_res_elec_twh_delayed_1yr": 1,
+    },
 )
 def annual_growth_rate_electricity_generation_res_elec_tot():
     """
@@ -47,6 +52,12 @@ def annual_growth_rate_electricity_generation_res_elec_tot():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extraction_coal_ej": 1,
+        "efficiency_coal_for_electricity": 1,
+        "share_coal_dem_for_elec": 1,
+        "ej_per_twh": 1,
+    },
 )
 def fe_elec_generation_from_coal_twh():
     """
@@ -65,6 +76,12 @@ def fe_elec_generation_from_coal_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_extraction_conv_gas_ej": 1,
+        "share_nat_gas_dem_for_elec": 1,
+        "efficiency_gas_for_electricity": 1,
+        "ej_per_twh": 1,
+    },
 )
 def fe_elec_generation_from_conv_gas_twh():
     """
@@ -83,6 +100,13 @@ def fe_elec_generation_from_conv_gas_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_elec_generation_from_coal_twh": 1,
+        "fe_elec_generation_from_conv_gas_twh": 1,
+        "fe_elec_generation_from_unconv_gas_twh": 1,
+        "fe_elec_generation_from_total_oil_twh": 1,
+        "fes_elec_fossil_fuel_chp_plants_twh": 1,
+    },
 )
 def fe_elec_generation_from_fossil_fuels_twh():
     """
@@ -102,6 +126,10 @@ def fe_elec_generation_from_fossil_fuels_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_elec_generation_from_fossil_fuels_twh": 1,
+        "fe_nuclear_elec_generation_twh": 1,
+    },
 )
 def fe_elec_generation_from_nre_twh():
     """
@@ -115,6 +143,12 @@ def fe_elec_generation_from_nre_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_oil_ej": 1,
+        "share_oil_dem_for_elec": 1,
+        "efficiency_liquids_for_electricity": 1,
+        "ej_per_twh": 1,
+    },
 )
 def fe_elec_generation_from_total_oil_twh():
     """
@@ -133,6 +167,12 @@ def fe_elec_generation_from_total_oil_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "real_extraction_unconv_gas_ej": 1,
+        "share_nat_gas_dem_for_elec": 1,
+        "efficiency_gas_for_electricity": 1,
+        "ej_per_twh": 1,
+    },
 )
 def fe_elec_generation_from_unconv_gas_twh():
     """
@@ -151,6 +191,11 @@ def fe_elec_generation_from_unconv_gas_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "extraction_uranium_ej": 1,
+        "efficiency_uranium_for_electricity": 1,
+        "ej_per_twh": 1,
+    },
 )
 def fe_nuclear_elec_generation_twh():
     """
@@ -164,6 +209,13 @@ def fe_nuclear_elec_generation_twh():
     units="Tdollars/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr": 1},
+    other_deps={
+        "_delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr": {
+            "initial": {},
+            "step": {"fe_tot_generation_all_res_elec_twh": 1},
+        }
+    },
 )
 def fe_tot_generation_all_res_elec_twh_delayed_1yr():
     """
@@ -182,7 +234,15 @@ _delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="FES elec from BioW", units="TWh", comp_type="Auxiliary", comp_subtype="Normal"
+    name="FES elec from BioW",
+    units="TWh",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "real_generation_res_elec_twh": 1,
+        "fes_elec_from_biogas_twh": 1,
+        "fes_elec_from_waste_twh": 1,
+    },
 )
 def fes_elec_from_biow():
     """
@@ -200,6 +260,10 @@ def fes_elec_from_biow():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_tot_generation_all_res_elec_twh": 1,
+        "total_fe_elec_generation_twh": 1,
+    },
 )
 def share_res_electricity_generation():
     """
@@ -213,6 +277,7 @@ def share_res_electricity_generation():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_fe_elec_generation_twh": 1, "share_transmdistr_elec_losses": 1},
 )
 def total_fe_elec_consumption_twh():
     """
@@ -226,6 +291,11 @@ def total_fe_elec_consumption_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_elec_generation_from_nre_twh": 1,
+        "fe_tot_generation_all_res_elec_twh": 1,
+        "fes_elec_from_waste_twh": 1,
+    },
 )
 def total_fe_elec_generation_twh():
     """
@@ -243,6 +313,7 @@ def total_fe_elec_generation_twh():
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"abundance_electricity": 1, "time": 1},
 )
 def year_scarcity_elec():
     """

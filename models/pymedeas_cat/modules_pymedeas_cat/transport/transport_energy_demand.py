@@ -1,6 +1,6 @@
 """
 Module transport_energy_demand
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,7 @@ Translated using PySD version 3.0.0
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"total_transport_fed_by_fuel": 1, "transport_tfed": 1},
 )
 def share_demand_by_fuel_in_transport():
     """
@@ -23,6 +24,7 @@ def share_demand_by_fuel_in_transport():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_demand_by_fuel_in_transport": 1},
 )
 def share_demand_electricity_in_transport():
     """
@@ -36,6 +38,7 @@ def share_demand_electricity_in_transport():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_demand_by_fuel_in_transport": 1},
 )
 def share_demand_gas_in_transport():
     """
@@ -49,6 +52,7 @@ def share_demand_gas_in_transport():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_demand_by_fuel_in_transport": 1},
 )
 def share_demand_heat_in_transport():
     """
@@ -62,6 +66,7 @@ def share_demand_heat_in_transport():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_demand_by_fuel_in_transport": 1},
 )
 def share_demand_liquids_in_transport():
     """
@@ -75,6 +80,7 @@ def share_demand_liquids_in_transport():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_demand_by_fuel_in_transport": 1},
 )
 def share_demand_solids_in_transport():
     """
@@ -89,6 +95,11 @@ def share_demand_solids_in_transport():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "required_final_energy_by_sector_and_fuel_aut": 1,
+        "transport_fraction": 1,
+        "transport_households_final_energy_demand": 1,
+    },
 )
 def total_transport_fed_by_fuel():
     """
@@ -99,17 +110,7 @@ def total_transport_fed_by_fuel():
             required_final_energy_by_sector_and_fuel_aut().rename(
                 {"sectors": "sectors!"}
             )
-            * (
-                xr.DataArray(
-                    0,
-                    {
-                        "final sources": _subscript_dict["final sources"],
-                        "sectors!": _subscript_dict["sectors"],
-                    },
-                    ["final sources", "sectors!"],
-                )
-                + transport_fraction().rename({"sectors": "sectors!"})
-            ),
+            * transport_fraction().rename({"sectors": "sectors!"}),
             dim=["sectors!"],
         )
         + transport_households_final_energy_demand()
@@ -122,6 +123,7 @@ def total_transport_fed_by_fuel():
     subscripts=["sectors"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_transport_fraction"},
 )
 def transport_fraction():
     return _ext_constant_transport_fraction()
@@ -139,7 +141,11 @@ _ext_constant_transport_fraction = ExtConstant(
 
 
 @component.add(
-    name="Transport TFED", units="EJ/Year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Transport TFED",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"total_transport_fed_by_fuel": 1},
 )
 def transport_tfed():
     """
@@ -156,6 +162,7 @@ def transport_tfed():
     units="EJ/Tdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"transport_tfed": 1, "gdp_aut": 1},
 )
 def transport_tfed_energy_intensity():
     return zidz(transport_tfed(), gdp_aut())

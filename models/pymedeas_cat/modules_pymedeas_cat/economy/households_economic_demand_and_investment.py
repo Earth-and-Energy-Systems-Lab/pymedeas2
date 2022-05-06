@@ -1,11 +1,15 @@
 """
 Module households_economic_demand_and_investment
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
 @component.add(
-    name="beta 1 HD", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="beta 1 HD",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_1_hd"},
 )
 def beta_1_hd():
     """
@@ -31,6 +35,7 @@ _ext_constant_beta_1_hd = ExtConstant(
     subscripts=["sectors"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_0_gfcf"},
 )
 def beta_0_gfcf():
     """
@@ -56,6 +61,7 @@ _ext_constant_beta_0_gfcf = ExtConstant(
     subscripts=["sectors"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_0_hd"},
 )
 def beta_0_hd():
     """
@@ -76,7 +82,11 @@ _ext_constant_beta_0_hd = ExtConstant(
 
 
 @component.add(
-    name="beta 1 GFCF", units="Dmnl", comp_type="Constant", comp_subtype="External"
+    name="beta 1 GFCF",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_1_gfcf"},
 )
 def beta_1_gfcf():
     """
@@ -102,6 +112,11 @@ _ext_constant_beta_1_gfcf = ExtConstant(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "real_gfcf_by_sector": 1,
+        "gross_fixed_capital_formation": 1,
+    },
 )
 def gfcf_not_covered():
     """
@@ -120,6 +135,13 @@ def gfcf_not_covered():
     subscripts=["sectors"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_gross_fixed_capital_formation": 1},
+    other_deps={
+        "_integ_gross_fixed_capital_formation": {
+            "initial": {"initial_gfcf": 1},
+            "step": {"variation_gfcf": 1, "gfcf_not_covered": 1},
+        }
+    },
 )
 def gross_fixed_capital_formation():
     """
@@ -141,6 +163,10 @@ _integ_gross_fixed_capital_formation = Integ(
     subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_gfcf",
+        "__lookup__": "_ext_lookup_historic_gfcf",
+    },
 )
 def historic_gfcf(x, final_subs=None):
     """
@@ -167,6 +193,10 @@ _ext_lookup_historic_gfcf = ExtLookup(
     subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_hd",
+        "__lookup__": "_ext_lookup_historic_hd",
+    },
 )
 def historic_hd(x, final_subs=None):
     """
@@ -193,6 +223,16 @@ _ext_lookup_historic_hd = ExtLookup(
     subscripts=["sectors"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_household_demand": 1},
+    other_deps={
+        "_integ_household_demand": {
+            "initial": {"initial_household_demand": 1},
+            "step": {
+                "variation_household_demand": 1,
+                "household_demand_not_covered": 1,
+            },
+        }
+    },
 )
 def household_demand():
     """
@@ -214,6 +254,7 @@ _integ_household_demand = Integ(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 1, "household_demand": 1, "real_household_demand_by_sector": 1},
 )
 def household_demand_not_covered():
     """
@@ -231,6 +272,7 @@ def household_demand_not_covered():
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"household_demand": 1},
 )
 def household_demand_total():
     """
@@ -245,6 +287,7 @@ def household_demand_total():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_gfcf": 1},
 )
 def initial_gfcf():
     """
@@ -258,6 +301,7 @@ def initial_gfcf():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_hd": 1},
 )
 def initial_household_demand():
     """
@@ -267,7 +311,11 @@ def initial_household_demand():
 
 
 @component.add(
-    name="Total GFCF", units="Mdollars", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Total GFCF",
+    units="Mdollars",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"gross_fixed_capital_formation": 1},
 )
 def total_gfcf():
     """
@@ -285,6 +333,15 @@ def total_gfcf():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "gross_fixed_capital_formation": 1,
+        "beta_0_gfcf": 1,
+        "variation_historic_gfcf": 1,
+        "beta_1_gfcf": 2,
+        "variation_cc": 1,
+        "time": 1,
+        "cc_total": 2,
+    },
 )
 def variation_gfcf():
     """
@@ -311,6 +368,7 @@ def variation_gfcf():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "historic_hd": 2},
 )
 def variation_historic_demand():
     """
@@ -325,6 +383,7 @@ def variation_historic_demand():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "historic_gfcf": 2},
 )
 def variation_historic_gfcf():
     """
@@ -339,6 +398,14 @@ def variation_historic_gfcf():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "variation_historic_demand": 1,
+        "beta_0_hd": 1,
+        "variation_lc": 1,
+        "lc": 2,
+        "beta_1_hd": 2,
+    },
 )
 def variation_household_demand():
     """

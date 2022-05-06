@@ -1,6 +1,6 @@
 """
 Module chp_plants
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,11 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_efficiency_elec_coal_chp_plants",
+        "__data__": "_ext_data_efficiency_elec_coal_chp_plants",
+        "time": 1,
+    },
 )
 def efficiency_elec_coal_chp_plants():
     """
@@ -35,6 +40,11 @@ _ext_data_efficiency_elec_coal_chp_plants = ExtData(
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_efficiency_elec_gas_chp_plants",
+        "__data__": "_ext_data_efficiency_elec_gas_chp_plants",
+        "time": 1,
+    },
 )
 def efficiency_elec_gas_chp_plants():
     """
@@ -61,6 +71,11 @@ _ext_data_efficiency_elec_gas_chp_plants = ExtData(
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_efficiency_elec_oil_chp_plants",
+        "__data__": "_ext_data_efficiency_elec_oil_chp_plants",
+        "time": 1,
+    },
 )
 def efficiency_elec_oil_chp_plants():
     """
@@ -87,6 +102,11 @@ _ext_data_efficiency_elec_oil_chp_plants = ExtData(
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_efficiency_heat_coal_chp_plants",
+        "__data__": "_ext_data_efficiency_heat_coal_chp_plants",
+        "time": 1,
+    },
 )
 def efficiency_heat_coal_chp_plants():
     """
@@ -113,6 +133,11 @@ _ext_data_efficiency_heat_coal_chp_plants = ExtData(
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_efficiency_heat_gas_chp_plants",
+        "__data__": "_ext_data_efficiency_heat_gas_chp_plants",
+        "time": 1,
+    },
 )
 def efficiency_heat_gas_chp_plants():
     """
@@ -139,6 +164,11 @@ _ext_data_efficiency_heat_gas_chp_plants = ExtData(
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_efficiency_heat_oil_chp_plants",
+        "__data__": "_ext_data_efficiency_heat_oil_chp_plants",
+        "time": 1,
+    },
 )
 def efficiency_heat_oil_chp_plants():
     """
@@ -165,6 +195,7 @@ _ext_data_efficiency_heat_oil_chp_plants = ExtData(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fed_heat_fossil_fuels_chp_plants_ej": 1, "share_chp_plants_coal": 1},
 )
 def fed_heat_coal_chp_plants_ej():
     """
@@ -178,6 +209,10 @@ def fed_heat_coal_chp_plants_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fed_heatcom_by_nre_chp_plants_ej": 1,
+        "fes_heatcom_nuclear_chp_plants_ej": 1,
+    },
 )
 def fed_heat_fossil_fuels_chp_plants_ej():
     """
@@ -193,6 +228,10 @@ def fed_heat_fossil_fuels_chp_plants_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fed_heat_fossil_fuels_chp_plants_ej": 1,
+        "historic_share_chp_plants_gas": 1,
+    },
 )
 def fed_heat_gas_chp_plants_ej():
     """
@@ -206,6 +245,7 @@ def fed_heat_gas_chp_plants_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fed_heat_fossil_fuels_chp_plants_ej": 1, "share_chp_plants_oil": 1},
 )
 def fed_heat_liquids_chp_plants_ej():
     """
@@ -219,6 +259,10 @@ def fed_heat_liquids_chp_plants_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation": 1,
+        "fed_heatcom_nre_ej": 1,
+    },
 )
 def fed_heatcom_by_nre_chp_plants_ej():
     """
@@ -235,6 +279,11 @@ def fed_heatcom_by_nre_chp_plants_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_fe_gen_elec_fossil_fuel_chp_plants_ej": 1,
+        "ej_per_twh": 1,
+        "demand_elec_nre_twh": 1,
+    },
 )
 def fes_elec_fossil_fuel_chp_plants_ej():
     """
@@ -251,6 +300,7 @@ def fes_elec_fossil_fuel_chp_plants_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fed_heat_fossil_fuels_chp_plants_ej": 1},
 )
 def fes_heatcom_fossil_fuels_chp_plants_ej():
     """
@@ -264,6 +314,10 @@ def fes_heatcom_fossil_fuels_chp_plants_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_fes_heatcom_nuclear_chp_plants_ej": 1,
+        "fed_heatcom_nre_ej": 1,
+    },
 )
 def fes_heatcom_nuclear_chp_plants_ej():
     """
@@ -279,6 +333,11 @@ def fes_heatcom_nuclear_chp_plants_ej():
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_share_chp_plants_gas",
+        "__data__": "_ext_data_historic_share_chp_plants_gas",
+        "time": 1,
+    },
 )
 def historic_share_chp_plants_gas():
     """
@@ -305,6 +364,11 @@ _ext_data_historic_share_chp_plants_gas = ExtData(
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_share_chp_plants_oil",
+        "__data__": "_ext_data_historic_share_chp_plants_oil",
+        "time": 1,
+    },
 )
 def historic_share_chp_plants_oil():
     """
@@ -331,6 +395,7 @@ _ext_data_historic_share_chp_plants_oil = ExtData(
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fed_heat_coal_chp_plants_ej": 1, "efficiency_heat_coal_chp_plants": 1},
 )
 def ped_coal_for_chp_plants_ej():
     """
@@ -344,6 +409,7 @@ def ped_coal_for_chp_plants_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fed_heat_gas_chp_plants_ej": 1, "efficiency_heat_gas_chp_plants": 1},
 )
 def ped_gas_for_chp_plants_ej():
     """
@@ -357,6 +423,10 @@ def ped_gas_for_chp_plants_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fed_heat_liquids_chp_plants_ej": 1,
+        "efficiency_heat_oil_chp_plants": 1,
+    },
 )
 def ped_oil_for_chp_plants_ej():
     """
@@ -370,6 +440,7 @@ def ped_oil_for_chp_plants_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_coal_for_chp_plants_ej": 1, "efficiency_elec_coal_chp_plants": 1},
 )
 def potential_fe_gen_elec_coal_chp_plants_ej():
     """
@@ -383,6 +454,11 @@ def potential_fe_gen_elec_coal_chp_plants_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_fe_gen_elec_coal_chp_plants_ej": 1,
+        "potential_fe_gen_elec_gas_chp_plants_ej": 1,
+        "potential_fe_gen_elec_liquids_chp_plants_ej": 1,
+    },
 )
 def potential_fe_gen_elec_fossil_fuel_chp_plants_ej():
     """
@@ -400,6 +476,7 @@ def potential_fe_gen_elec_fossil_fuel_chp_plants_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_gas_for_chp_plants_ej": 1, "efficiency_elec_gas_chp_plants": 1},
 )
 def potential_fe_gen_elec_gas_chp_plants_ej():
     """
@@ -413,6 +490,7 @@ def potential_fe_gen_elec_gas_chp_plants_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"ped_oil_for_chp_plants_ej": 1, "efficiency_elec_oil_chp_plants": 1},
 )
 def potential_fe_gen_elec_liquids_chp_plants_ej():
     """
@@ -426,6 +504,10 @@ def potential_fe_gen_elec_liquids_chp_plants_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fe_nuclear_elec_generation_twh": 1,
+        "share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation": 1,
+    },
 )
 def potential_fes_heatcom_nuclear_chp_plants_ej():
     """
@@ -442,6 +524,7 @@ def potential_fes_heatcom_nuclear_chp_plants_ej():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"historic_share_chp_plants_gas": 1, "share_chp_plants_oil": 1},
 )
 def share_chp_plants_coal():
     """
@@ -455,6 +538,7 @@ def share_chp_plants_coal():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "historic_share_chp_plants_oil": 1},
 )
 def share_chp_plants_oil():
     """
@@ -475,6 +559,11 @@ def share_chp_plants_oil():
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation",
+        "__data__": "_ext_data_share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation",
+        "time": 1,
+    },
 )
 def share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation():
     """
@@ -501,6 +590,9 @@ _ext_data_share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation = ExtData(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation"
+    },
 )
 def share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation():
     """
@@ -527,6 +619,17 @@ _ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_gener
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "ped_gas_for_chp_plants_ej": 1,
+        "efficiency_heat_gas_chp_plants": 1,
+        "efficiency_elec_gas_chp_plants": 1,
+        "efficiency_elec_oil_chp_plants": 1,
+        "ped_oil_for_chp_plants_ej": 1,
+        "efficiency_heat_oil_chp_plants": 1,
+        "efficiency_heat_coal_chp_plants": 1,
+        "ped_coal_for_chp_plants_ej": 1,
+        "efficiency_elec_coal_chp_plants": 1,
+    },
 )
 def total_gen_losses_demand_for_chp_plants_ej():
     """

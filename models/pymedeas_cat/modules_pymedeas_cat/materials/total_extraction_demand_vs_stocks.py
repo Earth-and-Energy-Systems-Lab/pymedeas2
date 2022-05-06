@@ -1,6 +1,6 @@
 """
 Module total_extraction_demand_vs_stocks
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,10 @@ Translated using PySD version 3.0.0
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "cum_materials_to_extract_for_ev_batteries_from_2015": 1,
+        "cum_materials_to_extract_for_res_elec_from_2015": 1,
+    },
 )
 def cum_materials_to_extract_for_alt_techn_from_2015_eu():
     """
@@ -27,6 +31,7 @@ def cum_materials_to_extract_for_alt_techn_from_2015_eu():
     subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_current_mineral_reserves_mt"},
 )
 def current_mineral_reserves_mt():
     """
@@ -52,6 +57,7 @@ _ext_constant_current_mineral_reserves_mt = ExtConstant(
     subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_current_mineral_resources_mt"},
 )
 def current_mineral_resources_mt():
     """
@@ -77,6 +83,7 @@ _ext_constant_current_mineral_resources_mt = ExtConstant(
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_cum_materials_to_extract_alt_techn_aut_vs_reserves_world": 1},
 )
 def materials_availability_reserves():
     """
@@ -99,6 +106,7 @@ def materials_availability_reserves():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"share_cum_materials_to_extract_alt_techn_aut_vs_resources_world": 1},
 )
 def materials_availability_resources():
     """
@@ -121,6 +129,10 @@ def materials_availability_resources():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "cum_materials_to_extract_for_alt_techn_from_2015_eu": 1,
+        "current_mineral_reserves_mt": 1,
+    },
 )
 def share_cum_materials_to_extract_alt_techn_aut_vs_reserves_world():
     """
@@ -138,6 +150,10 @@ def share_cum_materials_to_extract_alt_techn_aut_vs_reserves_world():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "cum_materials_to_extract_for_alt_techn_from_2015_eu": 1,
+        "current_mineral_resources_mt": 1,
+    },
 )
 def share_cum_materials_to_extract_alt_techn_aut_vs_resources_world():
     """
@@ -155,6 +171,10 @@ def share_cum_materials_to_extract_alt_techn_aut_vs_resources_world():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_materials_to_extract_for_ev_batteries_mt": 1,
+        "total_materials_to_extract_for_res_elec_mt": 1,
+    },
 )
 def total_materials_to_extract_alt_techn_mtyr():
     """

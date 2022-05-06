@@ -1,6 +1,6 @@
 """
 Module res_elec_capacities_and_generat
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,10 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_fe_elec_demand_after_priorities_twh": 4,
+        "fe_real_tot_generation_res_elec_twh": 2,
+    },
 )
 def abundance_res_elec():
     """
@@ -48,6 +52,13 @@ def activate_eroi_allocation_rule():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 5,
+        "past_res_growth": 1,
+        "table_hist_capacity_res_elec": 1,
+        "start_year_p_growth_res_elec": 3,
+        "p_power": 4,
+    },
 )
 def adapt_growth_res_elec():
     return if_then_else(
@@ -71,6 +82,12 @@ def adapt_growth_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "activate_eroi_allocation_rule": 1,
+        "adapt_growth_res_elec": 2,
+        "eroi_allocation_rule_per_res_elec": 1,
+        "constraint_elec_storage_availability": 1,
+    },
 )
 def adapt_growth_res_elec_after_allocation():
     """
@@ -92,6 +109,12 @@ def adapt_growth_res_elec_after_allocation():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "min_cp_baseload_res": 1,
+        "cpini_res_elec": 1,
+        "shortage_bioe_for_elec": 1,
+        "cp_exogenous_res_elec_reduction": 1,
+    },
 )
 def cp_res_elec():
     """
@@ -108,6 +131,10 @@ def cp_res_elec():
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_fe_elec_demand_after_priorities_twh": 1,
+        "potential_tot_generation_res_elec_twh": 1,
+    },
 )
 def fe_real_tot_generation_res_elec_twh():
     return np.minimum(
@@ -122,6 +149,7 @@ def fe_real_tot_generation_res_elec_twh():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"cp_res_elec": 1, "cpini_res_elec": 1},
 )
 def cp_baseload_reduction():
     return cp_res_elec() / cpini_res_elec()
@@ -133,6 +161,7 @@ def cp_baseload_reduction():
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_cpini_res_elec"},
 )
 def cpini_res_elec():
     """
@@ -158,6 +187,11 @@ _ext_constant_cpini_res_elec = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "total_time_planconstr_res_elec": 2,
+        "table_hist_capacity_res_elec": 2,
+    },
 )
 def historic_new_required_capacity_res_elec():
     """
@@ -200,6 +234,7 @@ def historic_new_required_capacity_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"initial_required_capacity_res_elec": 1},
 )
 def initial_capacity_in_construction_res_elec():
     """
@@ -214,6 +249,7 @@ def initial_capacity_in_construction_res_elec():
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_instal_cap_res_elec"},
 )
 def initial_instal_cap_res_elec():
     """
@@ -239,6 +275,7 @@ _ext_constant_initial_instal_cap_res_elec = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"table_hist_capacity_res_elec": 2},
 )
 def initial_required_capacity_res_elec():
     """
@@ -253,6 +290,13 @@ def initial_required_capacity_res_elec():
     subscripts=["RES elec"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_installed_capacity_delayed": 1},
+    other_deps={
+        "_delayfixed_installed_capacity_delayed": {
+            "initial": {},
+            "step": {"installed_capacity_res_elec_tw": 1},
+        }
+    },
 )
 def installed_capacity_delayed():
     return _delayfixed_installed_capacity_delayed()
@@ -273,6 +317,13 @@ _delayfixed_installed_capacity_delayed = DelayFixed(
     subscripts=["RES elec"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_installed_capacity_res_elec_delayed_1yr": 1},
+    other_deps={
+        "_delayfixed_installed_capacity_res_elec_delayed_1yr": {
+            "initial": {},
+            "step": {"installed_capacity_res_elec_tw": 1},
+        }
+    },
 )
 def installed_capacity_res_elec_delayed_1yr():
     """
@@ -296,6 +347,13 @@ _delayfixed_installed_capacity_res_elec_delayed_1yr = DelayFixed(
     subscripts=["RES elec"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_installed_capacity_res_elec_tw": 1},
+    other_deps={
+        "_integ_installed_capacity_res_elec_tw": {
+            "initial": {"initial_instal_cap_res_elec": 1},
+            "step": {"res_elec_capacity_under_construction_tw": 1, "wear_res_elec": 1},
+        }
+    },
 )
 def installed_capacity_res_elec_tw():
     """
@@ -317,6 +375,7 @@ _integ_installed_capacity_res_elec_tw = Integ(
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_lifetime_res_elec"},
 )
 def lifetime_res_elec():
     """
@@ -342,6 +401,7 @@ _ext_constant_lifetime_res_elec = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_min_cp_baseload_res"},
 )
 def min_cp_baseload_res():
     """
@@ -367,6 +427,10 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_res_elec_tw": 1,
+        "installed_capacity_res_elec_delayed_1yr": 1,
+    },
 )
 def new_capacity_installed_growth_rate_res_elec():
     """
@@ -383,6 +447,15 @@ def new_capacity_installed_growth_rate_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "total_time_planconstr_res_elec": 1,
+        "historic_new_required_capacity_res_elec": 1,
+        "installed_capacity_res_elec_tw": 1,
+        "adapt_growth_res_elec": 1,
+        "p_power": 1,
+        "max_res_elec_twe": 1,
+    },
 )
 def new_required_capacity_res_elec():
     """
@@ -407,6 +480,11 @@ def new_required_capacity_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "required_capacity_res_elec_tw": 1,
+        "time_step": 1,
+        "time_planification_res_elec": 1,
+    },
 )
 def new_res_elec_capacity_under_planning():
     """
@@ -425,6 +503,10 @@ def new_res_elec_capacity_under_planning():
     subscripts=["RES elec"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_p_power",
+        "__lookup__": "_ext_lookup_p_power",
+    },
 )
 def p_power(x, final_subs=None):
     return _ext_lookup_p_power(x, final_subs)
@@ -448,6 +530,7 @@ _ext_lookup_p_power = ExtLookup(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 3, "table_hist_capacity_res_elec": 3},
 )
 def past_res_growth():
     return zidz(
@@ -462,6 +545,11 @@ def past_res_growth():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_res_elec_tw": 1,
+        "cp_res_elec": 1,
+        "twe_per_twh": 1,
+    },
 )
 def potential_generation_res_elec_twh():
     """
@@ -476,6 +564,7 @@ def potential_generation_res_elec_twh():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_res_elec_twe": 1, "cp_baseload_reduction": 1, "twe_per_twh": 1},
 )
 def potential_res_elec_after_intermitt_twh():
     """
@@ -489,6 +578,7 @@ def potential_res_elec_after_intermitt_twh():
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"potential_generation_res_elec_twh": 1},
 )
 def potential_tot_generation_res_elec_twh():
     """
@@ -505,6 +595,7 @@ def potential_tot_generation_res_elec_twh():
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"potential_res_elec_after_intermitt_twh": 1},
 )
 def potential_tot_res_elec_after_intermitt():
     """
@@ -522,6 +613,13 @@ def potential_tot_res_elec_after_intermitt():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "cp_res_elec": 1,
+        "installed_capacity_res_elec_tw": 2,
+        "real_generation_res_elec_twh": 1,
+        "twe_per_twh": 1,
+    },
 )
 def real_cp_res_elec():
     return if_then_else(
@@ -545,6 +643,11 @@ def real_cp_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_generation_res_elec_twh": 1,
+        "res_elec_tot_overcapacity": 1,
+        "shortage_bioe_for_elec": 1,
+    },
 )
 def real_generation_res_elec_twh():
     """
@@ -563,6 +666,10 @@ def real_generation_res_elec_twh():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "remaining_potential_res_elec_after_intermitt": 2,
+        "threshold_remaining_potential_new_capacity": 2,
+    },
 )
 def remaining_potential_constraint_on_new_res_elec_capacity():
     """
@@ -585,6 +692,10 @@ def remaining_potential_constraint_on_new_res_elec_capacity():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_res_elec_after_intermitt_twh": 3,
+        "potential_generation_res_elec_twh": 2,
+    },
 )
 def remaining_potential_res_elec_after_intermitt():
     return if_then_else(
@@ -604,6 +715,10 @@ def remaining_potential_res_elec_after_intermitt():
     name="remaining potential tot RES elec after intermitt",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_tot_res_elec_after_intermitt": 3,
+        "fe_real_tot_generation_res_elec_twh": 2,
+    },
 )
 def remaining_potential_tot_res_elec_after_intermitt():
     return if_then_else(
@@ -624,6 +739,14 @@ def remaining_potential_tot_res_elec_after_intermitt():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "replacement_rate_res_elec": 1,
+        "res_elec_tot_overcapacity": 1,
+        "wear_res_elec": 1,
+        "constraint_elec_storage_availability": 1,
+        "shortage_bioe_for_elec": 1,
+    },
 )
 def replacement_capacity_res_elec():
     """
@@ -650,6 +773,10 @@ def replacement_capacity_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_generation_res_elec_twh": 1,
+        "potential_res_elec_after_intermitt_twh": 1,
+    },
 )
 def replacement_rate_res_elec():
     """
@@ -672,6 +799,16 @@ def replacement_rate_res_elec():
     subscripts=["RES elec"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_required_capacity_res_elec_tw": 1},
+    other_deps={
+        "_integ_required_capacity_res_elec_tw": {
+            "initial": {"initial_required_capacity_res_elec": 1},
+            "step": {
+                "new_required_capacity_res_elec": 1,
+                "new_res_elec_capacity_under_planning": 1,
+            },
+        }
+    },
 )
 def required_capacity_res_elec_tw():
     """
@@ -693,6 +830,12 @@ _integ_required_capacity_res_elec_tw = Integ(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_delayed": 1,
+        "max_res_elec_twe": 1,
+        "res_elec_planned_capacity_tw": 1,
+        "time_construction_res_elec": 1,
+    },
 )
 def res_elec_capacity_under_construction_tw():
     """
@@ -713,6 +856,17 @@ def res_elec_capacity_under_construction_tw():
     subscripts=["RES elec"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_res_elec_planned_capacity_tw": 1},
+    other_deps={
+        "_integ_res_elec_planned_capacity_tw": {
+            "initial": {"initial_capacity_in_construction_res_elec": 1},
+            "step": {
+                "new_res_elec_capacity_under_planning": 1,
+                "replacement_capacity_res_elec": 1,
+                "res_elec_capacity_under_construction_tw": 1,
+            },
+        }
+    },
 )
 def res_elec_planned_capacity_tw():
     """
@@ -735,6 +889,10 @@ _integ_res_elec_planned_capacity_tw = Integ(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "potential_tot_generation_res_elec_twh": 3,
+        "fe_real_tot_generation_res_elec_twh": 1,
+    },
 )
 def res_elec_tot_overcapacity():
     """
@@ -757,6 +915,10 @@ def res_elec_tot_overcapacity():
     subscripts=["RES elec"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_table_hist_capacity_res_elec",
+        "__lookup__": "_ext_lookup_table_hist_capacity_res_elec",
+    },
 )
 def table_hist_capacity_res_elec(x, final_subs=None):
     return _ext_lookup_table_hist_capacity_res_elec(x, final_subs)
@@ -791,6 +953,7 @@ def threshold_remaining_potential_new_capacity():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"remaining_potential_res_elec_after_intermitt": 1, "time": 1},
 )
 def time_95pc_ts_potential_res_elec():
     """
@@ -813,6 +976,7 @@ def time_95pc_ts_potential_res_elec():
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_time_construction_res_elec"},
 )
 def time_construction_res_elec():
     """
@@ -838,6 +1002,7 @@ _ext_constant_time_construction_res_elec = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_time_planification_res_elec"},
 )
 def time_planification_res_elec():
     """
@@ -863,6 +1028,11 @@ _ext_constant_time_planification_res_elec = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time_construction_res_elec": 1,
+        "time_step": 2,
+        "time_planification_res_elec": 1,
+    },
 )
 def total_time_planconstr_res_elec():
     return np.maximum(time_construction_res_elec(), time_step()) + np.maximum(
@@ -876,6 +1046,7 @@ def total_time_planconstr_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 1, "installed_capacity_res_elec_tw": 1, "lifetime_res_elec": 1},
 )
 def wear_res_elec():
     """

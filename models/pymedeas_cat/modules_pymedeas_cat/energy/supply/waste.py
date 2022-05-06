@@ -1,6 +1,6 @@
 """
 Module waste
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     units="1/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 3, "past_waste_growth": 3, "waste_change": 2},
 )
 def adapt_growth_waste():
     """
@@ -31,6 +32,7 @@ def adapt_growth_waste():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_waste_for_heat_plants"},
 )
 def efficiency_waste_for_heat_plants():
     """
@@ -55,6 +57,7 @@ _ext_constant_efficiency_waste_for_heat_plants = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_waste_for_elec_chp_plants"},
 )
 def efficiency_waste_for_elec_chp_plants():
     """
@@ -79,6 +82,7 @@ _ext_constant_efficiency_waste_for_elec_chp_plants = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_waste_for_elec_plants"},
 )
 def efficiency_waste_for_elec_plants():
     """
@@ -103,6 +107,7 @@ _ext_constant_efficiency_waste_for_elec_plants = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_waste_for_heat_chp_plants"},
 )
 def efficiency_waste_for_heat_chp_plants():
     """
@@ -127,6 +132,10 @@ _ext_constant_efficiency_waste_for_heat_chp_plants = ExtConstant(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fes_elec_from_waste_in_chp_plants": 1,
+        "fes_elec_from_waste_in_elec_plants": 1,
+    },
 )
 def fes_elec_from_waste_ej():
     """
@@ -140,6 +149,10 @@ def fes_elec_from_waste_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_waste_for_chp_plants": 1,
+        "efficiency_waste_for_elec_chp_plants": 1,
+    },
 )
 def fes_elec_from_waste_in_chp_plants():
     """
@@ -153,6 +166,7 @@ def fes_elec_from_waste_in_chp_plants():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_waste_for_elec_plants": 1, "efficiency_waste_for_elec_plants": 1},
 )
 def fes_elec_from_waste_in_elec_plants():
     """
@@ -166,6 +180,7 @@ def fes_elec_from_waste_in_elec_plants():
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"fes_elec_from_waste_ej": 1, "ej_per_twh": 1},
 )
 def fes_elec_from_waste_twh():
     """
@@ -179,6 +194,10 @@ def fes_elec_from_waste_twh():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "fes_waste_for_heatcom_plants": 1,
+        "fes_heatcom_from_waste_in_chp_plants": 1,
+    },
 )
 def fes_heatcom_from_waste_ej():
     """
@@ -192,6 +211,10 @@ def fes_heatcom_from_waste_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_waste_for_chp_plants": 1,
+        "efficiency_waste_for_heat_chp_plants": 1,
+    },
 )
 def fes_heatcom_from_waste_in_chp_plants():
     """
@@ -205,6 +228,10 @@ def fes_heatcom_from_waste_in_chp_plants():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_waste_for_heatcom_plants": 1,
+        "efficiency_waste_for_heat_plants": 1,
+    },
 )
 def fes_waste_for_heatcom_plants():
     """
@@ -218,6 +245,10 @@ def fes_waste_for_heatcom_plants():
     units="EJ/Year",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_pes_waste_ej",
+        "__lookup__": "_ext_lookup_historic_pes_waste_ej",
+    },
 )
 def historic_pes_waste_ej(x, final_subs=None):
     """
@@ -239,7 +270,11 @@ _ext_lookup_historic_pes_waste_ej = ExtLookup(
 
 
 @component.add(
-    name="initial PES waste", units="EJ", comp_type="Constant", comp_subtype="External"
+    name="initial PES waste",
+    units="EJ",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_pes_waste"},
 )
 def initial_pes_waste():
     """
@@ -260,7 +295,15 @@ _ext_constant_initial_pes_waste = ExtConstant(
 
 
 @component.add(
-    name="Losses CHP waste", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="Losses CHP waste",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "pes_waste_for_chp_plants": 1,
+        "fes_elec_from_waste_in_chp_plants": 1,
+        "fes_heatcom_from_waste_in_chp_plants": 1,
+    },
 )
 def losses_chp_waste():
     """
@@ -274,7 +317,11 @@ def losses_chp_waste():
 
 
 @component.add(
-    name="max PE waste", units="EJ", comp_type="Constant", comp_subtype="External"
+    name="max PE waste",
+    units="EJ",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_pe_waste"},
 )
 def max_pe_waste():
     """
@@ -299,6 +346,14 @@ _ext_constant_max_pe_waste = ExtConstant(
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 3,
+        "historic_pes_waste_ej": 2,
+        "pes_waste_ej": 3,
+        "max_pe_waste": 3,
+        "p_waste_change": 1,
+        "adapt_growth_waste": 1,
+    },
 )
 def new_waste_supply_ej():
     """
@@ -318,7 +373,11 @@ def new_waste_supply_ej():
 
 
 @component.add(
-    name="P waste change", units="1/Year", comp_type="Constant", comp_subtype="External"
+    name="P waste change",
+    units="1/Year",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_waste_change"},
 )
 def p_waste_change():
     """
@@ -343,6 +402,7 @@ _ext_constant_p_waste_change = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_past_waste_growth"},
 )
 def past_waste_growth():
     """
@@ -367,6 +427,12 @@ _ext_constant_past_waste_growth = ExtConstant(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_waste_for_elec_plants": 1,
+        "fes_elec_from_waste_in_chp_plants": 1,
+        "share_efficiency_waste_for_elec_in_chp_plants": 1,
+        "losses_chp_waste": 1,
+    },
 )
 def pes_tot_waste_for_elec():
     """
@@ -384,6 +450,12 @@ def pes_tot_waste_for_elec():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pes_waste_for_heatcom_plants": 1,
+        "fes_heatcom_from_waste_in_chp_plants": 1,
+        "share_efficiency_waste_for_elec_in_chp_plants": 1,
+        "losses_chp_waste": 1,
+    },
 )
 def pes_tot_waste_for_heatcom():
     """
@@ -397,7 +469,17 @@ def pes_tot_waste_for_heatcom():
 
 
 @component.add(
-    name="PES waste EJ", units="EJ", comp_type="Stateful", comp_subtype="Integ"
+    name="PES waste EJ",
+    units="EJ",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_pes_waste_ej": 1},
+    other_deps={
+        "_integ_pes_waste_ej": {
+            "initial": {"initial_pes_waste": 1},
+            "step": {"new_waste_supply_ej": 1},
+        }
+    },
 )
 def pes_waste_ej():
     """
@@ -416,6 +498,7 @@ _integ_pes_waste_ej = Integ(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_waste_ej": 1, "share_pes_waste_for_chp": 1},
 )
 def pes_waste_for_chp_plants():
     """
@@ -429,6 +512,7 @@ def pes_waste_for_chp_plants():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_waste_ej": 1, "share_pes_waste_for_elec_plants": 1},
 )
 def pes_waste_for_elec_plants():
     """
@@ -442,6 +526,7 @@ def pes_waste_for_elec_plants():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"pes_waste_ej": 1, "share_pes_waste_for_heatcom_plants": 1},
 )
 def pes_waste_for_heatcom_plants():
     """
@@ -451,7 +536,11 @@ def pes_waste_for_heatcom_plants():
 
 
 @component.add(
-    name="PES waste for TFC", units="EJ", comp_type="Auxiliary", comp_subtype="Normal"
+    name="PES waste for TFC",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pes_waste_ej": 1, "share_pes_waste_tfc": 1},
 )
 def pes_waste_for_tfc():
     """
@@ -465,6 +554,10 @@ def pes_waste_for_tfc():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "efficiency_waste_for_elec_chp_plants": 2,
+        "efficiency_waste_for_heat_chp_plants": 1,
+    },
 )
 def share_efficiency_waste_for_elec_in_chp_plants():
     return efficiency_waste_for_elec_chp_plants() / (
@@ -477,6 +570,7 @@ def share_efficiency_waste_for_elec_in_chp_plants():
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_pes_waste_for_chp"},
 )
 def share_pes_waste_for_chp():
     """
@@ -501,6 +595,7 @@ _ext_constant_share_pes_waste_for_chp = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_pes_waste_for_elec_plants"},
 )
 def share_pes_waste_for_elec_plants():
     """
@@ -525,6 +620,7 @@ _ext_constant_share_pes_waste_for_elec_plants = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_pes_waste_for_heatcom_plants"},
 )
 def share_pes_waste_for_heatcom_plants():
     """
@@ -549,6 +645,7 @@ _ext_constant_share_pes_waste_for_heatcom_plants = ExtConstant(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_pes_waste_tfc"},
 )
 def share_pes_waste_tfc():
     """
@@ -569,7 +666,11 @@ _ext_constant_share_pes_waste_tfc = ExtConstant(
 
 
 @component.add(
-    name="waste change", units="1/Year", comp_type="Auxiliary", comp_subtype="Normal"
+    name="waste change",
+    units="1/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"annual_gdp_growth_rate_aut": 2, "p_waste_change": 1},
 )
 def waste_change():
     """

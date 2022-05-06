@@ -1,6 +1,6 @@
 """
 Module rest_demand
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -10,6 +10,7 @@ Translated using PySD version 3.0.0
     subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_a_extraction_projection_minerals"},
 )
 def a_extraction_projection_minerals():
     return _ext_constant_a_extraction_projection_minerals()
@@ -32,6 +33,13 @@ _ext_constant_a_extraction_projection_minerals = ExtConstant(
     subscripts=["materials"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_cum_materials_to_extract_rest": 1},
+    other_deps={
+        "_integ_cum_materials_to_extract_rest": {
+            "initial": {"initial_cumulated_material_requirements_for_rest_1995": 1},
+            "step": {"materials_to_extract_rest_mt": 1},
+        }
+    },
 )
 def cum_materials_to_extract_rest():
     """
@@ -57,6 +65,13 @@ _integ_cum_materials_to_extract_rest = Integ(
     subscripts=["materials"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_cum_materials_to_extract_rest_from_2015": 1},
+    other_deps={
+        "_integ_cum_materials_to_extract_rest_from_2015": {
+            "initial": {"initial_cumulated_material_requirements_for_rest_1995": 1},
+            "step": {"materials_to_extract_rest_from_2015_mt": 1},
+        }
+    },
 )
 def cum_materials_to_extract_rest_from_2015():
     """
@@ -82,6 +97,10 @@ _integ_cum_materials_to_extract_rest_from_2015 = Integ(
     subscripts=["materials"],
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historical_extraction_minerals_rest",
+        "__lookup__": "_ext_lookup_historical_extraction_minerals_rest",
+    },
 )
 def historical_extraction_minerals_rest(x, final_subs=None):
     """
@@ -108,6 +127,7 @@ _ext_lookup_historical_extraction_minerals_rest = ExtLookup(
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 2, "historical_extraction_minerals_rest": 2},
 )
 def historical_variation_minerals_extraction_rest():
     """
@@ -134,6 +154,7 @@ def initial_cumulated_material_requirements_for_rest_1995():
     subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_minerals_extraction_rest"},
 )
 def initial_minerals_extraction_rest():
     """
@@ -159,6 +180,7 @@ _ext_constant_initial_minerals_extraction_rest = ExtConstant(
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 1, "materials_to_extract_rest_mt": 1},
 )
 def materials_to_extract_rest_from_2015_mt():
     """
@@ -179,6 +201,7 @@ def materials_to_extract_rest_from_2015_mt():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"minerals_extraction_projection_rest_with_rr": 1},
 )
 def materials_to_extract_rest_mt():
     """
@@ -193,6 +216,10 @@ def materials_to_extract_rest_mt():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "minerals_extraction_projection_rest_cte_rr": 1,
+        "current_recycling_rates_minerals": 1,
+    },
 )
 def minerals_consumption_estimation_rest_cte_rr():
     """
@@ -209,6 +236,13 @@ def minerals_consumption_estimation_rest_cte_rr():
     subscripts=["materials"],
     comp_type="Stateful",
     comp_subtype="Integ",
+    depends_on={"_integ_minerals_extraction_projection_rest_cte_rr": 1},
+    other_deps={
+        "_integ_minerals_extraction_projection_rest_cte_rr": {
+            "initial": {"initial_minerals_extraction_rest": 1, "mt_per_t": 1},
+            "step": {"variation_minerals_extraction_rest": 1},
+        }
+    },
 )
 def minerals_extraction_projection_rest_cte_rr():
     """
@@ -230,6 +264,10 @@ _integ_minerals_extraction_projection_rest_cte_rr = Integ(
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "minerals_consumption_estimation_rest_cte_rr": 1,
+        "recycling_rates_minerals_rest": 1,
+    },
 )
 def minerals_extraction_projection_rest_with_rr():
     """
@@ -256,6 +294,10 @@ def mt_per_t():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_materials_required_for_res_elec_ev_batteries_mt": 2,
+        "minerals_consumption_estimation_rest_cte_rr": 1,
+    },
 )
 def share_minerals_consumption_alt_techn_vs_total_economy():
     return zidz(
@@ -271,6 +313,10 @@ def share_minerals_consumption_alt_techn_vs_total_economy():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "total_materials_required_for_ev_batteries": 1,
+        "total_materials_required_for_res_elec_mt": 1,
+    },
 )
 def total_materials_required_for_res_elec_ev_batteries_mt():
     return (
@@ -285,6 +331,10 @@ def total_materials_required_for_res_elec_ev_batteries_mt():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "minerals_consumption_estimation_rest_cte_rr": 1,
+        "minerals_extraction_projection_rest_with_rr": 1,
+    },
 )
 def total_recycled_materials_for_other_mt():
     return (
@@ -299,6 +349,15 @@ def total_recycled_materials_for_other_mt():
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "historical_variation_minerals_extraction_rest": 1,
+        "a_extraction_projection_minerals": 1,
+        "gdp": 1,
+        "gdp_delayed_1yr": 1,
+        "minerals_extraction_projection_rest_cte_rr": 1,
+        "mt_per_t": 1,
+    },
 )
 def variation_minerals_extraction_rest():
     """

@@ -1,6 +1,6 @@
 """
 Module res_elec_potentials
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,7 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_conversion_geot_pe_to_elec"},
 )
 def efficiency_conversion_geot_pe_to_elec():
     """
@@ -33,6 +34,7 @@ _ext_constant_efficiency_conversion_geot_pe_to_elec = ExtConstant(
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_solar_on_land_mha": 1, "surface_solar_pv_mha": 1},
 )
 def max_csp_on_land_mha():
     """
@@ -46,6 +48,7 @@ def max_csp_on_land_mha():
     units="TWe",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_pe_geotelec_twth"},
 )
 def max_pe_geotelec_twth():
     """
@@ -69,8 +72,19 @@ _ext_constant_max_pe_geotelec_twth = ExtConstant(
     name="max potential RES elec TWe",
     units="TW",
     subscripts=["RES elec"],
-    comp_type="Constant, Auxiliary",
-    comp_subtype="External, Normal",
+    comp_type="Auxiliary, Constant",
+    comp_subtype="Normal, External",
+    depends_on={
+        "__external__": "_ext_constant_max_potential_res_elec_twe",
+        "max_pe_geotelec_twth": 1,
+        "efficiency_conversion_geot_pe_to_elec": 1,
+        "ej_per_twh": 1,
+        "twe_per_twh": 1,
+        "available_potential_fe_solid_bioe_for_elec_ej": 1,
+        "power_density_res_elec_twemha": 2,
+        "max_solar_pv_on_land_mha": 1,
+        "max_csp_on_land_mha": 1,
+    },
 )
 def max_potential_res_elec_twe():
     """
@@ -132,6 +146,7 @@ _ext_constant_max_potential_res_elec_twe.add(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_potential_res_elec_twe": 1, "twe_per_twh": 1},
 )
 def max_potential_res_elec_twh():
     """
@@ -145,6 +160,14 @@ def max_potential_res_elec_twh():
     units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_potential_res_elec_twh": 1,
+        "max_potential_phs_twe": 1,
+        "twe_per_twh": 1,
+        "ej_per_twh": 1,
+        "max_biogas_ej": 1,
+        "share_pes_biogas_for_elec": 1,
+    },
 )
 def max_potential_tot_res_elec_twh():
     """
@@ -165,6 +188,7 @@ def max_potential_tot_res_elec_twh():
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_solar_on_land_mha"},
 )
 def max_solar_on_land_mha():
     """
@@ -189,6 +213,7 @@ _ext_constant_max_solar_on_land_mha = ExtConstant(
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_solar_on_land_mha": 1, "surface_csp_mha": 1},
 )
 def max_solar_pv_on_land_mha():
     """
@@ -202,6 +227,7 @@ def max_solar_pv_on_land_mha():
     units="percent",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"remaining_potential_tot_res_elec": 1},
 )
 def percent_remaining_potential_tot_res_elec():
     """
@@ -216,6 +242,7 @@ def percent_remaining_potential_tot_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"max_potential_res_elec_twh": 3, "real_generation_res_elec_twh": 2},
 )
 def remaining_potential():
     return if_then_else(
@@ -233,6 +260,10 @@ def remaining_potential():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "max_potential_tot_res_elec_twh": 3,
+        "fe_tot_generation_all_res_elec_twh": 2,
+    },
 )
 def remaining_potential_tot_res_elec():
     """

@@ -1,6 +1,6 @@
 """
 Module population
-Translated using PySD version 3.0.0
+Translated using PySD version 3.0.0-dev
 """
 
 
@@ -9,6 +9,14 @@ Translated using PySD version 3.0.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "select_population_evolution_input": 2,
+        "variation_input_pop": 1,
+        "time": 1,
+        "p_customized_year_pop_evolution": 1,
+        "p_customized_cte_pop_variation": 1,
+        "p_timeseries_pop_growth_rate": 2,
+    },
 )
 def annual_population_growth_rate():
     return if_then_else(
@@ -31,6 +39,10 @@ def annual_population_growth_rate():
     units="people",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_population",
+        "__lookup__": "_ext_lookup_historic_population",
+    },
 )
 def historic_population(x, final_subs=None):
     """
@@ -56,6 +68,7 @@ _ext_lookup_historic_population = ExtLookup(
     units="people",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_population"},
 )
 def initial_population():
     """
@@ -80,6 +93,10 @@ _ext_constant_initial_population = ExtConstant(
     units="Mpeople",
     comp_type="Lookup",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_input_population",
+        "__lookup__": "_ext_lookup_input_population",
+    },
 )
 def input_population(x, final_subs=None):
     """
@@ -105,6 +122,7 @@ _ext_lookup_input_population = ExtLookup(
     units="Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_customized_cte_pop_variation"},
 )
 def p_customized_cte_pop_variation():
     """
@@ -129,6 +147,7 @@ _ext_constant_p_customized_cte_pop_variation = ExtConstant(
     units="1/Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_customized_year_pop_evolution"},
 )
 def p_customized_year_pop_evolution():
     """
@@ -153,6 +172,7 @@ _ext_constant_p_customized_year_pop_evolution = ExtConstant(
     units="Mpeople",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_p_pop_asymptote_millions"},
 )
 def p_pop_asymptote_millions():
     """
@@ -177,6 +197,11 @@ _ext_constant_p_pop_asymptote_millions = ExtConstant(
     units="1/Year",
     comp_type="Data",
     comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_p_timeseries_pop_growth_rate",
+        "__data__": "_ext_data_p_timeseries_pop_growth_rate",
+        "time": 1,
+    },
 )
 def p_timeseries_pop_growth_rate():
     """
@@ -199,7 +224,11 @@ _ext_data_p_timeseries_pop_growth_rate = ExtData(
 
 
 @component.add(
-    name="pop asymptote", units="people", comp_type="Auxiliary", comp_subtype="Normal"
+    name="pop asymptote",
+    units="people",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"p_pop_asymptote_millions": 1},
 )
 def pop_asymptote():
     return p_pop_asymptote_millions() * 1000000.0 - 10000000.0
@@ -210,6 +239,13 @@ def pop_asymptote():
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_pop_until_p_customized_year_pop_evolution": 1},
+    other_deps={
+        "_sampleiftrue_pop_until_p_customized_year_pop_evolution": {
+            "initial": {"population": 1},
+            "step": {"time": 1, "p_customized_year_pop_evolution": 1, "population": 1},
+        }
+    },
 )
 def pop_until_p_customized_year_pop_evolution():
     """
@@ -231,6 +267,17 @@ _sampleiftrue_pop_until_p_customized_year_pop_evolution = SampleIfTrue(
     units="people/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "p_customized_year_pop_evolution": 1,
+        "pop_variation_by_scen": 2,
+        "pop_variation_delay_3_step": 1,
+        "pop_variation_delay_2_step": 1,
+        "pop_variation_delay_1_step": 1,
+        "pop_variation_delay_4_step": 1,
+        "pop_variation_delay_5_step": 1,
+        "pop_variation_delay_6_step": 1,
+    },
 )
 def pop_variation():
     """
@@ -254,6 +301,13 @@ def pop_variation():
     units="people/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "pop_until_p_customized_year_pop_evolution": 1,
+        "pop_asymptote": 1,
+        "t_asymptote_pop": 2,
+        "time": 1,
+        "p_customized_year_pop_evolution": 1,
+    },
 )
 def pop_variation_asymptote_scen():
     """
@@ -271,6 +325,15 @@ def pop_variation_asymptote_scen():
     units="people/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "variation_historic_pop": 1,
+        "annual_population_growth_rate": 4,
+        "population": 4,
+        "pop_variation_asymptote_scen": 1,
+        "select_population_evolution_input": 4,
+        "p_customized_year_pop_evolution": 1,
+    },
 )
 def pop_variation_by_scen():
     """
@@ -307,6 +370,13 @@ def pop_variation_by_scen():
     units="people/Year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_pop_variation_delay_1_step": 1},
+    other_deps={
+        "_delayfixed_pop_variation_delay_1_step": {
+            "initial": {"pop_variation_by_scen": 1},
+            "step": {"pop_variation_by_scen": 1},
+        }
+    },
 )
 def pop_variation_delay_1_step():
     return _delayfixed_pop_variation_delay_1_step()
@@ -326,6 +396,13 @@ _delayfixed_pop_variation_delay_1_step = DelayFixed(
     units="people/Year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_pop_variation_delay_2_step": 1},
+    other_deps={
+        "_delayfixed_pop_variation_delay_2_step": {
+            "initial": {"pop_variation_by_scen": 1},
+            "step": {"pop_variation_by_scen": 1},
+        }
+    },
 )
 def pop_variation_delay_2_step():
     return _delayfixed_pop_variation_delay_2_step()
@@ -345,6 +422,13 @@ _delayfixed_pop_variation_delay_2_step = DelayFixed(
     units="people/Year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_pop_variation_delay_3_step": 1},
+    other_deps={
+        "_delayfixed_pop_variation_delay_3_step": {
+            "initial": {"pop_variation_by_scen": 1},
+            "step": {"pop_variation_by_scen": 1},
+        }
+    },
 )
 def pop_variation_delay_3_step():
     return _delayfixed_pop_variation_delay_3_step()
@@ -364,6 +448,13 @@ _delayfixed_pop_variation_delay_3_step = DelayFixed(
     units="people/Year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_pop_variation_delay_4_step": 1},
+    other_deps={
+        "_delayfixed_pop_variation_delay_4_step": {
+            "initial": {"pop_variation_by_scen": 1},
+            "step": {"pop_variation_by_scen": 1},
+        }
+    },
 )
 def pop_variation_delay_4_step():
     return _delayfixed_pop_variation_delay_4_step()
@@ -383,6 +474,13 @@ _delayfixed_pop_variation_delay_4_step = DelayFixed(
     units="people/Year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_pop_variation_delay_5_step": 1},
+    other_deps={
+        "_delayfixed_pop_variation_delay_5_step": {
+            "initial": {"pop_variation_by_scen": 1},
+            "step": {"pop_variation_by_scen": 1},
+        }
+    },
 )
 def pop_variation_delay_5_step():
     return _delayfixed_pop_variation_delay_5_step()
@@ -402,6 +500,13 @@ _delayfixed_pop_variation_delay_5_step = DelayFixed(
     units="people/Year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_pop_variation_delay_6_step": 1},
+    other_deps={
+        "_delayfixed_pop_variation_delay_6_step": {
+            "initial": {"pop_variation_by_scen": 1},
+            "step": {"pop_variation_by_scen": 1},
+        }
+    },
 )
 def pop_variation_delay_6_step():
     return _delayfixed_pop_variation_delay_6_step()
@@ -417,7 +522,17 @@ _delayfixed_pop_variation_delay_6_step = DelayFixed(
 
 
 @component.add(
-    name="Population", units="people", comp_type="Stateful", comp_subtype="Integ"
+    name="Population",
+    units="people",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_population": 1},
+    other_deps={
+        "_integ_population": {
+            "initial": {"initial_population": 1},
+            "step": {"pop_variation": 1},
+        }
+    },
 )
 def population():
     """
@@ -436,6 +551,7 @@ _integ_population = Integ(
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_select_population_evolution_input"},
 )
 def select_population_evolution_input():
     """
@@ -455,7 +571,18 @@ _ext_constant_select_population_evolution_input = ExtConstant(
 )
 
 
-@component.add(name="smooth pop", comp_type="Stateful", comp_subtype="Smooth")
+@component.add(
+    name="smooth pop",
+    comp_type="Stateful",
+    comp_subtype="Smooth",
+    depends_on={"_smooth_smooth_pop": 1},
+    other_deps={
+        "_smooth_smooth_pop": {
+            "initial": {"pop_variation_by_scen": 1},
+            "step": {"pop_variation_by_scen": 1},
+        }
+    },
+)
 def smooth_pop():
     return _smooth_smooth_pop()
 
@@ -474,6 +601,12 @@ _smooth_smooth_pop = Smooth(
     units="people/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "p_customized_year_pop_evolution": 1,
+        "pop_variation_by_scen": 1,
+        "smooth_pop": 1,
+    },
 )
 def smooth_probe():
     return if_then_else(
@@ -483,7 +616,12 @@ def smooth_probe():
     )
 
 
-@component.add(name="T asymptote pop", comp_type="Auxiliary", comp_subtype="Normal")
+@component.add(
+    name="T asymptote pop",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"target_year_pop_asymptote": 1, "p_customized_year_pop_evolution": 1},
+)
 def t_asymptote_pop():
     return (target_year_pop_asymptote() - p_customized_year_pop_evolution()) / 3
 
@@ -493,6 +631,7 @@ def t_asymptote_pop():
     units="Year",
     comp_type="Constant",
     comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_target_year_pop_asymptote"},
 )
 def target_year_pop_asymptote():
     """
@@ -517,6 +656,7 @@ _ext_constant_target_year_pop_asymptote = ExtConstant(
     units="people/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 3, "historic_population": 2},
 )
 def variation_historic_pop():
     """
@@ -534,6 +674,7 @@ def variation_historic_pop():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={"time": 3, "input_population": 2},
 )
 def variation_input_pop():
     return if_then_else(

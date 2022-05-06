@@ -33,10 +33,10 @@ __maintainer__ = "Eneko Martin"
 __status__ = "Development"
 
 # check PySD version
-if tuple(int(i) for i in pysd.__version__.split(".")) < (3, 0, 0):
+if tuple(int(i) for i in pysd.__version__.split(".")[:2]) < (3, 0):
     raise RuntimeError(
         "\n\n"
-        + "The current version of pymedeas models needs at least PySD 3.0.0"
+        + "The current version of pymedeas models needs at least PySD 3.0"
         + " You are running:\n\tPySD "
         + pysd.__version__
         + "\nPlease update PySD library with your package manager, "

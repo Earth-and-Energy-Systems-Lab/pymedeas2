@@ -237,6 +237,9 @@ class DataVensim(Data):
         for column in columns:
             file_name = ("[".join(column.split("[")[:-1]) or column)
             sub_name = file_name.replace("\"", "")
-            self.namespace[inverse_space[sub_name]] = file_name
+            if sub_name in inverse_space:
+                self.namespace[inverse_space[sub_name]] = file_name
+            else:
+                self.namespace[sub_name] = file_name
 
         self._variable_list = set(self.namespace)

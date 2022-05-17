@@ -39,6 +39,8 @@ Ef_{scarcity\_uranium}=  ((A_{Uranium}-0.8) \cdot 5)^2
 
 Then, the new planed nuclear capacity is calculated from the new nuclear capacity under planning plus replacement nuclear capacity less nuclear capacity under construction.
 
+\paragraph{Solar potentials in urban areas}
+
 
 \paragraph{RES electricity potentials}
 
@@ -48,7 +50,9 @@ Renewables potentials are limited by biophysical sustainable constraints, limiti
 
 \paragraph{RES electric capacities and generation}
 
-Energy generation from Renewable Energy Source (RES) from different sources (hydro, geothermal, solid biomass, oceanic, wind onshore, wind offshore and solar) is limited by the techno-sustainable potentials and its growth is defined in the "scenario.xslx" file and by the reduction of the capacity factor due tot the intermitency of RES. The module prioritize the use of biogas and waste as energy sources, and only after using this energy sources, it uses other RES. Desired growing rates of differet RES are defined at the "scenario.xslx" file, but also limited by several factors: storage capacity, reduction of capacity factor due to intermitency and EROI of each energy source.
+Renewable Energy Source (RES) capacity from different sources (hydro, geothermal, solid biomass, oceanic, wind onshore, wind offshore and solar) is limited by the techno-ecological potentials and its growth is defined in the "scenario.xslx" file, with objectives policies of total capacity installed by each RES every 5 years.  
+Then, this desired capacity is limited by the techno-ecological potential, that is read from "energy.xlsx" file and with values obtained from a literature review. The energy output of the installed capacity changes due to the reduction of the capacity factor caused by the intermitency of RES. The module prioritize the use of biogas and waste as energy sources, and only after using this energy sources, it uses other RES.
+
 
 \paragraph{RES electric supply by technology}
 
@@ -67,10 +71,19 @@ Once the model has calculated the total amount of electricity generated from RES
     \label{eq:FED-elect-NRE}
 \end{equation}
 
+
 \paragraph{RES electric overcapacity due to RES variability}
 
+The most abundant RES for the generation of electricity, solar and wind, are subject to temporal variability. Variable RES are characterized by short-term (e.g., cloudiness. day-night) and seasonal variability. A renewable mix scenario allows to partially mitigate the variablity of different RES. However, this complementarity is far from the compensation of different sources. In any region there is a certain probability of extreme combinations in the availability of natural resources. Moreover, there can be large annual variations in the availability of natural resources; for instance, the output of wind turbines in any given area can vary by up to 30\% from one year to the next.  It has been estimated that current electricity systems and grids can usually accommodate up to only 20\% electricity from renewable sources without a need for dedicated storage facilities. Thus, a certain level of: (1) storage, (2) grid development (3) overcapacity and/or (4) flexible demand management should then be considered if a high penetration RES electricity system is designed.
+
+
+Overcapacities are limited by the economic profitability of the power plant (i.e. large overcapacities imply low Cp). From a net energy perspective, overcapacities tend to lower the EROI, which could  similarly affect the net energy profitability of the plant.
+
 We assume that an increasing level of overcapacity of both dispatchable and variable RES is required when the variable RES increase their generation share in the electricity sector.Then, the used approach consists on estimating the reduction of the Cp of the RES power plants as a function of the penetration of variable RES in the electricity generation.
-Overcapacity of dispatchable RES is estimated taking as reference the study (NREL, 2012) which analyses the implications of different levels of RES penetration in USA, extrapolating the results (until 90\%) to the 100\% renewable scenario using a polynomial method (2nd order), considering that at 100\% penetration level of intermittent generation the Cp of baseloads plants would fall to zero. Then, the equation that describes this Cp reduction is:
+
+The RES for electricity generation can be classified as “baseload”, i.e. those sources that are able to supply a manageable (“dispachtable”) load such as hydro, 13 biomass and geothermal, and “variable” generation. The latter are characterized by differing levels of variability and limited predictability over various time scales, and include wind and solar technologies.
+
+Overcapacity of dispatchable RES is estimated taking as reference the study \cite{NREL2012} which analyses the implications of different levels of RES penetration in USA, extrapolating the results (until 90\%) to the 100\% renewable scenario using a polynomial method (2nd order), considering that at 100\% penetration level of intermittent generation the Cp of baseloads plants would fall to zero. Then, the equation that describes this Cp reduction is:
 
 \begin{equation}
     Cp_{red\_dispatchable}=-0.6209 \cdot S_{RES}^2-0.3998 \cdot S_{RES} + 1.0222

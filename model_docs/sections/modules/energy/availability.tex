@@ -4,7 +4,7 @@
 \note{Explain nuclear}
 
 
-This submodule calculates the availability of non-renewable energy sources: oil, natural gas, coal and uranium.
+The availability of non-renewable energy sources is calculated by each of the sources included in the model: oil, natural gas, coal and uranium.
 The model considers the following non-renewable energy resources:
 
 \begin{enumerate}
@@ -51,6 +51,7 @@ demand and maximum extraction.
     \label{eq:available_stock}
 \end{equation}
     
+\enric{Add  Literature review of depletion curves by fuel}
 
 \paragraph{Oil Extraction}
 The limitation of the oil resources, and availability of oil depends on two constraints: the stock (EJ) and the flows (Watts). The model priorizes the others NRE liquids fuels, then the oil demand is obtained as follows:
@@ -107,3 +108,11 @@ A= \frac{PED_i-PES_i}{PED_i}
 
 When the $PED<PES$ the abundance is always 1. The index i is the energy carrier: liquids, gases, solids, electricity and heat.
 Then, depending on the \emph{sensitivity to scarcity option} defined in the scenarios files, the perception of final energy scarcity of each fuel by economic sectors is obtained. This perception drives the fuel replacement and efficiency improvement. This perception of scarcity decreases on time depending on the \emph{energy scarcity forgeting time} defined also at the scenario files as the time in years that society takes to forget the percepticon of scarcity for economic sectors.
+
+\paragraph{Renewable energy sources (RES) availability}
+
+Although renewable energy is usually considered a huge abundant source of energy, there are technological and ecological limits to its development. . However, the large scale deployment of renewable alternatives faces serious challenges in relation to their integration in the electricity mix due to their intermittency, seasonality and uneven spatial distribution requiring storage, their lower energy density, their dependence on minerals and materials for the construction of power plants and related infrastructures and their associated environmental impacts, that pose problems on its fast and global growth. All this factors significantly reduce their sustainable potential.
+ 
+\enric{Include bibliography (A lot of information at the deliverable 4.1)}
+
+\enric{Detail all RES availability}

@@ -1,6 +1,6 @@
 """
 Module medeas_w
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.0.0
 """
 
 
@@ -251,24 +251,7 @@ def real_demand_by_sector():
 _data_real_demand_by_sector = TabData(
     "Real demand by sector",
     "real_demand_by_sector",
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "interpolate",
 )
 
@@ -322,23 +305,8 @@ _data_real_final_energy_by_sector_and_fuel = TabData(
     "Real final energy by sector and fuel",
     "real_final_energy_by_sector_and_fuel",
     {
-        "final sources": ["electricity", "heat", "liquids", "gases", "solids"],
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ],
+        "final sources": _subscript_dict["final sources"],
+        "sectors": _subscript_dict["sectors"],
     },
     "interpolate",
 )
@@ -376,24 +344,7 @@ def real_total_output_by_sector():
 _data_real_total_output_by_sector = TabData(
     "Real total output by sector",
     "real_total_output_by_sector",
-    {
-        "sectors": [
-            "Agriculture",
-            "Mining quarrying and energy supply",
-            "Food Beverages and Tobacco",
-            "Textiles and leather etc",
-            "Coke refined petroleum nuclear fuel and chemicals etc",
-            "Electrical and optical equipment and Transport equipment",
-            "Other manufacturing",
-            "Construction",
-            "Distribution",
-            "Hotels and restaurant",
-            "Transport storage and communication",
-            "Financial Intermediation",
-            "Real estate renting and busine activitie",
-            "Non Market Service",
-        ]
-    },
+    {"sectors": _subscript_dict["sectors"]},
     "interpolate",
 )
 

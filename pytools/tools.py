@@ -5,6 +5,7 @@ __status__ = "Development"
 
 import sys
 import time
+import shutil
 from datetime import datetime
 from pathlib import Path
 from argparse import Namespace
@@ -16,15 +17,16 @@ from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
 import pandas as pd
+import pysd
 
 # PySD imports for replaced functions
-from pysd.py_backend.statefuls import Model
+from pysd.py_backend.model import Model
 
 
 from . import PROJ_FOLDER
 from .logger.logger import log
 from .argparser import parser, config
-from .config import Params, ParentModel, read_model_config
+from .config import Params, ParentModel, read_model_config, read_config
 
 
 def get_initial_user_input(args: Union[List, None] = None) -> Namespace:
@@ -571,26 +573,86 @@ def create_parent_models_data_file_paths(config: Params) -> List[Path]:
     return [parent.results_file_path for parent in config.model.parent]
 
 
-def select_scenario_sheet(model: Model, scen_sheet_name: str) -> None:
+def load(config: Params, data_files: Union[list, None] = None) -> Model:
     """
-    Selects scenario sheet to load
+    Load PySD model and changes the paths to load excel data.
 
     Parameters
     ----------
-    model: pysd.Model
-        Model object.
-    scen_sheet_name: str
-        Name of the scenario sheet.
+    config: dict
+        Configuration parameters.
+    data_files: list or None (optional)
+        List of parent output file paths. Default is None.
 
     Returns
     -------
-    None
+    pysd.Model
 
     """
+    # Copy _subscripts.json
+    target = config.model.model_file.parent /\
+        f"_subscripts_{config.model.model_file.with_suffix('.json').name}"
+    shutil.copy(
+        config.model.model_file.parent.parent / config.aggregation /
+        config.model.subscripts_file,
+        target
+        )
+
+    # Load PySD model
+    model = pysd.load(
+        str(config.model.model_file), initialize=False,
+        data_files=data_files)
+
+    if target.exists():
+        target.unlink()
+        # target.unlink(missing_ok=True) should work but doesn't for some
+        # versions of pathlib
+
+    # Modify external elements information
+    scen_file =\
+        f"../../scenarios/{config.aggregation}/{config.model.scenario_file}"
+    input_folder = f"../{config.aggregation}/"
     for element in model._external_elements:
         # Replace only scenario sheets
         element.sheets = [
-            scen_sheet_name if "../../scenarios/scen" in file_name
+            config.scenario_sheet if "../../scenarios/scen" in file_name
+            else config.model.inputs_sheet if sheet_name != "Global"
             else sheet_name
             for sheet_name, file_name in zip(element.sheets, element.files)
         ]
+        # Select he input files from the agrregation
+        element.files = [
+            scen_file
+            if file_name.startswith("../../scenarios/")
+            else file_name.replace("../", input_folder)
+            for file_name in element.files
+        ]
+
+    return model
+
+
+def load_model(aggregation: str = "14sectors_cat",
+               region: str = "pymedeas_w",
+               data_files: Union[list, None] = None) -> Model:
+    """
+    Load PySD model and changes the paths to load excel data.
+
+    Parameters
+    ----------
+    aggregation: str (optional)
+        Aggregation to load the model. Default is '14sectors_cat'.
+    region: str (optional)
+        Region to load the model.  Default is 'pymedeas_w'.
+    data_files: list or None (optional)
+        List of parent output file paths. Default is None.
+
+    Returns
+    -------
+    pysd.Model
+
+    """
+    user_config = read_config()
+    user_config.aggregation = aggregation
+    user_config.region = region
+    read_model_config(user_config)
+    return load(user_config, data_files)

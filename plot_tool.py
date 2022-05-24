@@ -17,8 +17,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg,\
     NavigationToolbar2Tk
 from matplotlib.figure import Figure
 from matplotlib.ticker import MultipleLocator
-import pysd
 
+from pytools.tools import load
 from pytools.config import read_config, read_model_config
 from pytools.data_manager import DataContainer, DataFile, DataLoaded,\
                                  DataVensim
@@ -72,7 +72,7 @@ class PlotTool(tk.Frame):
 
         if not config:
             # Ask user for config
-            self.get_config()
+            self.get_config_aggr()
         else:
             self.configure_data(config)
             self.init_window()
@@ -84,8 +84,7 @@ class PlotTool(tk.Frame):
         self.default_list = config.model.out_default
 
         # Get model information (documentation, units, namespace)
-        model = pysd.load(config.model.model_file, initialize=False)
-        self.doc = model.doc
+        self.doc = load(config).doc
         self.doc["Clean Name"] = self.doc["Real Name"].apply(self.clean_name)
 
         # setting the default folder to store saved plots
@@ -99,33 +98,68 @@ class PlotTool(tk.Frame):
         else:
             return name
 
-    def get_config(self):
+    def get_config_aggr(self):
         """Popup window for selecting configuration"""
-        with _root.joinpath("pytools/models.json").open() as mod_pars:
-            model_pars = json.load(mod_pars)
+        with _root.joinpath("pytools/models.json").open(encoding="utf-8")\
+             as mod_pars:
+            self.aggr_pars = json.load(mod_pars)
 
         self.popup = tk.Toplevel()
         self.popup.wm_title("Select configuration")
 
-        tk.Label(self.popup, text="Select origin model to load outputs").grid(
-            column=0, row=0, padx=20, pady=20)
+        tk.Label(
+            self.popup, text="Select origin aggregation to load outputs"
+            ).grid(column=0, row=0, padx=20, pady=20)
 
-        self.config = tk.StringVar()
-        tk.OptionMenu(self.popup, self.config, *model_pars.keys()).grid(
-            column=0, row=1, padx=20, pady=10)
+        self.aggregation = tk.StringVar()
+        tk.OptionMenu(
+            self.popup, self.aggregation,
+            *self.aggr_pars.keys()
+            ).grid(column=0, row=1, padx=20, pady=10)
 
-        tk.Button(self.popup, text="Continue", command=self.set_config).grid(
-            column=0, row=2, padx=20, pady=10)
+        tk.Button(
+            self.popup, text="Continue", command=self.update_aggr
+            ).grid(column=0, row=3, padx=20, pady=10)
+
+        self.master.update()
+
+    def update_aggr(self):
+        if self.aggregation.get():
+            for widget in self.popup.winfo_children():
+                widget.destroy()
+            self.get_config_region()
+        else:
+            tk.messagebox.showwarning(
+                title="Select configuration",
+                message="Please select a configuration in the dropdown.")
+
+    def get_config_region(self):
+        """Popup window for selecting configuration"""
+        tk.Label(
+            self.popup, text="Select origin model to load outputs"
+            ).grid(column=0, row=0, padx=20, pady=20)
+
+        self.region = tk.StringVar()
+        tk.OptionMenu(
+            self.popup, self.region,
+            *self.aggr_pars[self.aggregation.get()].keys()
+            ).grid(column=0, row=1, padx=20, pady=10)
+
+        tk.Button(
+            self.popup, text="Continue", command=self.set_config
+            ).grid(column=0, row=3, padx=20, pady=10)
 
         self.master.update()
 
     def set_config(self):
         """Set model configuration from popup results"""
-        if self.config.get():
+        if self.region.get():
             config = read_config()
-            config.region = self.config.get()
+            config.aggregation = self.aggregation.get()
+            config.region = self.region.get()
             self.popup.destroy()
-            self.configure_data(read_model_config(config))
+            read_model_config(config)
+            self.configure_data(config)
             self.init_window()
         else:
             tk.messagebox.showwarning(
@@ -426,11 +460,13 @@ if __name__ == '__main__':
     # load configuration file
     if len(sys.argv) == 1:
         main()
-    elif len(sys.argv) == 2:
+    elif len(sys.argv) == 3:
         config = read_config()
-        config.region = sys.argv[1]
+        config.aggregation = sys.argv[1]
+        config.region = sys.argv[2]
         main(read_model_config(config))
     else:
         raise ValueError(
-            "python plot_tool.py only accepts 1 argument, corresponding"
-            " to the region (e.g.: python plot_tool.py pymedeas_eu)")
+            "python plot_tool.py only accepts 2 argument2, corresponding"
+            " to the aggregation and the region "
+            "(e.g.: python plot_tool.py 14sectors_cat pymedeas_eu)")

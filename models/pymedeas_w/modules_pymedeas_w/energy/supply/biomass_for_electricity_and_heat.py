@@ -1,6 +1,6 @@
 """
 Module biomass_for_electricity_and_heat
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.0.1
 """
 
 

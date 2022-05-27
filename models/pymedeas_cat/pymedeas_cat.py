@@ -22,7 +22,7 @@ from pysd.py_backend.data import TabData
 from pysd.py_backend.utils import load_model_data, load_modules
 from pysd import Component
 
-__pysd_version__ = "3.0.0-dev"
+__pysd_version__ = "3.0.1"
 
 __data = {"scope": None, "time": lambda: 0}
 

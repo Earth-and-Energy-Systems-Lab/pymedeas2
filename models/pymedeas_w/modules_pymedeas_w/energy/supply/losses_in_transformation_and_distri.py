@@ -1,6 +1,6 @@
 """
 Module losses_in_transformation_and_distri
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.0.1
 """
 
 

@@ -1,6 +1,6 @@
 """
 Module demand_for_ev_batteries
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -117,31 +117,6 @@ def initial_cumulated_material_requirements_for_ev_batteries_1995():
 
 
 @component.add(
-    name="materials required for EV batteries Mt",
-    units="Mt",
-    subscripts=["materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "newreplaced_batteries_tw": 1,
-        "materials_per_new_capacity_installed_ev_batteries": 1,
-        "m_per_t": 1,
-        "kg_per_mt": 1,
-    },
-)
-def materials_required_for_ev_batteries_mt():
-    """
-    Annual materials required for the fabrication of EV batteries.
-    """
-    return (
-        newreplaced_batteries_tw()
-        * materials_per_new_capacity_installed_ev_batteries()
-        * m_per_t()
-        / kg_per_mt()
-    )
-
-
-@component.add(
     name="materials per new capacity installed EV batteries",
     units="kg/MW",
     subscripts=["materials"],
@@ -167,6 +142,31 @@ _ext_constant_materials_per_new_capacity_installed_ev_batteries = ExtConstant(
     {"materials": _subscript_dict["materials"]},
     "_ext_constant_materials_per_new_capacity_installed_ev_batteries",
 )
+
+
+@component.add(
+    name="materials required for EV batteries Mt",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "newreplaced_batteries_tw": 1,
+        "materials_per_new_capacity_installed_ev_batteries": 1,
+        "m_per_t": 1,
+        "kg_per_mt": 1,
+    },
+)
+def materials_required_for_ev_batteries_mt():
+    """
+    Annual materials required for the fabrication of EV batteries.
+    """
+    return (
+        newreplaced_batteries_tw()
+        * materials_per_new_capacity_installed_ev_batteries()
+        * m_per_t()
+        / kg_per_mt()
+    )
 
 
 @component.add(

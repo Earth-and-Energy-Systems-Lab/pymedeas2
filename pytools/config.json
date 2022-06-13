@@ -6,6 +6,7 @@
         "return_timestamp": 1.0,
         "update_initials": {}
     },
+    "aggregation": "14sectors_cat",
     "region": "pymedeas_w",
     "silent": false,
     "headless": false,

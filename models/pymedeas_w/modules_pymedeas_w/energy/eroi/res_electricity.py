@@ -1,6 +1,6 @@
 """
 Module res_electricity
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -46,7 +46,7 @@ def static_eroi_res_elec():
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[["hydro"]] = if_then_else(
-        float(fei_over_lifetime_res_elec_dispatch().loc["hydro"]) == 0,
+        float(fei_over_lifetime_res_elec_dispatch().loc["hydro"]) <= 0,
         lambda: 0,
         lambda: float(output_elec_over_lifetime_res_elec().loc["hydro"])
         / (
@@ -201,8 +201,8 @@ def ced_new_cap_per_material_res_elec_var():
         "materials_for_om_per_capacity_installed_res_elec": 1,
         "energy_cons_per_unit_of_material_cons_for_res_elec": 1,
         "lifetime_res_elec": 1,
-        "kg_per_mt": 2,
         "m_per_t": 1,
+        "kg_per_mt": 2,
         "mj_per_ej": 1,
     },
 )
@@ -343,8 +343,8 @@ def cedtot_per_material_res_elec_var():
     depends_on={
         "res_elec_variables": 1,
         "lifetime_res_elec": 1,
-        "cpini_res_elec": 1,
         "twe_per_twh": 1,
+        "cpini_res_elec": 1,
         "ej_per_twh": 1,
         "eroiini_res_elec_dispatch": 1,
         "quality_of_electricity_2015": 1,
@@ -503,8 +503,8 @@ def fei_over_lifetime_res_elec_dispatch():
         "share_energy_requirements_for_decom_res_elec": 1,
         "ced_om_over_lifetime_res_elec_var": 1,
         "quality_of_electricity": 1,
-        "output_elec_over_lifetime_res_elec": 1,
         "selfelectricity_consumption_res_elec": 1,
+        "output_elec_over_lifetime_res_elec": 1,
     },
 )
 def fei_over_lifetime_res_elec_var():
@@ -554,7 +554,7 @@ def fei_res_elec_var():
     units="Dmnl",
     subscripts=["RES elec"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={"__external__": "_ext_constant_grid_correction_factor_res_elec"},
 )
 def grid_correction_factor_res_elec():
@@ -647,7 +647,7 @@ def res_elec_variables():
     units="Dmnl",
     subscripts=["RES elec"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={"__external__": "_ext_constant_selfelectricity_consumption_res_elec"},
 )
 def selfelectricity_consumption_res_elec():
@@ -677,7 +677,7 @@ _ext_constant_selfelectricity_consumption_res_elec = ExtConstant(
     units="Dmnl",
     subscripts=["RES elec"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={
         "__external__": "_ext_constant_share_energy_requirements_for_decom_res_elec"
     },

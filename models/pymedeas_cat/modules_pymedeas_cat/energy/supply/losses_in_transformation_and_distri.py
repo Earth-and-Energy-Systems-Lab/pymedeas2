@@ -1,6 +1,6 @@
 """
 Module losses_in_transformation_and_distri
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -196,10 +196,10 @@ def historic_share_pipeline_transport():
     depends_on={
         "pes_total_oil_ej_aut": 1,
         "imports_aut_total_oil_from_row_ej": 1,
-        "extraction_coal_aut": 1,
         "imports_aut_coal_from_row_ej": 1,
-        "pes_nat_gas_aut_1": 1,
+        "extraction_coal_aut": 1,
         "imports_aut_nat_gas_from_row_ej": 1,
+        "pes_nat_gas_aut_1": 1,
     },
 )
 def pes_fossil_fuel_extraction():

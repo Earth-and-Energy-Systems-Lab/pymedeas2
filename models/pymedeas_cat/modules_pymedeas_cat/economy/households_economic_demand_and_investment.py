@@ -1,32 +1,7 @@
 """
 Module households_economic_demand_and_investment
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
-
-
-@component.add(
-    name="beta 1 HD",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_beta_1_hd"},
-)
-def beta_1_hd():
-    """
-    Beta coefficient of panel data regression of households demand.
-    """
-    return _ext_constant_beta_1_hd()
-
-
-_ext_constant_beta_1_hd = ExtConstant(
-    "../economy.xlsx",
-    "Catalonia",
-    "beta_1_HD",
-    {},
-    _root,
-    {},
-    "_ext_constant_beta_1_hd",
-)
 
 
 @component.add(
@@ -107,6 +82,31 @@ _ext_constant_beta_1_gfcf = ExtConstant(
 
 
 @component.add(
+    name="beta 1 HD",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_beta_1_hd"},
+)
+def beta_1_hd():
+    """
+    Beta coefficient of panel data regression of households demand.
+    """
+    return _ext_constant_beta_1_hd()
+
+
+_ext_constant_beta_1_hd = ExtConstant(
+    "../economy.xlsx",
+    "Catalonia",
+    "beta_1_HD",
+    {},
+    _root,
+    {},
+    "_ext_constant_beta_1_hd",
+)
+
+
+@component.add(
     name="GFCF not covered",
     units="Mdollars/Year",
     subscripts=["sectors"],
@@ -114,8 +114,8 @@ _ext_constant_beta_1_gfcf = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "real_gfcf_by_sector": 1,
         "gross_fixed_capital_formation": 1,
+        "real_gfcf_by_sector": 1,
     },
 )
 def gfcf_not_covered():
@@ -254,7 +254,7 @@ _integ_household_demand = Integ(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "household_demand": 1, "real_household_demand_by_sector": 1},
+    depends_on={"time": 1, "real_household_demand_by_sector": 1, "household_demand": 1},
 )
 def household_demand_not_covered():
     """
@@ -336,11 +336,11 @@ def total_gfcf():
     depends_on={
         "gross_fixed_capital_formation": 1,
         "beta_0_gfcf": 1,
+        "cc_total": 2,
+        "variation_cc": 1,
         "variation_historic_gfcf": 1,
         "beta_1_gfcf": 2,
-        "variation_cc": 1,
         "time": 1,
-        "cc_total": 2,
     },
 )
 def variation_gfcf():
@@ -402,8 +402,8 @@ def variation_historic_gfcf():
         "time": 1,
         "variation_historic_demand": 1,
         "beta_0_hd": 1,
-        "variation_lc": 1,
         "lc": 2,
+        "variation_lc": 1,
         "beta_1_hd": 2,
     },
 )

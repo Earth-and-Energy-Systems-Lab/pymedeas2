@@ -1,6 +1,6 @@
 """
 Module total_ghg_emissions
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -112,8 +112,8 @@ _ext_data_afforestation_program_2020 = ExtData(
     depends_on={
         "afforestation_program_2020": 1,
         "activate_afforestation_program": 1,
-        "mt_per_gt": 1,
         "c_per_co2": 1,
+        "mt_per_gt": 1,
     },
 )
 def afforestation_program_2020_gtco2():
@@ -134,9 +134,9 @@ def afforestation_program_2020_gtco2():
     comp_subtype="Normal",
     depends_on={
         "gco2_per_mj_conv_gas": 1,
+        "pes_tot_biogas_for_heatcom": 1,
         "solid_biofuels_emissions_relevant_ej": 1,
         "oil_liquids_saved_by_biofuels_ej": 1,
-        "pes_tot_biogas_for_heatcom": 1,
         "mj_per_ej": 1,
         "g_per_gt": 1,
     },
@@ -475,9 +475,9 @@ def co2_emissions_unconv_gas():
     comp_subtype="Normal",
     depends_on={
         "real_extraction_unconv_oil_emissions_relevant_ej": 1,
-        "adapt_emissions_shale_oil": 1,
         "gco2_per_mj_unconv_oil": 2,
         "gco2_per_mj_shale_oil": 1,
+        "adapt_emissions_shale_oil": 1,
         "mj_per_ej": 1,
         "g_per_gt": 1,
     },

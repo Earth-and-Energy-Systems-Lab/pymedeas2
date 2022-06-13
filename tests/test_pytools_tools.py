@@ -3,22 +3,54 @@ import pytest
 from datetime import datetime
 import numpy as np
 import pandas as pd
+from pysd.py_backend.model import Model
 
 import pytools.tools as tools
 
-world = ["pymedeas_w"]
-all_regions = ["pymedeas_w", "pymedeas_eu", "pymedeas_cat"]
-sub_regions = ["pymedeas_eu", "pymedeas_cat"]
+world = [
+    ("14sectors_cat", "pymedeas_w")
+]
+all_regions = [
+    ("14sectors_cat", "pymedeas_w"),
+    ("14sectors_cat", "pymedeas_eu"),
+    ("14sectors_cat", "pymedeas_cat"),
+    ("16sectors_qb", "pymedeas_w"),
+    ("16sectors_qb", "pymedeas_qb")
+]
+sub_regions = [
+    ("14sectors_cat", "pymedeas_eu"),
+    ("14sectors_cat", "pymedeas_cat"),
+    ("16sectors_qb", "pymedeas_qb")
+]
 
 
-@pytest.mark.parametrize("region", all_regions, ids=all_regions)
-def test_update_config_from_user_input_defaults(region, default_config):
+@pytest.mark.parametrize(
+    "aggregation,region",
+    all_regions,
+    ids=[">".join(region) for region in all_regions]
+)
+def test_update_config_from_user_input_defaults(aggregation,
+                                                region, default_config):
     """Update config from user imput"""
-    options = tools.get_initial_user_input(["-m", region])
+    options = tools.get_initial_user_input(["-a", aggregation, "-m", region])
     assert tools.update_config_from_user_input(options) == default_config
 
 
-@pytest.mark.parametrize("region", ["pymedeas_eu"])
+@pytest.mark.parametrize(
+    "aggregation,region",
+    all_regions,
+    ids=[">".join(region) for region in all_regions]
+)
+def test_load_model(aggregation, region, default_config):
+    """Update config from user imput"""
+    model = tools.load_model(aggregation, region)
+    assert isinstance(model, Model)
+
+
+@pytest.mark.parametrize(
+    "aggregation,region",
+    [("14sectors_cat", "pymedeas_eu")]
+)
 def test_update_config_from_user_input_not_raising(
       cli_input_not_raises, expected_conf_cli_input_long_and_short):
 
@@ -78,7 +110,11 @@ def test_update_config_from_user_input_raises_filenotfounderror(
         tools.update_config_from_user_input(options)
 
 
-@pytest.mark.parametrize("region", all_regions, ids=all_regions)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    all_regions,
+    ids=[">".join(region) for region in all_regions]
+)
 def test__rename_old_simulation_results_file_exists(default_config_tmp):
     """Rename old simulations results"""
     file_path = default_config_tmp.model.out_folder.joinpath(
@@ -105,8 +141,11 @@ def test__rename_old_simulation_results_file_exists(default_config_tmp):
     assert default_config_tmp.model_arguments.results_fpath == file_path
     assert new_file_path.is_file()
 
-
-@pytest.mark.parametrize("region", all_regions, ids=all_regions)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    all_regions,
+    ids=[">".join(region) for region in all_regions]
+)
 def test__rename_old_simulation_results_file_not_exists(default_config_tmp):
     """Do not rename old simulations results"""
     original_path = default_config_tmp.model_arguments.results_fpath = \
@@ -122,9 +161,13 @@ def test__rename_old_simulation_results_file_not_exists(default_config_tmp):
     assert default_config_tmp.model_arguments.results_fpath == original_path
 
 
-@pytest.mark.parametrize("region", world, ids=world)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    world,
+    ids=[">".join(region) for region in world]
+)
 def test_store_results_csv(mocker, caplog, default_config_tmp,
-                        default_results):
+                           default_results):
 
     # set the path of the results file to a tmp_path
     default_config_tmp.model_arguments.results_fpath = \
@@ -133,7 +176,7 @@ def test_store_results_csv(mocker, caplog, default_config_tmp,
 
     # mock the function so it just returns the default results file path
     mocker.patch('pytools.tools._rename_old_simulation_results',
-                return_value=default_config_tmp)
+                 return_value=default_config_tmp)
 
     with caplog.at_level(logging.INFO):
         tools.store_results_csv(default_results, default_config_tmp)
@@ -144,7 +187,11 @@ def test_store_results_csv(mocker, caplog, default_config_tmp,
     assert default_config_tmp.model_arguments.results_fpath.is_file()
 
 
-@pytest.mark.parametrize("region", world, ids=world)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    world,
+    ids=[">".join(region) for region in world]
+)
 def test_store_results_csv_df_has_nans(
      mocker, caplog, default_config_tmp):
 
@@ -166,7 +213,11 @@ def test_store_results_csv_df_has_nans(
         assert caplog.messages[0].startswith("There are NaN's in the")
 
 
-@pytest.mark.parametrize("region", world, ids=world)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    world,
+    ids=[">".join(region) for region in world]
+)
 def test_select_model_outputs_silent(default_config_tmp,
                                      model):
 
@@ -182,7 +233,11 @@ def test_select_model_outputs_silent(default_config_tmp,
         sorted(default_config_tmp.model.out_default)
 
 
-@pytest.mark.parametrize("region", world, ids=world)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    world,
+    ids=[">".join(region) for region in world]
+)
 def test_select_model_outputs_select_default(default_config_tmp,
                                              model):
 
@@ -191,7 +246,11 @@ def test_select_model_outputs_select_default(default_config_tmp,
         sorted(default_config_tmp.model.out_default)
 
 
-@pytest.mark.parametrize("region", world, ids=world)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    world,
+    ids=[">".join(region) for region in world]
+)
 def test_select_model_outputs_comma_separated_variables(mocker,
                                                         default_config_tmp,
                                                         model):
@@ -207,7 +266,11 @@ def test_select_model_outputs_comma_separated_variables(mocker,
         sorted(return_vars + default_config_tmp.model.out_default)
 
 
-@pytest.mark.parametrize("region", world, ids=world)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    world,
+    ids=[">".join(region) for region in world]
+)
 def test_select_model_outputs_comma_separated_variables_with_plus(
      mocker, default_config_tmp, model):
 
@@ -227,7 +290,11 @@ def test_select_model_outputs_comma_separated_variables_with_plus(
                       default_config_tmp.model.out_default + return_vars)
 
 
-@pytest.mark.parametrize("region", world, ids=world)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    world,
+    ids=[">".join(region) for region in world]
+)
 def test_select_model_outputs_all_outputs_input(mocker,
                                                 all_outputs,
                                                 default_config_tmp,
@@ -241,7 +308,11 @@ def test_select_model_outputs_all_outputs_input(mocker,
                   default_config_tmp, model)) == all_outputs
 
 
-@pytest.mark.parametrize("region", world, ids=world)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    world,
+    ids=[">".join(region) for region in world]
+)
 def test_select_model_outputs_all_outputs_select_all(all_outputs,
                                                      default_config_tmp,
                                                      model):
@@ -253,35 +324,11 @@ def test_select_model_outputs_all_outputs_select_all(all_outputs,
                   select="all")) == all_outputs
 
 
-@pytest.mark.parametrize("region", world, ids=world)
-def test_select_scenario_sheet(model, default_config_tmp):
-
-    sheet = default_config_tmp.scenario_sheet
-
-    # does not return
-    assert tools.select_scenario_sheet(model, sheet) is None
-
-    assert getattr(
-        model.components,
-        "_ext_constant_current_mineral_reserves_mt"
-        ).sheets == ["Global"]
-    assert getattr(
-        model.components,
-        "_ext_constant_start_policy_leave_in_ground_coal"
-        ).sheets == [sheet]
-
-    tools.select_scenario_sheet(model, "GND")
-    assert getattr(
-        model.components,
-        "_ext_constant_current_mineral_reserves_mt"
-        ).sheets == ["Global"]
-    assert getattr(
-        model.components,
-        "_ext_constant_start_policy_leave_in_ground_coal"
-        ).sheets == ["GND"]
-
-
-@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    sub_regions,
+    ids=[">".join(region) for region in sub_regions]
+)
 def test_user_select_data_file_headless(mocker, default_config_tmp):
 
     files = [default_config_tmp.model.parent[0].default_results_folder.joinpath(
@@ -297,7 +344,11 @@ def test_user_select_data_file_headless(mocker, default_config_tmp):
     assert tools.user_select_data_file_headless(parent) == files[2]
 
 
-@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    sub_regions,
+    ids=[">".join(region) for region in sub_regions]
+)
 def test_user_select_data_file_headless_input_number_outside_bounds(
      mocker, default_config_tmp):
 
@@ -309,7 +360,11 @@ def test_user_select_data_file_headless_input_number_outside_bounds(
         tools.user_select_data_file_headless(parent)
 
 
-@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    sub_regions,
+    ids=[">".join(region) for region in sub_regions]
+)
 def test_user_select_data_file_headless_invalid_input_type(
      mocker, default_config_tmp):
     """Error when invalid input type for parent files"""
@@ -332,7 +387,11 @@ def test_user_select_data_file_headless_invalid_input_type(
     assert e.value.code == 0
 
 
-@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    sub_regions,
+    ids=[">".join(region) for region in sub_regions]
+)
 def test_user_select_data_file_headless_missing_results_files(
      default_config_tmp):
     """Error when missing results for parent models"""
@@ -341,7 +400,11 @@ def test_user_select_data_file_headless_missing_results_files(
             default_config_tmp.model.parent[0])
 
 
-@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    sub_regions,
+    ids=[">".join(region) for region in sub_regions]
+)
 def test_create_parent_models_data_file_paths_silent_no_paths_from_user(
      default_config_tmp):
     """
@@ -356,7 +419,11 @@ def test_create_parent_models_data_file_paths_silent_no_paths_from_user(
     assert e.value.code == 0
 
 
-@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    sub_regions,
+    ids=[">".join(region) for region in sub_regions]
+)
 def test_create_parent_models_data_file_paths_no_silent_paths_from_user(
      default_config_tmp):
     """
@@ -377,7 +444,11 @@ def test_create_parent_models_data_file_paths_no_silent_paths_from_user(
 
 
 @pytest.mark.parametrize("headless", [True, False], ids=["headless", "no-headless"])
-@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    sub_regions,
+    ids=[">".join(region) for region in sub_regions]
+)
 def test_create_parent_models_data_file_paths_not_silent(mocker,
                                                          headless,
                                                          default_config_tmp):
@@ -405,12 +476,16 @@ def test_create_parent_models_data_file_paths_not_silent(mocker,
         break
 
 
-@pytest.mark.parametrize("region", sub_regions, ids=sub_regions)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    sub_regions,
+    ids=[">".join(region) for region in sub_regions]
+)
 def test_run_no_file_path_from_user(mocker, capsys, default_config_tmp, model):
 
     # mocking the return of the run method of the pysd Model class
     return_df = pd.DataFrame(data={"a": [1, 2, 3], "b": [4, 5, 6]})
-    mocker.patch("pysd.py_backend.statefuls.Model.run", return_value=return_df)
+    mocker.patch("pysd.py_backend.model.Model.run", return_value=return_df)
 
     # configuring parents file paths
     for parent in default_config_tmp.model.parent:
@@ -433,12 +508,16 @@ def test_run_no_file_path_from_user(mocker, capsys, default_config_tmp, model):
                 )
 
 
-@pytest.mark.parametrize("region", world, ids=world)
+@pytest.mark.parametrize(
+    "aggregation,region",
+    world,
+    ids=[">".join(region) for region in world]
+)
 def test_run_file_path_from_user(mocker, default_config_tmp, model):
 
     # mocking the return of the run method of the pysd Model class
     return_df = pd.DataFrame(data={"a": [1, 2, 3], "b": [4, 5, 6]})
-    mocker.patch("pysd.py_backend.statefuls.Model.run", return_value=return_df)
+    mocker.patch("pysd.py_backend.model.Model.run", return_value=return_df)
 
     default_config_tmp.model_arguments.results_fname = "results.csv"
 

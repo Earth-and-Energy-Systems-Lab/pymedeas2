@@ -1,6 +1,6 @@
 """
 Module households_transport
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -9,7 +9,7 @@ Translated using PySD version 3.0.0-dev
     units="EJ/T$",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"liq_4w": 1, "demand_h": 1, "percent_4w_liq": 1},
+    depends_on={"liq_4w": 1, "percent_4w_liq": 1, "demand_h": 1},
 )
 def a1_coef_th():
     """
@@ -23,7 +23,7 @@ def a1_coef_th():
     units="EJ/T$",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"liq_2w": 1, "demand_h": 1, "percent_2w_liq": 1},
+    depends_on={"liq_2w": 1, "percent_2w_liq": 1, "demand_h": 1},
 )
 def a2_coef_th():
     """
@@ -187,31 +187,6 @@ _ext_constant_demand_h = ExtConstant(
 
 
 @component.add(
-    name="Energy intensity of households transport",
-    units="EJ/T$",
-    subscripts=["final sources"],
-    comp_type="Stateful",
-    comp_subtype="Integ",
-    depends_on={"_integ_energy_intensity_of_households_transport": 1},
-    other_deps={
-        "_integ_energy_intensity_of_households_transport": {
-            "initial": {"initial_energy_intensity_of_households_transport_2009": 1},
-            "step": {"variation_energy_intensity_of_households_transport": 1},
-        }
-    },
-)
-def energy_intensity_of_households_transport():
-    return _integ_energy_intensity_of_households_transport()
-
-
-_integ_energy_intensity_of_households_transport = Integ(
-    lambda: variation_energy_intensity_of_households_transport(),
-    lambda: initial_energy_intensity_of_households_transport_2009(),
-    "_integ_energy_intensity_of_households_transport",
-)
-
-
-@component.add(
     name="effects shortage elec on EV",
     units="Dmnl",
     comp_type="Auxiliary",
@@ -246,6 +221,31 @@ def effects_shortage_gas_h_veh():
 
 
 @component.add(
+    name="Energy intensity of households transport",
+    units="EJ/T$",
+    subscripts=["final sources"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_energy_intensity_of_households_transport": 1},
+    other_deps={
+        "_integ_energy_intensity_of_households_transport": {
+            "initial": {"initial_energy_intensity_of_households_transport_2009": 1},
+            "step": {"variation_energy_intensity_of_households_transport": 1},
+        }
+    },
+)
+def energy_intensity_of_households_transport():
+    return _integ_energy_intensity_of_households_transport()
+
+
+_integ_energy_intensity_of_households_transport = Integ(
+    lambda: variation_energy_intensity_of_households_transport(),
+    lambda: initial_energy_intensity_of_households_transport_2009(),
+    "_integ_energy_intensity_of_households_transport",
+)
+
+
+@component.add(
     name="H 2w elec adapt growth",
     units="1/Year",
     comp_type="Auxiliary",
@@ -266,8 +266,8 @@ def h_2w_elec_adapt_growth():
     depends_on={
         "time": 2,
         "t_fin_hveh": 2,
-        "t_ini_hveh": 2,
         "aux_hist_h": 1,
+        "t_ini_hveh": 2,
         "p_h_vehicle": 1,
         "activate_policy_h_transp": 1,
         "percent_h_vehicles_tini": 1,
@@ -309,8 +309,8 @@ def h_2w_liq_adapt_growth():
     depends_on={
         "time": 2,
         "t_fin_hveh": 2,
-        "t_ini_hveh": 2,
         "aux_hist_h": 1,
+        "t_ini_hveh": 2,
         "p_h_vehicle": 1,
         "activate_policy_h_transp": 1,
         "percent_h_vehicles_tini": 1,
@@ -354,8 +354,8 @@ def h_elec_adapt_growth():
     depends_on={
         "time": 2,
         "t_fin_hveh": 2,
-        "t_ini_hveh": 2,
         "aux_hist_h": 1,
+        "t_ini_hveh": 2,
         "p_h_vehicle": 1,
         "activate_policy_h_transp": 1,
         "percent_h_vehicles_tini": 1,
@@ -402,8 +402,8 @@ def h_gas_adapt_growth():
     depends_on={
         "time": 2,
         "t_fin_hveh": 2,
-        "t_ini_hveh": 2,
         "aux_hist_h": 1,
+        "t_ini_hveh": 2,
         "p_h_vehicle": 1,
         "activate_policy_h_transp": 1,
         "percent_h_vehicles_tini": 1,
@@ -450,8 +450,8 @@ def h_hyb_adapt_growth():
     depends_on={
         "time": 2,
         "t_fin_hveh": 2,
-        "t_ini_hveh": 2,
         "aux_hist_h": 1,
+        "t_ini_hveh": 2,
         "p_h_vehicle": 1,
         "activate_policy_h_transp": 1,
         "percent_h_vehicles_tini": 1,
@@ -482,7 +482,7 @@ def h_hyb_initial_growth():
     subscripts=["Households vehicles"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 4, "t_hist_h_transp": 4, "percent_h_vehicles_initial": 4},
+    depends_on={"time": 4, "percent_h_vehicles_initial": 4, "t_hist_h_transp": 4},
 )
 def hist_var_percent_h():
     """
@@ -719,9 +719,9 @@ def number_vehicles_h():
     comp_subtype="Normal",
     depends_on={
         "p_share_2wheelers": 6,
+        "p_percent_hyb_hveh": 2,
         "p_percent_gas_hveh": 2,
         "p_percent_elec_hveh": 2,
-        "p_percent_hyb_hveh": 2,
         "p_percent_2w_elec": 2,
     },
 )
@@ -1308,8 +1308,8 @@ _ext_constant_t_ini_hveh = ExtConstant(
         "a1_coef_th": 1,
         "var_percents_h_vehicles": 2,
         "saving_ratios_vehicles": 1,
-        "saving_ratio_2we": 1,
         "a2_coef_th": 1,
+        "saving_ratio_2we": 1,
     },
 )
 def var_ih_e2():
@@ -1376,11 +1376,11 @@ def var_ih_liq2():
         "time": 6,
         "t_ini_hveh": 6,
         "aux_hist_h": 6,
-        "h_hyb_adapt_growth": 2,
-        "h_2w_elec_adapt_growth": 2,
-        "h_gas_adapt_growth": 2,
         "h_2w_liq_adapt_growth": 2,
         "h_elec_adapt_growth": 2,
+        "h_gas_adapt_growth": 2,
+        "h_2w_elec_adapt_growth": 2,
+        "h_hyb_adapt_growth": 2,
     },
 )
 def var_percents_h_vehicles():

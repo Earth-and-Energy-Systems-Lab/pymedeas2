@@ -1,6 +1,6 @@
 """
 Module biomass_for_electricity_and_heat
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -86,6 +86,30 @@ def max_pe_potential_solid_bioe_for_heat_ej():
 
 
 @component.add(
+    name='"Max potential NPP bioE conventional for heat+elec"',
+    units="EJ/Year",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_max_potential_npp_bioe_conventional_for_heatelec"
+    },
+)
+def max_potential_npp_bioe_conventional_for_heatelec():
+    return _ext_constant_max_potential_npp_bioe_conventional_for_heatelec()
+
+
+_ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
+    "../energy.xlsx",
+    "Europe",
+    "max_pot_NPP_bioe_conv",
+    {},
+    _root,
+    {},
+    "_ext_constant_max_potential_npp_bioe_conventional_for_heatelec",
+)
+
+
+@component.add(
     name="share solids bioE for elec vs heat",
     units="Dmnl",
     comp_type="Auxiliary",
@@ -108,13 +132,19 @@ def share_solids_bioe_for_elec_vs_heat():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"max_e_forest_energy_non_trad": 1},
+    depends_on={
+        "max_potential_npp_bioe_conventional_for_heatelec": 1,
+        "pe_bioe_residues_nonbiofuels_ej": 1,
+    },
 )
 def total_pe_solid_bioe_potential_ej():
     """
     If switch land 1 =1 the land restrictions are used, otherwise a fixed potential is used
     """
-    return max_e_forest_energy_non_trad()
+    return (
+        max_potential_npp_bioe_conventional_for_heatelec()
+        + pe_bioe_residues_nonbiofuels_ej()
+    )
 
 
 @component.add(

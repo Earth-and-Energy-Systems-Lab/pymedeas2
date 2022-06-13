@@ -1,6 +1,6 @@
 """
 Module crops_for_biofuels_also_supply
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -9,7 +9,7 @@ Translated using PySD version 3.0.0-dev
     units="1/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "p_biofuels_2gen_land_compet": 2, "past_biofuels_2gen": 2},
+    depends_on={"time": 3, "past_biofuels_2gen": 2, "p_biofuels_2gen_land_compet": 2},
 )
 def adapt_growth_biofuels_2gen():
     """
@@ -436,11 +436,11 @@ _ext_constant_land_productivity_biofuels_2gen_ej_mha = ExtConstant(
     depends_on={
         "time": 2,
         "start_year_3gen_cellulosic_biofuels": 2,
-        "p_biofuels_3gen_land_compet": 1,
-        "annual_shift_from_2gen_to_3gen": 1,
-        "land_compet_2gen_vs_total_land_compet": 2,
-        "land_compet_biofuels_2gen_mha": 1,
         "biofuels_3gen_land_compet_available": 2,
+        "land_compet_biofuels_2gen_mha": 1,
+        "land_compet_2gen_vs_total_land_compet": 2,
+        "annual_shift_from_2gen_to_3gen": 1,
+        "p_biofuels_3gen_land_compet": 1,
         "land_compet_biofuels_3gen_mha": 1,
     },
 )
@@ -493,8 +493,8 @@ def max_land_compet_biofuels_2gen():
     depends_on={
         "time": 1,
         "start_year_3gen_cellulosic_biofuels": 1,
-        "max_land_compet_biofuels_2gen": 2,
         "land_productivity_biofuels_2gen_ej_mha": 2,
+        "max_land_compet_biofuels_2gen": 2,
         "efficiency_improvement_biofuels_3gen": 1,
     },
 )
@@ -521,8 +521,8 @@ def max_peavail_potential_biofuels_land_compet():
         "check_liquids": 1,
         "constrain_liquids_exogenous_growth": 1,
         "land_compet_biofuels_2gen_mha": 2,
-        "biofuels_land_compet_available": 1,
         "annual_additional_historic_land_use_biofuels_2gen": 1,
+        "biofuels_land_compet_available": 1,
         "adapt_growth_biofuels_2gen": 1,
         "land_availability_constraint": 1,
     },

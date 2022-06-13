@@ -1,6 +1,6 @@
 """
 Module crops_for_biofuels
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -172,14 +172,14 @@ def max_peavail_potential_biofuels_marginal_lands():
         "time": 3,
         "start_year_biofuels_land_marg": 3,
         "start_production_biofuels": 1,
-        "constrain_liquids_exogenous_growth": 1,
-        "check_liquids": 1,
-        "potential_peavail_biofuels_land_marg_ej": 2,
-        "potential_marginal_lands_mha": 1,
-        "p_biofuels_marg_lands": 1,
         "bioe_gen_land_marg_available": 1,
+        "potential_marginal_lands_mha": 1,
+        "constrain_liquids_exogenous_growth": 1,
         "ej_per_ktoe": 1,
+        "check_liquids": 1,
+        "p_biofuels_marg_lands": 1,
         "ratio_land_productivity_2gen_vs_marg": 1,
+        "potential_peavail_biofuels_land_marg_ej": 2,
         "land_availability_constraint": 1,
     },
 )

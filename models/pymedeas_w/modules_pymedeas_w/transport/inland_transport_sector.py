@@ -1,6 +1,6 @@
 """
 Module inland_transport_sector
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -38,11 +38,11 @@ _ext_constant_activate_policy_inlandt = ExtConstant(
     depends_on={
         "time": 2,
         "t_fin_inlandt": 2,
-        "hist_var_inlandt": 1,
-        "activate_policy_inlandt": 1,
         "t_ini_inlandt": 2,
-        "p_inlandt": 1,
         "initial_percent_t_vehicles": 1,
+        "hist_var_inlandt": 1,
+        "p_inlandt": 1,
+        "activate_policy_inlandt": 1,
         "efects_shortage_inlandt": 1,
     },
 )
@@ -100,7 +100,7 @@ _ext_constant_adjust_energy_for_transport_to_inland_transport = ExtConstant(
     name="Efects shortage inlandT",
     units="Dmnl",
     subscripts=["vehicleT"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"effects_shortage_gas": 3, "effects_shortage_elec_on_ev": 3},
 )
@@ -371,7 +371,7 @@ _ext_constant_inland_transport_fraction = ExtConstant(
     name="inland transport variation intensity",
     units="EJ/TS/yr",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"var_i_inland_elec": 1, "var_i_inlandt_liq": 1, "var_i_inlandt_gas": 1},
 )
@@ -696,12 +696,12 @@ _ext_constant_p_hv_hyb = ExtConstant(
     depends_on={
         "p_hv_gas": 2,
         "p_hv_hyb": 2,
-        "p_lv_hyb": 2,
-        "p_lv_elec": 2,
         "p_lv_gas": 2,
-        "p_bus_gas": 2,
+        "p_lv_elec": 2,
+        "p_lv_hyb": 2,
         "p_bus_hyb": 2,
         "p_bus_elec": 2,
+        "p_bus_gas": 2,
         "p_train_elec": 2,
     },
 )

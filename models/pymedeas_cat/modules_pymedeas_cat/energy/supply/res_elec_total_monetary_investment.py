@@ -1,6 +1,6 @@
 """
 Module res_elec_total_monetary_investment
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -51,13 +51,6 @@ _ext_lookup_balancing_costs_ref = ExtLookup(
     {},
     "_ext_lookup_balancing_costs_ref",
 )
-
-
-@component.add(
-    name="G per T", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
-)
-def g_per_t():
-    return 1000
 
 
 @component.add(
@@ -133,6 +126,13 @@ def extra_monet_invest_to_cope_with_variable_elec_res():
         float(real_generation_res_elec_twh().loc["wind onshore"])
         + float(real_generation_res_elec_twh().loc["wind offshore"])
     ) * balancing_costs() + grid_reinforcement_costs_tdollar()
+
+
+@component.add(
+    name="G per T", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+)
+def g_per_t():
+    return 1000
 
 
 @component.add(
@@ -233,10 +233,10 @@ def invest_res_elec_tdolar():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"new_res_elec_capacity_under_planning": 1},
+    depends_on={"new_res_installed_capacity": 1},
 )
 def new_capacity_installed_onshore_wind_tw():
-    return float(new_res_elec_capacity_under_planning().loc["wind onshore"])
+    return float(new_res_installed_capacity().loc["wind onshore"])
 
 
 @component.add(

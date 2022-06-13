@@ -1,6 +1,6 @@
 """
 Module biogas
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -25,20 +25,6 @@ def adapt_growth_biogas():
             lambda: p_biogas(),
         ),
     )
-
-
-@component.add(
-    name='"FES heat-com from biogas in CHP plants"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"pes_biogas_for_chp": 1, "efficiency_biogas_for_heat_chp_plants": 1},
-)
-def fes_heatcom_from_biogas_in_chp_plants():
-    """
-    Final energy supply of commercial heat in CHP plants from biogas.
-    """
-    return pes_biogas_for_chp() * efficiency_biogas_for_heat_chp_plants()
 
 
 @component.add(
@@ -252,6 +238,20 @@ def fes_heatcom_from_biogas_ej():
 
 
 @component.add(
+    name='"FES heat-com from biogas in CHP plants"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pes_biogas_for_chp": 1, "efficiency_biogas_for_heat_chp_plants": 1},
+)
+def fes_heatcom_from_biogas_in_chp_plants():
+    """
+    Final energy supply of commercial heat in CHP plants from biogas.
+    """
+    return pes_biogas_for_chp() * efficiency_biogas_for_heat_chp_plants()
+
+
+@component.add(
     name="Historic biogas PES",
     units="EJ/Year",
     comp_type="Lookup",
@@ -350,8 +350,8 @@ _ext_constant_max_pe_biogas_ej = ExtConstant(
         "time": 3,
         "historic_biogas_pes": 2,
         "adapt_growth_biogas": 1,
-        "max_pe_biogas_ej": 2,
         "pes_biogas_ej": 2,
+        "max_pe_biogas_ej": 2,
     },
 )
 def new_pes_biogas():
@@ -502,8 +502,8 @@ def pes_biogas_for_tfc():
     depends_on={
         "pes_biogas_for_elec_plants": 1,
         "fes_elec_from_biogas_in_chp_plants": 1,
-        "share_efficiency_biogas_for_elec_in_chp_plants": 1,
         "losses_chp_biogas": 1,
+        "share_efficiency_biogas_for_elec_in_chp_plants": 1,
     },
 )
 def pes_tot_biogas_for_elec():
@@ -525,8 +525,8 @@ def pes_tot_biogas_for_elec():
     depends_on={
         "pes_biogas_for_heatcom_plants": 1,
         "fes_heatcom_from_biogas_in_chp_plants": 1,
-        "share_efficiency_biogas_for_elec_in_chp_plants": 1,
         "losses_chp_biogas": 1,
+        "share_efficiency_biogas_for_elec_in_chp_plants": 1,
     },
 )
 def pes_tot_biogas_for_heatcom():

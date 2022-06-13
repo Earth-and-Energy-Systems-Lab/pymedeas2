@@ -1,6 +1,6 @@
 """
 Module inland_transport_sector
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -92,11 +92,11 @@ _ext_constant_activate_policy_inlandt = ExtConstant(
     depends_on={
         "time": 2,
         "t_fin_inlandt": 2,
-        "t_ini_inlandt": 2,
-        "hist_var_inlandt": 1,
-        "activate_policy_inlandt": 1,
-        "percent_t_veh_tini": 1,
         "p_inlandt": 1,
+        "hist_var_inlandt": 1,
+        "t_ini_inlandt": 2,
+        "percent_t_veh_tini": 1,
+        "activate_policy_inlandt": 1,
     },
 )
 def adapt_var_inlandt():
@@ -728,11 +728,11 @@ def nx0_vehicles_per_xinland_t():
         "p_percent_hv_gas": 2,
         "p_percent_hv_hyb": 2,
         "p_percent_lv_hyb": 2,
-        "p_percent_lv_gas": 2,
         "p_percent_lv_elec": 2,
-        "p_percent_bus_gas": 2,
+        "p_percent_lv_gas": 2,
         "p_percent_bus_hyb": 2,
         "p_percent_bus_elec": 2,
+        "p_percent_bus_gas": 2,
         "p_percent_train_elec": 2,
     },
 )

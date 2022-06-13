@@ -1,7 +1,26 @@
 """
 Module res_elec_overcap_due_to_res_variabi
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
+
+
+@component.add(
+    name="Cp exogenous RES elec dispatch reduction",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"share_variable_res_elec_generation_vs_total_gen": 2},
+)
+def cp_exogenous_res_elec_dispatch_reduction():
+    """
+    Reduction of the capacity factor of the dispatchable plants as a function of the penetration of variables RES in the electricity generation (Source: NREL (2012), see MEDEAS D4.1).
+    """
+    return np.minimum(
+        1,
+        -0.6209 * share_variable_res_elec_generation_vs_total_gen() ** 2
+        - 0.3998 * share_variable_res_elec_generation_vs_total_gen()
+        + 1.0222,
+    )
 
 
 @component.add(
@@ -31,25 +50,6 @@ def cp_exogenous_res_elec_reduction():
     value.loc[["solar PV"]] = cp_exogenous_res_elec_var_reduction()
     value.loc[["CSP"]] = cp_exogenous_res_elec_var_reduction()
     return value
-
-
-@component.add(
-    name="Cp exogenous RES elec dispatch reduction",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"share_variable_res_elec_generation_vs_total_gen": 2},
-)
-def cp_exogenous_res_elec_dispatch_reduction():
-    """
-    Reduction of the capacity factor of the dispatchable plants as a function of the penetration of variables RES in the electricity generation (Source: NREL (2012), see MEDEAS D4.1).
-    """
-    return np.minimum(
-        1,
-        -0.6209 * share_variable_res_elec_generation_vs_total_gen() ** 2
-        - 0.3998 * share_variable_res_elec_generation_vs_total_gen()
-        + 1.0222,
-    )
 
 
 @component.add(

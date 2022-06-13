@@ -1,6 +1,6 @@
 """
 Module recycling_and_material_extraction_dem
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -12,8 +12,8 @@ Translated using PySD version 3.0.0-dev
     depends_on={
         "p_rr_minerals_alt_techn": 1,
         "current_recycling_rates_minerals_alt_techn": 1,
-        "start_year_p_rr_minerals": 1,
         "target_year_p_rr_minerals": 1,
+        "start_year_p_rr_minerals": 1,
     },
 )
 def a_lineal_regr_rr_alt_techn():
@@ -33,8 +33,8 @@ def a_lineal_regr_rr_alt_techn():
     depends_on={
         "p_rr_minerals_rest": 1,
         "current_recycling_rates_minerals": 1,
-        "start_year_p_rr_minerals": 1,
         "target_year_p_rr_minerals": 1,
+        "start_year_p_rr_minerals": 1,
     },
 )
 def a_lineal_regr_rr_rest():
@@ -96,101 +96,6 @@ def b_lineal_regr_rr_rest():
     b parameter of lineal regression "y=a*TIME+b" where y corresponds to the evolution of the recycling rate of each mineral over time ("by mineral rr Rest").
     """
     return p_rr_minerals_rest() - a_lineal_regr_rr_rest() * target_year_p_rr_minerals()
-
-
-@component.add(
-    name="choose targets mineral recycling rates",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_choose_targets_mineral_recycling_rates"},
-)
-def choose_targets_mineral_recycling_rates():
-    """
-    1- Disaggregated by mineral. 2- Common annual variation for all minerals.
-    """
-    return _ext_constant_choose_targets_mineral_recycling_rates()
-
-
-_ext_constant_choose_targets_mineral_recycling_rates = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "choose_targets_mineral_recycling_rates",
-    {},
-    _root,
-    {},
-    "_ext_constant_choose_targets_mineral_recycling_rates",
-)
-
-
-@component.add(
-    name="constrain rr improv for Rest per mineral",
-    units="Dmnl",
-    subscripts=["materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"recycling_rates_minerals_rest": 1, "max_recycling_rates_minerals": 1},
-)
-def constrain_rr_improv_for_rest_per_mineral():
-    """
-    Remaining recycling rate improvement for the rest of the economy per material.
-    """
-    return if_then_else(
-        recycling_rates_minerals_rest() < max_recycling_rates_minerals(),
-        lambda: xr.DataArray(
-            1, {"materials": _subscript_dict["materials"]}, ["materials"]
-        ),
-        lambda: xr.DataArray(
-            0, {"materials": _subscript_dict["materials"]}, ["materials"]
-        ),
-    )
-
-
-@component.add(
-    name="current recycling rates minerals",
-    units="Mt",
-    subscripts=["materials"],
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_current_recycling_rates_minerals"},
-)
-def current_recycling_rates_minerals():
-    """
-    Current recycling rates minerals of the whole economy (UNEP, 2011).
-    """
-    return _ext_constant_current_recycling_rates_minerals()
-
-
-_ext_constant_current_recycling_rates_minerals = ExtConstant(
-    "../materials.xlsx",
-    "Global",
-    "current_recycling_rates_minerals*",
-    {"materials": _subscript_dict["materials"]},
-    _root,
-    {"materials": _subscript_dict["materials"]},
-    "_ext_constant_current_recycling_rates_minerals",
-)
-
-
-@component.add(
-    name="current recycling rates minerals alt techn",
-    units="Dmnl",
-    subscripts=["materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "current_recycling_rates_minerals": 1,
-        "eolrr_minerals_alt_techn_res_vs_total_economy": 1,
-    },
-)
-def current_recycling_rates_minerals_alt_techn():
-    """
-    Current recycling rates of minerales for alternative technologies. Since these technologies are novel and often include materials which are used in small quantities in complex products, the recycling rates of the used minerals are lower than for the whole economy (following the parameter "EOL-RR minerals alt techn RES vs. total economy").
-    """
-    return (
-        current_recycling_rates_minerals()
-        * eolrr_minerals_alt_techn_res_vs_total_economy()
-    )
 
 
 @component.add(
@@ -296,9 +201,9 @@ _delayfixed_by_mineral_rr_rest_1yr = DelayFixed(
     depends_on={
         "time": 2,
         "historic_improvement_recycling_rates_minerals": 2,
+        "by_mineral_rr_alt_techn_1yr": 1,
         "start_year_p_rr_minerals": 1,
         "by_mineral_rr_alt_techn": 1,
-        "by_mineral_rr_alt_techn_1yr": 1,
     },
 )
 def by_mineral_rr_variation_alt_techn():
@@ -326,8 +231,8 @@ def by_mineral_rr_variation_alt_techn():
         "time": 2,
         "historic_improvement_recycling_rates_minerals": 2,
         "start_year_p_rr_minerals": 1,
-        "by_mineral_rr_rest": 1,
         "by_mineral_rr_rest_1yr": 1,
+        "by_mineral_rr_rest": 1,
     },
 )
 def by_mineral_rr_variation_rest():
@@ -343,6 +248,31 @@ def by_mineral_rr_variation_rest():
             lambda: by_mineral_rr_rest() - by_mineral_rr_rest_1yr(),
         ),
     )
+
+
+@component.add(
+    name="choose targets mineral recycling rates",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_choose_targets_mineral_recycling_rates"},
+)
+def choose_targets_mineral_recycling_rates():
+    """
+    1- Disaggregated by mineral. 2- Common annual variation for all minerals.
+    """
+    return _ext_constant_choose_targets_mineral_recycling_rates()
+
+
+_ext_constant_choose_targets_mineral_recycling_rates = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "choose_targets_mineral_recycling_rates",
+    {},
+    _root,
+    {},
+    "_ext_constant_choose_targets_mineral_recycling_rates",
+)
 
 
 @component.add(
@@ -428,6 +358,76 @@ def constrain_rr_improv_for_alt_techn_per_mineral():
 
 
 @component.add(
+    name="constrain rr improv for Rest per mineral",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"recycling_rates_minerals_rest": 1, "max_recycling_rates_minerals": 1},
+)
+def constrain_rr_improv_for_rest_per_mineral():
+    """
+    Remaining recycling rate improvement for the rest of the economy per material.
+    """
+    return if_then_else(
+        recycling_rates_minerals_rest() < max_recycling_rates_minerals(),
+        lambda: xr.DataArray(
+            1, {"materials": _subscript_dict["materials"]}, ["materials"]
+        ),
+        lambda: xr.DataArray(
+            0, {"materials": _subscript_dict["materials"]}, ["materials"]
+        ),
+    )
+
+
+@component.add(
+    name="current recycling rates minerals",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_current_recycling_rates_minerals"},
+)
+def current_recycling_rates_minerals():
+    """
+    Current recycling rates minerals of the whole economy (UNEP, 2011).
+    """
+    return _ext_constant_current_recycling_rates_minerals()
+
+
+_ext_constant_current_recycling_rates_minerals = ExtConstant(
+    "../materials.xlsx",
+    "Global",
+    "current_recycling_rates_minerals*",
+    {"materials": _subscript_dict["materials"]},
+    _root,
+    {"materials": _subscript_dict["materials"]},
+    "_ext_constant_current_recycling_rates_minerals",
+)
+
+
+@component.add(
+    name="current recycling rates minerals alt techn",
+    units="Dmnl",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "current_recycling_rates_minerals": 1,
+        "eolrr_minerals_alt_techn_res_vs_total_economy": 1,
+    },
+)
+def current_recycling_rates_minerals_alt_techn():
+    """
+    Current recycling rates of minerales for alternative technologies. Since these technologies are novel and often include materials which are used in small quantities in complex products, the recycling rates of the used minerals are lower than for the whole economy (following the parameter "EOL-RR minerals alt techn RES vs. total economy").
+    """
+    return (
+        current_recycling_rates_minerals()
+        * eolrr_minerals_alt_techn_res_vs_total_economy()
+    )
+
+
+@component.add(
     name='"EOL-RR minerals alt techn RES vs. total economy"',
     units="Dnml",
     comp_type="Constant",
@@ -477,10 +477,10 @@ def historic_improvement_recycling_rates_minerals():
     depends_on={
         "time": 1,
         "historic_improvement_recycling_rates_minerals": 1,
-        "choose_targets_mineral_recycling_rates": 1,
         "recycling_rates_minerals_alt_techn": 1,
-        "by_mineral_rr_variation_alt_techn": 1,
+        "choose_targets_mineral_recycling_rates": 1,
         "common_rr_minerals_variation_alt_techn": 1,
+        "by_mineral_rr_variation_alt_techn": 1,
         "constrain_rr_improv_for_alt_techn_per_mineral": 1,
     },
 )
@@ -512,10 +512,10 @@ def improvement_recycling_rates_minerals_alt_techn():
     depends_on={
         "time": 1,
         "historic_improvement_recycling_rates_minerals": 1,
-        "choose_targets_mineral_recycling_rates": 1,
-        "common_rr_minerals_variation_rest": 1,
         "by_mineral_rr_variation_rest": 1,
+        "choose_targets_mineral_recycling_rates": 1,
         "recycling_rates_minerals_rest": 1,
+        "common_rr_minerals_variation_rest": 1,
         "constrain_rr_improv_for_rest_per_mineral": 1,
     },
 )

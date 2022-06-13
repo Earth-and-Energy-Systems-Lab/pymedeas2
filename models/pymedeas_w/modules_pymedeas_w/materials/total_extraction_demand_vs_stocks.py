@@ -1,6 +1,6 @@
 """
 Module total_extraction_demand_vs_stocks
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 

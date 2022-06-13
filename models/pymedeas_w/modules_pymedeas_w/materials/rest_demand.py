@@ -1,6 +1,6 @@
 """
 Module rest_demand
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -352,10 +352,10 @@ def total_recycled_materials_for_other_mt():
     depends_on={
         "time": 1,
         "historical_variation_minerals_extraction_rest": 1,
-        "a_extraction_projection_minerals": 1,
         "gdp": 1,
-        "gdp_delayed_1yr": 1,
         "minerals_extraction_projection_rest_cte_rr": 1,
+        "a_extraction_projection_minerals": 1,
+        "gdp_delayed_1yr": 1,
         "mt_per_t": 1,
     },
 )

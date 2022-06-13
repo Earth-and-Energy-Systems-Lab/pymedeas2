@@ -1,6 +1,6 @@
 """
 Module res_elec_total_monetary_investment
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -233,10 +233,10 @@ def invest_res_elec_tdolar():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"new_res_elec_capacity_under_planning": 1},
+    depends_on={"new_res_installed_capacity": 1},
 )
 def new_capacity_installed_onshore_wind_tw():
-    return float(new_res_elec_capacity_under_planning().loc["wind onshore"])
+    return float(new_res_installed_capacity().loc["wind onshore"])
 
 
 @component.add(

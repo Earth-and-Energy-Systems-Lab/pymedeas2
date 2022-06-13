@@ -1,21 +1,7 @@
 """
 Module imports_and_exports
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
-
-
-@component.add(
-    name="Demand by sector RoW",
-    units="Tdollars",
-    subscripts=["sectors"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"time": 1, "historic_demand_0": 1, "real_demand_by_sector_row": 1},
-)
-def demand_by_sector_row():
-    return if_then_else(
-        time() < 2009, lambda: historic_demand_0(), lambda: real_demand_by_sector_row()
-    )
 
 
 @component.add(
@@ -29,6 +15,20 @@ def demand_by_sector_row():
 def demand_by_sector_roeu():
     return if_then_else(
         time() < 2009, lambda: historic_demand_1(), lambda: real_demand_by_sector_roeu()
+    )
+
+
+@component.add(
+    name="Demand by sector RoW",
+    units="Tdollars",
+    subscripts=["sectors"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "historic_demand_0": 1, "real_demand_by_sector_row": 1},
+)
+def demand_by_sector_row():
+    return if_then_else(
+        time() < 2009, lambda: historic_demand_0(), lambda: real_demand_by_sector_row()
     )
 
 

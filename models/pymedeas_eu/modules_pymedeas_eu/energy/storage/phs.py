@@ -1,6 +1,6 @@
 """
 Module phs
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -37,9 +37,9 @@ _ext_lookup_p_phs_power = ExtLookup(
     depends_on={
         "time": 5,
         "past_phs_capacity_growth": 1,
-        "start_year_p_growth_res_elec": 3,
-        "table_hist_capacity_phs": 1,
         "p_phs_power": 4,
+        "table_hist_capacity_phs": 1,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def adapt_growth_phs():
@@ -250,9 +250,9 @@ def new_phs_capacity_under_planning():
         "time": 1,
         "total_time_planconstr_res_elec": 1,
         "historic_new_required_capacity_phs": 1,
-        "installed_capacity_phs_tw": 1,
-        "remaining_potential_constraint_on_new_phs_capacity": 1,
         "adapt_growth_phs": 1,
+        "remaining_potential_constraint_on_new_phs_capacity": 1,
+        "installed_capacity_phs_tw": 1,
     },
 )
 def new_required_phs_capacity():

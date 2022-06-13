@@ -5,7 +5,10 @@ import pandas as pd
 import pytools.data_manager as dm
 
 
-@pytest.mark.parametrize("region", ["pymedeas_w"])
+@pytest.mark.parametrize(
+    "aggregation,region",
+    [("14sectors_cat", "pymedeas_w")]
+)
 def test_data_container(proj_folder, doc):
     """Test the data container"""
     data_container = dm.DataContainer()
@@ -128,7 +131,10 @@ class TestDataFile:
     ],
     ids=["Vensim"]
 )
-@pytest.mark.parametrize("region", ["pymedeas_w"])
+@pytest.mark.parametrize(
+    "aggregation,region",
+    [("14sectors_cat", "pymedeas_w")]
+)
 class TestDataVensim:
     """test for data coming from Vensim outputs"""
 
@@ -208,8 +214,7 @@ class TestDataLoaded:
         else:
             return dm.DataLoaded(
                 "My scen",
-                pd.read_csv(proj_folder.joinpath(filename),
-                index_col=0))
+                pd.read_csv(proj_folder.joinpath(filename), index_col=0))
 
     def test_metadata(self, data_file):
         """test the main attributes"""

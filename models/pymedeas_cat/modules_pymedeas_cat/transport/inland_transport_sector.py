@@ -1,6 +1,6 @@
 """
 Module inland_transport_sector
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -92,11 +92,11 @@ _ext_constant_activate_policy_inlandt = ExtConstant(
     depends_on={
         "time": 2,
         "t_fin_inlandt": 2,
-        "t_ini_inlandt": 2,
-        "p_inlandt": 1,
-        "hist_var_inlandt": 1,
-        "percent_t_veh_tini": 1,
         "activate_policy_inlandt": 1,
+        "percent_t_veh_tini": 1,
+        "hist_var_inlandt": 1,
+        "p_inlandt": 1,
+        "t_ini_inlandt": 2,
     },
 )
 def adapt_var_inlandt():
@@ -182,28 +182,6 @@ def aux_hist_tveh():
     value.loc[["train liq"]] = float(hist_var_percent_tveh().loc["train liq"])
     value.loc[["train elec"]] = float(hist_var_percent_tveh().loc["train elec"])
     return value
-
-
-@component.add(
-    name="energy per X train",
-    units="EJ/T$",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "energy_initial_inland_transport": 1,
-        "adjust_energy_for_transport_to_inland_transport": 1,
-        "initial_xt_inland": 1,
-    },
-)
-def energy_per_x_train():
-    """
-    EJ/T$economic activity Average consumption of vehicles from historical data= energy used in that kind of transport/ economic activity of the sector In the case of trains the number of vehicles is set to 1 since there are no data of the number of trains
-    """
-    return (
-        float(energy_initial_inland_transport().loc["train liq"])
-        * adjust_energy_for_transport_to_inland_transport()
-        / initial_xt_inland()
-    )
 
 
 @component.add(
@@ -308,6 +286,28 @@ def energy_per_x_t():
 
 
 @component.add(
+    name="energy per X train",
+    units="EJ/T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "energy_initial_inland_transport": 1,
+        "adjust_energy_for_transport_to_inland_transport": 1,
+        "initial_xt_inland": 1,
+    },
+)
+def energy_per_x_train():
+    """
+    EJ/T$economic activity Average consumption of vehicles from historical data= energy used in that kind of transport/ economic activity of the sector In the case of trains the number of vehicles is set to 1 since there are no data of the number of trains
+    """
+    return (
+        float(energy_initial_inland_transport().loc["train liq"])
+        * adjust_energy_for_transport_to_inland_transport()
+        / initial_xt_inland()
+    )
+
+
+@component.add(
     name="hist var inlandT",
     units="Dmnl",
     subscripts=["vehicleT"],
@@ -327,7 +327,7 @@ def hist_var_inlandt():
     subscripts=["vehicleT"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 8, "initial_percent_t_vehicles": 8, "t_hist_inlandt": 8},
+    depends_on={"time": 8, "t_hist_inlandt": 8, "initial_percent_t_vehicles": 8},
 )
 def hist_var_percent_tveh():
     """
@@ -696,9 +696,9 @@ def nx0_vehicles_per_xinland_t():
     depends_on={
         "p_percent_hv_gas": 2,
         "p_percent_hv_hyb": 2,
-        "p_percent_lv_gas": 2,
         "p_percent_lv_elec": 2,
         "p_percent_lv_hyb": 2,
+        "p_percent_lv_gas": 2,
         "p_percent_bus_elec": 2,
         "p_percent_bus_hyb": 2,
         "p_percent_bus_gas": 2,

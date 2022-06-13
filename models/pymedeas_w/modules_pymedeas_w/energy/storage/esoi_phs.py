@@ -1,6 +1,6 @@
 """
 Module esoi_phs
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -26,8 +26,8 @@ def a_lineal_regr():
     comp_subtype="Normal",
     depends_on={
         "esoi_phs_depleted_potential": 1,
-        "max_capacity_potential_phs": 1,
         "a_lineal_regr": 1,
+        "max_capacity_potential_phs": 1,
     },
 )
 def b_lineal_regr():
@@ -46,8 +46,8 @@ def b_lineal_regr():
         "lifetime_res_elec": 1,
         "ej_per_twh": 1,
         "twe_per_twh": 1,
-        "esoi_static_phs": 1,
         "quality_of_electricity_2015": 1,
+        "esoi_static_phs": 1,
     },
 )
 def ced_per_tw_over_lifetime_phs():
@@ -81,8 +81,8 @@ def cedtot_over_lifetime_phs():
     comp_subtype="Normal",
     depends_on={
         "output_phs_over_lifetime": 1,
-        "quality_of_electricity": 1,
         "cedtot_over_lifetime_phs": 1,
+        "quality_of_electricity": 1,
     },
 )
 def esoi_phs():
@@ -141,15 +141,13 @@ def esoi_phs_full_potential():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"a_lineal_regr": 1, "installed_capacity_phs_tw": 1, "b_lineal_regr": 1},
+    depends_on={"a_lineal_regr": 1, "installed_capacity_phs": 1, "b_lineal_regr": 1},
 )
 def esoi_static_phs():
     """
     ESOI of the PHS without accounting for endogenous dynamic variations.
     """
-    return np.maximum(
-        5, a_lineal_regr() * installed_capacity_phs_tw() + b_lineal_regr()
-    )
+    return np.maximum(5, a_lineal_regr() * installed_capacity_phs() + b_lineal_regr())
 
 
 @component.add(

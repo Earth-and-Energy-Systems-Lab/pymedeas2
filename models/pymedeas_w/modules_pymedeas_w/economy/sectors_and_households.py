@@ -1,6 +1,6 @@
 """
 Module sectors_and_households
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -12,10 +12,10 @@ Translated using PySD version 3.0.1
     depends_on={
         "select_gdppc_evolution_input": 2,
         "input_gdppc_annual_growth": 1,
-        "p_customized_year_gdppc_evolution": 1,
-        "p_customized_cte_gdppc_variation": 1,
         "time": 1,
+        "p_customized_cte_gdppc_variation": 1,
         "p_timeseries_gdppc_growth_rate": 2,
+        "p_customized_year_gdppc_evolution": 1,
     },
 )
 def annual_gdppc_growth_rate():
@@ -299,8 +299,8 @@ def desired_annual_gdp_growth_rate():
         "time": 1,
         "total_demand": 1,
         "desired_gdppc": 1,
-        "population": 1,
         "dollars_to_tdollars": 1,
+        "population": 1,
     },
 )
 def desired_gdp():
@@ -394,9 +394,9 @@ def desired_variation_gdppc():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "total_demand": 1,
-        "desired_annual_gdp_growth_rate": 1,
         "gdp_delayed_1yr": 1,
+        "desired_annual_gdp_growth_rate": 1,
+        "total_demand": 1,
     },
 )
 def diff_demand():
@@ -849,7 +849,7 @@ _integ_household_demand = Integ(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "household_demand": 1, "real_household_demand": 1},
+    depends_on={"time": 1, "real_household_demand": 1, "household_demand": 1},
 )
 def household_demand_not_covered():
     """
@@ -1069,8 +1069,8 @@ _integ_labour_share = Integ(
     depends_on={
         "p_labour_share_2050": 1,
         "initial_labour_share": 1,
-        "year_initial_labour_share": 1,
         "year_final_labour_share": 1,
+        "year_initial_labour_share": 1,
     },
 )
 def labour_share_growth():
@@ -1407,8 +1407,8 @@ def total_demand_adjusted():
     comp_subtype="Normal",
     depends_on={
         "capital_share": 1,
-        "growth_capital_share": 2,
         "desired_annual_gdp_growth_rate": 2,
+        "growth_capital_share": 2,
         "real_demand": 1,
     },
 )
@@ -1458,9 +1458,9 @@ def variation_cc_sectoral():
     depends_on={
         "time": 1,
         "historic_variation_demand": 1,
-        "share_consum_goverment_and_inventories": 1,
-        "variation_household_demand": 1,
         "variation_gfcf": 1,
+        "variation_household_demand": 1,
+        "share_consum_goverment_and_inventories": 1,
     },
 )
 def variation_demand_flow_fd():
@@ -1484,10 +1484,10 @@ def variation_demand_flow_fd():
     depends_on={
         "time": 1,
         "variation_historic_gfcf": 1,
-        "beta_1_gfcf": 2,
-        "cc_sectoral": 2,
         "variation_cc_sectoral": 1,
         "beta_0_gfcf": 1,
+        "beta_1_gfcf": 2,
+        "cc_sectoral": 2,
     },
 )
 def variation_gfcf():
@@ -1527,8 +1527,8 @@ def variation_historic_demand():
     comp_subtype="Normal",
     depends_on={
         "time": 5,
-        "historic_population": 2,
         "historic_gdp": 2,
+        "historic_population": 2,
         "dollar_per_mdollar": 1,
     },
 )
@@ -1571,10 +1571,10 @@ def variation_historic_gfcf():
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "beta_0_hd": 1,
-        "beta_1_hd": 2,
         "lc": 2,
+        "beta_1_hd": 2,
         "variation_lc": 1,
+        "beta_0_hd": 1,
     },
 )
 def variation_household_demand():
@@ -1611,8 +1611,8 @@ def variation_labour_share():
     depends_on={
         "real_demand": 1,
         "labour_share": 1,
-        "growth_labour_share": 2,
         "desired_annual_gdp_growth_rate": 2,
+        "growth_labour_share": 2,
     },
 )
 def variation_lc():

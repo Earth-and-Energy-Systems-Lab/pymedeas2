@@ -1,6 +1,6 @@
 """
 Module total_outputs_from_demand
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -57,37 +57,6 @@ def annual_gdp_growth_rate_aut():
 
 
 @component.add(
-    name="Energy scarcity feedback shortage coeff AUT",
-    units="Dmnl",
-    subscripts=["final sources"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "activate_energy_scarcity_feedback": 1,
-        "real_fe_consumption_by_fuel_before_heat_correction": 1,
-        "required_fed_by_fuel_before_heat_correction": 1,
-    },
-)
-def energy_scarcity_feedback_shortage_coeff_aut():
-    """
-    MIN(1, real FE consumption by fuel before heat correction[final sources]/Required FED by fuel before heat correction [final sources]) This coefficient adapts the real final energy by fuel to be used by economic sectors taking into account energy availability.
-    """
-    return if_then_else(
-        activate_energy_scarcity_feedback() == 1,
-        lambda: np.minimum(
-            1,
-            zidz(
-                real_fe_consumption_by_fuel_before_heat_correction(),
-                required_fed_by_fuel_before_heat_correction(),
-            ),
-        ),
-        lambda: xr.DataArray(
-            1, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
-        ),
-    )
-
-
-@component.add(
     name="CC impacts feedback shortage coeff",
     units="Dmnl",
     comp_type="Auxiliary",
@@ -127,6 +96,37 @@ def domestic_demand_by_sector():
     EU28 total final demand by sector
     """
     return demand_by_sector_fd_adjusted()
+
+
+@component.add(
+    name="Energy scarcity feedback shortage coeff AUT",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "activate_energy_scarcity_feedback": 1,
+        "required_fed_by_fuel_before_heat_correction": 1,
+        "real_fe_consumption_by_fuel_before_heat_correction": 1,
+    },
+)
+def energy_scarcity_feedback_shortage_coeff_aut():
+    """
+    MIN(1, real FE consumption by fuel before heat correction[final sources]/Required FED by fuel before heat correction [final sources]) This coefficient adapts the real final energy by fuel to be used by economic sectors taking into account energy availability.
+    """
+    return if_then_else(
+        activate_energy_scarcity_feedback() == 1,
+        lambda: np.minimum(
+            1,
+            zidz(
+                real_fe_consumption_by_fuel_before_heat_correction(),
+                required_fed_by_fuel_before_heat_correction(),
+            ),
+        ),
+        lambda: xr.DataArray(
+            1, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        ),
+    )
 
 
 @component.add(

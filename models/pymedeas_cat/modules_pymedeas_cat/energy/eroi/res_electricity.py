@@ -1,6 +1,6 @@
 """
 Module res_electricity
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -33,8 +33,8 @@ def dynamic_eroi_res_elec_var():
     comp_subtype="Normal",
     depends_on={
         "fei_over_lifetime_res_elec_dispatch": 8,
-        "gquality_of_electricity": 4,
         "output_elec_over_lifetime_res_elec": 8,
+        "gquality_of_electricity": 4,
         "fei_over_lifetime_res_elec_var": 8,
     },
 )
@@ -140,166 +140,6 @@ def static_eroitot_res_elec():
             ),
         ),
     )
-
-
-@component.add(
-    name="CEDtot per material RES elec var",
-    units="EJ",
-    subscripts=["RES elec", "materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "ced_new_cap_per_material_res_elec_var": 1,
-        "ced_om_over_lifetime_per_material_res_elec_var": 1,
-    },
-)
-def cedtot_per_material_res_elec_var():
-    """
-    Total cumulative energy demand (construction+O&M) per material of RES variables per technology.
-    """
-    return (
-        ced_new_cap_per_material_res_elec_var()
-        + ced_om_over_lifetime_per_material_res_elec_var()
-    )
-
-
-@component.add(
-    name="CEDtot per TW per material RES elec var",
-    units="EJ/TW",
-    subscripts=["RES elec", "materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "cedtot_per_material_res_elec_var": 1,
-        "res_elec_capacity_under_construction_tw": 1,
-    },
-)
-def cedtot_per_tw_per_material_res_elec_var():
-    """
-    Total cumulative energy demand (construction+O&M) per power installed per material of RES variables per technology (considering only material requirements).
-    """
-    return zidz(
-        cedtot_per_material_res_elec_var(),
-        res_elec_capacity_under_construction_tw().expand_dims(
-            {"materials": _subscript_dict["materials"]}, 1
-        ),
-    )
-
-
-@component.add(
-    name="FEI over lifetime RES elec",
-    units="EJ",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "fei_over_lifetime_res_elec_dispatch": 4,
-        "fei_over_lifetime_res_elec_var": 4,
-    },
-)
-def fei_over_lifetime_res_elec():
-    """
-    Final energy investments over lifetime for RES elec technologies.
-    """
-    value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-    )
-    value.loc[["hydro"]] = float(fei_over_lifetime_res_elec_dispatch().loc["hydro"])
-    value.loc[["geot elec"]] = float(
-        fei_over_lifetime_res_elec_dispatch().loc["geot elec"]
-    )
-    value.loc[["solid bioE elec"]] = float(
-        fei_over_lifetime_res_elec_dispatch().loc["solid bioE elec"]
-    )
-    value.loc[["oceanic"]] = float(fei_over_lifetime_res_elec_dispatch().loc["oceanic"])
-    value.loc[["wind onshore"]] = float(
-        fei_over_lifetime_res_elec_var().loc["wind onshore"]
-    )
-    value.loc[["wind offshore"]] = float(
-        fei_over_lifetime_res_elec_var().loc["wind offshore"]
-    )
-    value.loc[["solar PV"]] = float(fei_over_lifetime_res_elec_var().loc["solar PV"])
-    value.loc[["CSP"]] = float(fei_over_lifetime_res_elec_var().loc["CSP"])
-    return value
-
-
-@component.add(
-    name="FEI over lifetime RES elec dispatch",
-    units="EJ",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "cedtot_per_tw_over_lifetime_res_elec_dispatch": 1,
-        "res_elec_capacity_under_construction_tw": 1,
-    },
-)
-def fei_over_lifetime_res_elec_dispatch():
-    """
-    Final energy invested over lifetime per RES elec dispatchable technology (equivalent to the denominator of the EROI (=CED*g).
-    """
-    return (
-        cedtot_per_tw_over_lifetime_res_elec_dispatch()
-        * res_elec_capacity_under_construction_tw()
-    )
-
-
-@component.add(
-    name="FEI over lifetime RES elec var",
-    units="EJ",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "cedtot_new_cap_res_elec_var": 1,
-        "grid_correction_factor_res_elec": 1,
-        "share_energy_requirements_for_decom_res_elec": 1,
-        "ced_om_over_lifetime_res_elec_var": 1,
-        "gquality_of_electricity": 1,
-        "selfelectricity_consumption_res_elec": 1,
-        "output_elec_over_lifetime_res_elec": 1,
-    },
-)
-def fei_over_lifetime_res_elec_var():
-    """
-    Final energy invested over lifetime per RES elec variable technology (equivalent to the denominator of the EROI (=CED*g, with total cumulative energy demand (including installation of new capacity and O&M) for RES variables per technology over the lifetime of the infrastructure.
-    """
-    return (
-        cedtot_new_cap_res_elec_var()
-        * (
-            1
-            + share_energy_requirements_for_decom_res_elec()
-            + grid_correction_factor_res_elec()
-        )
-        + ced_om_over_lifetime_res_elec_var()
-    ) * gquality_of_electricity() + output_elec_over_lifetime_res_elec() * selfelectricity_consumption_res_elec()
-
-
-@component.add(
-    name="FEI RES elec var",
-    units="EJ",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "cedtot_new_cap_res_elec_var": 1,
-        "grid_correction_factor_res_elec": 1,
-        "ced_decom_res_elec_capacity": 1,
-        "cedtot_om_res_elec_var": 1,
-        "gquality_of_electricity": 1,
-        "real_generation_res_elec_ej": 1,
-        "selfelectricity_consumption_res_elec": 1,
-    },
-)
-def fei_res_elec_var():
-    """
-    Final energy invested (equivalent to the denominator of the EROI (=CED*g, with total cumulative energy demand including installation of new capacity and O&M) for RES variables per technology).
-    """
-    return (
-        cedtot_new_cap_res_elec_var() * (1 + grid_correction_factor_res_elec())
-        + ced_decom_res_elec_capacity()
-        + cedtot_om_res_elec_var()
-    ) * gquality_of_electricity() + real_generation_res_elec_ej() * selfelectricity_consumption_res_elec()
 
 
 @component.add(
@@ -476,6 +316,27 @@ def cedtot_om_res_elec_var():
 
 
 @component.add(
+    name="CEDtot per material RES elec var",
+    units="EJ",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "ced_new_cap_per_material_res_elec_var": 1,
+        "ced_om_over_lifetime_per_material_res_elec_var": 1,
+    },
+)
+def cedtot_per_material_res_elec_var():
+    """
+    Total cumulative energy demand (construction+O&M) per material of RES variables per technology.
+    """
+    return (
+        ced_new_cap_per_material_res_elec_var()
+        + ced_om_over_lifetime_per_material_res_elec_var()
+    )
+
+
+@component.add(
     name="CEDtot per TW over lifetime RES elec dispatch",
     units="EJ/TW",
     subscripts=["RES elec"],
@@ -483,12 +344,12 @@ def cedtot_om_res_elec_var():
     comp_subtype="Normal",
     depends_on={
         "res_elec_variables": 1,
-        "cpini_res_elec": 1,
         "lifetime_res_elec": 1,
-        "ej_per_twh": 1,
         "twe_per_twh": 1,
-        "quality_of_electricity_2015": 1,
+        "ej_per_twh": 1,
+        "cpini_res_elec": 1,
         "eroiini_res_elec_dispatch": 1,
+        "quality_of_electricity_2015": 1,
     },
 )
 def cedtot_per_tw_over_lifetime_res_elec_dispatch():
@@ -499,6 +360,29 @@ def cedtot_per_tw_over_lifetime_res_elec_dispatch():
         (1 - res_elec_variables())
         * (cpini_res_elec() * lifetime_res_elec() * ej_per_twh() / twe_per_twh()),
         eroiini_res_elec_dispatch() * quality_of_electricity_2015(),
+    )
+
+
+@component.add(
+    name="CEDtot per TW per material RES elec var",
+    units="EJ/TW",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "cedtot_per_material_res_elec_var": 1,
+        "res_elec_capacity_under_construction_tw": 1,
+    },
+)
+def cedtot_per_tw_per_material_res_elec_var():
+    """
+    Total cumulative energy demand (construction+O&M) per power installed per material of RES variables per technology (considering only material requirements).
+    """
+    return zidz(
+        cedtot_per_material_res_elec_var(),
+        res_elec_capacity_under_construction_tw().expand_dims(
+            {"materials": _subscript_dict["materials"]}, 1
+        ),
     )
 
 
@@ -560,6 +444,122 @@ _ext_constant_eroiini_res_elec_dispatch = ExtConstant(
     {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_eroiini_res_elec_dispatch",
 )
+
+
+@component.add(
+    name="FEI over lifetime RES elec",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "fei_over_lifetime_res_elec_dispatch": 4,
+        "fei_over_lifetime_res_elec_var": 4,
+    },
+)
+def fei_over_lifetime_res_elec():
+    """
+    Final energy investments over lifetime for RES elec technologies.
+    """
+    value = xr.DataArray(
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+    )
+    value.loc[["hydro"]] = float(fei_over_lifetime_res_elec_dispatch().loc["hydro"])
+    value.loc[["geot elec"]] = float(
+        fei_over_lifetime_res_elec_dispatch().loc["geot elec"]
+    )
+    value.loc[["solid bioE elec"]] = float(
+        fei_over_lifetime_res_elec_dispatch().loc["solid bioE elec"]
+    )
+    value.loc[["oceanic"]] = float(fei_over_lifetime_res_elec_dispatch().loc["oceanic"])
+    value.loc[["wind onshore"]] = float(
+        fei_over_lifetime_res_elec_var().loc["wind onshore"]
+    )
+    value.loc[["wind offshore"]] = float(
+        fei_over_lifetime_res_elec_var().loc["wind offshore"]
+    )
+    value.loc[["solar PV"]] = float(fei_over_lifetime_res_elec_var().loc["solar PV"])
+    value.loc[["CSP"]] = float(fei_over_lifetime_res_elec_var().loc["CSP"])
+    return value
+
+
+@component.add(
+    name="FEI over lifetime RES elec dispatch",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "cedtot_per_tw_over_lifetime_res_elec_dispatch": 1,
+        "res_elec_capacity_under_construction_tw": 1,
+    },
+)
+def fei_over_lifetime_res_elec_dispatch():
+    """
+    Final energy invested over lifetime per RES elec dispatchable technology (equivalent to the denominator of the EROI (=CED*g).
+    """
+    return (
+        cedtot_per_tw_over_lifetime_res_elec_dispatch()
+        * res_elec_capacity_under_construction_tw()
+    )
+
+
+@component.add(
+    name="FEI over lifetime RES elec var",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "cedtot_new_cap_res_elec_var": 1,
+        "grid_correction_factor_res_elec": 1,
+        "share_energy_requirements_for_decom_res_elec": 1,
+        "ced_om_over_lifetime_res_elec_var": 1,
+        "gquality_of_electricity": 1,
+        "output_elec_over_lifetime_res_elec": 1,
+        "selfelectricity_consumption_res_elec": 1,
+    },
+)
+def fei_over_lifetime_res_elec_var():
+    """
+    Final energy invested over lifetime per RES elec variable technology (equivalent to the denominator of the EROI (=CED*g, with total cumulative energy demand (including installation of new capacity and O&M) for RES variables per technology over the lifetime of the infrastructure.
+    """
+    return (
+        cedtot_new_cap_res_elec_var()
+        * (
+            1
+            + share_energy_requirements_for_decom_res_elec()
+            + grid_correction_factor_res_elec()
+        )
+        + ced_om_over_lifetime_res_elec_var()
+    ) * gquality_of_electricity() + output_elec_over_lifetime_res_elec() * selfelectricity_consumption_res_elec()
+
+
+@component.add(
+    name="FEI RES elec var",
+    units="EJ",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "cedtot_new_cap_res_elec_var": 1,
+        "grid_correction_factor_res_elec": 1,
+        "ced_decom_res_elec_capacity": 1,
+        "cedtot_om_res_elec_var": 1,
+        "gquality_of_electricity": 1,
+        "real_generation_res_elec_ej": 1,
+        "selfelectricity_consumption_res_elec": 1,
+    },
+)
+def fei_res_elec_var():
+    """
+    Final energy invested (equivalent to the denominator of the EROI (=CED*g, with total cumulative energy demand including installation of new capacity and O&M) for RES variables per technology).
+    """
+    return (
+        cedtot_new_cap_res_elec_var() * (1 + grid_correction_factor_res_elec())
+        + ced_decom_res_elec_capacity()
+        + cedtot_om_res_elec_var()
+    ) * gquality_of_electricity() + real_generation_res_elec_ej() * selfelectricity_consumption_res_elec()
 
 
 @component.add(

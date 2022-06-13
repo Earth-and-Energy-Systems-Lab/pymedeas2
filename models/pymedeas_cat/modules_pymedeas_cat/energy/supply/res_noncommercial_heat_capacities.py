@@ -1,6 +1,6 @@
 """
 Module res_noncommercial_heat_capacities
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -48,9 +48,9 @@ def abundance_res_heatnc2():
     depends_on={
         "time": 4,
         "past_res_growth_for_heatnc": 4,
-        "p_res_for_heat": 2,
-        "start_year_p_growth_res_heat": 3,
         "target_year_p_growth_res_heat": 2,
+        "start_year_p_growth_res_heat": 3,
+        "p_res_for_heat": 2,
     },
 )
 def adapt_growth_res_for_heatnc():
@@ -72,22 +72,6 @@ def adapt_growth_res_for_heatnc():
                 lambda: p_res_for_heat(),
             ),
         ),
-    )
-
-
-@component.add(
-    name='"FE real supply RES for heat-nc tot EJ"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"total_fed_heatnc_ej": 1, "potential_fes_tot_res_for_heatnc_ej": 1},
-)
-def fe_real_supply_res_for_heatnc_tot_ej():
-    """
-    Total final energy supply delivered by RES for non-commercial heat.
-    """
-    return np.minimum(
-        np.maximum(total_fed_heatnc_ej(), 0), potential_fes_tot_res_for_heatnc_ej()
     )
 
 
@@ -139,6 +123,22 @@ def fe_real_generation_res_heatnc_ej():
     Non-commercial heat generation by RES technology.
     """
     return potential_fes_res_for_heatnc_ej() * (1 - res_heatnc_tot_overcapacity())
+
+
+@component.add(
+    name='"FE real supply RES for heat-nc tot EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"total_fed_heatnc_ej": 1, "potential_fes_tot_res_for_heatnc_ej": 1},
+)
+def fe_real_supply_res_for_heatnc_tot_ej():
+    """
+    Total final energy supply delivered by RES for non-commercial heat.
+    """
+    return np.minimum(
+        np.maximum(total_fed_heatnc_ej(), 0), potential_fes_tot_res_for_heatnc_ej()
+    )
 
 
 @component.add(
@@ -240,8 +240,8 @@ _integ_installed_capacity_res_heatnc_tw = Integ(
     depends_on={
         "time": 3,
         "historic_res_capacity_for_heatnc": 2,
-        "installed_capacity_res_heatnc_tw": 1,
         "adapt_growth_res_for_heatnc": 1,
+        "installed_capacity_res_heatnc_tw": 1,
         "remaining_potential_constraint_on_new_res_heat_capacity": 1,
         "abundance_res_heatnc2": 1,
     },

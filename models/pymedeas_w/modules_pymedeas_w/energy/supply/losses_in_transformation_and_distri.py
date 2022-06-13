@@ -1,6 +1,6 @@
 """
 Module losses_in_transformation_and_distri
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -8,7 +8,7 @@ Translated using PySD version 3.0.1
     name="Energy distr losses FF EJ",
     units="EJ/year",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pes_fossil_fuel_extraction_delayed": 3,
@@ -300,7 +300,7 @@ def total_distribution_losses():
 @component.add(
     name="Transformation FF losses EJ",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pes_fossil_fuel_extraction_delayed": 3,

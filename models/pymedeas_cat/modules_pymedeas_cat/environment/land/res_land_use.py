@@ -1,6 +1,6 @@
 """
 Module res_land_use
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -186,53 +186,21 @@ def surface_onshore_wind_mha():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "potential_generation_res_elec_twh": 8,
-        "power_density_res_elec_twemha": 8,
-        "twe_per_twh": 8,
-        "real_share_pv_urban_vs_total_pv": 1,
+        "power_density_res_elec_twemha": 2,
+        "installed_capacity_res_elec_delayed": 1,
     },
 )
 def surface_res_elec():
     """
     Land requirements by renewable technologies for electricity generation.
     """
-    value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+    return if_then_else(
+        power_density_res_elec_twemha() == 0,
+        lambda: xr.DataArray(
+            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        ),
+        lambda: installed_capacity_res_elec_delayed() / power_density_res_elec_twemha(),
     )
-    value.loc[["hydro"]] = zidz(
-        float(potential_generation_res_elec_twh().loc["hydro"]),
-        float(power_density_res_elec_twemha().loc["hydro"]) / twe_per_twh(),
-    )
-    value.loc[["geot elec"]] = zidz(
-        float(potential_generation_res_elec_twh().loc["geot elec"]),
-        float(power_density_res_elec_twemha().loc["geot elec"]) / twe_per_twh(),
-    )
-    value.loc[["solid bioE elec"]] = zidz(
-        float(potential_generation_res_elec_twh().loc["solid bioE elec"]),
-        float(power_density_res_elec_twemha().loc["solid bioE elec"]) / twe_per_twh(),
-    )
-    value.loc[["oceanic"]] = zidz(
-        float(potential_generation_res_elec_twh().loc["oceanic"]),
-        float(power_density_res_elec_twemha().loc["oceanic"]) / twe_per_twh(),
-    )
-    value.loc[["wind onshore"]] = zidz(
-        float(potential_generation_res_elec_twh().loc["wind onshore"]),
-        float(power_density_res_elec_twemha().loc["wind onshore"]) / twe_per_twh(),
-    )
-    value.loc[["wind offshore"]] = zidz(
-        float(potential_generation_res_elec_twh().loc["wind offshore"]),
-        float(power_density_res_elec_twemha().loc["wind offshore"]) / twe_per_twh(),
-    )
-    value.loc[["solar PV"]] = zidz(
-        float(potential_generation_res_elec_twh().loc["solar PV"])
-        * (1 - real_share_pv_urban_vs_total_pv()),
-        float(power_density_res_elec_twemha().loc["solar PV"]) / twe_per_twh(),
-    )
-    value.loc[["CSP"]] = zidz(
-        float(potential_generation_res_elec_twh().loc["CSP"]),
-        float(power_density_res_elec_twemha().loc["CSP"]) / twe_per_twh(),
-    )
-    return value
 
 
 @component.add(

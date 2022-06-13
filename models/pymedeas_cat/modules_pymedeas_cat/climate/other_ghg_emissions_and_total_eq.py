@@ -1,6 +1,6 @@
 """
 Module other_ghg_emissions_and_total_eq
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -11,8 +11,8 @@ Translated using PySD version 3.0.1
     comp_subtype="Normal",
     depends_on={
         "total_ch4_emissions_fossil_fuels": 1,
-        "ch4_anthro_emissions_rcp": 4,
         "choose_rcp": 3,
+        "ch4_anthro_emissions_rcp": 4,
     },
 )
 def ch4_anthro_emissions():

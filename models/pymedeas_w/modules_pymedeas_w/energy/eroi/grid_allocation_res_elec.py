@@ -1,6 +1,6 @@
 """
 Module grid_allocation_res_elec
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -12,9 +12,9 @@ Translated using PySD version 3.0.1
     comp_subtype="Normal",
     depends_on={
         "static_eroi_res_elec": 2,
-        "share_res_elec_generation_curtailedstored": 3,
         "esoi_elec_storage": 1,
         "rt_elec_storage_efficiency": 2,
+        "share_res_elec_generation_curtailedstored": 3,
     },
 )
 def static_eroigrid_res_elec():

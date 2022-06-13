@@ -1,6 +1,6 @@
 """
 Module tpes
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -104,8 +104,8 @@ def share_imports_aut_nre_vs_tpec():
     comp_subtype="Normal",
     depends_on={
         "real_tfec": 1,
-        "total_real_nonenergy_use_consumption_ej": 1,
         "tpes_ej": 1,
+        "total_real_nonenergy_use_consumption_ej": 1,
     },
 )
 def share_total_final_energy_vs_tpes():

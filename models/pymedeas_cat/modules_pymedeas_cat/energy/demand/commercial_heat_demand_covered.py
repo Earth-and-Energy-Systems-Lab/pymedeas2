@@ -1,6 +1,6 @@
 """
 Module commercial_heat_demand_covered
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -11,8 +11,8 @@ Translated using PySD version 3.0.1
     depends_on={
         "share_in_target_year_oil_for_heat": 1,
         "historic_share_liquids_for_heat_plants": 1,
-        "target_year_policy_phaseout_oil_for_heat": 1,
         "start_year_policy_phaseout_oil_for_heat": 1,
+        "target_year_policy_phaseout_oil_for_heat": 1,
     },
 )
 def a_lineal_regr_phaseout_oil_for_heat():
@@ -49,65 +49,6 @@ def b_lineal_regr_phaseout_oil_for_heat():
 
 
 @component.add(
-    name="efficiency gases for heat plants",
-    units="Dmnl",
-    comp_type="Data",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_data_efficiency_gases_for_heat_plants",
-        "__data__": "_ext_data_efficiency_gases_for_heat_plants",
-        "time": 1,
-    },
-)
-def efficiency_gases_for_heat_plants():
-    """
-    Efficiency of gas heat plants. We assume constant last data IEA.
-    """
-    return _ext_data_efficiency_gases_for_heat_plants(time())
-
-
-_ext_data_efficiency_gases_for_heat_plants = ExtData(
-    "../energy.xlsx",
-    "Austria",
-    "time_efficiencies",
-    "historic_efficiency_gases_for_heat_plants",
-    "interpolate",
-    {},
-    _root,
-    {},
-    "_ext_data_efficiency_gases_for_heat_plants",
-)
-
-
-@component.add(
-    name="FED Heat coal plants EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"fed_heat_gascoal_ej": 1, "share_coalcoalgas_for_heat_plants": 1},
-)
-def fed_heat_coal_plants_ej():
-    """
-    Final energy demand of coal to produce heat.
-    """
-    return fed_heat_gascoal_ej() * share_coalcoalgas_for_heat_plants()
-
-
-@component.add(
-    name="FED Heat gas plants EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"fed_heat_gascoal_ej": 1, "share_gascoalgas_for_heat_plants": 1},
-)
-def fed_heat_gas_plants_ej():
-    """
-    Final energy demand of gas to produce heat.
-    """
-    return fed_heat_gascoal_ej() * share_gascoalgas_for_heat_plants()
-
-
-@component.add(
     name="efficiency coal for heat plants",
     units="Dmnl",
     comp_type="Data",
@@ -135,6 +76,37 @@ _ext_data_efficiency_coal_for_heat_plants = ExtData(
     _root,
     {},
     "_ext_data_efficiency_coal_for_heat_plants",
+)
+
+
+@component.add(
+    name="efficiency gases for heat plants",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_efficiency_gases_for_heat_plants",
+        "__data__": "_ext_data_efficiency_gases_for_heat_plants",
+        "time": 1,
+    },
+)
+def efficiency_gases_for_heat_plants():
+    """
+    Efficiency of gas heat plants. We assume constant last data IEA.
+    """
+    return _ext_data_efficiency_gases_for_heat_plants(time())
+
+
+_ext_data_efficiency_gases_for_heat_plants = ExtData(
+    "../energy.xlsx",
+    "Austria",
+    "time_efficiencies",
+    "historic_efficiency_gases_for_heat_plants",
+    "interpolate",
+    {},
+    _root,
+    {},
+    "_ext_data_efficiency_gases_for_heat_plants",
 )
 
 
@@ -167,6 +139,34 @@ _ext_data_efficiency_liquids_for_heat_plants = ExtData(
     {},
     "_ext_data_efficiency_liquids_for_heat_plants",
 )
+
+
+@component.add(
+    name="FED Heat coal plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"fed_heat_gascoal_ej": 1, "share_coalcoalgas_for_heat_plants": 1},
+)
+def fed_heat_coal_plants_ej():
+    """
+    Final energy demand of coal to produce heat.
+    """
+    return fed_heat_gascoal_ej() * share_coalcoalgas_for_heat_plants()
+
+
+@component.add(
+    name="FED Heat gas plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"fed_heat_gascoal_ej": 1, "share_gascoalgas_for_heat_plants": 1},
+)
+def fed_heat_gas_plants_ej():
+    """
+    Final energy demand of gas to produce heat.
+    """
+    return fed_heat_gascoal_ej() * share_gascoalgas_for_heat_plants()
 
 
 @component.add(
@@ -486,8 +486,8 @@ _ext_constant_target_year_policy_phaseout_oil_for_heat = ExtConstant(
     depends_on={
         "ped_gases_for_heat_plants_ej": 1,
         "efficiency_gases_for_heat_plants": 1,
-        "ped_oil_for_heat_plants_ej": 1,
         "efficiency_liquids_for_heat_plants": 1,
+        "ped_oil_for_heat_plants_ej": 1,
         "efficiency_coal_for_heat_plants": 1,
         "ped_coal_for_heat_plants_ej": 1,
     },

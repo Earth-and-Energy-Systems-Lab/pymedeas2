@@ -1,6 +1,6 @@
 """
 Module ctl_and_gtl_supply
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -192,8 +192,8 @@ def ctlgtl_gb():
     depends_on={
         "time": 1,
         "hist_growth_ctl": 2,
-        "abundance_liquids": 1,
         "crash_programme_ctl": 2,
+        "abundance_liquids": 1,
         "p_ctl": 2,
     },
 )
@@ -224,8 +224,8 @@ def exogenous_growth_ctl():
     depends_on={
         "time": 1,
         "hist_growth_gtl": 2,
-        "abundance_liquids": 1,
         "p_gtl": 2,
+        "abundance_liquids": 1,
         "crash_programme_gtl": 2,
     },
 )
@@ -702,10 +702,10 @@ def real_growth_gtl():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "check_liquids": 1,
-        "constrain_liquids_exogenous_growth": 1,
-        "crash_programme_ctl": 1,
         "wear_ctl": 2,
+        "check_liquids": 1,
+        "crash_programme_ctl": 1,
+        "constrain_liquids_exogenous_growth": 1,
         "scarcity_conv_oil": 1,
     },
 )
@@ -738,10 +738,10 @@ def replacement_ctl():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "check_liquids": 1,
         "wear_gtl": 2,
-        "crash_programme_gtl": 1,
         "constrain_liquids_exogenous_growth": 1,
+        "crash_programme_gtl": 1,
+        "check_liquids": 1,
         "scarcity_conv_oil": 1,
     },
 )
@@ -786,10 +786,10 @@ def share_ctlgtl_overcapacity():
     depends_on={
         "time": 3,
         "historic_ctl_production": 2,
-        "check_liquids": 1,
-        "ctl_potential_production": 2,
-        "real_growth_ctl": 1,
         "constrain_liquids_exogenous_growth": 1,
+        "ctl_potential_production": 2,
+        "check_liquids": 1,
+        "real_growth_ctl": 1,
     },
 )
 def variation_ctl():
@@ -816,9 +816,9 @@ def variation_ctl():
     depends_on={
         "time": 3,
         "historic_gtl_production": 2,
-        "check_liquids": 1,
         "constrain_liquids_exogenous_growth": 1,
         "gtl_potential_production": 2,
+        "check_liquids": 1,
         "real_growth_gtl": 1,
     },
 )
@@ -859,7 +859,7 @@ def wear_ctl():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "lifetime_gtl": 1, "gtl_potential_production": 1},
+    depends_on={"time": 1, "gtl_potential_production": 1, "lifetime_gtl": 1},
 )
 def wear_gtl():
     """

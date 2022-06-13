@@ -1,7 +1,53 @@
 """
 Module co2_emissions_mix
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
+
+
+@component.add(
+    name="check historic CO2 emissions",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "total_fe_co2_emissions": 1,
+        "total_co2_emissions_all_fuels": 1,
+        "co2_fossil_fuel_emissions": 1,
+    },
+)
+def check_historic_co2_emissions():
+    return if_then_else(
+        time() < 2015,
+        lambda: (total_fe_co2_emissions() - total_co2_emissions_all_fuels())
+        * 100
+        / co2_fossil_fuel_emissions(),
+        lambda: 0,
+    )
+
+
+@component.add(
+    name="CO2 emissions COAL",
+    units="GtCO2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "modern_solids_bioe_demand_households": 1,
+        "gco2_per_mj_conv_gas": 1,
+        "mj_per_ej": 1,
+        "g_per_gt": 1,
+        "coal_for_elec_co2_emissions": 1,
+        "coal_for_heat_co2_emissions": 1,
+    },
+)
+def co2_emissions_coal():
+    return (
+        modern_solids_bioe_demand_households()
+        * gco2_per_mj_conv_gas()
+        * mj_per_ej()
+        / g_per_gt()
+        + coal_for_elec_co2_emissions()
+        + coal_for_heat_co2_emissions()
+    )
 
 
 @component.add(
@@ -52,52 +98,6 @@ def co2_emissions_liquids():
 )
 def co2_emissions_oil_test():
     return co2_emissions_conv_oil() + co2_emissions_unconv_oil()
-
-
-@component.add(
-    name="check historic CO2 emissions",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 1,
-        "total_co2_emissions_all_fuels": 1,
-        "total_fe_co2_emissions": 1,
-        "co2_fossil_fuel_emissions": 1,
-    },
-)
-def check_historic_co2_emissions():
-    return if_then_else(
-        time() < 2015,
-        lambda: (total_fe_co2_emissions() - total_co2_emissions_all_fuels())
-        * 100
-        / co2_fossil_fuel_emissions(),
-        lambda: 0,
-    )
-
-
-@component.add(
-    name="CO2 emissions COAL",
-    units="GtCO2",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "modern_solids_bioe_demand_households": 1,
-        "gco2_per_mj_conv_gas": 1,
-        "mj_per_ej": 1,
-        "g_per_gt": 1,
-        "coal_for_elec_co2_emissions": 1,
-        "coal_for_heat_co2_emissions": 1,
-    },
-)
-def co2_emissions_coal():
-    return (
-        modern_solids_bioe_demand_households()
-        * gco2_per_mj_conv_gas()
-        * mj_per_ej()
-        / g_per_gt()
-        + coal_for_elec_co2_emissions()
-        + coal_for_heat_co2_emissions()
-    )
 
 
 @component.add(
@@ -245,10 +245,10 @@ def gases_fe_co2_emission():
         "gco2_per_mj_conv_oil": 1,
         "g_per_gt": 5,
         "gco2_per_mj_unconv_oil": 1,
-        "gco2_per_mj_ctl": 1,
         "ctl_production": 1,
-        "gco2_per_mj_gtl": 1,
+        "gco2_per_mj_ctl": 1,
         "gtl_production": 1,
+        "gco2_per_mj_gtl": 1,
         "oil_liquids_saved_by_biofuels_ej": 1,
         "gco2_per_mj_conv_gas": 1,
     },
@@ -511,12 +511,12 @@ def solids_fe_co2_emissions():
     comp_subtype="Normal",
     depends_on={
         "co2_fossil_fuel_emissions": 1,
-        "gco2_per_mj_conv_gas": 1,
         "pes_tot_biogas_for_heatcom": 1,
-        "g_per_gt": 1,
-        "solid_bioe_emissions_relevant_ej": 1,
-        "oil_liquids_saved_by_biofuels_ej": 1,
         "mj_per_ej": 1,
+        "oil_liquids_saved_by_biofuels_ej": 1,
+        "solid_bioe_emissions_relevant_ej": 1,
+        "gco2_per_mj_conv_gas": 1,
+        "g_per_gt": 1,
         "co2_emissions_peat": 1,
     },
 )
@@ -572,10 +572,10 @@ def total_co2_gases_emissoin_test():
     comp_subtype="Normal",
     depends_on={
         "total_elec_nres_co2_emisions": 1,
-        "pe_real_generation_res_elec": 1,
-        "g_per_gt": 1,
-        "gco2_per_mj_conv_gas": 1,
         "mj_per_ej": 1,
+        "pe_real_generation_res_elec": 1,
+        "gco2_per_mj_conv_gas": 1,
+        "g_per_gt": 1,
     },
 )
 def total_elec_co2_emissions():
@@ -667,10 +667,10 @@ def total_fed_solids_ej():
         "coal_for_heat_co2_emissions": 1,
         "gas_for_heat_co2_emissions": 1,
         "oil_for_heat_co2_emissions": 1,
-        "g_per_gt": 1,
-        "gco2_per_mj_conv_gas": 1,
         "mj_per_ej": 1,
         "pes_solids_bioe_for_heat": 1,
+        "gco2_per_mj_conv_gas": 1,
+        "g_per_gt": 1,
     },
 )
 def total_heat_co2_emissions():

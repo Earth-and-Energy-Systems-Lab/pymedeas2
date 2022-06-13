@@ -1,7 +1,26 @@
 """
 Module storage_demand_and_supply
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
+
+
+@component.add(
+    name="Total installed capacity RES elec var",
+    units="TW",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"installed_capacity_res_elec": 1},
+)
+def total_installed_capacity_res_elec_var():
+    """
+    Total installed capacity of RES variables for electricity generation.
+    """
+    return sum(
+        installed_capacity_res_elec()
+        .loc[_subscript_dict["RES ELEC VARIABLE"]]
+        .rename({"RES elec": "RES ELEC VARIABLE!"}),
+        dim=["RES ELEC VARIABLE!"],
+    )
 
 
 @component.add(
@@ -136,8 +155,8 @@ def demand_storage_capacity():
     depends_on={
         "esoi_phs": 1,
         "installed_capacity_phs_tw": 1,
-        "used_ev_batteries_for_elec_storage": 1,
         "esoi_ev_batteries": 1,
+        "used_ev_batteries_for_elec_storage": 1,
         "total_capacity_elec_storage_tw": 1,
     },
 )
@@ -308,25 +327,6 @@ def total_capacity_elec_storage_tw():
     Total capacity electricity storage installed.
     """
     return installed_capacity_phs_tw() + used_ev_batteries_for_elec_storage()
-
-
-@component.add(
-    name="Total installed capacity RES elec var",
-    units="TW",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"installed_capacity_res_elec_tw": 4},
-)
-def total_installed_capacity_res_elec_var():
-    """
-    Total installed capacity of RES variables for electricity generation.
-    """
-    return (
-        float(installed_capacity_res_elec_tw().loc["wind onshore"])
-        + float(installed_capacity_res_elec_tw().loc["wind offshore"])
-        + float(installed_capacity_res_elec_tw().loc["solar PV"])
-        + float(installed_capacity_res_elec_tw().loc["CSP"])
-    )
 
 
 @component.add(

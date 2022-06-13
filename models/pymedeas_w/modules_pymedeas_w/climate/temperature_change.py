@@ -1,6 +1,6 @@
 """
 Module temperature_change
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -289,9 +289,9 @@ def heat_transfer():
     depends_on={
         "heat_transfer_rate": 1,
         "mean_depth_of_adjacent_layers": 1,
-        "eddy_diffusion_mean": 1,
-        "heat_diffusion_covar": 2,
         "eddy_diffusion_coef": 1,
+        "heat_diffusion_covar": 2,
+        "eddy_diffusion_mean": 1,
     },
 )
 def heat_transfer_coeff():
@@ -494,9 +494,9 @@ def temperature_change():
     comp_subtype="Normal",
     depends_on={
         "earth_surface_area": 1,
-        "land_area_fraction": 2,
         "mixed_layer_depth": 1,
         "land_thickness": 1,
+        "land_area_fraction": 2,
     },
 )
 def upper_layer_volume_vu():

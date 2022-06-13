@@ -1,7 +1,26 @@
 """
 Module res_employment
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
+
+
+@component.add(
+    name='"Jobs O&M RES elec per techn"',
+    units="people",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_res_elec": 1,
+        "employment_factors_om_res_elec": 1,
+        "m_per_t": 1,
+    },
+)
+def jobs_om_res_elec_per_techn():
+    """
+    Annual jobs operation&maintenance of RES elec per technology.
+    """
+    return installed_capacity_res_elec() * employment_factors_om_res_elec() * m_per_t()
 
 
 @component.add(
@@ -229,27 +248,6 @@ _ext_constant_employment_factors_om_res_heat = ExtConstant(
     {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_employment_factors_om_res_heat",
 )
-
-
-@component.add(
-    name='"Jobs O&M RES elec per techn"',
-    units="people",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "installed_capacity_res_elec_tw": 1,
-        "employment_factors_om_res_elec": 1,
-        "m_per_t": 1,
-    },
-)
-def jobs_om_res_elec_per_techn():
-    """
-    Annual jobs operation&maintenance of RES elec per technology.
-    """
-    return (
-        installed_capacity_res_elec_tw() * employment_factors_om_res_elec() * m_per_t()
-    )
 
 
 @component.add(

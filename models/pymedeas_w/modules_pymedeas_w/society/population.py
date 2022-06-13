@@ -1,6 +1,6 @@
 """
 Module population
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -12,10 +12,10 @@ Translated using PySD version 3.0.1
     depends_on={
         "select_population_evolution_input": 2,
         "variation_input_pop": 1,
-        "p_customized_cte_pop_variation": 1,
         "time": 1,
-        "p_customized_year_pop_evolution": 1,
         "p_timeseries_pop_growth_rate": 2,
+        "p_customized_cte_pop_variation": 1,
+        "p_customized_year_pop_evolution": 1,
     },
 )
 def annual_population_growth_rate():

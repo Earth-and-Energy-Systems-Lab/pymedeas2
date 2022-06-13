@@ -1,6 +1,6 @@
 """
 Module ped_from_nonelectric_res
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 

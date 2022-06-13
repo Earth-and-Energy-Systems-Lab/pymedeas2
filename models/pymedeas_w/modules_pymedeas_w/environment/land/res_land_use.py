@@ -1,7 +1,25 @@
 """
 Module res_land_use
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
+
+
+@component.add(
+    name="surface RES elec",
+    units="MHa",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"power_density_res_elec_twmha": 2, "res_installed_capacity_delayed": 1},
+)
+def surface_res_elec():
+    return if_then_else(
+        power_density_res_elec_twmha() == 0,
+        lambda: xr.DataArray(
+            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        ),
+        lambda: res_installed_capacity_delayed() / power_density_res_elec_twmha(),
+    )
 
 
 @component.add(
@@ -170,24 +188,6 @@ def surface_onshore_wind_mha():
     Surface required to produce "onshore wind TWe".
     """
     return float(surface_res_elec().loc["wind onshore"])
-
-
-@component.add(
-    name="surface RES elec",
-    units="MHa",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"power_density_res_elec_twmha": 2, "installed_capacity_res_elec_tw": 1},
-)
-def surface_res_elec():
-    return if_then_else(
-        power_density_res_elec_twmha() == 0,
-        lambda: xr.DataArray(
-            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-        ),
-        lambda: installed_capacity_res_elec_tw() / power_density_res_elec_twmha(),
-    )
 
 
 @component.add(

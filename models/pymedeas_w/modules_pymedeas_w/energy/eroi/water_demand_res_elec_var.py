@@ -1,7 +1,32 @@
 """
 Module water_demand_res_elec_var
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
+
+
+@component.add(
+    name='"Water for O&M required for RES elec"',
+    units="Mt",
+    subscripts=["RES elec", "water0"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_res_elec": 1,
+        "water_for_om_res_elec": 1,
+        "m_per_t": 1,
+        "kg_per_mt": 1,
+    },
+)
+def water_for_om_required_for_res_elec():
+    """
+    Annual water required for the operation and maintenance of the capacity of RES for electricity in operation by technology.
+    """
+    return (
+        installed_capacity_res_elec()
+        * water_for_om_res_elec()
+        * m_per_t()
+        / kg_per_mt()
+    )
 
 
 @component.add(
@@ -15,8 +40,8 @@ Translated using PySD version 3.0.1
         "water_for_om_res_elec": 1,
         "energy_requirements_per_unit_of_water_consumption": 1,
         "lifetime_res_elec": 1,
-        "kg_per_mt": 2,
         "m_per_t": 1,
+        "kg_per_mt": 2,
         "mj_per_ej": 1,
     },
 )
@@ -129,7 +154,7 @@ def total_water_for_om_required_by_res_elec_per_techn():
     name='"Total water for O&M required by RES elec"',
     units="Mt",
     subscripts=["water"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_water_for_om_required_by_res_elec_per_techn": 1},
 )
@@ -151,7 +176,7 @@ def total_water_for_om_required_by_res_elec():
     units="kg/MW",
     subscripts=["RES elec", "water0"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={"__external__": "_ext_constant_water_for_om_res_elec"},
 )
 def water_for_om_res_elec():
@@ -182,28 +207,3 @@ _ext_constant_water_for_om_res_elec = ExtConstant(
     },
     "_ext_constant_water_for_om_res_elec",
 )
-
-
-@component.add(
-    name='"Water for O&M required for RES elec"',
-    units="Mt",
-    subscripts=["RES elec", "water0"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "installed_capacity_res_elec_tw": 1,
-        "water_for_om_res_elec": 1,
-        "m_per_t": 1,
-        "kg_per_mt": 1,
-    },
-)
-def water_for_om_required_for_res_elec():
-    """
-    Annual water required for the operation and maintenance of the capacity of RES for electricity in operation by technology.
-    """
-    return (
-        installed_capacity_res_elec_tw()
-        * water_for_om_res_elec()
-        * m_per_t()
-        / kg_per_mt()
-    )

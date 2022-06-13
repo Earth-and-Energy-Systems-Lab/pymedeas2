@@ -1,7 +1,18 @@
 """
 Module ch4_emissions_mix
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
+
+
+@component.add(
+    name="CH4 emissions COAL test",
+    units="MtCH4",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"ch4_emissions_coal_without_ctl": 1, "ch4_emissions_ctl": 1},
+)
+def ch4_emissions_coal_test():
+    return ch4_emissions_coal_without_ctl() + ch4_emissions_ctl()
 
 
 @component.add(
@@ -135,17 +146,6 @@ def ch4_emissions_gas_test():
 )
 def ch4_emissions_oil_test():
     return ch4_emissions_oil()
-
-
-@component.add(
-    name="CH4 emissions COAL test",
-    units="MtCH4",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"ch4_emissions_coal_without_ctl": 1, "ch4_emissions_ctl": 1},
-)
-def ch4_emissions_coal_test():
-    return ch4_emissions_coal_without_ctl() + ch4_emissions_ctl()
 
 
 @component.add(
@@ -321,10 +321,10 @@ def gases_fe_ch4_emission():
         "mj_per_ej": 3,
         "gch4_per_mj_oil": 1,
         "g_per_mt": 3,
-        "gch4_per_mj_ctl": 1,
         "ped_coal_for_ctl_ej": 1,
-        "ped_nat_gas_for_gtl_ej": 1,
+        "gch4_per_mj_ctl": 1,
         "gch4_per_mj_gtl": 1,
+        "ped_nat_gas_for_gtl_ej": 1,
     },
 )
 def liquids_fe_ch4_emissions():

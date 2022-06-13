@@ -1,6 +1,6 @@
 """
 Module natural_gas_extraction
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -20,173 +20,6 @@ def abundance_total_nat_gas_aut():
         lambda: 1,
         lambda: 1 - zidz(ped_nat_gas_ej() - pes_nat_gas_aut_1(), ped_nat_gas_ej()),
     )
-
-
-@component.add(
-    name="conv gas to leave underground",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 1,
-        "start_policy_leave_in_ground_conv_gas": 1,
-        "rurr_conv_gas_until_start_year_plg": 1,
-        "share_rurr_conv_gas_to_leave_underground": 1,
-    },
-)
-def conv_gas_to_leave_underground():
-    """
-    Conventional natural gas to be left underground due to the application of a policy.
-    """
-    return if_then_else(
-        time() < start_policy_leave_in_ground_conv_gas(),
-        lambda: 0,
-        lambda: rurr_conv_gas_until_start_year_plg()
-        * share_rurr_conv_gas_to_leave_underground(),
-    )
-
-
-@component.add(
-    name="cumulated conv gas extraction to 1995",
-    units="EJ",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_cumulated_conv_gas_extraction_to_1995"},
-)
-def cumulated_conv_gas_extraction_to_1995():
-    """
-    Cumulated conventional gas extraction to 1995 (Mohr et al., 2015).
-    """
-    return _ext_constant_cumulated_conv_gas_extraction_to_1995()
-
-
-_ext_constant_cumulated_conv_gas_extraction_to_1995 = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "cumulative_conventional_gas_extraction_until_1995",
-    {},
-    _root,
-    {},
-    "_ext_constant_cumulated_conv_gas_extraction_to_1995",
-)
-
-
-@component.add(
-    name="cumulated tot agg gas extraction",
-    units="EJ",
-    comp_type="Stateful",
-    comp_subtype="Integ",
-    depends_on={"_integ_cumulated_tot_agg_gas_extraction": 1},
-    other_deps={
-        "_integ_cumulated_tot_agg_gas_extraction": {
-            "initial": {"cumulated_tot_agg_gas_extraction_to_1995": 1},
-            "step": {"extraction_tot_agg_gas_ej": 1},
-        }
-    },
-)
-def cumulated_tot_agg_gas_extraction():
-    """
-    Cumulated total aggregated gas extraction.
-    """
-    return _integ_cumulated_tot_agg_gas_extraction()
-
-
-_integ_cumulated_tot_agg_gas_extraction = Integ(
-    lambda: extraction_tot_agg_gas_ej(),
-    lambda: cumulated_tot_agg_gas_extraction_to_1995(),
-    "_integ_cumulated_tot_agg_gas_extraction",
-)
-
-
-@component.add(
-    name="Cumulated unconv gas extraction",
-    units="EJ",
-    comp_type="Stateful",
-    comp_subtype="Integ",
-    depends_on={"_integ_cumulated_unconv_gas_extraction": 1},
-    other_deps={
-        "_integ_cumulated_unconv_gas_extraction": {
-            "initial": {"cumulated_unconv_gas_extraction_to_1995": 1},
-            "step": {"extraction_unconv_gas_ej": 1},
-        }
-    },
-)
-def cumulated_unconv_gas_extraction():
-    """
-    Cumulated unconventional gas extraction.
-    """
-    return _integ_cumulated_unconv_gas_extraction()
-
-
-_integ_cumulated_unconv_gas_extraction = Integ(
-    lambda: extraction_unconv_gas_ej(),
-    lambda: cumulated_unconv_gas_extraction_to_1995(),
-    "_integ_cumulated_unconv_gas_extraction",
-)
-
-
-@component.add(
-    name="cumulated unconv gas extraction to 1995",
-    units="EJ",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_constant_cumulated_unconv_gas_extraction_to_1995"
-    },
-)
-def cumulated_unconv_gas_extraction_to_1995():
-    """
-    Cumulated unconventional gas extraction to 1995 (Mohr et al., 2015).
-    """
-    return _ext_constant_cumulated_unconv_gas_extraction_to_1995()
-
-
-_ext_constant_cumulated_unconv_gas_extraction_to_1995 = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "cumulative_unconventional_gas_extraction_until_1995",
-    {},
-    _root,
-    {},
-    "_ext_constant_cumulated_unconv_gas_extraction_to_1995",
-)
-
-
-@component.add(
-    name='"extraction unconv gas - tot agg"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"extraction_tot_agg_gas_ej": 1, "share_unconv_gas_vs_tot_agg": 1},
-)
-def extraction_unconv_gas_tot_agg():
-    return extraction_tot_agg_gas_ej() * share_unconv_gas_vs_tot_agg()
-
-
-@component.add(
-    name="extraction unconv gas delayed",
-    units="EJ/Year",
-    comp_type="Stateful",
-    comp_subtype="DelayFixed",
-    depends_on={"_delayfixed_extraction_unconv_gas_delayed": 1},
-    other_deps={
-        "_delayfixed_extraction_unconv_gas_delayed": {
-            "initial": {"time_step": 1},
-            "step": {"extraction_unconv_gas_ej": 1},
-        }
-    },
-)
-def extraction_unconv_gas_delayed():
-    return _delayfixed_extraction_unconv_gas_delayed()
-
-
-_delayfixed_extraction_unconv_gas_delayed = DelayFixed(
-    lambda: extraction_unconv_gas_ej(),
-    lambda: time_step(),
-    lambda: 0,
-    time_step,
-    "_delayfixed_extraction_unconv_gas_delayed",
-)
 
 
 @component.add(
@@ -242,6 +75,30 @@ _delayfixed_constrain_gas_exogenous_growth_delayed_1yr = DelayFixed(
 
 
 @component.add(
+    name="conv gas to leave underground",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "start_policy_leave_in_ground_conv_gas": 1,
+        "rurr_conv_gas_until_start_year_plg": 1,
+        "share_rurr_conv_gas_to_leave_underground": 1,
+    },
+)
+def conv_gas_to_leave_underground():
+    """
+    Conventional natural gas to be left underground due to the application of a policy.
+    """
+    return if_then_else(
+        time() < start_policy_leave_in_ground_conv_gas(),
+        lambda: 0,
+        lambda: rurr_conv_gas_until_start_year_plg()
+        * share_rurr_conv_gas_to_leave_underground(),
+    )
+
+
+@component.add(
     name="cumulated conv gas extraction",
     units="EJ",
     comp_type="Stateful",
@@ -269,6 +126,58 @@ _integ_cumulated_conv_gas_extraction = Integ(
 
 
 @component.add(
+    name="cumulated conv gas extraction to 1995",
+    units="EJ",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_cumulated_conv_gas_extraction_to_1995"},
+)
+def cumulated_conv_gas_extraction_to_1995():
+    """
+    Cumulated conventional gas extraction to 1995 (Mohr et al., 2015).
+    """
+    return _ext_constant_cumulated_conv_gas_extraction_to_1995()
+
+
+_ext_constant_cumulated_conv_gas_extraction_to_1995 = ExtConstant(
+    "../energy.xlsx",
+    "Austria",
+    "cumulative_conventional_gas_extraction_until_1995",
+    {},
+    _root,
+    {},
+    "_ext_constant_cumulated_conv_gas_extraction_to_1995",
+)
+
+
+@component.add(
+    name="cumulated tot agg gas extraction",
+    units="EJ",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_cumulated_tot_agg_gas_extraction": 1},
+    other_deps={
+        "_integ_cumulated_tot_agg_gas_extraction": {
+            "initial": {"cumulated_tot_agg_gas_extraction_to_1995": 1},
+            "step": {"extraction_tot_agg_gas_ej": 1},
+        }
+    },
+)
+def cumulated_tot_agg_gas_extraction():
+    """
+    Cumulated total aggregated gas extraction.
+    """
+    return _integ_cumulated_tot_agg_gas_extraction()
+
+
+_integ_cumulated_tot_agg_gas_extraction = Integ(
+    lambda: extraction_tot_agg_gas_ej(),
+    lambda: cumulated_tot_agg_gas_extraction_to_1995(),
+    "_integ_cumulated_tot_agg_gas_extraction",
+)
+
+
+@component.add(
     name="cumulated tot agg gas extraction to 1995",
     units="EJ",
     comp_type="Auxiliary",
@@ -286,6 +195,60 @@ def cumulated_tot_agg_gas_extraction_to_1995():
         cumulated_conv_gas_extraction_to_1995()
         + cumulated_unconv_gas_extraction_to_1995()
     )
+
+
+@component.add(
+    name="Cumulated unconv gas extraction",
+    units="EJ",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_cumulated_unconv_gas_extraction": 1},
+    other_deps={
+        "_integ_cumulated_unconv_gas_extraction": {
+            "initial": {"cumulated_unconv_gas_extraction_to_1995": 1},
+            "step": {"extraction_unconv_gas_ej": 1},
+        }
+    },
+)
+def cumulated_unconv_gas_extraction():
+    """
+    Cumulated unconventional gas extraction.
+    """
+    return _integ_cumulated_unconv_gas_extraction()
+
+
+_integ_cumulated_unconv_gas_extraction = Integ(
+    lambda: extraction_unconv_gas_ej(),
+    lambda: cumulated_unconv_gas_extraction_to_1995(),
+    "_integ_cumulated_unconv_gas_extraction",
+)
+
+
+@component.add(
+    name="cumulated unconv gas extraction to 1995",
+    units="EJ",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_cumulated_unconv_gas_extraction_to_1995"
+    },
+)
+def cumulated_unconv_gas_extraction_to_1995():
+    """
+    Cumulated unconventional gas extraction to 1995 (Mohr et al., 2015).
+    """
+    return _ext_constant_cumulated_unconv_gas_extraction_to_1995()
+
+
+_ext_constant_cumulated_unconv_gas_extraction_to_1995 = ExtConstant(
+    "../energy.xlsx",
+    "Austria",
+    "cumulative_unconventional_gas_extraction_until_1995",
+    {},
+    _root,
+    {},
+    "_ext_constant_cumulated_unconv_gas_extraction_to_1995",
+)
 
 
 @component.add(
@@ -389,10 +352,10 @@ def extraction_conv_gas_tot_agg():
     comp_subtype="Normal",
     depends_on={
         "rurr_conv_gas": 1,
-        "max_extraction_conv_gas_ej": 1,
         "unlimited_gas": 1,
         "unlimited_nre": 1,
         "ped_domestic_aut_conv_nat_gas_ej": 2,
+        "max_extraction_conv_gas_ej": 1,
         "time": 1,
     },
 )
@@ -424,8 +387,8 @@ def extraction_conv_gas_ej():
         "rurr_tot_agg_gas": 1,
         "unlimited_gas": 1,
         "unlimited_nre": 1,
-        "max_extraction_tot_agg_gas_ej": 1,
         "ped_domestic_aut_total_natgas_ej": 2,
+        "max_extraction_tot_agg_gas_ej": 1,
         "time": 1,
     },
 )
@@ -449,6 +412,43 @@ def extraction_tot_agg_gas_ej():
 
 
 @component.add(
+    name='"extraction unconv gas - tot agg"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"extraction_tot_agg_gas_ej": 1, "share_unconv_gas_vs_tot_agg": 1},
+)
+def extraction_unconv_gas_tot_agg():
+    return extraction_tot_agg_gas_ej() * share_unconv_gas_vs_tot_agg()
+
+
+@component.add(
+    name="extraction unconv gas delayed",
+    units="EJ/Year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_extraction_unconv_gas_delayed": 1},
+    other_deps={
+        "_delayfixed_extraction_unconv_gas_delayed": {
+            "initial": {"time_step": 1},
+            "step": {"extraction_unconv_gas_ej": 1},
+        }
+    },
+)
+def extraction_unconv_gas_delayed():
+    return _delayfixed_extraction_unconv_gas_delayed()
+
+
+_delayfixed_extraction_unconv_gas_delayed = DelayFixed(
+    lambda: extraction_unconv_gas_ej(),
+    lambda: time_step(),
+    lambda: 0,
+    time_step,
+    "_delayfixed_extraction_unconv_gas_delayed",
+)
+
+
+@component.add(
     name="extraction unconv gas EJ",
     units="EJ/Year",
     comp_type="Auxiliary",
@@ -457,8 +457,8 @@ def extraction_tot_agg_gas_ej():
         "rurr_unconv_gas": 1,
         "max_unconv_gas_growth_extraction_ej": 1,
         "max_extraction_unconv_gas": 1,
-        "separate_conv_and_unconv_gas": 1,
         "historic_unconv_gas": 1,
+        "separate_conv_and_unconv_gas": 1,
         "time": 1,
     },
 )
@@ -610,8 +610,8 @@ def increase_scarcity_conv_gas():
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_gas": 1,
-        "tot_rurr_conv_gas": 1,
         "table_max_extraction_conv_gas": 1,
+        "tot_rurr_conv_gas": 1,
     },
 )
 def max_extraction_conv_gas_ej():
@@ -692,8 +692,8 @@ def max_unconv_gas_growth_extraction():
     comp_subtype="Normal",
     depends_on={
         "check_gas_delayed_1yr": 1,
-        "extraction_unconv_gas_delayed": 2,
         "constrain_gas_exogenous_growth_delayed_1yr": 1,
+        "extraction_unconv_gas_delayed": 2,
         "max_unconv_gas_growth_extraction": 1,
     },
 )
@@ -810,8 +810,8 @@ def pes_nat_gas_without_gtl():
     comp_subtype="Normal",
     depends_on={
         "pec_conv_gas": 1,
-        "nonenergy_use_demand_by_final_fuel_ej": 1,
         "share_conv_vs_total_gas_extraction_eu": 1,
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
     },
 )
 def real_consumption_ue_conv_gas_emissions_relevant_ej():
@@ -833,8 +833,8 @@ def real_consumption_ue_conv_gas_emissions_relevant_ej():
     comp_subtype="Normal",
     depends_on={
         "pec_unconv_gas": 1,
-        "nonenergy_use_demand_by_final_fuel_ej": 1,
         "share_conv_vs_total_gas_extraction_eu": 1,
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
     },
 )
 def real_consumption_unconv_gas_emissions_relevant_ej():
@@ -875,9 +875,9 @@ def real_extraction_conv_gas_ej():
     comp_subtype="Normal",
     depends_on={
         "real_extraction_conv_gas_ej": 1,
-        "nonenergy_use_demand_by_final_fuel_ej": 1,
-        "ped_nat_gas_for_gtl_ej": 1,
         "share_conv_vs_total_gas_extraction_eu": 1,
+        "ped_nat_gas_for_gtl_ej": 1,
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
     },
 )
 def real_extraction_conv_gas_emissions_relevant_ej():
@@ -921,9 +921,9 @@ def real_extraction_unconv_gas_ej():
     comp_subtype="Normal",
     depends_on={
         "real_extraction_unconv_gas_ej": 1,
-        "nonenergy_use_demand_by_final_fuel_ej": 1,
-        "ped_nat_gas_for_gtl_ej": 1,
         "share_conv_vs_total_gas_extraction_eu": 1,
+        "ped_nat_gas_for_gtl_ej": 1,
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
     },
 )
 def real_extraction_unconv_gas_emissions_relevant_ej():
@@ -1015,8 +1015,8 @@ _sampleiftrue_rurr_conv_gas_until_start_year_plg = SampleIfTrue(
         "_integ_rurr_tot_agg_gas": {
             "initial": {
                 "separate_conv_and_unconv_gas": 1,
-                "cumulated_tot_agg_gas_extraction_to_1995": 1,
                 "urr_tot_agg_gas": 1,
+                "cumulated_tot_agg_gas_extraction_to_1995": 1,
             },
             "step": {
                 "extraction_tot_agg_gas_ej": 1,
@@ -1085,8 +1085,8 @@ _sampleiftrue_rurr_tot_gas_until_start_year_plg = SampleIfTrue(
         "_integ_rurr_unconv_gas": {
             "initial": {
                 "urr_unconv_gas": 1,
-                "separate_conv_and_unconv_gas": 1,
                 "cumulated_unconv_gas_extraction_to_1995": 1,
+                "separate_conv_and_unconv_gas": 1,
             },
             "step": {
                 "extraction_unconv_gas_ej": 1,
@@ -1592,8 +1592,8 @@ _ext_lookup_table_max_extraction_unconv_gas = ExtLookup(
     depends_on={
         "time": 1,
         "start_policy_leave_in_ground_tot_agg_gas": 1,
-        "rurr_tot_gas_until_start_year_plg": 1,
         "share_rurr_tot_agg_gas_to_leave_underground": 1,
+        "rurr_tot_gas_until_start_year_plg": 1,
     },
 )
 def tot_agg_gas_to_leave_underground():
@@ -1787,9 +1787,9 @@ _ext_constant_unlimited_gas = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_gas": 1,
-        "urr_conv_gas_input": 1,
         "unlimited_gas": 1,
         "unlimited_nre": 1,
+        "urr_conv_gas_input": 1,
     },
 )
 def urr_conv_gas():

@@ -1,6 +1,6 @@
 """
 Module res_elec_potentials
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -31,8 +31,8 @@ def available_max_fe_solid_bioe_for_elec_ej():
     depends_on={
         "time": 2,
         "historic_share_installed_pv_urban_vs_tot_pv": 2,
-        "start_year_p_growth_res_elec": 1,
         "p_share_installed_pv_urban_vs_tot_pv": 1,
+        "start_year_p_growth_res_elec": 1,
     },
 )
 def desired_share_installed_pv_urban_vs_tot_pv():
@@ -218,87 +218,18 @@ def max_pe_potential_biogas_for_elec():
 
 
 @component.add(
-    name="max potential CSP TWe",
-    units="TWe",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "max_solar_on_land_mha": 1,
-        "power_density_csp": 1,
-        "share_solar_pv_vs_tot_solar_gen": 1,
-    },
-)
-def max_potential_csp_twe():
-    """
-    Maximum potential of CSP PV for producing electricity on land. To distribute the area potential with the CSP, we assume the potential share proportional to the generation share in each time period.
-    """
-    return (
-        max_solar_on_land_mha()
-        * power_density_csp()
-        * (1 - share_solar_pv_vs_tot_solar_gen())
-    )
-
-
-@component.add(
     name="max potential RES elec TWh",
     units="TWh",
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "max_res_elec_twe": 5,
-        "twe_per_twh": 8,
-        "max_fe_potential_solid_bioe_for_elec_twe": 1,
-        "max_potential_solar_pv_twe": 1,
-        "max_potential_csp_twe": 1,
-    },
+    depends_on={"max_res_elec_twe": 1, "twe_per_twh": 1},
 )
 def max_potential_res_elec_twh():
     """
     Maximum potential of RES for electricity per technology considering an optimal Cp.
     """
-    value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-    )
-    value.loc[["hydro"]] = float(max_res_elec_twe().loc["hydro"]) / twe_per_twh()
-    value.loc[["geot elec"]] = (
-        float(max_res_elec_twe().loc["geot elec"]) / twe_per_twh()
-    )
-    value.loc[["solid bioE elec"]] = (
-        max_fe_potential_solid_bioe_for_elec_twe() / twe_per_twh()
-    )
-    value.loc[["oceanic"]] = float(max_res_elec_twe().loc["oceanic"]) / twe_per_twh()
-    value.loc[["wind onshore"]] = (
-        float(max_res_elec_twe().loc["wind onshore"]) / twe_per_twh()
-    )
-    value.loc[["wind offshore"]] = (
-        float(max_res_elec_twe().loc["wind offshore"]) / twe_per_twh()
-    )
-    value.loc[["solar PV"]] = max_potential_solar_pv_twe() / twe_per_twh()
-    value.loc[["CSP"]] = max_potential_csp_twe() / twe_per_twh()
-    return value
-
-
-@component.add(
-    name="max potential solar PV TWe",
-    units="TWe",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "max_solar_on_land_mha": 1,
-        "power_density_solar_pv_on_land_twemha": 1,
-        "share_solar_pv_vs_tot_solar_gen": 1,
-    },
-)
-def max_potential_solar_pv_twe():
-    """
-    Maximum potential of solar PV for producing electricity on land. To distribute the area potential with the CSP, we assume the potential share proportional to the generation share in each time period.
-    """
-    return (
-        max_solar_on_land_mha()
-        * power_density_solar_pv_on_land_twemha()
-        * share_solar_pv_vs_tot_solar_gen()
-    )
+    return max_res_elec_twe() / twe_per_twh()
 
 
 @component.add(
@@ -310,8 +241,8 @@ def max_potential_solar_pv_twe():
         "max_potential_res_elec_twh": 1,
         "max_potential_phs_twe": 1,
         "twe_per_twh": 1,
-        "max_pe_potential_biogas_for_elec": 1,
         "ej_per_twh": 1,
+        "max_pe_potential_biogas_for_elec": 1,
     },
 )
 def max_potential_tot_res_elec_twh():
@@ -333,11 +264,11 @@ def max_potential_tot_res_elec_twh():
     units="TWe",
     subscripts=["RES elec"],
     comp_type="Auxiliary, Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={
         "__external__": "_ext_constant_max_res_elec_twe",
-        "efficiency_conversion_geot_pe_to_elec": 1,
         "max_pe_geotelec_twth": 1,
+        "efficiency_conversion_geot_pe_to_elec": 1,
         "max_bioe_twe": 1,
         "max_solar_pv_urban": 1,
         "max_solar_pv_on_land_twe": 1,
@@ -390,6 +321,27 @@ _ext_constant_max_res_elec_twe.add(
     "Europe",
     "max_offshore_wind_potential",
     {"RES elec": ["wind offshore"]},
+)
+
+
+@component.add(
+    name="max solar on land Mha",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_solar_on_land_mha"},
+)
+def max_solar_on_land_mha():
+    return _ext_constant_max_solar_on_land_mha()
+
+
+_ext_constant_max_solar_on_land_mha = ExtConstant(
+    "../energy.xlsx",
+    "Europe",
+    "max_solar_on_land_potential",
+    {},
+    _root,
+    {},
+    "_ext_constant_max_solar_on_land_mha",
 )
 
 
@@ -601,8 +553,8 @@ def remaining_potential_res_elec():
     depends_on={
         "max_solar_pv_urban": 2,
         "twe_per_twh": 2,
-        "potential_generation_res_elec_twh": 1,
         "desired_share_installed_pv_urban_vs_tot_pv": 1,
+        "potential_generation_res_elec_twh": 1,
     },
 )
 def remaining_potential_solar_pv_urban():

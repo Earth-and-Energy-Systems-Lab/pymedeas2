@@ -1,6 +1,6 @@
 """
 Module solids_ped_pes_fes
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -208,10 +208,10 @@ _sampleiftrue_historic_share_net_imports_coal_eu_until_2016 = SampleIfTrue(
     depends_on={
         "time": 1,
         "ped_eu_coal_from_row": 5,
-        "extraction_coal_ej_world": 2,
         "limit_coal_imports_from_row": 3,
-        "adapt_max_share_imports_coal": 1,
+        "extraction_coal_ej_world": 2,
         "historic_share_net_imports_coal_eu_until_2016": 1,
+        "adapt_max_share_imports_coal": 1,
     },
 )
 def imports_eu_coal_from_row_ej():
@@ -328,9 +328,9 @@ def pec_coal():
     comp_subtype="Normal",
     depends_on={
         "ped_solids": 1,
-        "modern_solids_bioe_demand_households": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
         "losses_in_charcoal_plants_ej": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "modern_solids_bioe_demand_households": 1,
         "pes_peat_ej": 1,
         "pes_waste_for_tfc": 1,
     },
@@ -470,9 +470,9 @@ def pes_solids():
     depends_on={
         "extraction_coal_ej_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
-        "modern_solids_bioe_demand_households": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
         "losses_in_charcoal_plants_ej": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "modern_solids_bioe_demand_households": 1,
         "pes_peat_ej": 1,
         "pes_waste_for_tfc": 1,
         "ped_coal_for_ctl_ej": 1,
@@ -585,8 +585,8 @@ def share_imports_eu_coal_from_row_vs_extraction_world():
     depends_on={
         "required_fed_solids": 1,
         "ped_coal_for_ctl_ej": 1,
-        "other_solids_required": 1,
         "ped_solids": 1,
+        "other_solids_required": 1,
     },
 )
 def share_solids_for_final_energy():

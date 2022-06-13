@@ -1,6 +1,6 @@
 """
 Module total_fe_elec_generation
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -68,6 +68,31 @@ def fe_elec_generation_from_coal_twh():
         (extraction_coal_aut() + imports_aut_coal_from_row_ej())
         * efficiency_coal_for_electricity()
         * share_coal_dem_for_elec()
+        / ej_per_twh()
+    )
+
+
+@component.add(
+    name="FE Elec generation from conv gas TWh",
+    units="TWh/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "real_extraction_conv_gas_ej": 1,
+        "imports_aut_conv_gas_from_row_ej": 1,
+        "share_nat_gas_dem_for_elec": 1,
+        "efficiency_gas_for_electricity": 1,
+        "ej_per_twh": 1,
+    },
+)
+def fe_elec_generation_from_conv_gas_twh():
+    """
+    Final energy electricity generation from conventional gas (TWh).
+    """
+    return (
+        (real_extraction_conv_gas_ej() + imports_aut_conv_gas_from_row_ej())
+        * share_nat_gas_dem_for_elec()
+        * efficiency_gas_for_electricity()
         / ej_per_twh()
     )
 
@@ -141,60 +166,6 @@ def fe_elec_generation_from_total_oil_twh():
 
 
 @component.add(
-    name="FE tot generation all RES elec TWh delayed 1yr",
-    units="Tdollars/Year",
-    comp_type="Stateful",
-    comp_subtype="DelayFixed",
-    depends_on={"_delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr": 1},
-    other_deps={
-        "_delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr": {
-            "initial": {},
-            "step": {"fe_tot_generation_all_res_elec_twh": 1},
-        }
-    },
-)
-def fe_tot_generation_all_res_elec_twh_delayed_1yr():
-    """
-    Electricity generation from all RES technologies. delayed 1 year.
-    """
-    return _delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr()
-
-
-_delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr = DelayFixed(
-    lambda: fe_tot_generation_all_res_elec_twh(),
-    lambda: 1,
-    lambda: 36,
-    time_step,
-    "_delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr",
-)
-
-
-@component.add(
-    name="FE Elec generation from conv gas TWh",
-    units="TWh/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "real_extraction_conv_gas_ej": 1,
-        "imports_aut_conv_gas_from_row_ej": 1,
-        "share_nat_gas_dem_for_elec": 1,
-        "efficiency_gas_for_electricity": 1,
-        "ej_per_twh": 1,
-    },
-)
-def fe_elec_generation_from_conv_gas_twh():
-    """
-    Final energy electricity generation from conventional gas (TWh).
-    """
-    return (
-        (real_extraction_conv_gas_ej() + imports_aut_conv_gas_from_row_ej())
-        * share_nat_gas_dem_for_elec()
-        * efficiency_gas_for_electricity()
-        / ej_per_twh()
-    )
-
-
-@component.add(
     name="FE Elec generation from unconv gas TWh",
     units="TWh/Year",
     comp_type="Auxiliary",
@@ -240,6 +211,35 @@ def fe_nuclear_elec_generation_twh():
         * efficiency_uranium_for_electricity()
         / ej_per_twh()
     )
+
+
+@component.add(
+    name="FE tot generation all RES elec TWh delayed 1yr",
+    units="Tdollars/Year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr": 1},
+    other_deps={
+        "_delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr": {
+            "initial": {},
+            "step": {"fe_tot_generation_all_res_elec_twh": 1},
+        }
+    },
+)
+def fe_tot_generation_all_res_elec_twh_delayed_1yr():
+    """
+    Electricity generation from all RES technologies. delayed 1 year.
+    """
+    return _delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr()
+
+
+_delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr = DelayFixed(
+    lambda: fe_tot_generation_all_res_elec_twh(),
+    lambda: 1,
+    lambda: 36,
+    time_step,
+    "_delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr",
+)
 
 
 @component.add(

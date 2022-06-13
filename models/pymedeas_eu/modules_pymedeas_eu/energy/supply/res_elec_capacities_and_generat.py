@@ -1,111 +1,35 @@
 """
 Module res_elec_capacities_and_generat
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
 @component.add(
-    name="abundance RES elec",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "total_fe_elec_demand_after_priorities_twh": 4,
-        "fe_real_tot_generation_res_elec_twh": 2,
-    },
-)
-def abundance_res_elec():
-    """
-    The parameter abundance varies between (1;0). The closest to 1 indicates that electricity generation from RES is far to cover to whole electricity demand, if "abundance RES elec"=0 it means that RES elec cover the whole electricity demand.
-    """
-    return if_then_else(
-        total_fe_elec_demand_after_priorities_twh() == 0,
-        lambda: 0,
-        lambda: if_then_else(
-            total_fe_elec_demand_after_priorities_twh()
-            > fe_real_tot_generation_res_elec_twh(),
-            lambda: (
-                total_fe_elec_demand_after_priorities_twh()
-                - fe_real_tot_generation_res_elec_twh()
-            )
-            / total_fe_elec_demand_after_priorities_twh(),
-            lambda: 0,
-        ),
-    )
-
-
-@component.add(
-    name="activate EROI allocation rule",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="Normal",
-)
-def activate_eroi_allocation_rule():
-    """
-    Activate/Deactivate EROI allocation rule for the RES elec technologies: 1. Activated 0. Deactivated
-    """
-    return 1
-
-
-@component.add(
-    name="adapt growth RES elec",
-    units="1/Year",
+    name="constructed capacity RES elec TW",
+    units="TW",
     subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 5,
-        "past_res_elec_capacity_growth": 1,
-        "start_year_p_growth_res_elec": 3,
-        "p_power": 4,
-        "table_hist_capacity_res_elec": 1,
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_constructed_capacity_res_elec_tw": 1},
+    other_deps={
+        "_integ_constructed_capacity_res_elec_tw": {
+            "initial": {"initial_instal_cap_res_elec": 1},
+            "step": {"res_elec_capacity_under_construction_tw": 1, "wear_res_elec": 1},
+        }
     },
 )
-def adapt_growth_res_elec():
+def constructed_capacity_res_elec_tw():
     """
-    Annual growth per RES elec technology. Modeling of a soft transition from current historic annual growth to reach the policy-objective in the target year.
+    Annual installed capacity of RES elec technologies for electricity generation.
     """
-    return if_then_else(
-        time() <= 2015,
-        lambda: past_res_elec_capacity_growth(),
-        lambda: if_then_else(
-            time() < start_year_p_growth_res_elec() + 1,
-            lambda: zidz(
-                p_power(start_year_p_growth_res_elec()),
-                table_hist_capacity_res_elec(2015),
-            )
-            ** (1 / (start_year_p_growth_res_elec() - 2015))
-            - 1,
-            lambda: zidz(p_power(time()) - p_power(time() - 1), p_power(time() - 1)),
-        ),
-    )
+    return _integ_constructed_capacity_res_elec_tw()
 
 
-@component.add(
-    name="adapt growth RES elec after allocation",
-    units="Dmnl",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "activate_eroi_allocation_rule": 1,
-        "adapt_growth_res_elec": 2,
-        "eroi_allocation_rule_per_res_elec": 1,
-        "constraint_elec_storage_availability": 1,
-    },
+_integ_constructed_capacity_res_elec_tw = Integ(
+    lambda: res_elec_capacity_under_construction_tw() - wear_res_elec(),
+    lambda: initial_instal_cap_res_elec(),
+    "_integ_constructed_capacity_res_elec_tw",
 )
-def adapt_growth_res_elec_after_allocation():
-    """
-    Annual growth per RES elec technology after accounting for the allocation rule.
-    """
-    return (
-        if_then_else(
-            activate_eroi_allocation_rule() == 0,
-            lambda: adapt_growth_res_elec(),
-            lambda: adapt_growth_res_elec() * eroi_allocation_rule_per_res_elec(),
-        )
-        * constraint_elec_storage_availability()
-    )
 
 
 @component.add(
@@ -128,9 +52,9 @@ def cp_baseload_reduction():
     comp_subtype="Normal",
     depends_on={
         "min_cp_baseload_res": 1,
-        "shortage_bioe_for_elec": 1,
-        "cpini_res_elec": 1,
         "cp_exogenous_res_elec_reduction": 1,
+        "cpini_res_elec": 1,
+        "shortage_bioe_for_elec": 1,
     },
 )
 def cp_res_elec():
@@ -170,6 +94,31 @@ _ext_constant_cpini_res_elec = ExtConstant(
 
 
 @component.add(
+    name="end hist data",
+    units="Year",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_end_hist_data"},
+)
+def end_hist_data():
+    """
+    End historical data year
+    """
+    return _ext_constant_end_hist_data()
+
+
+_ext_constant_end_hist_data = ExtConstant(
+    "../energy.xlsx",
+    "Europe",
+    "end_hist_data",
+    {},
+    _root,
+    {},
+    "_ext_constant_end_hist_data",
+)
+
+
+@component.add(
     name="FE real tot generation RES elec TWh",
     units="TWh",
     comp_type="Auxiliary",
@@ -184,68 +133,6 @@ def fe_real_tot_generation_res_elec_twh():
         np.maximum(total_fe_elec_demand_after_priorities_twh(), 0),
         potential_tot_generation_res_elec_twh(),
     )
-
-
-@component.add(
-    name="Historic new required capacity RES elec",
-    units="TW",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 2,
-        "total_time_planconstr_res_elec": 2,
-        "table_hist_capacity_res_elec": 2,
-    },
-)
-def historic_new_required_capacity_res_elec():
-    """
-    (Assuming 100% of planned was planned and constructed).
-    """
-    return table_hist_capacity_res_elec(
-        integer(time() + 1) + total_time_planconstr_res_elec(),
-        {
-            "RES elec": [
-                "hydro",
-                "geot elec",
-                "solid bioE elec",
-                "oceanic",
-                "wind onshore",
-                "wind offshore",
-                "solar PV",
-                "CSP",
-            ]
-        },
-    ) - table_hist_capacity_res_elec(
-        integer(time()) + total_time_planconstr_res_elec(),
-        {
-            "RES elec": [
-                "hydro",
-                "geot elec",
-                "solid bioE elec",
-                "oceanic",
-                "wind onshore",
-                "wind offshore",
-                "solar PV",
-                "CSP",
-            ]
-        },
-    )
-
-
-@component.add(
-    name="initial capacity in construction RES elec",
-    units="TW",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"initial_required_capacity_res_elec": 1},
-)
-def initial_capacity_in_construction_res_elec():
-    """
-    Initial capacity of RES by technology in construction (year 1995). We assume that it is the same than the additional installed capacity between 1995 and 1996.
-    """
-    return initial_required_capacity_res_elec()
 
 
 @component.add(
@@ -275,76 +162,83 @@ _ext_constant_initial_instal_cap_res_elec = ExtConstant(
 
 
 @component.add(
-    name="initial required capacity RES elec",
-    units="TW",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"table_hist_capacity_res_elec": 2},
-)
-def initial_required_capacity_res_elec():
-    """
-    Initial required capacity of RES by technology (year 1995). We assume that it is the same than the additional installed capacity between 1995 and 1996.
-    """
-    return table_hist_capacity_res_elec(1996) - table_hist_capacity_res_elec(1995)
-
-
-@component.add(
-    name="installed capacity RES elec delayed 1yr",
+    name="installed capacity RES delayed",
     units="TW",
     subscripts=["RES elec"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
-    depends_on={"_delayfixed_installed_capacity_res_elec_delayed_1yr": 1},
+    depends_on={"_delayfixed_installed_capacity_res_delayed": 1},
     other_deps={
-        "_delayfixed_installed_capacity_res_elec_delayed_1yr": {
-            "initial": {},
-            "step": {"installed_capacity_res_elec_tw": 1},
+        "_delayfixed_installed_capacity_res_delayed": {
+            "initial": {"table_hist_capacity_res_elec": 1, "time_step": 1},
+            "step": {"installed_capacity_res_elec": 1},
         }
     },
 )
-def installed_capacity_res_elec_delayed_1yr():
-    """
-    Annual installed capacity of RES elec technologies for electricity generation delayed 1 year.
-    """
-    return _delayfixed_installed_capacity_res_elec_delayed_1yr()
+def installed_capacity_res_delayed():
+    return _delayfixed_installed_capacity_res_delayed()
 
 
-_delayfixed_installed_capacity_res_elec_delayed_1yr = DelayFixed(
-    lambda: installed_capacity_res_elec_tw(),
-    lambda: 1,
-    lambda: xr.DataArray(0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]),
+_delayfixed_installed_capacity_res_delayed = DelayFixed(
+    lambda: installed_capacity_res_elec(),
+    lambda: time_step(),
+    lambda: table_hist_capacity_res_elec(1995),
     time_step,
-    "_delayfixed_installed_capacity_res_elec_delayed_1yr",
+    "_delayfixed_installed_capacity_res_delayed",
 )
 
 
 @component.add(
-    name="installed capacity RES elec TW",
+    name="Installed capacity RES elec",
     units="TW",
     subscripts=["RES elec"],
-    comp_type="Stateful",
-    comp_subtype="Integ",
-    depends_on={"_integ_installed_capacity_res_elec_tw": 1},
-    other_deps={
-        "_integ_installed_capacity_res_elec_tw": {
-            "initial": {"initial_instal_cap_res_elec": 1},
-            "step": {"res_elec_capacity_under_construction_tw": 1, "wear_res_elec": 1},
-        }
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"installed_capacity_res_elec_policies": 2, "max_res_elec_twe": 2},
+)
+def installed_capacity_res_elec():
+    """
+    Introduce the limitation of the techno-ecological potentials
+    """
+    return if_then_else(
+        installed_capacity_res_elec_policies() >= max_res_elec_twe(),
+        lambda: max_res_elec_twe(),
+        lambda: installed_capacity_res_elec_policies(),
+    )
+
+
+@component.add(
+    name="Installed capacity RES elec policies",
+    units="TW",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 5,
+        "end_hist_data": 5,
+        "table_hist_capacity_res_elec": 3,
+        "p_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
-def installed_capacity_res_elec_tw():
-    """
-    Annual installed capacity of RES elec technologies for electricity generation.
-    """
-    return _integ_installed_capacity_res_elec_tw()
-
-
-_integ_installed_capacity_res_elec_tw = Integ(
-    lambda: res_elec_capacity_under_construction_tw() - wear_res_elec(),
-    lambda: initial_instal_cap_res_elec(),
-    "_integ_installed_capacity_res_elec_tw",
-)
+def installed_capacity_res_elec_policies():
+    return if_then_else(
+        time() < end_hist_data(),
+        lambda: table_hist_capacity_res_elec(time()),
+        lambda: if_then_else(
+            time() < start_year_p_growth_res_elec(),
+            lambda: table_hist_capacity_res_elec(end_hist_data())
+            + (
+                (
+                    p_power(start_year_p_growth_res_elec())
+                    - table_hist_capacity_res_elec(end_hist_data())
+                )
+                / (start_year_p_growth_res_elec() - end_hist_data())
+            )
+            * (time() - end_hist_data()),
+            lambda: p_power(time()),
+        ),
+    )
 
 
 @component.add(
@@ -400,78 +294,23 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
 
 
 @component.add(
-    name="new capacity installed growth rate RES elec",
-    units="Dmnl",
+    name="new RES installed capacity",
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "installed_capacity_res_elec_tw": 1,
-        "installed_capacity_res_elec_delayed_1yr": 1,
+        "time": 1,
+        "installed_capacity_res_elec": 1,
+        "res_installed_capacity_delayed": 1,
     },
 )
-def new_capacity_installed_growth_rate_res_elec():
-    """
-    Annual RES elec capacity installed growth rate.
-    """
-    return -1 + zidz(
-        installed_capacity_res_elec_tw(), installed_capacity_res_elec_delayed_1yr()
-    )
-
-
-@component.add(
-    name="new required capacity RES elec",
-    units="TW",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 2,
-        "total_time_planconstr_res_elec": 1,
-        "historic_new_required_capacity_res_elec": 1,
-        "max_res_elec_twe": 1,
-        "installed_capacity_res_elec_tw": 1,
-        "p_power": 1,
-        "adapt_growth_res_elec": 1,
-    },
-)
-def new_required_capacity_res_elec():
-    """
-    New required capacity of RES technologies for electricity generation. We assume 100% of the required infraestructure is planned and constructed.
-    """
+def new_res_installed_capacity():
     return if_then_else(
-        time() < 2015 - total_time_planconstr_res_elec(),
-        lambda: historic_new_required_capacity_res_elec(),
-        lambda: if_then_else(
-            max_res_elec_twe() > installed_capacity_res_elec_tw(),
-            lambda: p_power(time() - 1) * adapt_growth_res_elec(),
-            lambda: xr.DataArray(
-                0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-            ),
+        time() > 1995,
+        lambda: installed_capacity_res_elec() - res_installed_capacity_delayed(),
+        lambda: xr.DataArray(
+            0.1, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
         ),
-    )
-
-
-@component.add(
-    name="new RES elec capacity under planning",
-    units="TW/Year",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "required_capacity_res_elec_tw": 1,
-        "time_planification_res_elec": 1,
-        "time_step": 1,
-    },
-)
-def new_res_elec_capacity_under_planning():
-    """
-    New RES infraestructure for electricity generation capacity under planning.
-    """
-    return np.maximum(
-        0,
-        required_capacity_res_elec_tw()
-        / np.maximum(time_planification_res_elec(), time_step()),
     )
 
 
@@ -503,55 +342,18 @@ _ext_lookup_p_power = ExtLookup(
 
 
 @component.add(
-    name="past RES elec capacity growth",
-    units="1/Year",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"time": 3, "table_hist_capacity_res_elec": 3},
-)
-def past_res_elec_capacity_growth():
-    """
-    Historic growth levels.
-    """
-    return zidz(
-        table_hist_capacity_res_elec(time()) - table_hist_capacity_res_elec(time() - 1),
-        table_hist_capacity_res_elec(time() - 1),
-    )
-
-
-@component.add(
     name="potential generation RES elec TWh",
     units="TWh",
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "installed_capacity_res_elec_tw": 1,
-        "cp_res_elec": 1,
-        "twe_per_twh": 1,
-    },
+    depends_on={"installed_capacity_res_elec": 1, "cp_res_elec": 1, "twe_per_twh": 1},
 )
 def potential_generation_res_elec_twh():
     """
     Potential generation of electricity by RES technology given the installed capacity.
     """
-    return installed_capacity_res_elec_tw() * cp_res_elec() / twe_per_twh()
-
-
-@component.add(
-    name="potential RES elec after intermitt TWh",
-    units="TWh",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"max_res_elec_twe": 1, "cp_baseload_reduction": 1, "twe_per_twh": 1},
-)
-def potential_res_elec_after_intermitt_twh():
-    """
-    Potential of RES for electricity per technology after accounting for the reduction of the maximal potential given the reduction of the Cp.
-    """
-    return max_res_elec_twe() * cp_baseload_reduction() / twe_per_twh()
+    return installed_capacity_res_elec() * cp_res_elec() / twe_per_twh()
 
 
 @component.add(
@@ -572,23 +374,6 @@ def potential_tot_generation_res_elec_twh():
 
 
 @component.add(
-    name="potential tot RES elec after intermitt",
-    units="TWh",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"potential_res_elec_after_intermitt_twh": 1},
-)
-def potential_tot_res_elec_after_intermitt():
-    """
-    Total potential of RES for electricity after accounting for the reduction of the maximal potential given the reduction of the Cp.
-    """
-    return sum(
-        potential_res_elec_after_intermitt_twh().rename({"RES elec": "RES elec!"}),
-        dim=["RES elec!"],
-    )
-
-
-@component.add(
     name="real Cp RES elec",
     units="Dmnl",
     subscripts=["RES elec"],
@@ -597,9 +382,9 @@ def potential_tot_res_elec_after_intermitt():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "installed_capacity_res_elec_tw": 2,
-        "real_generation_res_elec_twh": 1,
+        "installed_capacity_res_elec": 2,
         "twe_per_twh": 1,
+        "real_generation_res_elec_twh": 1,
     },
 )
 def real_cp_res_elec():
@@ -607,13 +392,13 @@ def real_cp_res_elec():
         time() < 2015,
         lambda: cp_res_elec(),
         lambda: if_then_else(
-            installed_capacity_res_elec_tw() == 0,
+            installed_capacity_res_elec() == 0,
             lambda: xr.DataArray(
                 0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
             ),
             lambda: real_generation_res_elec_twh()
             * twe_per_twh()
-            / installed_capacity_res_elec_tw(),
+            / installed_capacity_res_elec(),
         ),
     )
 
@@ -647,45 +432,10 @@ def real_generation_res_elec_twh():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "potential_res_elec_after_intermitt_twh": 3,
-        "potential_generation_res_elec_twh": 2,
-    },
+    depends_on={"installed_capacity_res_elec": 1, "max_res_elec_twe": 1},
 )
 def remaining_potential_res_elec_after_intermitt():
-    return if_then_else(
-        potential_res_elec_after_intermitt_twh() > potential_generation_res_elec_twh(),
-        lambda: zidz(
-            potential_res_elec_after_intermitt_twh()
-            - potential_generation_res_elec_twh(),
-            potential_res_elec_after_intermitt_twh(),
-        ),
-        lambda: xr.DataArray(
-            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-        ),
-    )
-
-
-@component.add(
-    name="remaining potential tot RES elec after intermitt",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "potential_tot_res_elec_after_intermitt": 3,
-        "fe_real_tot_generation_res_elec_twh": 2,
-    },
-)
-def remaining_potential_tot_res_elec_after_intermitt():
-    return if_then_else(
-        potential_tot_res_elec_after_intermitt()
-        > fe_real_tot_generation_res_elec_twh(),
-        lambda: (
-            potential_tot_res_elec_after_intermitt()
-            - fe_real_tot_generation_res_elec_twh()
-        )
-        / potential_tot_res_elec_after_intermitt(),
-        lambda: 0,
-    )
+    return installed_capacity_res_elec() / max_res_elec_twe()
 
 
 @component.add(
@@ -696,10 +446,8 @@ def remaining_potential_tot_res_elec_after_intermitt():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "res_elec_tot_overcapacity": 1,
-        "replacement_rate_res_elec": 1,
         "wear_res_elec": 1,
-        "constraint_elec_storage_availability": 1,
+        "res_elec_tot_overcapacity": 1,
         "shortage_bioe_for_elec": 1,
     },
 )
@@ -713,70 +461,10 @@ def replacement_capacity_res_elec():
             lambda: xr.DataArray(
                 0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
             ),
-            lambda: replacement_rate_res_elec()
-            * wear_res_elec()
-            * (1 - res_elec_tot_overcapacity()),
+            lambda: wear_res_elec() * (1 - res_elec_tot_overcapacity()),
         )
-        * constraint_elec_storage_availability()
         * shortage_bioe_for_elec() ** 2
     )
-
-
-@component.add(
-    name="replacement rate RES elec",
-    units="Dmnl",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "potential_generation_res_elec_twh": 1,
-        "potential_res_elec_after_intermitt_twh": 1,
-    },
-)
-def replacement_rate_res_elec():
-    """
-    Replacement rate of RES for electricity: by default all decommissioned capacity is replaced (=1). In the case of overcapacity in relation to the potential after accounting for intermittency, we reduce the annual replacement rate to 0.9.
-    """
-    return if_then_else(
-        potential_generation_res_elec_twh() < potential_res_elec_after_intermitt_twh(),
-        lambda: xr.DataArray(
-            1, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-        ),
-        lambda: xr.DataArray(
-            0.9, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-        ),
-    )
-
-
-@component.add(
-    name="required capacity RES elec TW",
-    units="TW",
-    subscripts=["RES elec"],
-    comp_type="Stateful",
-    comp_subtype="Integ",
-    depends_on={"_integ_required_capacity_res_elec_tw": 1},
-    other_deps={
-        "_integ_required_capacity_res_elec_tw": {
-            "initial": {"initial_required_capacity_res_elec": 1},
-            "step": {
-                "new_required_capacity_res_elec": 1,
-                "new_res_elec_capacity_under_planning": 1,
-            },
-        }
-    },
-)
-def required_capacity_res_elec_tw():
-    """
-    Required capacity of RES technologies for electricity generation.
-    """
-    return _integ_required_capacity_res_elec_tw()
-
-
-_integ_required_capacity_res_elec_tw = Integ(
-    lambda: new_required_capacity_res_elec() - new_res_elec_capacity_under_planning(),
-    lambda: initial_required_capacity_res_elec(),
-    "_integ_required_capacity_res_elec_tw",
-)
 
 
 @component.add(
@@ -786,8 +474,8 @@ _integ_required_capacity_res_elec_tw = Integ(
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "res_elec_planned_capacity_tw": 1,
-        "time_step": 1,
+        "res_elec_planned_capacity_replacement": 1,
+        "new_res_installed_capacity": 1,
         "time_construction_res_elec": 1,
     },
 )
@@ -795,42 +483,39 @@ def res_elec_capacity_under_construction_tw():
     """
     RES infraestructure for electricity generation capacity under construction.
     """
-    return res_elec_planned_capacity_tw() / np.maximum(
-        time_construction_res_elec(), time_step()
-    )
+    return (
+        res_elec_planned_capacity_replacement() + new_res_installed_capacity()
+    ) / time_construction_res_elec()
 
 
 @component.add(
-    name="RES elec planned capacity TW",
+    name="RES elec planned capacity replacement",
     units="TW",
     subscripts=["RES elec"],
     comp_type="Stateful",
     comp_subtype="Integ",
-    depends_on={"_integ_res_elec_planned_capacity_tw": 1},
+    depends_on={"_integ_res_elec_planned_capacity_replacement": 1},
     other_deps={
-        "_integ_res_elec_planned_capacity_tw": {
-            "initial": {"initial_capacity_in_construction_res_elec": 1},
+        "_integ_res_elec_planned_capacity_replacement": {
+            "initial": {},
             "step": {
-                "new_res_elec_capacity_under_planning": 1,
                 "replacement_capacity_res_elec": 1,
                 "res_elec_capacity_under_construction_tw": 1,
             },
         }
     },
 )
-def res_elec_planned_capacity_tw():
+def res_elec_planned_capacity_replacement():
     """
-    Planned capacity of RES for electricity.
+    Planned capacity of RES for electricity that must be replaced
     """
-    return _integ_res_elec_planned_capacity_tw()
+    return _integ_res_elec_planned_capacity_replacement()
 
 
-_integ_res_elec_planned_capacity_tw = Integ(
-    lambda: new_res_elec_capacity_under_planning()
-    + replacement_capacity_res_elec()
-    - res_elec_capacity_under_construction_tw(),
-    lambda: initial_capacity_in_construction_res_elec(),
-    "_integ_res_elec_planned_capacity_tw",
+_integ_res_elec_planned_capacity_replacement = Integ(
+    lambda: replacement_capacity_res_elec() - res_elec_capacity_under_construction_tw(),
+    lambda: xr.DataArray(0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]),
+    "_integ_res_elec_planned_capacity_replacement",
 )
 
 
@@ -857,6 +542,33 @@ def res_elec_tot_overcapacity():
         )
         / potential_tot_generation_res_elec_twh(),
     )
+
+
+@component.add(
+    name="RES installed capacity delayed",
+    units="TW",
+    subscripts=["RES elec"],
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_res_installed_capacity_delayed": 1},
+    other_deps={
+        "_delayfixed_res_installed_capacity_delayed": {
+            "initial": {"time": 1},
+            "step": {"installed_capacity_res_elec": 1},
+        }
+    },
+)
+def res_installed_capacity_delayed():
+    return _delayfixed_res_installed_capacity_delayed()
+
+
+_delayfixed_res_installed_capacity_delayed = DelayFixed(
+    lambda: installed_capacity_res_elec(),
+    lambda: time(),
+    lambda: xr.DataArray(0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]),
+    time_step,
+    "_delayfixed_res_installed_capacity_delayed",
+)
 
 
 @component.add(
@@ -909,28 +621,6 @@ _ext_lookup_table_hist_capacity_res_elec = ExtLookup(
     {"RES elec": _subscript_dict["RES elec"]},
     "_ext_lookup_table_hist_capacity_res_elec",
 )
-
-
-@component.add(
-    name="Time 95pc TS potential RES elec",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"remaining_potential_res_elec_after_intermitt": 1, "time": 1},
-)
-def time_95pc_ts_potential_res_elec():
-    """
-    Time when the remaining resource availability falls bellow 5% of the techno-ecological potential, i.e. when the 95% of the techno-ecological potential is reached.
-    """
-    return if_then_else(
-        remaining_potential_res_elec_after_intermitt() > 0.05,
-        lambda: xr.DataArray(
-            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-        ),
-        lambda: xr.DataArray(
-            time(), {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-        ),
-    )
 
 
 @component.add(
@@ -1009,7 +699,11 @@ def total_time_planconstr_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "lifetime_res_elec": 1, "installed_capacity_res_elec_tw": 1},
+    depends_on={
+        "time": 1,
+        "constructed_capacity_res_elec_tw": 1,
+        "lifetime_res_elec": 1,
+    },
 )
 def wear_res_elec():
     """
@@ -1020,5 +714,5 @@ def wear_res_elec():
         lambda: xr.DataArray(
             0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
         ),
-        lambda: installed_capacity_res_elec_tw() / lifetime_res_elec(),
+        lambda: constructed_capacity_res_elec_tw() / lifetime_res_elec(),
     )

@@ -1,6 +1,6 @@
 """
 Module population
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -12,10 +12,10 @@ Translated using PySD version 3.0.1
     depends_on={
         "select_population_evolution_input": 2,
         "variation_input_pop": 1,
-        "p_timeseries_pop_growth_rate": 2,
-        "time": 1,
         "p_customized_cte_pop_variation": 1,
         "p_customized_year_pop_evolution": 1,
+        "time": 1,
+        "p_timeseries_pop_growth_rate": 2,
     },
 )
 def annual_population_growth_rate():
@@ -270,12 +270,12 @@ _sampleiftrue_pop_until_p_customized_year_pop_evolution = SampleIfTrue(
         "time": 1,
         "p_customized_year_pop_evolution": 1,
         "pop_variation_by_scen": 2,
-        "pop_variation_delay_6_step": 1,
-        "pop_variation_delay_4_step": 1,
         "pop_variation_delay_5_step": 1,
-        "pop_variation_delay_3_step": 1,
-        "pop_variation_delay_1_step": 1,
         "pop_variation_delay_2_step": 1,
+        "pop_variation_delay_4_step": 1,
+        "pop_variation_delay_3_step": 1,
+        "pop_variation_delay_6_step": 1,
+        "pop_variation_delay_1_step": 1,
     },
 )
 def pop_variation():
@@ -304,8 +304,8 @@ def pop_variation():
         "pop_until_p_customized_year_pop_evolution": 1,
         "pop_asymptote": 1,
         "t_asymptote_pop": 2,
-        "time": 1,
         "p_customized_year_pop_evolution": 1,
+        "time": 1,
     },
 )
 def pop_variation_asymptote_scen():
@@ -327,11 +327,11 @@ def pop_variation_asymptote_scen():
     depends_on={
         "time": 2,
         "variation_historic_pop": 1,
-        "select_population_evolution_input": 4,
-        "annual_population_growth_rate": 4,
-        "population": 4,
-        "pop_variation_asymptote_scen": 1,
         "p_customized_year_pop_evolution": 1,
+        "annual_population_growth_rate": 4,
+        "select_population_evolution_input": 4,
+        "pop_variation_asymptote_scen": 1,
+        "population": 4,
     },
 )
 def pop_variation_by_scen():

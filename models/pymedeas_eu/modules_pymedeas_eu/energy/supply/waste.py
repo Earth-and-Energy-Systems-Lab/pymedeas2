@@ -1,6 +1,6 @@
 """
 Module waste
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -351,8 +351,8 @@ _ext_constant_max_pe_waste = ExtConstant(
         "historic_pes_waste_ej": 2,
         "pes_waste_ej": 3,
         "p_waste_change": 1,
-        "adapt_growth_waste": 1,
         "max_pe_waste": 3,
+        "adapt_growth_waste": 1,
     },
 )
 def new_waste_supply_ej():

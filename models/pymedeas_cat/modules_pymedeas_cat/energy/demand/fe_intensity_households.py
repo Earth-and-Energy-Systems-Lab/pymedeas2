@@ -1,6 +1,6 @@
 """
 Module fe_intensity_households
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -11,9 +11,9 @@ Translated using PySD version 3.0.1
     comp_subtype="Normal",
     depends_on={
         "time": 1,
+        "min_energy_intensity_vs_intial_h": 2,
         "global_energy_intensity_h": 1,
         "initial_global_energy_intensity_2009": 2,
-        "min_energy_intensity_vs_intial_h": 2,
     },
 )
 def available_improvement_efficiency_h():
@@ -34,87 +34,6 @@ def available_improvement_efficiency_h():
             lambda: 1,
         ),
     )
-
-
-@component.add(
-    name="Decrease of intensity due to change energy technology H TOP DOWN",
-    units="EJ/Tdollars",
-    subscripts=["final sources"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "evol_final_energy_intensity_h": 2,
-        "global_energy_intensity_h": 1,
-        "minimum_fraction_source": 1,
-        "pressure_to_change_energy_technology_h": 1,
-        "max_yearly_change_between_sources": 1,
-        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
-    },
-)
-def decrease_of_intensity_due_to_change_energy_technology_h_top_down():
-    """
-    When in households, one type of energy (a) is replaced by another (b), the energy intensity of (b) will increase and the energy intensity of (a) will decrease. This flow represents the decrease of (a). IF THEN ELSE((ZIDZ(Evol final energy intensity H[final sources], Global energy intensity H)) >= minimum fraction source[Households,final sources] ,max yearly change between sources[Households,final sources] *Evol final energy intensity H[final sources] * Pressure to change energy technology H [final sources], 0 )
-    """
-    return if_then_else(
-        zidz(evol_final_energy_intensity_h(), global_energy_intensity_h())
-        >= minimum_fraction_source().loc["Households", :].reset_coords(drop=True),
-        lambda: (
-            max_yearly_change_between_sources()
-            .loc["Households", :]
-            .reset_coords(drop=True)
-            * (
-                1
-                + percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities()
-            )
-        )
-        * evol_final_energy_intensity_h()
-        * pressure_to_change_energy_technology_h(),
-        lambda: xr.DataArray(
-            0, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
-        ),
-    )
-
-
-@component.add(
-    name="Energy intensity of households rest",
-    units="EJ/Tdollar",
-    subscripts=["final sources"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "activate_bottom_up_method": 3,
-        "change_total_intensity_to_rest": 3,
-        "evol_final_energy_intensity_h": 8,
-    },
-)
-def energy_intensity_of_households_rest():
-    """
-    Energy intensity of households by final source without considering the energy of transports for households
-    """
-    value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
-    )
-    value.loc[["liquids"]] = if_then_else(
-        float(activate_bottom_up_method().loc["Households"]) == 1,
-        lambda: float(evol_final_energy_intensity_h().loc["liquids"])
-        * float(change_total_intensity_to_rest().loc["liquids"]),
-        lambda: float(evol_final_energy_intensity_h().loc["liquids"]),
-    )
-    value.loc[["solids"]] = float(evol_final_energy_intensity_h().loc["solids"])
-    value.loc[["gases"]] = if_then_else(
-        float(activate_bottom_up_method().loc["Households"]) == 1,
-        lambda: float(evol_final_energy_intensity_h().loc["gases"])
-        * float(change_total_intensity_to_rest().loc["gases"]),
-        lambda: float(evol_final_energy_intensity_h().loc["gases"]),
-    )
-    value.loc[["electricity"]] = if_then_else(
-        float(activate_bottom_up_method().loc["Households"]) == 1,
-        lambda: float(evol_final_energy_intensity_h().loc["electricity"])
-        * float(change_total_intensity_to_rest().loc["electricity"]),
-        lambda: float(evol_final_energy_intensity_h().loc["electricity"]),
-    )
-    value.loc[["heat"]] = float(evol_final_energy_intensity_h().loc["heat"])
-    return value
 
 
 @component.add(
@@ -164,6 +83,45 @@ _ext_constant_choose_energy_intensity_target_method = ExtConstant(
 
 
 @component.add(
+    name="Decrease of intensity due to change energy technology H TOP DOWN",
+    units="EJ/Tdollars",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "evol_final_energy_intensity_h": 2,
+        "global_energy_intensity_h": 1,
+        "minimum_fraction_source": 1,
+        "max_yearly_change_between_sources": 1,
+        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
+        "pressure_to_change_energy_technology_h": 1,
+    },
+)
+def decrease_of_intensity_due_to_change_energy_technology_h_top_down():
+    """
+    When in households, one type of energy (a) is replaced by another (b), the energy intensity of (b) will increase and the energy intensity of (a) will decrease. This flow represents the decrease of (a). IF THEN ELSE((ZIDZ(Evol final energy intensity H[final sources], Global energy intensity H)) >= minimum fraction source[Households,final sources] ,max yearly change between sources[Households,final sources] *Evol final energy intensity H[final sources] * Pressure to change energy technology H [final sources], 0 )
+    """
+    return if_then_else(
+        zidz(evol_final_energy_intensity_h(), global_energy_intensity_h())
+        >= minimum_fraction_source().loc["Households", :].reset_coords(drop=True),
+        lambda: (
+            max_yearly_change_between_sources()
+            .loc["Households", :]
+            .reset_coords(drop=True)
+            * (
+                1
+                + percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities()
+            )
+        )
+        * evol_final_energy_intensity_h()
+        * pressure_to_change_energy_technology_h(),
+        lambda: xr.DataArray(
+            0, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        ),
+    )
+
+
+@component.add(
     name="Energy intensity of households",
     units="EJ/Tdollar",
     subscripts=["final sources"],
@@ -172,8 +130,8 @@ _ext_constant_choose_energy_intensity_target_method = ExtConstant(
     depends_on={
         "time": 1,
         "energy_intensity_of_households_rest": 3,
-        "energy_intensity_of_households_transport": 1,
         "activate_bottom_up_method": 1,
+        "energy_intensity_of_households_transport": 1,
     },
 )
 def energy_intensity_of_households():
@@ -190,6 +148,48 @@ def energy_intensity_of_households():
             + energy_intensity_of_households_rest(),
         ),
     )
+
+
+@component.add(
+    name="Energy intensity of households rest",
+    units="EJ/Tdollar",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "activate_bottom_up_method": 3,
+        "evol_final_energy_intensity_h": 8,
+        "change_total_intensity_to_rest": 3,
+    },
+)
+def energy_intensity_of_households_rest():
+    """
+    Energy intensity of households by final source without considering the energy of transports for households
+    """
+    value = xr.DataArray(
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+    )
+    value.loc[["liquids"]] = if_then_else(
+        float(activate_bottom_up_method().loc["Households"]) == 1,
+        lambda: float(evol_final_energy_intensity_h().loc["liquids"])
+        * float(change_total_intensity_to_rest().loc["liquids"]),
+        lambda: float(evol_final_energy_intensity_h().loc["liquids"]),
+    )
+    value.loc[["solids"]] = float(evol_final_energy_intensity_h().loc["solids"])
+    value.loc[["gases"]] = if_then_else(
+        float(activate_bottom_up_method().loc["Households"]) == 1,
+        lambda: float(evol_final_energy_intensity_h().loc["gases"])
+        * float(change_total_intensity_to_rest().loc["gases"]),
+        lambda: float(evol_final_energy_intensity_h().loc["gases"]),
+    )
+    value.loc[["electricity"]] = if_then_else(
+        float(activate_bottom_up_method().loc["Households"]) == 1,
+        lambda: float(evol_final_energy_intensity_h().loc["electricity"])
+        * float(change_total_intensity_to_rest().loc["electricity"]),
+        lambda: float(evol_final_energy_intensity_h().loc["electricity"]),
+    )
+    value.loc[["heat"]] = float(evol_final_energy_intensity_h().loc["heat"])
+    return value
 
 
 @component.add(
@@ -401,14 +401,14 @@ def increase_of_intensity_due_to_change_energy_technology_net_h():
     depends_on={
         "time": 2,
         "historic_rate_final_energy_intensity": 1,
-        "choose_final_sectoral_energy_intensities_evolution_method": 2,
         "year_energy_intensity_target": 1,
         "efficiency_energy_acceleration": 12,
-        "available_improvement_efficiency_h": 4,
-        "evol_final_energy_intensity_h": 4,
-        "variation_energy_intensity_target_h": 1,
-        "initial_energy_intensity_1995": 4,
+        "choose_final_sectoral_energy_intensities_evolution_method": 2,
         "historic_mean_rate_energy_intensity": 6,
+        "variation_energy_intensity_target_h": 1,
+        "available_improvement_efficiency_h": 4,
+        "initial_energy_intensity_1995": 4,
+        "evol_final_energy_intensity_h": 4,
     },
 )
 def inertial_rate_energy_intensity_h_top_down():
@@ -807,8 +807,8 @@ def transport_households_final_energy_demand():
         "choose_energy_intensity_target_method": 1,
         "year_energy_intensity_target": 2,
         "energy_intensity_target": 1,
-        "evol_final_energy_intensity_h": 2,
         "final_year_energy_intensity_target": 4,
+        "evol_final_energy_intensity_h": 2,
         "time": 6,
         "final_energy_intensity_2020_h": 1,
         "pct_change_energy_intensity_target": 1,

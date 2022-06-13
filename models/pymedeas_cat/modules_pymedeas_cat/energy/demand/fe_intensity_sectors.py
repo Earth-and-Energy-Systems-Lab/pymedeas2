@@ -1,6 +1,6 @@
 """
 Module fe_intensity_sectors
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -62,6 +62,33 @@ def available_improvement_efficiency():
 
 
 @component.add(
+    name="Choose final sectoral energy intensities evolution method",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_choose_final_sectoral_energy_intensities_evolution_method"
+    },
+)
+def choose_final_sectoral_energy_intensities_evolution_method():
+    """
+    0- Dynamic evolution with policies and feedback of final fuel scarcity 1- Constant at 2009 levels 2- Sectoral energy intensity targets defined by user
+    """
+    return _ext_constant_choose_final_sectoral_energy_intensities_evolution_method()
+
+
+_ext_constant_choose_final_sectoral_energy_intensities_evolution_method = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "BAU",
+    "sectoral_FEI_evolution_method",
+    {},
+    _root,
+    {},
+    "_ext_constant_choose_final_sectoral_energy_intensities_evolution_method",
+)
+
+
+@component.add(
     name="Decrease of intensity due to energy a technology change TOP DOWN",
     units="EJ/Tdollars",
     subscripts=["sectors", "final sources"],
@@ -70,11 +97,11 @@ def available_improvement_efficiency():
     depends_on={
         "activate_bottom_up_method": 1,
         "evol_final_energy_intensity_by_sector_and_fuel": 2,
-        "pressure_to_change_energy_technology": 1,
+        "max_yearly_change_between_sources": 1,
         "global_energy_intensity_by_sector": 1,
+        "pressure_to_change_energy_technology": 1,
         "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
         "minimum_fraction_source": 1,
-        "max_yearly_change_between_sources": 1,
     },
 )
 def decrease_of_intensity_due_to_energy_a_technology_change_top_down():
@@ -126,6 +153,32 @@ def decrease_of_intensity_due_to_energy_a_technology_change_top_down():
             },
             ["sectors", "final sources"],
         ),
+    )
+
+
+@component.add(
+    name="Efficiency energy acceleration",
+    units="Dmnl",
+    subscripts=["SECTORS and HOUSEHOLDS", "final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "maximum_yearly_acceleration_of_intensity_improvement": 1,
+        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
+        "pressure_to_improve_energy_intensity_efficiency": 1,
+    },
+)
+def efficiency_energy_acceleration():
+    """
+    This variable represents the acceleration of the process of variation of the energy intensity that can be produced by polítcas or scarcity pressures.
+    """
+    return (
+        -maximum_yearly_acceleration_of_intensity_improvement()
+        * (
+            1
+            + percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities()
+        )
+        * pressure_to_improve_energy_intensity_efficiency()
     )
 
 
@@ -205,85 +258,6 @@ _ext_constant_efficiency_rate_of_substitution.add(
         "final sources1": ["solids"],
     },
 )
-
-
-@component.add(
-    name="exp rapid evol change energy",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="Normal",
-)
-def exp_rapid_evol_change_energy():
-    """
-    Parameter that define the speed of application of policies in the rapid way.
-    """
-    return 1 / 2
-
-
-@component.add(
-    name="exp slow evol change energy",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="Normal",
-)
-def exp_slow_evol_change_energy():
-    """
-    Parameter that define the speed of application of policies in the slow way.
-    """
-    return 2
-
-
-@component.add(
-    name="Choose final sectoral energy intensities evolution method",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_constant_choose_final_sectoral_energy_intensities_evolution_method"
-    },
-)
-def choose_final_sectoral_energy_intensities_evolution_method():
-    """
-    0- Dynamic evolution with policies and feedback of final fuel scarcity 1- Constant at 2009 levels 2- Sectoral energy intensity targets defined by user
-    """
-    return _ext_constant_choose_final_sectoral_energy_intensities_evolution_method()
-
-
-_ext_constant_choose_final_sectoral_energy_intensities_evolution_method = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "sectoral_FEI_evolution_method",
-    {},
-    _root,
-    {},
-    "_ext_constant_choose_final_sectoral_energy_intensities_evolution_method",
-)
-
-
-@component.add(
-    name="Efficiency energy acceleration",
-    units="Dmnl",
-    subscripts=["SECTORS and HOUSEHOLDS", "final sources"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "maximum_yearly_acceleration_of_intensity_improvement": 1,
-        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
-        "pressure_to_improve_energy_intensity_efficiency": 1,
-    },
-)
-def efficiency_energy_acceleration():
-    """
-    This variable represents the acceleration of the process of variation of the energy intensity that can be produced by polítcas or scarcity pressures.
-    """
-    return (
-        -maximum_yearly_acceleration_of_intensity_improvement()
-        * (
-            1
-            + percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities()
-        )
-        * pressure_to_improve_energy_intensity_efficiency()
-    )
 
 
 @component.add(
@@ -368,6 +342,19 @@ _integ_evol_final_energy_intensity_by_sector_and_fuel = Integ(
 
 
 @component.add(
+    name="exp rapid evol change energy",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def exp_rapid_evol_change_energy():
+    """
+    Parameter that define the speed of application of policies in the rapid way.
+    """
+    return 1 / 2
+
+
+@component.add(
     name="exp rapid evol improve efficiency",
     units="Dmnl",
     comp_type="Constant",
@@ -378,6 +365,19 @@ def exp_rapid_evol_improve_efficiency():
     Parameter that define the speed of application of policies in the rapid way.
     """
     return 1 / 2
+
+
+@component.add(
+    name="exp slow evol change energy",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def exp_slow_evol_change_energy():
+    """
+    Parameter that define the speed of application of policies in the slow way.
+    """
+    return 2
 
 
 @component.add(
@@ -695,8 +695,8 @@ def historic_rate_final_energy_intensity():
         "year_to_finish_energy_intensity_policies": 5,
         "time": 5,
         "exp_rapid_evol_change_energy": 1,
-        "policy_change_energy_speed": 3,
         "exp_slow_evol_change_energy": 1,
+        "policy_change_energy_speed": 3,
     },
 )
 def implementation_policy_to_change_final_energy():
@@ -788,9 +788,9 @@ def implementation_policy_to_change_final_energy():
         "year_policy_to_improve_efficiency": 9,
         "year_to_finish_energy_intensity_policies": 5,
         "time": 5,
+        "exp_slow_evol_improve_efficiency": 1,
         "exp_rapid_evol_improve_efficiency": 1,
         "policy_to_improve_efficiency_speed": 3,
-        "exp_slow_evol_improve_efficiency": 1,
     },
 )
 def implementation_policy_to_improve_energy_intensity_efficiency():
@@ -964,15 +964,15 @@ def increase_of_intensity_due_to_energy_a_technology_net():
         "time": 2,
         "historic_rate_final_energy_intensity": 1,
         "evol_final_energy_intensity_by_sector_and_fuel": 4,
-        "rate_change_intensity_bottom_up": 4,
-        "choose_final_sectoral_energy_intensities_evolution_method": 2,
-        "variation_energy_intensity_target": 1,
         "year_energy_intensity_target": 1,
         "efficiency_energy_acceleration": 12,
-        "available_improvement_efficiency": 4,
-        "activate_bottom_up_method": 4,
-        "initial_energy_intensity_1995": 4,
+        "variation_energy_intensity_target": 1,
+        "choose_final_sectoral_energy_intensities_evolution_method": 2,
         "historic_mean_rate_energy_intensity": 6,
+        "available_improvement_efficiency": 4,
+        "initial_energy_intensity_1995": 4,
+        "activate_bottom_up_method": 4,
+        "rate_change_intensity_bottom_up": 4,
     },
 )
 def inertial_rate_energy_intensity_top_down():

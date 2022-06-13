@@ -1,6 +1,6 @@
 """
 Module nonenergy_use
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -127,7 +127,7 @@ def total_real_nonenergy_use_consumption_ej():
     name="variation nonenergy use",
     units="EJ",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel_ej": 3,

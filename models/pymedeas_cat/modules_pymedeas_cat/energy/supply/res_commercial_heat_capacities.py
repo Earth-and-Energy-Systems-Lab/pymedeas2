@@ -1,6 +1,6 @@
 """
 Module res_commercial_heat_capacities
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -51,9 +51,9 @@ def abundance_res_heatcom2():
     depends_on={
         "time": 4,
         "past_res_growth_for_heatcom": 4,
-        "p_res_for_heat": 2,
-        "start_year_p_growth_res_heat": 3,
         "target_year_p_growth_res_heat": 2,
+        "start_year_p_growth_res_heat": 3,
+        "p_res_for_heat": 2,
     },
 )
 def adapt_growth_res_for_heatcom():
@@ -75,66 +75,6 @@ def adapt_growth_res_for_heatcom():
                 lambda: p_res_for_heat(),
             ),
         ),
-    )
-
-
-@component.add(
-    name="Efficiency geothermal for heat",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_efficiency_geothermal_for_heat"},
-)
-def efficiency_geothermal_for_heat():
-    return _ext_constant_efficiency_geothermal_for_heat()
-
-
-_ext_constant_efficiency_geothermal_for_heat = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "efficiency_geothermal_for_heat",
-    {},
-    _root,
-    {},
-    "_ext_constant_efficiency_geothermal_for_heat",
-)
-
-
-@component.add(
-    name='"FE real generation RES heat-com EJ"',
-    units="EJ",
-    subscripts=["RES heat"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "potential_fes_res_for_heatcom_ej": 1,
-        "res_heatcom_tot_overcapacity": 1,
-    },
-)
-def fe_real_generation_res_heatcom_ej():
-    """
-    Commercial heat generation by RES technology.
-    """
-    return potential_fes_res_for_heatcom_ej() * (1 - res_heatcom_tot_overcapacity())
-
-
-@component.add(
-    name='"FE real supply RES for heat-com tot EJ"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "fed_heatcom_after_priorities_ej": 1,
-        "potential_fes_tot_res_for_heatcom_ej": 1,
-    },
-)
-def fe_real_supply_res_for_heatcom_tot_ej():
-    """
-    Total final energy supply delivered by RES for commercial heat.
-    """
-    return np.minimum(
-        np.maximum(fed_heatcom_after_priorities_ej(), 0),
-        potential_fes_tot_res_for_heatcom_ej(),
     )
 
 
@@ -162,6 +102,28 @@ _ext_constant_efficiency_conversion_bioe_plants_to_heat = ExtConstant(
     _root,
     {},
     "_ext_constant_efficiency_conversion_bioe_plants_to_heat",
+)
+
+
+@component.add(
+    name="Efficiency geothermal for heat",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_geothermal_for_heat"},
+)
+def efficiency_geothermal_for_heat():
+    return _ext_constant_efficiency_geothermal_for_heat()
+
+
+_ext_constant_efficiency_geothermal_for_heat = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "efficiency_geothermal_for_heat",
+    {},
+    _root,
+    {},
+    "_ext_constant_efficiency_geothermal_for_heat",
 )
 
 
@@ -214,6 +176,44 @@ _ext_constant_f1_solar_panels_for_heat = ExtConstant(
     {},
     "_ext_constant_f1_solar_panels_for_heat",
 )
+
+
+@component.add(
+    name='"FE real generation RES heat-com EJ"',
+    units="EJ",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "potential_fes_res_for_heatcom_ej": 1,
+        "res_heatcom_tot_overcapacity": 1,
+    },
+)
+def fe_real_generation_res_heatcom_ej():
+    """
+    Commercial heat generation by RES technology.
+    """
+    return potential_fes_res_for_heatcom_ej() * (1 - res_heatcom_tot_overcapacity())
+
+
+@component.add(
+    name='"FE real supply RES for heat-com tot EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "fed_heatcom_after_priorities_ej": 1,
+        "potential_fes_tot_res_for_heatcom_ej": 1,
+    },
+)
+def fe_real_supply_res_for_heatcom_tot_ej():
+    """
+    Total final energy supply delivered by RES for commercial heat.
+    """
+    return np.minimum(
+        np.maximum(fed_heatcom_after_priorities_ej(), 0),
+        potential_fes_tot_res_for_heatcom_ej(),
+    )
 
 
 @component.add(
@@ -307,31 +307,6 @@ _integ_installed_capacity_res_heatcom_tw = Integ(
 
 
 @component.add(
-    name="Losses solar for heat",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_losses_solar_for_heat"},
-)
-def losses_solar_for_heat():
-    """
-    Losses (pipelina and storage) of solar for heat.
-    """
-    return _ext_constant_losses_solar_for_heat()
-
-
-_ext_constant_losses_solar_for_heat = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "losses_solar_for_heat",
-    {},
-    _root,
-    {},
-    "_ext_constant_losses_solar_for_heat",
-)
-
-
-@component.add(
     name="life time RES for heat",
     units="Year",
     subscripts=["RES heat"],
@@ -358,6 +333,31 @@ _ext_constant_life_time_res_for_heat = ExtConstant(
 
 
 @component.add(
+    name="Losses solar for heat",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_losses_solar_for_heat"},
+)
+def losses_solar_for_heat():
+    """
+    Losses (pipelina and storage) of solar for heat.
+    """
+    return _ext_constant_losses_solar_for_heat()
+
+
+_ext_constant_losses_solar_for_heat = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "losses_solar_for_heat",
+    {},
+    _root,
+    {},
+    "_ext_constant_losses_solar_for_heat",
+)
+
+
+@component.add(
     name='"new RES capacity for heat-com TW"',
     units="TW/Year",
     subscripts=["RES heat"],
@@ -366,9 +366,9 @@ _ext_constant_life_time_res_for_heat = ExtConstant(
     depends_on={
         "time": 3,
         "historic_res_capacity_for_heatcom": 2,
-        "installed_capacity_res_heatcom_tw": 1,
         "adapt_growth_res_for_heatcom": 1,
         "remaining_potential_constraint_on_new_res_heat_capacity": 1,
+        "installed_capacity_res_heatcom_tw": 1,
         "abundance_res_heatcom2": 1,
     },
 )

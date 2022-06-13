@@ -1,6 +1,6 @@
 """
 Module households_transport
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -9,7 +9,7 @@ Translated using PySD version 3.0.1
     units="EJ/T$",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"liq_4w": 1, "percent_4w_liq": 1, "demand_h": 1},
+    depends_on={"liq_4w": 1, "demand_h": 1, "percent_4w_liq": 1},
 )
 def a1_coef_th():
     """
@@ -266,11 +266,11 @@ def h_2w_elec_adapt_growth():
     depends_on={
         "time": 2,
         "t_fin_hveh": 2,
-        "p_h_vehicle": 1,
         "t_ini_hveh": 2,
-        "percent_h_vehicles_tini": 1,
-        "activate_policy_h_transp": 1,
+        "p_h_vehicle": 1,
         "aux_hist_h": 1,
+        "activate_policy_h_transp": 1,
+        "percent_h_vehicles_tini": 1,
     },
 )
 def h_2w_elec_initial_growth():
@@ -309,11 +309,11 @@ def h_2w_liq_adapt_growth():
     depends_on={
         "time": 2,
         "t_fin_hveh": 2,
-        "p_h_vehicle": 1,
         "t_ini_hveh": 2,
-        "percent_h_vehicles_tini": 1,
-        "activate_policy_h_transp": 1,
+        "p_h_vehicle": 1,
         "aux_hist_h": 1,
+        "activate_policy_h_transp": 1,
+        "percent_h_vehicles_tini": 1,
     },
 )
 def h_2w_liq_initial_growth():
@@ -354,11 +354,11 @@ def h_elec_adapt_growth():
     depends_on={
         "time": 2,
         "t_fin_hveh": 2,
-        "p_h_vehicle": 1,
         "t_ini_hveh": 2,
-        "percent_h_vehicles_tini": 1,
-        "activate_policy_h_transp": 1,
+        "p_h_vehicle": 1,
         "aux_hist_h": 1,
+        "activate_policy_h_transp": 1,
+        "percent_h_vehicles_tini": 1,
     },
 )
 def h_elec_initial_growth():
@@ -402,11 +402,11 @@ def h_gas_adapt_growth():
     depends_on={
         "time": 2,
         "t_fin_hveh": 2,
-        "p_h_vehicle": 1,
         "t_ini_hveh": 2,
-        "percent_h_vehicles_tini": 1,
-        "activate_policy_h_transp": 1,
+        "p_h_vehicle": 1,
         "aux_hist_h": 1,
+        "activate_policy_h_transp": 1,
+        "percent_h_vehicles_tini": 1,
     },
 )
 def h_gas_initial_growth():
@@ -450,11 +450,11 @@ def h_hyb_adapt_growth():
     depends_on={
         "time": 2,
         "t_fin_hveh": 2,
-        "p_h_vehicle": 1,
         "t_ini_hveh": 2,
-        "percent_h_vehicles_tini": 1,
-        "activate_policy_h_transp": 1,
+        "p_h_vehicle": 1,
         "aux_hist_h": 1,
+        "activate_policy_h_transp": 1,
+        "percent_h_vehicles_tini": 1,
     },
 )
 def h_hyb_initial_growth():
@@ -731,9 +731,9 @@ def number_vehicles_h():
     comp_subtype="Normal",
     depends_on={
         "p_share_2wheelers": 6,
-        "p_percent_elec_hveh": 2,
-        "p_percent_hyb_hveh": 2,
         "p_percent_gas_hveh": 2,
+        "p_percent_hyb_hveh": 2,
+        "p_percent_elec_hveh": 2,
         "p_percent_2w_elec": 2,
     },
 )
@@ -1388,11 +1388,11 @@ def var_ih_liq2():
         "time": 6,
         "t_ini_hveh": 6,
         "aux_hist_h": 6,
-        "h_2w_liq_adapt_growth": 2,
+        "h_2w_elec_adapt_growth": 2,
         "h_elec_adapt_growth": 2,
+        "h_2w_liq_adapt_growth": 2,
         "h_gas_adapt_growth": 2,
         "h_hyb_adapt_growth": 2,
-        "h_2w_elec_adapt_growth": 2,
     },
 )
 def var_percents_h_vehicles():

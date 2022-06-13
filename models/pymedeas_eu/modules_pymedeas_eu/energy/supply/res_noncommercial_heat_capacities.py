@@ -1,6 +1,6 @@
 """
 Module res_noncommercial_heat_capacities
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -48,8 +48,8 @@ def abundance_res_heatnc2():
     depends_on={
         "time": 4,
         "past_res_growth_for_heatnc": 4,
-        "start_year_p_growth_res_heat": 3,
         "target_year_p_growth_res_heat": 2,
+        "start_year_p_growth_res_heat": 3,
         "p_res_for_heat": 2,
     },
 )

@@ -1,6 +1,6 @@
 """
 Module storage_demand_and_supply
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -12,8 +12,8 @@ Translated using PySD version 3.0.1
     comp_subtype="Normal",
     depends_on={
         "res_elec_variables": 1,
-        "demand_storage_capacity": 2,
         "total_capacity_elec_storage_tw": 3,
+        "demand_storage_capacity": 2,
     },
 )
 def constraint_elec_storage_availability():
@@ -62,29 +62,6 @@ def cp_ev_batteries_for_elec_storage():
 
 
 @component.add(
-    name="ESOI elec storage",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "esoi_phs": 1,
-        "installed_capacity_phs_tw": 1,
-        "used_ev_batteries_for_elec_storage": 1,
-        "esoi_ev_batteries": 1,
-        "total_capacity_elec_storage_tw": 1,
-    },
-)
-def esoi_elec_storage():
-    """
-    ESOI of electric storage (PHS and EV batteries).
-    """
-    return (
-        esoi_phs() * installed_capacity_phs_tw()
-        + esoi_ev_batteries() * used_ev_batteries_for_elec_storage()
-    ) / total_capacity_elec_storage_tw()
-
-
-@component.add(
     name="Cp EV batteries required",
     units="TW",
     comp_type="Auxiliary",
@@ -126,6 +103,29 @@ def demand_storage_capacity():
     return (
         share_capacity_storageres_elec_var() * total_installed_capacity_res_elec_var()
     )
+
+
+@component.add(
+    name="ESOI elec storage",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "esoi_phs": 1,
+        "installed_capacity_phs_tw": 1,
+        "used_ev_batteries_for_elec_storage": 1,
+        "esoi_ev_batteries": 1,
+        "total_capacity_elec_storage_tw": 1,
+    },
+)
+def esoi_elec_storage():
+    """
+    ESOI of electric storage (PHS and EV batteries).
+    """
+    return (
+        esoi_phs() * installed_capacity_phs_tw()
+        + esoi_ev_batteries() * used_ev_batteries_for_elec_storage()
+    ) / total_capacity_elec_storage_tw()
 
 
 @component.add(
@@ -191,8 +191,8 @@ def remaining_potential_elec_storage_by_res_techn():
     depends_on={
         "rt_storage_efficiency_phs": 1,
         "installed_capacity_phs_tw": 1,
-        "rt_storage_efficiency_ev_batteries": 1,
         "used_ev_batteries_for_elec_storage": 1,
+        "rt_storage_efficiency_ev_batteries": 1,
         "total_capacity_elec_storage_tw": 1,
     },
 )
@@ -292,17 +292,17 @@ def total_capacity_elec_storage_tw():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"installed_capacity_res_elec_tw": 4},
+    depends_on={"installed_capacity_res_elec": 1},
 )
 def total_installed_capacity_res_elec_var():
     """
     Total installed capacity of RES variables for electricity generation.
     """
-    return (
-        float(installed_capacity_res_elec_tw().loc["wind onshore"])
-        + float(installed_capacity_res_elec_tw().loc["wind offshore"])
-        + float(installed_capacity_res_elec_tw().loc["solar PV"])
-        + float(installed_capacity_res_elec_tw().loc["CSP"])
+    return sum(
+        installed_capacity_res_elec()
+        .loc[_subscript_dict["RES ELEC VARIABLE"]]
+        .rename({"RES elec": "RES ELEC VARIABLE!"}),
+        dim=["RES ELEC VARIABLE!"],
     )
 
 

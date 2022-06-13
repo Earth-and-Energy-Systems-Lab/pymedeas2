@@ -1,6 +1,6 @@
 """
 Module medeas_w
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -128,6 +128,20 @@ _data_extraction_coal_ej = TabData(
 
 
 @component.add(
+    name="extraction coal EJ World",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"extraction_coal_ej": 1},
+)
+def extraction_coal_ej_world():
+    """
+    Global primary energy supply. Source: global model.
+    """
+    return extraction_coal_ej()
+
+
+@component.add(
     name='"extraction nat. gas EJ World"',
     units="EJ",
     comp_type="Auxiliary",
@@ -185,20 +199,6 @@ def extraction_uranium_ej_world():
     Global uranium extracted. Source: global model.
     """
     return extraction_uranium_ej()
-
-
-@component.add(
-    name="extraction coal EJ World",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"extraction_coal_ej": 1},
-)
-def extraction_coal_ej_world():
-    """
-    Global primary energy supply. Source: global model.
-    """
-    return extraction_coal_ej()
 
 
 @component.add(

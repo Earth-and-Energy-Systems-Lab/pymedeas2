@@ -1,6 +1,6 @@
 """
 Module solar_potential_in_urban_areas
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -26,56 +26,6 @@ _ext_constant_av_solar_i = ExtConstant(
     _root,
     {},
     "_ext_constant_av_solar_i",
-)
-
-
-@component.add(
-    name='"f1-ini solar PV"',
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_f1ini_solar_pv"},
-)
-def f1ini_solar_pv():
-    """
-    Current cell efficiency conversion of solar PV.
-    """
-    return _ext_constant_f1ini_solar_pv()
-
-
-_ext_constant_f1ini_solar_pv = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "cell_efficiency_conversion_of_solar_pv",
-    {},
-    _root,
-    {},
-    "_ext_constant_f1ini_solar_pv",
-)
-
-
-@component.add(
-    name="f3 solar PV on land",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_f3_solar_pv_on_land"},
-)
-def f3_solar_pv_on_land():
-    """
-    Land occupation ratio (f3).
-    """
-    return _ext_constant_f3_solar_pv_on_land()
-
-
-_ext_constant_f3_solar_pv_on_land = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "land_occupation_ratio_of_solar_pv",
-    {},
-    _root,
-    {},
-    "_ext_constant_f3_solar_pv_on_land",
 )
 
 
@@ -112,9 +62,9 @@ _ext_constant_f1_pv_solar_in_target_year = ExtConstant(
     depends_on={
         "time": 4,
         "f1ini_solar_pv": 4,
+        "start_year_p_f1_solar_pv": 3,
         "f1_pv_solar_in_target_year": 2,
         "target_year_f1_solar_pv": 2,
-        "start_year_p_f1_solar_pv": 3,
     },
 )
 def f1_solar_pv():
@@ -140,6 +90,31 @@ def f1_solar_pv():
 
 
 @component.add(
+    name='"f1-ini solar PV"',
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_f1ini_solar_pv"},
+)
+def f1ini_solar_pv():
+    """
+    Current cell efficiency conversion of solar PV.
+    """
+    return _ext_constant_f1ini_solar_pv()
+
+
+_ext_constant_f1ini_solar_pv = ExtConstant(
+    "../energy.xlsx",
+    "Austria",
+    "cell_efficiency_conversion_of_solar_pv",
+    {},
+    _root,
+    {},
+    "_ext_constant_f1ini_solar_pv",
+)
+
+
+@component.add(
     name="f2 PF solar PV",
     units="Dmnl",
     comp_type="Constant",
@@ -161,6 +136,31 @@ _ext_constant_f2_pf_solar_pv = ExtConstant(
     _root,
     {},
     "_ext_constant_f2_pf_solar_pv",
+)
+
+
+@component.add(
+    name="f3 solar PV on land",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_f3_solar_pv_on_land"},
+)
+def f3_solar_pv_on_land():
+    """
+    Land occupation ratio (f3).
+    """
+    return _ext_constant_f3_solar_pv_on_land()
+
+
+_ext_constant_f3_solar_pv_on_land = ExtConstant(
+    "../energy.xlsx",
+    "Austria",
+    "land_occupation_ratio_of_solar_pv",
+    {},
+    _root,
+    {},
+    "_ext_constant_f3_solar_pv_on_land",
 )
 
 
@@ -257,8 +257,8 @@ _ext_constant_power_density_initial_res_elec_twemha = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "power_density_initial_res_elec_twemha": 7,
-        "cp_res_elec": 8,
         "cpini_res_elec": 8,
+        "cp_res_elec": 8,
         "power_density_solar_pv_on_land_twemha": 1,
     },
 )

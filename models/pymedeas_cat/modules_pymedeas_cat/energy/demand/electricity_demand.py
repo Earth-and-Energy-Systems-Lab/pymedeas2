@@ -1,21 +1,7 @@
 """
 Module electricity_demand
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
-
-
-@component.add(
-    name="FE Elec demand exports TWh",
-    units="TWh",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"total_fe_elec_demand_twh": 1, "elec_exports_share": 1},
-)
-def fe_elec_demand_exports_twh():
-    """
-    Overdemand generated with the aim of exporting.
-    """
-    return total_fe_elec_demand_twh() * elec_exports_share()
 
 
 @component.add(
@@ -84,6 +70,20 @@ def fe_demand_elec_consum_twh():
     Electricity consumption (TWh)
     """
     return float(required_fed_by_fuel().loc["electricity"]) / ej_per_twh()
+
+
+@component.add(
+    name="FE Elec demand exports TWh",
+    units="TWh",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"total_fe_elec_demand_twh": 1, "elec_exports_share": 1},
+)
+def fe_elec_demand_exports_twh():
+    """
+    Overdemand generated with the aim of exporting.
+    """
+    return total_fe_elec_demand_twh() * elec_exports_share()
 
 
 @component.add(

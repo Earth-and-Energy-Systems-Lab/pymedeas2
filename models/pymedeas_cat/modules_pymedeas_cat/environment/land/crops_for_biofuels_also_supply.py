@@ -1,6 +1,6 @@
 """
 Module crops_for_biofuels_also_supply
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -135,6 +135,22 @@ _ext_constant_biofuel_production_2015 = ExtConstant(
 
 
 @component.add(
+    name="Biofuels 3gen land compet available",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"max_land_compet_biofuels_2gen": 2, "land_compet_biofuels_3gen_mha": 1},
+)
+def biofuels_3gen_land_compet_available():
+    """
+    Remaining potential land available (dedicated to 2nd generation) as given as a fraction of unity. We assume that no new land starts directly to produce biofuels 3rd generation biofuels.
+    """
+    return (
+        max_land_compet_biofuels_2gen() - land_compet_biofuels_3gen_mha()
+    ) / max_land_compet_biofuels_2gen()
+
+
+@component.add(
     name="Biofuels land compet available",
     units="Dmnl",
     comp_type="Auxiliary",
@@ -153,32 +169,6 @@ def biofuels_land_compet_available():
         max_land_compet_biofuels_2gen()
         - land_compet_biofuels_2gen_mha()
         - land_compet_biofuels_3gen_mha()
-    ) / max_land_compet_biofuels_2gen()
-
-
-@component.add(
-    name="EJ per ktoe", units="EJ/ktoe", comp_type="Constant", comp_subtype="Normal"
-)
-def ej_per_ktoe():
-    """
-    1 ktoe = 0.000041868 EJ.
-    """
-    return 4.1868e-05
-
-
-@component.add(
-    name="Biofuels 3gen land compet available",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"max_land_compet_biofuels_2gen": 2, "land_compet_biofuels_3gen_mha": 1},
-)
-def biofuels_3gen_land_compet_available():
-    """
-    Remaining potential land available (dedicated to 2nd generation) as given as a fraction of unity. We assume that no new land starts directly to produce biofuels 3rd generation biofuels.
-    """
-    return (
-        max_land_compet_biofuels_2gen() - land_compet_biofuels_3gen_mha()
     ) / max_land_compet_biofuels_2gen()
 
 
@@ -204,6 +194,16 @@ _ext_constant_efficiency_improvement_biofuels_3gen = ExtConstant(
     {},
     "_ext_constant_efficiency_improvement_biofuels_3gen",
 )
+
+
+@component.add(
+    name="EJ per ktoe", units="EJ/ktoe", comp_type="Constant", comp_subtype="Normal"
+)
+def ej_per_ktoe():
+    """
+    1 ktoe = 0.000041868 EJ.
+    """
+    return 4.1868e-05
 
 
 @component.add(
@@ -315,6 +315,20 @@ def land_compet_available_for_biofuels_2gen_2015():
         * ej_per_ktoe()
         / land_productivity_biofuels_2gen_ej_mha()
     )
+
+
+@component.add(
+    name="Land compet biofuels 2gen abandonned",
+    units="MHa",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"land_compet_biofuels_2gen_mha": 1, "share_biofuels_overcapacity": 1},
+)
+def land_compet_biofuels_2gen_abandonned():
+    """
+    Land previously dedicated to produce biofuels 2nd generation and abandoned due to reduced liquids demand.
+    """
+    return land_compet_biofuels_2gen_mha() * share_biofuels_overcapacity()
 
 
 @component.add(
@@ -438,6 +452,43 @@ _ext_constant_land_productivity_biofuels_2gen_ej_mha = ExtConstant(
 
 
 @component.add(
+    name="Land shifted to biofuels 3gen",
+    units="MHa/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "start_year_3gen_cellulosic_biofuels": 2,
+        "annual_shift_from_2gen_to_3gen": 1,
+        "biofuels_3gen_land_compet_available": 2,
+        "land_compet_biofuels_3gen_mha": 1,
+        "land_compet_2gen_vs_total_land_compet": 2,
+        "p_biofuels_3gen_land_compet": 1,
+        "land_compet_biofuels_2gen_mha": 1,
+    },
+)
+def land_shifted_to_biofuels_3gen():
+    """
+    New land dedicated to biofuels 3rd generation in land competing with other uses as a shift of surface previously dedicated to biofuels from the 2nd generation. We assume that no new land starts directly to produce biofuels 3rd generation biofuels. IF THEN ELSE(Time<start year 3gen,0, IF THEN ELSE(check liquids<0, "constrain liquids exogenous growth?"*Land compet biofuels 3gen Mha, IF THEN ELSE(Time<(start year 3gen+5), Annual shift from 2gen to 3gen*Land compet biofuels 2gen Mha*Biofuels 3gen land compet available*land compet 2gen vs total land compet, P biofuels 3gen*Land compet biofuels 3gen Mha*Biofuels 3gen land compet available*land compet 2gen vs total land compet)))
+    """
+    return if_then_else(
+        time() < start_year_3gen_cellulosic_biofuels(),
+        lambda: 0,
+        lambda: if_then_else(
+            time() < start_year_3gen_cellulosic_biofuels() + 5,
+            lambda: annual_shift_from_2gen_to_3gen()
+            * land_compet_biofuels_2gen_mha()
+            * biofuels_3gen_land_compet_available()
+            * land_compet_2gen_vs_total_land_compet(),
+            lambda: p_biofuels_3gen_land_compet()
+            * land_compet_biofuels_3gen_mha()
+            * biofuels_3gen_land_compet_available()
+            * land_compet_2gen_vs_total_land_compet(),
+        ),
+    )
+
+
+@component.add(
     name='"max additional potential land for biofuels (compet)"',
     units="MHa",
     comp_type="Constant",
@@ -462,57 +513,6 @@ _ext_constant_max_additional_potential_land_for_biofuels_compet = ExtConstant(
     {},
     "_ext_constant_max_additional_potential_land_for_biofuels_compet",
 )
-
-
-@component.add(
-    name="Land compet biofuels 2gen abandonned",
-    units="MHa",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"land_compet_biofuels_2gen_mha": 1, "share_biofuels_overcapacity": 1},
-)
-def land_compet_biofuels_2gen_abandonned():
-    """
-    Land previously dedicated to produce biofuels 2nd generation and abandoned due to reduced liquids demand.
-    """
-    return land_compet_biofuels_2gen_mha() * share_biofuels_overcapacity()
-
-
-@component.add(
-    name="Land shifted to biofuels 3gen",
-    units="MHa/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 2,
-        "start_year_3gen_cellulosic_biofuels": 2,
-        "p_biofuels_3gen_land_compet": 1,
-        "land_compet_biofuels_2gen_mha": 1,
-        "annual_shift_from_2gen_to_3gen": 1,
-        "land_compet_biofuels_3gen_mha": 1,
-        "biofuels_3gen_land_compet_available": 2,
-        "land_compet_2gen_vs_total_land_compet": 2,
-    },
-)
-def land_shifted_to_biofuels_3gen():
-    """
-    New land dedicated to biofuels 3rd generation in land competing with other uses as a shift of surface previously dedicated to biofuels from the 2nd generation. We assume that no new land starts directly to produce biofuels 3rd generation biofuels. IF THEN ELSE(Time<start year 3gen,0, IF THEN ELSE(check liquids<0, "constrain liquids exogenous growth?"*Land compet biofuels 3gen Mha, IF THEN ELSE(Time<(start year 3gen+5), Annual shift from 2gen to 3gen*Land compet biofuels 2gen Mha*Biofuels 3gen land compet available*land compet 2gen vs total land compet, P biofuels 3gen*Land compet biofuels 3gen Mha*Biofuels 3gen land compet available*land compet 2gen vs total land compet)))
-    """
-    return if_then_else(
-        time() < start_year_3gen_cellulosic_biofuels(),
-        lambda: 0,
-        lambda: if_then_else(
-            time() < start_year_3gen_cellulosic_biofuels() + 5,
-            lambda: annual_shift_from_2gen_to_3gen()
-            * land_compet_biofuels_2gen_mha()
-            * biofuels_3gen_land_compet_available()
-            * land_compet_2gen_vs_total_land_compet(),
-            lambda: p_biofuels_3gen_land_compet()
-            * land_compet_biofuels_3gen_mha()
-            * biofuels_3gen_land_compet_available()
-            * land_compet_2gen_vs_total_land_compet(),
-        ),
-    )
 
 
 @component.add(
@@ -543,8 +543,8 @@ def max_land_compet_biofuels_2gen():
     depends_on={
         "time": 1,
         "start_year_3gen_cellulosic_biofuels": 1,
-        "max_land_compet_biofuels_2gen": 2,
         "land_productivity_biofuels_2gen_ej_mha": 2,
+        "max_land_compet_biofuels_2gen": 2,
         "efficiency_improvement_biofuels_3gen": 1,
     },
 )
@@ -571,9 +571,9 @@ def max_peavail_potential_biofuels_land_compet():
         "check_liquids": 1,
         "constrain_liquids_exogenous_growth": 1,
         "land_compet_biofuels_2gen_mha": 2,
-        "biofuels_land_compet_available": 1,
         "adapt_growth_biofuels_2gen": 1,
         "annual_additional_historic_land_use_biofuels_2gen": 1,
+        "biofuels_land_compet_available": 1,
         "scarcity_agricultural_land": 1,
     },
 )

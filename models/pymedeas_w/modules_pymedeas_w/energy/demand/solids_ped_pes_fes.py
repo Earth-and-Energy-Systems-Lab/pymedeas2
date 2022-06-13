@@ -1,6 +1,6 @@
 """
 Module solids_ped_pes_fes
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -80,9 +80,9 @@ def other_solids_required():
     depends_on={
         "ped_solids": 1,
         "losses_in_charcoal_plants_ej": 1,
-        "pes_waste_for_tfc": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
         "pes_peat_ej": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "pes_waste_for_tfc": 1,
     },
 )
 def ped_coal_ej():
@@ -244,9 +244,9 @@ def share_coal_dem_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_solids": 1,
-        "ped_solids": 1,
-        "ped_coal_for_ctl_ej": 1,
         "other_solids_required": 1,
+        "ped_coal_for_ctl_ej": 1,
+        "ped_solids": 1,
     },
 )
 def share_solids_for_final_energy():

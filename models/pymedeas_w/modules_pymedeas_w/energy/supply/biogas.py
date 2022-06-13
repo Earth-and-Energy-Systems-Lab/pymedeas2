@@ -1,6 +1,6 @@
 """
 Module biogas
-Translated using PySD version 3.0.1
+Translated using PySD version 3.2.0
 """
 
 
@@ -360,8 +360,8 @@ _ext_constant_max_biogas_ej = ExtConstant(
     depends_on={
         "time": 3,
         "historic_biogas_pes": 2,
-        "pes_biogas_ej": 2,
         "max_biogas_ej": 2,
+        "pes_biogas_ej": 2,
         "adapt_growth_biogas": 1,
     },
 )

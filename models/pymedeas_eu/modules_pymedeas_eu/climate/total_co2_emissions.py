@@ -1,6 +1,6 @@
 """
 Module total_co2_emissions
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -139,9 +139,9 @@ def afforestation_program_2020_gtco2():
     comp_subtype="Normal",
     depends_on={
         "gco2_per_mj_conv_gas": 1,
-        "pes_tot_biogas_for_heatcom": 1,
-        "oil_liquids_saved_by_biofuels_ej": 1,
         "solid_bioe_emissions_relevant_ej": 1,
+        "oil_liquids_saved_by_biofuels_ej": 1,
+        "pes_tot_biogas_for_heatcom": 1,
         "mj_per_ej": 1,
         "g_per_gt": 1,
     },
@@ -217,8 +217,8 @@ def ch4_emissions_coal_without_ctl():
     comp_subtype="Normal",
     depends_on={
         "pec_conv_gas": 1,
-        "share_conv_vs_total_gas_extraction": 1,
         "ped_nat_gas_for_gtl_ej": 1,
+        "share_conv_vs_total_gas_extraction": 1,
         "gch4_per_mj_conv_gas": 1,
         "mj_per_ej": 1,
         "g_per_mt": 1,
@@ -303,8 +303,8 @@ def ch4_emissions_oil():
     comp_subtype="Normal",
     depends_on={
         "pec_unconv_gas": 1,
-        "share_conv_vs_total_gas_extraction": 1,
         "ped_nat_gas_for_gtl_ej": 1,
+        "share_conv_vs_total_gas_extraction": 1,
         "gch4_per_mj_unconv_gas": 1,
         "mj_per_ej": 1,
         "g_per_mt": 1,
@@ -506,9 +506,9 @@ def co2_emissions_unconv_gas():
     comp_subtype="Normal",
     depends_on={
         "real_consumption_unconv_oil_emissions_relevant_ej": 1,
-        "gco2_per_mj_shale_oil": 1,
         "gco2_per_mj_unconv_oil": 2,
         "adapt_emissions_shale_oil": 1,
+        "gco2_per_mj_shale_oil": 1,
         "mj_per_ej": 1,
         "g_per_gt": 1,
     },
@@ -1164,11 +1164,11 @@ def total_co2_emissions_gtco2():
     comp_subtype="Normal",
     depends_on={
         "total_co2_emissions_gtco2": 1,
-        "ch4_anthro_emissions": 1,
-        "choose_gwp_time_frame": 13,
-        "gwp_100_year": 13,
-        "gwp_20_year": 13,
         "mt_per_gt": 2,
+        "ch4_anthro_emissions": 1,
+        "gwp_20_year": 13,
+        "gwp_100_year": 13,
+        "choose_gwp_time_frame": 13,
         "n2o_anthro_emissions": 1,
         "pfc_emissions": 1,
         "nvs_1_to_g": 11,

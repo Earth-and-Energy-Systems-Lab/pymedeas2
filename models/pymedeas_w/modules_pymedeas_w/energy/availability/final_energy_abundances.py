@@ -1,6 +1,6 @@
 """
 Module final_energy_abundances
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -592,8 +592,8 @@ _ext_constant_sensitivity_to_energy_scarcity_medium = ExtConstant(
     depends_on={
         "sensitivity_to_scarcity_option": 2,
         "sensitivity_to_energy_scarcity_low": 1,
-        "sensitivity_to_energy_scarcity_medium": 1,
         "sensitivity_to_energy_scarcity_high": 1,
+        "sensitivity_to_energy_scarcity_medium": 1,
     },
 )
 def sensitivity_to_scarcity():
@@ -619,8 +619,8 @@ def sensitivity_to_scarcity():
     depends_on={
         "sensitivity_to_scarcity_option_h": 2,
         "sensitivity_to_energy_scarcity_low": 1,
-        "sensitivity_to_energy_scarcity_medium": 1,
         "sensitivity_to_energy_scarcity_high": 1,
+        "sensitivity_to_energy_scarcity_medium": 1,
     },
 )
 def sensitivity_to_scarcity_h():
@@ -763,8 +763,8 @@ def year_final_scarcity_resources():
             "initial": {},
             "step": {
                 "scarcity_final_fuels_flags": 1,
-                "scarcity_final_fuels_counter": 1,
                 "time": 1,
+                "scarcity_final_fuels_counter": 1,
                 "time_step": 1,
             },
         }

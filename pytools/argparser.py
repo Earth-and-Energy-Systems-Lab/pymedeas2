@@ -148,8 +148,13 @@ parser.add_argument(
     action='version', version=f'pymedeas models {__version__}')
 
 parser.add_argument(
-    '-m', '--model', dest='region', default=config.region,
+    '-a', '--aggr', dest='aggregation', default=config.aggregation,
     choices=list(dict_models),
+    help='select the sectorial aggregation to use')
+
+parser.add_argument(
+    '-m', '--model', dest='region', default=config.region,
+    #choices=list(dict_models),
     help='select the model to use')
 
 parser.add_argument(

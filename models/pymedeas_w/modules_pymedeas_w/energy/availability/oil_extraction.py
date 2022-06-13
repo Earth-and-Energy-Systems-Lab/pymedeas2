@@ -1,6 +1,6 @@
 """
 Module oil_extraction
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -172,8 +172,8 @@ _delayfixed_constrain_liquids_exogenous_growth_delayed_1yr = DelayFixed(
     depends_on={
         "time": 1,
         "start_policy_leave_in_ground_conv_oil": 1,
-        "share_rurr_conv_oil_to_leave_underground": 1,
         "rurr_conv_oil_until_start_year_plg": 1,
+        "share_rurr_conv_oil_to_leave_underground": 1,
     },
 )
 def conv_oil_to_leave_underground():
@@ -403,9 +403,9 @@ def extraction_conv_oil_tot_agg():
     comp_subtype="Normal",
     depends_on={
         "rurr_conv_oil": 1,
-        "unlimited_nre": 1,
         "unlimited_oil": 1,
         "demand_conv_oil_ej": 2,
+        "unlimited_nre": 1,
         "max_extraction_conv_oil_ej": 1,
     },
 )
@@ -431,9 +431,9 @@ def extraction_conv_oil_ej():
     comp_subtype="Normal",
     depends_on={
         "rurr_tot_agg_oil": 1,
-        "ped_total_oil_ej": 2,
-        "unlimited_nre": 1,
         "unlimited_oil": 1,
+        "unlimited_nre": 1,
+        "ped_total_oil_ej": 2,
         "max_extraction_tot_agg_oil_ej": 1,
     },
 )
@@ -499,11 +499,11 @@ _delayfixed_extraction_unconv_oil_delayed = DelayFixed(
     comp_subtype="Normal",
     depends_on={
         "rurr_unconv_oil_ej": 1,
-        "separate_conv_and_unconv_oil": 1,
         "time": 1,
-        "max_unconv_oil_growth_extraction_ej": 1,
         "historic_unconv_oil": 1,
+        "max_unconv_oil_growth_extraction_ej": 1,
         "max_extraction_unconv_oil": 1,
+        "separate_conv_and_unconv_oil": 1,
         "ped_total_oil_ej": 1,
     },
 )
@@ -670,8 +670,8 @@ def increase_scarcity_conv_oil():
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_oil": 1,
-        "table_max_extraction_conv_oil": 1,
         "tot_rurr_conv_oil": 1,
+        "table_max_extraction_conv_oil": 1,
     },
 )
 def max_extraction_conv_oil_ej():
@@ -692,8 +692,8 @@ def max_extraction_conv_oil_ej():
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_oil": 1,
-        "table_max_extraction_agg_oil": 1,
         "tot_rurr_tot_agg_oil": 1,
+        "table_max_extraction_agg_oil": 1,
     },
 )
 def max_extraction_tot_agg_oil_ej():
@@ -754,8 +754,8 @@ def max_unconv_oil_growth_extraction():
     comp_subtype="Normal",
     depends_on={
         "check_liquids_delayed_1yr": 1,
-        "constrain_liquids_exogenous_growth_delayed_1yr": 1,
         "extraction_unconv_oil_delayed": 2,
+        "constrain_liquids_exogenous_growth_delayed_1yr": 1,
         "max_unconv_oil_growth_extraction": 1,
     },
 )
@@ -933,8 +933,8 @@ def real_extraction_conv_oil_ej():
     comp_subtype="Normal",
     depends_on={
         "real_extraction_conv_oil_ej": 1,
-        "nonenergy_use_demand_by_final_fuel_ej": 1,
         "share_conv_vs_total_oil_extraction": 1,
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
     },
 )
 def real_extraction_conv_oil_emissions_relevant_ej():
@@ -986,8 +986,8 @@ def real_extraction_unconv_oil_ej():
     comp_subtype="Normal",
     depends_on={
         "real_extraction_unconv_oil_ej": 1,
-        "nonenergy_use_demand_by_final_fuel_ej": 1,
         "share_conv_vs_total_oil_extraction": 1,
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
     },
 )
 def real_extraction_unconv_oil_emissions_relevant_ej():
@@ -1012,8 +1012,8 @@ def real_extraction_unconv_oil_emissions_relevant_ej():
         "_integ_rurr_conv_oil": {
             "initial": {
                 "urr_conv_oil": 1,
-                "separate_conv_and_unconv_oil": 1,
                 "cumulated_conv_oil_extraction_to_1995": 1,
+                "separate_conv_and_unconv_oil": 1,
             },
             "step": {"extraction_conv_oil_ej": 1, "flow_conv_oil_left_in_ground": 1},
         }
@@ -1210,8 +1210,8 @@ _sampleiftrue_rurr_unconv_oil_until_start_year_plg = SampleIfTrue(
     comp_subtype="Normal",
     depends_on={
         "max_extraction_conv_oil_ej": 4,
-        "extraction_conv_oil_ej": 2,
         "exponent_availability_conv_oil": 1,
+        "extraction_conv_oil_ej": 2,
     },
 )
 def scarcity_conv_oil():
@@ -1426,8 +1426,8 @@ _ext_constant_share_rurr_unconv_oil_to_leave_underground = ExtConstant(
     depends_on={
         "time": 1,
         "evolution_share_unconv_oil_vs_tot_agg": 1,
-        "historic_unconv_oil": 1,
         "ped_total_oil_ej": 1,
+        "historic_unconv_oil": 1,
     },
 )
 def share_unconv_oil_vs_tot_agg():
@@ -1851,9 +1851,9 @@ _ext_constant_unlimited_oil = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_oil": 1,
-        "unlimited_nre": 1,
         "unlimited_oil": 1,
         "urr_conv_oil_input": 1,
+        "unlimited_nre": 1,
     },
 )
 def urr_conv_oil():
@@ -1900,9 +1900,9 @@ _ext_constant_urr_conv_oil_input = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_oil": 1,
+        "unlimited_oil": 1,
         "unlimited_nre": 1,
         "urr_tot_agg_oil_input": 1,
-        "unlimited_oil": 1,
     },
 )
 def urr_tot_agg_oil():

@@ -12,14 +12,14 @@ from typing import List
 from pathlib import Path
 
 from pandas import DataFrame
-from pysd.py_backend.statefuls import Model
+from pysd.py_backend.model import Model
 import pysd
 
 import plot_tool
 from pytools.config import Params
 from pytools.tools import get_initial_user_input,\
-                          update_config_from_user_input, \
-                          select_scenario_sheet,\
+                          update_config_from_user_input,\
+                          load,\
                           create_parent_models_data_file_paths,\
                           select_model_outputs,\
                           run,\
@@ -58,9 +58,6 @@ def main(config: Params, model: Model) -> None:
         Model object.
 
     """
-    # select scenario sheet
-    select_scenario_sheet(model, config.scenario_sheet)
-
     if not config.model_arguments.return_columns:
         # list of columns that need to be present in the output file
         config.model_arguments.return_columns = select_model_outputs(config,
@@ -101,9 +98,7 @@ if __name__ == "__main__":
         if config.model.parent else []
 
     # loading the model object
-    model: Model = pysd.load(
-        str(config.model.model_file), initialize=False,
-        data_files=data_files)
+    model: Model = load(config, data_files)
 
     # if it's bundled, copy user modifiable files to the bundle tempdir
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):

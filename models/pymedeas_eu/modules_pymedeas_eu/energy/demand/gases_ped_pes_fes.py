@@ -1,6 +1,6 @@
 """
 Module gases_ped_pes_fes
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -288,8 +288,8 @@ def imports_eu_conv_gas_from_row_ej():
         "time": 1,
         "ped_eu_nat_gas_from_row": 5,
         "extraction_nat_gas_ej_world": 2,
-        "adapt_max_share_imports_nat_gas": 1,
         "historic_share_net_imports_nat_gas_until_2016": 1,
+        "adapt_max_share_imports_nat_gas": 1,
         "limit_nat_gas_imports_from_row": 3,
     },
 )
@@ -390,16 +390,21 @@ _ext_constant_max_share_imports_nat_gas = ExtConstant(
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "transformation_ff_losses_ej": 1,
-        "energy_distr_losses_ff_ej": 1,
-        "nonenergy_use_demand_by_final_fuel_ej": 1,
+        "transformation_ff_losses_ej": 2,
+        "energy_distr_losses_ff_ej": 2,
+        "nonenergy_use_demand_by_final_fuel_ej": 2,
     },
 )
 def other_gases_required():
-    return (
+    return if_then_else(
         float(transformation_ff_losses_ej().loc["gases"])
         + float(energy_distr_losses_ff_ej().loc["gases"])
         + float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"])
+        < 0,
+        lambda: 0,
+        lambda: float(transformation_ff_losses_ej().loc["gases"])
+        + float(energy_distr_losses_ff_ej().loc["gases"])
+        + float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"]),
     )
 
 
@@ -570,7 +575,7 @@ def share_biogas_in_pes():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_gas_heatnc": 1, "pes_gases": 1, "ped_nat_gas_for_gtl_ej": 1},
+    depends_on={"ped_gas_heatnc": 1, "ped_nat_gas_for_gtl_ej": 1, "pes_gases": 1},
 )
 def share_gases_dem_for_heatnc():
     """
@@ -587,8 +592,8 @@ def share_gases_dem_for_heatnc():
     depends_on={
         "required_fed_by_gas": 1,
         "ped_gases": 1,
-        "ped_nat_gas_for_gtl_ej": 1,
         "other_gases_required": 1,
+        "ped_nat_gas_for_gtl_ej": 1,
     },
 )
 def share_gases_for_final_energy():

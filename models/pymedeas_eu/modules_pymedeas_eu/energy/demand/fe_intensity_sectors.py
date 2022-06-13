@@ -1,6 +1,6 @@
 """
 Module fe_intensity_sectors
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -30,9 +30,9 @@ def activate_bottom_up_method():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
+        "initial_global_energy_intensity_2009": 2,
         "global_energy_intensity_by_sector": 1,
         "min_energy_intensity_vs_intial": 2,
-        "initial_global_energy_intensity_2009": 2,
     },
 )
 def available_improvement_efficiency():
@@ -96,12 +96,12 @@ _ext_constant_choose_final_sectoral_energy_intensities_evolution_method = ExtCon
     comp_subtype="Normal",
     depends_on={
         "activate_bottom_up_method": 1,
-        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
-        "minimum_fraction_source": 1,
-        "pressure_to_change_energy_technology": 1,
-        "max_yearly_change_between_sources": 1,
         "evol_final_energy_intensity_by_sector_and_fuel": 2,
         "global_energy_intensity_by_sector": 1,
+        "max_yearly_change_between_sources": 1,
+        "minimum_fraction_source": 1,
+        "pressure_to_change_energy_technology": 1,
+        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
     },
 )
 def decrease_of_intensity_due_to_energy_a_technology_change_top_down():
@@ -792,9 +792,9 @@ def implementation_policy_to_change_final_energy():
         "year_policy_to_improve_efficiency": 9,
         "year_to_finish_energy_intensity_policies": 5,
         "time": 5,
-        "exp_slow_evol_improve_efficiency": 1,
-        "exp_rapid_evol_improve_efficiency": 1,
         "policy_to_improve_efficiency_speed": 3,
+        "exp_rapid_evol_improve_efficiency": 1,
+        "exp_slow_evol_improve_efficiency": 1,
     },
 )
 def implementation_policy_to_improve_energy_intensity_efficiency():
@@ -967,16 +967,16 @@ def increase_of_intensity_due_to_energy_a_technology_net():
     depends_on={
         "time": 2,
         "historic_rate_final_energy_intensity": 1,
-        "activate_bottom_up_method": 4,
-        "initial_energy_intensity_1995": 4,
-        "choose_final_sectoral_energy_intensities_evolution_method": 2,
-        "available_improvement_efficiency": 4,
+        "evol_final_energy_intensity_by_sector_and_fuel": 4,
+        "efficiency_energy_acceleration": 12,
         "rate_change_intensity_bottom_up": 4,
+        "year_energy_intensity_target": 1,
+        "activate_bottom_up_method": 4,
+        "choose_final_sectoral_energy_intensities_evolution_method": 2,
         "historic_mean_rate_energy_intensity": 6,
         "variation_energy_intensity_target": 1,
-        "efficiency_energy_acceleration": 12,
-        "evol_final_energy_intensity_by_sector_and_fuel": 4,
-        "year_energy_intensity_target": 1,
+        "initial_energy_intensity_1995": 4,
+        "available_improvement_efficiency": 4,
     },
 )
 def inertial_rate_energy_intensity_top_down():
@@ -1625,11 +1625,11 @@ def share_tech_change_fuel():
     comp_subtype="Normal",
     depends_on={
         "choose_energy_intensity_target_method": 1,
-        "time": 6,
-        "energy_intensity_target": 1,
         "evol_final_energy_intensity_by_sector_and_fuel": 2,
-        "final_year_energy_intensity_target": 4,
         "year_energy_intensity_target": 2,
+        "energy_intensity_target": 1,
+        "final_year_energy_intensity_target": 4,
+        "time": 6,
         "pct_change_energy_intensity_target": 1,
         "final_energy_intensity_2020": 1,
     },

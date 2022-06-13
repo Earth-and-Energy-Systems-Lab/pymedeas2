@@ -1,6 +1,6 @@
 """
 Module total_outputs_from_demand
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 

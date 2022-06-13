@@ -1,6 +1,6 @@
 """
 Module demand_for_res_elec
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -184,7 +184,7 @@ def materials_for_new_res_elec_per_capacity_installed():
     units="kg/MW",
     subscripts=["RES elec", "materials"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={
         "__external__": "_ext_constant_materials_for_om_per_capacity_installed_res_elec"
     },
@@ -349,7 +349,7 @@ def materials_required_for_new_res_elec_mt():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "installed_capacity_res_elec_tw": 1,
+        "installed_capacity_res_elec": 1,
         "materials_for_om_per_capacity_installed_res_elec": 1,
         "m_per_t": 1,
         "kg_per_mt": 1,
@@ -360,7 +360,7 @@ def materials_required_for_om_res_elec_mt():
     Annual materials required for the operation and maintenance of the capacity of RES for electricity in operation by technology.
     """
     return (
-        installed_capacity_res_elec_tw()
+        installed_capacity_res_elec()
         * materials_for_om_per_capacity_installed_res_elec()
         * m_per_t()
         / kg_per_mt()

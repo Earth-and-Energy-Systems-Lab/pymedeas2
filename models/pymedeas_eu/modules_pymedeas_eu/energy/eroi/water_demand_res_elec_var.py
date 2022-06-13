@@ -1,6 +1,6 @@
 """
 Module water_demand_res_elec_var
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -151,7 +151,7 @@ def total_water_for_om_required_by_res_elec():
     units="kg/MW",
     subscripts=["RES elec", "water0"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={"__external__": "_ext_constant_water_for_om_res_elec"},
 )
 def water_for_om_res_elec():
@@ -191,7 +191,7 @@ _ext_constant_water_for_om_res_elec = ExtConstant(
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "installed_capacity_res_elec_tw": 1,
+        "installed_capacity_res_elec": 1,
         "water_for_om_res_elec": 1,
         "m_per_t": 1,
         "kg_per_mt": 1,
@@ -202,7 +202,7 @@ def water_for_om_required_for_res_elec():
     Annual water required for the operation and maintenance of the capacity of RES for electricity in operation by technology.
     """
     return (
-        installed_capacity_res_elec_tw()
+        installed_capacity_res_elec()
         * water_for_om_res_elec()
         * m_per_t()
         / kg_per_mt()

@@ -1,6 +1,6 @@
 """
 Module res_elec_potentials
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -459,8 +459,8 @@ def max_potential_solar_pv_twe():
         "max_potential_res_elec_twh": 1,
         "max_potential_phs_twe": 1,
         "twe_per_twh": 1,
-        "max_pe_potential_biogas_for_elec": 1,
         "ej_per_twh": 1,
+        "max_pe_potential_biogas_for_elec": 1,
     },
 )
 def max_potential_tot_res_elec_twh():
@@ -734,8 +734,8 @@ def remaining_potential_res_elec():
     depends_on={
         "max_solar_pv_urban": 2,
         "twe_per_twh": 2,
-        "desired_share_installed_pv_urban_vs_tot_pv": 1,
         "potential_generation_res_elec_twh": 1,
+        "desired_share_installed_pv_urban_vs_tot_pv": 1,
     },
 )
 def remaining_potential_solar_pv_urban():

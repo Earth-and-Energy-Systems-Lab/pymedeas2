@@ -1,33 +1,16 @@
 """
 Module res_commercial_heat_capacities
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
 @component.add(
-    name="remaining potential constraint on new RES heat capacity",
-    units="Dmnl",
-    subscripts=["RES heat"],
-    comp_type="Auxiliary",
+    name="threshold remaining potential new capacity",
+    comp_type="Constant",
     comp_subtype="Normal",
-    depends_on={
-        "remaining_potential_res_for_heat": 2,
-        "threshold_remaining_potential_new_capacity": 2,
-    },
 )
-def remaining_potential_constraint_on_new_res_heat_capacity():
-    """
-    Constraint of remaining potential on new RES elec capacity. Another alternative: SQRT(remaining potential RES elec after intermitt[RES elec])
-    """
-    return if_then_else(
-        remaining_potential_res_for_heat()
-        > threshold_remaining_potential_new_capacity(),
-        lambda: xr.DataArray(
-            1, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
-        ),
-        lambda: remaining_potential_res_for_heat()
-        * (1 / threshold_remaining_potential_new_capacity()),
-    )
+def threshold_remaining_potential_new_capacity():
+    return 1
 
 
 @component.add(
@@ -380,8 +363,8 @@ _ext_constant_losses_solar_for_heat = ExtConstant(
     depends_on={
         "time": 3,
         "historic_res_capacity_for_heatcom": 2,
-        "installed_capacity_res_heatcom_tw": 1,
         "adapt_growth_res_for_heatcom": 1,
+        "installed_capacity_res_heatcom_tw": 1,
         "remaining_potential_constraint_on_new_res_heat_capacity": 1,
         "abundance_res_heatcom2": 1,
     },
@@ -616,6 +599,32 @@ def potential_fes_tot_res_for_heatcom_ej():
     return sum(
         potential_fes_res_for_heatcom_ej().rename({"RES heat": "RES heat!"}),
         dim=["RES heat!"],
+    )
+
+
+@component.add(
+    name="remaining potential constraint on new RES heat capacity",
+    units="Dmnl",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "remaining_potential_res_for_heat": 2,
+        "threshold_remaining_potential_new_capacity": 2,
+    },
+)
+def remaining_potential_constraint_on_new_res_heat_capacity():
+    """
+    Constraint of remaining potential on new RES elec capacity. Another alternative: SQRT(remaining potential RES elec after intermitt[RES elec])
+    """
+    return if_then_else(
+        remaining_potential_res_for_heat()
+        > threshold_remaining_potential_new_capacity(),
+        lambda: xr.DataArray(
+            1, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
+        ),
+        lambda: remaining_potential_res_for_heat()
+        * (1 / threshold_remaining_potential_new_capacity()),
     )
 
 

@@ -1,6 +1,6 @@
 """
 Module land_use
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -314,6 +314,65 @@ def compet_land_for_biofuels_rate():
 
 
 @component.add(
+    name="consum forest energy non traditional EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "demand_forest_energy_non_tradition_ej": 1,
+        "consum_forest_energy_traditional_ej": 1,
+        "consum_wood_products_ej": 1,
+        "forest_consumption_ej": 1,
+    },
+)
+def consum_forest_energy_non_traditional_ej():
+    """
+    Part of the forest biomass extration that goes into non energy uses. P wood-energy uses divides the possible extration into the two uses. Traditional biomass is not restricted
+    """
+    return np.minimum(
+        demand_forest_energy_non_tradition_ej(),
+        forest_consumption_ej()
+        - consum_forest_energy_traditional_ej()
+        - consum_wood_products_ej(),
+    )
+
+
+@component.add(
+    name="consum forest energy traditional EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"forest_consumption_ej": 1, "demand_forest_energy_traditional_ej": 1},
+)
+def consum_forest_energy_traditional_ej():
+    """
+    Consumption of traditional biomass. Traditional wood extraction is got priority over other uses but is limited by forest extraction, which depends on the stock and the policies taken to protect forests.
+    """
+    return np.minimum(forest_consumption_ej(), demand_forest_energy_traditional_ej())
+
+
+@component.add(
+    name="consum wood products EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "demand_wood_products_ej": 1,
+        "consum_forest_energy_traditional_ej": 1,
+        "forest_consumption_ej": 1,
+    },
+)
+def consum_wood_products_ej():
+    """
+    Priority to energy uses Part of the forest biomass extration that goes into non energy uses. P wood/energy uses divides the possible extration into the two uses. Traditional uses are not restricted
+    """
+    return np.minimum(
+        demand_wood_products_ej(),
+        forest_consumption_ej() - consum_forest_energy_traditional_ej(),
+    )
+
+
+@component.add(
     name="deficit forest biomass",
     units="Dmnl",
     comp_type="Auxiliary",
@@ -380,130 +439,6 @@ def deforestation_rate():
 
 
 @component.add(
-    name="demand forest wood products pc",
-    units="m3/people",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_demand_forest_wood_products_pc"},
-)
-def demand_forest_wood_products_pc():
-    """
-    Demand of forest non energy products per capita, data FAO2016
-    """
-    return _ext_constant_demand_forest_wood_products_pc()
-
-
-_ext_constant_demand_forest_wood_products_pc = ExtConstant(
-    "../land.xlsx",
-    "Global",
-    "demand_forest_wood_products",
-    {},
-    _root,
-    {},
-    "_ext_constant_demand_forest_wood_products_pc",
-)
-
-
-@component.add(
-    name="demand wood products m3",
-    units="m3",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"demand_forest_wood_products_pc": 1, "population": 1},
-)
-def demand_wood_products_m3():
-    """
-    Demand of non-energy product forests
-    """
-    return demand_forest_wood_products_pc() * population()
-
-
-@component.add(
-    name="Forest loss to sustain agriculture",
-    units="MHa/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "aux_reach_available_land": 1,
-        "agricultural_land": 1,
-        "agricultural_land_until_2015": 1,
-        "aux_reach_available_forest": 1,
-    },
-)
-def forest_loss_to_sustain_agriculture():
-    """
-    Forest loss rate to maintain the area dedicated to agriculture in EU in the year 2015.
-    """
-    return (
-        if_then_else(
-            aux_reach_available_land() < 1,
-            lambda: agricultural_land_until_2015() - agricultural_land(),
-            lambda: 0,
-        )
-        * aux_reach_available_forest()
-    )
-
-
-@component.add(
-    name="consum forest energy non traditional EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "demand_forest_energy_non_tradition_ej": 1,
-        "consum_forest_energy_traditional_ej": 1,
-        "forest_consumption_ej": 1,
-        "consum_wood_products_ej": 1,
-    },
-)
-def consum_forest_energy_non_traditional_ej():
-    """
-    Part of the forest biomass extration that goes into non energy uses. P wood-energy uses divides the possible extration into the two uses. Traditional biomass is not restricted
-    """
-    return np.minimum(
-        demand_forest_energy_non_tradition_ej(),
-        forest_consumption_ej()
-        - consum_forest_energy_traditional_ej()
-        - consum_wood_products_ej(),
-    )
-
-
-@component.add(
-    name="consum forest energy traditional EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"forest_consumption_ej": 1, "demand_forest_energy_traditional_ej": 1},
-)
-def consum_forest_energy_traditional_ej():
-    """
-    Consumption of traditional biomass. Traditional wood extraction is got priority over other uses but is limited by forest extraction, which depends on the stock and the policies taken to protect forests.
-    """
-    return np.minimum(forest_consumption_ej(), demand_forest_energy_traditional_ej())
-
-
-@component.add(
-    name="consum wood products EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "demand_wood_products_ej": 1,
-        "forest_consumption_ej": 1,
-        "consum_forest_energy_traditional_ej": 1,
-    },
-)
-def consum_wood_products_ej():
-    """
-    Priority to energy uses Part of the forest biomass extration that goes into non energy uses. P wood/energy uses divides the possible extration into the two uses. Traditional uses are not restricted
-    """
-    return np.minimum(
-        demand_wood_products_ej(),
-        forest_consumption_ej() - consum_forest_energy_traditional_ej(),
-    )
-
-
-@component.add(
     name="demand forest energy non tradition EJ",
     units="EJ",
     comp_type="Auxiliary",
@@ -537,6 +472,31 @@ def demand_forest_energy_traditional_ej():
 
 
 @component.add(
+    name="demand forest wood products pc",
+    units="m3/people",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_demand_forest_wood_products_pc"},
+)
+def demand_forest_wood_products_pc():
+    """
+    Demand of forest non energy products per capita, data FAO2016
+    """
+    return _ext_constant_demand_forest_wood_products_pc()
+
+
+_ext_constant_demand_forest_wood_products_pc = ExtConstant(
+    "../land.xlsx",
+    "Global",
+    "demand_forest_wood_products",
+    {},
+    _root,
+    {},
+    "_ext_constant_demand_forest_wood_products_pc",
+)
+
+
+@component.add(
     name="demand wood products EJ",
     units="EJ",
     comp_type="Auxiliary",
@@ -548,6 +508,20 @@ def demand_wood_products_ej():
     Demand of non energy forest products expressed as energy (to compare with other uses)
     """
     return demand_wood_products_m3() * wood_energy_density()
+
+
+@component.add(
+    name="demand wood products m3",
+    units="m3",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"demand_forest_wood_products_pc": 1, "population": 1},
+)
+def demand_wood_products_m3():
+    """
+    Demand of non-energy product forests
+    """
+    return demand_forest_wood_products_pc() * population()
 
 
 @component.add(
@@ -585,8 +559,8 @@ def forest_consumption_ej():
     comp_subtype="Normal",
     depends_on={
         "available_forest_area": 1,
-        "p_minimum_forest": 1,
         "forest_extraction_per_ha": 1,
+        "p_minimum_forest": 1,
         "total_demand_forest_biomass_ej": 1,
         "p_forest_overexplotation": 1,
         "max_sustainable_forest_extraction_ej": 1,
@@ -629,6 +603,32 @@ _ext_constant_forest_extraction_per_ha = ExtConstant(
     {},
     "_ext_constant_forest_extraction_per_ha",
 )
+
+
+@component.add(
+    name="Forest loss to sustain agriculture",
+    units="MHa/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "aux_reach_available_land": 1,
+        "agricultural_land_until_2015": 1,
+        "agricultural_land": 1,
+        "aux_reach_available_forest": 1,
+    },
+)
+def forest_loss_to_sustain_agriculture():
+    """
+    Forest loss rate to maintain the area dedicated to agriculture in EU in the year 2015.
+    """
+    return (
+        if_then_else(
+            aux_reach_available_land() < 1,
+            lambda: agricultural_land_until_2015() - agricultural_land(),
+            lambda: 0,
+        )
+        * aux_reach_available_forest()
+    )
 
 
 @component.add(
@@ -822,8 +822,8 @@ def historic_urban_land_density():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "agricultural_land": 1,
         "agricultural_land_until_2015": 1,
+        "agricultural_land": 1,
         "aux_reach_available_land": 1,
     },
 )
@@ -1101,20 +1101,6 @@ _integ_land_for_solar_and_hydro_res = Integ(
 
 
 @component.add(
-    name="Marginal land for biofuels rate",
-    units="MHa/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"new_land_marg_for_biofuels": 1, "aux_reach_available_land": 1},
-)
-def marginal_land_for_biofuels_rate():
-    """
-    Biofuels plantation rate on marginal lands.
-    """
-    return new_land_marg_for_biofuels() * aux_reach_available_land()
-
-
-@component.add(
     name='"Land requirements RES elec compet uses t-1"',
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -1167,6 +1153,20 @@ _integ_marginal_land_for_biofuels = Integ(
     lambda: initial_marginal_land_occupied_by_biofuels(),
     "_integ_marginal_land_for_biofuels",
 )
+
+
+@component.add(
+    name="Marginal land for biofuels rate",
+    units="MHa/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"new_land_marg_for_biofuels": 1, "aux_reach_available_land": 1},
+)
+def marginal_land_for_biofuels_rate():
+    """
+    Biofuels plantation rate on marginal lands.
+    """
+    return new_land_marg_for_biofuels() * aux_reach_available_land()
 
 
 @component.add(
@@ -1227,19 +1227,26 @@ def max_e_tot_forest_available():
 @component.add(
     name="max solar on land Mha",
     units="MHa",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "available_land": 1,
-        "surface_csp_mha": 1,
-        "surface_solar_pv_on_land_mha": 1,
-    },
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_solar_on_land_mha"},
 )
 def max_solar_on_land_mha():
     """
     Maximum area potential to be occupied by solar power plants on land.
     """
-    return available_land() + surface_csp_mha() + surface_solar_pv_on_land_mha()
+    return _ext_constant_max_solar_on_land_mha()
+
+
+_ext_constant_max_solar_on_land_mha = ExtConstant(
+    "../energy.xlsx",
+    "Austria",
+    "max_solar_on_land_potential",
+    {},
+    _root,
+    {},
+    "_ext_constant_max_solar_on_land_mha",
+)
 
 
 @component.add(
@@ -1427,9 +1434,9 @@ _integ_primary_forests_area = Integ(
     comp_subtype="Normal",
     depends_on={
         "aux_reach_ag_land": 1,
+        "agricultural_land_pc": 1,
         "threshold_scarcity_ag_land": 1,
         "agricultural_land_pc_until_2015": 1,
-        "agricultural_land_pc": 1,
     },
 )
 def scarcity_agricultural_land():

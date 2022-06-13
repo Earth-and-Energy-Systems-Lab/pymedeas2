@@ -1,6 +1,6 @@
 """
 Module coefficient_matrices
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -607,6 +607,27 @@ def leontief_matrix():
 
 
 @component.add(
+    name="Leontief Matrix Domestic",
+    subscripts=["sectors", "sectors1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"leontief_matrix": 1},
+)
+def leontief_matrix_domestic():
+    return xr.DataArray(
+        leontief_matrix()
+        .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 2"]]
+        .rename({"sectors A matrix": "sec map 2", "sectors A matrix1": "secb map 2"})
+        .values,
+        {
+            "sectors": _subscript_dict["sectors"],
+            "sectors1": _subscript_dict["sectors1"],
+        },
+        ["sectors", "sectors1"],
+    )
+
+
+@component.add(
     name="Leontief Matrix Exports 0",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
@@ -639,27 +660,6 @@ def leontief_matrix_exports_1():
         leontief_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 1"]]
         .rename({"sectors A matrix": "sec map 2", "sectors A matrix1": "secb map 1"})
-        .values,
-        {
-            "sectors": _subscript_dict["sectors"],
-            "sectors1": _subscript_dict["sectors1"],
-        },
-        ["sectors", "sectors1"],
-    )
-
-
-@component.add(
-    name="Leontief Matrix Domestic",
-    subscripts=["sectors", "sectors1"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"leontief_matrix": 1},
-)
-def leontief_matrix_domestic():
-    return xr.DataArray(
-        leontief_matrix()
-        .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 2"]]
-        .rename({"sectors A matrix": "sec map 2", "sectors A matrix1": "secb map 2"})
         .values,
         {
             "sectors": _subscript_dict["sectors"],

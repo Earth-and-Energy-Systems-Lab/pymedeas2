@@ -1,28 +1,7 @@
 """
 Module total_outputs_from_demand
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
-
-
-@component.add(
-    name="required FED sectors by fuel",
-    units="EJ",
-    subscripts=["final sources"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "required_final_energy_by_sector_and_fuel": 1,
-        "cc_impacts_feedback_shortage_coeff": 1,
-    },
-)
-def required_fed_sectors_by_fuel():
-    return (
-        sum(
-            required_final_energy_by_sector_and_fuel().rename({"sectors": "sectors!"}),
-            dim=["sectors!"],
-        )
-        * cc_impacts_feedback_shortage_coeff()
-    )
 
 
 @component.add(
@@ -99,8 +78,8 @@ def dollars_to_tdollars():
     comp_subtype="Normal",
     depends_on={
         "activate_energy_scarcity_feedback": 1,
-        "required_fed_by_fuel_before_heat_correction": 1,
         "real_fe_consumption_by_fuel_before_heat_correction": 1,
+        "required_fed_by_fuel_before_heat_correction": 1,
     },
 )
 def energy_scarcity_feedback_shortage_coeff():
@@ -261,23 +240,23 @@ _delayfixed_real_demand_by_sector_delayed = DelayFixed(
     depends_on={
         "total_fe_elec_consumption_twh": 1,
         "ej_per_twh": 1,
-        "total_fe_heat_generation_ej": 1,
         "share_heat_distribution_losses": 1,
-        "share_gases_for_final_energy": 1,
+        "total_fe_heat_generation_ej": 1,
         "ped_nat_gas_for_gtl_ej": 1,
-        "pes_gases": 1,
+        "share_gases_for_final_energy": 1,
         "other_gases_required": 1,
-        "pes_liquids_ej": 1,
+        "pes_gases": 1,
         "other_liquids_required_ej": 1,
         "share_liquids_for_final_energy": 1,
+        "pes_liquids_ej": 1,
         "ped_coal_for_ctl_ej": 1,
-        "share_solids_for_final_energy": 1,
-        "extraction_coal_ej": 1,
         "losses_in_charcoal_plants_ej": 1,
-        "pes_waste_for_tfc": 1,
         "pes_peat_ej": 1,
+        "pes_waste_for_tfc": 1,
         "other_solids_required": 1,
         "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "share_solids_for_final_energy": 1,
+        "extraction_coal_ej": 1,
     },
 )
 def real_fe_consumption_by_fuel():
@@ -495,6 +474,27 @@ def required_fed_by_fuel_before_heat_correction():
     Required final energy demand by fuel before heat demand correction. The final energy demand is modified with the feedback from the change of the EROEI.
     """
     return required_fed_sectors_by_fuel() + households_final_energy_demand()
+
+
+@component.add(
+    name="required FED sectors by fuel",
+    units="EJ",
+    subscripts=["final sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "required_final_energy_by_sector_and_fuel": 1,
+        "cc_impacts_feedback_shortage_coeff": 1,
+    },
+)
+def required_fed_sectors_by_fuel():
+    return (
+        sum(
+            required_final_energy_by_sector_and_fuel().rename({"sectors": "sectors!"}),
+            dim=["sectors!"],
+        )
+        * cc_impacts_feedback_shortage_coeff()
+    )
 
 
 @component.add(

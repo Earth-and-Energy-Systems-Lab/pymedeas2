@@ -1,38 +1,7 @@
 """
 Module chp_plants
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
-
-
-@component.add(
-    name="FED heat gas CHP plants EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "fed_heat_fossil_fuels_chp_plants_ej": 1,
-        "historic_share_chp_plants_gas": 1,
-    },
-)
-def fed_heat_gas_chp_plants_ej():
-    """
-    Final energy demand of gas to produce heat in CHP plants.
-    """
-    return fed_heat_fossil_fuels_chp_plants_ej() * historic_share_chp_plants_gas()
-
-
-@component.add(
-    name="FED heat liquids CHP plants EJ",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"fed_heat_fossil_fuels_chp_plants_ej": 1, "share_chp_plants_oil": 1},
-)
-def fed_heat_liquids_chp_plants_ej():
-    """
-    Final energy demand of oil to produce heat in CHP plants.
-    """
-    return fed_heat_fossil_fuels_chp_plants_ej() * share_chp_plants_oil()
 
 
 @component.add(
@@ -255,6 +224,37 @@ def fed_heat_fossil_fuels_chp_plants_ej():
 
 
 @component.add(
+    name="FED heat gas CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "fed_heat_fossil_fuels_chp_plants_ej": 1,
+        "historic_share_chp_plants_gas": 1,
+    },
+)
+def fed_heat_gas_chp_plants_ej():
+    """
+    Final energy demand of gas to produce heat in CHP plants.
+    """
+    return fed_heat_fossil_fuels_chp_plants_ej() * historic_share_chp_plants_gas()
+
+
+@component.add(
+    name="FED heat liquids CHP plants EJ",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"fed_heat_fossil_fuels_chp_plants_ej": 1, "share_chp_plants_oil": 1},
+)
+def fed_heat_liquids_chp_plants_ej():
+    """
+    Final energy demand of oil to produce heat in CHP plants.
+    """
+    return fed_heat_fossil_fuels_chp_plants_ej() * share_chp_plants_oil()
+
+
+@component.add(
     name='"FED heat-com by NRE CHP plants EJ"',
     units="EJ",
     comp_type="Auxiliary",
@@ -281,8 +281,8 @@ def fed_heatcom_by_nre_chp_plants_ej():
     comp_subtype="Normal",
     depends_on={
         "potential_fe_gen_elec_fossil_fuel_chp_plants_ej": 1,
-        "demand_elec_nre_twh": 1,
         "ej_per_twh": 1,
+        "demand_elec_nre_twh": 1,
     },
 )
 def fes_elec_fossil_fuel_chp_plants_ej():
@@ -626,8 +626,8 @@ _ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_gener
         "ped_oil_for_chp_plants_ej": 1,
         "efficiency_elec_oil_chp_plants": 1,
         "efficiency_heat_oil_chp_plants": 1,
-        "ped_coal_for_chp_plants_ej": 1,
         "efficiency_heat_coal_chp_plants": 1,
+        "ped_coal_for_chp_plants_ej": 1,
         "efficiency_elec_coal_chp_plants": 1,
     },
 )

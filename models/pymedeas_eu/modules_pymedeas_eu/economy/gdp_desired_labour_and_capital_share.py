@@ -1,6 +1,6 @@
 """
 Module gdp_desired_labour_and_capital_share
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -12,10 +12,10 @@ Translated using PySD version 3.0.0-dev
     depends_on={
         "select_gdppc_evolution_input": 2,
         "input_gdppc_annual_growth": 1,
-        "p_timeseries_gdppc_growth_rate": 2,
-        "time": 1,
-        "p_customized_cte_gdppc_variation": 1,
         "p_customized_year_gdppc_evolution": 1,
+        "p_customized_cte_gdppc_variation": 1,
+        "time": 1,
+        "p_timeseries_gdppc_growth_rate": 2,
     },
 )
 def annual_gdppc_growth_rate():
@@ -258,13 +258,13 @@ _integ_desired_gdppc = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "dollars_to_tdollars": 6,
-        "variation_historic_gdppc": 2,
         "variation_historic_pop": 2,
+        "dollars_to_tdollars": 6,
         "desired_gdppc": 2,
+        "variation_historic_gdppc": 2,
         "population": 2,
-        "pop_variation": 2,
         "desired_variation_gdppc": 2,
+        "pop_variation": 2,
     },
 )
 def desired_variation_gdp():
@@ -309,11 +309,11 @@ def desired_variation_gdppc():
     depends_on={
         "time": 2,
         "variation_historic_gdppc": 1,
-        "select_gdppc_evolution_input": 4,
+        "p_customized_year_gdppc_evolution": 1,
         "gdppc_variation_asymptote_scen": 1,
         "desired_gdppc": 4,
+        "select_gdppc_evolution_input": 4,
         "annual_gdppc_growth_rate": 4,
-        "p_customized_year_gdppc_evolution": 1,
     },
 )
 def desired_variation_gdppc_per_scen():
@@ -397,8 +397,8 @@ def gdppc_until_p_customized_year_gdppc_evolution():
         "gdppc_until_p_customized_year_gdppc_evolution": 1,
         "p_gdppc_asymptote": 1,
         "t_asymptote_gdppc": 2,
-        "time": 1,
         "p_customized_year_gdppc_evolution": 1,
+        "time": 1,
     },
 )
 def gdppc_variation_asymptote_scen():
@@ -418,8 +418,8 @@ def gdppc_variation_asymptote_scen():
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "capital_share_growth": 1,
         "laborcapital_share_cte": 1,
+        "capital_share_growth": 1,
         "historic_capital_share_growth": 1,
     },
 )
@@ -1131,8 +1131,8 @@ def variation_cc():
     depends_on={
         "time": 5,
         "historic_gdp": 2,
-        "dollar_per_mdollar": 1,
         "historic_population": 2,
+        "dollar_per_mdollar": 1,
     },
 )
 def variation_historic_gdppc():

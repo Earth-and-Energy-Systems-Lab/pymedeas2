@@ -1,6 +1,6 @@
 """
 Module energy_losses_function
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -86,9 +86,9 @@ _ext_constant_b_logistic = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "activate_elf": 1,
-        "b_logistic": 1,
         "a_logistic": 1,
         "co2_ppm_concentrations": 1,
+        "b_logistic": 1,
     },
 )
 def elf():

@@ -1,6 +1,6 @@
 """
 Module losses_in_transformation_and_distri
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -174,7 +174,7 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction.add(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "historic_pipeline_transport": 1, "fec_gasesliquids": 1},
+    depends_on={"time": 2, "fec_gasesliquids": 1, "historic_pipeline_transport": 1},
 )
 def historic_share_pipeline_transport():
     """
@@ -198,8 +198,8 @@ def historic_share_pipeline_transport():
         "imports_eu_total_oil_from_row_ej": 1,
         "extraction_coal_ej_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
-        "pes_nat_gas_eu": 1,
         "imports_eu_nat_gas_from_row_ej": 1,
+        "pes_nat_gas_eu": 1,
     },
 )
 def pes_fossil_fuel_extraction():

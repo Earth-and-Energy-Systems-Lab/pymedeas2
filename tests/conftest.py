@@ -3,9 +3,9 @@ from pathlib import Path
 
 from copy import deepcopy
 import pandas as pd
-import pysd
 
 from pytools.config import read_config, read_model_config
+from pytools.tools import load
 
 
 @pytest.fixture(scope="session")
@@ -19,34 +19,35 @@ def config():
     """read model configuration"""
     # NOTE : it does not have the model configuration loaded at this point
     # (i.e. config.model = None)
-    config = read_config()
-    return config
+    return read_config()
 
 
 @pytest.fixture(scope="function")
-def default_config(config, region):
+def default_config(config, aggregation, region):
     """create the default config"""
     _new_conf = deepcopy(config)
     # changing default region
+    _new_conf.aggregation = aggregation
     _new_conf.region = region
     # loading default model configurations
-    return read_model_config(_new_conf)
+    read_model_config(_new_conf)
+    return _new_conf
 
 
 @pytest.fixture(scope="function")
-def default_config_tmp(tmp_path, default_config, region):
+def default_config_tmp(tmp_path, default_config, aggregation, region):
     """create the default config with tmp_paths"""
 
     # setting the default results folder to the tests main folder
     default_config.model.out_folder = tmp_path.joinpath(
-        "outputs", region)
+        "outputs", aggregation, region)
     # creating the temporary results folder directory
     default_config.model.out_folder.mkdir(parents=True, exist_ok=True)
 
     # setting path to the results file of the parent model (pymedeas_w)
     for parent in default_config.model.parent:
         parent.default_results_folder = tmp_path.joinpath(
-        "outputs", parent.name)
+            "outputs", parent.name)
         parent.default_results_folder.mkdir(parents=True, exist_ok=True)
 
     return default_config
@@ -55,8 +56,7 @@ def default_config_tmp(tmp_path, default_config, region):
 @pytest.fixture()
 def model(proj_folder, default_config):
     """pysd model object"""
-    return pysd.load(proj_folder.joinpath(default_config.model.model_file),
-                     initialize=False)
+    return load(default_config, data_files=None)
 
 
 @pytest.fixture()

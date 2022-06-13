@@ -1,7 +1,31 @@
 """
 Module energy_consumption
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
+
+
+@component.add(
+    name="Energy cons per unit of material cons for RES elec",
+    units="MJ/kg",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "recycling_rates_minerals_alt_techn": 2,
+        "initial_energy_cons_per_unit_of_material_cons_recycled": 1,
+        "initial_energy_cons_per_unit_of_material_cons_virgin": 1,
+    },
+)
+def energy_cons_per_unit_of_material_cons_for_res_elec():
+    """
+    Average energy consumption per unit of material consumption accounting for recycling rates for RES elec technologies. recycling rates minerals RES elec[materials]*"Initial energy cons per unit of material cons (recycled)"[materials]+(1-recycling rates minerals RES elec[materials])*"Initial energy cons per unit of material cons (virgin)"[materials]
+    """
+    return (
+        recycling_rates_minerals_alt_techn()
+        * initial_energy_cons_per_unit_of_material_cons_recycled()
+        + (1 - recycling_rates_minerals_alt_techn())
+        * initial_energy_cons_per_unit_of_material_cons_virgin()
+    )
 
 
 @component.add(
@@ -30,52 +54,6 @@ def energy_required_for_material_consumption_for_ev_batteries():
 
 
 @component.add(
-    name='"Energy required for material consumption for O&M RES elec"',
-    units="EJ",
-    subscripts=["RES elec", "materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "materials_required_for_om_res_elec_mt": 1,
-        "energy_cons_per_unit_of_material_cons_for_res_elec": 1,
-        "kg_per_mt": 1,
-        "mj_per_ej": 1,
-    },
-)
-def energy_required_for_material_consumption_for_om_res_elec():
-    return (
-        materials_required_for_om_res_elec_mt()
-        * energy_cons_per_unit_of_material_cons_for_res_elec()
-        * kg_per_mt()
-        / mj_per_ej()
-    )
-
-
-@component.add(
-    name="Energy cons per unit of material cons for RES elec",
-    units="MJ/kg",
-    subscripts=["materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "recycling_rates_minerals_alt_techn": 2,
-        "initial_energy_cons_per_unit_of_material_cons_recycled": 1,
-        "initial_energy_cons_per_unit_of_material_cons_virgin": 1,
-    },
-)
-def energy_cons_per_unit_of_material_cons_for_res_elec():
-    """
-    Average energy consumption per unit of material consumption accounting for recycling rates for RES elec technologies. recycling rates minerals RES elec[materials]*"Initial energy cons per unit of material cons (recycled)"[materials]+(1-recycling rates minerals RES elec[materials])*"Initial energy cons per unit of material cons (virgin)"[materials]
-    """
-    return (
-        recycling_rates_minerals_alt_techn()
-        * initial_energy_cons_per_unit_of_material_cons_recycled()
-        + (1 - recycling_rates_minerals_alt_techn())
-        * initial_energy_cons_per_unit_of_material_cons_virgin()
-    )
-
-
-@component.add(
     name="Energy required for material consumption for new RES elec",
     units="EJ",
     subscripts=["RES elec", "materials"],
@@ -94,6 +72,28 @@ def energy_required_for_material_consumption_for_new_res_elec():
     """
     return (
         materials_required_for_new_res_elec_mt()
+        * energy_cons_per_unit_of_material_cons_for_res_elec()
+        * kg_per_mt()
+        / mj_per_ej()
+    )
+
+
+@component.add(
+    name='"Energy required for material consumption for O&M RES elec"',
+    units="EJ",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "materials_required_for_om_res_elec_mt": 1,
+        "energy_cons_per_unit_of_material_cons_for_res_elec": 1,
+        "kg_per_mt": 1,
+        "mj_per_ej": 1,
+    },
+)
+def energy_required_for_material_consumption_for_om_res_elec():
+    return (
+        materials_required_for_om_res_elec_mt()
         * energy_cons_per_unit_of_material_cons_for_res_elec()
         * kg_per_mt()
         / mj_per_ej()

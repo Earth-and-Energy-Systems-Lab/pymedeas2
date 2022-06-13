@@ -1,6 +1,6 @@
 """
 Module crop_and_forest_residues
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -146,11 +146,11 @@ def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
     depends_on={
         "time": 3,
         "start_year_bioe_residues_for_heatelec": 3,
-        "p_bioe_residues_for_heatelec": 1,
+        "ej_per_ktoe": 1,
         "bioe_residues_for_heatelec_available": 1,
+        "p_bioe_residues_for_heatelec": 1,
         "pe_bioe_residues_for_heatelec_ej": 1,
         "start_production_biofuels": 1,
-        "ej_per_ktoe": 1,
     },
 )
 def new_bioe_residues_for_heatelec():
@@ -181,12 +181,12 @@ def new_bioe_residues_for_heatelec():
     depends_on={
         "time": 3,
         "start_year_cellulosic_biofuels": 3,
-        "p_cellulosic_biofuels": 1,
-        "constrain_liquids_exogenous_growth": 1,
-        "potential_pe_cellulosic_biofuel_ej": 2,
-        "cellulosic_biofuels_available": 1,
         "start_production_biofuels": 1,
         "ej_per_ktoe": 1,
+        "p_cellulosic_biofuels": 1,
+        "cellulosic_biofuels_available": 1,
+        "potential_pe_cellulosic_biofuel_ej": 2,
+        "constrain_liquids_exogenous_growth": 1,
         "check_liquids": 1,
     },
 )

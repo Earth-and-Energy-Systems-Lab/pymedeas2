@@ -1,6 +1,6 @@
 """
 Module biogas
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -349,8 +349,8 @@ _ext_constant_max_pe_biogas_ej = ExtConstant(
     depends_on={
         "time": 3,
         "historic_biogas_pes": 2,
-        "pes_biogas_ej": 2,
         "max_pe_biogas_ej": 2,
+        "pes_biogas_ej": 2,
         "adapt_growth_biogas": 1,
     },
 )
@@ -502,8 +502,8 @@ def pes_biogas_for_tfc():
     depends_on={
         "pes_biogas_for_elec_plants": 1,
         "fes_elec_from_biogas_in_chp_plants": 1,
-        "share_efficiency_biogas_for_elec_in_chp_plants": 1,
         "losses_chp_biogas": 1,
+        "share_efficiency_biogas_for_elec_in_chp_plants": 1,
     },
 )
 def pes_tot_biogas_for_elec():
@@ -525,8 +525,8 @@ def pes_tot_biogas_for_elec():
     depends_on={
         "pes_biogas_for_heatcom_plants": 1,
         "fes_heatcom_from_biogas_in_chp_plants": 1,
-        "share_efficiency_biogas_for_elec_in_chp_plants": 1,
         "losses_chp_biogas": 1,
+        "share_efficiency_biogas_for_elec_in_chp_plants": 1,
     },
 )
 def pes_tot_biogas_for_heatcom():

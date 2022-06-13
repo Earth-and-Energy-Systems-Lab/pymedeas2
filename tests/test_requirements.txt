@@ -1,4 +1,4 @@
-git+https://github.com/JamesPHoughton/pysd.git@split-parsing-building#egg=pysd
+pysd>=3.0
 matplotlib
 dacite
 pytest

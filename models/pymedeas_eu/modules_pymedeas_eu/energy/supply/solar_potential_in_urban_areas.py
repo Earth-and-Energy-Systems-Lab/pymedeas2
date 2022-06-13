@@ -1,6 +1,6 @@
 """
 Module solar_potential_in_urban_areas
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -62,9 +62,9 @@ _ext_constant_f1_pv_solar_in_target_year = ExtConstant(
     depends_on={
         "time": 4,
         "f1ini_solar_pv": 4,
-        "f1_pv_solar_in_target_year": 2,
-        "target_year_f1_solar_pv": 2,
         "start_year_p_f1_solar_pv": 3,
+        "target_year_f1_solar_pv": 2,
+        "f1_pv_solar_in_target_year": 2,
     },
 )
 def f1_solar_pv():
@@ -224,56 +224,13 @@ _ext_constant_power_density_initial_res_elec_twemha = ExtConstant(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "power_density_initial_res_elec_twemha": 7,
-        "cp_res_elec": 8,
-        "cpini_res_elec": 8,
-        "power_density_solar_pv_on_land_twemha": 1,
-    },
+    depends_on={"power_density_initial_res_elec_twemha": 1, "cpini_res_elec": 1},
 )
 def power_density_res_elec_twemha():
     """
     Power density of renewable energy technologies for electricity generation. TODO
     """
-    value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-    )
-    value.loc[["hydro"]] = float(
-        power_density_initial_res_elec_twemha().loc["hydro"]
-    ) * (float(cp_res_elec().loc["hydro"]) / float(cpini_res_elec().loc["hydro"]))
-    value.loc[["geot elec"]] = float(
-        power_density_initial_res_elec_twemha().loc["geot elec"]
-    ) * (
-        float(cp_res_elec().loc["geot elec"]) / float(cpini_res_elec().loc["geot elec"])
-    )
-    value.loc[["solid bioE elec"]] = float(
-        power_density_initial_res_elec_twemha().loc["solid bioE elec"]
-    ) * (
-        float(cp_res_elec().loc["solid bioE elec"])
-        / float(cpini_res_elec().loc["solid bioE elec"])
-    )
-    value.loc[["oceanic"]] = float(
-        power_density_initial_res_elec_twemha().loc["oceanic"]
-    ) * (float(cp_res_elec().loc["oceanic"]) / float(cpini_res_elec().loc["oceanic"]))
-    value.loc[["wind onshore"]] = float(
-        power_density_initial_res_elec_twemha().loc["wind onshore"]
-    ) * (
-        float(cp_res_elec().loc["wind onshore"])
-        / float(cpini_res_elec().loc["wind onshore"])
-    )
-    value.loc[["wind offshore"]] = float(
-        power_density_initial_res_elec_twemha().loc["wind offshore"]
-    ) * (
-        float(cp_res_elec().loc["wind offshore"])
-        / float(cpini_res_elec().loc["wind offshore"])
-    )
-    value.loc[["solar PV"]] = power_density_solar_pv_on_land_twemha() * (
-        float(cp_res_elec().loc["solar PV"]) / float(cpini_res_elec().loc["solar PV"])
-    )
-    value.loc[["CSP"]] = float(power_density_initial_res_elec_twemha().loc["CSP"]) * (
-        float(cp_res_elec().loc["CSP"]) / float(cpini_res_elec().loc["CSP"])
-    )
-    return value
+    return power_density_initial_res_elec_twemha() / cpini_res_elec()
 
 
 @component.add(

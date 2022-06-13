@@ -1,6 +1,6 @@
 """
 Module waste
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -25,31 +25,6 @@ def adapt_growth_waste():
             lambda: waste_change(),
         ),
     )
-
-
-@component.add(
-    name="efficiency waste for heat plants",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_efficiency_waste_for_heat_plants"},
-)
-def efficiency_waste_for_heat_plants():
-    """
-    Efficiency of the transformation of waste in heat plants.
-    """
-    return _ext_constant_efficiency_waste_for_heat_plants()
-
-
-_ext_constant_efficiency_waste_for_heat_plants = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "efficiency_waste_for_heat_plants",
-    {},
-    _root,
-    {},
-    "_ext_constant_efficiency_waste_for_heat_plants",
-)
 
 
 @component.add(
@@ -124,6 +99,31 @@ _ext_constant_efficiency_waste_for_heat_chp_plants = ExtConstant(
     _root,
     {},
     "_ext_constant_efficiency_waste_for_heat_chp_plants",
+)
+
+
+@component.add(
+    name="efficiency waste for heat plants",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_efficiency_waste_for_heat_plants"},
+)
+def efficiency_waste_for_heat_plants():
+    """
+    Efficiency of the transformation of waste in heat plants.
+    """
+    return _ext_constant_efficiency_waste_for_heat_plants()
+
+
+_ext_constant_efficiency_waste_for_heat_plants = ExtConstant(
+    "../energy.xlsx",
+    "Austria",
+    "efficiency_waste_for_heat_plants",
+    {},
+    _root,
+    {},
+    "_ext_constant_efficiency_waste_for_heat_plants",
 )
 
 
@@ -349,10 +349,10 @@ _ext_constant_max_pe_waste = ExtConstant(
     depends_on={
         "time": 3,
         "historic_pes_waste_ej": 2,
-        "pes_waste_ej": 3,
         "max_pe_waste": 3,
-        "p_waste_change": 1,
+        "pes_waste_ej": 3,
         "adapt_growth_waste": 1,
+        "p_waste_change": 1,
     },
 )
 def new_waste_supply_ej():
@@ -430,8 +430,8 @@ _ext_constant_past_waste_growth = ExtConstant(
     depends_on={
         "pes_waste_for_elec_plants": 1,
         "fes_elec_from_waste_in_chp_plants": 1,
-        "share_efficiency_waste_for_elec_in_chp_plants": 1,
         "losses_chp_waste": 1,
+        "share_efficiency_waste_for_elec_in_chp_plants": 1,
     },
 )
 def pes_tot_waste_for_elec():
@@ -453,8 +453,8 @@ def pes_tot_waste_for_elec():
     depends_on={
         "pes_waste_for_heatcom_plants": 1,
         "fes_heatcom_from_waste_in_chp_plants": 1,
-        "share_efficiency_waste_for_elec_in_chp_plants": 1,
         "losses_chp_waste": 1,
+        "share_efficiency_waste_for_elec_in_chp_plants": 1,
     },
 )
 def pes_tot_waste_for_heatcom():

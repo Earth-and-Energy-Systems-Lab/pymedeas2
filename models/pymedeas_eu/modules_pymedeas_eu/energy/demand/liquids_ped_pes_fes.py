@@ -1,6 +1,6 @@
 """
 Module liquids_ped_pes_fes
-Translated using PySD version 3.0.0-dev
+Translated using PySD version 3.2.0
 """
 
 
@@ -288,9 +288,9 @@ def imports_eu_conv_oil_from_row_ej():
     depends_on={
         "time": 1,
         "ped_eu_total_oil_from_row": 5,
+        "limit_oil_imports_from_row": 3,
         "historic_share_net_imports_oil_until_2016": 1,
         "extraction_oil_ej_world": 2,
-        "limit_oil_imports_from_row": 3,
         "adapt_max_share_imports_oil": 1,
     },
 )
@@ -457,8 +457,8 @@ def ped_domestic_eu_conv_oil_ej():
     comp_subtype="Normal",
     depends_on={
         "ped_total_oil_ej": 1,
-        "historic_share_conv_oil_domestic_eu_extraction_until_2016": 1,
         "historic_share_unconv_oil_domestric_eu_extraction_until_2016": 1,
+        "historic_share_conv_oil_domestic_eu_extraction_until_2016": 1,
     },
 )
 def ped_domestic_eu_total_oil_ej():

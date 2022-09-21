@@ -1,1 +1,27 @@
-\note{Document climate module}
+\subsubsection{Estimation of GHG emissions}
+
+The model computes the $CO_2$ and $CH_4$ emissions associated to the extraction and burning of fossil fuels. While $CO_2$ emissions are produced during the combustion of fossil fuels, $CH_4$ emissions are originated by the losses of methane during extraction, processing, tranmission and distribution, notably of natural gas. Biofuels are far from being neutral carbon emitters due to Indirect Land Use Changes (ILUC); hence, in accordance with (\enric{cites}), we assign a similar emission level than natural gas. Emissions factors are considered constant over time. 
+
+The module has incorporated the capability of calculating the emissions by each economic sector and final source. In such a way, it can be determined which of the sectors is the most polluting in terms of GHG and, from here, be able to design transition scenarios in which the activity of these sectors can be reduced. 
+
+When one form of primary energy is transformed into another type of energy,for example burning gas to generate electricity, these emissions must be linked to the consumption of the final source (electricity) and not to that of the primary energy (gas). The same goes for heat generation and liquid transformation technologies (GTL, CTL). At the same time, when we have a cogeneration plant (CHP) that generates electricity and heat, we must distribute the fuel emissions that have been generated between the electricity consumer and the heat consumer. In this case, the share of electricity and heat is calculated as:
+
+\begin{equation}
+    Sh\_Elect\_CHP_i= \frac{Elec\_CHP_i}{Elec\_CHP_i+Heat\_CHP_i}
+    \label{eq:share-elec-CHP}
+\end{equation}
+
+
+Where $Sh\_Elect\_CHP_i$ is the share of primary energy $i$ (gas, oil or coal), $Elec\_CHP_i$ is the potential electricity generation from CHP plants burning primary energy, and $Heat\_CHP_i$ is the final energy demand of $i$ in CHP plants. 
+
+Then, the share of each of the primary energies for heat and electricity is obtained from:
+
+\begin{equation}
+    Sh\_Elect_i= \frac{PE\_Elect_i+PED\_CHP_i \cdot Sh\_Elect\_CHP_i}{PED_i}
+    \label{eq:share-elect-i}
+\end{equation}
+
+
+\enric{General description of the module}
+
+\paragraph{}

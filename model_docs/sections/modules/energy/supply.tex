@@ -51,7 +51,15 @@ Renewables potentials are limited by biophysical sustainable constraints, limiti
 \paragraph{RES electric capacities and generation}
 
 Renewable Energy Source (RES) capacity from different sources (hydro, geothermal, solid biomass, oceanic, wind onshore, wind offshore and solar) is limited by the techno-ecological potentials and its growth is defined in the "scenario.xslx" file, with objectives policies of total capacity installed by each RES every 5 years.  
-Then, this desired capacity is limited by the techno-ecological potential, that is read from "energy.xlsx" file and with values obtained from a literature review. The energy output of the installed capacity changes due to the reduction of the capacity factor caused by the intermitency of RES. The module prioritize the use of biogas and waste as energy sources, and only after using this energy sources, it uses other RES.
+Then, this desired capacity is limited by the techno-ecological potential, that is defined at "energy.xlsx" file and with values obtained from literature. 
+
+Energy output of the installed capacity is afected by two main sources: the capacity factor and curtailment. Capacity factor (Cp) variation has been discussed in literature, some sources, as \cite{IEA2022}, proposed increasing values of Cp as RES penetration level increases. Others, as \cite{NREL2012}, proposed a decreasing Cp proportional to the renewable share in the electricity generation mix. In our model, a constant Cp obtained from historical data is used. 
+
+The other limiting factor is curtailment. Increased variable RES penetration levels may drive a system to encounter transmission or operational constraints, forcing the system operator to accept less wind or solar than is available, in this cases, curtailment takes part of the electricity generated. As this factor depends on several parameters \cite{Bird2016} as  infrastructural, operational, or institutional development of the grid, as well as the development of an storage technology that can manage the peak generation electricity, it depends on several policies and strategies. This parameter is defined at the scerario's file as a share of total potential renewable electricity generated. 
+ 
+The module prioritize the use of biogas and waste as energy sources, and only after consuming this energy, other RES sources are taked into account.
+
+\enric{Revisar}
 
 
 \paragraph{RES electric supply by technology}
@@ -79,32 +87,16 @@ The most abundant RES for the generation of electricity, solar and wind, are sub
 
 Overcapacities are limited by the economic profitability of the power plant (i.e. large overcapacities imply low Cp). From a net energy perspective, overcapacities tend to lower the EROI, which could  similarly affect the net energy profitability of the plant.
 
-We assume that an increasing level of overcapacity of both dispatchable and variable RES is required when the variable RES increase their generation share in the electricity sector.Then, the used approach consists on estimating the reduction of the Cp of the RES power plants as a function of the penetration of variable RES in the electricity generation.
-
 The RES for electricity generation can be classified as “baseload”, i.e. those sources that are able to supply a manageable (“dispachtable”) load such as hydro, 13 biomass and geothermal, and “variable” generation. The latter are characterized by differing levels of variability and limited predictability over various time scales, and include wind and solar technologies.
 
-Overcapacity of dispatchable RES is estimated taking as reference the study \cite{NREL2012} which analyses the implications of different levels of RES penetration in USA, extrapolating the results (until 90\%) to the 100\% renewable scenario using a polynomial method (2nd order), considering that at 100\% penetration level of intermittent generation the Cp of baseloads plants would fall to zero. Then, the equation that describes this Cp reduction is:
+Overcapacity of RES energy generation is obtained from:
 
 \begin{equation}
-    Cp_{red\_dispatchable}=-0.6209 \cdot S_{RES}^2-0.3998 \cdot S_{RES} + 1.0222
-    \label{eq:cp-reduction-dispatchable}
+    Oc= PS_{RES}/FES_{RES}
+    \label{eq:Overcapacity}
 \end{equation}
 
-Where $S_{RES}$ is the share of RES over total electricity generation. 
-
-We estimate the overcapacity of variable RES following the study from (Delarue and Morris, 2015). Hence, we assume that in the case the variable RES would cover 100% of
-the electricity generation, an overcapacity of almost +200\% (3 times) would be required for those
-power plants running on variable RES technologies, equivalent to a reduction of almost 3 times in
-their Cp.
-
-\begin{equation}
-    Cp_{red\_variable}= \frac {1} {1+0.0001exp(9.85 \cdot S_{RES})}
-    \label{eq:cp-reduction-variable}
-\end{equation}
-
-To avoid unrealistically low values of Cp that would imply that power plants would be running
-unprofitably (and/or with negative net energy return to the system), we set a minimum Cp per
-technology.
+Where $PS_{RES}$ is the Potential supply of RES sources and $FES_{RES}$ is the real final energy supply obtained.
 
 \paragraph{RES electric total monetary investment}
 

@@ -189,7 +189,7 @@ parser.add_argument(
     '-x', '--scen', dest='scenario_sheet',
     type=str, metavar='SHEET', default=config.scenario_sheet,
     help='scenario name (names should be the same as the input file tabs),'
-         ' default is \'BAU\'')
+         ' default is \'NZE\'')
 
 parser.add_argument(
     '-e', '--export', dest='export_file',

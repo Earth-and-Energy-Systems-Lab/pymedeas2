@@ -1,4 +1,4 @@
-pysd>=3.0
+pysd>=3.10
 matplotlib
 dacite
 pytest

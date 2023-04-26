@@ -15,7 +15,7 @@ def test_data_container(proj_folder, doc):
     data_container.add(
         dm.DataFile(
             proj_folder.joinpath(
-                "tests/data/results_BAU_1995_2050_0.03125.csv")))
+                "tests/data/results_BAU_1995_2050_0.03125.csv"), test=True))
 
     variables = data_container.variable_list
     assert len(variables) > 1000
@@ -24,7 +24,7 @@ def test_data_container(proj_folder, doc):
     data_container.add(
         dm.DataFile(
             proj_folder.joinpath(
-                "tests/data/unknown.csv")))
+                "tests/data/unknown.csv"), test=True))
 
     assert variables == data_container.variable_list
     assert len(data_container) == 2
@@ -32,7 +32,7 @@ def test_data_container(proj_folder, doc):
     data_container.add(
         dm.DataVensim(
             proj_folder.joinpath(
-                "tests/data/vensim.tab"), doc))
+                "tests/data/vensim.tab"), doc, test=True))
 
     assert set(variables).issubset(data_container.variable_list)
     assert len(data_container) == 3
@@ -71,7 +71,7 @@ class TestDataFile:
     @pytest.fixture()
     def data_file(self, proj_folder, filename):
         """return data file object"""
-        return dm.DataFile(proj_folder.joinpath(filename))
+        return dm.DataFile(proj_folder.joinpath(filename), test=True)
 
     def test_metadata(self, proj_folder, filename, data_file, scenario):
         """test the main attributes"""
@@ -141,7 +141,7 @@ class TestDataVensim:
     @pytest.fixture()
     def data_file(self, proj_folder, filename, doc):
         """return data file object"""
-        return dm.DataVensim(proj_folder.joinpath(filename), doc)
+        return dm.DataVensim(proj_folder.joinpath(filename), doc, test=True)
 
     def test_metadata(self, proj_folder, filename, data_file):
         """test the main attributes"""
@@ -209,12 +209,12 @@ class TestDataLoaded:
         """return data file object"""
         if transpose:
             return dm.DataLoaded(
-                "My scen",
-                pd.read_csv(proj_folder.joinpath(filename), index_col=0).T)
+                pd.read_csv(proj_folder.joinpath(filename), index_col=0).T,
+                "My scen")
         else:
             return dm.DataLoaded(
-                "My scen",
-                pd.read_csv(proj_folder.joinpath(filename), index_col=0))
+                pd.read_csv(proj_folder.joinpath(filename), index_col=0),
+                "My scen")
 
     def test_metadata(self, data_file):
         """test the main attributes"""

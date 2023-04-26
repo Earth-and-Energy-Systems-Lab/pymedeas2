@@ -143,6 +143,38 @@ class Data:
         """Delete data"""
         del self.data, self.cached_values
 
+    def get_scenario_name(self, re_pattern=None, default_name="Unknown"):
+        """
+        Get scenario name from filename or from user input
+
+        First try to get the scenario from filename with regex. If it fails, if
+        in test mode (no GUI), return "Unknown" else, allow the user to provide
+        a scenario name with a GUI
+        """
+
+        if re_pattern:
+            pattern = re.compile(re_pattern)
+            match = pattern.match(self.filename.name)
+
+            if match:
+                return match.group(1)
+
+        if self.test:
+            return default_name
+
+        return self._scen_name_from_user(default_name)
+
+    def _scen_name_from_user(self, default_name):
+        # ask user for a scenario name
+        res = ScenarioDefWindow()
+
+        if res.scenario_name is None:
+            return default_name
+
+        return res.scenario_name
+
+
+
 
 class DataLoaded(Data):
 
@@ -177,31 +209,16 @@ class DataFile(Data):
     """
     Class that holds the data to be plotted when loaded from a csv or tab file
     """
+    scenario_name_pattern = re.compile(
+        r'results_(.*)(?=_[\d]{4}_[\d]{4}_[\d.]*(_[\d]{8}__[\d]{6})*(.tab|.csv))',
+        re.I)
 
     def __init__(self, filename, test=False):
         super().__init__()
         self.test = test
         self.filename = filename
-        self.scenario = self._get_scen_name()
+        self.scenario = self.get_scenario_name(DataFile.scenario_name_pattern)
         self.variable_list, self.transpose = Columns.get_columns(self.filename)
-
-    def _get_scen_name(self):
-        """get scenario name from filename"""
-        pattern = re.compile(
-            r'results_(.*)(?=_[\d]{4}_[\d]{4}_[\d.]*(_[\d]{8}__[\d]{6})*.tab)',
-            re.I)
-
-        match = pattern.match(self.filename.name)
-
-        if match:
-            return match.group(1)
-
-        res = ScenarioDefWindow()
-
-        if self.test or res.scenario_name is None:
-            return "Unknown"
-
-        return res.scenario_name
 
     def set_var(self, var_name):
         """Set current variable and get it from file if necessary"""
@@ -220,12 +237,14 @@ class DataFile(Data):
             self._add_to_cache()
 
 
-
 class DataNCFile(Data):
 
     """
     Class that holds the xarray Dataset to be plotted when loading from netCDF
     """
+    scenario_name_pattern = re.compile(
+            r'results_(.*)(?=_[\d]{4}_[\d]{4}_[\d.]*(_[\d]{8}__[\d]{6})*.nc)',
+            re.I)
 
     def __init__(self, filename, test=False):
         super().__init__()
@@ -233,10 +252,10 @@ class DataNCFile(Data):
         self.filename = Path(filename)
         # lazy loading (requires dask)
         self.dataset = NCFile(filename=filename, parallel=True).ds
-        self.scenario = self._get_scen_name()
+        self.scenario = self.get_scenario_name(
+            DataNCFile.scenario_name_pattern)
         self.time_dim = None
         self.dimensions = {}
-
 
         # get the time array
         for da in self.dataset.data_vars.values():
@@ -255,27 +274,6 @@ class DataNCFile(Data):
         if var.startswith('"') and var.endswith('"'):
             return var[1:-1]
         return var
-
-    def _get_scen_name(self):
-        """get scenario name from filename"""
-        pattern = re.compile(
-            r'results_(.*)(?=_[\d]{4}_[\d]{4}_[\d.]*(_[\d]{8}__[\d]{6})*.nc)',
-            re.I)
-
-        # try to detect the scenario name from the file name (only works if
-        # filename is default)
-        match = pattern.match(self.filename.name)
-
-        if match:
-            return match.group(1)
-
-        # ask user for a scenario name
-        res = ScenarioDefWindow()
-
-        if self.test or res.scenario_name is None:
-            return "Unknown"
-
-        return res.scenario_name
 
     def set_var(self, var_name):
         """
@@ -337,10 +335,11 @@ class DataVensim(Data):
     Class that holds the data to plot when loading Vensim outputs.
     """
 
-    def __init__(self, filename, doc):
+    def __init__(self, filename, doc, test=False):
         super().__init__()
         self.filename = filename
-        self.scenario = "Vensim output"
+        self.test = test
+        self.scenario = self.get_scenario_name(default_name="Vensim output")
         self.doc = doc[["Py Name", "Real Name"]]
         self.namespace = {}
         self.variable_list, self.transpose = Columns.get_columns(self.filename)

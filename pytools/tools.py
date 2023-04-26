@@ -293,8 +293,9 @@ def user_select_data_file_headless(parent: ParentModel) -> Path:
     """
     dir_path = parent.default_results_folder
 
-    files_list = list(filter(lambda x: x.is_file() and x.suffix == ".nc",
-                             dir_path.iterdir()))
+    files_list = list(
+        filter(lambda x: x.is_file() and x.suffix in [".nc", ".csv", ".tab"],
+               dir_path.iterdir()))
     files_list.sort()
 
     if files_list:  # there are csv files in the folder

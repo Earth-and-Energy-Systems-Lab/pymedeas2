@@ -40,7 +40,7 @@ if tuple(int(i) for i in pysd.__version__.split(".")[:2]) < (3, 0):
     )
 
 
-def main(config: Params) -> None:
+def main(config: Params, model: Model) -> None:
     """
     Main function for running the model
 
@@ -54,12 +54,6 @@ def main(config: Params) -> None:
         Model object.
 
     """
-    # get the data_file paths to load parent outputs
-    data_files: List[Path] = create_parent_models_data_file_paths(config)\
-        if config.model.parent else []
-
-    # loading the model object
-    model: Model = load(config, data_files)
 
     # create results directory if it does not exist
     Path(config.model.out_folder).mkdir(parents=True, exist_ok=True)
@@ -87,6 +81,13 @@ if __name__ == "__main__":
 
     # read user input and update config
     config: Params = update_config_from_user_input(options)
+
+    # get the data_file paths to load parent outputs
+    data_files: List[Path] = create_parent_models_data_file_paths(config)\
+        if config.model.parent else []
+
+    # loading the model object
+    model: Model = load(config, data_files)
 
     # if it's bundled, copy user modifiable files to the bundle tempdir
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
@@ -126,4 +127,4 @@ if __name__ == "__main__":
                     + " file before running the model.\n\n"
                 ) from None
 
-    main(config)
+    main(config, model)

@@ -42,7 +42,7 @@ def select_model(tmp_dir, proj_folder, model, default_vars):
         silent=True,
         headless=True,
         missing_values="ignore",
-        scenario_sheet="BAU",
+        scenario_sheet="NZE",
         plot=False,
         progress=False,
         model=None
@@ -51,7 +51,7 @@ def select_model(tmp_dir, proj_folder, model, default_vars):
     if model == "14pymedeas_w":
         model = "pymedeas_w"
         config.aggregation = "14sectors_cat"
-        config.model_arguments.results_fname = "14w.csv"
+        config.model_arguments.results_fname = "14w.nc"
         config.model_arguments.results_fpath =\
             tmp_dir.joinpath(config.model_arguments.results_fname)
         config.region = model

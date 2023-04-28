@@ -100,6 +100,7 @@ if __name__ == "__main__":
                     name for name in names
                     if path.joinpath(name).is_file()
                     and not name.endswith('.xlsx')
+                    and name.startswith('~')
                 }
 
             bundle_dir = Path(__file__).parent

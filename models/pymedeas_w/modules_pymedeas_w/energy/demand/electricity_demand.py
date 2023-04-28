@@ -1,6 +1,6 @@
 """
-Module electricity_demand
-Translated using PySD version 3.2.0
+Module energy.demand.electricity_demand
+Translated using PySD version 3.9.1
 """
 
 
@@ -106,31 +106,6 @@ def remaining_share_transmdistr_elec_losses():
 
 
 @component.add(
-    name='"share transm&distr elec losses initial"',
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_share_transmdistr_elec_losses_initial"},
-)
-def share_transmdistr_elec_losses_initial():
-    """
-    Current share of electrical transmission and distribution losses in relation to electricity consumption. We define these losses at around 9.5% following historical data.
-    """
-    return _ext_constant_share_transmdistr_elec_losses_initial()
-
-
-_ext_constant_share_transmdistr_elec_losses_initial = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "share_transm_and_distribution_elec_losses_initial",
-    {},
-    _root,
-    {},
-    "_ext_constant_share_transmdistr_elec_losses_initial",
-)
-
-
-@component.add(
     name='"share transm&distr elec losses"',
     units="Dmnl",
     comp_type="Stateful",
@@ -154,6 +129,31 @@ _integ_share_transmdistr_elec_losses = Integ(
     lambda: variation_share_transmdistr_elec_losses(),
     lambda: share_transmdistr_elec_losses_initial(),
     "_integ_share_transmdistr_elec_losses",
+)
+
+
+@component.add(
+    name='"share transm&distr elec losses initial"',
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_transmdistr_elec_losses_initial"},
+)
+def share_transmdistr_elec_losses_initial():
+    """
+    Current share of electrical transmission and distribution losses in relation to electricity consumption. We define these losses at around 9.5% following historical data.
+    """
+    return _ext_constant_share_transmdistr_elec_losses_initial()
+
+
+_ext_constant_share_transmdistr_elec_losses_initial = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "share_transm_and_distribution_elec_losses_initial",
+    {},
+    _root,
+    {},
+    "_ext_constant_share_transmdistr_elec_losses_initial",
 )
 
 

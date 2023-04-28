@@ -1,6 +1,6 @@
 """
-Module res_elec_supply_by_technology
-Translated using PySD version 3.2.0
+Module energy.supply.res_elec_supply_by_technology
+Translated using PySD version 3.9.1
 """
 
 
@@ -54,7 +54,7 @@ _ext_constant_efficiency_conversion_bioe_to_elec = ExtConstant(
 
 @component.add(
     name="FE tot generation all RES elec TWh",
-    units="TWh",
+    units="TWh/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -82,14 +82,15 @@ def fes_elec_from_res_with_priority_twh():
 
 @component.add(
     name='"imports/exports electricity"',
+    units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "fe_elec_demand_exports_twh": 2,
         "demand_elec_nre_twh": 2,
-        "total_fe_elec_generation_twh_eu28": 2,
         "real_fe_demand_nre": 2,
+        "total_fe_elec_generation_twh_eu28": 2,
     },
 )
 def importsexports_electricity():
@@ -253,7 +254,13 @@ def real_fe_demand_nre():
         + fe_demand_gas_elec_plants_twh()
         + fe_demand_oil_elec_plants_twh()
         + fe_nuclear_elec_generation_twh()
-        + fes_elec_fossil_fuel_chp_plants_ej() / ej_per_twh()
+        + sum(
+            fes_elec_fossil_fuel_chp_plants_ej().rename(
+                {"fossil fuels": "fossil fuels!"}
+            ),
+            dim=["fossil fuels!"],
+        )
+        / ej_per_twh()
     )
 
 

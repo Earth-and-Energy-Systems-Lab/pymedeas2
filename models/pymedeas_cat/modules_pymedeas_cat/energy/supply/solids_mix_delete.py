@@ -1,17 +1,17 @@
 """
-Module solids_mix
-Translated using PySD version 3.2.0
+Module energy.supply.solids_mix_delete
+Translated using PySD version 3.9.1
 """
 
 
 @component.add(
-    name="Coal in FEC AUT",
+    name="Coal in FEC CAT",
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pec_coal": 1, "total_coal_consumption": 1},
 )
-def coal_in_fec_aut():
+def coal_in_fec_cat():
     return pec_coal() - total_coal_consumption()
 
 
@@ -22,23 +22,23 @@ def coal_in_fec_aut():
     comp_subtype="Normal",
     depends_on={
         "other_solids_required": 1,
-        "pe_demand_coal_elec_plants_ej": 1,
+        "ped_coal_elec_plants_ej": 1,
         "ped_coal_for_chp_plants_ej": 1,
         "ped_coal_for_ctl_ej": 1,
         "ped_coal_for_heat_plants_ej": 1,
         "ped_coal_heatnc": 1,
-        "required_fed_solids": 1,
+        "required_fed_by_solids": 1,
     },
 )
 def ped_totat_solids():
     return (
         other_solids_required()
-        + pe_demand_coal_elec_plants_ej()
+        + ped_coal_elec_plants_ej()
         + ped_coal_for_chp_plants_ej()
         + ped_coal_for_ctl_ej()
         + ped_coal_for_heat_plants_ej()
         + ped_coal_heatnc()
-        + required_fed_solids()
+        + required_fed_by_solids()
     )
 
 
@@ -76,28 +76,12 @@ def share_traditional_biomass():
 
 
 @component.add(
-    name="Solids CO2 emissions",
-    units="GtCO2/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "required_fed_solids": 1,
-        "gco2_per_mj_coal": 1,
-        "mj_per_ej": 1,
-        "g_per_gt": 1,
-    },
-)
-def solids_co2_emissions():
-    return required_fed_solids() * gco2_per_mj_coal() * mj_per_ej() / g_per_gt()
-
-
-@component.add(
     name="Total coal consumption",
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "pe_demand_coal_elec_plants_ej": 1,
+        "ped_coal_elec_plants_ej": 1,
         "ped_coal_for_chp_plants_ej": 1,
         "ped_coal_for_ctl_ej": 1,
         "ped_coal_for_heat_plants_ej": 1,
@@ -107,7 +91,7 @@ def solids_co2_emissions():
 )
 def total_coal_consumption():
     return (
-        pe_demand_coal_elec_plants_ej()
+        ped_coal_elec_plants_ej()
         + ped_coal_for_chp_plants_ej()
         + ped_coal_for_ctl_ej()
         + ped_coal_for_heat_plants_ej()
@@ -148,7 +132,7 @@ def total_solids_ej():
     comp_subtype="Normal",
     depends_on={
         "modern_solids_bioe_demand_households": 1,
-        "coal_in_fec_aut": 1,
+        "coal_in_fec_cat": 1,
         "losses_in_charcoal_plants_ej": 1,
         "pes_peat_ej": 1,
         "pes_waste_for_tfc": 1,
@@ -157,7 +141,7 @@ def total_solids_ej():
 def total_solids_fec():
     return (
         modern_solids_bioe_demand_households()
-        + coal_in_fec_aut()
+        + coal_in_fec_cat()
         + losses_in_charcoal_plants_ej()
         + pes_peat_ej()
         + pes_waste_for_tfc()

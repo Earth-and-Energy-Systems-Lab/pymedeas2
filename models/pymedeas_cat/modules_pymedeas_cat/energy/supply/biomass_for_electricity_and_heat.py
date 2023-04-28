@@ -1,6 +1,6 @@
 """
-Module biomass_for_electricity_and_heat
-Translated using PySD version 3.2.0
+Module energy.supply.biomass_for_electricity_and_heat
+Translated using PySD version 3.9.1
 """
 
 
@@ -44,6 +44,66 @@ def available_max_pe_solid_bioe_for_heat_ej():
         total_pe_solid_bioe_potential_heatelec_ej()
         - float(pe_real_generation_res_elec().loc["solid bioE elec"]),
     )
+
+
+@component.add(
+    name="FES biomass",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "end_hist_data": 1,
+        "historic_biomass_fec": 1,
+        "policy_solid_bioe": 1,
+    },
+)
+def fes_biomass():
+    """
+    Final energy supply of biomass, biomass used for electricity generation is obtained from scenarios RES energy capacity development.
+    """
+    return if_then_else(
+        time() < end_hist_data(),
+        lambda: historic_biomass_fec(time()),
+        lambda: policy_solid_bioe(),
+    )
+
+
+@component.add(
+    name="FES biomass sectors",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"fes_biomass": 1, "modern_solids_bioe_demand_households": 1},
+)
+def fes_biomass_sectors():
+    return fes_biomass() - modern_solids_bioe_demand_households()
+
+
+@component.add(
+    name="historic biomass FEC",
+    units="EJ",
+    comp_type="Lookup",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_biomass_fec",
+        "__lookup__": "_ext_lookup_historic_biomass_fec",
+    },
+)
+def historic_biomass_fec(x, final_subs=None):
+    return _ext_lookup_historic_biomass_fec(x, final_subs)
+
+
+_ext_lookup_historic_biomass_fec = ExtLookup(
+    "../energy.xlsx",
+    "Catalonia",
+    "time_efficiencies",
+    "historic_final_energy_consumption_biomass",
+    {},
+    _root,
+    {},
+    "_ext_lookup_historic_biomass_fec",
+)
 
 
 @component.add(
@@ -99,12 +159,40 @@ def max_potential_npp_bioe_conventional_for_heatelec():
 
 _ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "max_pot_NPP_bioe_conv",
     {},
     _root,
     {},
     "_ext_constant_max_potential_npp_bioe_conventional_for_heatelec",
+)
+
+
+@component.add(
+    name="policy solid bioE",
+    units="EJ",
+    comp_type="Data",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_policy_solid_bioe",
+        "__data__": "_ext_data_policy_solid_bioe",
+        "time": 1,
+    },
+)
+def policy_solid_bioe():
+    return _ext_data_policy_solid_bioe(time())
+
+
+_ext_data_policy_solid_bioe = ExtData(
+    "../../scenarios/scen_cat.xlsx",
+    "NZP",
+    "year_RES_power",
+    "p_solid_bioE",
+    "interpolate",
+    {},
+    _root,
+    {},
+    "_ext_data_policy_solid_bioe",
 )
 
 
@@ -123,6 +211,19 @@ def share_solids_bioe_for_elec_vs_heat():
         float(pe_real_generation_res_elec().loc["solid bioE elec"]),
         float(pe_real_generation_res_elec().loc["solid bioE elec"])
         + float(pes_res_for_heat_by_techn().loc["solid bioE heat"]),
+    )
+
+
+@component.add(
+    name="tot RES",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pe_real_generation_res_elec": 1},
+)
+def tot_res():
+    return sum(
+        pe_real_generation_res_elec().rename({"RES elec": "RES elec!"}),
+        dim=["RES elec!"],
     )
 
 

@@ -1,6 +1,6 @@
 """
-Module total_outputs_from_demand
-Translated using PySD version 3.2.0
+Module economy.total_outputs_from_demand
+Translated using PySD version 3.9.1
 """
 
 
@@ -20,7 +20,7 @@ def activate_elf_by_scen():
 
 _ext_constant_activate_elf_by_scen = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "activate_ELF",
     {},
     _root,
@@ -106,8 +106,8 @@ def domestic_demand_by_sector():
     comp_subtype="Normal",
     depends_on={
         "activate_energy_scarcity_feedback": 1,
-        "real_fe_consumption_by_fuel_before_heat_correction": 1,
         "required_fed_by_fuel_before_heat_correction": 1,
+        "real_fe_consumption_by_fuel_before_heat_correction": 1,
     },
 )
 def energy_scarcity_feedback_shortage_coeff_eu():

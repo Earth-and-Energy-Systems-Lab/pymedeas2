@@ -1,25 +1,7 @@
 """
-Module res_land_use
-Translated using PySD version 3.2.0
+Module environment.land.res_land_use
+Translated using PySD version 3.9.1
 """
-
-
-@component.add(
-    name="surface RES elec",
-    units="MHa",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"power_density_res_elec_twmha": 2, "res_installed_capacity_delayed": 1},
-)
-def surface_res_elec():
-    return if_then_else(
-        power_density_res_elec_twmha() == 0,
-        lambda: xr.DataArray(
-            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-        ),
-        lambda: res_installed_capacity_delayed() / power_density_res_elec_twmha(),
-    )
 
 
 @component.add(
@@ -48,18 +30,6 @@ _ext_constant_global_arable_land = ExtConstant(
 
 
 @component.add(
-    name='"power density RES elec TW/Mha"',
-    units="TW/MHa",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"power_density_res_elec_twemha": 1, "cpini_res_elec": 1},
-)
-def power_density_res_elec_twmha():
-    return power_density_res_elec_twemha() / cpini_res_elec()
-
-
-@component.add(
     name='"power density RES elec TWe/Mha"',
     units="TWe/MHa",
     subscripts=["RES elec"],
@@ -83,6 +53,18 @@ _ext_constant_power_density_res_elec_twemha = ExtConstant(
     {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_power_density_res_elec_twemha",
 )
+
+
+@component.add(
+    name='"power density RES elec TW/Mha"',
+    units="TW/MHa",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"power_density_res_elec_twemha": 1, "cpini_res_elec": 1},
+)
+def power_density_res_elec_twmha():
+    return power_density_res_elec_twemha() / cpini_res_elec()
 
 
 @component.add(
@@ -188,6 +170,24 @@ def surface_onshore_wind_mha():
     Surface required to produce "onshore wind TWe".
     """
     return float(surface_res_elec().loc["wind onshore"])
+
+
+@component.add(
+    name="surface RES elec",
+    units="MHa",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"power_density_res_elec_twmha": 2, "res_installed_capacity_delayed": 1},
+)
+def surface_res_elec():
+    return if_then_else(
+        power_density_res_elec_twmha() == 0,
+        lambda: xr.DataArray(
+            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        ),
+        lambda: res_installed_capacity_delayed() / power_density_res_elec_twmha(),
+    )
 
 
 @component.add(

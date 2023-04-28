@@ -1,6 +1,6 @@
 """
-Module res_land_use
-Translated using PySD version 3.2.0
+Module environment.land.res_land_use
+Translated using PySD version 3.9.1
 """
 
 
@@ -69,6 +69,7 @@ def land_saved_by_urban_pv():
 
 @component.add(
     name="Share land compet biofuels",
+    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -187,7 +188,7 @@ def surface_onshore_wind_mha():
     comp_subtype="Normal",
     depends_on={
         "power_density_res_elec_twemha": 2,
-        "res_installed_capacity_delayed": 1,
+        "installed_capacity_res_elec_delayed": 1,
     },
 )
 def surface_res_elec():
@@ -199,7 +200,7 @@ def surface_res_elec():
         lambda: xr.DataArray(
             0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
         ),
-        lambda: res_installed_capacity_delayed() / power_density_res_elec_twemha(),
+        lambda: installed_capacity_res_elec_delayed() / power_density_res_elec_twemha(),
     )
 
 

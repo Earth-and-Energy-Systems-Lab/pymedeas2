@@ -1,18 +1,7 @@
 """
-Module temperature_change
-Translated using PySD version 3.2.0
+Module climate.temperature_change
+Translated using PySD version 3.9.1
 """
-
-
-@component.add(
-    name='"2x CO2 Forcing"',
-    units="W/m2",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"reference_co2_radiative_forcing": 1},
-)
-def nvs_2x_co2_forcing():
-    return reference_co2_radiative_forcing() * np.log(2)
 
 
 @component.add(
@@ -289,8 +278,8 @@ def heat_transfer():
     depends_on={
         "heat_transfer_rate": 1,
         "mean_depth_of_adjacent_layers": 1,
-        "eddy_diffusion_coef": 1,
         "heat_diffusion_covar": 2,
+        "eddy_diffusion_coef": 1,
         "eddy_diffusion_mean": 1,
     },
 )
@@ -431,6 +420,17 @@ def lower_layer_volume_vu():
 
 
 @component.add(
+    name='"2x CO2 Forcing"',
+    units="W/m2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"reference_co2_radiative_forcing": 1},
+)
+def nvs_2x_co2_forcing():
+    return reference_co2_radiative_forcing() * np.log(2)
+
+
+@component.add(
     name="reference CO2 radiative forcing",
     units="W/m2",
     comp_type="Constant",
@@ -494,9 +494,9 @@ def temperature_change():
     comp_subtype="Normal",
     depends_on={
         "earth_surface_area": 1,
+        "land_area_fraction": 2,
         "mixed_layer_depth": 1,
         "land_thickness": 1,
-        "land_area_fraction": 2,
     },
 )
 def upper_layer_volume_vu():

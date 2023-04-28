@@ -1,6 +1,6 @@
 """
-Module losses_in_transformation_and_distri
-Translated using PySD version 3.2.0
+Module energy.supply.losses_in_transformation_and_distri
+Translated using PySD version 3.9.1
 """
 
 
@@ -8,7 +8,7 @@ Translated using PySD version 3.2.0
     name="Energy distr losses FF EJ",
     units="EJ/year",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "pes_fossil_fuel_extraction_delayed": 3,
@@ -63,7 +63,7 @@ _ext_data_historic_share_of_losses_vs_extraction = ExtData(
     None,
     {"final sources": ["liquids"]},
     _root,
-    {"final sources": ["liquids", "solids", "gases"]},
+    {"final sources": _subscript_dict["final sources"]},
     "_ext_data_historic_share_of_losses_vs_extraction",
 )
 
@@ -113,7 +113,7 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction = ExtData(
     None,
     {"final sources": ["liquids"]},
     _root,
-    {"final sources": ["liquids", "solids"]},
+    {"final sources": _subscript_dict["final sources"]},
     "_ext_data_historic_share_of_transformation_losses_vs_extraction",
 )
 
@@ -300,7 +300,7 @@ def total_distribution_losses():
 @component.add(
     name="Transformation FF losses EJ",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "pes_fossil_fuel_extraction_delayed": 3,

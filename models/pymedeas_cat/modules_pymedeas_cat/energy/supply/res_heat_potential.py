@@ -1,6 +1,6 @@
 """
-Module res_heat_potential
-Translated using PySD version 3.2.0
+Module energy.supply.res_heat_potential
+Translated using PySD version 3.9.1
 """
 
 
@@ -38,7 +38,7 @@ def geot_pe_potential_for_heat_twth():
 
 _ext_constant_geot_pe_potential_for_heat_twth = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "geot_PE_potential_heat",
     {},
     _root,
@@ -75,8 +75,8 @@ def max_fe_potential_biogas_for_heat():
     comp_subtype="Normal",
     depends_on={
         "max_fe_res_for_heat": 2,
-        "max_pe_potential_solid_bioe_for_heat_ej": 1,
         "efficiency_res_heat": 1,
+        "max_pe_potential_solid_bioe_for_heat_ej": 1,
     },
 )
 def max_fe_potential_res_for_heat():

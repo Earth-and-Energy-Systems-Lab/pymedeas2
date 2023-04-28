@@ -1,114 +1,7 @@
 """
-Module land_use
-Translated using PySD version 3.2.0
+Module environment.land.land_use
+Translated using PySD version 3.9.1
 """
-
-
-@component.add(
-    name="\"'Available land'\"",
-    units="MHa",
-    comp_type="Stateful",
-    comp_subtype="Integ",
-    depends_on={"_integ_available_land": 1},
-    other_deps={
-        "_integ_available_land": {
-            "initial": {"initial_available_land": 1},
-            "step": {
-                "land_for_res_elec_rate": 1,
-                "increase_agricultural_land": 1,
-                "marginal_land_for_biofuels_rate": 1,
-            },
-        }
-    },
-)
-def available_land():
-    """
-    "Available land" as defined in MEDEAS-EU framework, representing the terrestrial land that is currently neither being used by the primary sector (arable land, permanent crops, permanent meadows and pastures and productive forest area) nor built-up, nor occupied by permanent snows&glaciers.
-    """
-    return _integ_available_land()
-
-
-_integ_available_land = Integ(
-    lambda: -land_for_res_elec_rate()
-    - increase_agricultural_land()
-    - marginal_land_for_biofuels_rate(),
-    lambda: initial_available_land(),
-    "_integ_available_land",
-)
-
-
-@component.add(
-    name="\"'Available' forest area\"",
-    units="MHa",
-    comp_type="Stateful",
-    comp_subtype="Integ",
-    depends_on={"_integ_available_forest_area": 1},
-    other_deps={
-        "_integ_available_forest_area": {
-            "initial": {"initial_available_forest_area": 1},
-            "step": {
-                "deforestation_rate": 1,
-                "forest_loss_to_sustain_agriculture": 1,
-                "available_to_primary_forest_rate": 1,
-            },
-        }
-    },
-)
-def available_forest_area():
-    """
-    Used forests, removing primary forest which are not used for wood extraction
-    """
-    return _integ_available_forest_area()
-
-
-_integ_available_forest_area = Integ(
-    lambda: -deforestation_rate()
-    - forest_loss_to_sustain_agriculture()
-    - available_to_primary_forest_rate(),
-    lambda: initial_available_forest_area(),
-    "_integ_available_forest_area",
-)
-
-
-@component.add(
-    name="\"'Available' to primary forest rate\"",
-    units="MHa/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 2,
-        "hist_variation_primary_forest": 1,
-        "p_variation_primary_forest": 1,
-        "historic_av_variation_primary_forests_area": 1,
-        "start_year_p_variation_primary_forest": 1,
-        "primary_forests_area": 2,
-        "aux_reach_available_forest": 1,
-    },
-)
-def available_to_primary_forest_rate():
-    """
-    Rate of variation of the area occupied by primary forests.
-    """
-    return (
-        if_then_else(
-            time() < 2014,
-            lambda: hist_variation_primary_forest(),
-            lambda: if_then_else(
-                time() < start_year_p_variation_primary_forest(),
-                lambda: historic_av_variation_primary_forests_area()
-                * primary_forests_area(),
-                lambda: p_variation_primary_forest() * primary_forests_area(),
-            ),
-        )
-        * aux_reach_available_forest()
-    )
-
-
-@component.add(
-    name='"1 to M"', units="Dmnl", comp_type="Constant", comp_subtype="Normal"
-)
-def nvs_1_to_m():
-    return 1000000.0
 
 
 @component.add(
@@ -273,6 +166,106 @@ def aux_reach_available_land():
 
 
 @component.add(
+    name="\"'Available' forest area\"",
+    units="MHa",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_available_forest_area": 1},
+    other_deps={
+        "_integ_available_forest_area": {
+            "initial": {"initial_available_forest_area": 1},
+            "step": {
+                "deforestation_rate": 1,
+                "forest_loss_to_sustain_agriculture": 1,
+                "available_to_primary_forest_rate": 1,
+            },
+        }
+    },
+)
+def available_forest_area():
+    """
+    Used forests, removing primary forest which are not used for wood extraction
+    """
+    return _integ_available_forest_area()
+
+
+_integ_available_forest_area = Integ(
+    lambda: -deforestation_rate()
+    - forest_loss_to_sustain_agriculture()
+    - available_to_primary_forest_rate(),
+    lambda: initial_available_forest_area(),
+    "_integ_available_forest_area",
+)
+
+
+@component.add(
+    name="\"'Available land'\"",
+    units="MHa",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_available_land": 1},
+    other_deps={
+        "_integ_available_land": {
+            "initial": {"initial_available_land": 1},
+            "step": {
+                "land_for_res_elec_rate": 1,
+                "increase_agricultural_land": 1,
+                "marginal_land_for_biofuels_rate": 1,
+            },
+        }
+    },
+)
+def available_land():
+    """
+    "Available land" as defined in MEDEAS-EU framework, representing the terrestrial land that is currently neither being used by the primary sector (arable land, permanent crops, permanent meadows and pastures and productive forest area) nor built-up, nor occupied by permanent snows&glaciers.
+    """
+    return _integ_available_land()
+
+
+_integ_available_land = Integ(
+    lambda: -land_for_res_elec_rate()
+    - increase_agricultural_land()
+    - marginal_land_for_biofuels_rate(),
+    lambda: initial_available_land(),
+    "_integ_available_land",
+)
+
+
+@component.add(
+    name="\"'Available' to primary forest rate\"",
+    units="MHa/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "hist_variation_primary_forest": 1,
+        "primary_forests_area": 2,
+        "p_variation_primary_forest": 1,
+        "start_year_p_variation_primary_forest": 1,
+        "historic_av_variation_primary_forests_area": 1,
+        "aux_reach_available_forest": 1,
+    },
+)
+def available_to_primary_forest_rate():
+    """
+    Rate of variation of the area occupied by primary forests.
+    """
+    return (
+        if_then_else(
+            time() < 2014,
+            lambda: hist_variation_primary_forest(),
+            lambda: if_then_else(
+                time() < start_year_p_variation_primary_forest(),
+                lambda: historic_av_variation_primary_forests_area()
+                * primary_forests_area(),
+                lambda: p_variation_primary_forest() * primary_forests_area(),
+            ),
+        )
+        * aux_reach_available_forest()
+    )
+
+
+@component.add(
     name="Compet agricultural land for biofuels",
     units="MHa",
     comp_type="Stateful",
@@ -320,9 +313,9 @@ def compet_land_for_biofuels_rate():
     comp_subtype="Normal",
     depends_on={
         "demand_forest_energy_non_tradition_ej": 1,
-        "consum_forest_energy_traditional_ej": 1,
-        "consum_wood_products_ej": 1,
         "forest_consumption_ej": 1,
+        "consum_wood_products_ej": 1,
+        "consum_forest_energy_traditional_ej": 1,
     },
 )
 def consum_forest_energy_non_traditional_ej():
@@ -358,8 +351,8 @@ def consum_forest_energy_traditional_ej():
     comp_subtype="Normal",
     depends_on={
         "demand_wood_products_ej": 1,
-        "consum_forest_energy_traditional_ej": 1,
         "forest_consumption_ej": 1,
+        "consum_forest_energy_traditional_ej": 1,
     },
 )
 def consum_wood_products_ej():
@@ -561,9 +554,9 @@ def forest_consumption_ej():
         "available_forest_area": 1,
         "forest_extraction_per_ha": 1,
         "p_minimum_forest": 1,
+        "max_sustainable_forest_extraction_ej": 1,
         "total_demand_forest_biomass_ej": 1,
         "p_forest_overexplotation": 1,
-        "max_sustainable_forest_extraction_ej": 1,
     },
 )
 def forest_extraction_ej():
@@ -730,7 +723,7 @@ def historic_av_variation_primary_forests_area():
 
 _ext_constant_historic_av_variation_primary_forests_area = ExtConstant(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "variation_primary_forests_area",
     {},
     _root,
@@ -758,7 +751,7 @@ def historic_primary_forest(x, final_subs=None):
 
 _ext_lookup_historic_primary_forest = ExtLookup(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "time",
     "primary_forest",
     {},
@@ -787,7 +780,7 @@ def historic_urban_land(x, final_subs=None):
 
 _ext_lookup_historic_urban_land = ExtLookup(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "time",
     "urban_land",
     {},
@@ -839,27 +832,24 @@ def increase_agricultural_land():
 
 
 @component.add(
-    name="initial 'available land'",
+    name="initial agricultural area",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_initial_available_land"},
+    depends_on={"__external__": "_ext_constant_initial_agricultural_area"},
 )
-def initial_available_land():
-    """
-    Initial "available land" as defined in MEDEAS-EU framework, representing the terrestrial land that is currently neither being used by the primary sector (arable land, permanent crops, permanent meadows and pastures and productive forest area) nor built-up, nor occupied by permanent snows&glaciers.
-    """
-    return _ext_constant_initial_available_land()
+def initial_agricultural_area():
+    return _ext_constant_initial_agricultural_area()
 
 
-_ext_constant_initial_available_land = ExtConstant(
+_ext_constant_initial_agricultural_area = ExtConstant(
     "../land.xlsx",
-    "Austria",
-    "initial_available_land",
+    "Catalonia",
+    "initial_agricultural_area",
     {},
     _root,
     {},
-    "_ext_constant_initial_available_land",
+    "_ext_constant_initial_agricultural_area",
 )
 
 
@@ -881,24 +871,27 @@ def initial_available_forest_area():
 
 
 @component.add(
-    name="initial agricultural area",
+    name="initial 'available land'",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_initial_agricultural_area"},
+    depends_on={"__external__": "_ext_constant_initial_available_land"},
 )
-def initial_agricultural_area():
-    return _ext_constant_initial_agricultural_area()
+def initial_available_land():
+    """
+    Initial "available land" as defined in MEDEAS-EU framework, representing the terrestrial land that is currently neither being used by the primary sector (arable land, permanent crops, permanent meadows and pastures and productive forest area) nor built-up, nor occupied by permanent snows&glaciers.
+    """
+    return _ext_constant_initial_available_land()
 
 
-_ext_constant_initial_agricultural_area = ExtConstant(
+_ext_constant_initial_available_land = ExtConstant(
     "../land.xlsx",
-    "Austria",
-    "initial_agricultural_area",
+    "Catalonia",
+    "initial_available_land",
     {},
     _root,
     {},
-    "_ext_constant_initial_agricultural_area",
+    "_ext_constant_initial_available_land",
 )
 
 
@@ -931,7 +924,7 @@ def initial_other_naturally_regen_forest():
 
 _ext_constant_initial_other_naturally_regen_forest = ExtConstant(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_other_naturally_regen_forest",
     {},
     _root,
@@ -956,7 +949,7 @@ def initial_permanent_snowsglaciers_area():
 
 _ext_constant_initial_permanent_snowsglaciers_area = ExtConstant(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_permanent_snow_glaciers_area",
     {},
     _root,
@@ -981,7 +974,7 @@ def initial_planted_forests():
 
 _ext_constant_initial_planted_forests = ExtConstant(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_planted_forests",
     {},
     _root,
@@ -1006,7 +999,7 @@ def initial_primary_forest_area():
 
 _ext_constant_initial_primary_forest_area = ExtConstant(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_primary_forest",
     {},
     _root,
@@ -1031,7 +1024,7 @@ def initial_urban_land():
 
 _ext_constant_initial_urban_land = ExtConstant(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_urban",
     {},
     _root,
@@ -1240,7 +1233,7 @@ def max_solar_on_land_mha():
 
 _ext_constant_max_solar_on_land_mha = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "max_solar_on_land_potential",
     {},
     _root,
@@ -1274,6 +1267,13 @@ def mha_to_m2():
 
 
 @component.add(
+    name='"1 to M"', units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+)
+def nvs_1_to_m():
+    return 1000000.0
+
+
+@component.add(
     name="P forest overexplotation",
     units="Dmnl",
     comp_type="Constant",
@@ -1289,7 +1289,7 @@ def p_forest_overexplotation():
 
 _ext_constant_p_forest_overexplotation = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "forest_overexplotation",
     {},
     _root,
@@ -1314,7 +1314,7 @@ def p_minimum_forest():
 
 _ext_constant_p_minimum_forest = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "minimum_forest",
     {},
     _root,
@@ -1339,7 +1339,7 @@ def p_urban_land_density():
 
 _ext_constant_p_urban_land_density = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "urban_land_density",
     {},
     _root,
@@ -1364,7 +1364,7 @@ def p_variation_primary_forest():
 
 _ext_constant_p_variation_primary_forest = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "variation_primary_forest",
     {},
     _root,
@@ -1434,8 +1434,8 @@ _integ_primary_forests_area = Integ(
     comp_subtype="Normal",
     depends_on={
         "aux_reach_ag_land": 1,
-        "agricultural_land_pc": 1,
         "threshold_scarcity_ag_land": 1,
+        "agricultural_land_pc": 1,
         "agricultural_land_pc_until_2015": 1,
     },
 )
@@ -1567,7 +1567,7 @@ def start_year_p_urban_land_density():
 
 _ext_constant_start_year_p_urban_land_density = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "start_year_P_urban_land_density",
     {},
     _root,
@@ -1592,7 +1592,7 @@ def start_year_p_variation_primary_forest():
 
 _ext_constant_start_year_p_variation_primary_forest = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "start_year_variation_primary_forest",
     {},
     _root,
@@ -1617,7 +1617,7 @@ def target_year_p_urban_land_density():
 
 _ext_constant_target_year_p_urban_land_density = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "target_year_P_urban_land_density",
     {},
     _root,
@@ -1640,7 +1640,7 @@ def threshold_scarcity_ag_land():
 
 
 @component.add(
-    name="Total AUT land endogenous",
+    name="Total CAT land endogenous",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1656,7 +1656,7 @@ def threshold_scarcity_ag_land():
         "available_land": 1,
     },
 )
-def total_aut_land_endogenous():
+def total_cat_land_endogenous():
     return (
         agricultural_land()
         + compet_agricultural_land_for_biofuels()
@@ -1788,9 +1788,9 @@ _integ_urban_land = Integ(
     depends_on={
         "time": 4,
         "historic_urban_land_density": 4,
-        "target_year_p_urban_land_density": 2,
         "p_urban_land_density": 2,
         "start_year_p_urban_land_density": 3,
+        "target_year_p_urban_land_density": 2,
     },
 )
 def urban_land_density():
@@ -1869,8 +1869,8 @@ def urban_land_density_variation():
     depends_on={
         "time": 1,
         "hist_variation_urban_land": 1,
-        "pop_variation": 1,
         "urban_land_density_variation": 1,
+        "pop_variation": 1,
         "aux_reach_ag_land": 1,
     },
 )

@@ -1,6 +1,6 @@
 """
-Module crops_for_biofuels_also_supply
-Translated using PySD version 3.2.0
+Module environment.land.crops_for_biofuels_also_supply
+Translated using PySD version 3.9.1
 """
 
 
@@ -100,7 +100,7 @@ def annual_shift_from_2gen_to_3gen():
 
 _ext_constant_annual_shift_from_2gen_to_3gen = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "annual_shift_from_second_generation_to_third_generation",
     {},
     _root,
@@ -125,7 +125,7 @@ def biofuel_production_2015():
 
 _ext_constant_biofuel_production_2015 = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "production_of_second_generation_biofuel_2015",
     {},
     _root,
@@ -225,7 +225,7 @@ def historic_produc_biofuels_2gen(x, final_subs=None):
 
 _ext_lookup_historic_produc_biofuels_2gen = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_production_of_second_generation_biofuels",
     {},
@@ -253,7 +253,7 @@ def initial_value_land_compet_biofuels_2gen_ktoe():
 
 _ext_constant_initial_value_land_compet_biofuels_2gen_ktoe = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_production_of_second_generation_biofuels",
     {},
     _root,
@@ -278,6 +278,7 @@ def initial_value_land_compet_biofuels_2gen_mha():
 
 @component.add(
     name="land compet 2gen vs total land compet",
+    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -289,9 +290,9 @@ def land_compet_2gen_vs_total_land_compet():
     """
     Land dedicated to 2nd generation biofuels vs total land competition for biofuels [to prevent stock "Land compet biofuels 2gen Mha" goes negative].
     """
-    return (
-        land_compet_biofuels_2gen_mha()
-        / land_compet_required_dedicated_crops_for_biofuels()
+    return zidz(
+        land_compet_biofuels_2gen_mha(),
+        land_compet_required_dedicated_crops_for_biofuels(),
     )
 
 
@@ -459,11 +460,11 @@ _ext_constant_land_productivity_biofuels_2gen_ej_mha = ExtConstant(
     depends_on={
         "time": 2,
         "start_year_3gen_cellulosic_biofuels": 2,
-        "annual_shift_from_2gen_to_3gen": 1,
-        "biofuels_3gen_land_compet_available": 2,
-        "land_compet_biofuels_3gen_mha": 1,
         "land_compet_2gen_vs_total_land_compet": 2,
+        "biofuels_3gen_land_compet_available": 2,
         "p_biofuels_3gen_land_compet": 1,
+        "annual_shift_from_2gen_to_3gen": 1,
+        "land_compet_biofuels_3gen_mha": 1,
         "land_compet_biofuels_2gen_mha": 1,
     },
 )
@@ -506,7 +507,7 @@ def max_additional_potential_land_for_biofuels_compet():
 
 _ext_constant_max_additional_potential_land_for_biofuels_compet = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "max_additional_pot_land_biofuels",
     {},
     _root,
@@ -569,8 +570,8 @@ def max_peavail_potential_biofuels_land_compet():
     comp_subtype="Normal",
     depends_on={
         "check_liquids": 1,
-        "constrain_liquids_exogenous_growth": 1,
         "land_compet_biofuels_2gen_mha": 2,
+        "constrain_liquids_exogenous_growth": 1,
         "adapt_growth_biofuels_2gen": 1,
         "annual_additional_historic_land_use_biofuels_2gen": 1,
         "biofuels_land_compet_available": 1,
@@ -614,7 +615,7 @@ def p_biofuels_2gen_land_compet():
 
 _ext_constant_p_biofuels_2gen_land_compet = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "p_biofuels_2gen_land_compet_growth",
     {},
     _root,
@@ -639,7 +640,7 @@ def p_biofuels_3gen_land_compet():
 
 _ext_constant_p_biofuels_3gen_land_compet = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "p_biofuels_3gen_land_compet_growth",
     {},
     _root,
@@ -664,7 +665,7 @@ def past_biofuels_2gen():
 
 _ext_constant_past_biofuels_2gen = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "historic_growth_biofuels_second_generation",
     {},
     _root,
@@ -831,7 +832,7 @@ def start_year_3gen_cellulosic_biofuels():
 
 _ext_constant_start_year_3gen_cellulosic_biofuels = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "start_year_3gen_cell_biofuels",
     {},
     _root,

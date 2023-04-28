@@ -1,6 +1,6 @@
 """
-Module ped_from_nonelectric_res
-Translated using PySD version 3.2.0
+Module energy.supply.ped_from_nonelectric_res
+Translated using PySD version 3.9.1
 """
 
 

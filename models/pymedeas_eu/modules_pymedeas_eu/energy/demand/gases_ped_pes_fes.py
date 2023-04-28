@@ -1,6 +1,6 @@
 """
-Module gases_ped_pes_fes
-Translated using PySD version 3.2.0
+Module energy.demand.gases_ped_pes_fes
+Translated using PySD version 3.9.1
 """
 
 
@@ -19,33 +19,6 @@ def abundance_gases():
         ped_gases() < pes_gases(),
         lambda: 1,
         lambda: 1 - zidz(ped_gases() - pes_gases(), ped_gases()),
-    )
-
-
-@component.add(
-    name="adapt max share imports nat gas",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 3,
-        "historic_share_net_imports_nat_gas_until_2016": 3,
-        "max_share_imports_nat_gas": 2,
-    },
-)
-def adapt_max_share_imports_nat_gas():
-    return if_then_else(
-        time() < 2016,
-        lambda: historic_share_net_imports_nat_gas_until_2016(),
-        lambda: if_then_else(
-            time() < 2021,
-            lambda: historic_share_net_imports_nat_gas_until_2016()
-            + (
-                max_share_imports_nat_gas()
-                - historic_share_net_imports_nat_gas_until_2016()
-            )
-            * ((time() - 2016) / (2021 - 2016)),
-            lambda: max_share_imports_nat_gas(),
-        ),
     )
 
 
@@ -117,20 +90,19 @@ _ext_data_historic_conv_nat_gas_domestic_eu_extracted_ej = ExtData(
 
 
 @component.add(
-    name='"Historic net imports nat. gas EU"',
+    name='"Historic share conv. nat gas domestic EU extraction"',
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "ped_nat_gas_ej": 1,
-        "historic_conv_nat_gas_domestic_eu_extracted_ej": 1,
+        "historic_conv_nat_gas_domestic_eu_extracted_ej": 2,
         "historic_unconv_nat_gas_domestic_eu_extracted_ej": 1,
     },
 )
-def historic_net_imports_nat_gas_eu():
-    return (
-        ped_nat_gas_ej()
-        - historic_conv_nat_gas_domestic_eu_extracted_ej()
-        - historic_unconv_nat_gas_domestic_eu_extracted_ej()
+def historic_share_conv_nat_gas_domestic_eu_extraction():
+    return zidz(
+        historic_conv_nat_gas_domestic_eu_extracted_ej(),
+        historic_conv_nat_gas_domestic_eu_extracted_ej()
+        + historic_unconv_nat_gas_domestic_eu_extracted_ej(),
     )
 
 
@@ -163,78 +135,6 @@ _sampleiftrue_historic_share_conv_nat_gas_domestic_eu_extraction_until_2016 = (
         "_sampleiftrue_historic_share_conv_nat_gas_domestic_eu_extraction_until_2016",
     )
 )
-
-
-@component.add(
-    name='"Historic share conv. nat gas domestic EU extraction"',
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "historic_conv_nat_gas_domestic_eu_extracted_ej": 1,
-        "ped_nat_gas_ej": 1,
-    },
-)
-def historic_share_conv_nat_gas_domestic_eu_extraction():
-    return zidz(historic_conv_nat_gas_domestic_eu_extracted_ej(), ped_nat_gas_ej())
-
-
-@component.add(
-    name='"Historic share net imports nat. gas until 2016"',
-    units="Dmnl",
-    comp_type="Stateful",
-    comp_subtype="SampleIfTrue",
-    depends_on={"_sampleiftrue_historic_share_net_imports_nat_gas_until_2016": 1},
-    other_deps={
-        "_sampleiftrue_historic_share_net_imports_nat_gas_until_2016": {
-            "initial": {
-                "historic_net_imports_nat_gas_eu": 1,
-                "extraction_nat_gas_ej_world": 1,
-            },
-            "step": {
-                "time": 1,
-                "extraction_nat_gas_ej_world": 1,
-                "historic_net_imports_nat_gas_eu": 1,
-            },
-        }
-    },
-)
-def historic_share_net_imports_nat_gas_until_2016():
-    return _sampleiftrue_historic_share_net_imports_nat_gas_until_2016()
-
-
-_sampleiftrue_historic_share_net_imports_nat_gas_until_2016 = SampleIfTrue(
-    lambda: time() < 2016,
-    lambda: zidz(historic_net_imports_nat_gas_eu(), extraction_nat_gas_ej_world()),
-    lambda: zidz(historic_net_imports_nat_gas_eu(), extraction_nat_gas_ej_world()),
-    "_sampleiftrue_historic_share_net_imports_nat_gas_until_2016",
-)
-
-
-@component.add(
-    name='"Historic share unconv. nat. gas domestric EU extraction until 2016"',
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"time": 1, "historic_share_unconv_nat_gas_domestric_eu_extraction": 2},
-)
-def historic_share_unconv_nat_gas_domestric_eu_extraction_until_2016():
-    return if_then_else(
-        time() < 2016,
-        lambda: historic_share_unconv_nat_gas_domestric_eu_extraction(),
-        lambda: historic_share_unconv_nat_gas_domestric_eu_extraction(),
-    )
-
-
-@component.add(
-    name='"Historic share unconv. nat. gas domestric EU extraction"',
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "historic_unconv_nat_gas_domestic_eu_extracted_ej": 1,
-        "ped_nat_gas_ej": 1,
-    },
-)
-def historic_share_unconv_nat_gas_domestric_eu_extraction():
-    return zidz(historic_unconv_nat_gas_domestic_eu_extracted_ej(), ped_nat_gas_ej())
 
 
 @component.add(
@@ -284,41 +184,13 @@ def imports_eu_conv_gas_from_row_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "time": 1,
-        "ped_eu_nat_gas_from_row": 5,
-        "extraction_nat_gas_ej_world": 2,
-        "historic_share_net_imports_nat_gas_until_2016": 1,
-        "adapt_max_share_imports_nat_gas": 1,
-        "limit_nat_gas_imports_from_row": 3,
-    },
+    depends_on={"net_gas_flux_eu": 1},
 )
 def imports_eu_nat_gas_from_row_ej():
-    return if_then_else(
-        time() < 2016,
-        lambda: ped_eu_nat_gas_from_row(),
-        lambda: if_then_else(
-            limit_nat_gas_imports_from_row() == 1,
-            lambda: ped_eu_nat_gas_from_row(),
-            lambda: if_then_else(
-                limit_nat_gas_imports_from_row() == 2,
-                lambda: np.minimum(
-                    ped_eu_nat_gas_from_row(),
-                    historic_share_net_imports_nat_gas_until_2016()
-                    * extraction_nat_gas_ej_world(),
-                ),
-                lambda: if_then_else(
-                    limit_nat_gas_imports_from_row() == 3,
-                    lambda: np.minimum(
-                        ped_eu_nat_gas_from_row(),
-                        adapt_max_share_imports_nat_gas()
-                        * extraction_nat_gas_ej_world(),
-                    ),
-                    lambda: ped_eu_nat_gas_from_row(),
-                ),
-            ),
-        ),
-    )
+    """
+    ** Name should be changed as well, because the name does not make evident that we are talking about net imports. net gas flux EU IF THEN ELSE(Time<2016, "PED EU nat. gas from RoW", IF THEN ELSE(limit nat gas imports from RoW=1, "PED EU nat. gas from RoW", IF THEN ELSE (limit nat gas imports from RoW=2, MIN("PED EU nat. gas from RoW","Historic share net imports nat. gas until 2016" *"extraction nat. gas EJ World"), IF THEN ELSE(limit nat gas imports from RoW=3, MIN("PED EU nat. gas from RoW",adapt max share imports nat gas*"extraction nat. gas EJ World"), "PED EU nat. gas from RoW"))))
+    """
+    return net_gas_flux_eu()
 
 
 @component.add(
@@ -335,53 +207,6 @@ def imports_eu_unconv_gas_from_row_ej():
     return imports_eu_nat_gas_from_row_ej() * (
         1 - share_conv_vs_total_gas_extraction_world()
     )
-
-
-@component.add(
-    name="limit nat gas imports from RoW",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_limit_nat_gas_imports_from_row"},
-)
-def limit_nat_gas_imports_from_row():
-    """
-    1: Unlimited coal imports share from RoW (constrained by total global production) 2: Limited imports coal of UE from RoW (at 2016 share of EU imports vs global production) 3: Limited imports coal of UE from Row (user defined)
-    """
-    return _ext_constant_limit_nat_gas_imports_from_row()
-
-
-_ext_constant_limit_nat_gas_imports_from_row = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
-    "limit_nat_gas_imports_from_RoW",
-    {},
-    _root,
-    {},
-    "_ext_constant_limit_nat_gas_imports_from_row",
-)
-
-
-@component.add(
-    name="max share imports nat gas",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_max_share_imports_nat_gas"},
-)
-def max_share_imports_nat_gas():
-    return _ext_constant_max_share_imports_nat_gas()
-
-
-_ext_constant_max_share_imports_nat_gas = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
-    "max_share_imports_nat_gas",
-    {},
-    _root,
-    {},
-    "_ext_constant_max_share_imports_nat_gas",
-)
 
 
 @component.add(
@@ -425,13 +250,13 @@ def pec_nat_gas():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "ped_nat_gas_ej": 1,
+        "ped_domestic_eu_total_natgas_ej": 1,
         "historic_share_conv_nat_gas_domestic_eu_extraction_until_2016": 1,
     },
 )
 def ped_domestic_eu_conv_nat_gas_ej():
     return (
-        ped_nat_gas_ej()
+        ped_domestic_eu_total_natgas_ej()
         * historic_share_conv_nat_gas_domestic_eu_extraction_until_2016()
     )
 
@@ -441,17 +266,13 @@ def ped_domestic_eu_conv_nat_gas_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "ped_nat_gas_ej": 1,
-        "historic_share_unconv_nat_gas_domestric_eu_extraction_until_2016": 1,
-        "historic_share_conv_nat_gas_domestic_eu_extraction_until_2016": 1,
-    },
+    depends_on={"ped_nat_gas_ej": 1, "imports_eu_nat_gas_from_row_ej": 1},
 )
 def ped_domestic_eu_total_natgas_ej():
-    return ped_nat_gas_ej() * (
-        historic_share_conv_nat_gas_domestic_eu_extraction_until_2016()
-        + historic_share_unconv_nat_gas_domestric_eu_extraction_until_2016()
-    )
+    """
+    # "PED nat. gas EJ"*("Historic share conv. nat gas domestic EU extraction until 2016"+"Historic share unconv. nat. gas domestric EU extraction until 2016" )
+    """
+    return np.maximum(0, ped_nat_gas_ej() - imports_eu_nat_gas_from_row_ej())
 
 
 @component.add(
@@ -575,7 +396,7 @@ def share_biogas_in_pes():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_gas_heatnc": 1, "ped_nat_gas_for_gtl_ej": 1, "pes_gases": 1},
+    depends_on={"ped_gas_heatnc": 1, "pes_gases": 1, "ped_nat_gas_for_gtl_ej": 1},
 )
 def share_gases_dem_for_heatnc():
     """
@@ -604,20 +425,6 @@ def share_gases_for_final_energy():
         required_fed_by_gas(),
         ped_gases() - ped_nat_gas_for_gtl_ej() - other_gases_required(),
     )
-
-
-@component.add(
-    name='"share imports EU nat. gas from RoW vs extraction World"',
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"imports_eu_nat_gas_from_row_ej": 1, "extraction_nat_gas_ej_world": 1},
-)
-def share_imports_eu_nat_gas_from_row_vs_extraction_world():
-    """
-    Share of EU natural gas imports vs global natural gas extraction.
-    """
-    return zidz(imports_eu_nat_gas_from_row_ej(), extraction_nat_gas_ej_world())
 
 
 @component.add(
@@ -654,6 +461,80 @@ def share_nat_gas_dem_for_heatcom():
         lambda: ped_gases_for_heat_plants_ej() / ped_nat_gas_ej(),
         lambda: 0,
     )
+
+
+@component.add(
+    name="share nat gas for Elec emissions relevant",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "pe_demand_gas_elec_plants_ej": 1,
+        "ped_gas_for_chp_plants_ej": 1,
+        "share_elec_gen_in_chp_nat_gas": 1,
+        "ped_nat_gas_ej": 1,
+    },
+)
+def share_nat_gas_for_elec_emissions_relevant():
+    return (
+        pe_demand_gas_elec_plants_ej()
+        + ped_gas_for_chp_plants_ej() * share_elec_gen_in_chp_nat_gas()
+    ) / ped_nat_gas_ej()
+
+
+@component.add(
+    name="share nat gas for FC emissions relevant",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
+        "ped_nat_gas_ej": 1,
+        "share_nat_gas_for_elec_emissions_relevant": 1,
+        "share_nat_gas_for_gtl_emissions_relevant": 1,
+        "share_nat_gas_for_heat_emissions_relevant": 1,
+    },
+)
+def share_nat_gas_for_fc_emissions_relevant():
+    return (
+        1
+        - float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"]) / ped_nat_gas_ej()
+        - share_nat_gas_for_elec_emissions_relevant()
+        - share_nat_gas_for_gtl_emissions_relevant()
+        - share_nat_gas_for_heat_emissions_relevant()
+    )
+
+
+@component.add(
+    name="share nat gas for GTL emissions relevant",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"ped_nat_gas_for_gtl_ej": 1, "ped_nat_gas_ej": 1},
+)
+def share_nat_gas_for_gtl_emissions_relevant():
+    return ped_nat_gas_for_gtl_ej() / ped_nat_gas_ej()
+
+
+@component.add(
+    name="share nat gas for Heat emissions relevant",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "ped_gases_for_heat_plants_ej": 1,
+        "ped_gas_heatnc": 1,
+        "ped_gas_for_chp_plants_ej": 1,
+        "share_elec_gen_in_chp_nat_gas": 1,
+        "ped_nat_gas_ej": 1,
+    },
+)
+def share_nat_gas_for_heat_emissions_relevant():
+    return (
+        ped_gases_for_heat_plants_ej()
+        + ped_gas_heatnc()
+        + ped_gas_for_chp_plants_ej() * (1 - share_elec_gen_in_chp_nat_gas())
+    ) / ped_nat_gas_ej()
 
 
 @component.add(

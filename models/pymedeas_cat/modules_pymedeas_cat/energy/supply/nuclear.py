@@ -1,6 +1,6 @@
 """
-Module nuclear
-Translated using PySD version 3.2.0
+Module energy.supply.nuclear
+Translated using PySD version 3.9.1
 """
 
 
@@ -45,7 +45,7 @@ def cp_nuclear_initial():
 
 _ext_constant_cp_nuclear_initial = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "cp_initial_nuclear",
     {},
     _root,
@@ -60,7 +60,7 @@ _ext_constant_cp_nuclear_initial = ExtConstant(
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "extraction_uranium_ej_aut": 1,
+        "extraction_uranium_ej_cat": 1,
         "extraction_uranium_row": 1,
         "abundance_uranium": 2,
     },
@@ -70,7 +70,7 @@ def effects_shortage_uranium():
     The eventual scarcity of coal would likely constrain the development of CTL. The proposed relationship avoids an abrupt limitation by introducing a range (1;0.8) in the gas abundance that constrains the development of CTL.
     """
     return if_then_else(
-        extraction_uranium_ej_aut() + extraction_uranium_row() == 0,
+        extraction_uranium_ej_cat() + extraction_uranium_row() == 0,
         lambda: 0,
         lambda: if_then_else(
             abundance_uranium() > 0.8,
@@ -124,7 +124,7 @@ def historic_nuclear_generation_twh(x, final_subs=None):
 
 _ext_lookup_historic_nuclear_generation_twh = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_nuclear_generation",
     {},
@@ -177,7 +177,7 @@ def initial_gen_nuclear():
 
 _ext_constant_initial_gen_nuclear = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_nuclear_generation",
     {},
     _root,
@@ -330,7 +330,7 @@ def min_cp_nuclear():
 
 _ext_constant_min_cp_nuclear = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "minimum_cp_nuclear",
     {},
     _root,
@@ -360,9 +360,9 @@ def new_nuclear_capacity_under_planning():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "p_nuclear_elec_gen": 1,
-        "demand_elec_nre_twh": 1,
         "installed_capacity_nuclear_tw": 1,
+        "demand_elec_nre_twh": 1,
+        "p_nuclear_elec_gen": 1,
         "effects_shortage_uranium": 1,
         "cp_limit_nuclear": 1,
     },
@@ -396,10 +396,10 @@ def new_required_capacity_nuclear():
     comp_subtype="Normal",
     depends_on={
         "selection_of_nuclear_scenario": 1,
-        "start_year_nuclear_growth_scen34": 1,
         "time": 1,
-        "installed_capacity_nuclear_tw": 1,
+        "start_year_nuclear_growth_scen34": 1,
         "p_nuclear_scen34": 1,
+        "installed_capacity_nuclear_tw": 1,
     },
 )
 def nuclear_capacity_phaseout():
@@ -424,9 +424,9 @@ def nuclear_capacity_phaseout():
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "twe_per_twh": 1,
-        "cp_nuclear": 1,
         "historic_nuclear_generation_twh": 2,
+        "cp_nuclear": 1,
+        "twe_per_twh": 1,
         "planned_nuclear_capacity_tw": 1,
         "time_construction_nuclear": 1,
     },
@@ -478,8 +478,8 @@ def nuclear_overcapacity():
     comp_subtype="Normal",
     depends_on={
         "selection_of_nuclear_scenario": 4,
-        "start_year_nuclear_growth_scen34": 1,
         "time": 1,
+        "start_year_nuclear_growth_scen34": 1,
         "p_nuclear_scen34": 1,
     },
 )
@@ -526,7 +526,7 @@ def p_nuclear_scen34():
 
 _ext_constant_p_nuclear_scen34 = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "p_nuclear_scen3_4_variation",
     {},
     _root,
@@ -536,7 +536,7 @@ _ext_constant_p_nuclear_scen34 = ExtConstant(
 
 
 @component.add(
-    name="PE demand uranium AUT EJ",
+    name="PE demand uranium CAT EJ",
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -546,7 +546,7 @@ _ext_constant_p_nuclear_scen34 = ExtConstant(
         "efficiency_uranium_for_electricity": 1,
     },
 )
-def pe_demand_uranium_aut_ej():
+def pe_demand_uranium_cat_ej():
     """
     Primary energy demand of uranium for nuclear power generation.
     """
@@ -620,10 +620,10 @@ def potential_generation_nuclear_elec_twh():
     depends_on={
         "time": 1,
         "nuclear_capacity_under_construction": 1,
-        "replacement_rate_nuclear": 1,
-        "nuclear_overcapacity": 1,
-        "wear_nuclear": 1,
         "selection_of_nuclear_scenario": 2,
+        "replacement_rate_nuclear": 1,
+        "wear_nuclear": 1,
+        "nuclear_overcapacity": 1,
         "cp_limit_nuclear": 1,
     },
 )
@@ -722,7 +722,7 @@ def selection_of_nuclear_scenario():
 
 _ext_constant_selection_of_nuclear_scenario = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "select_nuclear_scen",
     {},
     _root,
@@ -747,7 +747,7 @@ def start_year_nuclear_growth_scen34():
 
 _ext_constant_start_year_nuclear_growth_scen34 = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "start_year_nuclear_variation_scen3_4",
     {},
     _root,
@@ -824,7 +824,7 @@ def twe_per_twh():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "life_time_nuclear": 1, "installed_capacity_nuclear_tw": 1},
+    depends_on={"time": 1, "installed_capacity_nuclear_tw": 1, "life_time_nuclear": 1},
 )
 def wear_nuclear():
     """

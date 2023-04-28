@@ -1,7 +1,24 @@
 """
-Module traditional_biomass
-Translated using PySD version 3.2.0
+Module energy.supply.traditional_biomass
+Translated using PySD version 3.9.1
 """
+
+
+@component.add(
+    name="modern BioE in households",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "households_final_energy_demand": 1,
+        "pe_traditional_biomass_consum_ej": 1,
+    },
+)
+def modern_bioe_in_households():
+    return (
+        float(households_final_energy_demand().loc["solids"])
+        - pe_traditional_biomass_consum_ej()
+    )
 
 
 @component.add(
@@ -40,7 +57,7 @@ def pe_consumption_trad_biomass_ref():
 
 _ext_constant_pe_consumption_trad_biomass_ref = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "pe_consumption_trad_biomass_ref",
     {},
     _root,
@@ -128,7 +145,7 @@ def people_relying_trad_biomass_ref():
 
 _ext_constant_people_relying_trad_biomass_ref = ExtConstant(
     "../parameters.xlsx",
-    "Austria",
+    "Catalonia",
     "people_relying_on_traditional_biomass",
     {},
     _root,
@@ -200,7 +217,7 @@ def share_trad_biomass_vs_solids_in_households():
 
 _ext_constant_share_trad_biomass_vs_solids_in_households = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "share_trad_biomass_vs_solids_in_households",
     {},
     _root,

@@ -1,6 +1,6 @@
 """
-Module medeas_w
-Translated using PySD version 3.2.0
+Module boundary_variables.medeas_w
+Translated using PySD version 3.9.1
 """
 
 
@@ -295,9 +295,6 @@ def real_demand_world():
     depends_on={"time": 1, "__data__": "_data_real_final_energy_by_sector_and_fuel"},
 )
 def real_final_energy_by_sector_and_fuel():
-    """
-    Real final energy consumed by sector and fuel. Source: global model.
-    """
     return _data_real_final_energy_by_sector_and_fuel(time())
 
 
@@ -306,7 +303,7 @@ _data_real_final_energy_by_sector_and_fuel = TabData(
     "real_final_energy_by_sector_and_fuel",
     {
         "final sources": _subscript_dict["final sources"],
-        "sectors": _subscript_dict["sectors"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
     },
     "interpolate",
 )

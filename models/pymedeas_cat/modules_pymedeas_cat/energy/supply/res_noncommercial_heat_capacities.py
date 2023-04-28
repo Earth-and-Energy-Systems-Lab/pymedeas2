@@ -1,6 +1,6 @@
 """
-Module res_noncommercial_heat_capacities
-Translated using PySD version 3.2.0
+Module energy.supply.res_noncommercial_heat_capacities
+Translated using PySD version 3.9.1
 """
 
 
@@ -48,8 +48,8 @@ def abundance_res_heatnc2():
     depends_on={
         "time": 4,
         "past_res_growth_for_heatnc": 4,
-        "target_year_p_growth_res_heat": 2,
         "start_year_p_growth_res_heat": 3,
+        "target_year_p_growth_res_heat": 2,
         "p_res_for_heat": 2,
     },
 )
@@ -101,7 +101,7 @@ def cpini_res_for_heat():
 
 _ext_constant_cpini_res_for_heat = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "cp_initial_res_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
@@ -161,7 +161,7 @@ def historic_res_capacity_for_heatnc(x, final_subs=None):
 
 _ext_lookup_historic_res_capacity_for_heatnc = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_res_capacity_for_heat_non_commercial",
     {"RES heat": _subscript_dict["RES heat"]},
@@ -188,7 +188,7 @@ def initial_value_res_for_heatnc():
 
 _ext_constant_initial_value_res_for_heatnc = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_res_capacity_for_heat_non_commercial*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
@@ -240,8 +240,8 @@ _integ_installed_capacity_res_heatnc_tw = Integ(
     depends_on={
         "time": 3,
         "historic_res_capacity_for_heatnc": 2,
-        "adapt_growth_res_for_heatnc": 1,
         "installed_capacity_res_heatnc_tw": 1,
+        "adapt_growth_res_for_heatnc": 1,
         "remaining_potential_constraint_on_new_res_heat_capacity": 1,
         "abundance_res_heatnc2": 1,
     },
@@ -280,7 +280,7 @@ def past_res_growth_for_heatnc():
 
 _ext_constant_past_res_growth_for_heatnc = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "historic_growth_res_for_heat_nc*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
@@ -389,31 +389,6 @@ def potential_fes_tot_res_for_heatnc_ej():
 
 
 @component.add(
-    name='"replacement RES for heat-nc TW"',
-    units="TW/Year",
-    subscripts=["RES heat"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "wear_res_capacity_for_heatnc_tw": 1,
-        "replacement_res_for_heatnc": 1,
-        "res_heatnc_tot_overcapacity": 1,
-        "shortage_bioe_for_heat": 1,
-    },
-)
-def replacement_res_for_heatnc_tw():
-    """
-    Annual replacement of RES for non-commercial heat by technology.
-    """
-    return (
-        wear_res_capacity_for_heatnc_tw()
-        * replacement_res_for_heatnc()
-        * (1 - res_heatnc_tot_overcapacity())
-        * shortage_bioe_for_heat() ** 2
-    )
-
-
-@component.add(
     name='"replacement RES for heat-nc"',
     units="Dmnl",
     subscripts=["RES heat"],
@@ -437,6 +412,31 @@ _ext_constant_replacement_res_for_heatnc = ExtConstant(
     {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_replacement_res_for_heatnc",
 )
+
+
+@component.add(
+    name='"replacement RES for heat-nc TW"',
+    units="TW/Year",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "wear_res_capacity_for_heatnc_tw": 1,
+        "replacement_res_for_heatnc": 1,
+        "res_heatnc_tot_overcapacity": 1,
+        "shortage_bioe_for_heat": 1,
+    },
+)
+def replacement_res_for_heatnc_tw():
+    """
+    Annual replacement of RES for non-commercial heat by technology.
+    """
+    return (
+        wear_res_capacity_for_heatnc_tw()
+        * replacement_res_for_heatnc()
+        * (1 - res_heatnc_tot_overcapacity())
+        * shortage_bioe_for_heat() ** 2
+    )
 
 
 @component.add(

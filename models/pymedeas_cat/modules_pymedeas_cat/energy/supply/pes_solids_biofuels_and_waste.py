@@ -1,6 +1,6 @@
 """
-Module pes_solids_biofuels_and_waste
-Translated using PySD version 3.2.0
+Module energy.supply.pes_solids_biofuels_and_waste
+Translated using PySD version 3.9.1
 """
 
 
@@ -24,7 +24,7 @@ def losses_in_charcoal_plants_ej():
 
 _ext_data_losses_in_charcoal_plants_ej = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_efficiencies",
     "historic_losses_charcoal_plants",
     "interpolate",
@@ -36,20 +36,6 @@ _ext_data_losses_in_charcoal_plants_ej = ExtData(
 
 
 @component.add(
-    name='"PES solids bioE & waste EJ"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"pes_solids_bioe_ej": 1, "pes_waste_ej": 1},
-)
-def pes_solids_bioe_waste_ej():
-    """
-    Total primary energy supply solids biofuels and waste.
-    """
-    return pes_solids_bioe_ej() - pes_waste_ej()
-
-
-@component.add(
     name="PES solids bioE EJ",
     units="EJ/Year",
     comp_type="Auxiliary",
@@ -58,8 +44,8 @@ def pes_solids_bioe_waste_ej():
         "losses_in_charcoal_plants_ej": 1,
         "pe_real_generation_res_elec": 1,
         "pe_traditional_biomass_ej_delayed_1yr": 1,
-        "modern_solids_bioe_demand_households": 1,
         "pes_res_for_heat_by_techn": 1,
+        "fes_biomass": 1,
     },
 )
 def pes_solids_bioe_ej():
@@ -70,9 +56,23 @@ def pes_solids_bioe_ej():
         losses_in_charcoal_plants_ej()
         + float(pe_real_generation_res_elec().loc["solid bioE elec"])
         + pe_traditional_biomass_ej_delayed_1yr()
-        + modern_solids_bioe_demand_households()
         + float(pes_res_for_heat_by_techn().loc["solid bioE heat"])
+        + fes_biomass()
     )
+
+
+@component.add(
+    name='"PES solids bioE & waste EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pes_solids_bioe_ej": 1, "pes_waste": 1},
+)
+def pes_solids_bioe_waste_ej():
+    """
+    Total primary energy supply solids biofuels and waste.
+    """
+    return pes_solids_bioe_ej() - pes_waste()
 
 
 @component.add(
@@ -83,7 +83,7 @@ def pes_solids_bioe_ej():
     depends_on={
         "pe_real_generation_res_elec": 1,
         "pes_res_for_heat_by_techn": 1,
-        "modern_solids_bioe_demand_households": 1,
+        "fes_biomass": 1,
     },
 )
 def solid_bioe_emissions_relevant_ej():
@@ -93,5 +93,5 @@ def solid_bioe_emissions_relevant_ej():
     return (
         float(pe_real_generation_res_elec().loc["solid bioE elec"])
         + float(pes_res_for_heat_by_techn().loc["solid bioE heat"])
-        + modern_solids_bioe_demand_households()
+        + fes_biomass()
     )

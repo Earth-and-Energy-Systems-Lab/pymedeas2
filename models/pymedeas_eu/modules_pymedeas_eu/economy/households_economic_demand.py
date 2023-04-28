@@ -1,6 +1,6 @@
 """
-Module households_economic_demand
-Translated using PySD version 3.2.0
+Module economy.households_economic_demand
+Translated using PySD version 3.9.1
 """
 
 
@@ -116,7 +116,7 @@ _integ_household_demand = Integ(
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "real_household_demand_by_sector": 1, "household_demand": 1},
+    depends_on={"time": 1, "household_demand": 1, "real_household_demand_by_sector": 1},
 )
 def household_demand_not_covered():
     """
@@ -181,10 +181,10 @@ def variation_historic_demand():
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "variation_lc": 1,
-        "lc": 2,
-        "beta_0_hd": 1,
         "beta_1_hd": 2,
+        "variation_lc": 1,
+        "beta_0_hd": 1,
+        "lc": 2,
     },
 )
 def variation_household_demand():

@@ -1,6 +1,6 @@
 """
-Module res_employment
-Translated using PySD version 3.2.0
+Module society.res_employment
+Translated using PySD version 3.9.1
 """
 
 
@@ -410,13 +410,13 @@ def total_di_jobs_res_heat_per_techn():
     units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"employment_factor_biofuels": 1, "fes_total_biofuels_production_ej": 1},
+    depends_on={"employment_factor_biofuels": 1, "fes_total_biofuels_ej": 1},
 )
 def total_jobs_biofuels():
     """
     Total (direct+indirect) jobs biofuels.
     """
-    return employment_factor_biofuels() * fes_total_biofuels_production_ej()
+    return employment_factor_biofuels() * fes_total_biofuels_ej()
 
 
 @component.add(

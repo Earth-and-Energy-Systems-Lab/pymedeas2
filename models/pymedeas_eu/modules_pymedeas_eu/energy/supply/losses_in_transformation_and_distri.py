@@ -1,6 +1,6 @@
 """
-Module losses_in_transformation_and_distri
-Translated using PySD version 3.2.0
+Module energy.supply.losses_in_transformation_and_distri
+Translated using PySD version 3.9.1
 """
 
 
@@ -105,7 +105,7 @@ _ext_data_historic_share_of_losses_vs_extraction = ExtData(
     None,
     {"final sources": ["liquids"]},
     _root,
-    {"final sources": ["liquids", "solids", "gases"]},
+    {"final sources": _subscript_dict["final sources"]},
     "_ext_data_historic_share_of_losses_vs_extraction",
 )
 
@@ -155,7 +155,7 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction = ExtData(
     None,
     {"final sources": ["liquids"]},
     _root,
-    {"final sources": ["liquids", "solids"]},
+    {"final sources": _subscript_dict["final sources"]},
     "_ext_data_historic_share_of_transformation_losses_vs_extraction",
 )
 
@@ -174,7 +174,7 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction.add(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "fec_gasesliquids": 1, "historic_pipeline_transport": 1},
+    depends_on={"time": 2, "historic_pipeline_transport": 1, "fec_gasesliquids": 1},
 )
 def historic_share_pipeline_transport():
     """
@@ -196,7 +196,7 @@ def historic_share_pipeline_transport():
     depends_on={
         "pes_total_oil_ej_eu": 1,
         "imports_eu_total_oil_from_row_ej": 1,
-        "extraction_coal_ej_eu": 1,
+        "extraction_coal_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
         "imports_eu_nat_gas_from_row_ej": 1,
         "pes_nat_gas_eu": 1,
@@ -210,7 +210,7 @@ def pes_fossil_fuel_extraction():
         np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     value.loc[["liquids"]] = pes_total_oil_ej_eu() + imports_eu_total_oil_from_row_ej()
-    value.loc[["solids"]] = extraction_coal_ej_eu() + imports_eu_coal_from_row_ej()
+    value.loc[["solids"]] = extraction_coal_eu() + imports_eu_coal_from_row_ej()
     value.loc[["gases"]] = pes_nat_gas_eu() + imports_eu_nat_gas_from_row_ej()
     return value
 

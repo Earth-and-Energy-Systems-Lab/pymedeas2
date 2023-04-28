@@ -1,6 +1,6 @@
 """
-Module transport_energy_demand
-Translated using PySD version 3.2.0
+Module transport.transport_energy_demand
+Translated using PySD version 3.9.1
 """
 
 
@@ -96,7 +96,7 @@ def share_demand_solids_in_transport():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "required_final_energy_by_sector_and_fuel_aut": 1,
+        "required_final_energy_by_sector_and_fuel_cat": 1,
         "transport_fraction": 1,
         "transport_households_final_energy_demand": 1,
     },
@@ -107,7 +107,7 @@ def total_transport_fed_by_fuel():
     """
     return (
         sum(
-            required_final_energy_by_sector_and_fuel_aut().rename(
+            required_final_energy_by_sector_and_fuel_cat().rename(
                 {"sectors": "sectors!"}
             )
             * transport_fraction().rename({"sectors": "sectors!"}),
@@ -162,7 +162,7 @@ def transport_tfed():
     units="EJ/Tdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"transport_tfed": 1, "gdp_aut": 1},
+    depends_on={"transport_tfed": 1, "gdp_cat": 1},
 )
 def transport_tfed_energy_intensity():
-    return zidz(transport_tfed(), gdp_aut())
+    return zidz(transport_tfed(), gdp_cat())

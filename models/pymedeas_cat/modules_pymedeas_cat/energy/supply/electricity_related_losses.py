@@ -1,6 +1,6 @@
 """
-Module electricity_related_losses
-Translated using PySD version 3.2.0
+Module energy.supply.electricity_related_losses
+Translated using PySD version 3.9.1
 """
 
 
@@ -47,48 +47,25 @@ def pe_losses_biogas_for_elec():
 
 
 @component.add(
-    name="PE losses coal for Elec EJ",
+    name="PE losses FF for Elec EJ",
     units="EJ/Year",
+    subscripts=["fossil fuels"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "extraction_coal_aut": 1,
-        "imports_aut_coal_from_row_ej": 1,
-        "share_coal_dem_for_elec": 1,
-        "efficiency_coal_for_electricity": 1,
+        "gen_losses_demand_for_chp_plants_ej": 1,
+        "share_efficiency_ff_for_elec_in_chp_plants": 1,
+        "gen_losses_demand_for_ff_elec_plants_ej": 1,
     },
 )
-def pe_losses_coal_for_elec_ej():
+def pe_losses_ff_for_elec_ej():
     """
-    (Primary) Energy losses in the generation of electricity in coal power centrals.
-    """
-    return (
-        (extraction_coal_aut() + imports_aut_coal_from_row_ej())
-        * share_coal_dem_for_elec()
-        * (1 - efficiency_coal_for_electricity())
-    )
-
-
-@component.add(
-    name="PE losses conv gas for Elec EJ",
-    units="EJ/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "real_extraction_conv_gas_ej": 1,
-        "imports_aut_conv_gas_from_row_ej": 1,
-        "share_nat_gas_dem_for_elec": 1,
-        "efficiency_gas_for_electricity": 1,
-    },
-)
-def pe_losses_conv_gas_for_elec_ej():
-    """
-    (Primary) Energy losses in the generation of electricity in gas power centrals.
+    Primary energy losses related with oil for electricity generation.
     """
     return (
-        (real_extraction_conv_gas_ej() + imports_aut_conv_gas_from_row_ej())
-        * share_nat_gas_dem_for_elec()
-        * (1 - efficiency_gas_for_electricity())
+        gen_losses_demand_for_chp_plants_ej()
+        * share_efficiency_ff_for_elec_in_chp_plants()
+        + gen_losses_demand_for_ff_elec_plants_ej()
     )
 
 
@@ -97,47 +74,18 @@ def pe_losses_conv_gas_for_elec_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "pe_losses_coal_for_elec_ej": 1,
-        "pe_losses_conv_gas_for_elec_ej": 1,
-        "pe_losses_oil_for_elec_ej": 1,
-        "pe_losses_uncon_gas_for_elec_ej": 1,
-        "pe_losses_uranium_for_elec_ej": 1,
-    },
+    depends_on={"pe_losses_ff_for_elec_ej": 1, "pe_losses_uranium_for_elec_ej": 1},
 )
 def pe_losses_nre_elec_generation():
     """
     Losses for electricity generation from non-renewable energy resources.
     """
     return (
-        pe_losses_coal_for_elec_ej()
-        + pe_losses_conv_gas_for_elec_ej()
-        + pe_losses_oil_for_elec_ej()
-        + pe_losses_uncon_gas_for_elec_ej()
+        sum(
+            pe_losses_ff_for_elec_ej().rename({"fossil fuels": "fossil fuels!"}),
+            dim=["fossil fuels!"],
+        )
         + pe_losses_uranium_for_elec_ej()
-    )
-
-
-@component.add(
-    name="PE losses oil for Elec EJ",
-    units="EJ/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "pes_total_oil_ej_aut": 1,
-        "imports_aut_total_oil_from_row_ej": 1,
-        "share_oil_dem_for_elec": 1,
-        "efficiency_liquids_for_electricity": 1,
-    },
-)
-def pe_losses_oil_for_elec_ej():
-    """
-    Primary energy losses related with oil for electricity generation.
-    """
-    return (
-        (pes_total_oil_ej_aut() + imports_aut_total_oil_from_row_ej())
-        * share_oil_dem_for_elec()
-        * (1 - efficiency_liquids_for_electricity())
     )
 
 
@@ -161,35 +109,12 @@ def pe_losses_res_for_elec():
 
 
 @component.add(
-    name="PE losses uncon gas for Elec EJ",
-    units="EJ/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "real_extraction_unconv_gas_ej": 1,
-        "imports_aut_unconv_gas_from_row_ej": 1,
-        "share_nat_gas_dem_for_elec": 1,
-        "efficiency_gas_for_electricity": 1,
-    },
-)
-def pe_losses_uncon_gas_for_elec_ej():
-    """
-    (Primary) Energy losses in the generation of electricity in gas power centrals.
-    """
-    return (
-        (real_extraction_unconv_gas_ej() + imports_aut_unconv_gas_from_row_ej())
-        * share_nat_gas_dem_for_elec()
-        * (1 - efficiency_gas_for_electricity())
-    )
-
-
-@component.add(
     name="PE losses uranium for Elec EJ",
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "extraction_uranium_ej_aut": 1,
+        "extraction_uranium_ej_cat": 1,
         "extraction_uranium_row": 1,
         "efficiency_uranium_for_electricity": 1,
     },
@@ -198,7 +123,7 @@ def pe_losses_uranium_for_elec_ej():
     """
     (Primary) Energy losses in the generation of electricity in nuclear power centrals.
     """
-    return (extraction_uranium_ej_aut() + extraction_uranium_row()) * (
+    return (extraction_uranium_ej_cat() + extraction_uranium_row()) * (
         1 - efficiency_uranium_for_electricity()
     )
 
@@ -222,14 +147,14 @@ def pe_losses_waste_for_elec():
     depends_on={
         "total_fe_elec_demand_ej": 1,
         "elec_gen_related_losses_ej": 1,
-        "gdp_aut": 1,
+        "gdp_cat": 1,
     },
 )
 def real_ped_intensity_of_electricity():
     """
     Primary energy demand intensity of the electricity sector. Note that the parameter "'a' I-ELEC projection" refers to final energy while here we refer to primary energy. The "real PED intensity of electricity" may thus decrease with the penetration of RES in the electricity generation (see "share RES vs NRE electricity generation").
     """
-    return zidz(total_fe_elec_demand_ej() + elec_gen_related_losses_ej(), gdp_aut())
+    return zidz(total_fe_elec_demand_ej() + elec_gen_related_losses_ej(), gdp_cat())
 
 
 @component.add(

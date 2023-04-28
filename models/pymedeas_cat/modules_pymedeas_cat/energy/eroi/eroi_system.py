@@ -1,6 +1,6 @@
 """
-Module eroi_system
-Translated using PySD version 3.2.0
+Module energy.eroi.eroi_system
+Translated using PySD version 3.9.1
 """
 
 
@@ -47,8 +47,8 @@ def fe_tot_generation_all_res_elec_ej():
     comp_subtype="Normal",
     depends_on={
         "share_e_industry_ownuse_vs_tfec_in_2015": 1,
-        "fe_tot_generation_all_res_elec_ej": 1,
         "real_tfec": 1,
+        "fe_tot_generation_all_res_elec_ej": 1,
         "total_dyn_fei_res": 1,
     },
 )
@@ -82,7 +82,7 @@ def historic_energy_industry_ownuse(x, final_subs=None):
 
 _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_energy_industry_own_use",
     {},
@@ -99,9 +99,9 @@ _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "fe_tot_generation_all_res_elec_ej": 1,
-        "historic_energy_industry_ownuse": 1,
         "real_tfec": 1,
+        "historic_energy_industry_ownuse": 1,
+        "fe_tot_generation_all_res_elec_ej": 1,
     },
 )
 def historic_share_e_industry_ownuse_vs_tfec():

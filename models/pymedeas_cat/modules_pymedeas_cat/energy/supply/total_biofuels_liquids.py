@@ -1,6 +1,6 @@
 """
-Module total_biofuels_liquids
-Translated using PySD version 3.2.0
+Module energy.supply.total_biofuels_liquids
+Translated using PySD version 3.9.1
 """
 
 
@@ -22,7 +22,54 @@ def additional_pe_production_of_bioenergy_for_biofuels():
 
 
 @component.add(
-    name="FES total biofuels production EJ",
+    name="exports biofuels",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "historic_exports_biofuels": 1,
+        "exports_biofuels_policy": 1,
+    },
+)
+def exports_biofuels():
+    return if_then_else(
+        time() < 2015,
+        lambda: historic_exports_biofuels(),
+        lambda: exports_biofuels_policy(),
+    )
+
+
+@component.add(
+    name="exports biofuels policy",
+    units="EJ",
+    comp_type="Data",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_exports_biofuels_policy",
+        "__data__": "_ext_data_exports_biofuels_policy",
+        "time": 1,
+    },
+)
+def exports_biofuels_policy():
+    return _ext_data_exports_biofuels_policy(time())
+
+
+_ext_data_exports_biofuels_policy = ExtData(
+    "../../scenarios/scen_cat.xlsx",
+    "NZP",
+    "year_RES_power",
+    "biofuels_exports",
+    None,
+    {},
+    _root,
+    {},
+    "_ext_data_exports_biofuels_policy",
+)
+
+
+@component.add(
+    name="FES total biofuels EJ",
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -30,31 +77,33 @@ def additional_pe_production_of_bioenergy_for_biofuels():
         "peavail_tot_biofuels_land_compet_ej": 1,
         "peavail_biofuels_land_marg_ej": 1,
         "peavail_cellulosic_biofuel_ej": 1,
+        "exports_biofuels": 1,
     },
 )
-def fes_total_biofuels_production_ej():
+def fes_total_biofuels_ej():
     """
-    Final energy supply total biofuels liquids production. Equivalent to "FES total biofuels production EJ 2" but obtained disaggregately.
+    Final energy supply total biofuels liquids production and imports/exports. Equivalent to "FES total biofuels production EJ 2" but obtained disaggregately.
     """
     return (
         peavail_tot_biofuels_land_compet_ej()
         + peavail_biofuels_land_marg_ej()
         + peavail_cellulosic_biofuel_ej()
+        - exports_biofuels()
     )
 
 
 @component.add(
-    name="FES total biofuels production EJ 2",
+    name="FES total biofuels production EJ",
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_liquids_ej": 1, "potential_peavail_total_biofuels": 1},
+    depends_on={"ped_liquids": 1, "potential_peavail_total_biofuels": 1},
 )
-def fes_total_biofuels_production_ej_2():
+def fes_total_biofuels_production_ej():
     """
     Final energy supply total biofuels liquids production. Equivalent to "FES total biofuels production EJ" but obtained aggregately to estimate the "share biofuels overcapacity".
     """
-    return np.minimum(ped_liquids_ej(), potential_peavail_total_biofuels())
+    return np.minimum(ped_liquids(), potential_peavail_total_biofuels())
 
 
 @component.add(
@@ -62,13 +111,44 @@ def fes_total_biofuels_production_ej_2():
     units="Mb/d",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"fes_total_biofuels_production_ej": 1, "mbd_per_ejyear": 1},
+    depends_on={"fes_total_biofuels_ej": 1, "mbd_per_ejyear": 1},
 )
 def fes_total_biofuels_production_mbd():
     """
     Final energy supply total biofuels liquids production.
     """
-    return fes_total_biofuels_production_ej() * mbd_per_ejyear()
+    return fes_total_biofuels_ej() * mbd_per_ejyear()
+
+
+@component.add(
+    name="Historic exports biofuels",
+    units="EJ",
+    comp_type="Data",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_historic_exports_biofuels",
+        "__data__": "_ext_data_historic_exports_biofuels",
+        "time": 1,
+    },
+)
+def historic_exports_biofuels():
+    """
+    Exports if >0, else imports
+    """
+    return _ext_data_historic_exports_biofuels(time())
+
+
+_ext_data_historic_exports_biofuels = ExtData(
+    "../energy.xlsx",
+    "Catalonia",
+    "time_historic_data",
+    "biofuels_hist_exports",
+    "interpolate",
+    {},
+    _root,
+    {},
+    "_ext_data_historic_exports_biofuels",
+)
 
 
 @component.add(
@@ -98,13 +178,13 @@ def max_peavail_biofuels_potential():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"fes_total_biofuels_production_ej": 1},
+    depends_on={"fes_total_biofuels_ej": 1},
 )
 def oil_liquids_saved_by_biofuels_ej():
     """
     Oil liquids saved by biofuels.
     """
-    return fes_total_biofuels_production_ej()
+    return fes_total_biofuels_ej()
 
 
 @component.add(
@@ -155,18 +235,15 @@ def potential_peavail_total_biofuels():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "max_peavail_biofuels_potential": 3,
-        "fes_total_biofuels_production_ej": 2,
-    },
+    depends_on={"max_peavail_biofuels_potential": 3, "fes_total_biofuels_ej": 2},
 )
 def remaining_potential_biofuels():
     """
     Remaining potential available as a fraction of unity.
     """
     return if_then_else(
-        max_peavail_biofuels_potential() > fes_total_biofuels_production_ej(),
-        lambda: (max_peavail_biofuels_potential() - fes_total_biofuels_production_ej())
+        max_peavail_biofuels_potential() > fes_total_biofuels_ej(),
+        lambda: (max_peavail_biofuels_potential() - fes_total_biofuels_ej())
         / max_peavail_biofuels_potential(),
         lambda: 0,
     )
@@ -179,11 +256,11 @@ def remaining_potential_biofuels():
     comp_subtype="Normal",
     depends_on={
         "potential_peavail_total_biofuels": 2,
-        "fes_total_biofuels_production_ej_2": 1,
+        "fes_total_biofuels_production_ej": 1,
     },
 )
 def share_biofuels_overcapacity():
     return zidz(
-        potential_peavail_total_biofuels() - fes_total_biofuels_production_ej_2(),
+        potential_peavail_total_biofuels() - fes_total_biofuels_production_ej(),
         potential_peavail_total_biofuels(),
     )

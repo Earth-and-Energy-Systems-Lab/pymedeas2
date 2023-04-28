@@ -1,6 +1,6 @@
 """
-Module traditional_biomass
-Translated using PySD version 3.2.0
+Module energy.supply.traditional_biomass
+Translated using PySD version 3.9.1
 """
 
 
@@ -81,31 +81,31 @@ def pe_traditional_biomass_demand_ej():
 
 
 @component.add(
-    name="PE traditional biomass EJ delayed 1yr",
+    name="PE traditional biomass EJ delayed",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
-    depends_on={"_delayfixed_pe_traditional_biomass_ej_delayed_1yr": 1},
+    depends_on={"_delayfixed_pe_traditional_biomass_ej_delayed": 1},
     other_deps={
-        "_delayfixed_pe_traditional_biomass_ej_delayed_1yr": {
-            "initial": {},
+        "_delayfixed_pe_traditional_biomass_ej_delayed": {
+            "initial": {"time_step": 1},
             "step": {"pe_traditional_biomass_consum_ej": 1},
         }
     },
 )
-def pe_traditional_biomass_ej_delayed_1yr():
+def pe_traditional_biomass_ej_delayed():
     """
-    Annual primary energy consumption of traditional biomass. It also includes charcoal and biosolids for solids.
+    *Annual primary energy consumption of traditional biomass. It also includes charcoal and biosolids for solids. *Original name: PE traditional biomass EJ delayed 1yr *PE traditional biomass consum EJ, 1, 30
     """
-    return _delayfixed_pe_traditional_biomass_ej_delayed_1yr()
+    return _delayfixed_pe_traditional_biomass_ej_delayed()
 
 
-_delayfixed_pe_traditional_biomass_ej_delayed_1yr = DelayFixed(
+_delayfixed_pe_traditional_biomass_ej_delayed = DelayFixed(
     lambda: pe_traditional_biomass_consum_ej(),
-    lambda: 1,
+    lambda: time_step(),
     lambda: 30,
     time_step,
-    "_delayfixed_pe_traditional_biomass_ej_delayed_1yr",
+    "_delayfixed_pe_traditional_biomass_ej_delayed",
 )
 
 

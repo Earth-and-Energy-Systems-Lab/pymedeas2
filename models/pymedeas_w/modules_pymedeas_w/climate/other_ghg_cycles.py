@@ -1,6 +1,6 @@
 """
-Module other_ghg_cycles
-Translated using PySD version 3.2.0
+Module climate.other_ghg_cycles
+Translated using PySD version 3.9.1
 """
 
 
@@ -60,10 +60,10 @@ def ch4_emissions_from_permafrost_and_clathrate():
     comp_subtype="Normal",
     depends_on={
         "reference_ch4_time_constant": 1,
-        "stratospheric_ch4_path_share": 2,
         "preindustrial_ch4": 1,
         "tropospheric_ch4_path_share": 2,
         "ch4_in_atm": 1,
+        "stratospheric_ch4_path_share": 2,
     },
 )
 def ch4_fractional_uptake():
@@ -153,7 +153,7 @@ def choose_rcp():
 
 _ext_constant_choose_rcp = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "select_RCP",
     {},
     _root,
@@ -199,16 +199,16 @@ def g_per_t():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "total_ch4_emissions_fossil_fuels": 1,
-        "global_ch4_anthro_emissions_rcp": 4,
+        "total_ch4_emissions_mtch4": 1,
         "choose_rcp": 3,
+        "global_ch4_anthro_emissions_rcp": 4,
     },
 )
 def global_ch4_anthro_emissions():
     """
     "Representative Concentration Pathways" (RCPs, see http://tntcat.iiasa.ac.at:8787/RcpDb/dsd?Action=htmlpage&page=compare) except Power Plants, Energy Conversion, Extraction, and Distribution. Corrected with endogenous data "Total CH4 emissions fossil fuels" Choose RCP: 1. RCP 2.6 2. RCP 4.5 3. RCP 6.0 4. RCP 8.5
     """
-    return total_ch4_emissions_fossil_fuels() + if_then_else(
+    return total_ch4_emissions_mtch4() + if_then_else(
         choose_rcp() == 1,
         lambda: float(global_ch4_anthro_emissions_rcp().loc["RCP26"]),
         lambda: if_then_else(
@@ -1674,9 +1674,9 @@ _ext_constant_time_const_for_sf6 = ExtConstant(
             "initial": {},
             "step": {
                 "flux_c_from_permafrost_release": 1,
-                "mt_per_gt": 1,
-                "ch4_per_c": 1,
                 "ch4_emissions_from_permafrost_and_clathrate": 1,
+                "ch4_per_c": 1,
+                "mt_per_gt": 1,
             },
         }
     },

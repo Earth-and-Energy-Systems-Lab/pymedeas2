@@ -1,6 +1,6 @@
 """
-Module res_heat_potential
-Translated using PySD version 3.2.0
+Module energy.supply.res_heat_potential
+Translated using PySD version 3.9.1
 """
 
 
@@ -19,8 +19,8 @@ def fe_solar_potential_for_heat():
 
 
 _ext_constant_fe_solar_potential_for_heat = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "../energy.xlsx",
+    "World",
     "solar_thermal_pot_FE",
     {},
     _root,
@@ -62,8 +62,8 @@ def geot_pe_potential_for_heat_twth():
 
 
 _ext_constant_geot_pe_potential_for_heat_twth = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "../energy.xlsx",
+    "World",
     "geothermal_PE_pot_heat",
     {},
     _root,

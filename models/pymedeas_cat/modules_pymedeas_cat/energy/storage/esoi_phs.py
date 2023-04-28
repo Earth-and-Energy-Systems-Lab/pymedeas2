@@ -1,6 +1,6 @@
 """
-Module esoi_phs
-Translated using PySD version 3.2.0
+Module energy.storage.esoi_phs
+Translated using PySD version 3.9.1
 """
 
 
@@ -81,8 +81,8 @@ def cedtot_over_lifetime_phs():
     comp_subtype="Normal",
     depends_on={
         "output_phs_over_lifetime": 1,
-        "gquality_of_electricity": 1,
         "cedtot_over_lifetime_phs": 1,
+        "gquality_of_electricity": 1,
     },
 )
 def esoi_phs():

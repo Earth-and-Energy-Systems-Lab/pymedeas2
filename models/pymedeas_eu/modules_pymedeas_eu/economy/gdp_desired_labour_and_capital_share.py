@@ -1,6 +1,6 @@
 """
-Module gdp_desired_labour_and_capital_share
-Translated using PySD version 3.2.0
+Module economy.gdp_desired_labour_and_capital_share
+Translated using PySD version 3.9.1
 """
 
 
@@ -9,29 +9,10 @@ Translated using PySD version 3.2.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "select_gdppc_evolution_input": 2,
-        "input_gdppc_annual_growth": 1,
-        "p_customized_year_gdppc_evolution": 1,
-        "p_customized_cte_gdppc_variation": 1,
-        "time": 1,
-        "p_timeseries_gdppc_growth_rate": 2,
-    },
+    depends_on={"p_timeseries_gdppc_growth_rate": 1},
 )
 def annual_gdppc_growth_rate():
-    return if_then_else(
-        select_gdppc_evolution_input() == 0,
-        lambda: input_gdppc_annual_growth(),
-        lambda: if_then_else(
-            select_gdppc_evolution_input() == 1,
-            lambda: p_timeseries_gdppc_growth_rate(),
-            lambda: if_then_else(
-                time() < p_customized_year_gdppc_evolution(),
-                lambda: p_timeseries_gdppc_growth_rate(),
-                lambda: p_customized_cte_gdppc_variation(),
-            ),
-        ),
-    )
+    return p_timeseries_gdppc_growth_rate()
 
 
 @component.add(
@@ -92,13 +73,13 @@ def capital_share_growth():
 )
 def cc_total():
     """
-    Capital compensation
+    Capital compensation ** Debugging. MAX(0, diff) function introduced to avoid negative values. Original: variation CC-CC total not covered
     """
     return _integ_cc_total()
 
 
 _integ_cc_total = Integ(
-    lambda: variation_cc() - cc_total_not_covered(),
+    lambda: np.maximum(0, variation_cc() - cc_total_not_covered()),
     lambda: initial_cc_total(),
     "_integ_cc_total",
 )
@@ -258,10 +239,10 @@ _integ_desired_gdppc = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "variation_historic_pop": 2,
-        "dollars_to_tdollars": 6,
-        "desired_gdppc": 2,
         "variation_historic_gdppc": 2,
+        "variation_historic_pop": 2,
+        "desired_gdppc": 2,
+        "dollars_to_tdollars": 6,
         "population": 2,
         "desired_variation_gdppc": 2,
         "pop_variation": 2,
@@ -286,8 +267,9 @@ def desired_variation_gdp():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "desired_variation_gdppc_per_scen": 1,
-        "smooth_desired_variation_gdppc": 1,
+        "variation_historic_gdppc": 1,
+        "annual_gdppc_growth_rate": 1,
+        "desired_gdppc": 1,
     },
 )
 def desired_variation_gdppc():
@@ -296,53 +278,8 @@ def desired_variation_gdppc():
     """
     return if_then_else(
         time() < 2015,
-        lambda: desired_variation_gdppc_per_scen(),
-        lambda: smooth_desired_variation_gdppc(),
-    )
-
-
-@component.add(
-    name="desired variation GDPpc per scen",
-    units="$/person",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 2,
-        "variation_historic_gdppc": 1,
-        "p_customized_year_gdppc_evolution": 1,
-        "gdppc_variation_asymptote_scen": 1,
-        "desired_gdppc": 4,
-        "select_gdppc_evolution_input": 4,
-        "annual_gdppc_growth_rate": 4,
-    },
-)
-def desired_variation_gdppc_per_scen():
-    """
-    Desired GDPpc variation depending on the policy target selected by the user.
-    """
-    return if_then_else(
-        time() < 2015,
         lambda: variation_historic_gdppc(),
-        lambda: if_then_else(
-            np.logical_and(
-                select_gdppc_evolution_input() == 3,
-                time() < p_customized_year_gdppc_evolution(),
-            ),
-            lambda: desired_gdppc() * annual_gdppc_growth_rate(),
-            lambda: if_then_else(
-                select_gdppc_evolution_input() == 0,
-                lambda: desired_gdppc() * annual_gdppc_growth_rate(),
-                lambda: if_then_else(
-                    select_gdppc_evolution_input() == 1,
-                    lambda: desired_gdppc() * annual_gdppc_growth_rate(),
-                    lambda: if_then_else(
-                        select_gdppc_evolution_input() == 2,
-                        lambda: desired_gdppc() * annual_gdppc_growth_rate(),
-                        lambda: gdppc_variation_asymptote_scen(),
-                    ),
-                ),
-            ),
-        ),
+        lambda: desired_gdppc() * annual_gdppc_growth_rate(),
     )
 
 
@@ -371,55 +308,13 @@ def gdppc_initial_year():
 
 
 @component.add(
-    name="GDPpc until P customized year GDPpc evolution",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"time": 1, "p_customized_year_gdppc_evolution": 1, "desired_gdppc": 2},
-)
-def gdppc_until_p_customized_year_gdppc_evolution():
-    """
-    GDPpc until starting customized year of the policy target.
-    """
-    return if_then_else(
-        time() < p_customized_year_gdppc_evolution(),
-        lambda: desired_gdppc(),
-        lambda: desired_gdppc(),
-    )
-
-
-@component.add(
-    name="GDPpc variation asymptote scen",
-    units="$/(Year*person)",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "gdppc_until_p_customized_year_gdppc_evolution": 1,
-        "p_gdppc_asymptote": 1,
-        "t_asymptote_gdppc": 2,
-        "p_customized_year_gdppc_evolution": 1,
-        "time": 1,
-    },
-)
-def gdppc_variation_asymptote_scen():
-    """
-    Desired GDPpc variation to reach asymptote target.
-    """
-    return (
-        (gdppc_until_p_customized_year_gdppc_evolution() - (p_gdppc_asymptote() - 1600))
-        * (-1 / t_asymptote_gdppc())
-        * np.exp(-(time() - p_customized_year_gdppc_evolution()) / t_asymptote_gdppc())
-    )
-
-
-@component.add(
     name="growth capital share",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "laborcapital_share_cte": 1,
         "capital_share_growth": 1,
+        "laborcapital_share_cte": 1,
         "historic_capital_share_growth": 1,
     },
 )
@@ -696,37 +591,6 @@ def initial_lc_total():
 
 
 @component.add(
-    name="input GDPpc annual growth",
-    units="Dmnl",
-    comp_type="Data",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_data_input_gdppc_annual_growth",
-        "__data__": "_ext_data_input_gdppc_annual_growth",
-        "time": 1,
-    },
-)
-def input_gdppc_annual_growth():
-    """
-    Original values for annual growth of GDPpc from SSP2.
-    """
-    return _ext_data_input_gdppc_annual_growth(time())
-
-
-_ext_data_input_gdppc_annual_growth = ExtData(
-    "../economy.xlsx",
-    "Europe",
-    "time_index_projection",
-    "input_GDPpc_annual_growth",
-    None,
-    {},
-    _root,
-    {},
-    "_ext_data_input_gdppc_annual_growth",
-)
-
-
-@component.add(
     name='"Labor/Capital share cte?"',
     units="Dmnl",
     comp_type="Constant",
@@ -797,13 +661,15 @@ def labour_share_growth():
 )
 def lc():
     """
-    Labour compensation
+    Labour compensation ** Debugging. MAX(0, diff) function introduced to avoid negative values. Original: variation LC-LC not covered
     """
     return _integ_lc()
 
 
 _integ_lc = Integ(
-    lambda: variation_lc() - lc_not_covered(), lambda: initial_lc_total(), "_integ_lc"
+    lambda: np.maximum(0, variation_lc() - lc_not_covered()),
+    lambda: initial_lc_total(),
+    "_integ_lc",
 )
 
 
@@ -837,87 +703,12 @@ def p_capital_share():
 
 _ext_constant_p_capital_share = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "p_capital_share",
     {},
     _root,
     {},
     "_ext_constant_p_capital_share",
-)
-
-
-@component.add(
-    name="P customized cte GDPpc variation",
-    units="1/Year",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_p_customized_cte_gdppc_variation"},
-)
-def p_customized_cte_gdppc_variation():
-    """
-    From customized year, set annual constant variation.
-    """
-    return _ext_constant_p_customized_cte_gdppc_variation()
-
-
-_ext_constant_p_customized_cte_gdppc_variation = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
-    "p_constant_gdp_variation",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_customized_cte_gdppc_variation",
-)
-
-
-@component.add(
-    name="P customized year GDPpc evolution",
-    units="Year",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_p_customized_year_gdppc_evolution"},
-)
-def p_customized_year_gdppc_evolution():
-    """
-    From customized year, set annual constant variation.
-    """
-    return _ext_constant_p_customized_year_gdppc_evolution()
-
-
-_ext_constant_p_customized_year_gdppc_evolution = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
-    "year_customized_gdp_evol",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_customized_year_gdppc_evolution",
-)
-
-
-@component.add(
-    name="P GDPpc asymptote",
-    units="$/person",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_p_gdppc_asymptote"},
-)
-def p_gdppc_asymptote():
-    """
-    Policy target of GDPpc in target year to be approached smoothly-asymptotically.
-    """
-    return _ext_constant_p_gdppc_asymptote()
-
-
-_ext_constant_p_gdppc_asymptote = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
-    "asymptote_GDPpc",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_gdppc_asymptote",
 )
 
 
@@ -937,7 +728,7 @@ def p_labour_share():
 
 _ext_constant_p_labour_share = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "p_labour_share",
     {},
     _root,
@@ -966,7 +757,7 @@ def p_timeseries_gdppc_growth_rate():
 
 _ext_data_p_timeseries_gdppc_growth_rate = ExtData(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "year_gdp_timeseries",
     "p_timeseries_gdp_growth",
     "interpolate",
@@ -974,110 +765,6 @@ _ext_data_p_timeseries_gdppc_growth_rate = ExtData(
     _root,
     {},
     "_ext_data_p_timeseries_gdppc_growth_rate",
-)
-
-
-@component.add(
-    name="select GDPpc evolution input",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_select_gdppc_evolution_input"},
-)
-def select_gdppc_evolution_input():
-    """
-    0. SSP2 1. Timeseries 2. From customized year, set annual constant variation
-    """
-    return _ext_constant_select_gdppc_evolution_input()
-
-
-_ext_constant_select_gdppc_evolution_input = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
-    "select_gdp_evolution",
-    {},
-    _root,
-    {},
-    "_ext_constant_select_gdppc_evolution_input",
-)
-
-
-@component.add(
-    name="smooth Desired GDPpc",
-    comp_type="Stateful",
-    comp_subtype="Smooth",
-    depends_on={"_smooth_smooth_desired_gdppc": 1},
-    other_deps={
-        "_smooth_smooth_desired_gdppc": {
-            "initial": {"desired_variation_gdppc_per_scen": 1},
-            "step": {"desired_variation_gdppc_per_scen": 1},
-        }
-    },
-)
-def smooth_desired_gdppc():
-    return _smooth_smooth_desired_gdppc()
-
-
-_smooth_smooth_desired_gdppc = Smooth(
-    lambda: desired_variation_gdppc_per_scen(),
-    lambda: 2,
-    lambda: desired_variation_gdppc_per_scen(),
-    lambda: 2,
-    "_smooth_smooth_desired_gdppc",
-)
-
-
-@component.add(
-    name="smooth Desired variation GDPpc",
-    units="$/person",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 1,
-        "p_customized_year_gdppc_evolution": 1,
-        "desired_variation_gdppc_per_scen": 1,
-        "smooth_desired_gdppc": 1,
-    },
-)
-def smooth_desired_variation_gdppc():
-    return if_then_else(
-        time() < p_customized_year_gdppc_evolution(),
-        lambda: desired_variation_gdppc_per_scen(),
-        lambda: smooth_desired_gdppc(),
-    )
-
-
-@component.add(
-    name="T asymptote GDPpc",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "target_year_gdppc_asymptote": 1,
-        "p_customized_year_gdppc_evolution": 1,
-    },
-)
-def t_asymptote_gdppc():
-    return (target_year_gdppc_asymptote() - p_customized_year_gdppc_evolution()) / 3
-
-
-@component.add(
-    name="Target year GDPpc asymptote",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_target_year_gdppc_asymptote"},
-)
-def target_year_gdppc_asymptote():
-    return _ext_constant_target_year_gdppc_asymptote()
-
-
-_ext_constant_target_year_gdppc_asymptote = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
-    "target_year_asymptote_gdp",
-    {},
-    _root,
-    {},
-    "_ext_constant_target_year_gdppc_asymptote",
 )
 
 
@@ -1130,9 +817,9 @@ def variation_cc():
     comp_subtype="Normal",
     depends_on={
         "time": 5,
-        "historic_gdp": 2,
         "historic_population": 2,
         "dollar_per_mdollar": 1,
+        "historic_gdp": 2,
     },
 )
 def variation_historic_gdppc():
@@ -1172,8 +859,8 @@ def variation_labour_share():
     depends_on={
         "gdp_eu": 1,
         "labour_share": 1,
-        "desired_annual_total_demand_growth_rate": 2,
         "growth_labour_share": 2,
+        "desired_annual_total_demand_growth_rate": 2,
     },
 )
 def variation_lc():

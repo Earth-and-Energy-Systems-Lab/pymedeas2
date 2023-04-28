@@ -1,6 +1,6 @@
 """
-Module water_demand_res_elec_var
-Translated using PySD version 3.2.0
+Module energy.eroi.water_demand_res_elec_var
+Translated using PySD version 3.9.1
 """
 
 
@@ -108,24 +108,6 @@ def total_energy_requirements_om_for_water_consumption_res_elec():
 
 
 @component.add(
-    name='"Total water for O&M required by RES elec per techn"',
-    units="Mt",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"water_for_om_required_for_res_elec": 1},
-)
-def total_water_for_om_required_by_res_elec_per_techn():
-    """
-    Annual total water required by RES technology for generating electricity.
-    """
-    return sum(
-        water_for_om_required_for_res_elec().rename({"water0": "water0!"}),
-        dim=["water0!"],
-    )
-
-
-@component.add(
     name='"Total water for O&M required by RES elec"',
     units="Mt",
     subscripts=["water"],
@@ -147,41 +129,21 @@ def total_water_for_om_required_by_res_elec():
 
 
 @component.add(
-    name='"water for O&M - RES elec"',
-    units="kg/MW",
-    subscripts=["RES elec", "water0"],
-    comp_type="Constant",
-    comp_subtype="External, Normal",
-    depends_on={"__external__": "_ext_constant_water_for_om_res_elec"},
+    name='"Total water for O&M required by RES elec per techn"',
+    units="Mt",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"water_for_om_required_for_res_elec": 1},
 )
-def water_for_om_res_elec():
-    value = xr.DataArray(
-        np.nan,
-        {"RES elec": _subscript_dict["RES elec"], "water0": _subscript_dict["water0"]},
-        ["RES elec", "water0"],
+def total_water_for_om_required_by_res_elec_per_techn():
+    """
+    Annual total water required by RES technology for generating electricity.
+    """
+    return sum(
+        water_for_om_required_for_res_elec().rename({"water0": "water0!"}),
+        dim=["water0!"],
     )
-    value.loc[_subscript_dict["RES ELEC DISPATCHABLE"], :] = 0
-    value.loc[
-        ["wind onshore", "wind offshore", "solar PV", "CSP"], :
-    ] = _ext_constant_water_for_om_res_elec().values
-    return value
-
-
-_ext_constant_water_for_om_res_elec = ExtConstant(
-    "../materials.xlsx",
-    "Global",
-    "water_for_om_res_elec*",
-    {
-        "RES elec": _subscript_dict["RES ELEC VARIABLE"],
-        "water0": _subscript_dict["water0"],
-    },
-    _root,
-    {
-        "RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"],
-        "water0": _subscript_dict["water0"],
-    },
-    "_ext_constant_water_for_om_res_elec",
-)
 
 
 @component.add(
@@ -207,3 +169,40 @@ def water_for_om_required_for_res_elec():
         * m_per_t()
         / kg_per_mt()
     )
+
+
+@component.add(
+    name='"water for O&M - RES elec"',
+    units="kg/MW",
+    subscripts=["RES elec", "water0"],
+    comp_type="Constant",
+    comp_subtype="External, Normal",
+    depends_on={"__external__": "_ext_constant_water_for_om_res_elec"},
+)
+def water_for_om_res_elec():
+    value = xr.DataArray(
+        np.nan,
+        {"RES elec": _subscript_dict["RES elec"], "water0": _subscript_dict["water0"]},
+        ["RES elec", "water0"],
+    )
+    value.loc[_subscript_dict["RES ELEC DISPATCHABLE"], :] = 0
+    def_subs = xr.zeros_like(value, dtype=bool)
+    def_subs.loc[["wind onshore", "wind offshore", "solar PV", "CSP"], :] = True
+    value.values[def_subs.values] = _ext_constant_water_for_om_res_elec().values[
+        def_subs.values
+    ]
+    return value
+
+
+_ext_constant_water_for_om_res_elec = ExtConstant(
+    "../materials.xlsx",
+    "Global",
+    "water_for_om_res_elec*",
+    {
+        "RES elec": _subscript_dict["RES ELEC VARIABLE"],
+        "water0": _subscript_dict["water0"],
+    },
+    _root,
+    {"RES elec": _subscript_dict["RES elec"], "water0": _subscript_dict["water0"]},
+    "_ext_constant_water_for_om_res_elec",
+)

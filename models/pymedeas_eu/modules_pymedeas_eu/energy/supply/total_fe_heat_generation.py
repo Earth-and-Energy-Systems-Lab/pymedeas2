@@ -1,6 +1,6 @@
 """
-Module total_fe_heat_generation
-Translated using PySD version 3.2.0
+Module energy.supply.total_fe_heat_generation
+Translated using PySD version 3.9.1
 """
 
 
@@ -206,7 +206,7 @@ def fes_res_for_heat_ej():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "extraction_coal_ej_eu": 1,
+        "extraction_coal_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
         "share_coal_dem_for_heatcom": 1,
     },
@@ -216,7 +216,7 @@ def pes_coal_for_heatcom_plants():
     Primary energy supply of coal for commercial Heat plants.
     """
     return (
-        extraction_coal_ej_eu() + imports_eu_coal_from_row_ej()
+        extraction_coal_eu() + imports_eu_coal_from_row_ej()
     ) * share_coal_dem_for_heatcom()
 
 
@@ -226,7 +226,7 @@ def pes_coal_for_heatcom_plants():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "extraction_coal_ej_eu": 1,
+        "extraction_coal_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
         "share_coal_dem_for_heatnc": 1,
     },
@@ -236,7 +236,7 @@ def pes_coal_for_heatnc_plants():
     Primary energy supply of coal for non-commercial Heat plants.
     """
     return (
-        extraction_coal_ej_eu() + imports_eu_coal_from_row_ej()
+        extraction_coal_eu() + imports_eu_coal_from_row_ej()
     ) * share_coal_dem_for_heatnc()
 
 

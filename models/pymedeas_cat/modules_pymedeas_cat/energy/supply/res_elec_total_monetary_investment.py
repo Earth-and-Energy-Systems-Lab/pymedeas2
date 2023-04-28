@@ -1,6 +1,6 @@
 """
-Module res_elec_total_monetary_investment
-Translated using PySD version 3.2.0
+Module energy.supply.res_elec_total_monetary_investment
+Translated using PySD version 3.9.1
 """
 
 
@@ -276,13 +276,13 @@ def share_extra_monet_invest_to_cope_with_variable_elec_res():
     units="1/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_monet_invest_res_for_elec_tdolar": 1, "gdp_aut": 1},
+    depends_on={"total_monet_invest_res_for_elec_tdolar": 1, "gdp_cat": 1},
 )
 def share_tot_monet_invest_elec_res_vs_gdp():
     """
     Annual total monetary investment for RES for electricity as a share of the annual GDP.
     """
-    return zidz(total_monet_invest_res_for_elec_tdolar(), gdp_aut())
+    return zidz(total_monet_invest_res_for_elec_tdolar(), gdp_cat())
 
 
 @component.add(

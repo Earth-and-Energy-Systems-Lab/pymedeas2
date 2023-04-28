@@ -1,6 +1,6 @@
 """
-Module carbon_cycle
-Translated using PySD version 3.2.0
+Module climate.carbon_cycle
+Translated using PySD version 3.9.1
 """
 
 
@@ -157,9 +157,9 @@ _ext_constant_buffer_c_coeff = ExtConstant(
             "initial": {"ref_buffer_factor": 1},
             "step": {
                 "ref_buffer_factor": 1,
-                "preindustrial_c_in_mixed_layer": 1,
-                "c_in_mixed_layer": 1,
                 "buffer_c_coeff": 1,
+                "c_in_mixed_layer": 1,
+                "preindustrial_c_in_mixed_layer": 1,
             },
         }
     },
@@ -460,6 +460,16 @@ def c_in_mixed_layer_per_meter():
 
 
 @component.add(
+    name="C per CO2", units="GtC/GTCO2e", comp_type="Constant", comp_subtype="Normal"
+)
+def c_per_co2():
+    """
+    1 kg of CO2 contains 3/11 of carbon.
+    """
+    return 3 / 11
+
+
+@component.add(
     name="CH4 generation rate from biomass",
     units="1/year",
     limits=(0.0, 0.00014),
@@ -711,8 +721,8 @@ def effect_of_warming_on_ch4_release_from_biological_activity():
     depends_on={
         "preindustrial_c_in_mixed_layer": 1,
         "effect_of_temp_on_dic_pco2": 1,
-        "c_in_atmosphere": 1,
         "buffer_factor": 1,
+        "c_in_atmosphere": 1,
         "preindustrial_c": 1,
     },
 )
@@ -748,8 +758,8 @@ def equilibrium_c_per_meter_in_mixed_layer():
     comp_subtype="Normal",
     depends_on={
         "init_npp": 1,
-        "c_in_atmosphere": 1,
         "biostim_coeff": 1,
+        "c_in_atmosphere": 1,
         "preindustrial_c": 1,
         "effect_of_warming_on_c_flux_to_biomass": 1,
     },
@@ -1095,8 +1105,8 @@ _ext_constant_layer_depth = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "layer_depth": 2,
-        "eddy_diffusion_coef": 2,
         "mean_depth_of_adjacent_layers": 2,
+        "eddy_diffusion_coef": 2,
     },
 )
 def layer_time_constant():

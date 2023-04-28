@@ -1,6 +1,6 @@
 """
-Module energy_indicators
-Translated using PySD version 3.2.0
+Module energy.supply.energy_indicators
+Translated using PySD version 3.9.1
 """
 
 
@@ -149,8 +149,8 @@ def pop_not_dependent_on_trad_biomass():
     comp_subtype="Normal",
     depends_on={
         "net_tfec": 1,
-        "tpes_ej": 1,
         "total_real_nonenergy_use_consumption_ej": 1,
+        "tpes_ej": 1,
     },
 )
 def share_total_net_energy_vs_tpes():
@@ -202,7 +202,7 @@ def tfec_per_capita_before_heat_dem_corr():
         "fe_tot_generation_all_res_elec_ej": 1,
         "fes_res_for_heat_ej": 1,
         "pe_traditional_biomass_consum_ej": 1,
-        "fes_total_biofuels": 1,
+        "fes_total_biofuels_ej": 1,
         "fes_total_biogas": 1,
     },
 )
@@ -214,7 +214,7 @@ def tfec_res_ej():
         fe_tot_generation_all_res_elec_ej()
         + fes_res_for_heat_ej()
         + pe_traditional_biomass_consum_ej()
-        + fes_total_biofuels()
+        + fes_total_biofuels_ej()
         + fes_total_biogas()
     )
 

@@ -1,6 +1,6 @@
 """
-Module total_outputs_from_demand
-Translated using PySD version 3.2.0
+Module economy.total_outputs_from_demand
+Translated using PySD version 3.9.1
 """
 
 
@@ -20,7 +20,7 @@ def activate_elf_by_scen():
 
 _ext_constant_activate_elf_by_scen = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "activate_ELF",
     {},
     _root,
@@ -43,17 +43,17 @@ def activate_energy_scarcity_feedback():
 
 
 @component.add(
-    name="Annual GDP growth rate AUT",
+    name="Annual GDP growth rate CAT",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"gdp_aut": 1, "gdp_delayed_1yr": 1},
+    depends_on={"gdp_cat": 1, "gdp_delayed_1yr": 1},
 )
-def annual_gdp_growth_rate_aut():
+def annual_gdp_growth_rate_cat():
     """
     Annual GDP growth rate.
     """
-    return -1 + zidz(gdp_aut(), gdp_delayed_1yr())
+    return -1 + zidz(gdp_cat(), gdp_delayed_1yr())
 
 
 @component.add(
@@ -68,6 +68,36 @@ def cc_impacts_feedback_shortage_coeff():
     This coefficient adapts the real final energy by fuel to be used by economic sectors taking into account climate change impacts.
     """
     return 1 - share_e_losses_cc_world()
+
+
+@component.add(
+    name="DEBUG FED after sum",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"required_fed_by_fuel": 1},
+)
+def debug_fed_after_sum():
+    return sum(
+        required_fed_by_fuel().rename({"final sources": "final sources!"}),
+        dim=["final sources!"],
+    )
+
+
+@component.add(
+    name="DEBUG FED before heat correction",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"required_fed_by_fuel_before_heat_correction": 1},
+)
+def debug_fed_before_heat_correction():
+    return sum(
+        required_fed_by_fuel_before_heat_correction().rename(
+            {"final sources": "final sources!"}
+        ),
+        dim=["final sources!"],
+    )
 
 
 @component.add(
@@ -99,7 +129,7 @@ def domestic_demand_by_sector():
 
 
 @component.add(
-    name="Energy scarcity feedback shortage coeff AUT",
+    name="Energy scarcity feedback shortage coeff CAT",
     units="Dmnl",
     subscripts=["final sources"],
     comp_type="Auxiliary",
@@ -110,7 +140,7 @@ def domestic_demand_by_sector():
         "real_fe_consumption_by_fuel_before_heat_correction": 1,
     },
 )
-def energy_scarcity_feedback_shortage_coeff_aut():
+def energy_scarcity_feedback_shortage_coeff_cat():
     """
     MIN(1, real FE consumption by fuel before heat correction[final sources]/Required FED by fuel before heat correction [final sources]) This coefficient adapts the real final energy by fuel to be used by economic sectors taking into account energy availability.
     """
@@ -130,36 +160,19 @@ def energy_scarcity_feedback_shortage_coeff_aut():
 
 
 @component.add(
-    name="Final energy intensity by sector and fuel EU",
+    name="Final energy intensity by sector and fuel",
     units="EJ/Tdollars",
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"evol_final_energy_intensity_by_sector_and_fuel": 1},
 )
-def final_energy_intensity_by_sector_and_fuel_eu():
+def final_energy_intensity_by_sector_and_fuel():
     """
     Evolution of final energy intensity by sector and fuel.
     """
     return evol_final_energy_intensity_by_sector_and_fuel().transpose(
         "final sources", "sectors"
-    )
-
-
-@component.add(
-    name="GDP AUT",
-    units="T$",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"gdp_by_sector": 1},
-)
-def gdp_aut():
-    """
-    Global GDP in T1995T$.
-    """
-    return (
-        sum(gdp_by_sector().rename({"sectors": "sectors!"}), dim=["sectors!"])
-        / 1000000.0
     )
 
 
@@ -170,7 +183,7 @@ def gdp_aut():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "real_final_demand_by_sector_aut": 1,
+        "real_final_demand_by_sector_cat": 1,
         "ic_total_exports": 1,
         "ic_total_imports": 1,
     },
@@ -179,7 +192,7 @@ def gdp_by_sector():
     """
     Gross Domestic Product by sector
     """
-    return real_final_demand_by_sector_aut() + ic_total_exports() - ic_total_imports()
+    return real_final_demand_by_sector_cat() + ic_total_exports() - ic_total_imports()
 
 
 @component.add(
@@ -222,12 +235,29 @@ def gdp_by_sector_growth_rate():
 
 
 @component.add(
+    name="GDP CAT",
+    units="T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"gdp_by_sector": 1},
+)
+def gdp_cat():
+    """
+    Global GDP in T1995T$.
+    """
+    return (
+        sum(gdp_by_sector().rename({"sectors": "sectors!"}), dim=["sectors!"])
+        / 1000000.0
+    )
+
+
+@component.add(
     name="GDP delayed 1yr",
     units="Tdollars/Year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_gdp_delayed_1yr": 1},
-    other_deps={"_delayfixed_gdp_delayed_1yr": {"initial": {}, "step": {"gdp_aut": 1}}},
+    other_deps={"_delayfixed_gdp_delayed_1yr": {"initial": {}, "step": {"gdp_cat": 1}}},
 )
 def gdp_delayed_1yr():
     """
@@ -237,7 +267,7 @@ def gdp_delayed_1yr():
 
 
 _delayfixed_gdp_delayed_1yr = DelayFixed(
-    lambda: gdp_aut(), lambda: 1, lambda: 0.22, time_step, "_delayfixed_gdp_delayed_1yr"
+    lambda: gdp_cat(), lambda: 1, lambda: 0.22, time_step, "_delayfixed_gdp_delayed_1yr"
 )
 
 
@@ -246,13 +276,13 @@ _delayfixed_gdp_delayed_1yr = DelayFixed(
     units="$/people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"gdp_aut": 1, "dollars_to_tdollars": 1, "population": 1},
+    depends_on={"gdp_cat": 1, "dollars_to_tdollars": 1, "population": 1},
 )
 def gdppc():
     """
     GDP per capita (1995T$ per capita).
     """
-    return gdp_aut() * dollars_to_tdollars() / population()
+    return gdp_cat() * dollars_to_tdollars() / population()
 
 
 @component.add(
@@ -260,42 +290,42 @@ def gdppc():
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"real_final_demand_by_sector_aut": 1},
+    depends_on={"real_final_demand_by_sector_cat": 1},
 )
 def real_demand():
     """
     Total demand
     """
     return sum(
-        real_final_demand_by_sector_aut().rename({"sectors": "sectors!"}),
+        real_final_demand_by_sector_cat().rename({"sectors": "sectors!"}),
         dim=["sectors!"],
     )
 
 
 @component.add(
-    name="Real demand by sector delayed AUT",
+    name="Real demand by sector delayed CAT",
     units="$",
     subscripts=["sectors"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
-    depends_on={"_delayfixed_real_demand_by_sector_delayed_aut": 1},
+    depends_on={"_delayfixed_real_demand_by_sector_delayed_cat": 1},
     other_deps={
-        "_delayfixed_real_demand_by_sector_delayed_aut": {
+        "_delayfixed_real_demand_by_sector_delayed_cat": {
             "initial": {},
-            "step": {"real_final_demand_by_sector_aut": 1},
+            "step": {"real_final_demand_by_sector_cat": 1},
         }
     },
 )
-def real_demand_by_sector_delayed_aut():
-    return _delayfixed_real_demand_by_sector_delayed_aut()
+def real_demand_by_sector_delayed_cat():
+    return _delayfixed_real_demand_by_sector_delayed_cat()
 
 
-_delayfixed_real_demand_by_sector_delayed_aut = DelayFixed(
-    lambda: real_final_demand_by_sector_aut(),
+_delayfixed_real_demand_by_sector_delayed_cat = DelayFixed(
+    lambda: real_final_demand_by_sector_cat(),
     lambda: 1,
     lambda: xr.DataArray(10, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
     time_step,
-    "_delayfixed_real_demand_by_sector_delayed_aut",
+    "_delayfixed_real_demand_by_sector_delayed_cat",
 )
 
 
@@ -336,14 +366,14 @@ def real_demand_tdollars():
 
 
 @component.add(
-    name="Real domestic demand by sector AUT",
+    name="Real domestic demand by sector CAT",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ia_matrix_domestic": 1, "real_total_output_by_sector_aut": 1},
+    depends_on={"ia_matrix_domestic": 1, "real_total_output_by_sector_cat": 1},
 )
-def real_domestic_demand_by_sector_aut():
+def real_domestic_demand_by_sector_cat():
     """
     Total real domestic (without exports) final demand of EU28 products (after energy-economy feedback).
     """
@@ -351,7 +381,7 @@ def real_domestic_demand_by_sector_aut():
         0,
         sum(
             ia_matrix_domestic().rename({"sectors1": "sectors1!"})
-            * real_total_output_by_sector_aut().rename({"sectors": "sectors1!"}),
+            * real_total_output_by_sector_cat().rename({"sectors": "sectors1!"}),
             dim=["sectors1!"],
         ),
     )
@@ -454,44 +484,44 @@ def real_fec_before_heat_dem_corr():
 
 
 @component.add(
-    name="Real final demand by sector AUT",
+    name="Real final demand by sector CAT",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "real_domestic_demand_by_sector_aut": 1,
+        "real_domestic_demand_by_sector_cat": 1,
         "real_final_demand_of_exports": 1,
     },
 )
-def real_final_demand_by_sector_aut():
+def real_final_demand_by_sector_cat():
     """
     Sectoral final demand of EU28 products (domestic and foreign).
     """
     return np.maximum(
-        0, real_domestic_demand_by_sector_aut() + real_final_demand_of_exports()
+        0, real_domestic_demand_by_sector_cat() + real_final_demand_of_exports()
     )
 
 
 @component.add(
-    name="Real final energy by sector and fuel AUT",
+    name="Real final energy by sector and fuel CAT",
     units="EJ",
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "required_final_energy_by_sector_and_fuel_aut": 1,
-        "energy_scarcity_feedback_shortage_coeff_aut": 1,
+        "required_final_energy_by_sector_and_fuel_cat": 1,
+        "energy_scarcity_feedback_shortage_coeff_cat": 1,
         "cc_impacts_feedback_shortage_coeff": 1,
     },
 )
-def real_final_energy_by_sector_and_fuel_aut():
+def real_final_energy_by_sector_and_fuel_cat():
     """
     Real final energy to be used by economic sectors and fuel after accounting for energy scarcity and CC impacts.
     """
     return (
-        required_final_energy_by_sector_and_fuel_aut()
-        * energy_scarcity_feedback_shortage_coeff_aut()
+        required_final_energy_by_sector_and_fuel_cat()
+        * energy_scarcity_feedback_shortage_coeff_cat()
         * cc_impacts_feedback_shortage_coeff()
     )
 
@@ -535,14 +565,14 @@ def real_tfec_before_heat_dem_corr():
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"real_total_output_by_sector_aut": 1},
+    depends_on={"real_total_output_by_sector_cat": 1},
 )
 def real_total_output():
     """
     Total output (1995$).
     """
     return sum(
-        real_total_output_by_sector_aut().rename({"sectors": "sectors!"}),
+        real_total_output_by_sector_cat().rename({"sectors": "sectors!"}),
         dim=["sectors!"],
     )
 
@@ -554,8 +584,8 @@ def real_total_output():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "real_final_energy_by_sector_and_fuel_aut": 1,
-        "final_energy_intensity_by_sector_and_fuel_eu": 1,
+        "real_final_energy_by_sector_and_fuel_cat": 1,
+        "final_energy_intensity_by_sector_and_fuel": 1,
         "total_output_required_by_sector": 1,
     },
 )
@@ -565,8 +595,8 @@ def real_total_output_by_fuel_and_sector():
     """
     return (
         xidz(
-            real_final_energy_by_sector_and_fuel_aut(),
-            final_energy_intensity_by_sector_and_fuel_eu(),
+            real_final_energy_by_sector_and_fuel_cat(),
+            final_energy_intensity_by_sector_and_fuel(),
             (total_output_required_by_sector() / 1000000.0).expand_dims(
                 {"final sources": _subscript_dict["final sources"]}, 0
             ),
@@ -576,14 +606,14 @@ def real_total_output_by_fuel_and_sector():
 
 
 @component.add(
-    name="Real total output by sector AUT",
+    name="Real total output by sector CAT",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_total_output_by_fuel_and_sector": 5},
 )
-def real_total_output_by_sector_aut():
+def real_total_output_by_sector_cat():
     """
     Real total output by sector (35 WIOD sectors). US$1995. We assume the most limiting resources.
     """
@@ -670,33 +700,33 @@ def required_fed_by_fuel_before_heat_correction():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"required_final_energy_by_sector_and_fuel_aut": 1},
+    depends_on={"required_final_energy_by_sector_and_fuel_cat": 1},
 )
 def required_fed_sectors_by_fuel():
     return sum(
-        required_final_energy_by_sector_and_fuel_aut().rename({"sectors": "sectors!"}),
+        required_final_energy_by_sector_and_fuel_cat().rename({"sectors": "sectors!"}),
         dim=["sectors!"],
     )
 
 
 @component.add(
-    name="Required final energy by sector and fuel AUT",
+    name="Required final energy by sector and fuel CAT",
     units="EJ",
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "total_output_required_by_sector": 1,
-        "final_energy_intensity_by_sector_and_fuel_eu": 1,
+        "final_energy_intensity_by_sector_and_fuel": 1,
     },
 )
-def required_final_energy_by_sector_and_fuel_aut():
+def required_final_energy_by_sector_and_fuel_cat():
     """
     Required final energy by sector and fuel (35 WIOD sectors & 5 final sources).
     """
     return (
         total_output_required_by_sector()
-        * final_energy_intensity_by_sector_and_fuel_eu().transpose(
+        * final_energy_intensity_by_sector_and_fuel().transpose(
             "sectors", "final sources"
         )
         / 1000000.0
@@ -712,6 +742,28 @@ def required_final_energy_by_sector_and_fuel_aut():
 def share_e_losses_cc_world():
     return if_then_else(
         activate_elf_by_scen() == 1, lambda: share_e_losses_cc(), lambda: 0
+    )
+
+
+@component.add(
+    name="share exports required",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"required_total_output_for_exports": 2, "domestic_demand_by_sector": 1},
+)
+def share_exports_required():
+    return sum(
+        required_total_output_for_exports().rename({"sectors": "sectors!"}),
+        dim=["sectors!"],
+    ) / (
+        sum(
+            required_total_output_for_exports().rename({"sectors": "sectors!"}),
+            dim=["sectors!"],
+        )
+        + sum(
+            domestic_demand_by_sector().rename({"sectors": "sectors!"}),
+            dim=["sectors!"],
+        )
     )
 
 
@@ -737,6 +789,19 @@ def shortage_coef_without_min_without_elosses():
 
 
 @component.add(
+    name="sum total domestic sectors",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"total_domestic_output_required_by_sector": 1},
+)
+def sum_total_domestic_sectors():
+    return sum(
+        total_domestic_output_required_by_sector().rename({"sectors": "sectors!"}),
+        dim=["sectors!"],
+    )
+
+
+@component.add(
     name="Total domestic output required by sector",
     units="Mdollars",
     subscripts=["sectors"],
@@ -756,14 +821,27 @@ def total_domestic_output_required_by_sector():
 
 
 @component.add(
+    name="total output required",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"total_output_required_by_sector": 1},
+)
+def total_output_required():
+    return sum(
+        total_output_required_by_sector().rename({"sectors": "sectors!"}),
+        dim=["sectors!"],
+    )
+
+
+@component.add(
     name="Total output required by sector",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "required_total_output_for_exports": 1,
         "total_domestic_output_required_by_sector": 1,
+        "required_total_output_for_exports": 1,
     },
 )
 def total_output_required_by_sector():
@@ -771,5 +849,18 @@ def total_output_required_by_sector():
     Total output required to satisfy domestic and foreign final demand.
     """
     return (
-        required_total_output_for_exports() + total_domestic_output_required_by_sector()
+        total_domestic_output_required_by_sector() + required_total_output_for_exports()
+    )
+
+
+@component.add(
+    name="total required fed",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"required_fed_sectors_by_fuel": 1},
+)
+def total_required_fed():
+    return sum(
+        required_fed_sectors_by_fuel().rename({"final sources": "final sources!"}),
+        dim=["final sources!"],
     )

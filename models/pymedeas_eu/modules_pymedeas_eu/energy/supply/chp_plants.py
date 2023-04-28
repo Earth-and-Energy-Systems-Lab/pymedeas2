@@ -1,6 +1,6 @@
 """
-Module chp_plants
-Translated using PySD version 3.2.0
+Module energy.supply.chp_plants
+Translated using PySD version 3.9.1
 """
 
 
@@ -281,8 +281,8 @@ def fed_heatcom_by_nre_chp_plants_ej():
     comp_subtype="Normal",
     depends_on={
         "potential_fe_gen_elec_fossil_fuel_chp_plants_ej": 1,
-        "demand_elec_nre_twh": 1,
         "ej_per_twh": 1,
+        "demand_elec_nre_twh": 1,
     },
 )
 def fes_elec_fossil_fuel_chp_plants_ej():
@@ -555,6 +555,58 @@ def share_chp_plants_oil():
 
 
 @component.add(
+    name="share Elec gen in CHP coal",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "potential_fe_gen_elec_coal_chp_plants_ej": 2,
+        "fed_heat_coal_chp_plants_ej": 1,
+    },
+)
+def share_elec_gen_in_chp_coal():
+    return zidz(
+        potential_fe_gen_elec_coal_chp_plants_ej(),
+        potential_fe_gen_elec_coal_chp_plants_ej() + fed_heat_coal_chp_plants_ej(),
+    )
+
+
+@component.add(
+    name="share Elec gen in CHP nat gas",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "potential_fe_gen_elec_gas_chp_plants_ej": 2,
+        "fed_heat_gas_chp_plants_ej": 1,
+    },
+)
+def share_elec_gen_in_chp_nat_gas():
+    return zidz(
+        potential_fe_gen_elec_gas_chp_plants_ej(),
+        potential_fe_gen_elec_gas_chp_plants_ej() + fed_heat_gas_chp_plants_ej(),
+    )
+
+
+@component.add(
+    name="share Elec gen in CHP oil",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "potential_fe_gen_elec_liquids_chp_plants_ej": 2,
+        "fed_heat_liquids_chp_plants_ej": 1,
+    },
+)
+def share_elec_gen_in_chp_oil():
+    return zidz(
+        potential_fe_gen_elec_liquids_chp_plants_ej(),
+        potential_fe_gen_elec_liquids_chp_plants_ej()
+        + fed_heat_liquids_chp_plants_ej(),
+    )
+
+
+@component.add(
     name='"Share heat-com CHP plants NRE vs NRE tot heat-com generation"',
     units="Dmnl",
     comp_type="Data",
@@ -621,14 +673,14 @@ _ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_gener
     comp_subtype="Normal",
     depends_on={
         "ped_gas_for_chp_plants_ej": 1,
-        "efficiency_heat_gas_chp_plants": 1,
         "efficiency_elec_gas_chp_plants": 1,
-        "efficiency_elec_oil_chp_plants": 1,
-        "efficiency_heat_oil_chp_plants": 1,
+        "efficiency_heat_gas_chp_plants": 1,
         "ped_oil_for_chp_plants_ej": 1,
+        "efficiency_heat_oil_chp_plants": 1,
+        "efficiency_elec_oil_chp_plants": 1,
+        "efficiency_heat_coal_chp_plants": 1,
         "ped_coal_for_chp_plants_ej": 1,
         "efficiency_elec_coal_chp_plants": 1,
-        "efficiency_heat_coal_chp_plants": 1,
     },
 )
 def total_gen_losses_demand_for_chp_plants_ej():

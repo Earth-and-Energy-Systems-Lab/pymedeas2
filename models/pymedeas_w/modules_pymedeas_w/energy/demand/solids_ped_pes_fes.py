@@ -1,6 +1,6 @@
 """
-Module solids_ped_pes_fes
-Translated using PySD version 3.2.0
+Module energy.demand.solids_ped_pes_fes
+Translated using PySD version 3.9.1
 """
 
 
@@ -79,18 +79,21 @@ def other_solids_required():
     comp_subtype="Normal",
     depends_on={
         "ped_solids": 1,
-        "losses_in_charcoal_plants_ej": 1,
         "pes_peat_ej": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "losses_in_charcoal_plants_ej": 1,
+        "pe_traditional_biomass_ej_delayed": 1,
         "pes_waste_for_tfc": 1,
     },
 )
 def ped_coal_ej():
+    """
+    Primary energy demand of coal.
+    """
     return np.maximum(
         0,
         ped_solids()
         - (
-            pe_traditional_biomass_ej_delayed_1yr()
+            pe_traditional_biomass_ej_delayed()
             + pes_peat_ej()
             + pes_waste_for_tfc()
             + losses_in_charcoal_plants_ej()
@@ -154,7 +157,7 @@ def pes_peat_ej():
     comp_subtype="Normal",
     depends_on={
         "extraction_coal_ej": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "pe_traditional_biomass_ej_delayed": 1,
         "pes_peat_ej": 1,
         "pes_waste_for_tfc": 1,
         "losses_in_charcoal_plants_ej": 1,
@@ -166,7 +169,7 @@ def pes_solids():
     """
     return (
         extraction_coal_ej()
-        + pe_traditional_biomass_ej_delayed_1yr()
+        + pe_traditional_biomass_ej_delayed()
         + pes_peat_ej()
         + pes_waste_for_tfc()
         + losses_in_charcoal_plants_ej()
@@ -235,6 +238,84 @@ def share_coal_dem_for_heatnc():
     Share of coal demand to cover non-commercial heat consumption in Heat plants.
     """
     return zidz(ped_coal_heatnc(), ped_coal_ej())
+
+
+@component.add(
+    name="share coal for CTL emissions relevant",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"ped_coal_for_ctl_ej": 1, "ped_coal_ej": 1},
+)
+def share_coal_for_ctl_emissions_relevant():
+    return zidz(ped_coal_for_ctl_ej(), ped_coal_ej())
+
+
+@component.add(
+    name="share coal for Elec emissions relevant",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "pe_demand_coal_elec_plants_ej": 1,
+        "ped_coal_for_chp_plants_ej": 1,
+        "share_elec_gen_in_chp_coal": 1,
+        "ped_coal_ej": 1,
+    },
+)
+def share_coal_for_elec_emissions_relevant():
+    return zidz(
+        pe_demand_coal_elec_plants_ej()
+        + ped_coal_for_chp_plants_ej() * share_elec_gen_in_chp_coal(),
+        ped_coal_ej(),
+    )
+
+
+@component.add(
+    name="share coal for FC emissions relevant",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
+        "ped_coal_ej": 1,
+        "share_coal_for_ctl_emissions_relevant": 1,
+        "share_coal_for_elec_emissions_relevant": 1,
+        "share_coal_for_heat_emissions_relevant": 1,
+    },
+)
+def share_coal_for_fc_emissions_relevant():
+    return (
+        1
+        - zidz(
+            float(nonenergy_use_demand_by_final_fuel_ej().loc["solids"]), ped_coal_ej()
+        )
+        - share_coal_for_ctl_emissions_relevant()
+        - share_coal_for_elec_emissions_relevant()
+        - share_coal_for_heat_emissions_relevant()
+    )
+
+
+@component.add(
+    name="share coal for Heat emissions relevant",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "ped_coal_for_heat_plants_ej": 1,
+        "ped_coal_heatnc": 1,
+        "ped_coal_for_chp_plants_ej": 1,
+        "share_elec_gen_in_chp_coal": 1,
+        "ped_coal_ej": 1,
+    },
+)
+def share_coal_for_heat_emissions_relevant():
+    return zidz(
+        ped_coal_for_heat_plants_ej()
+        + ped_coal_heatnc()
+        + ped_coal_for_chp_plants_ej() * (1 - share_elec_gen_in_chp_coal()),
+        ped_coal_ej(),
+    )
 
 
 @component.add(

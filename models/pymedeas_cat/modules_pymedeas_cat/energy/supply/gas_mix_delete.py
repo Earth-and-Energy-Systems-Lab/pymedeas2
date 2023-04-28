@@ -1,6 +1,6 @@
 """
-Module gas_mix
-Translated using PySD version 3.2.0
+Module energy.supply.gas_mix_delete
+Translated using PySD version 3.9.1
 """
 
 
@@ -16,54 +16,33 @@ def fed_gas_ej():
 
 
 @component.add(
-    name="Gas AUT",
+    name="Gas CAT",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pes_nat_gas_aut_1": 1},
+    depends_on={"pes_nat_gas_cat_": 1},
 )
-def gas_aut():
-    return pes_nat_gas_aut_1()
-
-
-@component.add(
-    name="Gas Co2 emissions",
-    units="GtCO2/Year",
-    subscripts=["primary sources"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "required_fed_by_gas": 1,
-        "gco2_per_mj_conv_gas": 1,
-        "mj_per_ej": 1,
-        "g_per_gt": 1,
-    },
-)
-def gas_co2_emissions():
-    return xr.DataArray(
-        required_fed_by_gas() * gco2_per_mj_conv_gas() * mj_per_ej() / g_per_gt(),
-        {"primary sources": _subscript_dict["primary sources"]},
-        ["primary sources"],
-    )
+def gas_cat():
+    return pes_nat_gas_cat_()
 
 
 @component.add(
     name="Gas RoW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"imports_aut_nat_gas_from_row_ej": 1},
+    depends_on={"imports_cat_nat_gas_from_row_ej": 1},
 )
 def gas_row():
-    return imports_aut_nat_gas_from_row_ej()
+    return imports_cat_nat_gas_from_row_ej()
 
 
 @component.add(
-    name="PES Nat Gas AUT",
+    name="PES Nat Gas CAT",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_extraction_conv_gas_ej": 1, "real_extraction_unconv_gas_ej": 1},
 )
-def pes_nat_gas_aut():
+def pes_nat_gas_cat():
     return real_extraction_conv_gas_ej() + real_extraction_unconv_gas_ej()
 
 
@@ -73,12 +52,12 @@ def pes_nat_gas_aut():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "imports_aut_conv_gas_from_row_ej": 1,
-        "imports_aut_unconv_gas_from_row_ej": 1,
+        "imports_cat_conv_gas_from_row_ej": 1,
+        "imports_cat_unconv_gas_from_row_ej": 1,
     },
 )
 def pes_nat_gas_row():
-    return imports_aut_conv_gas_from_row_ej() + imports_aut_unconv_gas_from_row_ej()
+    return imports_cat_conv_gas_from_row_ej() + imports_cat_unconv_gas_from_row_ej()
 
 
 @component.add(
@@ -86,20 +65,20 @@ def pes_nat_gas_row():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pes_nat_gas_aut": 1, "pes_nat_gas_row": 1},
+    depends_on={"pes_nat_gas_cat": 1, "pes_nat_gas_row": 1},
 )
 def pes_total_nat_gas():
-    return pes_nat_gas_aut() + pes_nat_gas_row()
+    return pes_nat_gas_cat() + pes_nat_gas_row()
 
 
 @component.add(
-    name="share Biogas total PES Gases AUT",
+    name="share Biogas total PES Gases CAT",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pes_biogas_for_tfc": 1, "total_pes_gases": 1},
 )
-def share_biogas_total_pes_gases_aut():
+def share_biogas_total_pes_gases_cat():
     return zidz(pes_biogas_for_tfc(), total_pes_gases())
 
 
@@ -109,14 +88,14 @@ def share_biogas_total_pes_gases_aut():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "imports_aut_unconv_gas_from_row_ej": 1,
+        "imports_cat_unconv_gas_from_row_ej": 1,
         "real_extraction_unconv_gas_ej": 1,
         "pes_total_nat_gas": 1,
     },
 )
 def share_unconv_tot_gas():
     return zidz(
-        imports_aut_unconv_gas_from_row_ej() + real_extraction_unconv_gas_ej(),
+        imports_cat_unconv_gas_from_row_ej() + real_extraction_unconv_gas_ej(),
         pes_total_nat_gas(),
     )
 
@@ -138,23 +117,23 @@ def total_biogas():
     comp_subtype="Normal",
     depends_on={
         "other_gases_required": 1,
-        "pe_demand_gas_elec_plants_ej": 1,
+        "ped_gas_elec_plants_ej": 1,
         "ped_gas_for_chp_plants_ej": 1,
         "ped_gas_heatnc": 1,
         "ped_gases_for_heat_plants_ej": 1,
         "ped_nat_gas_for_gtl_ej": 1,
-        "required_fed_by_gas": 1,
+        "required_fed_by_gases": 1,
     },
 )
 def total_gas_ej():
     return (
         other_gases_required()
-        + pe_demand_gas_elec_plants_ej()
+        + ped_gas_elec_plants_ej()
         + ped_gas_for_chp_plants_ej()
         + ped_gas_heatnc()
         + ped_gases_for_heat_plants_ej()
         + ped_nat_gas_for_gtl_ej()
-        + required_fed_by_gas()
+        + required_fed_by_gases()
     )
 
 
@@ -163,10 +142,10 @@ def total_gas_ej():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"gas_aut": 1, "gas_row": 1, "total_biogas": 1},
+    depends_on={"gas_cat": 1, "gas_row": 1, "total_biogas": 1},
 )
 def total_gas_pes():
-    return gas_aut() + gas_row() + total_biogas()
+    return gas_cat() + gas_row() + total_biogas()
 
 
 @component.add(

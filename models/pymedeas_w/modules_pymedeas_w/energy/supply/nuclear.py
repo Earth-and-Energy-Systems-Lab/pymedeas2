@@ -1,6 +1,6 @@
 """
-Module nuclear
-Translated using PySD version 3.2.0
+Module energy.supply.nuclear
+Translated using PySD version 3.9.1
 """
 
 
@@ -357,8 +357,8 @@ def new_nuclear_capacity_under_planning():
     depends_on={
         "time": 1,
         "demand_elec_nre_twh": 1,
-        "installed_capacity_nuclear_tw": 1,
         "p_nuclear_elec_gen": 1,
+        "installed_capacity_nuclear_tw": 1,
         "effects_shortage_uranium": 1,
         "cp_limit_nuclear": 1,
     },
@@ -389,9 +389,9 @@ def new_required_capacity_nuclear():
     depends_on={
         "selection_of_nuclear_scenario": 1,
         "time": 1,
-        "installed_capacity_nuclear_tw": 1,
         "start_year_nuclear_growth_scen34": 1,
         "p_nuclear_scen34": 1,
+        "installed_capacity_nuclear_tw": 1,
     },
 )
 def nuclear_capacity_phaseout():
@@ -417,8 +417,8 @@ def nuclear_capacity_phaseout():
     depends_on={
         "time": 3,
         "cp_nuclear": 1,
-        "historic_nuclear_generation_twh": 2,
         "twe_per_twh": 1,
+        "historic_nuclear_generation_twh": 2,
         "time_construction_nuclear": 1,
         "planned_nuclear_capacity_tw": 1,
     },
@@ -512,7 +512,7 @@ def p_nuclear_scen34():
 
 _ext_constant_p_nuclear_scen34 = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "p_nuclear_variation_scen_3_4",
     {},
     _root,
@@ -606,10 +606,10 @@ def potential_generation_nuclear_elec_twh():
     depends_on={
         "time": 1,
         "nuclear_capacity_under_construction": 1,
-        "nuclear_overcapacity": 1,
-        "selection_of_nuclear_scenario": 2,
-        "replacement_rate_nuclear": 1,
         "wear_nuclear": 1,
+        "selection_of_nuclear_scenario": 2,
+        "nuclear_overcapacity": 1,
+        "replacement_rate_nuclear": 1,
         "cp_limit_nuclear": 1,
     },
 )
@@ -707,7 +707,7 @@ def selection_of_nuclear_scenario():
 
 _ext_constant_selection_of_nuclear_scenario = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "nuclear_scenario_select",
     {},
     _root,
@@ -732,7 +732,7 @@ def start_year_nuclear_growth_scen34():
 
 _ext_constant_start_year_nuclear_growth_scen34 = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "start_year_nuclear_variation_scen3_4",
     {},
     _root,
@@ -809,7 +809,7 @@ def twe_per_twh():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "installed_capacity_nuclear_tw": 1, "life_time_nuclear": 1},
+    depends_on={"time": 1, "life_time_nuclear": 1, "installed_capacity_nuclear_tw": 1},
 )
 def wear_nuclear():
     """

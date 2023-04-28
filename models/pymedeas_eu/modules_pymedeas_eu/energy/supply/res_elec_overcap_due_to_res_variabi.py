@@ -1,6 +1,6 @@
 """
-Module res_elec_overcap_due_to_res_variabi
-Translated using PySD version 3.2.0
+Module energy.supply.res_elec_overcap_due_to_res_variabi
+Translated using PySD version 3.9.1
 """
 
 
@@ -21,35 +21,6 @@ def cp_exogenous_res_elec_dispatch_reduction():
         - 0.3998 * share_variable_res_elec_generation_vs_total_gen()
         + 1.0222,
     )
-
-
-@component.add(
-    name="Cp exogenous RES elec reduction",
-    units="Dmnl",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "cp_exogenous_res_elec_dispatch_reduction": 4,
-        "cp_exogenous_res_elec_var_reduction": 4,
-    },
-)
-def cp_exogenous_res_elec_reduction():
-    """
-    Reduction of Cp of RES elec due to the penetration of RES elec variables (modelling of overcapacities due to the intermittence of RES elec variables).
-    """
-    value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-    )
-    value.loc[["hydro"]] = cp_exogenous_res_elec_dispatch_reduction()
-    value.loc[["geot elec"]] = cp_exogenous_res_elec_dispatch_reduction()
-    value.loc[["solid bioE elec"]] = cp_exogenous_res_elec_dispatch_reduction()
-    value.loc[["oceanic"]] = cp_exogenous_res_elec_dispatch_reduction()
-    value.loc[["wind onshore"]] = cp_exogenous_res_elec_var_reduction()
-    value.loc[["wind offshore"]] = cp_exogenous_res_elec_var_reduction()
-    value.loc[["solar PV"]] = cp_exogenous_res_elec_var_reduction()
-    value.loc[["CSP"]] = cp_exogenous_res_elec_var_reduction()
-    return value
 
 
 @component.add(

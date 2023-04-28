@@ -1,6 +1,6 @@
 """
-Module final_energy_footprint
-Translated using PySD version 3.2.0
+Module society.final_energy_footprint
+Translated using PySD version 3.9.1
 """
 
 
@@ -90,7 +90,7 @@ def final_energy_footprint_by_fuel():
 
 @component.add(
     name="Final energy intensity by sector and fuel RoW",
-    units="Dmnl",
+    units="EJ/T$",
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -112,6 +112,7 @@ def final_energy_intensity_by_sector_and_fuel_row():
 
 @component.add(
     name="Real final energy by sector and fuel RoW",
+    units="EJ",
     subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",

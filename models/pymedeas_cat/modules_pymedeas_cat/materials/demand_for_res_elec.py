@@ -1,6 +1,6 @@
 """
-Module demand_for_res_elec
-Translated using PySD version 3.2.0
+Module materials.demand_for_res_elec
+Translated using PySD version 3.9.1
 """
 
 
@@ -202,9 +202,13 @@ def materials_for_om_per_capacity_installed_res_elec():
         ["RES elec", "materials"],
     )
     value.loc[_subscript_dict["RES ELEC DISPATCHABLE"], :] = 0
-    value.loc[
-        ["wind onshore", "wind offshore", "solar PV", "CSP"], :
-    ] = _ext_constant_materials_for_om_per_capacity_installed_res_elec().values
+    def_subs = xr.zeros_like(value, dtype=bool)
+    def_subs.loc[["wind onshore", "wind offshore", "solar PV", "CSP"], :] = True
+    value.values[
+        def_subs.values
+    ] = _ext_constant_materials_for_om_per_capacity_installed_res_elec().values[
+        def_subs.values
+    ]
     return value
 
 
@@ -218,7 +222,7 @@ _ext_constant_materials_for_om_per_capacity_installed_res_elec = ExtConstant(
     },
     _root,
     {
-        "RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"],
+        "RES elec": _subscript_dict["RES elec"],
         "materials": _subscript_dict["materials"],
     },
     "_ext_constant_materials_for_om_per_capacity_installed_res_elec",

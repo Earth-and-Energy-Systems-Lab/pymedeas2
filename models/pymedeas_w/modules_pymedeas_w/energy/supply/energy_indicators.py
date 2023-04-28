@@ -1,6 +1,6 @@
 """
-Module energy_indicators
-Translated using PySD version 3.2.0
+Module energy.supply.energy_indicators
+Translated using PySD version 3.9.1
 """
 
 
@@ -150,10 +150,10 @@ def tfec_res_ej():
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"tpes_ej": 1, "pe_traditional_biomass_ej_delayed_1yr": 1},
+    depends_on={"tpes_ej": 1, "pe_traditional_biomass_ej_delayed": 1},
 )
 def tpes_without_trad_biomass():
     """
     TPES without accounting for traditional biomass.
     """
-    return tpes_ej() - pe_traditional_biomass_ej_delayed_1yr()
+    return tpes_ej() - pe_traditional_biomass_ej_delayed()

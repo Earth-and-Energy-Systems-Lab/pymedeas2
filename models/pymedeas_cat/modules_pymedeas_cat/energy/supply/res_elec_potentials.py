@@ -1,28 +1,7 @@
 """
-Module res_elec_potentials
-Translated using PySD version 3.2.0
+Module energy.supply.res_elec_potentials
+Translated using PySD version 3.9.1
 """
-
-
-@component.add(
-    name="Start year P growth RES elec",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_start_year_p_growth_res_elec"},
-)
-def start_year_p_growth_res_elec():
-    return _ext_constant_start_year_p_growth_res_elec()
-
-
-_ext_constant_start_year_p_growth_res_elec = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "start_year_p_growth_RES_elec",
-    {},
-    _root,
-    {},
-    "_ext_constant_start_year_p_growth_res_elec",
-)
 
 
 @component.add(
@@ -132,7 +111,7 @@ def historic_share_installed_pv_urban_vs_tot_pv():
 
 _ext_data_historic_share_installed_pv_urban_vs_tot_pv = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_share_of_urban_pv_over_total",
     None,
@@ -243,7 +222,7 @@ def max_hydro_twe():
 
 _ext_constant_max_hydro_twe = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "max_hydro_potential",
     {},
     _root,
@@ -268,7 +247,7 @@ def max_oceanic_twe():
 
 _ext_constant_max_oceanic_twe = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "max_oceanic_potential",
     {},
     _root,
@@ -293,7 +272,7 @@ def max_offshore_wind_twe():
 
 _ext_constant_max_offshore_wind_twe = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "max_offshore_wind_potential",
     {},
     _root,
@@ -318,7 +297,7 @@ def max_onshore_wind_twe():
 
 _ext_constant_max_onshore_wind_twe = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "max_onshore_wind_potential",
     {},
     _root,
@@ -343,7 +322,7 @@ def max_pe_geotelec_twth():
 
 _ext_constant_max_pe_geotelec_twth = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "max_PE_geot_elec_potential",
     {},
     _root,
@@ -573,7 +552,7 @@ def p_share_installed_pv_urban_vs_tot_pv():
 
 _ext_constant_p_share_installed_pv_urban_vs_tot_pv = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "share_PV_urban_tot_PV",
     {},
     _root,
@@ -705,28 +684,6 @@ def real_share_pv_urban_vs_total_pv():
 
 
 @component.add(
-    name="remaining potential RES elec",
-    units="Dmnl",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"max_potential_res_elec_twh": 3, "real_generation_res_elec_twh": 2},
-)
-def remaining_potential_res_elec():
-    """
-    Remaining potential of renewables for electricity by technology.
-    """
-    return if_then_else(
-        max_potential_res_elec_twh() > real_generation_res_elec_twh(),
-        lambda: (max_potential_res_elec_twh() - real_generation_res_elec_twh())
-        / max_potential_res_elec_twh(),
-        lambda: xr.DataArray(
-            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-        ),
-    )
-
-
-@component.add(
     name="remaining potential solar PV urban",
     units="Dmnl",
     comp_type="Auxiliary",
@@ -734,8 +691,8 @@ def remaining_potential_res_elec():
     depends_on={
         "max_solar_pv_urban": 2,
         "twe_per_twh": 2,
-        "potential_generation_res_elec_twh": 1,
         "desired_share_installed_pv_urban_vs_tot_pv": 1,
+        "potential_generation_res_elec_twh": 1,
     },
 )
 def remaining_potential_solar_pv_urban():
@@ -797,3 +754,24 @@ def share_solar_pv_vs_tot_solar_gen():
         + fe_elec_gen_from_solar_pv_on_land_twh(),
         1,
     )
+
+
+@component.add(
+    name="Start year P growth RES elec",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_start_year_p_growth_res_elec"},
+)
+def start_year_p_growth_res_elec():
+    return _ext_constant_start_year_p_growth_res_elec()
+
+
+_ext_constant_start_year_p_growth_res_elec = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "NZP",
+    "start_year_p_growth_RES_elec",
+    {},
+    _root,
+    {},
+    "_ext_constant_start_year_p_growth_res_elec",
+)

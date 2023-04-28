@@ -1,6 +1,6 @@
 """
-Module biomass_for_electricity_and_heat
-Translated using PySD version 3.2.0
+Module energy.supply.biomass_for_electricity_and_heat
+Translated using PySD version 3.9.1
 """
 
 

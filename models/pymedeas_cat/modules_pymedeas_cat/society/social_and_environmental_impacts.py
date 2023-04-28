@@ -1,6 +1,6 @@
 """
-Module social_and_environmental_impacts
-Translated using PySD version 3.2.0
+Module society.social_and_environmental_impacts
+Translated using PySD version 3.9.1
 """
 
 
@@ -37,13 +37,13 @@ def carbon_footprint_tonnescperson():
     units="GtCO2/(Year*T$)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_co2_emissions_gtco2": 1, "gdp_aut": 1},
+    depends_on={"total_co2_emissions_gtco2": 1, "gdp_cat": 1},
 )
 def co2_emissions_per_value_added():
     """
     CO2 emissions per value added (GDP).
     """
-    return zidz(total_co2_emissions_gtco2(), gdp_aut())
+    return zidz(total_co2_emissions_gtco2(), gdp_cat())
 
 
 @component.add(

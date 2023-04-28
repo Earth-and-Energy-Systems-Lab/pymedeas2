@@ -1,6 +1,6 @@
 """
-Module res_land_use
-Translated using PySD version 3.2.0
+Module environment.land.res_land_use
+Translated using PySD version 3.9.1
 """
 
 
@@ -17,7 +17,7 @@ def agricultural_land_2015():
 
 _ext_constant_agricultural_land_2015 = ExtConstant(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "agricultural_land_2015",
     {},
     _root,
@@ -257,7 +257,7 @@ def urban_surface_2015():
 
 _ext_constant_urban_surface_2015 = ExtConstant(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "urban_surface_2015",
     {},
     _root,

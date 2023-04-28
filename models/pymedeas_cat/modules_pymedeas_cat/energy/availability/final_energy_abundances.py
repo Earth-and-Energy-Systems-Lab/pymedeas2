@@ -1,6 +1,6 @@
 """
-Module final_energy_abundances
-Translated using PySD version 3.2.0
+Module energy.availability.final_energy_abundances
+Translated using PySD version 3.9.1
 """
 
 
@@ -45,7 +45,7 @@ def energy_scarcity_forgetting_time():
 
 _ext_constant_energy_scarcity_forgetting_time = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "energy_scarcity_forgetting_time",
     {},
     _root,
@@ -70,7 +70,7 @@ def energy_scarcity_forgetting_time_h():
 
 _ext_constant_energy_scarcity_forgetting_time_h = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "energy_scarcity_forgetting_time_H",
     {},
     _root,
@@ -194,6 +194,35 @@ _integ_perception_of_final_energy_scarcity_h = Integ(
 
 
 @component.add(
+    name='"perception of inter-fuel final energy scarcities"',
+    units="Dmnl",
+    subscripts=["final sources", "final sources1"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"sensitivity_to_scarcity": 1, "perception_of_final_energy_scarcity": 2},
+)
+def perception_of_interfuel_final_energy_scarcities():
+    """
+    Perception of economic sectors of final energy scarcity between fuels. Matrix 5x5. This perception drives the fuel replacement and efficiency improvement.
+    """
+    return if_then_else(
+        sensitivity_to_scarcity() == 0,
+        lambda: xr.DataArray(
+            0,
+            {
+                "final sources1": _subscript_dict["final sources1"],
+                "final sources": _subscript_dict["final sources"],
+            },
+            ["final sources1", "final sources"],
+        ),
+        lambda: perception_of_final_energy_scarcity().rename(
+            {"final sources": "final sources1"}
+        )
+        - perception_of_final_energy_scarcity(),
+    ).transpose("final sources", "final sources1")
+
+
+@component.add(
     name='"perception of inter-fuel final energy scarcities H"',
     units="Dmnl",
     subscripts=["final sources", "final sources1"],
@@ -222,35 +251,6 @@ def perception_of_interfuel_final_energy_scarcities_h():
             {"final sources": "final sources1"}
         )
         - perception_of_final_energy_scarcity_h(),
-    ).transpose("final sources", "final sources1")
-
-
-@component.add(
-    name='"perception of inter-fuel final energy scarcities"',
-    units="Dmnl",
-    subscripts=["final sources", "final sources1"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"sensitivity_to_scarcity": 1, "perception_of_final_energy_scarcity": 2},
-)
-def perception_of_interfuel_final_energy_scarcities():
-    """
-    Perception of economic sectors of final energy scarcity between fuels. Matrix 5x5. This perception drives the fuel replacement and efficiency improvement.
-    """
-    return if_then_else(
-        sensitivity_to_scarcity() == 0,
-        lambda: xr.DataArray(
-            0,
-            {
-                "final sources1": _subscript_dict["final sources1"],
-                "final sources": _subscript_dict["final sources"],
-            },
-            ["final sources1", "final sources"],
-        ),
-        lambda: perception_of_final_energy_scarcity().rename(
-            {"final sources": "final sources1"}
-        )
-        - perception_of_final_energy_scarcity(),
     ).transpose("final sources", "final sources1")
 
 
@@ -586,8 +586,8 @@ _ext_constant_sensitivity_to_energy_scarcity_medium = ExtConstant(
     depends_on={
         "sensitivity_to_scarcity_option": 2,
         "sensitivity_to_energy_scarcity_low": 1,
-        "sensitivity_to_energy_scarcity_high": 1,
         "sensitivity_to_energy_scarcity_medium": 1,
+        "sensitivity_to_energy_scarcity_high": 1,
     },
 )
 def sensitivity_to_scarcity():
@@ -613,8 +613,8 @@ def sensitivity_to_scarcity():
     depends_on={
         "sensitivity_to_scarcity_option_h": 2,
         "sensitivity_to_energy_scarcity_low": 1,
-        "sensitivity_to_energy_scarcity_high": 1,
         "sensitivity_to_energy_scarcity_medium": 1,
+        "sensitivity_to_energy_scarcity_high": 1,
     },
 )
 def sensitivity_to_scarcity_h():
@@ -648,7 +648,7 @@ def sensitivity_to_scarcity_option():
 
 _ext_constant_sensitivity_to_scarcity_option = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "sensitivity_to_scarcity_option",
     {},
     _root,
@@ -673,7 +673,7 @@ def sensitivity_to_scarcity_option_h():
 
 _ext_constant_sensitivity_to_scarcity_option_h = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "sensitivity_to_scarcity_option_H",
     {},
     _root,

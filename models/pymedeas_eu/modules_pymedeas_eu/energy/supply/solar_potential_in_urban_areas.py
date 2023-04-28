@@ -1,6 +1,6 @@
 """
-Module solar_potential_in_urban_areas
-Translated using PySD version 3.2.0
+Module energy.supply.solar_potential_in_urban_areas
+Translated using PySD version 3.9.1
 """
 
 
@@ -19,8 +19,8 @@ def av_solar_i():
 
 
 _ext_constant_av_solar_i = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "../parameters.xlsx",
+    "Europe",
     "average_solar_I",
     {},
     _root,
@@ -44,8 +44,8 @@ def f1_pv_solar_in_target_year():
 
 
 _ext_constant_f1_pv_solar_in_target_year = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "../energy.xlsx",
+    "Europe",
     "cell_efficiency_target_year",
     {},
     _root,
@@ -62,9 +62,9 @@ _ext_constant_f1_pv_solar_in_target_year = ExtConstant(
     depends_on={
         "time": 4,
         "f1ini_solar_pv": 4,
+        "f1_pv_solar_in_target_year": 2,
         "start_year_p_f1_solar_pv": 3,
         "target_year_f1_solar_pv": 2,
-        "f1_pv_solar_in_target_year": 2,
     },
 )
 def f1_solar_pv():
@@ -331,7 +331,7 @@ def share_available_roof():
 
 _ext_constant_share_available_roof = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "share_available_roof",
     {},
     _root,
@@ -356,7 +356,7 @@ def share_available_roof_for_rooftop_pv():
 
 _ext_constant_share_available_roof_for_rooftop_pv = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "share_available_roof_for_rooftop_PV",
     {},
     _root,
@@ -381,7 +381,7 @@ def share_available_roof_for_solar_thermal():
 
 _ext_constant_share_available_roof_for_solar_thermal = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "share_roof_solar_thermal",
     {},
     _root,
@@ -405,8 +405,8 @@ def start_year_p_f1_solar_pv():
 
 
 _ext_constant_start_year_p_f1_solar_pv = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "../energy.xlsx",
+    "Europe",
     "start_year_cell_efficency_PV",
     {},
     _root,
@@ -430,8 +430,8 @@ def target_year_f1_solar_pv():
 
 
 _ext_constant_target_year_f1_solar_pv = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "../energy.xlsx",
+    "Europe",
     "targ_year_cell_efficiency_PV",
     {},
     _root,

@@ -1,6 +1,6 @@
 """
-Module res_elec_potentials
-Translated using PySD version 3.2.0
+Module energy.supply.res_elec_potentials
+Translated using PySD version 3.9.1
 """
 
 
@@ -263,15 +263,15 @@ def max_potential_tot_res_elec_twh():
     name="max RES elec TWe",
     units="TWe",
     subscripts=["RES elec"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="External, Normal",
     depends_on={
         "__external__": "_ext_constant_max_res_elec_twe",
-        "max_pe_geotelec_twth": 1,
         "efficiency_conversion_geot_pe_to_elec": 1,
+        "max_pe_geotelec_twth": 1,
         "max_bioe_twe": 1,
-        "max_solar_pv_urban": 1,
         "max_solar_pv_on_land_twe": 1,
+        "max_solar_pv_urban": 1,
         "max_csp_on_land_mha": 1,
         "power_density_csp": 1,
     },
@@ -283,9 +283,14 @@ def max_res_elec_twe():
     value = xr.DataArray(
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
-    value.loc[
-        ["hydro", "oceanic", "wind onshore", "wind offshore"]
-    ] = _ext_constant_max_res_elec_twe().values
+    def_subs = xr.zeros_like(value, dtype=bool)
+    def_subs.loc[["hydro"]] = True
+    def_subs.loc[["oceanic"]] = True
+    def_subs.loc[["wind onshore"]] = True
+    def_subs.loc[["wind offshore"]] = True
+    value.values[def_subs.values] = _ext_constant_max_res_elec_twe().values[
+        def_subs.values
+    ]
     value.loc[["geot elec"]] = (
         max_pe_geotelec_twth() * efficiency_conversion_geot_pe_to_elec()
     )
@@ -301,7 +306,7 @@ _ext_constant_max_res_elec_twe = ExtConstant(
     "max_hydro_potential",
     {"RES elec": ["hydro"]},
     _root,
-    {"RES elec": ["hydro", "oceanic", "wind onshore", "wind offshore"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_max_res_elec_twe",
 )
 
@@ -392,7 +397,7 @@ def p_share_installed_pv_urban_vs_tot_pv():
 
 _ext_constant_p_share_installed_pv_urban_vs_tot_pv = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "share_PV_urban_tot_PV",
     {},
     _root,

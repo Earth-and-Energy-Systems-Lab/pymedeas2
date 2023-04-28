@@ -1,6 +1,6 @@
 """
-Module primary_energy_abundances
-Translated using PySD version 3.2.0
+Module energy.availability.primary_energy_abundances
+Translated using PySD version 3.9.1
 """
 
 
@@ -126,7 +126,7 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["coal"]}, 0)
+        .expand_dims({"fossil fuels": ["coal"]}, 0)
         .values
     )
     value.loc[["oil"], :] = (
@@ -143,7 +143,7 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["oil"]}, 0)
+        .expand_dims({"fossil fuels": ["oil"]}, 0)
         .values
     )
     value.loc[["natural gas"], :] = (
@@ -160,7 +160,7 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["natural gas"]}, 0)
+        .expand_dims({"fossil fuels": ["natural gas"]}, 0)
         .values
     )
     value.loc[["others"], :] = (

@@ -1,6 +1,6 @@
 """
-Module exports_demand
-Translated using PySD version 3.2.0
+Module economy.exports_demand
+Translated using PySD version 3.9.1
 """
 
 
@@ -137,8 +137,8 @@ def exports_demand_not_covered_row():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "exports_demand_to_roeu": 1,
         "real_exports_demand_to_roeu_by_sector": 1,
+        "exports_demand_to_roeu": 1,
     },
 )
 def exports_demand_not_covered_to_roeu():
@@ -327,6 +327,7 @@ def real_demand_world_next_step():
 
 @component.add(
     name="Total exports",
+    units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_exports_to_roeu": 1, "total_exports_to_row": 1},
@@ -375,12 +376,12 @@ def total_exports_to_row():
     comp_subtype="Normal",
     depends_on={
         "exports_demand_to_roeu": 1,
-        "variation_historic_exports_demand_to_roeu": 1,
-        "beta_1_exp_1": 2,
-        "gdp_eu28_next_step": 1,
-        "beta_0_exp_1": 1,
         "time": 1,
+        "variation_historic_exports_demand_to_roeu": 1,
+        "beta_0_exp_1": 1,
+        "beta_1_exp_1": 2,
         "gdp_eu28": 1,
+        "gdp_eu28_next_step": 1,
     },
 )
 def variation_exports_demand_to_roeu():
@@ -407,12 +408,12 @@ def variation_exports_demand_to_roeu():
     comp_subtype="Normal",
     depends_on={
         "exports_demand_to_row": 1,
-        "beta_1_exp_0": 2,
-        "real_demand_world": 1,
+        "time": 1,
         "real_demand_world_next_step": 1,
         "beta_0_exp_0": 1,
+        "beta_1_exp_0": 2,
+        "real_demand_world": 1,
         "variation_historic_exports_demand_row": 1,
-        "time": 1,
     },
 )
 def variation_exports_demand_to_row():

@@ -1,6 +1,6 @@
 """
-Module energy_indicators
-Translated using PySD version 3.2.0
+Module energy.supply.energy_indicators
+Translated using PySD version 3.9.1
 """
 
 

@@ -1,6 +1,6 @@
 """
-Module heat_demand
-Translated using PySD version 3.2.0
+Module energy.demand.heat_demand
+Translated using PySD version 3.9.1
 """
 
 
@@ -77,7 +77,12 @@ def fed_heatcom_plants_fossil_fuels_ej():
     """
     return np.maximum(
         fed_heatcom_nre_ej()
-        - fes_heatcom_fossil_fuels_chp_plants_ej()
+        - sum(
+            fes_heatcom_fossil_fuels_chp_plants_ej().rename(
+                {"fossil fuels": "fossil fuels!"}
+            ),
+            dim=["fossil fuels!"],
+        )
         - fes_heatcom_nuclear_chp_plants_ej(),
         0,
     )
@@ -132,7 +137,7 @@ def heatnc_distribution_losses():
 
 @component.add(
     name='"PED coal Heat-nc"',
-    units="EJ",
+    units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -145,10 +150,9 @@ def ped_coal_heatnc():
     """
     Primary energy demand heat non-commercial to be covered by coal. It corresponds to the FEH (final energy use for heat) metric which includes the distribution and generation losses (see IEA, 2014).
     """
-    return (
-        total_fed_nre_heatnc()
-        * share_fed_coal_vs_nre_heatnc()
-        / efficiency_coal_for_heat_plants()
+    return zidz(
+        total_fed_nre_heatnc() * share_fed_coal_vs_nre_heatnc(),
+        efficiency_coal_for_heat_plants(),
     )
 
 
@@ -167,10 +171,9 @@ def ped_gas_heatnc():
     """
     Primary energy demand heat non-commercial to be covered by natural gas. It corresponds to the FEH (final energy use for heat) metric which includes the distribution and generation losses (see IEA, 2014).
     """
-    return (
-        total_fed_nre_heatnc()
-        * share_fed_gas_vs_nre_heatnc()
-        / efficiency_gases_for_heat_plants()
+    return zidz(
+        total_fed_nre_heatnc() * share_fed_gas_vs_nre_heatnc(),
+        efficiency_gases_for_heat_plants(),
     )
 
 
@@ -189,10 +192,9 @@ def ped_liquids_heatnc():
     """
     Primary energy demand heat non-commercial to be covered by liquids. It corresponds to the FEH (final energy use for heat) metric which includes the distribution and generation losses (see IEA, 2014).
     """
-    return (
-        total_fed_nre_heatnc()
-        * share_fed_liquids_vs_nre_heatnc()
-        / efficiency_liquids_for_heat_plants()
+    return zidz(
+        total_fed_nre_heatnc() * share_fed_liquids_vs_nre_heatnc(),
+        efficiency_liquids_for_heat_plants(),
     )
 
 

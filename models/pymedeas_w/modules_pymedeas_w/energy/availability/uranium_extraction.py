@@ -1,6 +1,6 @@
 """
-Module uranium_extraction
-Translated using PySD version 3.2.0
+Module energy.availability.uranium_extraction
+Translated using PySD version 3.9.1
 """
 
 
@@ -84,22 +84,13 @@ _ext_constant_cumulated_uranium_extraction_to_1995 = ExtConstant(
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "unlimited_nre": 1,
-        "unlimited_uranium": 1,
-        "pe_demand_uranium": 2,
-        "max_extraction_uranium": 1,
-    },
+    depends_on={"pe_demand_uranium": 1, "max_extraction_uranium": 1},
 )
 def extraction_uranium_ej():
     """
     Annual extraction of uranium.
     """
-    return if_then_else(
-        np.logical_or(unlimited_nre() == 1, unlimited_uranium() == 1),
-        lambda: pe_demand_uranium(),
-        lambda: np.minimum(pe_demand_uranium(), max_extraction_uranium()),
-    )
+    return np.minimum(pe_demand_uranium(), max_extraction_uranium())
 
 
 @component.add(
@@ -170,46 +161,17 @@ _ext_lookup_table_max_extraction_uranium = ExtLookup(
 
 
 @component.add(
-    name='"unlimited uranium?"',
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_unlimited_uranium"},
-)
-def unlimited_uranium():
-    """
-    Switch to consider if uranium is unlimited (1), or if it is limited (0). If limited then the available depletion curves are considered.
-    """
-    return _ext_constant_unlimited_uranium()
-
-
-_ext_constant_unlimited_uranium = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "unlimited_uranium",
-    {},
-    _root,
-    {},
-    "_ext_constant_unlimited_uranium",
-)
-
-
-@component.add(
     name="URR uranium",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"unlimited_nre": 1, "unlimited_uranium": 1, "urr_uranium_input": 1},
+    depends_on={"urr_uranium_input": 1},
 )
 def urr_uranium():
     """
     Ultimately Recoverable Resources (URR) associated to the selected depletion curve.
     """
-    return if_then_else(
-        np.logical_or(unlimited_nre() == 1, unlimited_uranium() == 1),
-        lambda: np.nan,
-        lambda: urr_uranium_input(),
-    )
+    return urr_uranium_input()
 
 
 @component.add(

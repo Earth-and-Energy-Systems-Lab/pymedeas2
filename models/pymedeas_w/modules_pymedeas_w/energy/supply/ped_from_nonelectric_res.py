@@ -1,6 +1,6 @@
 """
-Module ped_from_nonelectric_res
-Translated using PySD version 3.2.0
+Module energy.supply.ped_from_nonelectric_res
+Translated using PySD version 3.9.1
 """
 
 
@@ -50,7 +50,7 @@ def pe_supply_from_res_nonelec_without_trad_bioe_ej():
     comp_subtype="Normal",
     depends_on={
         "pe_supply_from_res_nonelec_without_trad_bioe_ej": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "pe_traditional_biomass_ej_delayed": 1,
         "losses_in_charcoal_plants_ej": 1,
     },
 )
@@ -60,6 +60,6 @@ def pe_supply_res_nonelec_ej():
     """
     return (
         pe_supply_from_res_nonelec_without_trad_bioe_ej()
-        + pe_traditional_biomass_ej_delayed_1yr()
+        + pe_traditional_biomass_ej_delayed()
         + losses_in_charcoal_plants_ej()
     )

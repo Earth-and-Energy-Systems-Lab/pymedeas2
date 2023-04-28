@@ -1,6 +1,6 @@
 """
-Module crop_and_forest_residues
-Translated using PySD version 3.2.0
+Module energy.supply.crop_and_forest_residues
+Translated using PySD version 3.9.1
 """
 
 
@@ -147,9 +147,9 @@ def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
         "time": 3,
         "start_year_bioe_residues_for_heatelec": 3,
         "ej_per_ktoe": 1,
+        "pe_bioe_residues_for_heatelec_ej": 1,
         "bioe_residues_for_heatelec_available": 1,
         "p_bioe_residues_for_heatelec": 1,
-        "pe_bioe_residues_for_heatelec_ej": 1,
         "start_production_biofuels": 1,
     },
 )
@@ -181,13 +181,13 @@ def new_bioe_residues_for_heatelec():
     depends_on={
         "time": 3,
         "start_year_cellulosic_biofuels": 3,
-        "start_production_biofuels": 1,
+        "check_liquids": 1,
         "ej_per_ktoe": 1,
-        "p_cellulosic_biofuels": 1,
         "cellulosic_biofuels_available": 1,
         "potential_pe_cellulosic_biofuel_ej": 2,
+        "start_production_biofuels": 1,
         "constrain_liquids_exogenous_growth": 1,
-        "check_liquids": 1,
+        "p_cellulosic_biofuels": 1,
     },
 )
 def new_cellulosic_biofuels():
@@ -229,7 +229,7 @@ def p_bioe_residues_for_heatelec():
 
 _ext_constant_p_bioe_residues_for_heatelec = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "p_bioe_residues_for_heat_electr",
     {},
     _root,
@@ -254,7 +254,7 @@ def p_cellulosic_biofuels():
 
 _ext_constant_p_cellulosic_biofuels = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "p_cellulosic_biofuels",
     {},
     _root,
@@ -383,7 +383,7 @@ def share_cellulosic_biofuels_vs_bioe_residues():
 
 _ext_constant_share_cellulosic_biofuels_vs_bioe_residues = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "share_cell_biofuels_vs_bioe_residues",
     {},
     _root,
@@ -408,7 +408,7 @@ def start_year_bioe_residues_for_heatelec():
 
 _ext_constant_start_year_bioe_residues_for_heatelec = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "start_year_bioe_residues_heat_electr",
     {},
     _root,
@@ -433,7 +433,7 @@ def start_year_cellulosic_biofuels():
 
 _ext_constant_start_year_cellulosic_biofuels = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "start_year_cell_biofuels",
     {},
     _root,

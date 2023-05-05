@@ -1,9 +1,5 @@
-before_script:
-  - add-apt-repository ppa:deadsnakes/ppa
-  - apt update -qy
-  - apt install -y python3.11 python3-pip
-  - apt install -y python3-tk
-  - python3 -m pip install --upgrade pip
+
+image: python:latest
 
 tests:
   stage: test

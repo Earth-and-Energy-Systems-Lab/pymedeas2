@@ -6,3 +6,5 @@ matplotlib
 dask[array]
 dask[diagnostics]
 dask[distributed]
+ipykernel
+jupyterlab

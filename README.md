@@ -10,27 +10,40 @@ Please note that the three models are nested, hence **to run *temporary_name_cat
 
 Python >= 3.7 is required to run the code (Python 3.11 is recommended).
 
-### Installation instructions for (Windows/Linux/MacOS) using conda
+### Installation instructions using venv
 
 0. Clone or download this repository in your computer
 
-1. If not installed yet, [download and install Miniconda or Anaconda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html) on your computer.
-
-2. Open a terminal (Anaconda prompt in Windows) and create a conda environement with the following command:
+1. Open a terminal and create a conda environement with the following command:
+    ```console
+    python -m venv pymedeas2
     ```
-    conda env create -f environment.yml
+2. Activate the virtual environment:
+    - On windows:
+    ```console
+    pymedeas2\Scripts\activate
     ```
-3. Now move to *Running a simulation from terminal* section of this document to run your first simulation.
+    - On Linux and Mac:
+    ```console
+    source pymedeas2/bin/activate
+    ```
+3. Install dependencies from the *requirements.txt* file:
+    ```console
+    pip install -r requirements.txt
+    ```
 
-NOTE: If you already had Anaconda installed on your Mac and then upgraded the OS to Catalina, If you are running MacOS Catalina, make sure your read [this](https://www.anaconda.com/how-to-restore-anaconda-after-macos-catalina-update/)
+4. Now move to *Running a simulation from terminal* section of this document to run your first simulation.
+
+NOTE: to leave the virtual environment run:
+    ```console
+    deactivate
+    ```
+
 ### Running a simulation from terminal (Windows/Linux/MacOS)
 
 1. Open a terminal and go to the project folder (using the *cd* command)
 
-2. Activate the project virtual environment running the following command:
-    ```console
-    conda activate pymedeas
-    ```
+2. Activate the project virtual environment as in step 2 of the previous section.
 
 3. At this point, you should be able to run a default simulation with the following command:
 
@@ -54,16 +67,13 @@ python run.py -h
 ```
 5. After finishing you can deactivate your environment:
     ```console
-    conda deactivate
+    deactivate
     ```
 ### Using the plot GUI to plot previous simulation results from terminal (in csv format)
 
 1. Open a terminal and go to the project folder (using the *cd* command)
 
-2. If it's not active yet, activate the project virtual environment running the following command:
-    ```console
-    conda activate pymedeas
-    ```
+2. If it's not active yet, activate the project virtual environment as previously shown.
 
 3. Run the following command:
 
@@ -71,22 +81,27 @@ python run.py -h
     python plot_tool.py
     ```
 
-4. Simulation results (csv file) can be found either in the pymedeas_w the pymedeas_eu or the pymedeas_at folder. You can load an unlimited number of results files, to compare several simulation results.
+4. Simulation results can be found either in the pymedeas_w the pymedeas_eu or the pymedeas_at folder. You can load an unlimited number of results files, to compare several simulation results.
 
-5. After finishing you can deactivate your environment:
-    ```console
-    conda deactivate
-    ```
+
 ### Model outputs
 
-Simulation results (csv file) can be found either in the respective folder inside the *outputs* folder.
+Simulation results can be found either in the respective folder inside the *outputs* folder.
 
 Unless the user provides the desired output file name with the -n option when launching the simulation (e.g. python run.py -n results_my_scenario), the default results naming convention is the following:
 
-results_SCENARIO-NAME_INITIAL-DATE_FINAL-DATE_TIME-STEP.csv
+results_SCENARIO-NAME_INITIAL-DATE_FINAL-DATE_TIME-STEP.nc
 
 If a results file with the same name already exists, the characters "_old" will be added at the end of the file name. This can happen up to two times. NOTE that if a fourth simulation with the same name is run, the file of the first simulation result will be automatically deleted.
 
 ### Exporting results stored in netCDF (.nc) format to csv (or tab)
 
-Open the jupyter notebook named `deserialize_simulation_results.ipynb` in the pytools folder and follow the instructions.
+Unless specified through the CLI, results are stored in netCDF format (.nc extension).
+
+
+To export the results to csv or tab format, open the jupyter notebook named `deserialize_simulation_results.ipynb` in the pytools folder and follow the instructions.
+
+To open the jupyter notebook run:
+```console
+jupyter notebook
+```

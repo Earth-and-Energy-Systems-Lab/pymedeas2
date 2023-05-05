@@ -24,10 +24,6 @@ from pytools.tools import get_initial_user_input,\
 
 warnings.filterwarnings("ignore")
 
-__author__ = "Oleg Osychenko, Roger Samsó, Eneko Martin"
-__maintainer__ = "Eneko Martin"
-__status__ = "Development"
-
 # check PySD version
 if tuple(int(i) for i in pysd.__version__.split(".")[:2]) < (3, 0):
     raise RuntimeError(

@@ -13,6 +13,5 @@ model_updated.py
 .ipynb_checkpoints
 .vscode
 .~lock*
-*.txt
 *.csv
 .coverage

@@ -8,7 +8,7 @@ Currently, *temporary_name* models for World (*temporary_name_w*), EU28 (*tempor
 Please note that the three models are nested, hence **to run *temporary_name_cat* the two parent models (*temporary_name_w* and *temporary_name_eu*) need to be run first**. Child models will request the results file/s from the parents at runtime.
 
 
-Python 3.7 is required to run the code.
+Python >= 3.7 is required to run the code (Python 3.11 is recommended).
 
 ### Installation instructions for (Windows/Linux/MacOS) using conda
 
@@ -86,3 +86,7 @@ Unless the user provides the desired output file name with the -n option when la
 results_SCENARIO-NAME_INITIAL-DATE_FINAL-DATE_TIME-STEP.csv
 
 If a results file with the same name already exists, the characters "_old" will be added at the end of the file name. This can happen up to two times. NOTE that if a fourth simulation with the same name is run, the file of the first simulation result will be automatically deleted.
+
+### Exporting results stored in netCDF (.nc) format to csv (or tab)
+
+Open the jupyter notebook named `deserialize_simulation_results.ipynb` in the pytools folder and follow the instructions.

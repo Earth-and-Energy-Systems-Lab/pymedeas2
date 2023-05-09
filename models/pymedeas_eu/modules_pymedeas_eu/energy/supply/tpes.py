@@ -1,6 +1,6 @@
 """
-Module tpes
-Translated using PySD version 3.2.0
+Module energy.supply.tpes
+Translated using PySD version 3.10.0
 """
 
 
@@ -121,7 +121,7 @@ def staticdynamic_quality_of_electricity():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "extraction_coal_ej_eu": 1,
+        "extraction_coal_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
         "real_extraction_conv_gas_ej": 1,
         "real_extraction_conv_oil_ej": 1,
@@ -138,7 +138,7 @@ def total_consumption_nre_ej():
     Annual total consumption of non-renewable energy resources.
     """
     return (
-        extraction_coal_ej_eu()
+        extraction_coal_eu()
         + imports_eu_coal_from_row_ej()
         + real_extraction_conv_gas_ej()
         + real_extraction_conv_oil_ej()

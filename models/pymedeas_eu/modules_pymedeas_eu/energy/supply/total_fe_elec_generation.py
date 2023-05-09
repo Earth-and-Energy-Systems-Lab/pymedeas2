@@ -1,6 +1,6 @@
 """
-Module total_fe_elec_generation
-Translated using PySD version 3.2.0
+Module energy.supply.total_fe_elec_generation
+Translated using PySD version 3.10.0
 """
 
 
@@ -53,7 +53,7 @@ def annual_growth_rate_electricity_generation_res_elec_tot():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "extraction_coal_ej_eu": 1,
+        "extraction_coal_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
         "efficiency_coal_for_electricity": 1,
         "share_coal_dem_for_elec": 1,
@@ -65,7 +65,7 @@ def fe_elec_generation_from_coal_twh():
     Final energy electricity generation from coal (TWh).
     """
     return (
-        (extraction_coal_ej_eu() + imports_eu_coal_from_row_ej())
+        (extraction_coal_eu() + imports_eu_coal_from_row_ej())
         * efficiency_coal_for_electricity()
         * share_coal_dem_for_elec()
         / ej_per_twh()

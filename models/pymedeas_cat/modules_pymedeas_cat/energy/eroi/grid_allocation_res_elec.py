@@ -1,102 +1,7 @@
 """
-Module grid_allocation_res_elec
-Translated using PySD version 3.2.0
+Module energy.eroi.grid_allocation_res_elec
+Translated using PySD version 3.10.0
 """
-
-
-@component.add(
-    name="\"'static' EROIgrid RES elec\"",
-    units="Dmnl",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "static_eroi_res_elec": 2,
-        "esoi_elec_storage": 1,
-        "rt_elec_storage_efficiency": 2,
-        "share_res_elec_generation_curtailedstored": 3,
-    },
-)
-def static_eroigrid_res_elec():
-    """
-    System EROI after accounting for the energy losses of electricity storage. Equation from Barnhart et al (2013).
-    """
-    return if_then_else(
-        static_eroi_res_elec() <= 0,
-        lambda: xr.DataArray(
-            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-        ),
-        lambda: (
-            1
-            - share_res_elec_generation_curtailedstored()
-            + share_res_elec_generation_curtailedstored() * rt_elec_storage_efficiency()
-        )
-        / (
-            1 / static_eroi_res_elec()
-            + share_res_elec_generation_curtailedstored()
-            * zidz(rt_elec_storage_efficiency(), esoi_elec_storage())
-        ),
-    )
-
-
-@component.add(
-    name="\"'static' EROIgrid tot-effective for allocation RES elec\"",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "output_elec_over_lifetime_res_elec_for_allocation2": 1,
-        "fei_over_lifetime_res_elec_for_allocation": 1,
-    },
-)
-def static_eroigrid_toteffective_for_allocation_res_elec():
-    """
-    EROI of the aggregated outputs and inputs of RES for generating electricity.
-    """
-    return zidz(
-        sum(
-            output_elec_over_lifetime_res_elec_for_allocation2().rename(
-                {"RES elec": "RES elec!"}
-            ),
-            dim=["RES elec!"],
-        ),
-        sum(
-            fei_over_lifetime_res_elec_for_allocation().rename(
-                {"RES elec": "RES elec!"}
-            ),
-            dim=["RES elec!"],
-        ),
-    )
-
-
-@component.add(
-    name="\"'static' EROItot-effective for allocation RES elec\"",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "output_elec_over_lifetime_res_elec_for_allocation": 1,
-        "fei_over_lifetime_res_elec_for_allocation": 1,
-    },
-)
-def static_eroitoteffective_for_allocation_res_elec():
-    """
-    EROI of the aggregated outputs and inputs of RES for generating electricity.
-    """
-    return zidz(
-        sum(
-            output_elec_over_lifetime_res_elec_for_allocation().rename(
-                {"RES elec": "RES elec!"}
-            ),
-            dim=["RES elec!"],
-        ),
-        sum(
-            fei_over_lifetime_res_elec_for_allocation().rename(
-                {"RES elec": "RES elec!"}
-            ),
-            dim=["RES elec!"],
-        ),
-    )
 
 
 @component.add(
@@ -271,3 +176,98 @@ def share_res_elec_generation_curtailedstored():
     value.loc[["solar PV"]] = 0.2
     value.loc[["CSP"]] = 0.2
     return value
+
+
+@component.add(
+    name="\"'static' EROIgrid RES elec\"",
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "static_eroi_res_elec": 2,
+        "share_res_elec_generation_curtailedstored": 3,
+        "esoi_elec_storage": 1,
+        "rt_elec_storage_efficiency": 2,
+    },
+)
+def static_eroigrid_res_elec():
+    """
+    System EROI after accounting for the energy losses of electricity storage. Equation from Barnhart et al (2013).
+    """
+    return if_then_else(
+        static_eroi_res_elec() <= 0,
+        lambda: xr.DataArray(
+            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        ),
+        lambda: (
+            1
+            - share_res_elec_generation_curtailedstored()
+            + share_res_elec_generation_curtailedstored() * rt_elec_storage_efficiency()
+        )
+        / (
+            1 / static_eroi_res_elec()
+            + share_res_elec_generation_curtailedstored()
+            * zidz(rt_elec_storage_efficiency(), esoi_elec_storage())
+        ),
+    )
+
+
+@component.add(
+    name="\"'static' EROIgrid tot-effective for allocation RES elec\"",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "output_elec_over_lifetime_res_elec_for_allocation2": 1,
+        "fei_over_lifetime_res_elec_for_allocation": 1,
+    },
+)
+def static_eroigrid_toteffective_for_allocation_res_elec():
+    """
+    EROI of the aggregated outputs and inputs of RES for generating electricity.
+    """
+    return zidz(
+        sum(
+            output_elec_over_lifetime_res_elec_for_allocation2().rename(
+                {"RES elec": "RES elec!"}
+            ),
+            dim=["RES elec!"],
+        ),
+        sum(
+            fei_over_lifetime_res_elec_for_allocation().rename(
+                {"RES elec": "RES elec!"}
+            ),
+            dim=["RES elec!"],
+        ),
+    )
+
+
+@component.add(
+    name="\"'static' EROItot-effective for allocation RES elec\"",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "output_elec_over_lifetime_res_elec_for_allocation": 1,
+        "fei_over_lifetime_res_elec_for_allocation": 1,
+    },
+)
+def static_eroitoteffective_for_allocation_res_elec():
+    """
+    EROI of the aggregated outputs and inputs of RES for generating electricity.
+    """
+    return zidz(
+        sum(
+            output_elec_over_lifetime_res_elec_for_allocation().rename(
+                {"RES elec": "RES elec!"}
+            ),
+            dim=["RES elec!"],
+        ),
+        sum(
+            fei_over_lifetime_res_elec_for_allocation().rename(
+                {"RES elec": "RES elec!"}
+            ),
+            dim=["RES elec!"],
+        ),
+    )

@@ -1,21 +1,7 @@
 """
-Module transport_electric_batteries
-Translated using PySD version 3.2.0
+Module energy.storage.transport_electric_batteries
+Translated using PySD version 3.10.0
 """
-
-
-@component.add(
-    name="bat number 2w",
-    units="batteries",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"number_vehicles_h": 1, "bateries_ratio_2w_e": 1},
-)
-def bat_number_2w():
-    """
-    Required number of electric batteries for 2w vehicles expressed in terms of a stantad a 21,3KWh battery, but taking into account the smaller size of 2 wheeler's batteries
-    """
-    return float(number_vehicles_h().loc["elec 2wheels"]) * bateries_ratio_2w_e()
 
 
 @component.add(
@@ -23,20 +9,14 @@ def bat_number_2w():
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "number_vehicles_h": 1,
-        "vehicles_inlandt": 2,
-        "bateries_ratio_bus_e": 1,
-    },
+    depends_on={"vehicles_households": 1, "vehicles_commercial_pkm": 1},
 )
 def bat_number_ev():
     """
-    Required number of electric batteries for hybrid vehicles expressed in terms of a stantad a 21,3KWh battery,
+    Required number of electric batteries for electric vehicles
     """
-    return (
-        float(number_vehicles_h().loc["elec 4wheels"])
-        + float(vehicles_inlandt().loc["LV elec"])
-        + float(vehicles_inlandt().loc["bus elec"]) * bateries_ratio_bus_e()
+    return float(vehicles_households().loc["elect"]) + float(
+        vehicles_commercial_pkm().loc["elect"]
     )
 
 
@@ -46,97 +26,19 @@ def bat_number_ev():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "vehicles_inlandt": 3,
-        "bateries_ratio_hib_lv": 2,
+        "vehicles_commercial_pkm": 1,
+        "vehicles_households": 1,
         "bateries_ratio_hib_hv": 1,
-        "bateries_ratio_hib_bus": 1,
-        "number_vehicles_h": 1,
     },
 )
 def bat_number_hib():
     """
-    Required number of electric batteries for hybrid vehicles expressed in terms of a stantad a 21,3KWh battery, but taking into account the greater size of heavy vehicle's batteries and the smaller one of hybrid ligh vehicles
+    Required number of electric batteries for hybrid vehicles expressed in terms of a stantad a 21,3KWh battery.
     """
     return (
-        float(vehicles_inlandt().loc["LV hib"]) * bateries_ratio_hib_lv()
-        + float(vehicles_inlandt().loc["HV hib"]) * bateries_ratio_hib_hv()
-        + float(vehicles_inlandt().loc["bus hib"]) * bateries_ratio_hib_bus()
-        + float(number_vehicles_h().loc["hib 4wheels"]) * bateries_ratio_hib_lv()
-    )
-
-
-@component.add(
-    name="bateries ratio 2w E",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_bateries_ratio_2w_e"},
-)
-def bateries_ratio_2w_e():
-    """
-    Ratio between the size of the electric 2 wheeler batteries and the standard 21,3KWh batteries, per vehicle
-    """
-    return _ext_constant_bateries_ratio_2w_e()
-
-
-_ext_constant_bateries_ratio_2w_e = ExtConstant(
-    "../transport.xlsx",
-    "Global",
-    "bateries_ratio_2w_E",
-    {},
-    _root,
-    {},
-    "_ext_constant_bateries_ratio_2w_e",
-)
-
-
-@component.add(
-    name="bateries ratio bus E",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_bateries_ratio_bus_e"},
-)
-def bateries_ratio_bus_e():
-    """
-    Ratio between the size of the electric bus batteries and the standard 21,3KWh batteries, per vehicle
-    """
-    return _ext_constant_bateries_ratio_bus_e()
-
-
-_ext_constant_bateries_ratio_bus_e = ExtConstant(
-    "../transport.xlsx",
-    "Global",
-    "bateries_ratio_bus_E",
-    {},
-    _root,
-    {},
-    "_ext_constant_bateries_ratio_bus_e",
-)
-
-
-@component.add(
-    name="bateries ratio hib bus",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_bateries_ratio_hib_bus"},
-)
-def bateries_ratio_hib_bus():
-    """
-    Ratio between the size of the hybrid bus batteries and the standard 21,3KWh batteries, per vehicle
-    """
-    return _ext_constant_bateries_ratio_hib_bus()
-
-
-_ext_constant_bateries_ratio_hib_bus = ExtConstant(
-    "../transport.xlsx",
-    "Global",
-    "bateries_ratio_hib_bus",
-    {},
-    _root,
-    {},
-    "_ext_constant_bateries_ratio_hib_bus",
-)
+        float(vehicles_commercial_pkm().loc["hybrid"])
+        + float(vehicles_households().loc["hybrid"])
+    ) * bateries_ratio_hib_hv()
 
 
 @component.add(
@@ -148,7 +50,7 @@ _ext_constant_bateries_ratio_hib_bus = ExtConstant(
 )
 def bateries_ratio_hib_hv():
     """
-    Ratio between the size of the hybrid HV batteries and the standard 21,3KWh batteries, per vehicle
+    Ratio between the size of the hybrid HV batteries and the standard batteries, per vehicle
     """
     return _ext_constant_bateries_ratio_hib_hv()
 
@@ -161,30 +63,6 @@ _ext_constant_bateries_ratio_hib_hv = ExtConstant(
     _root,
     {},
     "_ext_constant_bateries_ratio_hib_hv",
-)
-
-
-@component.add(
-    name="bateries ratio hib LV",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_bateries_ratio_hib_lv"},
-)
-def bateries_ratio_hib_lv():
-    """
-    Ratio between the size of the electric LV hybrid batteries and the standard 21,3KWh batteries, per vehicle
-    """
-    return _ext_constant_bateries_ratio_hib_lv()
-
-
-_ext_constant_bateries_ratio_hib_lv = ExtConstant(
-    "../transport.xlsx",
-    "Global",
-    "bateries_ratio_hib_lv",
-    {},
-    _root,
-    {},
-    "_ext_constant_bateries_ratio_hib_lv",
 )
 
 
@@ -328,10 +206,10 @@ def replacement_batteries():
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"bat_number_2w": 1, "bat_number_ev": 1, "bat_number_hib": 1},
+    depends_on={"bat_number_ev": 1, "bat_number_hib": 1},
 )
 def required_number_standard_batteries():
     """
     Required number of electric batteries taking as a stantad a 21,3KWh battery (average size of purely electric vehicle). The batteries of other vehicles are described in terms of this standard one using the batteries ratio coefficient, (relative to the size and amount of minerals). .
     """
-    return bat_number_2w() + bat_number_ev() + bat_number_hib() + 1
+    return bat_number_ev() + bat_number_hib()

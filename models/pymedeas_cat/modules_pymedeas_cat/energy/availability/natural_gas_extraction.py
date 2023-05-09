@@ -1,24 +1,24 @@
 """
-Module natural_gas_extraction
-Translated using PySD version 3.2.0
+Module energy.availability.natural_gas_extraction
+Translated using PySD version 3.10.0
 """
 
 
 @component.add(
-    name='"abundance total nat. gas AUT"',
+    name='"abundance total nat. gas CAT "',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_nat_gas_ej": 3, "pes_nat_gas_aut_1": 2},
+    depends_on={"ped_nat_gas_ej": 3, "pes_nat_gas_cat_": 2},
 )
-def abundance_total_nat_gas_aut():
+def abundance_total_nat_gas_cat_():
     """
     The parameter abundance varies between (1;0). Abundance=1 while the supply covers the demand; the closest to 0 indicates a higher divergence between supply and demand.
     """
     return if_then_else(
-        ped_nat_gas_ej() < pes_nat_gas_aut_1(),
+        ped_nat_gas_ej() < pes_nat_gas_cat_(),
         lambda: 1,
-        lambda: 1 - zidz(ped_nat_gas_ej() - pes_nat_gas_aut_1(), ped_nat_gas_ej()),
+        lambda: 1 - zidz(ped_nat_gas_ej() - pes_nat_gas_cat_(), ped_nat_gas_ej()),
     )
 
 
@@ -82,8 +82,8 @@ _delayfixed_constrain_gas_exogenous_growth_delayed_1yr = DelayFixed(
     depends_on={
         "time": 1,
         "start_policy_leave_in_ground_conv_gas": 1,
-        "rurr_conv_gas_until_start_year_plg": 1,
         "share_rurr_conv_gas_to_leave_underground": 1,
+        "rurr_conv_gas_until_start_year_plg": 1,
     },
 )
 def conv_gas_to_leave_underground():
@@ -141,7 +141,7 @@ def cumulated_conv_gas_extraction_to_1995():
 
 _ext_constant_cumulated_conv_gas_extraction_to_1995 = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "cumulative_conventional_gas_extraction_until_1995",
     {},
     _root,
@@ -242,12 +242,41 @@ def cumulated_unconv_gas_extraction_to_1995():
 
 _ext_constant_cumulated_unconv_gas_extraction_to_1995 = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "cumulative_unconventional_gas_extraction_until_1995",
     {},
     _root,
     {},
     "_ext_constant_cumulated_unconv_gas_extraction_to_1995",
+)
+
+
+@component.add(
+    name="delay gas to leave underground",
+    units="EJ",
+    comp_type="Stateful",
+    comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_delay_gas_to_leave_underground": 1},
+    other_deps={
+        "_sampleiftrue_delay_gas_to_leave_underground": {
+            "initial": {},
+            "step": {
+                "time": 1,
+                "start_year_policy_leave_in_ground_fossil_gas": 1,
+                "total_agg_fossil_gas_to_leave_underground": 1,
+            },
+        }
+    },
+)
+def delay_gas_to_leave_underground():
+    return _sampleiftrue_delay_gas_to_leave_underground()
+
+
+_sampleiftrue_delay_gas_to_leave_underground = SampleIfTrue(
+    lambda: time() == start_year_policy_leave_in_ground_fossil_gas(),
+    lambda: total_agg_fossil_gas_to_leave_underground(),
+    lambda: 0,
+    "_sampleiftrue_delay_gas_to_leave_underground",
 )
 
 
@@ -305,6 +334,58 @@ _ext_constant_efficiency_gas_for_oil_refinery_gains = ExtConstant(
 
 
 @component.add(
+    name="evol fossil gas extraction rate constraint",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "year_to_end_fossil_gas_extraction": 2,
+        "extraction_tot_agg_gas_ej": 1,
+    },
+)
+def evol_fossil_gas_extraction_rate_constraint():
+    """
+    Slope of linear fit to limit extraction from current extraction to zero, where the area under the curve is the remainig extractable resource to comply with leave in ground targets.
+    """
+    return if_then_else(
+        time() < year_to_end_fossil_gas_extraction(),
+        lambda: -extraction_tot_agg_gas_ej()
+        / (year_to_end_fossil_gas_extraction() - time()),
+        lambda: 0,
+    )
+
+
+@component.add(
+    name="evol fossil gas extraction rate delayed",
+    units="EJ/Year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_evol_fossil_gas_extraction_rate_delayed": 1},
+    other_deps={
+        "_delayfixed_evol_fossil_gas_extraction_rate_delayed": {
+            "initial": {"time_step": 1},
+            "step": {"evol_fossil_gas_extraction_rate_constraint": 1},
+        }
+    },
+)
+def evol_fossil_gas_extraction_rate_delayed():
+    """
+    Slope of linear fit to limit extraction from current extraction to zero,where the are under the curve is the remainig extractable resources to comply with leave in ground targets. Delayed one time step.
+    """
+    return _delayfixed_evol_fossil_gas_extraction_rate_delayed()
+
+
+_delayfixed_evol_fossil_gas_extraction_rate_delayed = DelayFixed(
+    lambda: evol_fossil_gas_extraction_rate_constraint(),
+    lambda: time_step(),
+    lambda: 1,
+    time_step,
+    "_delayfixed_evol_fossil_gas_extraction_rate_delayed",
+)
+
+
+@component.add(
     name="evolution share unconv gas vs tot agg",
     units="Dmnl",
     comp_type="Auxiliary",
@@ -335,27 +416,14 @@ def exponent_availability_conv_gas():
 
 
 @component.add(
-    name='"extraction conv gas - tot agg"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"extraction_tot_agg_gas_ej": 1, "share_conv_gas_vs_tot_agg": 1},
-)
-def extraction_conv_gas_tot_agg():
-    return extraction_tot_agg_gas_ej() * share_conv_gas_vs_tot_agg()
-
-
-@component.add(
     name="extraction conv gas EJ",
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "rurr_conv_gas": 1,
-        "unlimited_gas": 1,
-        "unlimited_nre": 1,
-        "ped_domestic_aut_conv_nat_gas_ej": 2,
         "max_extraction_conv_gas_ej": 1,
+        "ped_domestic_cat_conv_nat_gas_ej": 2,
         "time": 1,
     },
 )
@@ -367,15 +435,53 @@ def extraction_conv_gas_ej():
         rurr_conv_gas() < 0,
         lambda: 0,
         lambda: if_then_else(
-            np.logical_or(
-                time() < 2016, np.logical_or(unlimited_nre() == 1, unlimited_gas() == 1)
-            ),
-            lambda: ped_domestic_aut_conv_nat_gas_ej(),
+            time() < 2016,
+            lambda: ped_domestic_cat_conv_nat_gas_ej(),
             lambda: np.minimum(
-                ped_domestic_aut_conv_nat_gas_ej(), max_extraction_conv_gas_ej()
+                ped_domestic_cat_conv_nat_gas_ej(), max_extraction_conv_gas_ej()
             ),
         ),
     )
+
+
+@component.add(
+    name='"extraction conv gas - tot agg"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"extraction_tot_agg_gas_ej": 1, "share_conv_gas_vs_tot_agg": 1},
+)
+def extraction_conv_gas_tot_agg():
+    return extraction_tot_agg_gas_ej() * share_conv_gas_vs_tot_agg()
+
+
+@component.add(
+    name="extraction fossil gas agg EJ delayed",
+    units="EJ/Year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_extraction_fossil_gas_agg_ej_delayed": 1},
+    other_deps={
+        "_delayfixed_extraction_fossil_gas_agg_ej_delayed": {
+            "initial": {"time_step": 1},
+            "step": {"extraction_tot_agg_gas_ej": 1},
+        }
+    },
+)
+def extraction_fossil_gas_agg_ej_delayed():
+    """
+    Annual extraction of aggregated fossil gas delayed one year. The delay allows to progressively limit extraction (due to leave underground policies) using previous extraction rates.
+    """
+    return _delayfixed_extraction_fossil_gas_agg_ej_delayed()
+
+
+_delayfixed_extraction_fossil_gas_agg_ej_delayed = DelayFixed(
+    lambda: extraction_tot_agg_gas_ej(),
+    lambda: time_step(),
+    lambda: 1,
+    time_step,
+    "_delayfixed_extraction_fossil_gas_agg_ej_delayed",
+)
 
 
 @component.add(
@@ -384,42 +490,33 @@ def extraction_conv_gas_ej():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "rurr_tot_agg_gas": 1,
-        "unlimited_gas": 1,
-        "unlimited_nre": 1,
-        "ped_domestic_aut_total_natgas_ej": 2,
-        "max_extraction_tot_agg_gas_ej": 1,
         "time": 1,
+        "ped_domestic_cat_total_natgas_ej": 3,
+        "activate_force_leaving_underground": 1,
+        "max_extraction_tot_agg_gas": 2,
+        "remaining_extractable_fossil_gas_with_left_underground": 1,
     },
 )
 def extraction_tot_agg_gas_ej():
     """
-    Annual extraction of total aggregated natural gas.
+    Annual extraction of total aggregated fossil gas. IF THEN ELSE(Time<2016 , historic gas extraction(Time), IF THEN ELSE(Activate force leaving underground = 0, MIN("PED domestic CAT total nat.gas EJ", max extraction tot agg gas), MIN(MIN("PED domestic CAT total nat.gas EJ", max extraction tot agg gas), remaining extractable fossil gas with left underground)))
     """
     return if_then_else(
-        rurr_tot_agg_gas() < 0,
-        lambda: 0,
+        time() < 2016,
+        lambda: ped_domestic_cat_total_natgas_ej(),
         lambda: if_then_else(
-            np.logical_or(
-                time() < 2016, np.logical_or(unlimited_nre() == 1, unlimited_gas() == 1)
-            ),
-            lambda: ped_domestic_aut_total_natgas_ej(),
+            activate_force_leaving_underground() == 0,
             lambda: np.minimum(
-                ped_domestic_aut_total_natgas_ej(), max_extraction_tot_agg_gas_ej()
+                ped_domestic_cat_total_natgas_ej(), max_extraction_tot_agg_gas()
+            ),
+            lambda: np.minimum(
+                np.minimum(
+                    ped_domestic_cat_total_natgas_ej(), max_extraction_tot_agg_gas()
+                ),
+                remaining_extractable_fossil_gas_with_left_underground(),
             ),
         ),
     )
-
-
-@component.add(
-    name='"extraction unconv gas - tot agg"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"extraction_tot_agg_gas_ej": 1, "share_unconv_gas_vs_tot_agg": 1},
-)
-def extraction_unconv_gas_tot_agg():
-    return extraction_tot_agg_gas_ej() * share_unconv_gas_vs_tot_agg()
 
 
 @component.add(
@@ -455,11 +552,11 @@ _delayfixed_extraction_unconv_gas_delayed = DelayFixed(
     comp_subtype="Normal",
     depends_on={
         "rurr_unconv_gas": 1,
-        "max_unconv_gas_growth_extraction_ej": 1,
+        "separate_conv_and_unconv_gas": 1,
         "max_extraction_unconv_gas": 1,
         "historic_unconv_gas": 1,
-        "separate_conv_and_unconv_gas": 1,
         "time": 1,
+        "max_unconv_gas_growth_extraction_ej": 1,
     },
 )
 def extraction_unconv_gas_ej():
@@ -484,6 +581,17 @@ def extraction_unconv_gas_ej():
 
 
 @component.add(
+    name='"extraction unconv gas - tot agg"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"extraction_tot_agg_gas_ej": 1, "share_unconv_gas_vs_tot_agg": 1},
+)
+def extraction_unconv_gas_tot_agg():
+    return extraction_tot_agg_gas_ej() * share_unconv_gas_vs_tot_agg()
+
+
+@component.add(
     name="Flow conv gas left in ground",
     units="EJ",
     comp_type="Auxiliary",
@@ -505,32 +613,6 @@ def flow_conv_gas_left_in_ground():
             time() >= start_policy_leave_in_ground_conv_gas() + 1,
             lambda: 0,
             lambda: conv_gas_to_leave_underground(),
-        ),
-    )
-
-
-@component.add(
-    name="Flow tot agg gas left in ground",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 2,
-        "start_policy_leave_in_ground_tot_agg_gas": 2,
-        "tot_agg_gas_to_leave_underground": 1,
-    },
-)
-def flow_tot_agg_gas_left_in_ground():
-    """
-    Flow of total aggregated natural gas left in the ground. We assume that this amount is removed from the stock of conventional natural gas available in 1 year.
-    """
-    return if_then_else(
-        time() < start_policy_leave_in_ground_tot_agg_gas(),
-        lambda: 0,
-        lambda: if_then_else(
-            time() >= start_policy_leave_in_ground_tot_agg_gas() + 1,
-            lambda: 0,
-            lambda: tot_agg_gas_to_leave_underground(),
         ),
     )
 
@@ -581,7 +663,7 @@ def historic_unconv_gas():
 
 _ext_data_historic_unconv_gas = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_unconventional_gas_extraction",
     "interpolate",
@@ -610,8 +692,8 @@ def increase_scarcity_conv_gas():
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_gas": 1,
-        "table_max_extraction_conv_gas": 1,
         "tot_rurr_conv_gas": 1,
+        "table_max_extraction_conv_gas": 1,
     },
 )
 def max_extraction_conv_gas_ej():
@@ -626,23 +708,75 @@ def max_extraction_conv_gas_ej():
 
 
 @component.add(
-    name="max extraction tot agg gas EJ",
+    name="max extraction tot agg gas",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "activate_force_leaving_underground": 1,
+        "max_extraction_total_agg_gas_technical_ej": 3,
+        "max_extraction_total_agg_gas_policy": 1,
+        "start_year_policy_leave_in_ground_fossil_gas": 1,
+        "time": 1,
+    },
+)
+def max_extraction_tot_agg_gas():
+    """
+    Maximum extraction of aggregated gas due to technical reasons (Hubbert) and, if applies, leave underground policy.
+    """
+    return if_then_else(
+        activate_force_leaving_underground() == 0,
+        lambda: max_extraction_total_agg_gas_technical_ej(),
+        lambda: if_then_else(
+            time() > start_year_policy_leave_in_ground_fossil_gas(),
+            lambda: np.minimum(
+                max_extraction_total_agg_gas_technical_ej(),
+                max_extraction_total_agg_gas_policy(),
+            ),
+            lambda: max_extraction_total_agg_gas_technical_ej(),
+        ),
+    )
+
+
+@component.add(
+    name="max extraction total agg gas policy",
+    units="EJ/Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "evol_fossil_gas_extraction_rate_delayed": 1,
+        "time_step": 1,
+        "extraction_fossil_gas_agg_ej_delayed": 1,
+    },
+)
+def max_extraction_total_agg_gas_policy():
+    """
+    Maximum extraction of aggregated gas allowed by leave underground policy (progressive linear decrease assumed).
+    """
+    return (
+        evol_fossil_gas_extraction_rate_delayed() * time_step()
+        + extraction_fossil_gas_agg_ej_delayed()
+    )
+
+
+@component.add(
+    name="max extraction total agg gas technical EJ",
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_gas": 1,
-        "tot_rurr_tot_agg_gas": 1,
+        "rurr_tot_agg_gas": 1,
         "table_max_extraction_agg_gas": 1,
     },
 )
-def max_extraction_tot_agg_gas_ej():
+def max_extraction_total_agg_gas_technical_ej():
     """
-    Maximum extraction curve selected for the simulations.
+    Maximum extraction of fossil gas due to technical constraints (Hubbert).
     """
     return if_then_else(
         separate_conv_and_unconv_gas() == 0,
-        lambda: table_max_extraction_agg_gas(tot_rurr_tot_agg_gas()),
+        lambda: table_max_extraction_agg_gas(rurr_tot_agg_gas()),
         lambda: 0,
     )
 
@@ -727,7 +861,7 @@ def p_constraint_growth_extraction_unconv_gas():
 
 _ext_constant_p_constraint_growth_extraction_unconv_gas = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "p_constraint_growth_extraction_unconv_gas",
     {},
     _root,
@@ -743,11 +877,11 @@ _ext_constant_p_constraint_growth_extraction_unconv_gas = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "real_extraction_conv_gas_ej": 1,
-        "imports_aut_conv_gas_from_row_ej": 1,
+        "imports_cat_conv_gas_from_row_ej": 1,
     },
 )
 def pec_conv_gas():
-    return real_extraction_conv_gas_ej() + imports_aut_conv_gas_from_row_ej()
+    return real_extraction_conv_gas_ej() + imports_cat_conv_gas_from_row_ej()
 
 
 @component.add(
@@ -757,11 +891,11 @@ def pec_conv_gas():
     comp_subtype="Normal",
     depends_on={
         "real_extraction_unconv_gas_ej": 1,
-        "imports_aut_unconv_gas_from_row_ej": 1,
+        "imports_cat_unconv_gas_from_row_ej": 1,
     },
 )
 def pec_unconv_gas():
-    return real_extraction_unconv_gas_ej() + imports_aut_unconv_gas_from_row_ej()
+    return real_extraction_unconv_gas_ej() + imports_cat_unconv_gas_from_row_ej()
 
 
 @component.add(
@@ -779,13 +913,13 @@ def ped_nat_gas_without_gtl():
 
 
 @component.add(
-    name='"PES nat. gas AUT"',
+    name='"PES nat. gas CAT "',
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_extraction_conv_gas_ej": 1, "real_extraction_unconv_gas_ej": 1},
 )
-def pes_nat_gas_aut_1():
+def pes_nat_gas_cat_():
     return real_extraction_conv_gas_ej() + real_extraction_unconv_gas_ej()
 
 
@@ -794,13 +928,13 @@ def pes_nat_gas_aut_1():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pes_nat_gas_aut_1": 1, "ped_nat_gas_for_gtl_ej": 1},
+    depends_on={"pes_nat_gas_cat_": 1, "ped_nat_gas_for_gtl_ej": 1},
 )
 def pes_nat_gas_without_gtl():
     """
     Total extraction of conventional gas and unconventional (without GTL).
     """
-    return pes_nat_gas_aut_1() - ped_nat_gas_for_gtl_ej()
+    return pes_nat_gas_cat_() - ped_nat_gas_for_gtl_ej()
 
 
 @component.add(
@@ -875,8 +1009,8 @@ def real_extraction_conv_gas_ej():
     comp_subtype="Normal",
     depends_on={
         "real_extraction_conv_gas_ej": 1,
-        "share_conv_vs_total_gas_extraction_eu": 1,
         "ped_nat_gas_for_gtl_ej": 1,
+        "share_conv_vs_total_gas_extraction_eu": 1,
         "nonenergy_use_demand_by_final_fuel_ej": 1,
     },
 )
@@ -921,8 +1055,8 @@ def real_extraction_unconv_gas_ej():
     comp_subtype="Normal",
     depends_on={
         "real_extraction_unconv_gas_ej": 1,
-        "share_conv_vs_total_gas_extraction_eu": 1,
         "ped_nat_gas_for_gtl_ej": 1,
+        "share_conv_vs_total_gas_extraction_eu": 1,
         "nonenergy_use_demand_by_final_fuel_ej": 1,
     },
 )
@@ -939,6 +1073,20 @@ def real_extraction_unconv_gas_emissions_relevant_ej():
         )
         * (1 - share_conv_vs_total_gas_extraction_eu()),
     )
+
+
+@component.add(
+    name="remaining extractable fossil gas with left underground",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"rurr_tot_agg_gas": 1, "delay_gas_to_leave_underground": 1},
+)
+def remaining_extractable_fossil_gas_with_left_underground():
+    """
+    Remaining extractable fossil gas: corresponds to the difference between the Remaining Ultimate Recoverable Resources and the fossil gas that must be blocked underground (if such policy is enforced).
+    """
+    return np.maximum(0, rurr_tot_agg_gas() - delay_gas_to_leave_underground())
 
 
 @component.add(
@@ -1018,10 +1166,7 @@ _sampleiftrue_rurr_conv_gas_until_start_year_plg = SampleIfTrue(
                 "urr_tot_agg_gas": 1,
                 "cumulated_tot_agg_gas_extraction_to_1995": 1,
             },
-            "step": {
-                "extraction_tot_agg_gas_ej": 1,
-                "flow_tot_agg_gas_left_in_ground": 1,
-            },
+            "step": {"extraction_tot_agg_gas_ej": 1},
         }
     },
 )
@@ -1033,7 +1178,7 @@ def rurr_tot_agg_gas():
 
 
 _integ_rurr_tot_agg_gas = Integ(
-    lambda: -extraction_tot_agg_gas_ej() - flow_tot_agg_gas_left_in_ground(),
+    lambda: -extraction_tot_agg_gas_ej(),
     lambda: if_then_else(
         separate_conv_and_unconv_gas() == 0,
         lambda: urr_tot_agg_gas() - cumulated_tot_agg_gas_extraction_to_1995(),
@@ -1044,34 +1189,30 @@ _integ_rurr_tot_agg_gas = Integ(
 
 
 @component.add(
-    name="RURR tot gas until start year PLG",
+    name="RURR total agg fossil gas in reference year",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
-    depends_on={"_sampleiftrue_rurr_tot_gas_until_start_year_plg": 1},
+    depends_on={"_sampleiftrue_rurr_total_agg_fossil_gas_in_reference_year": 1},
     other_deps={
-        "_sampleiftrue_rurr_tot_gas_until_start_year_plg": {
-            "initial": {"rurr_tot_agg_gas": 1},
-            "step": {
-                "time": 1,
-                "start_policy_leave_in_ground_tot_agg_gas": 1,
-                "rurr_tot_agg_gas": 1,
-            },
+        "_sampleiftrue_rurr_total_agg_fossil_gas_in_reference_year": {
+            "initial": {},
+            "step": {"time": 1, "year_reference_rurr": 1, "rurr_tot_agg_gas": 1},
         }
     },
 )
-def rurr_tot_gas_until_start_year_plg():
+def rurr_total_agg_fossil_gas_in_reference_year():
     """
-    RURR until the start of the policy to leave in the ground (PLG) the resource.
+    RURR in the year used to calculate the share to leave underground under the policy to leave in the ground the resource.
     """
-    return _sampleiftrue_rurr_tot_gas_until_start_year_plg()
+    return _sampleiftrue_rurr_total_agg_fossil_gas_in_reference_year()
 
 
-_sampleiftrue_rurr_tot_gas_until_start_year_plg = SampleIfTrue(
-    lambda: time() < start_policy_leave_in_ground_tot_agg_gas(),
+_sampleiftrue_rurr_total_agg_fossil_gas_in_reference_year = SampleIfTrue(
+    lambda: time() == year_reference_rurr(),
     lambda: rurr_tot_agg_gas(),
-    lambda: rurr_tot_agg_gas(),
-    "_sampleiftrue_rurr_tot_gas_until_start_year_plg",
+    lambda: 0,
+    "_sampleiftrue_rurr_total_agg_fossil_gas_in_reference_year",
 )
 
 
@@ -1243,7 +1384,7 @@ def separate_conv_and_unconv_gas():
 
 _ext_constant_separate_conv_and_unconv_gas = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "separate_conv_and_unconv_gas",
     {},
     _root,
@@ -1316,7 +1457,7 @@ def share_rurr_conv_gas_to_leave_underground():
 
 _ext_constant_share_rurr_conv_gas_to_leave_underground = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "share_RURR_conv_gas_underground",
     {},
     _root,
@@ -1326,29 +1467,29 @@ _ext_constant_share_rurr_conv_gas_to_leave_underground = ExtConstant(
 
 
 @component.add(
-    name="share RURR tot agg gas to leave underground",
+    name="share RURR tot agg fossil gas to leave underground",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
-        "__external__": "_ext_constant_share_rurr_tot_agg_gas_to_leave_underground"
+        "__external__": "_ext_constant_share_rurr_tot_agg_fossil_gas_to_leave_underground"
     },
 )
-def share_rurr_tot_agg_gas_to_leave_underground():
+def share_rurr_tot_agg_fossil_gas_to_leave_underground():
     """
-    RURR's total aggregated natural gas to be left in the ground as a share of the RURR in the year 2015.
+    RURR's total aggregated fossil gas to be left in the ground as a share of the RURR in the reference year.
     """
-    return _ext_constant_share_rurr_tot_agg_gas_to_leave_underground()
+    return _ext_constant_share_rurr_tot_agg_fossil_gas_to_leave_underground()
 
 
-_ext_constant_share_rurr_tot_agg_gas_to_leave_underground = ExtConstant(
+_ext_constant_share_rurr_tot_agg_fossil_gas_to_leave_underground = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "share_RURR_agg_gas_underground",
     {},
     _root,
     {},
-    "_ext_constant_share_rurr_tot_agg_gas_to_leave_underground",
+    "_ext_constant_share_rurr_tot_agg_fossil_gas_to_leave_underground",
 )
 
 
@@ -1370,7 +1511,7 @@ def share_rurr_unconv_gas_to_leave_underground():
 
 _ext_constant_share_rurr_unconv_gas_to_leave_underground = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "share_RURR_unconv_gas_underground",
     {},
     _root,
@@ -1418,7 +1559,7 @@ def share_unconv_gas_vs_tot_agg_in_2050():
 
 _ext_constant_share_unconv_gas_vs_tot_agg_in_2050 = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "share_unconv_vs_agg_gas_in_2050",
     {},
     _root,
@@ -1443,39 +1584,12 @@ def start_policy_leave_in_ground_conv_gas():
 
 _ext_constant_start_policy_leave_in_ground_conv_gas = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "start_policy_year_conv_gas_underground",
     {},
     _root,
     {},
     "_ext_constant_start_policy_leave_in_ground_conv_gas",
-)
-
-
-@component.add(
-    name="Start policy leave in ground tot agg gas",
-    units="Year",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_constant_start_policy_leave_in_ground_tot_agg_gas"
-    },
-)
-def start_policy_leave_in_ground_tot_agg_gas():
-    """
-    Year when the policy to leave in the ground an amount of total aggregated gas RURR enters into force.
-    """
-    return _ext_constant_start_policy_leave_in_ground_tot_agg_gas()
-
-
-_ext_constant_start_policy_leave_in_ground_tot_agg_gas = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "start_policy_year_agg_gas_underground",
-    {},
-    _root,
-    {},
-    "_ext_constant_start_policy_leave_in_ground_tot_agg_gas",
 )
 
 
@@ -1497,12 +1611,39 @@ def start_policy_leave_in_ground_unconv_gas():
 
 _ext_constant_start_policy_leave_in_ground_unconv_gas = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "start_policy_year_unconv_gas_underground",
     {},
     _root,
     {},
     "_ext_constant_start_policy_leave_in_ground_unconv_gas",
+)
+
+
+@component.add(
+    name="Start year policy leave in ground fossil gas",
+    units="Year",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_start_year_policy_leave_in_ground_fossil_gas"
+    },
+)
+def start_year_policy_leave_in_ground_fossil_gas():
+    """
+    Year when the policy to progressively leave fossil gas in the ground enters into force.
+    """
+    return _ext_constant_start_year_policy_leave_in_ground_fossil_gas()
+
+
+_ext_constant_start_year_policy_leave_in_ground_fossil_gas = ExtConstant(
+    "../../scenarios/scen_cat.xlsx",
+    "NZP",
+    "start_policy_year_agg_oil_underground",
+    {},
+    _root,
+    {},
+    "_ext_constant_start_year_policy_leave_in_ground_fossil_gas",
 )
 
 
@@ -1522,7 +1663,7 @@ def table_max_extraction_agg_gas(x, final_subs=None):
 
 _ext_lookup_table_max_extraction_agg_gas = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "RURR_agg_gas",
     "max_extraction_agg_gas",
     {},
@@ -1548,7 +1689,7 @@ def table_max_extraction_conv_gas(x, final_subs=None):
 
 _ext_lookup_table_max_extraction_conv_gas = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "RURR_conv_gas",
     "max_extraction_conv_gas",
     {},
@@ -1574,7 +1715,7 @@ def table_max_extraction_unconv_gas(x, final_subs=None):
 
 _ext_lookup_table_max_extraction_unconv_gas = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "RURR_unconv_gas",
     "max_extraction_unconv_gas",
     {},
@@ -1582,30 +1723,6 @@ _ext_lookup_table_max_extraction_unconv_gas = ExtLookup(
     {},
     "_ext_lookup_table_max_extraction_unconv_gas",
 )
-
-
-@component.add(
-    name="tot agg gas to leave underground",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 1,
-        "start_policy_leave_in_ground_tot_agg_gas": 1,
-        "share_rurr_tot_agg_gas_to_leave_underground": 1,
-        "rurr_tot_gas_until_start_year_plg": 1,
-    },
-)
-def tot_agg_gas_to_leave_underground():
-    """
-    Total aggregated natural gas to be left underground due to the application of a policy.
-    """
-    return if_then_else(
-        time() < start_policy_leave_in_ground_tot_agg_gas(),
-        lambda: 0,
-        lambda: rurr_tot_gas_until_start_year_plg()
-        * share_rurr_tot_agg_gas_to_leave_underground(),
-    )
 
 
 @component.add(
@@ -1623,20 +1740,6 @@ def tot_rurr_conv_gas():
 
 
 @component.add(
-    name="Tot RURR tot agg gas",
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"rurr_tot_agg_gas": 1, "total_agg_gas_left_in_ground": 1},
-)
-def tot_rurr_tot_agg_gas():
-    """
-    Total RURR of total aggregated natural gas considering the available RURR and the eventual amount of RURR left in the ground as a policy.
-    """
-    return rurr_tot_agg_gas() + total_agg_gas_left_in_ground()
-
-
-@component.add(
     name="Tot RURR unconv gas",
     units="EJ",
     comp_type="Auxiliary",
@@ -1651,30 +1754,23 @@ def tot_rurr_unconv_gas():
 
 
 @component.add(
-    name="Total agg gas left in ground",
+    name="total agg fossil gas to leave underground",
     units="EJ",
-    comp_type="Stateful",
-    comp_subtype="Integ",
-    depends_on={"_integ_total_agg_gas_left_in_ground": 1},
-    other_deps={
-        "_integ_total_agg_gas_left_in_ground": {
-            "initial": {},
-            "step": {"flow_tot_agg_gas_left_in_ground": 1},
-        }
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "share_rurr_tot_agg_fossil_gas_to_leave_underground": 1,
+        "rurr_total_agg_fossil_gas_in_reference_year": 1,
     },
 )
-def total_agg_gas_left_in_ground():
+def total_agg_fossil_gas_to_leave_underground():
     """
-    Total amount of aggregated natural gas left in the ground due to policies.
+    Total aggregated natural gas to be left underground due to the application of a policy.
     """
-    return _integ_total_agg_gas_left_in_ground()
-
-
-_integ_total_agg_gas_left_in_ground = Integ(
-    lambda: flow_tot_agg_gas_left_in_ground(),
-    lambda: 0,
-    "_integ_total_agg_gas_left_in_ground",
-)
+    return (
+        share_rurr_tot_agg_fossil_gas_to_leave_underground()
+        * rurr_total_agg_fossil_gas_in_reference_year()
+    )
 
 
 @component.add(
@@ -1739,8 +1835,8 @@ _integ_total_unconv_gas_left_in_ground = Integ(
     depends_on={
         "time": 1,
         "start_policy_leave_in_ground_unconv_gas": 1,
-        "share_rurr_unconv_gas_to_leave_underground": 1,
         "rurr_unconv_gas_until_start_year_plg": 1,
+        "share_rurr_unconv_gas_to_leave_underground": 1,
     },
 )
 def unconv_gas_to_leave_underground():
@@ -1756,54 +1852,18 @@ def unconv_gas_to_leave_underground():
 
 
 @component.add(
-    name='"unlimited gas?"',
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_unlimited_gas"},
-)
-def unlimited_gas():
-    """
-    Switch to consider if gas is unlimited (1), or if it is limited (0). If limited then the available depletion curves are considered.
-    """
-    return _ext_constant_unlimited_gas()
-
-
-_ext_constant_unlimited_gas = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "unlimited_gas",
-    {},
-    _root,
-    {},
-    "_ext_constant_unlimited_gas",
-)
-
-
-@component.add(
     name="URR conv gas",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "separate_conv_and_unconv_gas": 1,
-        "unlimited_gas": 1,
-        "unlimited_nre": 1,
-        "urr_conv_gas_input": 1,
-    },
+    depends_on={"separate_conv_and_unconv_gas": 1, "urr_conv_gas_input": 1},
 )
 def urr_conv_gas():
     """
     Ultimately Recoverable Resources (URR) associated to the selected depletion curve.
     """
     return if_then_else(
-        separate_conv_and_unconv_gas() == 1,
-        lambda: if_then_else(
-            np.logical_or(unlimited_nre() == 1, unlimited_gas() == 1),
-            lambda: np.nan,
-            lambda: urr_conv_gas_input(),
-        ),
-        lambda: 0,
+        separate_conv_and_unconv_gas() == 1, lambda: urr_conv_gas_input(), lambda: 0
     )
 
 
@@ -1820,7 +1880,7 @@ def urr_conv_gas_input():
 
 _ext_constant_urr_conv_gas_input = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "URR_conv_gas",
     {},
     _root,
@@ -1834,25 +1894,14 @@ _ext_constant_urr_conv_gas_input = ExtConstant(
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "separate_conv_and_unconv_gas": 1,
-        "unlimited_gas": 1,
-        "unlimited_nre": 1,
-        "urr_total_gas_input": 1,
-    },
+    depends_on={"separate_conv_and_unconv_gas": 1, "urr_total_gas_input": 1},
 )
 def urr_tot_agg_gas():
     """
     Ultimately Recoverable Resources (URR) associated to the selected depletion curve.
     """
     return if_then_else(
-        separate_conv_and_unconv_gas() == 1,
-        lambda: 0,
-        lambda: if_then_else(
-            np.logical_or(unlimited_nre() == 1, unlimited_gas() == 1),
-            lambda: np.nan,
-            lambda: urr_total_gas_input(),
-        ),
+        separate_conv_and_unconv_gas() == 1, lambda: 0, lambda: urr_total_gas_input()
     )
 
 
@@ -1864,12 +1913,15 @@ def urr_tot_agg_gas():
     depends_on={"__external__": "_ext_constant_urr_total_gas_input"},
 )
 def urr_total_gas_input():
+    """
+    Input of total aggregated fossil gas URR (Ultimate Recoverable Resources).
+    """
     return _ext_constant_urr_total_gas_input()
 
 
 _ext_constant_urr_total_gas_input = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "URR_agg_gas",
     {},
     _root,
@@ -1907,7 +1959,7 @@ def urr_unconv_gas_input():
 
 _ext_constant_urr_unconv_gas_input = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "URR_unconv_gas",
     {},
     _root,
@@ -1920,10 +1972,40 @@ _ext_constant_urr_unconv_gas_input = ExtConstant(
     name='"Year scarcity total nat. gas"',
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"abundance_total_nat_gas_aut": 1, "time": 1},
+    depends_on={"abundance_total_nat_gas_cat_": 1, "time": 1},
 )
 def year_scarcity_total_nat_gas():
     """
     Year when the parameter abundance falls below 0.95, i.e. year when scarcity starts.
     """
-    return if_then_else(abundance_total_nat_gas_aut() > 0.95, lambda: 0, lambda: time())
+    return if_then_else(
+        abundance_total_nat_gas_cat_() > 0.95, lambda: 0, lambda: time()
+    )
+
+
+@component.add(
+    name="year to end fossil gas extraction",
+    units="Year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "extraction_tot_agg_gas_ej": 2,
+        "remaining_extractable_fossil_gas_with_left_underground": 2,
+        "time": 1,
+    },
+)
+def year_to_end_fossil_gas_extraction():
+    """
+    Year when fossil gas extraction has to end in order to comply with leave in ground policy. This year is dinamically determined, accordig to the actual extraction rate.
+    """
+    return if_then_else(
+        np.logical_or(
+            extraction_tot_agg_gas_ej() <= 0,
+            remaining_extractable_fossil_gas_with_left_underground() <= 0,
+        ),
+        lambda: 0,
+        lambda: 2
+        * remaining_extractable_fossil_gas_with_left_underground()
+        / extraction_tot_agg_gas_ej()
+        + time(),
+    )

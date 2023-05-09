@@ -1,6 +1,6 @@
 """
-Module crops_for_biofuels_also_supply
-Translated using PySD version 3.2.0
+Module environment.land.crops_for_biofuels_also_supply
+Translated using PySD version 3.10.0
 """
 
 
@@ -9,7 +9,7 @@ Translated using PySD version 3.2.0
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "past_biofuels_2gen": 2, "p_biofuels_2gen": 2},
+    depends_on={"time": 3, "p_biofuels_2gen": 2, "past_biofuels_2gen": 2},
 )
 def adapt_growth_biofuels_2gen():
     """
@@ -44,8 +44,8 @@ def additional_land_compet_available_for_biofuels():
 
 
 _ext_constant_additional_land_compet_available_for_biofuels = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "../energy.xlsx",
+    "World",
     "additional_land_available_biofuels",
     {},
     _root,
@@ -108,7 +108,7 @@ def annual_shift_from_2gen_to_3gen():
 
 _ext_constant_annual_shift_from_2gen_to_3gen = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "annual_shift_2_3_gen_biofuels",
     {},
     _root,
@@ -400,12 +400,12 @@ _ext_constant_land_productivity_biofuels_2gen_ej_mha = ExtConstant(
     depends_on={
         "time": 2,
         "start_year_3gen": 2,
-        "biofuels_3gen_land_compet_available": 2,
         "land_compet_biofuels_3gen_mha": 1,
-        "land_compet_biofuels_2gen_mha": 1,
         "p_biofuels_3gen": 1,
-        "annual_shift_from_2gen_to_3gen": 1,
+        "land_compet_biofuels_2gen_mha": 1,
         "land_compet_2gen_vs_total_land_compet": 2,
+        "biofuels_3gen_land_compet_available": 2,
+        "annual_shift_from_2gen_to_3gen": 1,
     },
 )
 def land_shifted_to_biofuels_3gen():
@@ -485,9 +485,9 @@ def max_peavail_potential_biofuels_23gen():
         "check_liquids": 1,
         "land_compet_biofuels_2gen_mha": 2,
         "constrain_liquids_exogenous_growth": 1,
+        "adapt_growth_biofuels_2gen": 1,
         "annual_additional_historic_land_use_biofuels_2gen": 1,
         "biofuels_land_compet_available": 1,
-        "adapt_growth_biofuels_2gen": 1,
     },
 )
 def new_biofuels_2gen_land_compet():
@@ -523,7 +523,7 @@ def p_biofuels_2gen():
 
 _ext_constant_p_biofuels_2gen = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "p_biofuels_2gen",
     {},
     _root,
@@ -548,7 +548,7 @@ def p_biofuels_3gen():
 
 _ext_constant_p_biofuels_3gen = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "p_biofuels_3g",
     {},
     _root,
@@ -695,7 +695,7 @@ def start_year_3gen():
 
 _ext_constant_start_year_3gen = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "start_year_3gen",
     {},
     _root,

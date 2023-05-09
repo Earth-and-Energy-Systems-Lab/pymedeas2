@@ -1,6 +1,6 @@
 """
-Module total_extraction_demand_vs_stocks
-Translated using PySD version 3.2.0
+Module materials.total_extraction_demand_vs_stocks
+Translated using PySD version 3.10.0
 """
 
 
@@ -23,6 +23,38 @@ def cum_materials_to_extract_for_alt_techn_from_2015_eu():
         cum_materials_to_extract_for_ev_batteries_from_2015()
         + cum_materials_to_extract_for_res_elec_from_2015()
     )
+
+
+@component.add(
+    name="cum materials to extract for RES elec from 2015",
+    units="Mt",
+    subscripts=["materials"],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_cum_materials_to_extract_for_res_elec_from_2015": 1},
+    other_deps={
+        "_integ_cum_materials_to_extract_for_res_elec_from_2015": {
+            "initial": {"initial_cumulated_material_requirements_for_res_elec_1995": 1},
+            "step": {"total_materials_to_extract_for_res_elec_from_2015_mt": 1},
+        }
+    },
+)
+def cum_materials_to_extract_for_res_elec_from_2015():
+    """
+    Cumulative materials to be mined for the installation and O&M of RES for electricity generation.
+    """
+    return _integ_cum_materials_to_extract_for_res_elec_from_2015()
+
+
+_integ_cum_materials_to_extract_for_res_elec_from_2015 = Integ(
+    lambda: total_materials_to_extract_for_res_elec_from_2015_mt(),
+    lambda: xr.DataArray(
+        initial_cumulated_material_requirements_for_res_elec_1995(),
+        {"materials": _subscript_dict["materials"]},
+        ["materials"],
+    ),
+    "_integ_cum_materials_to_extract_for_res_elec_from_2015",
+)
 
 
 @component.add(
@@ -183,4 +215,45 @@ def total_materials_to_extract_alt_techn_mtyr():
     return (
         total_materials_to_extract_for_ev_batteries_mt()
         + total_materials_to_extract_for_res_elec_mt()
+    )
+
+
+@component.add(
+    name="Total materials to extract for RES elec from 2015 Mt",
+    units="Mt/Year",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "total_materials_to_extract_for_res_elec_mt": 1},
+)
+def total_materials_to_extract_for_res_elec_from_2015_mt():
+    """
+    Annual materials to be mined for the installation and O&M of RES for electricity generation from 2015.
+    """
+    return if_then_else(
+        time() < 2015,
+        lambda: xr.DataArray(
+            0, {"materials": _subscript_dict["materials"]}, ["materials"]
+        ),
+        lambda: total_materials_to_extract_for_res_elec_mt(),
+    )
+
+
+@component.add(
+    name="Total materials to extract for RES elec Mt",
+    units="Mt/Year",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "total_materials_required_for_res_elec_mt": 1,
+        "recycling_rates_minerals_alt_techn": 1,
+    },
+)
+def total_materials_to_extract_for_res_elec_mt():
+    """
+    Annual materials to be mined for the installation and O&M of RES for electricity generation.
+    """
+    return total_materials_required_for_res_elec_mt() * (
+        1 - recycling_rates_minerals_alt_techn()
     )

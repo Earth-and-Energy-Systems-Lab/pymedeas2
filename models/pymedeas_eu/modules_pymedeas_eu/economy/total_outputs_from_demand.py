@@ -1,6 +1,6 @@
 """
-Module total_outputs_from_demand
-Translated using PySD version 3.2.0
+Module economy.total_outputs_from_demand
+Translated using PySD version 3.10.0
 """
 
 
@@ -20,7 +20,7 @@ def activate_elf_by_scen():
 
 _ext_constant_activate_elf_by_scen = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "activate_ELF",
     {},
     _root,

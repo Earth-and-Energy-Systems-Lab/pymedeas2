@@ -1,6 +1,6 @@
 """
-Module pes_solids_biofuels_and_waste
-Translated using PySD version 3.2.0
+Module energy.supply.pes_solids_biofuels_and_waste
+Translated using PySD version 3.10.0
 """
 
 
@@ -36,20 +36,6 @@ _ext_data_losses_in_charcoal_plants_ej = ExtData(
 
 
 @component.add(
-    name='"PES solids bioE & waste EJ"',
-    units="EJ",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"pes_solids_bioe_ej": 1, "pes_waste_ej": 1},
-)
-def pes_solids_bioe_waste_ej():
-    """
-    Total primary energy supply solids biofuels and waste.
-    """
-    return pes_solids_bioe_ej() - pes_waste_ej()
-
-
-@component.add(
     name="PES solids bioE EJ",
     units="EJ/Year",
     comp_type="Auxiliary",
@@ -73,6 +59,20 @@ def pes_solids_bioe_ej():
         + modern_solids_bioe_demand_households()
         + float(pes_res_for_heat_by_techn().loc["solid bioE heat"])
     )
+
+
+@component.add(
+    name='"PES solids bioE & waste EJ"',
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pes_solids_bioe_ej": 1, "pes_waste_ej": 1},
+)
+def pes_solids_bioe_waste_ej():
+    """
+    Total primary energy supply solids biofuels and waste.
+    """
+    return pes_solids_bioe_ej() - pes_waste_ej()
 
 
 @component.add(

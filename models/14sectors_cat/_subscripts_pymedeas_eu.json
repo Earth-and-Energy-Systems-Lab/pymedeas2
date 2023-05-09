@@ -178,6 +178,22 @@
         "Real estate renting and busine activitie",
         "Non Market Service"
     ],
+    "Transport Modes": [
+        "Inland",
+        "Maritime",
+        "Air"
+    ],
+    "Transport Modes pkm": [
+        "Inland",
+        "Maritime",
+        "Air",
+        "Househ"
+    ],
+    "Transport Modes pkm Commercial": [
+        "Inland",
+        "Maritime",
+        "Air"
+    ],
     "economic years": [
         "year1995",
         "year1996",
@@ -213,6 +229,22 @@
         "liquids",
         "gases",
         "solids"
+    ],
+    "fuel": [
+        "liq",
+        "gas",
+        "elect"
+    ],
+    "fuels": [
+        "liq",
+        "gas",
+        "elect",
+        "hybrid"
+    ],
+    "fuels2": [
+        "liq",
+        "gas",
+        "elect"
     ],
     "materials": [
         "Adhesive",
@@ -456,6 +488,10 @@
         "bus gas",
         "train liq",
         "train elec"
+    ],
+    "vehicles bat": [
+        "electric vehicles",
+        "hybrid vehicles"
     ],
     "water": [
         "blue water",

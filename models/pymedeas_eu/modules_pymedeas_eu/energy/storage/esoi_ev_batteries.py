@@ -1,6 +1,6 @@
 """
-Module esoi_ev_batteries
-Translated using PySD version 3.2.0
+Module energy.storage.esoi_ev_batteries
+Translated using PySD version 3.10.0
 """
 
 
@@ -48,8 +48,8 @@ def energy_intensity_construction_ev_batteries_mjmw():
         "mw_in_1_year_to_mj": 1,
         "energy_intensity_construction_ev_batteries_mjmw": 1,
         "grid_correction_factor_ev_batteries": 1,
-        "gquality_of_electricity": 1,
         "share_energy_requirements_for_decom_ev_batteries": 1,
+        "gquality_of_electricity": 1,
     },
 )
 def esoi_ev_batteries():
@@ -128,11 +128,11 @@ def kw_per_mw():
     comp_subtype="Normal",
     depends_on={
         "net_stored_energy_ev_battery_over_lifetime": 1,
+        "cp_ev_batteries_for_transp": 1,
         "kw_per_mw": 1,
-        "mw_in_1_year_to_mj": 1,
         "kw_per_battery_ev": 1,
         "cp_ev_batteries_for_elec_storage": 1,
-        "cp_ev_batteries_for_transp": 1,
+        "mw_in_1_year_to_mj": 1,
     },
 )
 def lifetime_ev_batteries():
@@ -155,8 +155,8 @@ def lifetime_ev_batteries():
     depends_on={
         "net_stored_energy_ev_battery_over_lifetime": 1,
         "kw_per_battery_ev": 1,
-        "kw_per_mw": 1,
         "mw_in_1_year_to_mj": 1,
+        "kw_per_mw": 1,
         "min_lifetime_ev_batteries": 1,
     },
 )

@@ -1,6 +1,6 @@
 """
-Module res_heat_potential
-Translated using PySD version 3.2.0
+Module energy.supply.res_heat_potential
+Translated using PySD version 3.10.0
 """
 
 
@@ -75,8 +75,8 @@ def max_fe_potential_biogas_for_heat():
     comp_subtype="Normal",
     depends_on={
         "max_fe_res_for_heat": 2,
-        "efficiency_res_heat": 1,
         "max_pe_potential_solid_bioe_for_heat_ej": 1,
+        "efficiency_res_heat": 1,
     },
 )
 def max_fe_potential_res_for_heat():

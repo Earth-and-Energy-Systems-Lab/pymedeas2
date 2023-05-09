@@ -1,6 +1,6 @@
 """
-Module nonenergy_use
-Translated using PySD version 3.2.0
+Module energy.supply.nonenergy_use
+Translated using PySD version 3.10.0
 """
 
 
@@ -25,6 +25,53 @@ def annual_variation_nonenergy_use():
 
 
 @component.add(
+    name='"Domestic economic demand non-energy sector"',
+    units="Mdollars",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"total_domestic_output_required_by_sector": 1},
+)
+def domestic_economic_demand_nonenergy_sector():
+    """
+    Domestic economic demand of the sector that includes industries which use fuels as the source for materials with non-energy uses.
+    """
+    return float(
+        total_domestic_output_required_by_sector().loc[
+            "Coke refined petroleum nuclear fuel and chemicals etc"
+        ]
+    )
+
+
+@component.add(
+    name='"Domestic economic demand non-energy sector delayed 1yr"',
+    units="Mdollars",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_domestic_economic_demand_nonenergy_sector_delayed_1yr": 1},
+    other_deps={
+        "_delayfixed_domestic_economic_demand_nonenergy_sector_delayed_1yr": {
+            "initial": {},
+            "step": {"domestic_economic_demand_nonenergy_sector": 1},
+        }
+    },
+)
+def domestic_economic_demand_nonenergy_sector_delayed_1yr():
+    """
+    Domestic economic demand of the sector that includes industries which use fuels as the source for materials with non-energy uses delayed 1 year.
+    """
+    return _delayfixed_domestic_economic_demand_nonenergy_sector_delayed_1yr()
+
+
+_delayfixed_domestic_economic_demand_nonenergy_sector_delayed_1yr = DelayFixed(
+    lambda: domestic_economic_demand_nonenergy_sector(),
+    lambda: 1,
+    lambda: 0,
+    time_step,
+    "_delayfixed_domestic_economic_demand_nonenergy_sector_delayed_1yr",
+)
+
+
+@component.add(
     name="historic nonenergy use",
     units="EJ",
     subscripts=["final sources"],
@@ -44,7 +91,7 @@ def historic_nonenergy_use(x, final_subs=None):
 
 _ext_lookup_historic_nonenergy_use = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_non_energy_use",
     {"final sources": _subscript_dict["final sources"]},
@@ -71,7 +118,7 @@ def initial_nonenergy_use():
 
 _ext_constant_initial_nonenergy_use = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_non_energy_use*",
     {"final sources": _subscript_dict["final sources"]},
     _root,
@@ -82,7 +129,7 @@ _ext_constant_initial_nonenergy_use = ExtConstant(
 
 @component.add(
     name='"Non-energy use demand by final fuel EJ"',
-    units="EJ",
+    units="EJ/Year",
     subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -128,12 +175,11 @@ def total_real_nonenergy_use_consumption_ej():
     name='"variation non-energy use"',
     units="EJ",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
-        "nonenergy_use_demand_by_final_fuel_ej": 3,
-        "gdp_aut": 3,
-        "gdp_delayed_1yr": 3,
+        "domestic_economic_demand_nonenergy_sector": 3,
+        "domestic_economic_demand_nonenergy_sector_delayed_1yr": 3,
     },
 )
 def variation_nonenergy_use():
@@ -142,19 +188,16 @@ def variation_nonenergy_use():
     )
     value.loc[["electricity"]] = 0
     value.loc[["heat"]] = 0
-    value.loc[["liquids"]] = if_then_else(
-        float(nonenergy_use_demand_by_final_fuel_ej().loc["liquids"]) > 0.01,
-        lambda: 0.461414 * (gdp_aut() - gdp_delayed_1yr()),
-        lambda: 0,
+    value.loc[["liquids"]] = 4.6e-06 * (
+        domestic_economic_demand_nonenergy_sector()
+        - domestic_economic_demand_nonenergy_sector_delayed_1yr()
     )
-    value.loc[["gases"]] = if_then_else(
-        float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"]) > 0.01,
-        lambda: 0.123925 * (gdp_aut() - gdp_delayed_1yr()),
-        lambda: 0,
+    value.loc[["gases"]] = 2e-10 * (
+        domestic_economic_demand_nonenergy_sector()
+        - domestic_economic_demand_nonenergy_sector_delayed_1yr()
     )
-    value.loc[["solids"]] = if_then_else(
-        float(nonenergy_use_demand_by_final_fuel_ej().loc["solids"]) > 0.01,
-        lambda: 0.0797511 * (gdp_aut() - gdp_delayed_1yr()),
-        lambda: 0,
+    value.loc[["solids"]] = 7e-09 * (
+        domestic_economic_demand_nonenergy_sector()
+        - domestic_economic_demand_nonenergy_sector_delayed_1yr()
     )
     return value

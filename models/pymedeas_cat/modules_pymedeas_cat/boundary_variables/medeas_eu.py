@@ -1,6 +1,6 @@
 """
-Module medeas_eu
-Translated using PySD version 3.2.0
+Module boundary_variables.medeas_eu
+Translated using PySD version 3.10.0
 """
 
 
@@ -32,7 +32,6 @@ def annual_gdp_growth_rate_eu28():
 
 @component.add(
     name="GDP EU",
-    units="Tdollar",
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_gdp_eu"},

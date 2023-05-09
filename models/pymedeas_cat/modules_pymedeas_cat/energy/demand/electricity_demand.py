@@ -1,6 +1,6 @@
 """
-Module electricity_demand
-Translated using PySD version 3.2.0
+Module energy.demand.electricity_demand
+Translated using PySD version 3.10.0
 """
 
 
@@ -106,7 +106,7 @@ def hist_elec_exports_share():
 
 _ext_data_hist_elec_exports_share = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_share_of_electricty_exports_of_total_electricity_production",
     "interpolate",
@@ -134,13 +134,34 @@ def max_share_transmdistr_elec_losses():
 
 
 @component.add(
-    name="P export share", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+    name="P export share",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_p_export_share",
+        "__data__": "_ext_data_p_export_share",
+        "time": 1,
+    },
 )
 def p_export_share():
     """
     Share of electricity generated with the aim of exporting
     """
-    return -0.1
+    return _ext_data_p_export_share(time())
+
+
+_ext_data_p_export_share = ExtData(
+    "../../scenarios/scen_cat.xlsx",
+    "NZP",
+    "year_RES_power",
+    "share_exports_electricity",
+    "interpolate",
+    {},
+    _root,
+    {},
+    "_ext_data_p_export_share",
+)
 
 
 @component.add(
@@ -160,31 +181,6 @@ def remaining_share_transmdistr_elec_losses():
     return (
         max_share_transmdistr_elec_losses() - share_transmdistr_elec_losses()
     ) / max_share_transmdistr_elec_losses()
-
-
-@component.add(
-    name='"share transm&distr elec losses initial"',
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_share_transmdistr_elec_losses_initial"},
-)
-def share_transmdistr_elec_losses_initial():
-    """
-    Current share of electrical transmission and distribution losses in relation to electricity consumption. We define these losses at around 9.5% following historical data.
-    """
-    return _ext_constant_share_transmdistr_elec_losses_initial()
-
-
-_ext_constant_share_transmdistr_elec_losses_initial = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "share_transm_and_distribution_elec_losses_initial",
-    {},
-    _root,
-    {},
-    "_ext_constant_share_transmdistr_elec_losses_initial",
-)
 
 
 @component.add(
@@ -211,6 +207,31 @@ _integ_share_transmdistr_elec_losses = Integ(
     lambda: variation_share_transmdistr_elec_losses(),
     lambda: share_transmdistr_elec_losses_initial(),
     "_integ_share_transmdistr_elec_losses",
+)
+
+
+@component.add(
+    name='"share transm&distr elec losses initial"',
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_transmdistr_elec_losses_initial"},
+)
+def share_transmdistr_elec_losses_initial():
+    """
+    Current share of electrical transmission and distribution losses in relation to electricity consumption. We define these losses at around 9.5% following historical data.
+    """
+    return _ext_constant_share_transmdistr_elec_losses_initial()
+
+
+_ext_constant_share_transmdistr_elec_losses_initial = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "share_transm_and_distribution_elec_losses_initial",
+    {},
+    _root,
+    {},
+    "_ext_constant_share_transmdistr_elec_losses_initial",
 )
 
 
@@ -257,8 +278,8 @@ def total_fe_elec_demand_twh():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "variation_share_transmdistr_losses_elec": 1,
         "remaining_share_transmdistr_elec_losses": 1,
+        "variation_share_transmdistr_losses_elec": 1,
     },
 )
 def variation_share_transmdistr_elec_losses():

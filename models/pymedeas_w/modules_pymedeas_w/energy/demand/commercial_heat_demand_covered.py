@@ -1,6 +1,6 @@
 """
-Module commercial_heat_demand_covered
-Translated using PySD version 3.2.0
+Module energy.demand.commercial_heat_demand_covered
+Translated using PySD version 3.10.0
 """
 
 
@@ -171,6 +171,7 @@ def fed_heat_gas_plants_ej():
 
 @component.add(
     name='"FED Heat gas+coal EJ"',
+    units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -341,7 +342,7 @@ def phaseout_oil_for_heat():
 
 _ext_constant_phaseout_oil_for_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "phase_out_oil_heat",
     {},
     _root,
@@ -394,7 +395,7 @@ def share_in_target_year_oil_for_heat():
 
 _ext_constant_share_in_target_year_oil_for_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "share_target_year_oil_for_heat",
     {},
     _root,
@@ -411,9 +412,9 @@ _ext_constant_share_in_target_year_oil_for_heat = ExtConstant(
     depends_on={
         "time": 2,
         "historic_share_liquids_for_heat_plants": 3,
-        "phaseout_oil_for_heat": 1,
         "p_share_oil_for_heat": 1,
         "start_year_policy_phaseout_oil_for_heat": 1,
+        "phaseout_oil_for_heat": 1,
     },
 )
 def share_liquids_fot_heat_plants():
@@ -453,7 +454,7 @@ def start_year_policy_phaseout_oil_for_heat():
 
 _ext_constant_start_year_policy_phaseout_oil_for_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "start_year_policy_phase_out_oil_for_heat",
     {},
     _root,
@@ -480,7 +481,7 @@ def target_year_policy_phaseout_oil_for_heat():
 
 _ext_constant_target_year_policy_phaseout_oil_for_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "target_year_policy_phase_out_oil_for_heat",
     {},
     _root,
@@ -497,10 +498,10 @@ _ext_constant_target_year_policy_phaseout_oil_for_heat = ExtConstant(
     depends_on={
         "ped_gases_for_heat_plants_ej": 1,
         "efficiency_gases_for_heat_plants": 1,
-        "ped_oil_for_heat_plants_ej": 1,
         "efficiency_liquids_for_heat_plants": 1,
-        "efficiency_coal_for_heat_plants": 1,
+        "ped_oil_for_heat_plants_ej": 1,
         "ped_coal_for_heat_plants_ej": 1,
+        "efficiency_coal_for_heat_plants": 1,
     },
 )
 def total_gen_losses_demand_for_heat_plants_ej():

@@ -1,6 +1,6 @@
 """
-Module res_elec_capacities_and_generat
-Translated using PySD version 3.2.0
+Module energy.supply.res_elec_capacities_and_generat
+Translated using PySD version 3.10.0
 """
 
 
@@ -43,7 +43,7 @@ def abundance_res_elec():
     depends_on={"cp_res_elec": 1, "cpini_res_elec": 1},
 )
 def cp_baseload_reduction():
-    return cp_res_elec() / cpini_res_elec()
+    return zidz(cp_res_elec(), cpini_res_elec())
 
 
 @component.add(
@@ -54,7 +54,6 @@ def cp_baseload_reduction():
     comp_subtype="Normal",
     depends_on={
         "min_cp_baseload_res": 1,
-        "cp_exogenous_res_elec_reduction": 1,
         "cpini_res_elec": 1,
         "shortage_bioe_for_elec": 1,
     },
@@ -64,8 +63,7 @@ def cp_res_elec():
     Capacity factor of RES technologies (after accounting for the overcapacities required to manage the intermittency of RES elec variables).
     """
     return np.maximum(
-        min_cp_baseload_res(),
-        cpini_res_elec() * cp_exogenous_res_elec_reduction() * shortage_bioe_for_elec(),
+        min_cp_baseload_res(), cpini_res_elec() * shortage_bioe_for_elec()
     )
 
 
@@ -86,13 +84,65 @@ def cpini_res_elec():
 
 _ext_constant_cpini_res_elec = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "cp_initial_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
     {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_cpini_res_elec",
 )
+
+
+@component.add(
+    name="curtailment and storage share variable RES",
+    units="Dmnl",
+    comp_type="Lookup",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_curtailment_and_storage_share_variable_res",
+        "__lookup__": "_ext_lookup_curtailment_and_storage_share_variable_res",
+    },
+)
+def curtailment_and_storage_share_variable_res(x, final_subs=None):
+    """
+    Share of curtailment and storage of variable RES
+    """
+    return _ext_lookup_curtailment_and_storage_share_variable_res(x, final_subs)
+
+
+_ext_lookup_curtailment_and_storage_share_variable_res = ExtLookup(
+    "../../scenarios/scen_cat.xlsx",
+    "NZP",
+    "year_RES_power",
+    "share_curtailment",
+    {},
+    _root,
+    {},
+    "_ext_lookup_curtailment_and_storage_share_variable_res",
+)
+
+
+@component.add(
+    name="curtailment RES",
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary, Constant",
+    comp_subtype="Normal",
+    depends_on={"time": 4, "curtailment_and_storage_share_variable_res": 4},
+)
+def curtailment_res():
+    value = xr.DataArray(
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+    )
+    value.loc[["hydro"]] = 0
+    value.loc[["geot elec"]] = 0
+    value.loc[["solid bioE elec"]] = 0
+    value.loc[["oceanic"]] = 0
+    value.loc[["wind onshore"]] = curtailment_and_storage_share_variable_res(time())
+    value.loc[["wind offshore"]] = curtailment_and_storage_share_variable_res(time())
+    value.loc[["solar PV"]] = curtailment_and_storage_share_variable_res(time())
+    value.loc[["CSP"]] = curtailment_and_storage_share_variable_res(time())
+    return value
 
 
 @component.add(
@@ -108,7 +158,7 @@ def end_hist_data():
 
 _ext_constant_end_hist_data = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "end_hist_data",
     {},
     _root,
@@ -151,7 +201,7 @@ def initial_instal_cap_res_elec():
 
 _ext_constant_initial_instal_cap_res_elec = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_installed_capacity_res_for_electricity*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
@@ -280,7 +330,7 @@ def min_cp_baseload_res():
 
 _ext_constant_min_cp_baseload_res = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "minimum_cp_baseload_res*",
     {"RES elec": _subscript_dict["RES elec"]},
     _root,
@@ -327,7 +377,7 @@ def p_power(x, final_subs=None):
 
 _ext_lookup_p_power = ExtLookup(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "year_RES_power",
     "p_RES_power",
     {"RES elec": _subscript_dict["RES elec"]},
@@ -343,13 +393,23 @@ _ext_lookup_p_power = ExtLookup(
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"installed_capacity_res_elec": 1, "cp_res_elec": 1, "twe_per_twh": 1},
+    depends_on={
+        "installed_capacity_res_elec": 1,
+        "cp_res_elec": 1,
+        "curtailment_res": 1,
+        "twe_per_twh": 1,
+    },
 )
 def potential_generation_res_elec_twh():
     """
     Potential generation of electricity by RES technology given the installed capacity.
     """
-    return installed_capacity_res_elec() * cp_res_elec() / twe_per_twh()
+    return (
+        installed_capacity_res_elec()
+        * cp_res_elec()
+        * (1 - curtailment_res())
+        / twe_per_twh()
+    )
 
 
 @component.add(
@@ -410,9 +470,9 @@ def potential_tot_res_elec_after_intermitt():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
+        "real_generation_res_elec_twh": 1,
         "replaced_capacity_res_elec_tw": 2,
         "twe_per_twh": 1,
-        "real_generation_res_elec_twh": 1,
     },
 )
 def real_cp_res_elec():
@@ -445,11 +505,11 @@ def real_cp_res_elec():
 )
 def real_generation_res_elec_twh():
     """
-    Electricity generation by RES technology.
+    Electricity generation by RES technology. ZIDZ introduced
     """
     return (
         potential_generation_res_elec_twh()
-        * (1 - res_elec_tot_overcapacity())
+        * zidz(1, 1 + res_elec_tot_overcapacity())
         * shortage_bioe_for_elec()
     )
 
@@ -537,8 +597,8 @@ _integ_replaced_capacity_res_elec_tw = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "wear_res_elec": 1,
         "res_elec_tot_overcapacity": 1,
+        "wear_res_elec": 1,
         "shortage_bioe_for_elec": 1,
     },
 )
@@ -610,7 +670,7 @@ _integ_res_elec_planned_capacity_tw = Integ(
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "potential_tot_generation_res_elec_twh": 3,
+        "potential_tot_generation_res_elec_twh": 1,
         "fe_real_tot_generation_res_elec_twh": 1,
     },
 )
@@ -618,14 +678,12 @@ def res_elec_tot_overcapacity():
     """
     Overcapacity for each technology RES for electricity taking into account the installed capacity and the real generation.
     """
-    return if_then_else(
-        potential_tot_generation_res_elec_twh() == 0,
-        lambda: 0,
-        lambda: (
-            potential_tot_generation_res_elec_twh()
-            - fe_real_tot_generation_res_elec_twh()
+    return (
+        zidz(
+            potential_tot_generation_res_elec_twh(),
+            fe_real_tot_generation_res_elec_twh(),
         )
-        / potential_tot_generation_res_elec_twh(),
+        - 1
     )
 
 
@@ -672,7 +730,7 @@ def table_hist_capacity_res_elec(x, final_subs=None):
 
 _ext_lookup_table_hist_capacity_res_elec = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_installed_capacity_res_for_electricity",
     {"RES elec": _subscript_dict["RES elec"]},

@@ -1,7 +1,24 @@
 """
-Module traditional_biomass
-Translated using PySD version 3.2.0
+Module energy.supply.traditional_biomass
+Translated using PySD version 3.10.0
 """
+
+
+@component.add(
+    name="modern BioE in households",
+    units="EJ",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "households_final_energy_demand": 1,
+        "pe_traditional_biomass_consum_ej": 1,
+    },
+)
+def modern_bioe_in_households():
+    return (
+        float(households_final_energy_demand().loc["solids"])
+        - pe_traditional_biomass_consum_ej()
+    )
 
 
 @component.add(

@@ -1,143 +1,7 @@
 """
-Module res_electricity
-Translated using PySD version 3.2.0
+Module energy.eroi.res_electricity
+Translated using PySD version 3.10.0
 """
-
-
-@component.add(
-    name="\"'dynamic' EROI RES elec var\"",
-    units="Dmnl",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"fei_res_elec_var": 2, "real_generation_res_elec_ej": 1},
-)
-def dynamic_eroi_res_elec_var():
-    """
-    Evolution of EROI over time per RES variable technology, considering CED dynamic over time.
-    """
-    return if_then_else(
-        fei_res_elec_var() == 0,
-        lambda: xr.DataArray(
-            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-        ),
-        lambda: real_generation_res_elec_ej() / fei_res_elec_var(),
-    )
-
-
-@component.add(
-    name="\"'static' EROI RES elec\"",
-    units="Dmnl",
-    subscripts=["RES elec"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "fei_over_lifetime_res_elec_dispatch": 8,
-        "gquality_of_electricity": 4,
-        "output_elec_over_lifetime_res_elec": 8,
-        "fei_over_lifetime_res_elec_var": 8,
-    },
-)
-def static_eroi_res_elec():
-    """
-    Energy return on energy invested (over the full lifetime of the infrastructure) per RES technology for generating electricity.
-    """
-    value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
-    )
-    value.loc[["hydro"]] = if_then_else(
-        float(fei_over_lifetime_res_elec_dispatch().loc["hydro"]) == 0,
-        lambda: 0,
-        lambda: float(output_elec_over_lifetime_res_elec().loc["hydro"])
-        / (
-            float(fei_over_lifetime_res_elec_dispatch().loc["hydro"])
-            * gquality_of_electricity()
-        ),
-    )
-    value.loc[["geot elec"]] = if_then_else(
-        float(fei_over_lifetime_res_elec_dispatch().loc["geot elec"]) == 0,
-        lambda: 0,
-        lambda: float(output_elec_over_lifetime_res_elec().loc["geot elec"])
-        / (
-            float(fei_over_lifetime_res_elec_dispatch().loc["geot elec"])
-            * gquality_of_electricity()
-        ),
-    )
-    value.loc[["solid bioE elec"]] = if_then_else(
-        float(fei_over_lifetime_res_elec_dispatch().loc["solid bioE elec"]) == 0,
-        lambda: 0,
-        lambda: float(output_elec_over_lifetime_res_elec().loc["solid bioE elec"])
-        / (
-            float(fei_over_lifetime_res_elec_dispatch().loc["solid bioE elec"])
-            * gquality_of_electricity()
-        ),
-    )
-    value.loc[["oceanic"]] = if_then_else(
-        float(fei_over_lifetime_res_elec_dispatch().loc["oceanic"]) == 0,
-        lambda: 0,
-        lambda: float(output_elec_over_lifetime_res_elec().loc["oceanic"])
-        / (
-            float(fei_over_lifetime_res_elec_dispatch().loc["oceanic"])
-            * gquality_of_electricity()
-        ),
-    )
-    value.loc[["wind onshore"]] = if_then_else(
-        float(fei_over_lifetime_res_elec_var().loc["wind onshore"]) == 0,
-        lambda: 0,
-        lambda: float(output_elec_over_lifetime_res_elec().loc["wind onshore"])
-        / float(fei_over_lifetime_res_elec_var().loc["wind onshore"]),
-    )
-    value.loc[["wind offshore"]] = if_then_else(
-        float(fei_over_lifetime_res_elec_var().loc["wind offshore"]) == 0,
-        lambda: 0,
-        lambda: float(output_elec_over_lifetime_res_elec().loc["wind offshore"])
-        / float(fei_over_lifetime_res_elec_var().loc["wind offshore"]),
-    )
-    value.loc[["solar PV"]] = if_then_else(
-        float(fei_over_lifetime_res_elec_var().loc["solar PV"]) == 0,
-        lambda: 0,
-        lambda: float(output_elec_over_lifetime_res_elec().loc["solar PV"])
-        / float(fei_over_lifetime_res_elec_var().loc["solar PV"]),
-    )
-    value.loc[["CSP"]] = if_then_else(
-        float(fei_over_lifetime_res_elec_var().loc["CSP"]) == 0,
-        lambda: 0,
-        lambda: float(output_elec_over_lifetime_res_elec().loc["CSP"])
-        / float(fei_over_lifetime_res_elec_var().loc["CSP"]),
-    )
-    return value
-
-
-@component.add(
-    name="\"'static' EROItot RES elec\"",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "fei_over_lifetime_res_elec": 2,
-        "output_elec_over_lifetime_res_elec": 1,
-    },
-)
-def static_eroitot_res_elec():
-    """
-    EROI over the lifetime of the aggregated outputs and inputs of RES for generating electricity.
-    """
-    return if_then_else(
-        sum(
-            fei_over_lifetime_res_elec().rename({"RES elec": "RES elec!"}),
-            dim=["RES elec!"],
-        )
-        < 0,
-        lambda: 0,
-        lambda: sum(
-            output_elec_over_lifetime_res_elec().rename({"RES elec": "RES elec!"}),
-            dim=["RES elec!"],
-        )
-        / sum(
-            fei_over_lifetime_res_elec().rename({"RES elec": "RES elec!"}),
-            dim=["RES elec!"],
-        ),
-    )
 
 
 @component.add(
@@ -201,8 +65,8 @@ def ced_new_cap_per_material_res_elec_var():
         "materials_for_om_per_capacity_installed_res_elec": 1,
         "energy_cons_per_unit_of_material_cons_for_res_elec": 1,
         "lifetime_res_elec": 1,
-        "kg_per_mt": 2,
         "m_per_t": 1,
+        "kg_per_mt": 2,
         "mj_per_ej": 1,
     },
 )
@@ -342,12 +206,12 @@ def cedtot_per_material_res_elec_var():
     comp_subtype="Normal",
     depends_on={
         "res_elec_variables": 1,
+        "twe_per_twh": 1,
         "ej_per_twh": 1,
         "cpini_res_elec": 1,
-        "twe_per_twh": 1,
         "lifetime_res_elec": 1,
-        "eroiini_res_elec_dispatch": 1,
         "quality_of_electricity_2015": 1,
+        "eroiini_res_elec_dispatch": 1,
     },
 )
 def cedtot_per_tw_over_lifetime_res_elec_dispatch():
@@ -416,6 +280,27 @@ def cedtot_per_tw_res_elec_var():
 )
 def cedtot_solar_pv():
     return float(fei_res_elec_var().loc["solar PV"])
+
+
+@component.add(
+    name="\"'dynamic' EROI RES elec var\"",
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"fei_res_elec_var": 2, "real_generation_res_elec_ej": 1},
+)
+def dynamic_eroi_res_elec_var():
+    """
+    Evolution of EROI over time per RES variable technology, considering CED dynamic over time.
+    """
+    return if_then_else(
+        fei_res_elec_var() == 0,
+        lambda: xr.DataArray(
+            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        ),
+        lambda: real_generation_res_elec_ej() / fei_res_elec_var(),
+    )
 
 
 @component.add(
@@ -510,8 +395,8 @@ def fei_over_lifetime_res_elec_dispatch():
     comp_subtype="Normal",
     depends_on={
         "cedtot_new_cap_res_elec_var": 1,
-        "share_energy_requirements_for_decom_res_elec": 1,
         "grid_correction_factor_res_elec": 1,
+        "share_energy_requirements_for_decom_res_elec": 1,
         "ced_om_over_lifetime_res_elec_var": 1,
         "gquality_of_electricity": 1,
         "output_elec_over_lifetime_res_elec": 1,
@@ -565,7 +450,7 @@ def fei_res_elec_var():
     units="Dmnl",
     subscripts=["RES elec"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
     depends_on={"__external__": "_ext_constant_grid_correction_factor_res_elec"},
 )
 def grid_correction_factor_res_elec():
@@ -576,9 +461,11 @@ def grid_correction_factor_res_elec():
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[_subscript_dict["RES ELEC DISPATCHABLE"]] = 0
-    value.loc[
-        ["wind onshore", "wind offshore", "solar PV", "CSP"]
-    ] = _ext_constant_grid_correction_factor_res_elec().values
+    def_subs = xr.zeros_like(value, dtype=bool)
+    def_subs.loc[["wind onshore", "wind offshore", "solar PV", "CSP"]] = True
+    value.values[
+        def_subs.values
+    ] = _ext_constant_grid_correction_factor_res_elec().values[def_subs.values]
     return value
 
 
@@ -588,9 +475,250 @@ _ext_constant_grid_correction_factor_res_elec = ExtConstant(
     "grid_correction_factor_res_elec",
     {"RES elec": _subscript_dict["RES ELEC VARIABLE"]},
     _root,
-    {"RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_grid_correction_factor_res_elec",
 )
+
+
+@component.add(
+    name='"include materials for overgrids?"',
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def include_materials_for_overgrids():
+    """
+    1. Include materials for overgrids in the CED of RES elec var 0: NOT include materials for overgrids in the CED of RES elec var
+    """
+    return 0
+
+
+@component.add(
+    name="materials for new RES elec per capacity installed",
+    units="kg/MW",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary, Constant",
+    comp_subtype="Normal",
+    depends_on={
+        "materials_per_new_capacity_installed_res": 1,
+        "include_materials_for_overgrids": 1,
+        "materials_per_new_res_elec_capacity_installed_material_overgrid_high_power": 1,
+        "materials_per_new_res_elec_capacity_installed_hvdcs": 1,
+    },
+)
+def materials_for_new_res_elec_per_capacity_installed():
+    value = xr.DataArray(
+        np.nan,
+        {
+            "RES elec": _subscript_dict["RES elec"],
+            "materials": _subscript_dict["materials"],
+        },
+        ["RES elec", "materials"],
+    )
+    value.loc[_subscript_dict["RES ELEC DISPATCHABLE"], :] = 0
+    value.loc[_subscript_dict["RES ELEC VARIABLE"], :] = (
+        materials_per_new_capacity_installed_res()
+        + (
+            (
+                materials_per_new_res_elec_capacity_installed_hvdcs()
+                + materials_per_new_res_elec_capacity_installed_material_overgrid_high_power()
+            )
+            * include_materials_for_overgrids()
+        )
+    ).values
+    return value
+
+
+@component.add(
+    name='"materials for O&M per capacity installed RES elec"',
+    units="kg/MW",
+    subscripts=["RES elec", "materials"],
+    comp_type="Constant",
+    comp_subtype="Normal, External",
+    depends_on={
+        "__external__": "_ext_constant_materials_for_om_per_capacity_installed_res_elec"
+    },
+)
+def materials_for_om_per_capacity_installed_res_elec():
+    """
+    Materials requirements for operation and maintenance per unit of new installed capacity of RES elec.
+    """
+    value = xr.DataArray(
+        np.nan,
+        {
+            "RES elec": _subscript_dict["RES elec"],
+            "materials": _subscript_dict["materials"],
+        },
+        ["RES elec", "materials"],
+    )
+    value.loc[_subscript_dict["RES ELEC DISPATCHABLE"], :] = 0
+    def_subs = xr.zeros_like(value, dtype=bool)
+    def_subs.loc[["wind onshore", "wind offshore", "solar PV", "CSP"], :] = True
+    value.values[
+        def_subs.values
+    ] = _ext_constant_materials_for_om_per_capacity_installed_res_elec().values[
+        def_subs.values
+    ]
+    return value
+
+
+_ext_constant_materials_for_om_per_capacity_installed_res_elec = ExtConstant(
+    "../materials.xlsx",
+    "Global",
+    "materials_for_om_per_capacity_installed_res_elec*",
+    {
+        "RES elec": _subscript_dict["RES ELEC VARIABLE"],
+        "materials": _subscript_dict["materials"],
+    },
+    _root,
+    {
+        "RES elec": _subscript_dict["RES elec"],
+        "materials": _subscript_dict["materials"],
+    },
+    "_ext_constant_materials_for_om_per_capacity_installed_res_elec",
+)
+
+
+@component.add(
+    name="materials per new capacity installed RES",
+    units="kg/MW",
+    subscripts=["RES ELEC VARIABLE", "materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_materials_per_new_capacity_installed_res"
+    },
+)
+def materials_per_new_capacity_installed_res():
+    """
+    Materials requirements per unit of new installed capacity of RES.
+    """
+    return _ext_constant_materials_per_new_capacity_installed_res()
+
+
+_ext_constant_materials_per_new_capacity_installed_res = ExtConstant(
+    "../materials.xlsx",
+    "Global",
+    "materials_per_new_capacity_installed_res*",
+    {
+        "RES ELEC VARIABLE": _subscript_dict["RES ELEC VARIABLE"],
+        "materials": _subscript_dict["materials"],
+    },
+    _root,
+    {
+        "RES ELEC VARIABLE": _subscript_dict["RES ELEC VARIABLE"],
+        "materials": _subscript_dict["materials"],
+    },
+    "_ext_constant_materials_per_new_capacity_installed_res",
+)
+
+
+@component.add(
+    name="materials per new RES elec capacity installed HVDCs",
+    units="kg/MW",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_materials_per_new_res_elec_capacity_installed_hvdcs"
+    },
+)
+def materials_per_new_res_elec_capacity_installed_hvdcs():
+    """
+    Materials requirements for inter-regional grids (HVDCs) per unit of new installed capacity of RES variable for electricity.
+    """
+    return _ext_constant_materials_per_new_res_elec_capacity_installed_hvdcs()
+
+
+_ext_constant_materials_per_new_res_elec_capacity_installed_hvdcs = ExtConstant(
+    "../materials.xlsx",
+    "Global",
+    "materials_per_new_res_elec_capacity_installed_hvdcs*",
+    {"materials": _subscript_dict["materials"]},
+    _root,
+    {"materials": _subscript_dict["materials"]},
+    "_ext_constant_materials_per_new_res_elec_capacity_installed_hvdcs",
+)
+
+
+@component.add(
+    name="materials per new RES elec capacity installed material overgrid high power",
+    units="kg/MW",
+    subscripts=["materials"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_materials_per_new_res_elec_capacity_installed_material_overgrid_high_power"
+    },
+)
+def materials_per_new_res_elec_capacity_installed_material_overgrid_high_power():
+    """
+    Materials requirements for overgrid high power per unit of new installed capacity of RES variable for electricity.
+    """
+    return (
+        _ext_constant_materials_per_new_res_elec_capacity_installed_material_overgrid_high_power()
+    )
+
+
+_ext_constant_materials_per_new_res_elec_capacity_installed_material_overgrid_high_power = ExtConstant(
+    "../materials.xlsx",
+    "Global",
+    "materials_per_new_res_elec_capacity_installed_material_overgrid_high_power*",
+    {"materials": _subscript_dict["materials"]},
+    _root,
+    {"materials": _subscript_dict["materials"]},
+    "_ext_constant_materials_per_new_res_elec_capacity_installed_material_overgrid_high_power",
+)
+
+
+@component.add(
+    name="materials required for new RES elec Mt",
+    units="Mt",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "res_elec_capacity_under_construction_tw": 1,
+        "materials_for_new_res_elec_per_capacity_installed": 1,
+        "m_per_t": 1,
+        "kg_per_mt": 1,
+    },
+)
+def materials_required_for_new_res_elec_mt():
+    """
+    Annual materials required for the installation of new capacity of RES for electricity by technology.
+    """
+    return (
+        res_elec_capacity_under_construction_tw()
+        * materials_for_new_res_elec_per_capacity_installed()
+        * m_per_t()
+        / kg_per_mt()
+    )
+
+
+@component.add(
+    name='"materials required for O&M RES elec Mt"',
+    units="Mt",
+    subscripts=["RES elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_res_elec": 1,
+        "materials_for_om_per_capacity_installed_res_elec": 1,
+        "m_per_t": 1,
+        "kg_per_mt": 1,
+    },
+)
+def materials_required_for_om_res_elec_mt():
+    """
+    Annual materials required for the operation and maintenance of the capacity of RES for electricity in operation by technology.
+    """
+    return (
+        installed_capacity_res_elec()
+        * materials_for_om_per_capacity_installed_res_elec()
+        * m_per_t()
+        / kg_per_mt()
+    )
 
 
 @component.add(
@@ -658,7 +786,7 @@ def res_elec_variables():
     units="Dmnl",
     subscripts=["RES elec"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
     depends_on={"__external__": "_ext_constant_selfelectricity_consumption_res_elec"},
 )
 def selfelectricity_consumption_res_elec():
@@ -666,9 +794,11 @@ def selfelectricity_consumption_res_elec():
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[_subscript_dict["RES ELEC DISPATCHABLE"]] = 0
-    value.loc[
-        ["wind onshore", "wind offshore", "solar PV", "CSP"]
-    ] = _ext_constant_selfelectricity_consumption_res_elec().values
+    def_subs = xr.zeros_like(value, dtype=bool)
+    def_subs.loc[["wind onshore", "wind offshore", "solar PV", "CSP"]] = True
+    value.values[
+        def_subs.values
+    ] = _ext_constant_selfelectricity_consumption_res_elec().values[def_subs.values]
     return value
 
 
@@ -678,7 +808,7 @@ _ext_constant_selfelectricity_consumption_res_elec = ExtConstant(
     "self_electricity_consumption_res_elec",
     {"RES elec": _subscript_dict["RES ELEC VARIABLE"]},
     _root,
-    {"RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_selfelectricity_consumption_res_elec",
 )
 
@@ -688,7 +818,7 @@ _ext_constant_selfelectricity_consumption_res_elec = ExtConstant(
     units="Dmnl",
     subscripts=["RES elec"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
     depends_on={
         "__external__": "_ext_constant_share_energy_requirements_for_decom_res_elec"
     },
@@ -701,9 +831,13 @@ def share_energy_requirements_for_decom_res_elec():
         np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[_subscript_dict["RES ELEC DISPATCHABLE"]] = 0
-    value.loc[
-        ["wind onshore", "wind offshore", "solar PV", "CSP"]
-    ] = _ext_constant_share_energy_requirements_for_decom_res_elec().values
+    def_subs = xr.zeros_like(value, dtype=bool)
+    def_subs.loc[["wind onshore", "wind offshore", "solar PV", "CSP"]] = True
+    value.values[
+        def_subs.values
+    ] = _ext_constant_share_energy_requirements_for_decom_res_elec().values[
+        def_subs.values
+    ]
     return value
 
 
@@ -713,6 +847,121 @@ _ext_constant_share_energy_requirements_for_decom_res_elec = ExtConstant(
     "share_energy_requirements_for_decom_res_elec",
     {"RES elec": _subscript_dict["RES ELEC VARIABLE"]},
     _root,
-    {"RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_share_energy_requirements_for_decom_res_elec",
 )
+
+
+@component.add(
+    name="\"'static' EROI RES elec\"",
+    units="Dmnl",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "fei_over_lifetime_res_elec_dispatch": 8,
+        "output_elec_over_lifetime_res_elec": 8,
+        "gquality_of_electricity": 4,
+        "fei_over_lifetime_res_elec_var": 8,
+    },
+)
+def static_eroi_res_elec():
+    """
+    Energy return on energy invested (over the full lifetime of the infrastructure) per RES technology for generating electricity.
+    """
+    value = xr.DataArray(
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+    )
+    value.loc[["hydro"]] = if_then_else(
+        float(fei_over_lifetime_res_elec_dispatch().loc["hydro"]) == 0,
+        lambda: 0,
+        lambda: float(output_elec_over_lifetime_res_elec().loc["hydro"])
+        / (
+            float(fei_over_lifetime_res_elec_dispatch().loc["hydro"])
+            * gquality_of_electricity()
+        ),
+    )
+    value.loc[["geot elec"]] = if_then_else(
+        float(fei_over_lifetime_res_elec_dispatch().loc["geot elec"]) == 0,
+        lambda: 0,
+        lambda: float(output_elec_over_lifetime_res_elec().loc["geot elec"])
+        / (
+            float(fei_over_lifetime_res_elec_dispatch().loc["geot elec"])
+            * gquality_of_electricity()
+        ),
+    )
+    value.loc[["solid bioE elec"]] = if_then_else(
+        float(fei_over_lifetime_res_elec_dispatch().loc["solid bioE elec"]) == 0,
+        lambda: 0,
+        lambda: float(output_elec_over_lifetime_res_elec().loc["solid bioE elec"])
+        / (
+            float(fei_over_lifetime_res_elec_dispatch().loc["solid bioE elec"])
+            * gquality_of_electricity()
+        ),
+    )
+    value.loc[["oceanic"]] = if_then_else(
+        float(fei_over_lifetime_res_elec_dispatch().loc["oceanic"]) == 0,
+        lambda: 0,
+        lambda: float(output_elec_over_lifetime_res_elec().loc["oceanic"])
+        / (
+            float(fei_over_lifetime_res_elec_dispatch().loc["oceanic"])
+            * gquality_of_electricity()
+        ),
+    )
+    value.loc[["wind onshore"]] = if_then_else(
+        float(fei_over_lifetime_res_elec_var().loc["wind onshore"]) == 0,
+        lambda: 0,
+        lambda: float(output_elec_over_lifetime_res_elec().loc["wind onshore"])
+        / float(fei_over_lifetime_res_elec_var().loc["wind onshore"]),
+    )
+    value.loc[["wind offshore"]] = if_then_else(
+        float(fei_over_lifetime_res_elec_var().loc["wind offshore"]) == 0,
+        lambda: 0,
+        lambda: float(output_elec_over_lifetime_res_elec().loc["wind offshore"])
+        / float(fei_over_lifetime_res_elec_var().loc["wind offshore"]),
+    )
+    value.loc[["solar PV"]] = if_then_else(
+        float(fei_over_lifetime_res_elec_var().loc["solar PV"]) == 0,
+        lambda: 0,
+        lambda: float(output_elec_over_lifetime_res_elec().loc["solar PV"])
+        / float(fei_over_lifetime_res_elec_var().loc["solar PV"]),
+    )
+    value.loc[["CSP"]] = if_then_else(
+        float(fei_over_lifetime_res_elec_var().loc["CSP"]) == 0,
+        lambda: 0,
+        lambda: float(output_elec_over_lifetime_res_elec().loc["CSP"])
+        / float(fei_over_lifetime_res_elec_var().loc["CSP"]),
+    )
+    return value
+
+
+@component.add(
+    name="\"'static' EROItot RES elec\"",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "fei_over_lifetime_res_elec": 2,
+        "output_elec_over_lifetime_res_elec": 1,
+    },
+)
+def static_eroitot_res_elec():
+    """
+    EROI over the lifetime of the aggregated outputs and inputs of RES for generating electricity.
+    """
+    return if_then_else(
+        sum(
+            fei_over_lifetime_res_elec().rename({"RES elec": "RES elec!"}),
+            dim=["RES elec!"],
+        )
+        < 0,
+        lambda: 0,
+        lambda: sum(
+            output_elec_over_lifetime_res_elec().rename({"RES elec": "RES elec!"}),
+            dim=["RES elec!"],
+        )
+        / sum(
+            fei_over_lifetime_res_elec().rename({"RES elec": "RES elec!"}),
+            dim=["RES elec!"],
+        ),
+    )

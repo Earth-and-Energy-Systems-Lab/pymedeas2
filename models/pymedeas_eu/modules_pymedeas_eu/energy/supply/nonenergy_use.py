@@ -1,6 +1,6 @@
 """
-Module nonenergy_use
-Translated using PySD version 3.2.0
+Module energy.supply.nonenergy_use
+Translated using PySD version 3.10.0
 """
 
 
@@ -132,8 +132,8 @@ def total_real_nonenergy_use_consumption_ej():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel_ej": 3,
-        "gdp_eu": 3,
         "gdp_delayed_1yr": 3,
+        "gdp_eu": 3,
     },
 )
 def variation_nonenergy_use():

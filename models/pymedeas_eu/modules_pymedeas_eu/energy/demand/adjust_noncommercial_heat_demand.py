@@ -1,6 +1,6 @@
 """
-Module adjust_noncommercial_heat_demand
-Translated using PySD version 3.2.0
+Module energy.demand.adjust_noncommercial_heat_demand
+Translated using PySD version 3.10.0
 """
 
 
@@ -13,8 +13,8 @@ Translated using PySD version 3.2.0
     depends_on={
         "fed_oil_for_heatnc": 1,
         "fed_nat_gas_for_heatnc": 1,
-        "fed_solid_bioe_for_heatnc": 1,
         "fed_coal_for_heatnc": 1,
+        "fed_solid_bioe_for_heatnc": 1,
     },
 )
 def fed_by_fuel_for_heatnc():
@@ -218,8 +218,8 @@ def share_fed_liquids_vs_nre_heatnc():
     depends_on={
         "share_feh_over_fed_oil": 1,
         "share_feh_over_fed_nat_gas": 1,
-        "share_feh_over_fed_coal": 1,
         "share_feh_over_fed_solid_bioe": 1,
+        "share_feh_over_fed_coal": 1,
     },
 )
 def share_feh_over_fed_by_final_fuel():

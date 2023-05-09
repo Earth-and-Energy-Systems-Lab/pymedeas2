@@ -1,77 +1,7 @@
 """
-Module storage_demand_and_supply
-Translated using PySD version 3.2.0
+Module energy.storage.storage_demand_and_supply
+Translated using PySD version 3.10.0
 """
-
-
-@component.add(
-    name="Total capacity elec storage TW",
-    units="TW",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"installed_capacity_phs": 1, "used_ev_batteries_for_elec_storage": 1},
-)
-def total_capacity_elec_storage_tw():
-    """
-    Total capacity electricity storage installed.
-    """
-    return installed_capacity_phs() + used_ev_batteries_for_elec_storage()
-
-
-@component.add(
-    name="rt elec storage efficiency",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "rt_storage_efficiency_phs": 1,
-        "installed_capacity_phs": 1,
-        "rt_storage_efficiency_ev_batteries": 1,
-        "used_ev_batteries_for_elec_storage": 1,
-        "total_capacity_elec_storage_tw": 1,
-    },
-)
-def rt_elec_storage_efficiency():
-    """
-    Round-trip storage efficiency of electric storage (PHS and EV batteries).
-    """
-    return (
-        rt_storage_efficiency_phs() * installed_capacity_phs()
-        + rt_storage_efficiency_ev_batteries() * used_ev_batteries_for_elec_storage()
-    ) / total_capacity_elec_storage_tw()
-
-
-@component.add(
-    name="demand EV batteries for elec storage",
-    units="TW",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"demand_storage_capacity": 1, "installed_capacity_phs": 1},
-)
-def demand_ev_batteries_for_elec_storage():
-    """
-    Demand of EV batteries for storage of electricity.
-    """
-    return np.maximum(0, demand_storage_capacity() - installed_capacity_phs())
-
-
-@component.add(
-    name="Total installed capacity RES elec var",
-    units="TW",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"installed_capacity_res_elec": 1},
-)
-def total_installed_capacity_res_elec_var():
-    """
-    Total installed capacity of RES variables for electricity generation.
-    """
-    return sum(
-        installed_capacity_res_elec()
-        .loc[_subscript_dict["RES ELEC VARIABLE"]]
-        .rename({"RES elec": "RES ELEC VARIABLE!"}),
-        dim=["RES ELEC VARIABLE!"],
-    )
 
 
 @component.add(
@@ -143,6 +73,20 @@ def cp_ev_batteries_required():
 
 
 @component.add(
+    name="demand EV batteries for elec storage",
+    units="TW",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"demand_storage_capacity": 1, "installed_capacity_phs": 1},
+)
+def demand_ev_batteries_for_elec_storage():
+    """
+    Demand of EV batteries for storage of electricity.
+    """
+    return np.maximum(0, demand_storage_capacity() - installed_capacity_phs())
+
+
+@component.add(
     name="demand storage capacity",
     units="TW",
     comp_type="Auxiliary",
@@ -169,8 +113,8 @@ def demand_storage_capacity():
     depends_on={
         "esoi_phs": 1,
         "installed_capacity_phs": 1,
-        "esoi_ev_batteries": 1,
         "used_ev_batteries_for_elec_storage": 1,
+        "esoi_ev_batteries": 1,
         "total_capacity_elec_storage_tw": 1,
     },
 )
@@ -240,6 +184,29 @@ def remaining_potential_elec_storage_by_res_techn():
 
 
 @component.add(
+    name="rt elec storage efficiency",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "rt_storage_efficiency_phs": 1,
+        "installed_capacity_phs": 1,
+        "rt_storage_efficiency_ev_batteries": 1,
+        "used_ev_batteries_for_elec_storage": 1,
+        "total_capacity_elec_storage_tw": 1,
+    },
+)
+def rt_elec_storage_efficiency():
+    """
+    Round-trip storage efficiency of electric storage (PHS and EV batteries).
+    """
+    return (
+        rt_storage_efficiency_phs() * installed_capacity_phs()
+        + rt_storage_efficiency_ev_batteries() * used_ev_batteries_for_elec_storage()
+    ) / total_capacity_elec_storage_tw()
+
+
+@component.add(
     name="rt storage efficiency EV batteries",
     units="Dmnl",
     comp_type="Constant",
@@ -301,6 +268,39 @@ def share_capacity_storageres_elec_var():
     Share installed capacity of storage vs installed capacity of variable RES for electricity. Estimation from NREL (2012).
     """
     return 0.099 + 0.1132 * share_elec_demand_covered_by_res()
+
+
+@component.add(
+    name="Total capacity elec storage TW",
+    units="TW",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"installed_capacity_phs": 1, "used_ev_batteries_for_elec_storage": 1},
+)
+def total_capacity_elec_storage_tw():
+    """
+    Total capacity electricity storage installed.
+    """
+    return installed_capacity_phs() + used_ev_batteries_for_elec_storage()
+
+
+@component.add(
+    name="Total installed capacity RES elec var",
+    units="TW",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"installed_capacity_res_elec": 1},
+)
+def total_installed_capacity_res_elec_var():
+    """
+    Total installed capacity of RES variables for electricity generation.
+    """
+    return sum(
+        installed_capacity_res_elec()
+        .loc[_subscript_dict["RES ELEC VARIABLE"]]
+        .rename({"RES elec": "RES ELEC VARIABLE!"}),
+        dim=["RES ELEC VARIABLE!"],
+    )
 
 
 @component.add(

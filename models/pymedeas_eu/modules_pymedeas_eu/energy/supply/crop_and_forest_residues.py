@@ -1,6 +1,6 @@
 """
-Module crop_and_forest_residues
-Translated using PySD version 3.2.0
+Module energy.supply.crop_and_forest_residues
+Translated using PySD version 3.10.0
 """
 
 
@@ -75,8 +75,8 @@ def max_npp_potential_bioe_residues():
 
 
 _ext_constant_max_npp_potential_bioe_residues = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "../energy.xlsx",
+    "Europe",
     "max_NPP_pot_bioe_residues",
     {},
     _root,
@@ -149,11 +149,11 @@ def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
         "time": 3,
         "start_year_bioe_residues_for_nonbiofuels": 3,
         "start_production_biofuels": 1,
-        "pe_bioe_residues_nonbiofuels_ej": 1,
-        "bioe_residues_for_nonbiofuels_available": 1,
-        "p_bioe_residues": 1,
-        "max_npp_potential_bioe_residues": 1,
         "ej_per_ktoe": 1,
+        "pe_bioe_residues_nonbiofuels_ej": 1,
+        "max_npp_potential_bioe_residues": 1,
+        "p_bioe_residues": 1,
+        "bioe_residues_for_nonbiofuels_available": 1,
     },
 )
 def new_bioe_residues_for_nonbiofuels():
@@ -189,13 +189,13 @@ def new_bioe_residues_for_nonbiofuels():
         "time": 3,
         "start_year_3gen_cellulosic_biofuels": 3,
         "start_production_biofuels": 1,
-        "p_bioe_residues": 1,
-        "constrain_liquids_exogenous_growth": 1,
-        "check_liquids": 1,
+        "ej_per_ktoe": 1,
         "cellulosic_biofuels_available": 1,
         "max_npp_potential_bioe_residues": 1,
+        "p_bioe_residues": 1,
         "potential_pe_cellulosic_biofuel_ej": 2,
-        "ej_per_ktoe": 1,
+        "constrain_liquids_exogenous_growth": 1,
+        "check_liquids": 1,
     },
 )
 def new_cellulosic_biofuels():
@@ -243,7 +243,7 @@ def p_bioe_residues():
 
 _ext_constant_p_bioe_residues = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "p_bioe_residues_growth",
     {},
     _root,
@@ -389,7 +389,7 @@ def share_cellulosic_biofuels_vs_bioe_residues():
 
 _ext_constant_share_cellulosic_biofuels_vs_bioe_residues = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "share_cellulosic_biof_vs_bioe_res",
     {},
     _root,
@@ -416,7 +416,7 @@ def start_year_bioe_residues_for_nonbiofuels():
 
 _ext_constant_start_year_bioe_residues_for_nonbiofuels = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "start_year_bioe_residues_non_biofuels",
     {},
     _root,

@@ -1,21 +1,7 @@
 """
-Module social_and_environmental_impacts
-Translated using PySD version 3.2.0
+Module society.social_and_environmental_impacts
+Translated using PySD version 3.10.0
 """
-
-
-@component.add(
-    name='"Carbon footprint tC/person"',
-    units="tC/person",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"carbon_footprint_tco2person": 1, "c_per_co2": 1},
-)
-def carbon_footprint_tcperson():
-    """
-    Carbon footprint.
-    """
-    return carbon_footprint_tco2person() * c_per_co2()
 
 
 @component.add(
@@ -30,6 +16,20 @@ def carbon_footprint_tco2person():
     CO2 emissions per capita.
     """
     return total_co2_emissions_gtco2() * t_per_gt() / population()
+
+
+@component.add(
+    name='"Carbon footprint tC/person"',
+    units="tC/person",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"carbon_footprint_tco2person": 1, "c_per_co2": 1},
+)
+def carbon_footprint_tcperson():
+    """
+    Carbon footprint.
+    """
+    return carbon_footprint_tco2person() * c_per_co2()
 
 
 @component.add(

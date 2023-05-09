@@ -1,6 +1,6 @@
 """
-Module eroi_system
-Translated using PySD version 3.2.0
+Module energy.eroi.eroi_system
+Translated using PySD version 3.10.0
 """
 
 
@@ -99,8 +99,8 @@ _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "historic_energy_industry_ownuse": 1,
         "real_tfec": 1,
+        "historic_energy_industry_ownuse": 1,
         "fe_tot_generation_all_res_elec_ej": 1,
     },
 )

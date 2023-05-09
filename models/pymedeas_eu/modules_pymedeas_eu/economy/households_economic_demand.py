@@ -1,6 +1,6 @@
 """
-Module households_economic_demand
-Translated using PySD version 3.2.0
+Module economy.households_economic_demand
+Translated using PySD version 3.10.0
 """
 
 
@@ -181,8 +181,8 @@ def variation_historic_demand():
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "variation_lc": 1,
         "lc": 2,
+        "variation_lc": 1,
         "beta_0_hd": 1,
         "beta_1_hd": 2,
     },

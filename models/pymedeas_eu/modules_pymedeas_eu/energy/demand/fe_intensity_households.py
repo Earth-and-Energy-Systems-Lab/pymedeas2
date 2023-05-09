@@ -1,6 +1,6 @@
 """
-Module fe_intensity_households
-Translated using PySD version 3.2.0
+Module energy.demand.fe_intensity_households
+Translated using PySD version 3.10.0
 """
 
 
@@ -11,9 +11,9 @@ Translated using PySD version 3.2.0
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "initial_global_energy_intensity_2009": 2,
         "global_energy_intensity_h": 1,
         "min_energy_intensity_vs_intial_h": 2,
+        "initial_global_energy_intensity_2009": 2,
     },
 )
 def available_improvement_efficiency_h():
@@ -73,7 +73,7 @@ def choose_energy_intensity_target_method():
 
 _ext_constant_choose_energy_intensity_target_method = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "choose_energy_intensity_target_method",
     {},
     _root,
@@ -92,9 +92,9 @@ _ext_constant_choose_energy_intensity_target_method = ExtConstant(
         "evol_final_energy_intensity_h": 2,
         "global_energy_intensity_h": 1,
         "minimum_fraction_source": 1,
+        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
         "pressure_to_change_energy_technology_h": 1,
         "max_yearly_change_between_sources": 1,
-        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
     },
 )
 def decrease_of_intensity_due_to_change_energy_technology_h_top_down():
@@ -122,6 +122,33 @@ def decrease_of_intensity_due_to_change_energy_technology_h_top_down():
 
 
 @component.add(
+    name="EI households transport delayed",
+    units="EJ/T$",
+    subscripts=["final sources"],
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_ei_households_transport_delayed": 1},
+    other_deps={
+        "_delayfixed_ei_households_transport_delayed": {
+            "initial": {"initial_households_energy_intensity": 1, "time_step": 1},
+            "step": {"ei_households_transport": 1},
+        }
+    },
+)
+def ei_households_transport_delayed():
+    return _delayfixed_ei_households_transport_delayed()
+
+
+_delayfixed_ei_households_transport_delayed = DelayFixed(
+    lambda: ei_households_transport(),
+    lambda: time_step(),
+    lambda: initial_households_energy_intensity(),
+    time_step,
+    "_delayfixed_ei_households_transport_delayed",
+)
+
+
+@component.add(
     name="Energy intensity of households",
     units="EJ/Tdollar",
     subscripts=["final sources"],
@@ -130,8 +157,8 @@ def decrease_of_intensity_due_to_change_energy_technology_h_top_down():
     depends_on={
         "time": 1,
         "energy_intensity_of_households_rest": 3,
-        "energy_intensity_of_households_transport": 1,
         "activate_bottom_up_method": 1,
+        "ei_households_transport_delayed": 1,
     },
 )
 def energy_intensity_of_households():
@@ -144,7 +171,7 @@ def energy_intensity_of_households():
         lambda: if_then_else(
             float(activate_bottom_up_method().loc["Households"]) == 0,
             lambda: energy_intensity_of_households_rest(),
-            lambda: energy_intensity_of_households_transport()
+            lambda: ei_households_transport_delayed()
             + energy_intensity_of_households_rest(),
         ),
     )
@@ -158,8 +185,8 @@ def energy_intensity_of_households():
     comp_subtype="Normal",
     depends_on={
         "activate_bottom_up_method": 3,
-        "evol_final_energy_intensity_h": 8,
         "change_total_intensity_to_rest": 3,
+        "evol_final_energy_intensity_h": 8,
     },
 )
 def energy_intensity_of_households_rest():
@@ -401,13 +428,13 @@ def increase_of_intensity_due_to_change_energy_technology_net_h():
     depends_on={
         "time": 2,
         "historic_rate_final_energy_intensity": 1,
-        "evol_final_energy_intensity_h": 4,
-        "available_improvement_efficiency_h": 4,
-        "efficiency_energy_acceleration": 12,
-        "variation_energy_intensity_target_h": 1,
         "year_energy_intensity_target": 1,
         "choose_final_sectoral_energy_intensities_evolution_method": 2,
+        "efficiency_energy_acceleration": 12,
+        "variation_energy_intensity_target_h": 1,
+        "evol_final_energy_intensity_h": 4,
         "historic_mean_rate_energy_intensity": 6,
+        "available_improvement_efficiency_h": 4,
         "initial_energy_intensity_1995": 4,
     },
 )
@@ -528,6 +555,29 @@ def inertial_rate_energy_intensity_h_top_down():
 
 
 @component.add(
+    name="initial households energy intensity",
+    units="EJ/T$",
+    subscripts=["final sources"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_households_energy_intensity"},
+)
+def initial_households_energy_intensity():
+    return _ext_constant_initial_households_energy_intensity()
+
+
+_ext_constant_initial_households_energy_intensity = ExtConstant(
+    "../transport.xlsx",
+    "Europe",
+    "initial_ei_households_transport*",
+    {"final sources": _subscript_dict["final sources"]},
+    _root,
+    {"final sources": _subscript_dict["final sources"]},
+    "_ext_constant_initial_households_energy_intensity",
+)
+
+
+@component.add(
     name='"Inter-fuel scarcity pressure H"',
     units="Dmnl",
     subscripts=["final sources", "final sources1"],
@@ -572,7 +622,7 @@ def min_energy_intensity_vs_intial_h():
 
 _ext_constant_min_energy_intensity_vs_intial_h = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "min_FEI_vs_initial",
     {},
     _root,
@@ -597,7 +647,7 @@ def pct_change_energy_intensity_target():
 
 _ext_constant_pct_change_energy_intensity_target = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "pct_change_energy_intensity_target",
     {},
     _root,
@@ -626,7 +676,7 @@ def percentage_of_change_over_the_historic_maximun_variation_of_energy_intensiti
 
 _ext_constant_percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "p_change_over_hist_max_variation_FEI",
     {},
     _root,
@@ -731,7 +781,7 @@ def start_year_modification_ei():
 
 _ext_constant_start_year_modification_ei = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "start_year_modification_EI",
     {},
     _root,
@@ -782,20 +832,13 @@ def total_fed_trasnport_households():
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "energy_intensity_of_households_transport": 1,
-        "household_demand_total": 1,
-    },
+    depends_on={"ei_households_transport_delayed": 1, "household_demand_total": 1},
 )
 def transport_households_final_energy_demand():
     """
     Final energy in transport households
     """
-    return (
-        energy_intensity_of_households_transport()
-        * household_demand_total()
-        / 1000000.0
-    )
+    return ei_households_transport_delayed() * household_demand_total() / 1000000.0
 
 
 @component.add(
@@ -805,11 +848,11 @@ def transport_households_final_energy_demand():
     comp_subtype="Normal",
     depends_on={
         "choose_energy_intensity_target_method": 1,
-        "evol_final_energy_intensity_h": 2,
         "year_energy_intensity_target": 2,
-        "energy_intensity_target": 1,
         "final_year_energy_intensity_target": 4,
         "time": 6,
+        "evol_final_energy_intensity_h": 2,
+        "energy_intensity_target": 1,
         "final_energy_intensity_2020_h": 1,
         "pct_change_energy_intensity_target": 1,
     },
@@ -886,7 +929,7 @@ def year_change_pct_energy_intensity_target():
 
 _ext_constant_year_change_pct_energy_intensity_target = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "year_change_pct_energy_intensity_target",
     {},
     _root,

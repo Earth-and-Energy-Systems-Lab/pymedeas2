@@ -1,6 +1,6 @@
 """
-Module phs
-Translated using PySD version 3.2.0
+Module energy.storage.phs
+Translated using PySD version 3.10.0
 """
 
 
@@ -19,7 +19,7 @@ def cp_phs():
 
 
 _ext_constant_cp_phs = ExtConstant(
-    "../energy.xlsx", "Austria", "cp_phs", {}, _root, {}, "_ext_constant_cp_phs"
+    "../energy.xlsx", "Catalonia", "cp_phs", {}, _root, {}, "_ext_constant_cp_phs"
 )
 
 
@@ -39,7 +39,7 @@ def initial_instal_cap_phs():
 
 _ext_constant_initial_instal_cap_phs = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_installed_capacity_phs",
     {},
     _root,
@@ -71,8 +71,8 @@ def installed_capacity_phs():
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_phs": 3,
-        "start_year_p_growth_res_elec": 3,
         "p_phs_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def installed_capacity_phs_policies():
@@ -175,7 +175,7 @@ def max_potential_phs_twe():
 
 _ext_constant_max_potential_phs_twe = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "max_PHS_potential",
     {},
     _root,
@@ -259,7 +259,7 @@ def p_phs_power(x, final_subs=None):
 
 _ext_lookup_p_phs_power = ExtLookup(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "year_RES_power",
     "p_PHS_power",
     {},
@@ -357,7 +357,7 @@ def real_fe_elec_stored_phs_twh():
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "wear_phs": 1, "phs_overcapacity": 1},
+    depends_on={"time": 1, "phs_overcapacity": 1, "wear_phs": 1},
 )
 def replacement_capacity_phs():
     """
@@ -384,7 +384,7 @@ def table_hist_capacity_phs(x, final_subs=None):
 
 _ext_lookup_table_hist_capacity_phs = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_installed_capacity_phs",
     {},

@@ -1,6 +1,6 @@
 """
-Module total_outputs_from_demand
-Translated using PySD version 3.2.0
+Module economy.total_outputs_from_demand
+Translated using PySD version 3.10.0
 """
 
 
@@ -240,23 +240,23 @@ _delayfixed_real_demand_by_sector_delayed = DelayFixed(
     depends_on={
         "total_fe_elec_consumption_twh": 1,
         "ej_per_twh": 1,
-        "share_heat_distribution_losses": 1,
         "total_fe_heat_generation_ej": 1,
+        "share_heat_distribution_losses": 1,
+        "pes_gases": 1,
+        "other_gases_required": 1,
         "ped_nat_gas_for_gtl_ej": 1,
         "share_gases_for_final_energy": 1,
-        "other_gases_required": 1,
-        "pes_gases": 1,
         "other_liquids_required_ej": 1,
         "share_liquids_for_final_energy": 1,
         "pes_liquids_ej": 1,
         "ped_coal_for_ctl_ej": 1,
-        "losses_in_charcoal_plants_ej": 1,
-        "pes_peat_ej": 1,
-        "pes_waste_for_tfc": 1,
-        "other_solids_required": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
-        "share_solids_for_final_energy": 1,
         "extraction_coal_ej": 1,
+        "pes_waste_for_tfc": 1,
+        "losses_in_charcoal_plants_ej": 1,
+        "pe_traditional_biomass_ej_delayed": 1,
+        "pes_peat_ej": 1,
+        "share_solids_for_final_energy": 1,
+        "other_solids_required": 1,
     },
 )
 def real_fe_consumption_by_fuel():
@@ -273,13 +273,15 @@ def real_fe_consumption_by_fuel():
     value.loc[["gases"]] = (
         pes_gases() - ped_nat_gas_for_gtl_ej() - other_gases_required()
     ) * share_gases_for_final_energy()
-    value.loc[["liquids"]] = (
-        pes_liquids_ej() - other_liquids_required_ej()
-    ) * share_liquids_for_final_energy()
+    value.loc[["liquids"]] = np.maximum(
+        (pes_liquids_ej() - other_liquids_required_ej())
+        * share_liquids_for_final_energy(),
+        0,
+    )
     value.loc[["solids"]] = (
         extraction_coal_ej()
         + (
-            pe_traditional_biomass_ej_delayed_1yr()
+            pe_traditional_biomass_ej_delayed()
             + pes_waste_for_tfc()
             + pes_peat_ej()
             + losses_in_charcoal_plants_ej()
@@ -414,13 +416,19 @@ def real_total_output_by_fuel_and_sector():
 )
 def real_total_output_by_sector():
     """
-    Real total output by sector (35 WIOD sectors). US$1995. We assume the most limiting resources.
+    Real total output by sector (14 WIOD sectors). US$1995. We assume the most limiting resources.
     """
-    return vmin(
+    return sum(
         real_total_output_by_fuel_and_sector().rename(
             {"final sources": "final sources!"}
         ),
         dim=["final sources!"],
+    ) / len(
+        xr.DataArray(
+            np.arange(1, len(_subscript_dict["final sources"]) + 1),
+            {"final sources": _subscript_dict["final sources"]},
+            ["final sources"],
+        )
     )
 
 

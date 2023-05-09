@@ -1,6 +1,6 @@
 """
-Module res_heat_potential
-Translated using PySD version 3.2.0
+Module energy.supply.res_heat_potential
+Translated using PySD version 3.10.0
 """
 
 
@@ -38,7 +38,7 @@ def geot_pe_potential_for_heat_twth():
 
 _ext_constant_geot_pe_potential_for_heat_twth = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "geot_PE_potential_heat",
     {},
     _root,

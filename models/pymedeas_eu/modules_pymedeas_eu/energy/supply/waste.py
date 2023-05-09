@@ -1,6 +1,6 @@
 """
-Module waste
-Translated using PySD version 3.2.0
+Module energy.supply.waste
+Translated using PySD version 3.10.0
 """
 
 
@@ -349,10 +349,10 @@ _ext_constant_max_pe_waste = ExtConstant(
     depends_on={
         "time": 3,
         "historic_pes_waste_ej": 2,
-        "pes_waste_ej": 3,
         "p_waste_change": 1,
-        "max_pe_waste": 3,
+        "pes_waste_ej": 3,
         "adapt_growth_waste": 1,
+        "max_pe_waste": 3,
     },
 )
 def new_waste_supply_ej():
@@ -388,7 +388,7 @@ def p_waste_change():
 
 _ext_constant_p_waste_change = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "p_waste_growth",
     {},
     _root,
@@ -430,8 +430,8 @@ _ext_constant_past_waste_growth = ExtConstant(
     depends_on={
         "pes_waste_for_elec_plants": 1,
         "fes_elec_from_waste_in_chp_plants": 1,
-        "share_efficiency_waste_for_elec_in_chp_plants": 1,
         "losses_chp_waste": 1,
+        "share_efficiency_waste_for_elec_in_chp_plants": 1,
     },
 )
 def pes_tot_waste_for_elec():
@@ -453,8 +453,8 @@ def pes_tot_waste_for_elec():
     depends_on={
         "pes_waste_for_heatcom_plants": 1,
         "fes_heatcom_from_waste_in_chp_plants": 1,
-        "share_efficiency_waste_for_elec_in_chp_plants": 1,
         "losses_chp_waste": 1,
+        "share_efficiency_waste_for_elec_in_chp_plants": 1,
     },
 )
 def pes_tot_waste_for_heatcom():

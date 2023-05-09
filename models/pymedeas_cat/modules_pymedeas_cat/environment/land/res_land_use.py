@@ -1,6 +1,6 @@
 """
-Module res_land_use
-Translated using PySD version 3.2.0
+Module environment.land.res_land_use
+Translated using PySD version 3.10.0
 """
 
 
@@ -17,7 +17,7 @@ def agricultural_land_2015():
 
 _ext_constant_agricultural_land_2015 = ExtConstant(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "agricultural_land_2015",
     {},
     _root,
@@ -52,8 +52,8 @@ def land_requirements_res_elec_compet_uses():
     depends_on={
         "potential_generation_res_elec_twh": 1,
         "real_share_pv_urban_vs_total_pv": 1,
-        "power_density_res_elec_twemha": 1,
         "twe_per_twh": 1,
+        "power_density_res_elec_twemha": 1,
     },
 )
 def land_saved_by_urban_pv():
@@ -257,7 +257,7 @@ def urban_surface_2015():
 
 _ext_constant_urban_surface_2015 = ExtConstant(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "urban_surface_2015",
     {},
     _root,

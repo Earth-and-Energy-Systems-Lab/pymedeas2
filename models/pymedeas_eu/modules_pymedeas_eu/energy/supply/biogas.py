@@ -1,6 +1,6 @@
 """
-Module biogas
-Translated using PySD version 3.2.0
+Module energy.supply.biogas
+Translated using PySD version 3.10.0
 """
 
 
@@ -331,8 +331,8 @@ def max_pe_biogas_ej():
 
 
 _ext_constant_max_pe_biogas_ej = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "../energy.xlsx",
+    "Europe",
     "max_PE_biogas",
     {},
     _root,
@@ -384,7 +384,7 @@ def p_biogas():
 
 _ext_constant_p_biogas = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "p_biogas_growth",
     {},
     _root,
@@ -502,8 +502,8 @@ def pes_biogas_for_tfc():
     depends_on={
         "pes_biogas_for_elec_plants": 1,
         "fes_elec_from_biogas_in_chp_plants": 1,
-        "losses_chp_biogas": 1,
         "share_efficiency_biogas_for_elec_in_chp_plants": 1,
+        "losses_chp_biogas": 1,
     },
 )
 def pes_tot_biogas_for_elec():
@@ -525,8 +525,8 @@ def pes_tot_biogas_for_elec():
     depends_on={
         "pes_biogas_for_heatcom_plants": 1,
         "fes_heatcom_from_biogas_in_chp_plants": 1,
-        "losses_chp_biogas": 1,
         "share_efficiency_biogas_for_elec_in_chp_plants": 1,
+        "losses_chp_biogas": 1,
     },
 )
 def pes_tot_biogas_for_heatcom():

@@ -20,12 +20,10 @@ from matplotlib.ticker import MultipleLocator
 
 from pytools.tools import load
 from pytools.config import read_config, read_model_config
-from pytools.data_manager import DataContainer, DataFile, DataLoaded,\
-                                 DataVensim
+from pytools.data_manager import (DataContainer, DataFile, DataLoaded,
+                                  DataNCFile, DataVensim)
 
-__author__ = "Eneko Martin, Emilio Ramon Garcia Ladona"
-__maintainer__ = "Roger Samsó, Eneko Martin"
-__status__ = "Development"
+__author__ = "Eneko Martin, Roger Samsó, Emilio Ramon Garcia Ladona"
 
 _root = Path(__file__).parent
 
@@ -40,7 +38,7 @@ class PlotTool(tk.Frame):
     markers = ["o", "v", "<", "^", "1", "s", "p", "P", "h", "X", "D"]
     line_styles = ['--', '-.', ':']
 
-    def __init__(self, master, data=None, config=None, scenario="Current"):
+    def __init__(self, master, config=None, data=None, scenario="Current"):
         tk.Frame.__init__(self, master)
         self.master = master
         self.master.option_add('*tearOff', 'FALSE')  # menus no detaching
@@ -63,17 +61,24 @@ class PlotTool(tk.Frame):
         self.button = None  # button to clear data
         self.var_dim = []  # dimensions of the variable
 
-        #  Data
+        self.all_vars = []
+
         if data is not None:
-            self.data_container.add(DataLoaded(scenario, data))
+            self.data_container.add(DataLoaded(data, scenario))
             self.all_vars = self.data_container.variable_list
-        else:
-            self.all_vars = []
 
         if not config:
             # Ask user for config
             self.get_config_aggr()
         else:
+            # When saving in netCDF, pysd doesn't return the Dataset, hence
+            # data=None, however, the results_fpath is only set during
+            # simulation, which implies that this was executed from run.py
+            if config.model_arguments.results_fpath:
+                self.data_container.add(
+                    DataNCFile(config.model_arguments.results_fpath))
+                self.all_vars = self.data_container.variable_list
+
             self.configure_data(config)
             self.init_window()
 
@@ -112,6 +117,7 @@ class PlotTool(tk.Frame):
             ).grid(column=0, row=0, padx=20, pady=20)
 
         self.aggregation = tk.StringVar()
+
         tk.OptionMenu(
             self.popup, self.aggregation,
             *self.aggr_pars.keys()
@@ -124,6 +130,7 @@ class PlotTool(tk.Frame):
         self.master.update()
 
     def update_aggr(self):
+        """Popup window for selecting sectoral aggregation"""
         if self.aggregation.get():
             for widget in self.popup.winfo_children():
                 widget.destroy()
@@ -175,6 +182,9 @@ class PlotTool(tk.Frame):
 
         filemenu = tk.Menu(menubar)
         filemenu.add_command(label="Load data", command=self.load_file)
+        filemenu.add_command(
+            label="Load netCDF data",
+            command=lambda: self.load_file(lambda x: DataNCFile(x)))
         filemenu.add_command(
             label="Load Vensim data",
             command=lambda: self.load_file(lambda x: DataVensim(x, self.doc)))
@@ -303,24 +313,25 @@ class PlotTool(tk.Frame):
         """Create Data object with columns information"""
         filenames = askopenfilenames(
             initialdir=self.results_folder,
-            title="Open file",
+            title="Load file",
             filetypes=(
-                ("csv, tab files", "*.csv *.tab"),
+                ("All files", "*"),
+                ("nc files", "*.nc"),
                 ("csv files", "*.csv"),
                 ("tab files", "*.tab"),
-                ("All files", "*")
             )
         )
 
         for filename in filenames:
             filename = Path(filename)
-            if filename.suffix in [".csv", ".tab"]:
+            if filename.suffix in [".csv", ".tab", ".nc"]:
                 self.data_container.add(DataType(filename))
             else:
                 tk.messagebox.showerror(
                     title="Incompatible file format",
                     message=f"Incompatible file format '{filename}'.\n"
-                            "Compatible file formats are '.csv' and '.tab'")
+                            "Compatible file formats are '.csv', '.tab' "
+                            "and '.nc'.")
 
         self.all_vars = self.data_container.variable_list
         self.update_list()
@@ -349,7 +360,7 @@ class PlotTool(tk.Frame):
 
     def set_variable_info(self):
         """Set variable info from model documentation"""
-        index = self.doc["Py Name"] == self.column
+        index = self.doc["Clean Name"] == self.column
         if any(index):
             # set the metadata using model doc
             self.title = self.doc[index]["Clean Name"].iloc[0]
@@ -385,7 +396,7 @@ class PlotTool(tk.Frame):
     def draw(self, values):
         """Draw the plot of the selected variable"""
         self.plot_info()
-        historical = False
+        historical = None
         historic_year = 2014
         markers = cycle(PlotTool.markers)
         n_sim = len(self.data_container)
@@ -400,17 +411,22 @@ class PlotTool(tk.Frame):
             if results is None:
                 continue
 
-            if not historical and any(results.index < historic_year):
+            if any(results.index < historic_year):
+                if historical is not None:
+                    if results.index[-1] > historical.index[-1]:
+                        historical = results.loc[:historic_year]
+                else:
+                    historical = results.loc[:historic_year]
 
-                self.subplot.plot(results.loc[:historic_year],
-                                  label='Historical',
-                                  color='black')
-                historical = True
 
             self.subplot.plot(results.loc[historic_year:],
                               marker=marker, markersize=markersize,
                               markevery=(k, n_sim),
                               label=scenario, alpha=0.8)
+
+        self.subplot.plot(historical,
+                          label='Historical',
+                          color='black')
 
         self.subplot.legend()
         self.canvas.draw()
@@ -439,8 +455,7 @@ def on_closing(root):
     root.destroy()
     sys.exit()
 
-
-def main(config=None, data=None, scenario=None):
+def main(config=None, data=None):
     """
     Main loop
     """
@@ -450,7 +465,7 @@ def main(config=None, data=None, scenario=None):
         root = tk.Toplevel()
 
     root.geometry("1200x600")
-    PlotTool(root, data=data, config=config, scenario=scenario)
+    PlotTool(root, config=config, data=data)
     root.protocol("WM_DELETE_WINDOW", lambda: on_closing(root))
     root.mainloop()
 
@@ -464,9 +479,10 @@ if __name__ == '__main__':
         config = read_config()
         config.aggregation = sys.argv[1]
         config.region = sys.argv[2]
-        main(read_model_config(config))
+        read_model_config(config)
+        main(config=config)
     else:
         raise ValueError(
-            "python plot_tool.py only accepts 2 argument2, corresponding"
+            "python plot_tool.py only accepts 2 arguments, corresponding"
             " to the aggregation and the region "
             "(e.g.: python plot_tool.py 14sectors_cat pymedeas_eu)")

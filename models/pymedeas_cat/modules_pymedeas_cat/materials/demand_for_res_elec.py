@@ -1,6 +1,6 @@
 """
-Module demand_for_res_elec
-Translated using PySD version 3.2.0
+Module materials.demand_for_res_elec
+Translated using PySD version 3.10.0
 """
 
 
@@ -147,13 +147,13 @@ def m_per_t():
     name="materials for new RES elec per capacity installed",
     units="kg/MW",
     subscripts=["RES elec", "materials"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "materials_per_new_capacity_installed_res": 1,
-        "materials_per_new_res_elec_capacity_installed_hvdcs": 1,
-        "materials_per_new_res_elec_capacity_installed_material_overgrid_high_power": 1,
         "include_materials_for_overgrids": 1,
+        "materials_per_new_res_elec_capacity_installed_material_overgrid_high_power": 1,
+        "materials_per_new_res_elec_capacity_installed_hvdcs": 1,
     },
 )
 def materials_for_new_res_elec_per_capacity_installed():
@@ -184,7 +184,7 @@ def materials_for_new_res_elec_per_capacity_installed():
     units="kg/MW",
     subscripts=["RES elec", "materials"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
     depends_on={
         "__external__": "_ext_constant_materials_for_om_per_capacity_installed_res_elec"
     },
@@ -202,9 +202,13 @@ def materials_for_om_per_capacity_installed_res_elec():
         ["RES elec", "materials"],
     )
     value.loc[_subscript_dict["RES ELEC DISPATCHABLE"], :] = 0
-    value.loc[
-        ["wind onshore", "wind offshore", "solar PV", "CSP"], :
-    ] = _ext_constant_materials_for_om_per_capacity_installed_res_elec().values
+    def_subs = xr.zeros_like(value, dtype=bool)
+    def_subs.loc[["wind onshore", "wind offshore", "solar PV", "CSP"], :] = True
+    value.values[
+        def_subs.values
+    ] = _ext_constant_materials_for_om_per_capacity_installed_res_elec().values[
+        def_subs.values
+    ]
     return value
 
 
@@ -218,7 +222,7 @@ _ext_constant_materials_for_om_per_capacity_installed_res_elec = ExtConstant(
     },
     _root,
     {
-        "RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"],
+        "RES elec": _subscript_dict["RES elec"],
         "materials": _subscript_dict["materials"],
     },
     "_ext_constant_materials_for_om_per_capacity_installed_res_elec",

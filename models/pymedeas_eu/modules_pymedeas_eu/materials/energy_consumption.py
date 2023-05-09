@@ -1,6 +1,6 @@
 """
-Module energy_consumption
-Translated using PySD version 3.2.0
+Module materials.energy_consumption
+Translated using PySD version 3.10.0
 """
 
 
@@ -122,6 +122,28 @@ def energy_required_for_material_consumption_per_res_elec():
 
 
 @component.add(
+    name='"Initial energy cons per unit of material cons (recycled)"',
+    units="MJ/kg",
+    subscripts=["materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "initial_energy_cons_per_unit_of_material_cons_recycled_data": 2,
+        "initial_energy_cons_per_unit_of_material_cons_virgin": 1,
+    },
+)
+def initial_energy_cons_per_unit_of_material_cons_recycled():
+    """
+    Energy consumption required to use recycled materials per unit of material consumption. When data for recycled materials was not available, the energy consumption for virgin materials was assumed.
+    """
+    return if_then_else(
+        initial_energy_cons_per_unit_of_material_cons_recycled_data() == 0,
+        lambda: initial_energy_cons_per_unit_of_material_cons_virgin(),
+        lambda: initial_energy_cons_per_unit_of_material_cons_recycled_data(),
+    )
+
+
+@component.add(
     name='"Initial energy cons per unit of material cons (recycled) - data"',
     units="MJ/kg",
     subscripts=["materials"],
@@ -147,28 +169,6 @@ _ext_constant_initial_energy_cons_per_unit_of_material_cons_recycled_data = ExtC
     {"materials": _subscript_dict["materials"]},
     "_ext_constant_initial_energy_cons_per_unit_of_material_cons_recycled_data",
 )
-
-
-@component.add(
-    name='"Initial energy cons per unit of material cons (recycled)"',
-    units="MJ/kg",
-    subscripts=["materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "initial_energy_cons_per_unit_of_material_cons_recycled_data": 2,
-        "initial_energy_cons_per_unit_of_material_cons_virgin": 1,
-    },
-)
-def initial_energy_cons_per_unit_of_material_cons_recycled():
-    """
-    Energy consumption required to use recycled materials per unit of material consumption. When data for recycled materials was not available, the energy consumption for virgin materials was assumed.
-    """
-    return if_then_else(
-        initial_energy_cons_per_unit_of_material_cons_recycled_data() == 0,
-        lambda: initial_energy_cons_per_unit_of_material_cons_virgin(),
-        lambda: initial_energy_cons_per_unit_of_material_cons_recycled_data(),
-    )
 
 
 @component.add(

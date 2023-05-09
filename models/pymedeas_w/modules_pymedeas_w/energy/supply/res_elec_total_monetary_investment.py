@@ -1,6 +1,6 @@
 """
-Module res_elec_total_monetary_investment
-Translated using PySD version 3.2.0
+Module energy.supply.res_elec_total_monetary_investment
+Translated using PySD version 3.10.0
 """
 
 

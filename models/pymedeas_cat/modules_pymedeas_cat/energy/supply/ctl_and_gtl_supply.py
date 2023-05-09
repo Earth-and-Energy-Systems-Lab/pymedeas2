@@ -1,6 +1,6 @@
 """
-Module ctl_and_gtl_supply
-Translated using PySD version 3.2.0
+Module energy.supply.ctl_and_gtl_supply
+Translated using PySD version 3.10.0
 """
 
 
@@ -9,14 +9,14 @@ Translated using PySD version 3.2.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_liquids_ej": 2, "ctl_potential_production": 1},
+    depends_on={"ped_liquids": 2, "ctl_potential_production": 1},
 )
 def abundance_liquids_ctl():
     """
     Variable to moderate the growth of CTL when it comes close to supply all the liquids. This variable limits the growth of a technology supplying a particular final energy type when its supply increases its share in relation to the total supply of this energy type (to avoid overshootings).
     """
     return np.sqrt(
-        np.abs(xidz(ped_liquids_ej() - ctl_potential_production(), ped_liquids_ej(), 0))
+        np.abs(xidz(ped_liquids() - ctl_potential_production(), ped_liquids(), 0))
     )
 
 
@@ -25,14 +25,14 @@ def abundance_liquids_ctl():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_liquids_ej": 2, "gtl_potential_production": 1},
+    depends_on={"ped_liquids": 2, "gtl_potential_production": 1},
 )
 def abundance_liquids_gtl():
     """
     Variable to moderate the growth of GTL when it comes close to supply all the liquids. This variable limits the growth of a technology supplying a particular final energy type when its supply increases its share in relation to the total supply of this energy type (to avoid overshootings).
     """
     return np.sqrt(
-        np.abs(xidz(ped_liquids_ej() - gtl_potential_production(), ped_liquids_ej(), 0))
+        np.abs(xidz(ped_liquids() - gtl_potential_production(), ped_liquids(), 0))
     )
 
 
@@ -70,7 +70,7 @@ def crash_programme_ctl():
 
 _ext_constant_crash_programme_ctl = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "crash_programme_CTL",
     {},
     _root,
@@ -95,7 +95,7 @@ def crash_programme_gtl():
 
 _ext_constant_crash_programme_gtl = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "crash_programme_GTL",
     {},
     _root,
@@ -192,8 +192,8 @@ def ctlgtl_gb():
     depends_on={
         "time": 1,
         "hist_growth_ctl": 2,
-        "p_ctl": 2,
         "abundance_liquids": 1,
+        "p_ctl": 2,
         "crash_programme_ctl": 2,
     },
 )
@@ -224,9 +224,9 @@ def exogenous_growth_ctl():
     depends_on={
         "time": 1,
         "hist_growth_gtl": 2,
+        "abundance_liquids": 1,
         "crash_programme_gtl": 2,
         "p_gtl": 2,
-        "abundance_liquids": 1,
     },
 )
 def exogenous_growth_gtl():
@@ -354,7 +354,7 @@ def hist_growth_ctl():
 
 _ext_constant_hist_growth_ctl = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "historic_growth_ctl",
     {},
     _root,
@@ -379,7 +379,7 @@ def hist_growth_gtl():
 
 _ext_constant_hist_growth_gtl = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "historic_growth_gtl",
     {},
     _root,
@@ -407,7 +407,7 @@ def historic_ctl_production(x, final_subs=None):
 
 _ext_lookup_historic_ctl_production = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_ctl_production",
     {},
@@ -436,7 +436,7 @@ def historic_gtl_production(x, final_subs=None):
 
 _ext_lookup_historic_gtl_production = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_gtl_production",
     {},
@@ -462,7 +462,7 @@ def initial_ctl_production():
 
 _ext_constant_initial_ctl_production = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_ctl_production",
     {},
     _root,
@@ -487,7 +487,7 @@ def initial_gtl_production():
 
 _ext_constant_initial_gtl_production = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_gtl_production",
     {},
     _root,
@@ -562,7 +562,7 @@ def p_ctl():
 
 _ext_constant_p_ctl = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "p_CTL_growth",
     {},
     _root,
@@ -587,7 +587,7 @@ def p_gtl():
 
 _ext_constant_p_gtl = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "p_GTL_growth",
     {},
     _root,
@@ -641,7 +641,7 @@ def potential_fes_ctlgtl_ej():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "abundance_coal_aut": 2,
+        "abundance_coal_cat": 2,
         "abundance_liquids": 1,
         "exogenous_growth_ctl": 1,
         "abundance_liquids_ctl": 1,
@@ -654,9 +654,9 @@ def real_growth_ctl():
     """
     return (
         if_then_else(
-            abundance_coal_aut() >= abundance_liquids(),
+            abundance_coal_cat() >= abundance_liquids(),
             lambda: if_then_else(
-                abundance_coal_aut() == 1, lambda: exogenous_growth_ctl(), lambda: 0
+                abundance_coal_cat() == 1, lambda: exogenous_growth_ctl(), lambda: 0
             ),
             lambda: 0,
         )
@@ -702,10 +702,10 @@ def real_growth_gtl():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "check_liquids": 1,
-        "wear_ctl": 2,
         "constrain_liquids_exogenous_growth": 1,
+        "wear_ctl": 2,
         "crash_programme_ctl": 1,
+        "check_liquids": 1,
         "scarcity_conv_oil": 1,
     },
 )
@@ -738,9 +738,9 @@ def replacement_ctl():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "check_liquids": 1,
-        "crash_programme_gtl": 1,
         "constrain_liquids_exogenous_growth": 1,
+        "crash_programme_gtl": 1,
+        "check_liquids": 1,
         "wear_gtl": 2,
         "scarcity_conv_oil": 1,
     },
@@ -786,10 +786,10 @@ def share_ctlgtl_overcapacity():
     depends_on={
         "time": 3,
         "historic_ctl_production": 2,
+        "constrain_liquids_exogenous_growth": 1,
+        "ctl_potential_production": 2,
         "check_liquids": 1,
         "real_growth_ctl": 1,
-        "ctl_potential_production": 2,
-        "constrain_liquids_exogenous_growth": 1,
     },
 )
 def variation_ctl():
@@ -816,9 +816,9 @@ def variation_ctl():
     depends_on={
         "time": 3,
         "historic_gtl_production": 2,
-        "check_liquids": 1,
         "constrain_liquids_exogenous_growth": 1,
         "gtl_potential_production": 2,
+        "check_liquids": 1,
         "real_growth_gtl": 1,
     },
 )
@@ -843,7 +843,7 @@ def variation_gtl():
     units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "lifetime_ctl": 1, "ctl_potential_production": 1},
+    depends_on={"time": 1, "ctl_potential_production": 1, "lifetime_ctl": 1},
 )
 def wear_ctl():
     """

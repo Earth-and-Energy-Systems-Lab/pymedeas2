@@ -1,11 +1,12 @@
 """
-Module esoi_phs
-Translated using PySD version 3.2.0
+Module energy.storage.esoi_phs
+Translated using PySD version 3.10.0
 """
 
 
 @component.add(
     name="a lineal regr",
+    units="1/TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -22,12 +23,13 @@ def a_lineal_regr():
 
 @component.add(
     name="b lineal regr",
+    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "esoi_phs_depleted_potential": 1,
-        "a_lineal_regr": 1,
         "max_capacity_potential_phs": 1,
+        "a_lineal_regr": 1,
     },
 )
 def b_lineal_regr():
@@ -125,7 +127,7 @@ _ext_constant_esoi_phs_depleted_potential = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"eroiini_res_elec_dispatch": 1, "cp_phs": 1, "cpini_res_elec": 1},
+    depends_on={"eroiini_res_elec_dispatch": 1, "cpini_res_elec": 1, "cp_phs": 1},
 )
 def esoi_phs_full_potential():
     """
@@ -141,15 +143,13 @@ def esoi_phs_full_potential():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"a_lineal_regr": 1, "installed_capacity_phs_tw": 1, "b_lineal_regr": 1},
+    depends_on={"a_lineal_regr": 1, "installed_capacity_phs": 1, "b_lineal_regr": 1},
 )
 def esoi_static_phs():
     """
     ESOI of the PHS without accounting for endogenous dynamic variations.
     """
-    return np.maximum(
-        5, a_lineal_regr() * installed_capacity_phs_tw() + b_lineal_regr()
-    )
+    return np.maximum(5, a_lineal_regr() * installed_capacity_phs() + b_lineal_regr())
 
 
 @component.add(
@@ -163,4 +163,4 @@ def final_energy_invested_phs():
     """
     Final energy invested is equivalent to the denominator of the EROI (=CED*g).
     """
-    return real_fe_elec_stored_phs_twh() * ej_per_twh() / esoi_phs()
+    return zidz(real_fe_elec_stored_phs_twh() * ej_per_twh(), esoi_phs())

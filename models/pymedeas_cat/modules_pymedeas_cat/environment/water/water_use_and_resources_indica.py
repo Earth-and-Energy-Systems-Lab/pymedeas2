@@ -1,6 +1,6 @@
 """
-Module water_use_and_resources_indica
-Translated using PySD version 3.2.0
+Module environment.water.water_use_and_resources_indica
+Translated using PySD version 3.10.0
 """
 
 
@@ -20,7 +20,7 @@ def ar_water():
 
 _ext_constant_ar_water = ExtConstant(
     "../parameters.xlsx",
-    "Austria",
+    "Catalonia",
     "accessible_runnoff_water",
     {},
     _root,
@@ -44,7 +44,7 @@ def dam3_per_km3():
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "real_total_output_by_sector_aut": 1,
+        "real_total_output_by_sector_cat": 1,
         "historic_water_use": 1,
     },
 )
@@ -54,7 +54,7 @@ def historic_water_by_type_intensities_by_sector():
         lambda: historic_water_use(time())
         .loc[_subscript_dict["sectors"], :]
         .rename({"SECTORS and HOUSEHOLDS": "sectors"})
-        / real_total_output_by_sector_aut(),
+        / real_total_output_by_sector_cat(),
         lambda: xr.DataArray(
             0,
             {"sectors": _subscript_dict["sectors"], "water": _subscript_dict["water"]},
@@ -274,7 +274,7 @@ def renewable_water_resources():
 
 _ext_constant_renewable_water_resources = ExtConstant(
     "../parameters.xlsx",
-    "Austria",
+    "Catalonia",
     "renewable_water_resources",
     {},
     _root,
@@ -288,7 +288,7 @@ _ext_constant_renewable_water_resources = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_water_use_by_type": 1, "dam3_per_km3": 1, "ar_water": 1},
+    depends_on={"total_water_use_by_type": 1, "ar_water": 1, "dam3_per_km3": 1},
 )
 def share_blue_water_use_vs_ar():
     """
@@ -324,7 +324,7 @@ def share_blue_water_use_vs_renewable_water_resources():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_water_use": 1, "dam3_per_km3": 1, "ar_water": 1},
+    depends_on={"total_water_use": 1, "ar_water": 1, "dam3_per_km3": 1},
 )
 def share_total_water_use_vs_ar():
     """
@@ -436,8 +436,8 @@ def variation_water_intensity_by_sector():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "historic_water_by_type_intensities_for_households": 1,
         "historic_water_intensities_for_households_delayed_1yr": 1,
+        "historic_water_by_type_intensities_for_households": 1,
     },
 )
 def variation_water_intensity_households():
@@ -523,10 +523,10 @@ def water_use_by_households():
     subscripts=["sectors", "water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"water_intensity_by_sector": 1, "real_total_output_by_sector_aut": 1},
+    depends_on={"water_intensity_by_sector": 1, "real_total_output_by_sector_cat": 1},
 )
 def water_use_by_sector():
     """
     Water use by type by sector.
     """
-    return water_intensity_by_sector() * real_total_output_by_sector_aut()
+    return water_intensity_by_sector() * real_total_output_by_sector_cat()

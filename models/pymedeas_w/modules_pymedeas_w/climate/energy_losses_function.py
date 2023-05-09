@@ -1,6 +1,6 @@
 """
-Module energy_losses_function
-Translated using PySD version 3.2.0
+Module climate.energy_losses_function
+Translated using PySD version 3.10.0
 """
 
 
@@ -45,7 +45,7 @@ def activate_elf():
 
 _ext_constant_activate_elf = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "ELF",
     {},
     _root,
@@ -86,8 +86,8 @@ _ext_constant_b_logistic = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "activate_elf": 1,
-        "a_logistic": 1,
         "co2_ppm_concentrations": 1,
+        "a_logistic": 1,
         "b_logistic": 1,
     },
 )

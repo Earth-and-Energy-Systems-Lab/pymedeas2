@@ -1,6 +1,6 @@
 """
-Module imports_and_exports
-Translated using PySD version 3.2.0
+Module economy.imports_and_exports
+Translated using PySD version 3.10.0
 """
 
 
@@ -135,32 +135,32 @@ _ext_data_historic_demand_1 = ExtData(
 
 
 @component.add(
-    name="IC exports AUT from RoEU",
+    name="IC exports CAT from RoEU",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ic_exports_aut_matrix_to_roeu": 1},
+    depends_on={"ic_exports_cat_matrix_to_roeu": 1},
 )
-def ic_exports_aut_from_roeu():
+def ic_exports_cat_from_roeu():
     """
     Total intermediate products exports
     """
     return sum(
-        ic_exports_aut_matrix_to_roeu().rename({"sectors1": "sectors1!"}),
+        ic_exports_cat_matrix_to_roeu().rename({"sectors1": "sectors1!"}),
         dim=["sectors1!"],
     )
 
 
 @component.add(
-    name="IC exports AUT matrix to RoEU",
+    name="IC exports CAT matrix to RoEU",
     units="Mdollars",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ia_matrix_exports_1": 1, "real_total_output_by_sector_roeu": 1},
 )
-def ic_exports_aut_matrix_to_roeu():
+def ic_exports_cat_matrix_to_roeu():
     """
     Intermediate products exports by sector
     """
@@ -170,14 +170,14 @@ def ic_exports_aut_matrix_to_roeu():
 
 
 @component.add(
-    name="IC exports AUT matrix to RoW",
+    name="IC exports CAT matrix to RoW",
     units="Mdollars",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ia_matrix_exports_0": 1, "real_total_output_by_sector_row": 1},
 )
-def ic_exports_aut_matrix_to_row():
+def ic_exports_cat_matrix_to_row():
     """
     Intermediate products exports by sector
     """
@@ -187,37 +187,37 @@ def ic_exports_aut_matrix_to_row():
 
 
 @component.add(
-    name="IC exports AUT to RoW",
+    name="IC exports CAT to RoW",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ic_exports_aut_matrix_to_row": 1},
+    depends_on={"ic_exports_cat_matrix_to_row": 1},
 )
-def ic_exports_aut_to_row():
+def ic_exports_cat_to_row():
     """
     Total intermediate products exports
     """
     return sum(
-        ic_exports_aut_matrix_to_row().rename({"sectors1": "sectors1!"}),
+        ic_exports_cat_matrix_to_row().rename({"sectors1": "sectors1!"}),
         dim=["sectors1!"],
     )
 
 
 @component.add(
-    name="IC imports AUT from RoW",
+    name="IC imports CAT from RoW",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ic_imports_aut_matrix_from_row": 1},
+    depends_on={"ic_imports_cat_matrix_from_row": 1},
 )
-def ic_imports_aut_from_row():
+def ic_imports_cat_from_row():
     """
     Total intermediate products imports
     """
     return sum(
-        ic_imports_aut_matrix_from_row().rename(
+        ic_imports_cat_matrix_from_row().rename(
             {"sectors": "sectors1!", "sectors1": "sectors"}
         ),
         dim=["sectors1!"],
@@ -225,53 +225,53 @@ def ic_imports_aut_from_row():
 
 
 @component.add(
-    name="IC imports AUT matrix from RoEU",
+    name="IC imports CAT matrix from RoEU",
     units="Mdollars",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ia_matrix_imports_1": 1, "real_total_output_by_sector_aut": 1},
+    depends_on={"ia_matrix_imports_1": 1, "real_total_output_by_sector_cat": 1},
 )
-def ic_imports_aut_matrix_from_roeu():
+def ic_imports_cat_matrix_from_roeu():
     """
     Intermediate products imports by sector
     """
-    return -ia_matrix_imports_1() * real_total_output_by_sector_aut().rename(
+    return -ia_matrix_imports_1() * real_total_output_by_sector_cat().rename(
         {"sectors": "sectors1"}
     )
 
 
 @component.add(
-    name="IC imports AUT matrix from RoW",
+    name="IC imports CAT matrix from RoW",
     units="Mdollars",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ia_matrix_imports_0": 1, "real_total_output_by_sector_aut": 1},
+    depends_on={"ia_matrix_imports_0": 1, "real_total_output_by_sector_cat": 1},
 )
-def ic_imports_aut_matrix_from_row():
+def ic_imports_cat_matrix_from_row():
     """
     Intermediate products imports by sector
     """
-    return -ia_matrix_imports_0() * real_total_output_by_sector_aut().rename(
+    return -ia_matrix_imports_0() * real_total_output_by_sector_cat().rename(
         {"sectors": "sectors1"}
     )
 
 
 @component.add(
-    name="IC imports AUT to RoEU",
+    name="IC imports CAT to RoEU",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ic_imports_aut_matrix_from_roeu": 1},
+    depends_on={"ic_imports_cat_matrix_from_roeu": 1},
 )
-def ic_imports_aut_to_roeu():
+def ic_imports_cat_to_roeu():
     """
     Total intermediate products imports
     """
     return sum(
-        ic_imports_aut_matrix_from_roeu().rename(
+        ic_imports_cat_matrix_from_roeu().rename(
             {"sectors": "sectors1!", "sectors1": "sectors"}
         ),
         dim=["sectors1!"],
@@ -283,10 +283,10 @@ def ic_imports_aut_to_roeu():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ic_exports_aut_from_roeu": 1, "ic_exports_aut_to_row": 1},
+    depends_on={"ic_exports_cat_from_roeu": 1, "ic_exports_cat_to_row": 1},
 )
 def ic_total_exports():
-    return ic_exports_aut_from_roeu() + ic_exports_aut_to_row()
+    return ic_exports_cat_from_roeu() + ic_exports_cat_to_row()
 
 
 @component.add(
@@ -294,10 +294,10 @@ def ic_total_exports():
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ic_imports_aut_from_row": 1, "ic_imports_aut_to_roeu": 1},
+    depends_on={"ic_imports_cat_from_row": 1, "ic_imports_cat_to_roeu": 1},
 )
 def ic_total_imports():
-    return ic_imports_aut_from_row() + ic_imports_aut_to_roeu()
+    return ic_imports_cat_from_row() + ic_imports_cat_to_roeu()
 
 
 @component.add(
@@ -308,11 +308,11 @@ def ic_total_imports():
     comp_subtype="Normal",
     depends_on={
         "real_demand_by_sector_eu28": 1,
-        "real_demand_by_sector_delayed_aut": 1,
+        "real_demand_by_sector_delayed_cat": 1,
     },
 )
 def real_demand_by_sector_roeu():
-    return real_demand_by_sector_eu28() - real_demand_by_sector_delayed_aut()
+    return real_demand_by_sector_eu28() - real_demand_by_sector_delayed_cat()
 
 
 @component.add(
@@ -389,14 +389,14 @@ def real_final_demand_of_exports_to_row():
     comp_subtype="Normal",
     depends_on={
         "real_total_output_by_sector_eu28": 1,
-        "real_total_output_by_sector_aut": 1,
+        "real_total_output_by_sector_cat": 1,
     },
 )
 def real_total_output_by_sector_roeu():
     """
     Sectoral real total production by Rest of the World.
     """
-    return real_total_output_by_sector_eu28() - real_total_output_by_sector_aut()
+    return real_total_output_by_sector_eu28() - real_total_output_by_sector_cat()
 
 
 @component.add(
@@ -435,6 +435,20 @@ def required_total_output_for_exports():
     return (
         domestic_output_required_for_exports_row_by_sector()
         + domestic_output_required_for_exports_roeu_by_sector()
+    )
+
+
+@component.add(
+    name="sum total exports demand",
+    units="Mdollars",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"required_total_output_for_exports": 1},
+)
+def sum_total_exports_demand():
+    return sum(
+        required_total_output_for_exports().rename({"sectors": "sectors!"}),
+        dim=["sectors!"],
     )
 
 

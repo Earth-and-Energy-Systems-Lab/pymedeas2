@@ -1,6 +1,6 @@
 """
-Module primary_energy_abundances
-Translated using PySD version 3.2.0
+Module energy.availability.primary_energy_abundances
+Translated using PySD version 3.10.0
 """
 
 

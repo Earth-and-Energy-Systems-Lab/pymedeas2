@@ -163,176 +163,15 @@ def test__rename_old_simulation_results_file_not_exists(default_config_tmp):
 
 @pytest.mark.parametrize(
     "aggregation,region",
-    world,
-    ids=[">".join(region) for region in world]
-)
-def test_store_results_csv(mocker, caplog, default_config_tmp,
-                           default_results):
-
-    # set the path of the results file to a tmp_path
-    default_config_tmp.model_arguments.results_fpath = \
-        default_config_tmp.model.out_folder.joinpath(
-            "test_random_results.csv")
-
-    # mock the function so it just returns the default results file path
-    mocker.patch('pytools.tools._rename_old_simulation_results',
-                 return_value=default_config_tmp)
-
-    with caplog.at_level(logging.INFO):
-        tools.store_results_csv(default_results, default_config_tmp)
-        assert caplog.messages[0].startswith('Simulation results file is')
-
-    assert default_config_tmp.model.out_folder.joinpath(
-        'last_output.txt').is_file()
-    assert default_config_tmp.model_arguments.results_fpath.is_file()
-
-
-@pytest.mark.parametrize(
-    "aggregation,region",
-    world,
-    ids=[">".join(region) for region in world]
-)
-def test_store_results_csv_df_has_nans(
-     mocker, caplog, default_config_tmp):
-
-    df = pd.DataFrame(data={"a": [1, 2, 3, np.nan], "b": [5, 6, 7, 8]})
-
-    # creating a temporary results file path
-    results_file_path = default_config_tmp.model.out_folder.joinpath(
-            "test_random_results.csv")
-
-    # set the path of the results file to a tmp_path
-    default_config_tmp.model_arguments.results_fpath = results_file_path
-
-    # mock the function so it just returns the default results file path
-    mocker.patch('pytools.tools._rename_old_simulation_results',
-                 return_value=default_config_tmp)
-
-    with caplog.at_level(logging.WARNING):
-        tools.store_results_csv(df, default_config_tmp)
-        assert caplog.messages[0].startswith("There are NaN's in the")
-
-
-@pytest.mark.parametrize(
-    "aggregation,region",
-    world,
-    ids=[">".join(region) for region in world]
-)
-def test_select_model_outputs_silent(default_config_tmp,
-                                     model):
-
-    # when silent, it should get the out vars from the last_output.txt file
-    default_config_tmp.silent = True
-
-    # creating the last_output.txt file and writing the defaults on it
-    p = default_config_tmp.model.out_folder / "last_output.txt"
-    p.write_text("\n".join(default_config_tmp.model.out_default))
-
-    assert sorted(tools.select_model_outputs(
-                  default_config_tmp, model)) == \
-        sorted(default_config_tmp.model.out_default)
-
-
-@pytest.mark.parametrize(
-    "aggregation,region",
-    world,
-    ids=[">".join(region) for region in world]
-)
-def test_select_model_outputs_select_default(default_config_tmp,
-                                             model):
-
-    assert sorted(tools.select_model_outputs(
-                  default_config_tmp, model, select="default")) == \
-        sorted(default_config_tmp.model.out_default)
-
-
-@pytest.mark.parametrize(
-    "aggregation,region",
-    world,
-    ids=[">".join(region) for region in world]
-)
-def test_select_model_outputs_comma_separated_variables(mocker,
-                                                        default_config_tmp,
-                                                        model):
-    # when the user passes the list of vars they want in the output as
-    # comma separated variabl names
-    return_vars = ["ch4_emissions_ctl", "cc_total", "cc_sectoral"]
-    # overriding the builtin input function, to make it return the comma
-    # separated variable names
-    mocker.patch('builtins.input', return_value=", ".join(return_vars))
-
-    assert sorted(tools.select_model_outputs(
-                  default_config_tmp, model)) == \
-        sorted(return_vars + default_config_tmp.model.out_default)
-
-
-@pytest.mark.parametrize(
-    "aggregation,region",
-    world,
-    ids=[">".join(region) for region in world]
-)
-def test_select_model_outputs_comma_separated_variables_with_plus(
-     mocker, default_config_tmp, model):
-
-    # when the user passes the list of vars they want in the output as
-    # comma separated variabl names with the plus sign
-    return_vars = ["ch4_emissions_ctl", "cc_total", "cc_sectoral"]
-    # overriding the builtin input function, to make it return the comma
-    # separated variable names
-    mocker.patch('builtins.input', return_value=", +".join(return_vars))
-
-    # creating the last_output.txt file and writing the defaults on it
-    p = default_config_tmp.model.out_folder / "last_output.txt"
-    p.write_text("\n".join(default_config_tmp.model.out_default))
-
-    assert sorted(tools.select_model_outputs(
-                  default_config_tmp, model)) == sorted(
-                      default_config_tmp.model.out_default + return_vars)
-
-
-@pytest.mark.parametrize(
-    "aggregation,region",
-    world,
-    ids=[">".join(region) for region in world]
-)
-def test_select_model_outputs_all_outputs_input(mocker,
-                                                all_outputs,
-                                                default_config_tmp,
-                                                model):
-
-    # when the user passes a 0 is that they expect all outputs
-    # overriding the builtin input function, to make it return 0
-    mocker.patch('builtins.input', return_value="0")
-
-    assert sorted(tools.select_model_outputs(
-                  default_config_tmp, model)) == all_outputs
-
-
-@pytest.mark.parametrize(
-    "aggregation,region",
-    world,
-    ids=[">".join(region) for region in world]
-)
-def test_select_model_outputs_all_outputs_select_all(all_outputs,
-                                                     default_config_tmp,
-                                                     model):
-
-    assert sorted(
-        tools.select_model_outputs(
-                  default_config_tmp,
-                  model,
-                  select="all")) == all_outputs
-
-
-@pytest.mark.parametrize(
-    "aggregation,region",
     sub_regions,
     ids=[">".join(region) for region in sub_regions]
 )
 def test_user_select_data_file_headless(mocker, default_config_tmp):
 
-    files = [default_config_tmp.model.parent[0].default_results_folder.joinpath(
-             file_name) for file_name in ["f1.csv", "f2.csv", "f3.csv"]]
+    files = [
+        default_config_tmp.model.parent[0].default_results_folder.joinpath(
+        file_name) for file_name in ["f1.csv", "f2.csv", "f3.csv"]]
+
     # creating 3 files
     for val in files:
         val.touch()
@@ -443,15 +282,15 @@ def test_create_parent_models_data_file_paths_no_silent_paths_from_user(
         assert parent.results_file_path == paths[parent.name]
 
 
-@pytest.mark.parametrize("headless", [True, False], ids=["headless", "no-headless"])
+@pytest.mark.parametrize("headless", [True, False], ids=["headless",
+                                                         "no-headless"])
 @pytest.mark.parametrize(
     "aggregation,region",
     sub_regions,
     ids=[">".join(region) for region in sub_regions]
 )
-def test_create_parent_models_data_file_paths_not_silent(mocker,
-                                                         headless,
-                                                         default_config_tmp):
+def test_create_parent_models_data_file_paths_not_silent(
+    mocker, headless, default_config_tmp):
     """test the case were the user did not provide paths through CLI"""
     default_config_tmp.headless = headless
     for parent in default_config_tmp.model.parent:
@@ -500,7 +339,7 @@ def test_run_no_file_path_from_user(mocker, capsys, default_config_tmp, model):
         assert f"External data file for {parent.name}:" in out
 
     assert default_config_tmp.model_arguments.results_fname == \
-        "results_{}_{}_{}_{}.csv".format(
+        "results_{}_{}_{}_{}.nc".format(
                 default_config_tmp.scenario_sheet,
                 int(default_config_tmp.model_arguments.initial_time),
                 int(default_config_tmp.model_arguments.final_time),

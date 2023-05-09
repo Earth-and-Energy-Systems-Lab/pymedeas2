@@ -145,55 +145,6 @@ def update_config_from_user_input(options: Namespace,
     return config
 
 
-def store_results_csv(result: pd.DataFrame, config: Params) -> pd.DataFrame:
-    """
-    Stores the final results as csv.
-
-    Parameters
-    ----------
-    result: pandas.DataFrame
-        Output of the simulation
-    config: dict
-        Configuration parameters.
-
-    Returns
-    -------
-    results: pandas.DataFrame
-        Transposed result file.
-
-    """
-    _rename_old_simulation_results(config)
-
-    # storing results to csv file
-    result.transpose().to_csv(config.model_arguments.results_fpath)
-    log.info("Simulation results file is located in %s" %
-             str(config.model_arguments.results_fpath))
-
-    col_empty = []
-    for column in result.columns:
-        if result[column].isna().all():
-            # remove columns with all na values (unexistent dimensions)
-            col_empty.append(column)
-
-    for column in col_empty:
-        result.drop(column, inplace=True, axis=1)
-
-    # recording the output variables in a file, in case the user wants to
-    # output the same variables in the next simulations
-    with open(config.model.out_folder.joinpath('last_output.txt'),
-              mode='w') as f:
-        f.write('\n'.join(sorted(result.columns)))
-
-    if result.isna().any().any():
-        nan_vars = result.columns[result.isna().any()].tolist()
-        log.warning(
-            "There are NaN's in the timeseries of the following variables\n\n:"
-            "\t%s\n\n, which might indicate convergence issues, try"
-            "decreasing the time step" % '\n'.join(nan_vars))
-
-    return result
-
-
 def _rename_old_simulation_results(config: Params) -> None:
     """
     This function renames old simulation results with the same name but
@@ -218,149 +169,6 @@ def _rename_old_simulation_results(config: Params) -> None:
                                                     old_file_new_path.name))
 
 
-def select_model_outputs(config: Params, model: Model,
-                         select: Union[str, None] = None) -> list:
-    """
-    Select model outputs. If the simulation was called using silent mode,
-    the outputs from the last simulation will be used. Otherwise, the user
-    will be asked via terminal the outputs to include.
-
-    Some default outputs will be always returned by the model, see the
-    models.json for the list.
-
-    Parameters
-    ----------
-    config: dict
-        Configuration parameters.
-    model: pysd.Model
-        Model object.
-    selsect: 'all', 'default' or None
-        If 'all', select directly all columns. If 'default' select only default
-        columns. Else print in stdin the message to select columns.
-        Default is None.
-
-    Returns
-    -------
-    return_columns: list
-        List of columns to return by the simulation.
-
-    """
-    # avoid variables containing these words
-    # TODO this list should not be hardcoded
-    avoid_vars = ["historic", "delay", "next", "variation", "leontief",
-                  "ia_matrix", "year", "initial", "aux", "policy",
-                  "future",
-                  ] + config.model.out_default
-
-    # returning cache.step objects
-    var_list = sorted([
-        model.namespace[var_name]
-        for var_name in model._default_return_columns(which='step')
-        if all(
-            [a_var not in model.namespace[var_name] for a_var in avoid_vars]
-            )
-        ])
-
-    if select == "all":
-        col_ind = "0"
-    elif select == "default":
-        return config.model.out_default
-    elif config.silent:
-        col_ind = "r"
-    else:
-        for num, var_name in enumerate(var_list, 1):
-            print('{}: {}'.format(num, var_name))
-
-        print('\n\nDefault output variables:')
-        for var_name in config.model.out_default:
-            print('\t{}'.format(var_name))
-
-        message =\
-            "\n\nPlease select the desired output variables:" \
-            "\n - 0 for all model variables" \
-            "\n - comma separated numbers from the list above for "\
-            "individual variables (e.g.: 1,4,5)" \
-            "\n - r for the same variables of the last simulation" \
-            "\n - + followed by the variable number to add individual "\
-            "variables to the last simulation output (e.g. +5,+19,+21)" \
-            "\n\n Write your choice here:"
-
-        while True:
-            col_ind = input(message)
-            if col_ind.strip() == '':
-                continue
-
-            col_ind_split = [x.strip(' \t\n\b+') for x in col_ind.split(',')]
-
-            if any(x in col_ind_split for x in ['r', '0']):
-                break
-
-            col_indices = [int(x) - 1 for x in col_ind_split if x.isdigit()]
-            col_vars = [x for x in col_ind_split if not x.isdigit()]
-
-            try:
-                return_columns_set = set(list(map(var_list.__getitem__,
-                                                  col_indices)) + col_vars)
-            except IndexError:
-                log.warning('\t\tWrong numerical index, try again...')
-                continue
-
-            # check if the variable names are correct
-            if return_columns_set.issubset(var_list):
-                break
-            else:
-                log.warning('Wrong variable name, try again...')
-
-    col_ind_split = [x.strip(' \t\n\b+') for x in col_ind.split(',')]
-    col_indices = [int(x) - 1 for x in col_ind_split if x.isdigit()]
-    col_vars = [x for x in col_ind_split if not x.isdigit()]
-
-    return_columns_set = set(list(map(var_list.__getitem__, col_indices))
-                             + col_vars)
-
-    if -1 in col_indices:
-        return_columns = var_list
-
-    elif 'r' in col_vars:
-        try:
-            with open(config.model.out_folder.joinpath('last_output.txt'),
-                      'r', encoding='utf-8') as f:
-                return_columns = [x.strip() for x in f.readlines()]
-        except FileNotFoundError:
-            log.warning("The list of output variables from the last"
-                        " simulation. All model outputs will be returned.")
-            return_columns = var_list
-        else:
-            log.info("The number and type of output variables of the current "
-                     "simulation will be the same as in the previous one.")
-            if config.silent:
-                log.info("\nIf you want to change the number of outputs please"
-                         " remove the '-s' (silent mode) from the options when"
-                         " you run a simulation")
-
-    elif col_ind.lstrip().startswith('+'):
-        try:
-            with open(config.model.out_folder.joinpath('last_output.txt'),
-                      mode='r', encoding='utf-8') as f:
-                return_columns_set.update([x.strip() for x in f.readlines()])
-        except FileNotFoundError:
-            log.warning("There is no previous simulation available, "
-                        "taking only the given variables instead")
-        return_columns = sorted(list(return_columns_set))
-
-    else:
-        return_columns = sorted(list(return_columns_set))
-
-    # adding the default variables to the choice of the user
-    return_columns = list(set(return_columns + config.model.out_default))
-
-    with open(config.model.out_folder.joinpath('last_output.txt'),
-              mode='w', encoding='utf-8') as f:
-        f.write("\n".join(sorted(return_columns)))
-
-    return return_columns
-
-
 def run(config: Params, model: Model) -> pd.DataFrame:
     """
     Runs the model
@@ -371,8 +179,6 @@ def run(config: Params, model: Model) -> pd.DataFrame:
         Configuration parameters.
     model: pysd.Model
         Model object.
-    return_columns: list
-        Name of the variables that are to be written in the outputs file.
 
     Returns
     -------
@@ -383,7 +189,7 @@ def run(config: Params, model: Model) -> pd.DataFrame:
     # generating the output file name
     if not config.model_arguments.results_fname:
         config.model_arguments.results_fname = \
-            "results_{}_{}_{}_{}.csv".format(
+            "results_{}_{}_{}_{}.nc".format(
                 config.scenario_sheet,
                 int(config.model_arguments.initial_time),
                 int(config.model_arguments.final_time),
@@ -424,7 +230,7 @@ def run(config: Params, model: Model) -> pd.DataFrame:
 
     sim_start_time = time.time()
 
-    stocks = model.run(
+    stock = model.run(
         params=config.model_arguments.update_params,
         initial_condition=(config.model_arguments.initial_time,
                            config.model_arguments.update_initials),
@@ -433,14 +239,13 @@ def run(config: Params, model: Model) -> pd.DataFrame:
         final_time=config.model_arguments.final_time,
         time_step=config.model_arguments.time_step,
         saveper=config.model_arguments.return_timestamp,
-        flatten_output=True)
+        output_file=config.model_arguments.results_fpath
+    )
 
     sim_time = time.time() - sim_start_time
     log.info(f"Total simulation time: {(sim_time/60.):.2f} minutes")
 
-    stocks.index.name = 'time'
-
-    return stocks
+    return stock
 
 
 def user_select_data_file_gui(parent: ParentModel) -> str:
@@ -465,7 +270,7 @@ def user_select_data_file_gui(parent: ParentModel) -> str:
     return askopenfilename(
         initialdir=dir_path,
         title="Select external data file",
-        filetypes=(('.csv files', '*.csv'), ("All files", '*'))
+        filetypes=(('.nc files', '*.nc'), ("All files", '*'))
         )
 
 
@@ -488,8 +293,9 @@ def user_select_data_file_headless(parent: ParentModel) -> Path:
     """
     dir_path = parent.default_results_folder
 
-    files_list = list(filter(lambda x: x.is_file() and x.suffix == ".csv",
-                             dir_path.iterdir()))
+    files_list = list(
+        filter(lambda x: x.is_file() and x.suffix in [".nc", ".csv", ".tab"],
+               dir_path.iterdir()))
     files_list.sort()
 
     if files_list:  # there are csv files in the folder
@@ -511,13 +317,13 @@ def user_select_data_file_headless(parent: ParentModel) -> Path:
                 raise ValueError("Please provide a number between 0 and "
                                  f"{len(files_list)-1}")
     else:
-        raise ValueError('There are no csv files to import data from.\n'
+        raise ValueError('There are no nc files to import data from.\n'
                          'Please run the parent model/s first')
 
 
 def create_parent_models_data_file_paths(config: Params) -> List[Path]:
     """
-    This function lists all csv (results) files in the pymedeas_w and/or
+    This function lists all nc (results) files in the pymedeas_w and/or
     pymedeas_eu folder/s and asks the user to choose one, so that all the
     external data required by the EU or country model can be imported.
     Updates config with the paths.
@@ -545,9 +351,9 @@ def create_parent_models_data_file_paths(config: Params) -> List[Path]:
             print('If you want to run in silent mode, please provide the name '
                   'of the results file/s from which you want to '
                   'import data. Examples below:\n'
-                  '\t-f pymedeas_w: outputs/results_w.csv\n'
-                  '\t-f pymedeas_w: outputs/results_w.csv, pymedeas_eu: '
-                  'outputs/results_eu.csv\n')
+                  '\t-f pymedeas_w: outputs/results_w.nc\n'
+                  '\t-f pymedeas_w: outputs/results_w.nc, pymedeas_eu: '
+                  'outputs/results_eu.nc\n')
             sys.exit(0)
 
     else:

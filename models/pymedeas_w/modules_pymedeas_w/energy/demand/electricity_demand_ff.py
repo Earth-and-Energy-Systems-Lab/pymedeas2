@@ -1,6 +1,6 @@
 """
-Module electricity_demand_ff
-Translated using PySD version 3.2.0
+Module energy.demand.electricity_demand_ff
+Translated using PySD version 3.10.0
 """
 
 
@@ -29,7 +29,7 @@ def a_lineal_regr_phaseout_oil_for_elec():
     name="Abundance primary sources",
     units="Dmnl",
     subscripts=["primary sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "abundance_coal": 1,
@@ -59,8 +59,8 @@ def abundance_primary_sources():
     comp_subtype="Normal",
     depends_on={
         "share_in_target_year_oil_for_elec": 1,
-        "a_lineal_regr_phaseout_oil_for_elec": 1,
         "target_year_policy_phaseout_oil_for_elec": 1,
+        "a_lineal_regr_phaseout_oil_for_elec": 1,
     },
 )
 def b_lineal_regr_phaseout_oil_for_elec():
@@ -124,8 +124,8 @@ def decrease_share_oil_for_elec():
     comp_subtype="Normal",
     depends_on={
         "switch_scarcityps_elec_substit": 1,
-        "demand_elec_plants_fossil_fuels_twh": 3,
         "hist_share_oilff_elec": 2,
+        "demand_elec_plants_fossil_fuels_twh": 3,
         "time": 1,
         "future_share_gascoalff_for_elec": 1,
     },
@@ -497,8 +497,8 @@ _ext_lookup_historic_efficiency_gas_for_electricity = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "percent_to_share": 1,
         "historic_efficiency_gas_for_electricity": 2,
+        "percent_to_share": 1,
         "remaining_efficiency_improv_gas_for_electricity": 1,
         "efficiency_gas_for_electricity": 1,
         "efficiency_improv_gas_for_electricity": 1,
@@ -1036,7 +1036,7 @@ def phaseout_oil_for_electricity():
 
 _ext_constant_phaseout_oil_for_electricity = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "phase_out_oil_electr",
     {},
     _root,
@@ -1179,7 +1179,7 @@ def share_in_target_year_oil_for_elec():
 
 _ext_constant_share_in_target_year_oil_for_elec = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "share_target_year_oil_for_elec",
     {},
     _root,
@@ -1196,11 +1196,11 @@ _ext_constant_share_in_target_year_oil_for_elec = ExtConstant(
     depends_on={
         "switch_scarcityps_elec_substit": 1,
         "hist_share_oilff_elec": 3,
-        "time": 2,
-        "p_share_oil_for_elec": 1,
-        "start_year_policy_phaseout_oil_for_elec": 1,
-        "phaseout_oil_for_electricity": 1,
         "future_share_oilff_for_elec": 1,
+        "time": 2,
+        "phaseout_oil_for_electricity": 1,
+        "start_year_policy_phaseout_oil_for_elec": 1,
+        "p_share_oil_for_elec": 1,
     },
 )
 def share_oil_for_elec():
@@ -1269,7 +1269,7 @@ def start_year_policy_phaseout_oil_for_elec():
 
 _ext_constant_start_year_policy_phaseout_oil_for_elec = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "start_year_policy_phase_out_oil_for_electricity",
     {},
     _root,
@@ -1309,7 +1309,7 @@ def target_year_policy_phaseout_oil_for_elec():
 
 _ext_constant_target_year_policy_phaseout_oil_for_elec = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "target_year_policy_phase_out_oil_for_electricity",
     {},
     _root,

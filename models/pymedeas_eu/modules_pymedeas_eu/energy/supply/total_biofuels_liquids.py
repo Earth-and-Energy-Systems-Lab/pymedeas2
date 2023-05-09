@@ -1,6 +1,6 @@
 """
-Module total_biofuels_liquids
-Translated using PySD version 3.2.0
+Module energy.supply.total_biofuels_liquids
+Translated using PySD version 3.10.0
 """
 
 

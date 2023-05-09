@@ -1,6 +1,6 @@
 """
-Module adjust_noncommercial_heat_demand
-Translated using PySD version 3.2.0
+Module energy.demand.adjust_noncommercial_heat_demand
+Translated using PySD version 3.10.0
 """
 
 
@@ -8,7 +8,7 @@ Translated using PySD version 3.2.0
     name='"FED by fuel for heat-nc"',
     units="EJ",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "fed_oil_for_heatnc": 1,
@@ -168,6 +168,31 @@ def ratio_fed_for_heatnc_vs_fed_for_heatcom():
 
 
 @component.add(
+    name="share coal FEH over FED solids",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_coal_feh_over_fed_solids"},
+)
+def share_coal_feh_over_fed_solids():
+    """
+    Estimated share of FEH over FED for coal solids (IEA, 2014 and own calculations).
+    """
+    return _ext_constant_share_coal_feh_over_fed_solids()
+
+
+_ext_constant_share_coal_feh_over_fed_solids = ExtConstant(
+    "../energy.xlsx",
+    "Catalonia",
+    "share_feh_over_fed_coal",
+    {},
+    _root,
+    {},
+    "_ext_constant_share_coal_feh_over_fed_solids",
+)
+
+
+@component.add(
     name='"share FED coal vs NRE heat-nc"',
     units="Dmnl",
     comp_type="Auxiliary",
@@ -210,16 +235,41 @@ def share_fed_liquids_vs_nre_heatnc():
 
 
 @component.add(
+    name="share FEH oil over FED solids",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_share_feh_oil_over_fed_solids"},
+)
+def share_feh_oil_over_fed_solids():
+    """
+    Estimated share of FEH over FED for liquids (IEA, 2014 and own calculations). COMMNENT: Change excel cell range name
+    """
+    return _ext_constant_share_feh_oil_over_fed_solids()
+
+
+_ext_constant_share_feh_oil_over_fed_solids = ExtConstant(
+    "../energy.xlsx",
+    "Catalonia",
+    "share_feh_over_fed_oil",
+    {},
+    _root,
+    {},
+    "_ext_constant_share_feh_oil_over_fed_solids",
+)
+
+
+@component.add(
     name="share FEH over FED by final fuel",
     units="Dmnl",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
-        "share_feh_over_fed_oil": 1,
+        "share_feh_oil_over_fed_solids": 1,
         "share_feh_over_fed_nat_gas": 1,
-        "share_feh_over_fed_coal": 1,
         "share_feh_over_fed_solid_bioe": 1,
+        "share_coal_feh_over_fed_solids": 1,
     },
 )
 def share_feh_over_fed_by_final_fuel():
@@ -231,35 +281,12 @@ def share_feh_over_fed_by_final_fuel():
     )
     value.loc[["electricity"]] = 0
     value.loc[["heat"]] = 0
-    value.loc[["liquids"]] = share_feh_over_fed_oil()
+    value.loc[["liquids"]] = share_feh_oil_over_fed_solids()
     value.loc[["gases"]] = share_feh_over_fed_nat_gas()
-    value.loc[["solids"]] = share_feh_over_fed_coal() + share_feh_over_fed_solid_bioe()
+    value.loc[["solids"]] = (
+        share_coal_feh_over_fed_solids() + share_feh_over_fed_solid_bioe()
+    )
     return value
-
-
-@component.add(
-    name="share FEH over FED coal",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_share_feh_over_fed_coal"},
-)
-def share_feh_over_fed_coal():
-    """
-    Estimated share of FEH over FED for coal solids (IEA, 2014 and own calculations).
-    """
-    return _ext_constant_share_feh_over_fed_coal()
-
-
-_ext_constant_share_feh_over_fed_coal = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "share_feh_over_fed_coal",
-    {},
-    _root,
-    {},
-    "_ext_constant_share_feh_over_fed_coal",
-)
 
 
 @component.add(
@@ -278,37 +305,12 @@ def share_feh_over_fed_nat_gas():
 
 _ext_constant_share_feh_over_fed_nat_gas = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "share_feh_over_fed_nat_gas",
     {},
     _root,
     {},
     "_ext_constant_share_feh_over_fed_nat_gas",
-)
-
-
-@component.add(
-    name="share FEH over FED oil",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_share_feh_over_fed_oil"},
-)
-def share_feh_over_fed_oil():
-    """
-    Estimated share of FEH over FED for liquids (IEA, 2014 and own calculations).
-    """
-    return _ext_constant_share_feh_over_fed_oil()
-
-
-_ext_constant_share_feh_over_fed_oil = ExtConstant(
-    "../energy.xlsx",
-    "Austria",
-    "share_feh_over_fed_oil",
-    {},
-    _root,
-    {},
-    "_ext_constant_share_feh_over_fed_oil",
 )
 
 
@@ -328,7 +330,7 @@ def share_feh_over_fed_solid_bioe():
 
 _ext_constant_share_feh_over_fed_solid_bioe = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "share_feh_over_fed_solids_bioe",
     {},
     _root,

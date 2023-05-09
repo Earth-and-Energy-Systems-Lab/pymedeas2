@@ -1,6 +1,6 @@
 """
-Module radiative_forcing
-Translated using PySD version 3.2.0
+Module climate.radiative_forcing
+Translated using PySD version 3.10.0
 """
 
 
@@ -34,13 +34,13 @@ def adjusted_other_forcings():
     comp_subtype="Normal",
     depends_on={
         "ch4_n2o_interaction_coef_1": 1,
+        "ch4_atm_conc": 3,
+        "ch4_n2o_interaction_coef_3": 1,
+        "ch4_n2o_interaction_exp_1": 1,
         "n2o_reference_conc": 2,
         "ch4_n2o_unit_adj": 5,
-        "ch4_n2o_interaction_coef_2": 1,
-        "ch4_n2o_interaction_exp_1": 1,
-        "ch4_n2o_interaction_coef_3": 1,
-        "ch4_atm_conc": 3,
         "ch4_n2o_interaction_exp_2": 1,
+        "ch4_n2o_interaction_coef_2": 1,
     },
 )
 def adjustment_for_ch4_and_n2oref():
@@ -78,12 +78,12 @@ def adjustment_for_ch4_and_n2oref():
     depends_on={
         "ch4_n2o_interaction_coef_1": 1,
         "ch4_reference_conc": 3,
-        "ch4_n2o_unit_adj": 5,
-        "ch4_n2o_interaction_coef_2": 1,
-        "ch4_n2o_interaction_exp_1": 1,
         "ch4_n2o_interaction_coef_3": 1,
+        "ch4_n2o_interaction_exp_1": 1,
         "n2o_atm_conc": 2,
+        "ch4_n2o_unit_adj": 5,
         "ch4_n2o_interaction_exp_2": 1,
+        "ch4_n2o_interaction_coef_2": 1,
     },
 )
 def adjustment_for_ch4ref_and_n2o():
@@ -120,13 +120,13 @@ def adjustment_for_ch4ref_and_n2o():
     comp_subtype="Normal",
     depends_on={
         "ch4_n2o_interaction_coef_1": 1,
-        "n2o_reference_conc": 2,
         "ch4_reference_conc": 3,
-        "ch4_n2o_unit_adj": 5,
-        "ch4_n2o_interaction_coef_2": 1,
-        "ch4_n2o_interaction_exp_1": 1,
         "ch4_n2o_interaction_coef_3": 1,
+        "ch4_n2o_interaction_exp_1": 1,
+        "n2o_reference_conc": 2,
+        "ch4_n2o_unit_adj": 5,
         "ch4_n2o_interaction_exp_2": 1,
+        "ch4_n2o_interaction_coef_2": 1,
     },
 )
 def adjustment_for_ch4ref_and_n2oref():
@@ -353,8 +353,8 @@ _ext_constant_ch4_radiative_efficiency_coef = ExtConstant(
     depends_on={
         "ch4_radiative_efficiency_coef": 1,
         "ch4_atm_conc": 1,
-        "ch4_n2o_unit_adj": 2,
         "ch4_reference_conc": 1,
+        "ch4_n2o_unit_adj": 2,
         "adjustment_for_ch4_and_n2oref": 1,
         "adjustment_for_ch4ref_and_n2oref": 1,
     },
@@ -584,9 +584,9 @@ _ext_constant_n2o_radiative_efficiency_coeff = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "n2o_radiative_efficiency_coeff": 1,
-        "n2o_reference_conc": 1,
         "n2o_atm_conc": 1,
         "ch4_n2o_unit_adj": 2,
+        "n2o_reference_conc": 1,
         "adjustment_for_ch4ref_and_n2oref": 1,
         "adjustment_for_ch4ref_and_n2o": 1,
     },

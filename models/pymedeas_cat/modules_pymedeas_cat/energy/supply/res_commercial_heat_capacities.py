@@ -1,6 +1,6 @@
 """
-Module res_commercial_heat_capacities
-Translated using PySD version 3.2.0
+Module energy.supply.res_commercial_heat_capacities
+Translated using PySD version 3.10.0
 """
 
 
@@ -52,8 +52,8 @@ def abundance_res_heatcom2():
         "time": 4,
         "past_res_growth_for_heatcom": 4,
         "target_year_p_growth_res_heat": 2,
-        "start_year_p_growth_res_heat": 3,
         "p_res_for_heat": 2,
+        "start_year_p_growth_res_heat": 3,
     },
 )
 def adapt_growth_res_for_heatcom():
@@ -169,7 +169,7 @@ def f1_solar_panels_for_heat():
 
 _ext_constant_f1_solar_panels_for_heat = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "efficiency_solar_panels_for_heat",
     {},
     _root,
@@ -236,7 +236,7 @@ def historic_res_capacity_for_heatcom(x, final_subs=None):
 
 _ext_lookup_historic_res_capacity_for_heatcom = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_res_capacity_for_heat_commercial",
     {"RES heat": _subscript_dict["RES heat"]},
@@ -263,7 +263,7 @@ def initial_value_res_for_heatcom():
 
 _ext_constant_initial_value_res_for_heatcom = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_res_capacity_for_heat_commercial*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
@@ -366,9 +366,9 @@ _ext_constant_losses_solar_for_heat = ExtConstant(
     depends_on={
         "time": 3,
         "historic_res_capacity_for_heatcom": 2,
-        "adapt_growth_res_for_heatcom": 1,
-        "remaining_potential_constraint_on_new_res_heat_capacity": 1,
         "installed_capacity_res_heatcom_tw": 1,
+        "remaining_potential_constraint_on_new_res_heat_capacity": 1,
+        "adapt_growth_res_for_heatcom": 1,
         "abundance_res_heatcom2": 1,
     },
 )
@@ -405,7 +405,7 @@ def p_geothermal_for_heat():
 
 _ext_constant_p_geothermal_for_heat = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "p_geot_heat_growth",
     {},
     _root,
@@ -455,7 +455,7 @@ def p_solar_for_heat():
 
 _ext_constant_p_solar_for_heat = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "p_solar_heat",
     {},
     _root,
@@ -480,7 +480,7 @@ def p_solid_bioe_for_heat():
 
 _ext_constant_p_solid_bioe_for_heat = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "p_solid_bioe_heat",
     {},
     _root,
@@ -506,7 +506,7 @@ def past_res_growth_for_heatcom():
 
 _ext_constant_past_res_growth_for_heatcom = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "historic_growth_res_for_heat_com*",
     {"RES heat": _subscript_dict["RES heat"]},
     _root,
@@ -668,31 +668,6 @@ def remaining_potential_res_for_heat():
 
 
 @component.add(
-    name='"replacement RES for heat-com TW"',
-    units="TW/Year",
-    subscripts=["RES heat"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "wear_res_capacity_for_heatcom_tw": 1,
-        "replacement_res_for_heatcom": 1,
-        "res_heatcom_tot_overcapacity": 1,
-        "shortage_bioe_for_heat": 1,
-    },
-)
-def replacement_res_for_heatcom_tw():
-    """
-    Annual replacement of RES for commercial heat by technology.
-    """
-    return (
-        wear_res_capacity_for_heatcom_tw()
-        * replacement_res_for_heatcom()
-        * (1 - res_heatcom_tot_overcapacity())
-        * shortage_bioe_for_heat() ** 2
-    )
-
-
-@component.add(
     name='"replacement RES for heat-com"',
     units="Dmnl",
     subscripts=["RES heat"],
@@ -716,6 +691,31 @@ _ext_constant_replacement_res_for_heatcom = ExtConstant(
     {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_replacement_res_for_heatcom",
 )
+
+
+@component.add(
+    name='"replacement RES for heat-com TW"',
+    units="TW/Year",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "wear_res_capacity_for_heatcom_tw": 1,
+        "replacement_res_for_heatcom": 1,
+        "res_heatcom_tot_overcapacity": 1,
+        "shortage_bioe_for_heat": 1,
+    },
+)
+def replacement_res_for_heatcom_tw():
+    """
+    Annual replacement of RES for commercial heat by technology.
+    """
+    return (
+        wear_res_capacity_for_heatcom_tw()
+        * replacement_res_for_heatcom()
+        * (1 - res_heatcom_tot_overcapacity())
+        * shortage_bioe_for_heat() ** 2
+    )
 
 
 @component.add(
@@ -759,7 +759,7 @@ def start_year_p_growth_res_heat():
 
 _ext_constant_start_year_p_growth_res_heat = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "start_year_p_growth_RES_heat",
     {},
     _root,
@@ -784,7 +784,7 @@ def target_year_p_growth_res_heat():
 
 _ext_constant_target_year_p_growth_res_heat = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "target_year_p_growth_RES_heat",
     {},
     _root,

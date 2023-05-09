@@ -1,6 +1,6 @@
 """
-Module social_and_environmental_impacts
-Translated using PySD version 3.2.0
+Module society.social_and_environmental_impacts
+Translated using PySD version 3.10.0
 """
 
 

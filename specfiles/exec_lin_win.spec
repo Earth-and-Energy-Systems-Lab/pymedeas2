@@ -14,13 +14,15 @@ To run this, we need to first create a copy of run.py and save it as shared.py
 import os
 import shutil
 import platform
+from PyInstaller.utils.hooks import get_package_paths
+
 
 BLOCK_CIPHER = None
 
 # libraries used for development or by PySD for translation and building
 EXCLUDE_LIBRARIES = [
     "pytest", "IPython", "coverage", "lxml", "parsimonious", "black",
-    "pytest-cov", "pytest-xdist", "pytest-mock"
+    "pytest-cov", "pytest-xdist", "pytest-mock", "pyarrow"
 ]
 
 specpath = os.path.dirname(os.path.abspath(SPEC))
@@ -32,10 +34,12 @@ shutil.copy(os.path.join(main_path, "run.py"), shared_file)
 
 shared_added_files = [
     (os.path.join(main_path, 'pytools', '*.json'), 'pytools'),
-    (os.path.join(main_path, 'plot_tool.py'), '.')
+    (os.path.join(main_path, 'plot_tool.py'), '.'),
+    (os.path.join(get_package_paths('distributed')[1], "distributed.yaml"),"distributed")
 ]
 
 run_added_files = [
+    (os.path.join(get_package_paths('distributed')[1], "distributed.yaml"),"distributed"),
     (os.path.join(main_path, 'models'), 'models'),
     (os.path.join(main_path, 'README.md'), '.'),
     (os.path.join(main_path, 'LICENSE'), '.'),
@@ -45,6 +49,7 @@ run_added_files = [
 ]
 
 plot_added_files = [
+    (os.path.join(get_package_paths('distributed')[1], "distributed.yaml"),"distributed"),
     (os.path.join(main_path, 'models'), 'models'),
     (os.path.join(main_path, 'pytools', '*.json'), 'pytools'),
     (os.path.join(main_path, 'pytools', 'info-logo.png'), 'pytools')
@@ -55,7 +60,7 @@ shared_a = Analysis(
     pathex=['.'],
     binaries=[],
     datas=shared_added_files,
-    hiddenimports=['PIL._tkinter_finder'],
+    hiddenimports=['PIL._tkinter_finder', 'openpyxl.cell._writer'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -71,7 +76,7 @@ run_a = Analysis(
     pathex=['.'],
     binaries=[],
     datas=run_added_files,
-    hiddenimports=['PIL._tkinter_finder'],
+    hiddenimports=['PIL._tkinter_finder', 'openpyxl.cell._writer'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -87,7 +92,7 @@ plot_a = Analysis(
     pathex=['.'],
     binaries=[],
     datas=plot_added_files,
-    hiddenimports=['PIL._tkinter_finder'],
+    hiddenimports=['PIL._tkinter_finder', 'openpyxl.cell._writer'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -239,6 +244,7 @@ plot_exe = EXE(
 
 
 shared_coll = COLLECT(
+    shared_exe,
     shared_a.binaries,
     shared_a.zipfiles,
     shared_a.datas,

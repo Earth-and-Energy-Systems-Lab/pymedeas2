@@ -1,6 +1,6 @@
 """
-Module res_commercial_heat_capacities
-Translated using PySD version 3.2.0
+Module energy.supply.res_commercial_heat_capacities
+Translated using PySD version 3.10.0
 """
 
 
@@ -52,8 +52,8 @@ def abundance_res_heatcom2():
         "time": 4,
         "past_res_growth_for_heatcom": 4,
         "target_year_p_growth_res_heat": 2,
-        "start_year_p_growth_res_heat": 3,
         "p_res_for_heat": 2,
+        "start_year_p_growth_res_heat": 3,
     },
 )
 def adapt_growth_res_for_heatcom():
@@ -367,8 +367,8 @@ _ext_constant_losses_solar_for_heat = ExtConstant(
         "time": 3,
         "historic_res_capacity_for_heatcom": 2,
         "installed_capacity_res_heatcom_tw": 1,
-        "remaining_potential_constraint_on_new_res_heat_capacity": 1,
         "adapt_growth_res_for_heatcom": 1,
+        "remaining_potential_constraint_on_new_res_heat_capacity": 1,
         "abundance_res_heatcom2": 1,
     },
 )
@@ -405,7 +405,7 @@ def p_geothermal_for_heat():
 
 _ext_constant_p_geothermal_for_heat = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "p_geot_heat_growth",
     {},
     _root,
@@ -455,7 +455,7 @@ def p_solar_for_heat():
 
 _ext_constant_p_solar_for_heat = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "p_solar_heat",
     {},
     _root,
@@ -480,7 +480,7 @@ def p_solid_bioe_for_heat():
 
 _ext_constant_p_solid_bioe_for_heat = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "p_solid_bioe_heat",
     {},
     _root,
@@ -622,7 +622,7 @@ def potential_fes_tot_res_for_heatcom_ej():
     comp_subtype="Normal",
     depends_on={
         "remaining_potential_res_for_heat": 2,
-        "threshold_remaining_potential_new_capacity": 2,
+        "threshold_remaining_potential_new_capacity": 1,
     },
 )
 def remaining_potential_constraint_on_new_res_heat_capacity():
@@ -635,8 +635,7 @@ def remaining_potential_constraint_on_new_res_heat_capacity():
         lambda: xr.DataArray(
             1, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
         ),
-        lambda: remaining_potential_res_for_heat()
-        * (1 / threshold_remaining_potential_new_capacity()),
+        lambda: remaining_potential_res_for_heat(),
     )
 
 
@@ -668,31 +667,6 @@ def remaining_potential_res_for_heat():
 
 
 @component.add(
-    name='"replacement RES for heat-com TW"',
-    units="TW/Year",
-    subscripts=["RES heat"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "wear_res_capacity_for_heatcom_tw": 1,
-        "replacement_res_for_heatcom": 1,
-        "res_heatcom_tot_overcapacity": 1,
-        "shortage_bioe_for_heat": 1,
-    },
-)
-def replacement_res_for_heatcom_tw():
-    """
-    Annual replacement of RES for commercial heat by technology.
-    """
-    return (
-        wear_res_capacity_for_heatcom_tw()
-        * replacement_res_for_heatcom()
-        * (1 - res_heatcom_tot_overcapacity())
-        * shortage_bioe_for_heat() ** 2
-    )
-
-
-@component.add(
     name='"replacement RES for heat-com"',
     units="Dmnl",
     subscripts=["RES heat"],
@@ -716,6 +690,31 @@ _ext_constant_replacement_res_for_heatcom = ExtConstant(
     {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_replacement_res_for_heatcom",
 )
+
+
+@component.add(
+    name='"replacement RES for heat-com TW"',
+    units="TW/Year",
+    subscripts=["RES heat"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "wear_res_capacity_for_heatcom_tw": 1,
+        "replacement_res_for_heatcom": 1,
+        "res_heatcom_tot_overcapacity": 1,
+        "shortage_bioe_for_heat": 1,
+    },
+)
+def replacement_res_for_heatcom_tw():
+    """
+    Annual replacement of RES for commercial heat by technology.
+    """
+    return (
+        wear_res_capacity_for_heatcom_tw()
+        * replacement_res_for_heatcom()
+        * (1 - res_heatcom_tot_overcapacity())
+        * shortage_bioe_for_heat() ** 2
+    )
 
 
 @component.add(
@@ -759,7 +758,7 @@ def start_year_p_growth_res_heat():
 
 _ext_constant_start_year_p_growth_res_heat = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "start_year_p_growth_RES_heat",
     {},
     _root,
@@ -784,13 +783,25 @@ def target_year_p_growth_res_heat():
 
 _ext_constant_target_year_p_growth_res_heat = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "target_year_p_growth_RES_heat",
     {},
     _root,
     {},
     "_ext_constant_target_year_p_growth_res_heat",
 )
+
+
+@component.add(
+    name="threshold remaining potential new capacity",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def threshold_remaining_potential_new_capacity():
+    """
+    * Threshold has been set to 0.
+    """
+    return 0
 
 
 @component.add(

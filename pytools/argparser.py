@@ -33,10 +33,10 @@ def check_output(string):
     Checks that out put file ends with .tab or .csv
 
     """
-    if not string.endswith('.tab') and not string.endswith('.csv'):
+    if not string.endswith(('.tab', '.csv', '.nc')):
         parser.error(
             f'when parsing {string}'
-            '\nThe output file name must be .tab or .csv...')
+            '\nThe output file name must be .tab, .csv or .nc...')
 
     return string
 
@@ -183,13 +183,13 @@ parser.add_argument(
     '-f', '--ext', dest='results_file_path',
     type=check_output_file_paths, metavar='FILE', nargs='+',
     help='path/s of the file/s from which to import results from parent models'
-    'e.g. pymedeas_w: outputs/results_world.csv')
+    ', e.g. pymedeas_w: outputs/results_world.csv')
 
 parser.add_argument(
     '-x', '--scen', dest='scenario_sheet',
     type=str, metavar='SHEET', default=config.scenario_sheet,
     help='scenario name (names should be the same as the input file tabs),'
-         ' default is \'BAU\'')
+         ' default is \'NZE\'')
 
 parser.add_argument(
     '-e', '--export', dest='export_file',

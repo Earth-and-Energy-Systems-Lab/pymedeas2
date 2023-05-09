@@ -1,6 +1,6 @@
 """
-Module commercial_heat_demand_covered
-Translated using PySD version 3.2.0
+Module energy.demand.commercial_heat_demand_covered
+Translated using PySD version 3.10.0
 """
 
 
@@ -313,7 +313,7 @@ def phaseout_oil_for_heat():
 
 _ext_constant_phaseout_oil_for_heat = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "phase_out_oil_heat",
     {},
     _root,
@@ -383,7 +383,7 @@ def share_in_target_year_oil_for_heat():
 
 _ext_constant_share_in_target_year_oil_for_heat = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "share_target_year_oil_for_heat",
     {},
     _root,
@@ -401,8 +401,8 @@ _ext_constant_share_in_target_year_oil_for_heat = ExtConstant(
         "time": 2,
         "historic_share_liquids_for_heat_plants": 3,
         "phaseout_oil_for_heat": 1,
-        "p_share_oil_for_heat": 1,
         "start_year_policy_phaseout_oil_for_heat": 1,
+        "p_share_oil_for_heat": 1,
     },
 )
 def share_liquids_for_heat_plants():
@@ -442,7 +442,7 @@ def start_year_policy_phaseout_oil_for_heat():
 
 _ext_constant_start_year_policy_phaseout_oil_for_heat = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "start_year_policy_phase_out_oil_for_heat",
     {},
     _root,
@@ -469,7 +469,7 @@ def target_year_policy_phaseout_oil_for_heat():
 
 _ext_constant_target_year_policy_phaseout_oil_for_heat = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
-    "BAU",
+    "NZP",
     "target_year_policy_phase_out_oil_heat",
     {},
     _root,

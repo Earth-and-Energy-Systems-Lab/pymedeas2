@@ -1,6 +1,6 @@
 """
-Module population
-Translated using PySD version 3.2.0
+Module society.population
+Translated using PySD version 3.10.0
 """
 
 
@@ -9,29 +9,10 @@ Translated using PySD version 3.2.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "select_population_evolution_input": 2,
-        "variation_input_pop": 1,
-        "time": 1,
-        "p_timeseries_pop_growth_rate": 2,
-        "p_customized_cte_pop_variation": 1,
-        "p_customized_year_pop_evolution": 1,
-    },
+    depends_on={"p_timeseries_pop_growth_rate": 1},
 )
 def annual_population_growth_rate():
-    return if_then_else(
-        select_population_evolution_input() == 0,
-        lambda: variation_input_pop(),
-        lambda: if_then_else(
-            select_population_evolution_input() == 1,
-            lambda: p_timeseries_pop_growth_rate(),
-            lambda: if_then_else(
-                time() < p_customized_year_pop_evolution(),
-                lambda: p_timeseries_pop_growth_rate(),
-                lambda: p_customized_cte_pop_variation(),
-            ),
-        ),
-    )
+    return p_timeseries_pop_growth_rate()
 
 
 @component.add(
@@ -118,56 +99,6 @@ _ext_lookup_input_population = ExtLookup(
 
 
 @component.add(
-    name="P customized cte pop variation",
-    units="year",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_p_customized_cte_pop_variation"},
-)
-def p_customized_cte_pop_variation():
-    """
-    From customized year, set annual constant variation.
-    """
-    return _ext_constant_p_customized_cte_pop_variation()
-
-
-_ext_constant_p_customized_cte_pop_variation = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "Constant_population_variation",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_customized_cte_pop_variation",
-)
-
-
-@component.add(
-    name="P customized year pop evolution",
-    units="1/year",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_p_customized_year_pop_evolution"},
-)
-def p_customized_year_pop_evolution():
-    """
-    From customized year, set annual constant variation.
-    """
-    return _ext_constant_p_customized_year_pop_evolution()
-
-
-_ext_constant_p_customized_year_pop_evolution = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "start_year_population_variation",
-    {},
-    _root,
-    {},
-    "_ext_constant_p_customized_year_pop_evolution",
-)
-
-
-@component.add(
     name="P timeseries pop growth rate",
     units="1/year",
     comp_type="Data",
@@ -187,7 +118,7 @@ def p_timeseries_pop_growth_rate():
 
 _ext_data_p_timeseries_pop_growth_rate = ExtData(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "years_pop_growth",
     "pop_growth_timeseries",
     "interpolate",
@@ -206,8 +137,8 @@ _ext_data_p_timeseries_pop_growth_rate = ExtData(
     depends_on={
         "time": 1,
         "variation_historic_pop": 1,
-        "population": 1,
         "annual_population_growth_rate": 1,
+        "population": 1,
     },
 )
 def pop_variation():
@@ -243,31 +174,6 @@ def population():
 
 _integ_population = Integ(
     lambda: pop_variation(), lambda: initial_population(), "_integ_population"
-)
-
-
-@component.add(
-    name="select Population evolution input",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_select_population_evolution_input"},
-)
-def select_population_evolution_input():
-    """
-    0. From SSPs 1. Timeseries 2. From cusotmized year, set annual constant variation
-    """
-    return _ext_constant_select_population_evolution_input()
-
-
-_ext_constant_select_population_evolution_input = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
-    "BAU",
-    "pop_evolution_input",
-    {},
-    _root,
-    {},
-    "_ext_constant_select_population_evolution_input",
 )
 
 

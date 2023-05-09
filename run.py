@@ -11,7 +11,6 @@ import shutil
 from typing import List
 from pathlib import Path
 
-from pandas import DataFrame
 from pysd.py_backend.model import Model
 import pysd
 
@@ -21,16 +20,9 @@ from pytools.tools import get_initial_user_input,\
                           update_config_from_user_input,\
                           load,\
                           create_parent_models_data_file_paths,\
-                          select_model_outputs,\
-                          run,\
-                          store_results_csv
-
+                          run
 
 warnings.filterwarnings("ignore")
-
-__author__ = "Oleg Osychenko, Roger Samsó, Eneko Martin"
-__maintainer__ = "Eneko Martin"
-__status__ = "Development"
 
 # check PySD version
 if tuple(int(i) for i in pysd.__version__.split(".")[:2]) < (3, 0):
@@ -58,24 +50,17 @@ def main(config: Params, model: Model) -> None:
         Model object.
 
     """
-    if not config.model_arguments.return_columns:
-        # list of columns that need to be present in the output file
-        config.model_arguments.return_columns = select_model_outputs(config,
-                                                                     model)
-    elif config.model_arguments.return_columns[0] in ['all', 'default']:
-        config.model_arguments.return_columns = select_model_outputs(
-            config, model, config.model_arguments.return_columns[0])
 
-    # run the simulation
-    stock: DataFrame = run(config, model)
+    # create results directory if it does not exist
+    Path(config.model.out_folder).mkdir(parents=True, exist_ok=True)
 
-    result_df: DataFrame = store_results_csv(stock, config)
+    # run the simulation and store simulation results
+    stock = run(config, model)
 
     # running the plot tool
     if config.plot:
         if not config.headless:
-            plot_tool.main(config, result_df,
-                           f"Current ({config.scenario_sheet})")
+            plot_tool.main(config=config, data=stock)
         else:
             print(
                 '\nWe prevented the plot GUI from popping up, since'
@@ -111,6 +96,7 @@ if __name__ == "__main__":
                     name for name in names
                     if path.joinpath(name).is_file()
                     and not name.endswith('.xlsx')
+                    and name.startswith('~')
                 }
 
             bundle_dir = Path(__file__).parent
@@ -137,8 +123,5 @@ if __name__ == "__main__":
                     + f"Please, close '{err.args[0][0][0].split('~$')[-1]}'"
                     + " file before running the model.\n\n"
                 ) from None
-
-    # create results directory if it does not exist
-    Path(config.model.out_folder).mkdir(parents=True, exist_ok=True)
 
     main(config, model)

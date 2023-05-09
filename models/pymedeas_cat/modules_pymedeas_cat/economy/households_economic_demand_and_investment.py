@@ -1,6 +1,6 @@
 """
-Module households_economic_demand_and_investment
-Translated using PySD version 3.2.0
+Module economy.households_economic_demand_and_investment
+Translated using PySD version 3.10.0
 """
 
 
@@ -114,8 +114,8 @@ _ext_constant_beta_1_hd = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "gross_fixed_capital_formation": 1,
         "real_gfcf_by_sector": 1,
+        "gross_fixed_capital_formation": 1,
     },
 )
 def gfcf_not_covered():
@@ -336,11 +336,11 @@ def total_gfcf():
     depends_on={
         "gross_fixed_capital_formation": 1,
         "beta_0_gfcf": 1,
-        "cc_total": 2,
-        "variation_cc": 1,
         "variation_historic_gfcf": 1,
         "beta_1_gfcf": 2,
+        "variation_cc": 1,
         "time": 1,
+        "cc_total": 2,
     },
 )
 def variation_gfcf():
@@ -401,9 +401,9 @@ def variation_historic_gfcf():
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "beta_0_hd": 1,
         "lc": 2,
         "variation_lc": 1,
+        "beta_0_hd": 1,
         "beta_1_hd": 2,
     },
 )

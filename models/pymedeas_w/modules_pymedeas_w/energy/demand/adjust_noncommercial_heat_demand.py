@@ -1,6 +1,6 @@
 """
-Module adjust_noncommercial_heat_demand
-Translated using PySD version 3.2.0
+Module energy.demand.adjust_noncommercial_heat_demand
+Translated using PySD version 3.10.0
 """
 
 
@@ -8,7 +8,7 @@ Translated using PySD version 3.2.0
     name='"FED by fuel for heat-nc"',
     units="EJ",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "fed_oil_for_heatnc": 1,
@@ -213,7 +213,7 @@ def share_fed_liquids_vs_nre_heatnc():
     name="share FEH over FED by final fuel",
     units="Dmnl",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "share_feh_over_fed_oil": 1,

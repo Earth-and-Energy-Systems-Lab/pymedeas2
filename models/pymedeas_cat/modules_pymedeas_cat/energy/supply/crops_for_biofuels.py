@@ -1,6 +1,6 @@
 """
-Module crops_for_biofuels
-Translated using PySD version 3.2.0
+Module energy.supply.crops_for_biofuels
+Translated using PySD version 3.10.0
 """
 
 
@@ -171,15 +171,15 @@ def max_peavail_potential_biofuels_marginal_lands():
     depends_on={
         "time": 3,
         "start_year_biofuels_land_marg": 3,
-        "ratio_land_productivity_2gen_vs_marg": 1,
-        "bioe_gen_land_marg_available": 1,
-        "constrain_liquids_exogenous_growth": 1,
-        "potential_marginal_lands_mha": 1,
-        "check_liquids": 1,
         "start_production_biofuels": 1,
+        "ratio_land_productivity_2gen_vs_marg": 1,
         "p_biofuels_marg_lands": 1,
+        "potential_marginal_lands_mha": 1,
         "ej_per_ktoe": 1,
         "potential_peavail_biofuels_land_marg_ej": 2,
+        "constrain_liquids_exogenous_growth": 1,
+        "bioe_gen_land_marg_available": 1,
+        "check_liquids": 1,
         "land_availability_constraint": 1,
     },
 )
@@ -251,7 +251,7 @@ def p_biofuels_marg_lands():
 
 _ext_constant_p_biofuels_marg_lands = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "p_biofuels_land_marg_growth",
     {},
     _root,
@@ -311,7 +311,7 @@ def potential_marginal_lands_mha():
 
 _ext_constant_potential_marginal_lands_mha = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "pot_marg_land_biofuels",
     {},
     _root,
@@ -430,7 +430,7 @@ def start_production_biofuels(x, final_subs=None):
 
 _ext_lookup_start_production_biofuels = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "delta_years",
     "start_production_biofuels",
     {},
@@ -456,7 +456,7 @@ def start_year_biofuels_land_marg():
 
 _ext_constant_start_year_biofuels_land_marg = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "start_year_biofuels_land_marg",
     {},
     _root,

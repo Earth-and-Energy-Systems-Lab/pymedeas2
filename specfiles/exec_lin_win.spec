@@ -35,6 +35,7 @@ shutil.copy(os.path.join(main_path, "run.py"), shared_file)
 shared_added_files = [
     (os.path.join(main_path, 'pytools', '*.json'), 'pytools'),
     (os.path.join(main_path, 'plot_tool.py'), '.'),
+    (os.path.join(main_path, 'pytools', 'info-logo.png'), 'pytools'),
     (os.path.join(get_package_paths('distributed')[1], "distributed.yaml"),"distributed")
 ]
 
@@ -45,7 +46,9 @@ run_added_files = [
     (os.path.join(main_path, 'LICENSE'), '.'),
     (os.path.join(main_path, 'scenarios'), 'scenarios'),
     (os.path.join(main_path, 'pytools', '*.json'), 'pytools'),
-    (os.path.join(main_path, 'plot_tool.py'), '.')
+    (os.path.join(main_path, 'plot_tool.py'), '.'),
+    (os.path.join(main_path, 'pytools', 'info-logo.png'), 'pytools')
+
 ]
 
 plot_added_files = [

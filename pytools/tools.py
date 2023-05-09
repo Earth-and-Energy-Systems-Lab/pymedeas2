@@ -186,6 +186,9 @@ def run(config: Params, model: Model) -> pd.DataFrame:
         Result of the simulation.
 
     """
+
+
+
     # generating the output file name
     if not config.model_arguments.results_fname:
         config.model_arguments.results_fname = \
@@ -200,6 +203,9 @@ def run(config: Params, model: Model) -> pd.DataFrame:
         config.model_arguments.results_fpath =\
             config.model.out_folder.joinpath(
                 config.model_arguments.results_fname)
+
+    # renaming or deleting same name results files
+    _rename_old_simulation_results(config)
 
     print(
         "\n\nSimulation parameters:\n"

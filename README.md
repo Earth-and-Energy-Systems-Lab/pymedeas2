@@ -92,7 +92,7 @@ Unless the user provides the desired output file name with the -n option when la
 
 results_SCENARIO-NAME_INITIAL-DATE_FINAL-DATE_TIME-STEP.nc
 
-If a results file with the same name already exists, the characters "_old" will be added at the end of the file name. This can happen up to two times. NOTE that if a fourth simulation with the same name is run, the file of the first simulation result will be automatically deleted.
+If a results file with the same name already exists, the creation date of the preexisting file will be added at the end of the file name. This can happen up to two times. NOTE that if a fourth simulation with the same name is run, the file of the first simulation result will be automatically deleted.
 
 ### Exporting results stored in netCDF (.nc) format to csv (or tab)
 

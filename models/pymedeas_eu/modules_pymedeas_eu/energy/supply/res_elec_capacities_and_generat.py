@@ -52,8 +52,8 @@ def cp_baseload_reduction():
     comp_subtype="Normal",
     depends_on={
         "min_cp_baseload_res": 1,
-        "cpini_res_elec": 1,
         "shortage_bioe_for_elec": 1,
+        "cpini_res_elec": 1,
     },
 )
 def cp_res_elec():
@@ -267,8 +267,8 @@ _delayfixed_installed_capacity_res_elec_delayed = DelayFixed(
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
-        "start_year_p_growth_res_elec": 3,
         "p_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def installed_capacity_res_elec_policies():
@@ -458,8 +458,8 @@ def potential_tot_generation_res_elec_twh():
         "time": 1,
         "cp_res_elec": 1,
         "installed_capacity_res_elec": 2,
-        "real_generation_res_elec_twh": 1,
         "twe_per_twh": 1,
+        "real_generation_res_elec_twh": 1,
     },
 )
 def real_cp_res_elec():

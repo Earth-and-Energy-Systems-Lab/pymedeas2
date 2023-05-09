@@ -470,8 +470,8 @@ def share_nat_gas_dem_for_heatcom():
     comp_subtype="Normal",
     depends_on={
         "pe_demand_gas_elec_plants_ej": 1,
-        "share_elec_gen_in_chp_nat_gas": 1,
         "ped_gas_for_chp_plants_ej": 1,
+        "share_elec_gen_in_chp_nat_gas": 1,
         "ped_nat_gas_ej": 1,
     },
 )
@@ -524,8 +524,8 @@ def share_nat_gas_for_gtl_emissions_relevant():
     depends_on={
         "ped_gases_for_heat_plants_ej": 1,
         "ped_gas_heatnc": 1,
-        "share_elec_gen_in_chp_nat_gas": 1,
         "ped_gas_for_chp_plants_ej": 1,
+        "share_elec_gen_in_chp_nat_gas": 1,
         "ped_nat_gas_ej": 1,
     },
 )

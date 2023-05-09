@@ -128,8 +128,8 @@ def maximum_oil_available_in_eu():
         "time": 3,
         "last_historical_year": 1,
         "historic_coal_imports": 1,
-        "projected_net_coal_flux_eu": 1,
         "maximum_coal_available_in_eu": 1,
+        "projected_net_coal_flux_eu": 1,
     },
 )
 def net_coal_flux_eu():
@@ -151,8 +151,8 @@ def net_coal_flux_eu():
         "time": 3,
         "last_historical_year": 1,
         "historic_gas_imports": 1,
-        "maximum_gas_available_in_eu": 1,
         "projected_net_gas_flux_eu": 1,
+        "maximum_gas_available_in_eu": 1,
     },
 )
 def net_gas_flux_eu():

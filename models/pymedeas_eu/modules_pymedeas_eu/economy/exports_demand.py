@@ -155,8 +155,8 @@ def exports_demand_not_covered():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "real_gfcf_by_sector": 1,
         "gross_fixed_capital_formation": 1,
+        "real_gfcf_by_sector": 1,
     },
 )
 def gfcf_not_covered():
@@ -337,12 +337,12 @@ def total_gfcf():
     comp_subtype="Normal",
     depends_on={
         "exports_demand": 1,
-        "real_demand_world_next_step": 1,
-        "beta_1_exp": 2,
-        "beta_0_exp": 1,
         "real_demand_world": 1,
-        "time": 1,
+        "real_demand_world_next_step": 1,
         "variation_historic_exports_demand": 1,
+        "beta_0_exp": 1,
+        "time": 1,
+        "beta_1_exp": 2,
     },
 )
 def variation_exports_demand():
@@ -374,10 +374,10 @@ def variation_exports_demand():
         "gross_fixed_capital_formation": 1,
         "beta_0_gfcf": 1,
         "variation_historic_gfcf": 1,
-        "beta_1_gfcf": 2,
-        "variation_cc": 1,
         "time": 1,
+        "beta_1_gfcf": 2,
         "cc_total": 2,
+        "variation_cc": 1,
     },
 )
 def variation_gfcf():

@@ -719,8 +719,8 @@ _delayfixed_extraction_fossil_oil_agg_delayed = DelayFixed(
         "time": 1,
         "ped_domestic_eu_total_oil_ej": 3,
         "activate_force_leaving_underground": 1,
-        "max_extraction_total_agg_oil": 2,
         "remaining_extractable_fossil_oil_with_left_underground": 1,
+        "max_extraction_total_agg_oil": 2,
     },
 )
 def extraction_tot_agg_oil():
@@ -840,9 +840,9 @@ def increase_scarcity_conv_oil():
     depends_on={
         "activate_force_leaving_underground": 1,
         "max_extraction_conv_oil_technical": 3,
-        "max_extraction_conv_oil_policy": 1,
         "time": 1,
         "start_year_policy_leave_in_ground_conv_oil": 1,
+        "max_extraction_conv_oil_policy": 1,
     },
 )
 def max_extraction_conv_oil():
@@ -910,9 +910,9 @@ def max_extraction_conv_oil_technical():
     depends_on={
         "activate_force_leaving_underground": 1,
         "max_extraction_total_agg_oil_technical": 3,
+        "time": 1,
         "max_extraction_total_agg_oil_policy": 1,
         "start_year_policy_leave_in_ground_fossil_oil": 1,
-        "time": 1,
     },
 )
 def max_extraction_total_agg_oil():
@@ -983,9 +983,9 @@ def max_extraction_total_agg_oil_technical():
     depends_on={
         "activate_force_leaving_underground": 1,
         "max_extraction_unconv_oil_technical": 3,
-        "max_extraction_unconv_oil_policy": 1,
-        "start_year_policy_leave_in_ground_unconv_oil": 1,
         "time": 1,
+        "start_year_policy_leave_in_ground_unconv_oil": 1,
+        "max_extraction_unconv_oil_policy": 1,
     },
 )
 def max_extraction_unconv_oil():
@@ -1069,8 +1069,8 @@ def max_unconv_oil_growth_extraction():
     comp_subtype="Normal",
     depends_on={
         "check_liquids_delayed_1yr": 1,
-        "constrain_liquids_exogenous_growth_delayed_1yr": 1,
         "extraction_unconv_oil_delayed": 2,
+        "constrain_liquids_exogenous_growth_delayed_1yr": 1,
         "max_unconv_oil_growth_extraction": 1,
     },
 )
@@ -1500,8 +1500,8 @@ _sampleiftrue_rurr_conv_oil_in_reference_year = SampleIfTrue(
         "_integ_rurr_tot_agg_oil": {
             "initial": {
                 "separate_conv_and_unconv_oil": 1,
-                "cumulated_tot_agg_extraction_to_1995": 1,
                 "urr_tot_agg_oil": 1,
+                "cumulated_tot_agg_extraction_to_1995": 1,
             },
             "step": {"extraction_tot_agg_oil": 1},
         }
@@ -1562,8 +1562,8 @@ _sampleiftrue_rurr_total_agg_fossil_oil_in_reference_year = SampleIfTrue(
         "_integ_rurr_unconv_oil": {
             "initial": {
                 "urr_unconv_oil": 1,
-                "cumulated_unconv_oil_extraction_to_1995": 1,
                 "separate_conv_and_unconv_oil": 1,
+                "cumulated_unconv_oil_extraction_to_1995": 1,
             },
             "step": {"extraction_unconv_oil": 1},
         }
@@ -1619,8 +1619,8 @@ _sampleiftrue_rurr_unconv_oil_in_reference_year = SampleIfTrue(
     comp_subtype="Normal",
     depends_on={
         "max_extraction_conv_oil_technical": 4,
-        "extraction_conv_oil": 2,
         "exponent_availability_conv_oil": 1,
+        "extraction_conv_oil": 2,
     },
 )
 def scarcity_conv_oil():

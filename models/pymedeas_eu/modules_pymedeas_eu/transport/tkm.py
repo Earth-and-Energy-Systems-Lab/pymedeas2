@@ -1,5 +1,5 @@
 """
-Module transport_._tkm
+Module transport.tkm
 Translated using PySD version 3.10.0
 """
 
@@ -121,8 +121,8 @@ def energy_by_fuel_tkm():
     depends_on={
         "energy_by_fuel_tkm": 1,
         "energy_commercial_by_fuel_pkm": 1,
-        "gdp_trans": 1,
         "time_step": 1,
+        "gdp_trans": 1,
     },
 )
 def energy_intensity_commercial_transport():
@@ -623,8 +623,8 @@ _ext_constant_start_year_policies_transport = ExtConstant(
     depends_on={
         "time": 2,
         "tkm_initial": 1,
-        "tkm_slope": 1,
         "gdp_eu": 1,
+        "tkm_slope": 1,
         "hist_tkm": 1,
         "time_step": 1,
     },
@@ -731,8 +731,8 @@ def tkm_fuel_share_air():
         "time": 4,
         "end_historical_data": 3,
         "initial_fuel_share_inland": 3,
-        "fuel_share_inland": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_inland": 2,
     },
 )
 def tkm_fuel_share_inland():

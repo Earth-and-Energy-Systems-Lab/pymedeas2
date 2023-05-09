@@ -143,10 +143,10 @@ def ped2():
     comp_subtype="Normal",
     depends_on={
         "ped_solids": 1,
-        "pes_waste_for_tfc": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
         "modern_solids_bioe_demand_households": 1,
+        "pes_waste_for_tfc": 1,
         "losses_in_charcoal_plants_ej": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
         "pes_peat_ej": 1,
     },
 )
@@ -263,10 +263,10 @@ def pes_solids():
     depends_on={
         "extraction_coal_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
-        "pes_waste_for_tfc": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
         "modern_solids_bioe_demand_households": 1,
+        "pes_waste_for_tfc": 1,
         "losses_in_charcoal_plants_ej": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
         "pes_peat_ej": 1,
         "ped_coal_for_ctl_ej": 1,
         "other_solids_required": 1,
@@ -374,8 +374,8 @@ def share_coal_for_ctl_emissions_relevant():
     comp_subtype="Normal",
     depends_on={
         "pe_demand_coal_elec_plants_ej": 1,
-        "share_elec_gen_in_chp_coal": 1,
         "ped_coal_for_chp_plants_ej": 1,
+        "share_elec_gen_in_chp_coal": 1,
         "ped_coal_ej": 1,
     },
 )
@@ -417,8 +417,8 @@ def share_coal_for_fc_emissions_relevant():
     depends_on={
         "ped_coal_for_heat_plants_ej": 1,
         "ped_coal_heatnc": 1,
-        "share_elec_gen_in_chp_coal": 1,
         "ped_coal_for_chp_plants_ej": 1,
+        "share_elec_gen_in_chp_coal": 1,
         "ped_coal_ej": 1,
     },
 )
@@ -437,9 +437,9 @@ def share_coal_for_heat_emissions_relevant():
     comp_subtype="Normal",
     depends_on={
         "required_fed_solids": 1,
-        "ped_coal_for_ctl_ej": 1,
         "ped_solids": 1,
         "other_solids_required": 1,
+        "ped_coal_for_ctl_ej": 1,
     },
 )
 def share_solids_for_final_energy():

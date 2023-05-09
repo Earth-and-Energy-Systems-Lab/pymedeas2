@@ -89,6 +89,7 @@
             "co2_emissions_per_fuel",
             "co2_emissions_solid_bioe",
             "co2_emissions_waste",
+            "co2_lulcf",
             "co2_soillucf_emissions",
             "gtco2_per_ej_biofuels",
             "gtco2_per_ej_biogas",
@@ -107,6 +108,7 @@
             "gtco2_per_ej_unconv_oil",
             "gtco2_per_ej_waste",
             "mt_per_gt",
+            "past_trends_co2_lucf",
             "total_co2_emissions_gtco2"
         ]
     },
@@ -1945,16 +1947,7 @@
         ]
     },
     "transport": {
-        "transport_energy_demand": [
-            "share_demand_by_fuel_in_transport",
-            "total_transport_fed_by_fuel",
-            "transport_fraction",
-            "transport_tfed",
-            "transport_tfed_energy_intensity"
-        ]
-    },
-    "transport_": {
-        "_pkm": [
+        "pkm": [
             "commercial_pkm_vehiclespkm",
             "desired_pkm_by_mode_and_fuel",
             "eficiency_liquids_pkm",
@@ -1996,7 +1989,7 @@
             "vehicles_commercial_pkm",
             "vehicles_households"
         ],
-        "_tkm": [
+        "tkm": [
             "desired_tkm_by_mode_and_fuel",
             "eficiency_liquids_tkm",
             "end_historical_data",
@@ -2031,6 +2024,13 @@
             "tkm_initial",
             "tkm_mode_share",
             "tkm_slope"
+        ],
+        "transport_energy_demand": [
+            "share_demand_by_fuel_in_transport",
+            "total_transport_fed_by_fuel",
+            "transport_fraction",
+            "transport_tfed",
+            "transport_tfed_energy_intensity"
         ]
     }
 }

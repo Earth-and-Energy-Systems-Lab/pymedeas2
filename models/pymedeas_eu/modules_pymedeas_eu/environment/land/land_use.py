@@ -161,10 +161,10 @@ _integ_available_land = Integ(
     depends_on={
         "time": 2,
         "hist_variation_primary_forest": 1,
-        "p_variation_primary_forest": 1,
-        "historic_av_variation_primary_forests_area": 1,
         "start_year_p_variation_primary_forest": 1,
         "primary_forests_area": 2,
+        "historic_av_variation_primary_forests_area": 1,
+        "p_variation_primary_forest": 1,
     },
 )
 def available_to_primary_forest_rate():
@@ -231,8 +231,8 @@ def compet_land_for_biofuels_rate():
     comp_subtype="Normal",
     depends_on={
         "demand_forest_energy_non_tradition_ej": 1,
-        "consum_forest_energy_traditional_ej": 1,
         "forest_consumption_ej": 1,
+        "consum_forest_energy_traditional_ej": 1,
         "consum_wood_products_ej": 1,
     },
 )
@@ -468,8 +468,8 @@ def forest_consumption_ej():
         "available_forest_area": 1,
         "p_minimum_forest": 1,
         "forest_extraction_per_ha": 1,
-        "p_forest_overexplotation": 1,
         "max_sustainable_forest_extraction_ej": 1,
+        "p_forest_overexplotation": 1,
         "total_demand_forest_biomass_ej": 1,
     },
 )
@@ -519,8 +519,8 @@ _ext_constant_forest_extraction_per_ha = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "aux_reach_available_land": 1,
-        "agricultural_land_until_2015": 1,
         "agricultural_land": 1,
+        "agricultural_land_until_2015": 1,
     },
 )
 def forest_loss_to_sustain_agriculture():
@@ -725,8 +725,8 @@ def historic_urban_land_density():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "agricultural_land_until_2015": 1,
         "agricultural_land": 1,
+        "agricultural_land_until_2015": 1,
         "aux_reach_available_land": 1,
     },
 )

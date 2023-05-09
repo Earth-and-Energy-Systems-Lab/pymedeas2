@@ -44,8 +44,8 @@ def dam3_per_km3():
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "real_total_output_by_sector_eu": 1,
         "historic_water_use": 1,
+        "real_total_output_by_sector_eu": 1,
     },
 )
 def historic_water_by_type_intensities_by_sector():
@@ -408,8 +408,8 @@ def total_water_use_by_type():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "historic_water_by_type_intensities_by_sector": 1,
         "historic_water_intensities_by_sector_delayed_1yr": 1,
+        "historic_water_by_type_intensities_by_sector": 1,
     },
 )
 def variation_water_intensity_by_sector():

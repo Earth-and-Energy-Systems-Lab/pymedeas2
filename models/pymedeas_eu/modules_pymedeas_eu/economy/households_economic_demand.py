@@ -182,9 +182,9 @@ def variation_historic_demand():
         "time": 1,
         "variation_historic_demand": 1,
         "lc": 2,
-        "variation_lc": 1,
         "beta_0_hd": 1,
         "beta_1_hd": 2,
+        "variation_lc": 1,
     },
 )
 def variation_household_demand():

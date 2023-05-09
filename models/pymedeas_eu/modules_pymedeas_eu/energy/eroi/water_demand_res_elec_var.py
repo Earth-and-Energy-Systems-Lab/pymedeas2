@@ -15,8 +15,8 @@ Translated using PySD version 3.10.0
         "water_for_om_res_elec": 1,
         "energy_requirements_per_unit_of_water_consumption": 1,
         "lifetime_res_elec": 1,
-        "m_per_t": 1,
         "kg_per_mt": 2,
+        "m_per_t": 1,
         "mj_per_ej": 1,
     },
 )

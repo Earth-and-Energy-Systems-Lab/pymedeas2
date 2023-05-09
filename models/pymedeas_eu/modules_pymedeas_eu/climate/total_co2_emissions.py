@@ -90,8 +90,8 @@ _ext_data_afforestation_program_2020 = ExtData(
     depends_on={
         "afforestation_program_2020": 1,
         "activate_affores_program": 1,
-        "mt_per_gt": 1,
         "c_per_co2": 1,
+        "mt_per_gt": 1,
     },
 )
 def afforestation_program_2020_gtco2():
@@ -219,8 +219,8 @@ def co2_emissions_biomass():
         "pec_coal": 4,
         "share_coal_for_elec_emissions_relevant": 1,
         "share_coal_for_heat_emissions_relevant": 1,
-        "share_coal_for_ctl_emissions_relevant": 1,
         "gtco2_per_ej_ctl": 1,
+        "share_coal_for_ctl_emissions_relevant": 1,
         "share_coal_for_fc_emissions_relevant": 1,
     },
 )
@@ -277,8 +277,8 @@ def co2_emissions_fossil_fuels():
         "pec_nat_gas": 4,
         "share_nat_gas_for_elec_emissions_relevant": 1,
         "share_nat_gas_for_heat_emissions_relevant": 1,
-        "share_nat_gas_for_gtl_emissions_relevant": 1,
         "gtco2_per_ej_gtl": 1,
+        "share_nat_gas_for_gtl_emissions_relevant": 1,
         "share_nat_gas_for_fc_emissions_relevant": 1,
     },
 )
@@ -431,6 +431,20 @@ def co2_emissions_waste():
     value.loc[["gases"]] = 0
     value.loc[["solids"]] = gtco2_per_ej_waste() * pes_waste_for_tfc()
     return value
+
+
+@component.add(
+    name="CO2 LULCF",
+    units="GtCO2",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"past_trends_co2_lucf": 1},
+)
+def co2_lulcf():
+    """
+    CO2 emissions from Land-Use Change and Forestry.
+    """
+    return past_trends_co2_lucf()
 
 
 @component.add(
@@ -627,8 +641,8 @@ _ext_constant_gtco2_per_ej_gtl = ExtConstant(
     depends_on={
         "share_conv_vs_total_oil_extraction": 2,
         "gtco2_per_ej_conv_oil": 1,
-        "gtco2_per_ej_shale_oil": 1,
         "adapt_emissions_shale_oil": 1,
+        "gtco2_per_ej_shale_oil": 1,
         "gtco2_per_ej_unconv_oil": 2,
     },
 )
@@ -802,6 +816,37 @@ def mt_per_gt():
     Conversion from Mega to Giga (1000 M = 1 G).
     """
     return 1000
+
+
+@component.add(
+    name="Past trends CO2 LUCF",
+    units="GtCO2",
+    comp_type="Data",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_past_trends_co2_lucf",
+        "__data__": "_ext_data_past_trends_co2_lucf",
+        "time": 1,
+    },
+)
+def past_trends_co2_lucf():
+    """
+    Historic CO2 emissions from Land-Use Change and Forestry.
+    """
+    return _ext_data_past_trends_co2_lucf(time())
+
+
+_ext_data_past_trends_co2_lucf = ExtData(
+    "../land.xlsx",
+    "Europe",
+    "time",
+    "historic_co2_emissions_from_land_use_change_and_forestry",
+    "interpolate",
+    {},
+    _root,
+    {},
+    "_ext_data_past_trends_co2_lucf",
+)
 
 
 @component.add(

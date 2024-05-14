@@ -18,6 +18,7 @@ from tkinter.filedialog import askopenfilename
 
 import pandas as pd
 import pysd
+from tabulate import tabulate
 
 # PySD imports for replaced functions
 from pysd.py_backend.model import Model
@@ -261,6 +262,18 @@ def select_model_outputs(config: Params, model: Model,
             )
         ])
 
+    df = model.doc
+    df = df[df["Py Name"].isin(var_list)]
+    df = df.loc[:, ["Py Name", "Units", "Comment"]]
+    df.dropna(inplace=True, how="all")
+    df = df.reset_index(drop=True)
+
+    df["Comment"].fillna(value="Description not available for this variable", inplace=True)
+    df["Units"].fillna(value="-", inplace=True)
+
+    # Apply the function to the column with long strings
+    df["Comment"] = df["Comment"].apply(split_long_strings)
+
     if select == "all":
         col_ind = "0"
     elif select == "default":
@@ -268,8 +281,12 @@ def select_model_outputs(config: Params, model: Model,
     elif config.silent:
         col_ind = "r"
     else:
-        for num, var_name in enumerate(var_list, 1):
-            print('{}: {}'.format(num, var_name))
+        page_size = 500
+        # Print each page of the paginated data
+        for page_num, page_df in enumerate(paginate_dataframe(df, page_size), start=1):
+            print(f"Page {page_num}:")
+            print(tabulate(page_df, headers='keys', tablefmt='pretty'))
+            print("\n")  # Add a newline between pages
 
         print('\n\nDefault output variables:')
         for var_name in config.model.out_default:
@@ -656,3 +673,17 @@ def load_model(aggregation: str = "14sectors_cat",
     user_config.region = region
     read_model_config(user_config)
     return load(user_config, data_files)
+
+
+# Function to paginate the DataFrame
+def paginate_dataframe(df, page_size):
+    for i in range(0, len(df), page_size):
+        yield df.iloc[i:i+page_size]
+
+
+# Function to split long strings into multiple lines
+def split_long_strings(value, max_width=80):
+    if len(value) <= max_width:
+        return value
+    else:
+        return '\n'.join([value[i:i+max_width] for i in range(0, len(value), max_width)])

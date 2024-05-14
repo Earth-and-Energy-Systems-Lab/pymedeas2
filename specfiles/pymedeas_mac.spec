@@ -20,7 +20,7 @@ added_files = [
     (os.path.join(main_path, 'README.md'), '.'),
     (os.path.join(main_path, 'LICENSE'), '.'),
     (os.path.join(main_path, 'scenarios'), 'scenarios'),
-    (os.path.join(main_path, 'pytools', '*.json'), 'pytools')
+    (os.path.join(main_path, 'tools', '*.json'), 'tools')
 ]
 
 a = Analysis(

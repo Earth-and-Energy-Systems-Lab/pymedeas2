@@ -22,7 +22,7 @@ added_files = [
     (os.path.join(main_path, 'models'), 'models'),
     (matplotlibrc_path, 'matplotlib/mpl-data'),
     (mtplt_images_path, 'matplotlib/mpl-data/images'),
-    (os.path.join(main_path, 'pytools', '*.json'), 'pytools')
+    (os.path.join(main_path, 'tools', '*.json'), 'tools')
 ]
 
 a = Analysis(

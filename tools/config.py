@@ -62,7 +62,7 @@ def read_config() -> Params:
     """Read main configuration"""
     # default simulation parameters
     # None values are given in argparser.py
-    config_path = PROJ_FOLDER / 'pytools' / 'config.json'
+    config_path = PROJ_FOLDER / 'tools' / 'config.json'
     with config_path.open(encoding='utf-8') as params:
         pars = json.load(params)
 
@@ -74,7 +74,7 @@ def read_config() -> Params:
 
 def read_model_config(config: Params) -> None:
     """Read model configuration"""
-    models_path = PROJ_FOLDER / 'pytools' / 'models.json'
+    models_path = PROJ_FOLDER / 'tools' / 'models.json'
     with models_path.open(encoding='utf-8') as mod_pars:
         model_pars = json.load(mod_pars)
 

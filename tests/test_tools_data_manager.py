@@ -2,7 +2,7 @@ import pytest
 
 import pandas as pd
 
-import pytools.data_manager as dm
+import tools.data_manager as dm
 
 
 @pytest.mark.parametrize(

@@ -1,5 +1,5 @@
 import pytest
-from pytools.config import read_config,\
+from tools.config import read_config,\
                            read_model_config
 
 

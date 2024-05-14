@@ -1,15 +1,15 @@
 import pytest
 import json
 
-from pytools.config import Params, ModelArguments, Model, ParentModel
-from pytools.tools import load
+from tools.config import Params, ModelArguments, Model, ParentModel
+from tools.tools import load
 from run import main
 
 
 @pytest.fixture(scope="session")
 def default_vars(proj_folder):
     """Get default vars from each model"""
-    with open(proj_folder.joinpath("pytools/models.json")) as json_file:
+    with open(proj_folder.joinpath("tools/models.json")) as json_file:
         data = json.load(json_file)
 
     new_dict = {

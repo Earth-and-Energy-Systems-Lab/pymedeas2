@@ -400,7 +400,7 @@ def run(config: Params, model: Model) -> pd.DataFrame:
     # generating the output file name
     if not config.model_arguments.results_fname:
         config.model_arguments.results_fname = \
-            "results_{}_{}_{}_{}.csv".format(
+            "results_{}_{}_{}_{}.nc".format(
                 config.scenario_sheet,
                 int(config.model_arguments.initial_time),
                 int(config.model_arguments.final_time),
@@ -441,7 +441,7 @@ def run(config: Params, model: Model) -> pd.DataFrame:
 
     sim_start_time = time.time()
 
-    stocks = model.run(
+    model.run(
         params=config.model_arguments.update_params,
         initial_condition=(config.model_arguments.initial_time,
                            config.model_arguments.update_initials),
@@ -450,14 +450,10 @@ def run(config: Params, model: Model) -> pd.DataFrame:
         final_time=config.model_arguments.final_time,
         time_step=config.model_arguments.time_step,
         saveper=config.model_arguments.return_timestamp,
-        flatten_output=True)
+        output_file=config.model_arguments.results_fpath)
 
     sim_time = time.time() - sim_start_time
     log.info(f"Total simulation time: {(sim_time/60.):.2f} minutes")
-
-    stocks.index.name = 'time'
-
-    return stocks
 
 
 def user_select_data_file_gui(parent: ParentModel) -> str:

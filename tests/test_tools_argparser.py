@@ -1,5 +1,5 @@
 import pytest
-from pytools.argparser import check_output, \
+from tools.argparser import check_output, \
                               split_columns, \
                               split_vars, \
                               check_output_file_paths

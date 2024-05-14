@@ -11,26 +11,16 @@ import shutil
 from typing import List
 from pathlib import Path
 
-from pandas import DataFrame
 from pysd.py_backend.model import Model
 import pysd
 
 import plot_tool
-from pytools.config import Params
-from pytools.tools import get_initial_user_input,\
-                          update_config_from_user_input,\
-                          load,\
-                          create_parent_models_data_file_paths,\
-                          select_model_outputs,\
-                          run,\
-                          store_results_csv
-
+from tools.config import Params
+from tools.tools import (get_initial_user_input, update_config_from_user_input,
+                         load, create_parent_models_data_file_paths,
+                         select_model_outputs, run)
 
 warnings.filterwarnings("ignore")
-
-__author__ = "Oleg Osychenko, Roger Samsó, Eneko Martin"
-__maintainer__ = "Eneko Martin"
-__status__ = "Development"
 
 # check PySD version
 if tuple(int(i) for i in pysd.__version__.split(".")[:2]) < (3, 0):
@@ -67,15 +57,12 @@ def main(config: Params, model: Model) -> None:
             config, model, config.model_arguments.return_columns[0])
 
     # run the simulation
-    stock: DataFrame = run(config, model)
-
-    result_df: DataFrame = store_results_csv(stock, config)
+    run(config, model)
 
     # running the plot tool
     if config.plot:
         if not config.headless:
-            plot_tool.main(config, result_df,
-                           f"Current ({config.scenario_sheet})")
+            plot_tool.main(config)
         else:
             print(
                 '\nWe prevented the plot GUI from popping up, since'

@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from pysd.py_backend.model import Model
 
-import pytools.tools as tools
+import tools.tools as tools
 
 world = [
     ("14sectors_cat", "pymedeas_w")
@@ -175,7 +175,7 @@ def test_store_results_csv(mocker, caplog, default_config_tmp,
             "test_random_results.csv")
 
     # mock the function so it just returns the default results file path
-    mocker.patch('pytools.tools._rename_old_simulation_results',
+    mocker.patch('tools.tools._rename_old_simulation_results',
                  return_value=default_config_tmp)
 
     with caplog.at_level(logging.INFO):
@@ -205,7 +205,7 @@ def test_store_results_csv_df_has_nans(
     default_config_tmp.model_arguments.results_fpath = results_file_path
 
     # mock the function so it just returns the default results file path
-    mocker.patch('pytools.tools._rename_old_simulation_results',
+    mocker.patch('tools.tools._rename_old_simulation_results',
                  return_value=default_config_tmp)
 
     with caplog.at_level(logging.WARNING):
@@ -460,11 +460,11 @@ def test_create_parent_models_data_file_paths_not_silent(mocker,
 
         if headless:
             # mock the user_select_data_file_headless function
-            mocker.patch('pytools.tools.user_select_data_file_headless',
+            mocker.patch('tools.tools.user_select_data_file_headless',
                          return_value=return_path)
         else:
             # mock the user_select_data_file_gui function
-            mocker.patch('pytools.tools.user_select_data_file_gui',
+            mocker.patch('tools.tools.user_select_data_file_gui',
                          return_value=return_path)
 
         assert set(tools.create_parent_models_data_file_paths(default_config_tmp))\

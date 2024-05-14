@@ -30,13 +30,13 @@ config = read_config()
 
 def check_output(string):
     """
-    Checks that out put file ends with .tab or .csv
+    Checks that out put file ends with .nc
 
     """
-    if not string.endswith('.tab') and not string.endswith('.csv'):
+    if not string.endswith('.nc'):
         parser.error(
             f'when parsing {string}'
-            '\nThe output file name must be .tab or .csv...')
+            '\nThe output file name must be netCDF (.nc)')
 
     return string
 
@@ -155,14 +155,14 @@ parser.add_argument(
 parser.add_argument(
     '-m', '--model', dest='region', default=config.region,
     #choices=list(dict_models),
-    help='select the model to use')
+    help='select the model to use (e.g. pymedeas_w, pymedeas_eu, pymedeas_cat')
 
 parser.add_argument(
     '-n', '--fname', dest='results_fname',
     type=check_output, metavar='FILE',
     help='name of the results file, default is '
          'results_{scenario sheet}_{initial time}_{final time}'
-         '_{time step}.csv')
+         '_{time step}.nc')
 
 parser.add_argument(
     '-r', '--return-columns', dest='return_columns',

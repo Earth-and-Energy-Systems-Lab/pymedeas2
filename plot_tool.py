@@ -70,6 +70,12 @@ class PlotTool(tk.Frame):
             self.get_config_aggr()
         else:
             self.configure_data(config)
+
+            filepath = config.model_arguments.results_fpath
+            if filepath: # this means user has passed the -p
+                print(f"Loading simulation results from {filepath}")
+                self.data_container.add(DataNCFile(filepath))
+                self.all_vars = self.data_container.variable_list
             self.init_window()
 
     def configure_data(self, config):

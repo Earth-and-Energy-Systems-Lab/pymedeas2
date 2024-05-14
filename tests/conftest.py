@@ -4,8 +4,8 @@ from pathlib import Path
 from copy import deepcopy
 import pandas as pd
 
-from pytools.config import read_config, read_model_config
-from pytools.tools import load
+from tools.config import read_config, read_model_config
+from tools.tools import load
 
 
 @pytest.fixture(scope="session")

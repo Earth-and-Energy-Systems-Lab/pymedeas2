@@ -51,7 +51,7 @@ def select_model(tmp_dir, proj_folder, model, default_vars):
     if model == "14pymedeas_w":
         model = "pymedeas_w"
         config.aggregation = "14sectors_cat"
-        config.model_arguments.results_fname = "14w.csv"
+        config.model_arguments.results_fname = "14w.nc"
         config.model_arguments.results_fpath =\
             tmp_dir.joinpath(config.model_arguments.results_fname)
         config.region = model
@@ -68,7 +68,7 @@ def select_model(tmp_dir, proj_folder, model, default_vars):
     elif model == "14pymedeas_eu":
         model = "pymedeas_eu"
         config.aggregation = "14sectors_cat"
-        config.model_arguments.results_fname = "14eu.csv"
+        config.model_arguments.results_fname = "14eu.nc"
         config.model_arguments.results_fpath =\
             tmp_dir.joinpath(config.model_arguments.results_fname)
         config.region = model
@@ -84,14 +84,14 @@ def select_model(tmp_dir, proj_folder, model, default_vars):
                 ParentModel(
                     name="pymedeas_w",
                     default_results_folder=tmp_dir,
-                    results_file_path=tmp_dir.joinpath("14w.csv")
+                    results_file_path=tmp_dir.joinpath("14w.nc")
                 )
             ]
         )
     elif model == "14pymedeas_cat":
         model = "pymedeas_cat"
         config.aggregation = "14sectors_cat"
-        config.model_arguments.results_fname = "14cat.csv"
+        config.model_arguments.results_fname = "14cat.nc"
         config.model_arguments.results_fpath =\
             tmp_dir.joinpath(config.model_arguments.results_fname)
         config.region = model
@@ -107,19 +107,19 @@ def select_model(tmp_dir, proj_folder, model, default_vars):
                 ParentModel(
                     name="pymedeas_w",
                     default_results_folder=tmp_dir,
-                    results_file_path=tmp_dir.joinpath("14w.csv")
+                    results_file_path=tmp_dir.joinpath("14w.nc")
                 ),
                 ParentModel(
                     name="pymedeas_eu",
                     default_results_folder=tmp_dir,
-                    results_file_path=tmp_dir.joinpath("14eu.csv")
+                    results_file_path=tmp_dir.joinpath("14eu.nc")
                 )
             ]
         )
     if model == "16pymedeas_w":
         model = "pymedeas_w"
         config.aggregation = "16sectors_qb"
-        config.model_arguments.results_fname = "16w.csv"
+        config.model_arguments.results_fname = "16w.nc"
         config.model_arguments.results_fpath =\
             tmp_dir.joinpath(config.model_arguments.results_fname)
         config.region = model
@@ -136,7 +136,7 @@ def select_model(tmp_dir, proj_folder, model, default_vars):
     elif model == "16pymedeas_qb":
         model = "pymedeas_qb"
         config.aggregation = "16sectors_qb"
-        config.model_arguments.results_fname = "16qb.csv"
+        config.model_arguments.results_fname = "16qb.nc"
         config.model_arguments.results_fpath =\
             tmp_dir.joinpath(config.model_arguments.results_fname)
         config.region = model
@@ -152,7 +152,7 @@ def select_model(tmp_dir, proj_folder, model, default_vars):
                 ParentModel(
                     name="pymedeas_w",
                     default_results_folder=tmp_dir,
-                    results_file_path=tmp_dir.joinpath("16w.csv")
+                    results_file_path=tmp_dir.joinpath("16w.nc")
                 )
             ]
         )

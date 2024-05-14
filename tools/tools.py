@@ -268,8 +268,9 @@ def select_model_outputs(config: Params, model: Model,
     df.dropna(inplace=True, how="all")
     df = df.reset_index(drop=True)
 
-    df["Comment"].fillna(value="Description not available for this variable", inplace=True)
-    df["Units"].fillna(value="-", inplace=True)
+    df.fillna({"Comment": "Description not available for this variable"},
+              inplace=True)
+    df.fillna({"Units": "-"}, inplace=True)
 
     # Apply the function to the column with long strings
     df["Comment"] = df["Comment"].apply(split_long_strings)

@@ -443,7 +443,11 @@ def test_create_parent_models_data_file_paths_no_silent_paths_from_user(
         assert parent.results_file_path == paths[parent.name]
 
 
-@pytest.mark.parametrize("headless", [True, False], ids=["headless", "no-headless"])
+@pytest.mark.parametrize(
+        "headless",
+        [True, False],
+        ids=["headless", "no-headless"]
+        )
 @pytest.mark.parametrize(
     "aggregation,region",
     sub_regions,
@@ -500,7 +504,7 @@ def test_run_no_file_path_from_user(mocker, capsys, default_config_tmp, model):
         assert f"External data file for {parent.name}:" in out
 
     assert default_config_tmp.model_arguments.results_fname == \
-        "results_{}_{}_{}_{}.csv".format(
+        "results_{}_{}_{}_{}.nc".format(
                 default_config_tmp.scenario_sheet,
                 int(default_config_tmp.model_arguments.initial_time),
                 int(default_config_tmp.model_arguments.final_time),

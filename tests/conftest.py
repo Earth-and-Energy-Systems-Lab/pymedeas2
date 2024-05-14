@@ -110,11 +110,11 @@ def cli_input_long_names():
                 "--ext",  # path of the resuls file of the parent model
                 "pymedeas_w:" + \
                 "outputs/pymedeas_w/" + \
-                "results_BAU_1995.0_1996.0_0.03125.csv",
+                "results_BAU_1995.0_1996.0_0.03125.nc",
                 "--silent",  # silent
                 "--headless",  # headless
                 "--fname",  # results file name
-                "test_model.csv",
+                "test_model.nc",
                 "--return-columns",  # return columns
                 "var1, var2, var3",
                 "--export",  # export results to pickle format
@@ -145,11 +145,11 @@ def cli_input_short_names():
                 "-f",  # path of the resuls file of the parent model
                 "pymedeas_w:" + \
                 "outputs/pymedeas_w/" + \
-                "results_BAU_1995.0_1996.0_0.03125.csv",
+                "results_BAU_1995.0_1996.0_0.03125.nc",
                 "-s",  # silent
                 "-b",  # headless
                 "-n",  # results file name
-                "test_model.csv",
+                "test_model.nc",
                 "-r",  # return columns
                 "var1, var2, var3",
                 "-e",  # export results to pickle format
@@ -252,11 +252,11 @@ def expected_conf_cli_input_long_and_short(tmp_path, default_config):
     updated_conf.model_arguments.return_timestamp = 5.0
     updated_conf.model_arguments.return_columns = ["var1", "var2", "var3"]
     updated_conf.model.parent[0].results_file_path = tmp_path.joinpath(
-        "outputs", "pymedeas_w", "results_BAU_1995.0_1996.0_0.03125.csv"
+        "outputs", "pymedeas_w", "results_BAU_1995.0_1996.0_0.03125.nc"
         ).resolve()
     updated_conf.model_arguments.export = tmp_path.joinpath(
         "outputs", "exported.pickle").resolve()
-    updated_conf.model_arguments.results_fname = "test_model.csv"
+    updated_conf.model_arguments.results_fname = "test_model.nc"
     updated_conf.model_arguments.update_params = {"var1": 5.0,
                                                   "var2": 7.5,
                                                   "var3": pd.Series(

@@ -181,7 +181,7 @@ class DataFile(Data):
     def _get_scen_name(self):
         """get scenario name from filename"""
         pattern = re.compile(
-            r'results_(.*)(?=_[\d]{4}_[\d]{4}_[\d.]*(_[\d]{8}__[\d]{6})*.tab)',
+            r'results_(.*)(?=_[\d]{4}_[\d]{4}_[\d.]*(_[\d]{8}__[\d]{6})*.(tab|csv))',
             re.I)
         try:
             return pattern.match(self.filename.name).group(1)

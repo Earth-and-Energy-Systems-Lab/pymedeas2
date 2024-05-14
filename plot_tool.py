@@ -18,10 +18,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg,\
 from matplotlib.figure import Figure
 from matplotlib.ticker import MultipleLocator
 
-from pytools.tools import load
-from pytools.config import read_config, read_model_config
-from pytools.data_manager import DataContainer, DataFile, DataLoaded,\
-                                 DataVensim
+from tools.tools import load
+from tools.config import read_config, read_model_config
+from tools.data_manager import (DataContainer, DataFile, DataVensim,
+                                DataNCFile)
 
 __author__ = "Eneko Martin, Emilio Ramon Garcia Ladona"
 __maintainer__ = "Roger Samsó, Eneko Martin"
@@ -40,7 +40,7 @@ class PlotTool(tk.Frame):
     markers = ["o", "v", "<", "^", "1", "s", "p", "P", "h", "X", "D"]
     line_styles = ['--', '-.', ':']
 
-    def __init__(self, master, data=None, config=None, scenario="Current"):
+    def __init__(self, master, config=None):
         tk.Frame.__init__(self, master)
         self.master = master
         self.master.option_add('*tearOff', 'FALSE')  # menus no detaching
@@ -63,12 +63,7 @@ class PlotTool(tk.Frame):
         self.button = None  # button to clear data
         self.var_dim = []  # dimensions of the variable
 
-        #  Data
-        if data is not None:
-            self.data_container.add(DataLoaded(scenario, data))
-            self.all_vars = self.data_container.variable_list
-        else:
-            self.all_vars = []
+        self.all_vars = []
 
         if not config:
             # Ask user for config
@@ -100,7 +95,7 @@ class PlotTool(tk.Frame):
 
     def get_config_aggr(self):
         """Popup window for selecting configuration"""
-        with _root.joinpath("pytools/models.json").open(encoding="utf-8")\
+        with _root.joinpath("tools/models.json").open(encoding="utf-8")\
              as mod_pars:
             self.aggr_pars = json.load(mod_pars)
 
@@ -176,6 +171,9 @@ class PlotTool(tk.Frame):
         filemenu = tk.Menu(menubar)
         filemenu.add_command(label="Load data", command=self.load_file)
         filemenu.add_command(
+            label="Load netCDF data",
+            command=lambda: self.load_file(lambda x: DataNCFile(x)))
+        filemenu.add_command(
             label="Load Vensim data",
             command=lambda: self.load_file(lambda x: DataVensim(x, self.doc)))
         filemenu.add_command(label="Clear data", command=self.clear_data)
@@ -240,7 +238,7 @@ class PlotTool(tk.Frame):
         self.canvas.get_tk_widget().pack()
 
         # info buttom for variable description
-        info_icon = tk.PhotoImage(file=_root.joinpath("pytools/info-logo.png"))
+        info_icon = tk.PhotoImage(file=_root.joinpath("tools/info-logo.png"))
         info_icon = info_icon.subsample(8, 8)
         self.button = tk.Button(
             self.toolbar, image=info_icon, width=25, height=20,
@@ -303,8 +301,9 @@ class PlotTool(tk.Frame):
         """Create Data object with columns information"""
         filenames = askopenfilenames(
             initialdir=self.results_folder,
-            title="Open file",
+            title="Load file",
             filetypes=(
+                ("nc files", "*.nc"),
                 ("csv, tab files", "*.csv *.tab"),
                 ("csv files", "*.csv"),
                 ("tab files", "*.tab"),
@@ -314,13 +313,13 @@ class PlotTool(tk.Frame):
 
         for filename in filenames:
             filename = Path(filename)
-            if filename.suffix in [".csv", ".tab"]:
+            if filename.suffix in [".csv", ".tab", ".nc"]:
                 self.data_container.add(DataType(filename))
             else:
                 tk.messagebox.showerror(
                     title="Incompatible file format",
                     message=f"Incompatible file format '{filename}'.\n"
-                            "Compatible file formats are '.csv' and '.tab'")
+                            "Compatible file formats are '.csv', '.tab' and '.nc'")
 
         self.all_vars = self.data_container.variable_list
         self.update_list()
@@ -440,7 +439,7 @@ def on_closing(root):
     sys.exit()
 
 
-def main(config=None, data=None, scenario=None):
+def main(config=None):
     """
     Main loop
     """
@@ -450,7 +449,7 @@ def main(config=None, data=None, scenario=None):
         root = tk.Toplevel()
 
     root.geometry("1200x600")
-    PlotTool(root, data=data, config=config, scenario=scenario)
+    PlotTool(root, config=config)
     root.protocol("WM_DELETE_WINDOW", lambda: on_closing(root))
     root.mainloop()
 

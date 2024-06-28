@@ -53,7 +53,6 @@ class Params:
     headless: bool
     missing_values: str  # default is 'warning'
     scenario_sheet: str
-    plot: bool
     progress: bool  # default is True, not modifiable through CLI
     model: Optional[Model]
 

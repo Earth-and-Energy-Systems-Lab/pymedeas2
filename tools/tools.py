@@ -93,9 +93,6 @@ def update_config_from_user_input(options: Namespace,
                                                       'return_timestamp')
     config.model_arguments.results_fname = getattr(options, 'results_fname')
 
-    if getattr(options, 'return_columns'):
-        config.model_arguments.return_columns = getattr(options,
-                                                        'return_columns')
     if options.new_values['param']:
         config.model_arguments.update_params = options.new_values['param']
 
@@ -446,7 +443,7 @@ def run(config: Params, model: Model) -> pd.DataFrame:
         params=config.model_arguments.update_params,
         initial_condition=(config.model_arguments.initial_time,
                            config.model_arguments.update_initials),
-        return_columns=config.model_arguments.return_columns,
+        return_columns="step",
         progress=config.progress,
         final_time=config.model_arguments.final_time,
         time_step=config.model_arguments.time_step,

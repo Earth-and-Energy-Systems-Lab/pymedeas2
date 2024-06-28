@@ -11,7 +11,6 @@
     "silent": false,
     "headless": false,
     "missing_values": "warning",
-    "scenario_sheet": "BAU",
-    "plot": false,
+    "scenario_sheet": "NZP",
     "progress": true
 }

@@ -165,21 +165,6 @@ parser.add_argument(
          '_{time step}.nc')
 
 parser.add_argument(
-    '-r', '--return-columns', dest='return_columns',
-    action='store', type=split_columns,
-    metavar='\'var1, var2, .., varN\' or FILE (.txt)',
-    help='provide the return columns separated by commas or a .txt file'
-         ' where each row is a variable, if all is given it will return all'
-         ' columns, if default is given it will return default columns,'
-         ' if not givemn will ask the user for the columns')
-
-parser.add_argument(
-    '-p', '--plot', dest='plot',
-    action='store_true', default=config.plot,
-    help='opens the plot gui after simulation')
-
-
-parser.add_argument(
     '-f', '--ext', dest='results_file_path',
     type=check_output_file_paths, metavar='FILE', nargs='+',
     help='path/s of the file/s from which to import results from parent models'

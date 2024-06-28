@@ -2,8 +2,7 @@ import pytest
 import json
 
 from tools.config import Params, ModelArguments, Model, ParentModel
-from tools.tools import load
-from run import main
+from tools.tools import load, run
 
 
 @pytest.fixture(scope="session")
@@ -42,8 +41,7 @@ def select_model(tmp_dir, proj_folder, model, default_vars):
         silent=True,
         headless=True,
         missing_values="ignore",
-        scenario_sheet="BAU",
-        plot=False,
+        scenario_sheet="NZP",
         progress=False,
         model=None
     )
@@ -116,46 +114,7 @@ def select_model(tmp_dir, proj_folder, model, default_vars):
                 )
             ]
         )
-    if model == "16pymedeas_w":
-        model = "pymedeas_w"
-        config.aggregation = "16sectors_qb"
-        config.model_arguments.results_fname = "16w.nc"
-        config.model_arguments.results_fpath =\
-            tmp_dir.joinpath(config.model_arguments.results_fname)
-        config.region = model
-        config.model = Model(
-            model_file=proj_folder.joinpath(
-                "models/pymedeas_w/pymedeas_w.py"),
-            subscripts_file="_subscripts_pymedeas_w.json",
-            scenario_file="scen_w.xlsx",
-            inputs_sheet="World",
-            out_folder=tmp_dir,
-            out_default=default_vars[config.aggregation][model],
-            parent=[]
-        )
-    elif model == "16pymedeas_qb":
-        model = "pymedeas_qb"
-        config.aggregation = "16sectors_qb"
-        config.model_arguments.results_fname = "16qb.nc"
-        config.model_arguments.results_fpath =\
-            tmp_dir.joinpath(config.model_arguments.results_fname)
-        config.region = model
-        config.model = Model(
-            model_file=proj_folder.joinpath(
-                "models/pymedeas_eu/pymedeas_eu.py"),
-            subscripts_file="_subscripts_pymedeas_qb.json",
-            scenario_file="scen_qb.xlsx",
-            inputs_sheet="Quebec",
-            out_folder=tmp_dir,
-            out_default=default_vars[config.aggregation][model],
-            parent=[
-                ParentModel(
-                    name="pymedeas_w",
-                    default_results_folder=tmp_dir,
-                    results_file_path=tmp_dir.joinpath("16w.nc")
-                )
-            ]
-        )
+
     # get the data_file paths to load parent outputs
     data_files = [parent.results_file_path for parent in config.model.parent]
 
@@ -164,29 +123,12 @@ def select_model(tmp_dir, proj_folder, model, default_vars):
 
 
 @pytest.mark.filterwarnings("ignore")
-def test_run_three_levels_14sectors_cat(tmp_path, proj_folder, default_vars):
+@pytest.mark.parametrize(
+    "model", ["14pymedeas_w", "14pymedeas_eu", "14pymedeas_cat"]
+    )
+def test_run_three_levels_14sectors_cat(tmp_path, proj_folder, default_vars, model):
     """Run of the 3 models in cascade"""
 
     model, config = select_model(
-        tmp_path, proj_folder, "14pymedeas_w", default_vars)
-    main(config, model)
-
-    model, config = select_model(
-        tmp_path, proj_folder, "14pymedeas_eu", default_vars)
-    main(config, model)
-
-    model, config = select_model(
-        tmp_path, proj_folder, "14pymedeas_cat", default_vars)
-    main(config, model)
-
-@pytest.mark.filterwarnings("ignore")
-def test_run_three_levels_16sectors_qb(tmp_path, proj_folder, default_vars):
-    """Run of the 3 models in cascade"""
-
-    model, config = select_model(
-        tmp_path, proj_folder, "16pymedeas_w", default_vars)
-    main(config, model)
-
-    model, config = select_model(
-        tmp_path, proj_folder, "16pymedeas_qb", default_vars)
-    main(config, model)
+        tmp_path, proj_folder, model, default_vars)
+    run(config, model)

@@ -499,11 +499,11 @@ def user_select_data_file_headless(parent: ParentModel) -> Path:
     """
     dir_path = parent.default_results_folder
 
-    files_list = list(filter(lambda x: x.is_file() and x.suffix == ".csv",
+    files_list = list(filter(lambda x: x.is_file() and x.suffix == ".nc",
                              dir_path.iterdir()))
     files_list.sort()
 
-    if files_list:  # there are csv files in the folder
+    if files_list:  # there are nc files in the folder
         while True:
             val_ = input(
              "\nPlease write the number associated with the results file of"
@@ -522,7 +522,7 @@ def user_select_data_file_headless(parent: ParentModel) -> Path:
                 raise ValueError("Please provide a number between 0 and "
                                  f"{len(files_list)-1}")
     else:
-        raise ValueError('There are no csv files to import data from.\n'
+        raise ValueError('There are no .nc files to import data from.\n'
                          'Please run the parent model/s first')
 
 

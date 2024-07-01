@@ -48,7 +48,7 @@
             "parent": [
                 {
                     "name": "pymedeas_w",
-                    "default_results_folder": "outputs/pymedeas_w"
+                    "default_results_folder": "outputs/14sectors_cat/pymedeas_w"
                 }
             ]
         },
@@ -61,11 +61,11 @@
             "parent": [
                 {
                     "name": "pymedeas_w",
-                    "default_results_folder": "outputs/pymedeas_w"
+                    "default_results_folder": "outputs/14sectors_cat/pymedeas_w"
                 },
                 {
                     "name": "pymedeas_eu",
-                    "default_results_folder": "outputs/pymedeas_eu"
+                    "default_results_folder": "outputs/14sectors_cat/pymedeas_eu"
                 }
             ]
         }

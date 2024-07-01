@@ -1,11 +1,10 @@
 """
-Module electricity_demand
-Translated using PySD version 3.2.0
+Module energy.demand.electricity_demand
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="EJ per TWh", units="EJ/TWh", comp_type="Constant", comp_subtype="Normal"
+    name="EJ_per_TWh", units="EJ/TWh", comp_type="Constant", comp_subtype="Normal"
 )
 def ej_per_twh():
     """
@@ -15,7 +14,7 @@ def ej_per_twh():
 
 
 @component.add(
-    name="Elec exports share",
+    name="Elec_exports_share",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -31,8 +30,8 @@ def elec_exports_share():
 
 
 @component.add(
-    name="Electrical distribution losses EJ",
-    units="EJ/Year",
+    name="Electrical_distribution_losses_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"electrical_distribution_losses_twh": 1, "ej_per_twh": 1},
@@ -45,22 +44,22 @@ def electrical_distribution_losses_ej():
 
 
 @component.add(
-    name="Electrical distribution losses TWh",
-    units="TWh",
+    name="Electrical_distribution_losses_TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_fe_elec_demand_twh": 1, "share_transmdistr_elec_losses": 1},
+    depends_on={"fe_demand_elec_consum_twh": 1, "share_transmdistr_elec_losses": 1},
 )
 def electrical_distribution_losses_twh():
     """
     Electrical transmission and distribution losses.
     """
-    return total_fe_elec_demand_twh() * share_transmdistr_elec_losses()
+    return fe_demand_elec_consum_twh() * share_transmdistr_elec_losses()
 
 
 @component.add(
-    name="FE demand Elec consum TWh",
-    units="TWh/Year",
+    name="FE_demand_Elec_consum_TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"required_fed_by_fuel": 1, "ej_per_twh": 1},
@@ -73,21 +72,21 @@ def fe_demand_elec_consum_twh():
 
 
 @component.add(
-    name="FE Elec demand exports TWh",
-    units="TWh",
+    name="FE_Elec_demand_exports_TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_fe_elec_demand_twh": 1, "elec_exports_share": 1},
+    depends_on={"fe_demand_elec_consum_twh": 1, "elec_exports_share": 1},
 )
 def fe_elec_demand_exports_twh():
     """
     Overdemand generated with the aim of exporting.
     """
-    return total_fe_elec_demand_twh() * elec_exports_share()
+    return fe_demand_elec_consum_twh() * elec_exports_share()
 
 
 @component.add(
-    name="Hist Elec exports share",
+    name="Hist_Elec_exports_share",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -106,7 +105,7 @@ def hist_elec_exports_share():
 
 _ext_data_hist_elec_exports_share = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_share_of_electricty_exports_of_total_electricity_production",
     "interpolate",
@@ -118,8 +117,8 @@ _ext_data_hist_elec_exports_share = ExtData(
 
 
 @component.add(
-    name='"Max share transm&distr elec losses"',
-    units="Dnml",
+    name='"Max_share_transm&distr_elec_losses"',
+    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"share_transmdistr_elec_losses_initial": 1},
@@ -134,17 +133,38 @@ def max_share_transmdistr_elec_losses():
 
 
 @component.add(
-    name="P export share", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+    name="P_export_share",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_p_export_share",
+        "__data__": "_ext_data_p_export_share",
+        "time": 1,
+    },
 )
 def p_export_share():
     """
     Share of electricity generated with the aim of exporting
     """
-    return -0.1
+    return _ext_data_p_export_share(time())
+
+
+_ext_data_p_export_share = ExtData(
+    "../../scenarios/scen_cat.xlsx",
+    "NZP",
+    "year_RES_power",
+    "share_exports_electricity",
+    "interpolate",
+    {},
+    _root,
+    {},
+    "_ext_data_p_export_share",
+)
 
 
 @component.add(
-    name='"remaining share transm&distr elec losses"',
+    name='"remaining_share_transm&distr_elec_losses"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -163,7 +183,34 @@ def remaining_share_transmdistr_elec_losses():
 
 
 @component.add(
-    name='"share transm&distr elec losses initial"',
+    name='"share_transm&distr_elec_losses"',
+    units="Dmnl",
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_share_transmdistr_elec_losses": 1},
+    other_deps={
+        "_integ_share_transmdistr_elec_losses": {
+            "initial": {"share_transmdistr_elec_losses_initial": 1},
+            "step": {},
+        }
+    },
+)
+def share_transmdistr_elec_losses():
+    """
+    Evolution over time of the share of transmission and distribution losses of electricity. It is assumed that these losses increase over time as the share of RES increase in the electricity mix.
+    """
+    return _integ_share_transmdistr_elec_losses()
+
+
+_integ_share_transmdistr_elec_losses = Integ(
+    lambda: 0,
+    lambda: share_transmdistr_elec_losses_initial(),
+    "_integ_share_transmdistr_elec_losses",
+)
+
+
+@component.add(
+    name='"share_transm&distr_elec_losses_initial"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -188,35 +235,8 @@ _ext_constant_share_transmdistr_elec_losses_initial = ExtConstant(
 
 
 @component.add(
-    name='"share transm&distr elec losses"',
-    units="Dmnl",
-    comp_type="Stateful",
-    comp_subtype="Integ",
-    depends_on={"_integ_share_transmdistr_elec_losses": 1},
-    other_deps={
-        "_integ_share_transmdistr_elec_losses": {
-            "initial": {"share_transmdistr_elec_losses_initial": 1},
-            "step": {"variation_share_transmdistr_elec_losses": 1},
-        }
-    },
-)
-def share_transmdistr_elec_losses():
-    """
-    Evolution over time of the share of transmission and distribution losses of electricity. It is assumed that these losses increase over time as the share of RES increase in the electricity mix.
-    """
-    return _integ_share_transmdistr_elec_losses()
-
-
-_integ_share_transmdistr_elec_losses = Integ(
-    lambda: variation_share_transmdistr_elec_losses(),
-    lambda: share_transmdistr_elec_losses_initial(),
-    "_integ_share_transmdistr_elec_losses",
-)
-
-
-@component.add(
-    name="Total FE Elec demand EJ",
-    units="EJ/Year",
+    name="Total_FE_Elec_demand_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_fe_elec_demand_twh": 1, "ej_per_twh": 1},
@@ -229,8 +249,8 @@ def total_fe_elec_demand_ej():
 
 
 @component.add(
-    name="Total FE Elec demand TWh",
-    units="TWh/Year",
+    name="Total_FE_Elec_demand_TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -243,22 +263,20 @@ def total_fe_elec_demand_twh():
     """
     Total final energy electricity demand (TWh). It includes new electric uses (e.g. EV & HEV) and electrical transmission and distribution losses.
     """
-    return (
-        fe_demand_elec_consum_twh()
-        * (1 + share_transmdistr_elec_losses())
-        / (1 - elec_exports_share())
+    return fe_demand_elec_consum_twh() * (
+        1 + share_transmdistr_elec_losses() + elec_exports_share()
     )
 
 
 @component.add(
-    name='"variation share transm&distr elec losses"',
-    units="Dmnl",
+    name='"variation_share_transm&distr_elec_losses"',
+    units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "variation_share_transmdistr_losses_elec": 1,
         "remaining_share_transmdistr_elec_losses": 1,
+        "variation_share_transmdistr_losses_elec": 1,
     },
 )
 def variation_share_transmdistr_elec_losses():
@@ -274,19 +292,22 @@ def variation_share_transmdistr_elec_losses():
 
 
 @component.add(
-    name='"variation share transm&distr losses elec"',
-    units="Dmnl",
+    name='"variation_share_transm&distr_losses_elec"',
+    units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_transmdistr_elec_losses_initial": 1,
         "share_res_electricity_generation": 1,
+        "nvs_1_year": 1,
     },
 )
 def variation_share_transmdistr_losses_elec():
     """
     Relationship between transmission and distribution losses of electricity and the penetration of RES in the electricity mix. Source: NREL (2012).
     """
-    return share_transmdistr_elec_losses_initial() * (
-        0.0115 * np.exp(4.2297 * share_res_electricity_generation()) - 0.00251
+    return (
+        share_transmdistr_elec_losses_initial()
+        * (0.0115 * np.exp(4.2297 * share_res_electricity_generation()) - 0.00251)
+        / nvs_1_year()
     )

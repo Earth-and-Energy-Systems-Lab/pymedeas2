@@ -1,11 +1,10 @@
 """
-Module exports_demand
-Translated using PySD version 3.2.0
+Module economy.exports_demand
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="beta 0 EXP",
+    name="beta_0_EXP",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -31,7 +30,7 @@ _ext_constant_beta_0_exp = ExtConstant(
 
 
 @component.add(
-    name="beta 0 GFCF",
+    name="beta_0_GFCF",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -57,7 +56,7 @@ _ext_constant_beta_0_gfcf = ExtConstant(
 
 
 @component.add(
-    name="beta 1 EXP",
+    name="beta_1_EXP",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -76,7 +75,7 @@ _ext_constant_beta_1_exp = ExtConstant(
 
 
 @component.add(
-    name="beta 1 GFCF",
+    name="beta_1_GFCF",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -101,7 +100,7 @@ _ext_constant_beta_1_gfcf = ExtConstant(
 
 
 @component.add(
-    name="Exports demand",
+    name="Exports_demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -129,27 +128,37 @@ _integ_exports_demand = Integ(
 
 
 @component.add(
-    name="Exports demand not covered",
-    units="Mdollars/Year",
+    name="Exports_demand_not_covered",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "exports_demand": 1, "real_exports_demand_by_sector": 1},
+    depends_on={
+        "time": 1,
+        "exports_demand": 1,
+        "real_exports_demand_by_sector": 1,
+        "nvs_1_year": 1,
+    },
 )
 def exports_demand_not_covered():
     """
     Gap between exports required and real exports (after energy-economy feedback)
     """
-    return if_then_else(
-        time() < 2009,
-        lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
-        lambda: exports_demand() - real_exports_demand_by_sector(),
+    return (
+        if_then_else(
+            time() < 2009,
+            lambda: xr.DataArray(
+                0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
+            ),
+            lambda: exports_demand() - real_exports_demand_by_sector(),
+        )
+        / nvs_1_year()
     )
 
 
 @component.add(
-    name="GFCF not covered",
-    units="Mdollars/Year",
+    name="GFCF_not_covered",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -157,21 +166,27 @@ def exports_demand_not_covered():
         "time": 1,
         "gross_fixed_capital_formation": 1,
         "real_gfcf_by_sector": 1,
+        "nvs_1_year": 1,
     },
 )
 def gfcf_not_covered():
     """
     Gap between gross fixed capital formation required and real gross fixed capital formation (after energy-economy feedback)
     """
-    return if_then_else(
-        time() < 2009,
-        lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
-        lambda: gross_fixed_capital_formation() - real_gfcf_by_sector(),
+    return (
+        if_then_else(
+            time() < 2009,
+            lambda: xr.DataArray(
+                0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
+            ),
+            lambda: gross_fixed_capital_formation() - real_gfcf_by_sector(),
+        )
+        / nvs_1_year()
     )
 
 
 @component.add(
-    name="Gross fixed capital formation",
+    name="Gross_fixed_capital_formation",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -199,7 +214,7 @@ _integ_gross_fixed_capital_formation = Integ(
 
 
 @component.add(
-    name="historic exports demand",
+    name="historic_exports_demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -229,7 +244,7 @@ _ext_lookup_historic_exports_demand = ExtLookup(
 
 
 @component.add(
-    name="historic GFCF",
+    name="historic_GFCF",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -259,7 +274,7 @@ _ext_lookup_historic_gfcf = ExtLookup(
 
 
 @component.add(
-    name="Initial exports demand",
+    name="Initial_exports_demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -274,8 +289,8 @@ def initial_exports_demand():
 
 
 @component.add(
-    name="initial GFCF",
-    units="Mdollars",
+    name="initial_GFCF",
+    units="M$",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -289,7 +304,8 @@ def initial_gfcf():
 
 
 @component.add(
-    name="real demand world next step",
+    name="real_demand_world_next_step",
+    units="M$",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_demand_world": 1, "annual_gdp_growth_rate_world": 1},
@@ -299,7 +315,7 @@ def real_demand_world_next_step():
 
 
 @component.add(
-    name="Total exports",
+    name="Total_exports",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -313,7 +329,7 @@ def total_exports():
 
 
 @component.add(
-    name="Total GFCF",
+    name="Total_GFCF",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -330,18 +346,19 @@ def total_gfcf():
 
 
 @component.add(
-    name="variation exports demand",
-    units="Mdollars/Year",
+    name="variation_exports_demand",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "exports_demand": 1,
-        "variation_historic_exports_demand": 1,
+        "real_demand_world": 1,
+        "unit_correction_economic": 2,
         "beta_0_exp": 1,
         "real_demand_world_next_step": 1,
+        "variation_historic_exports_demand": 1,
         "beta_1_exp": 2,
-        "real_demand_world": 1,
         "time": 1,
     },
 )
@@ -357,26 +374,29 @@ def variation_exports_demand():
             lambda: variation_historic_exports_demand(),
             lambda: np.exp(beta_0_exp())
             * (
-                real_demand_world_next_step() ** beta_1_exp()
-                - real_demand_world() ** beta_1_exp()
+                (real_demand_world_next_step() * unit_correction_economic())
+                ** beta_1_exp()
+                - (real_demand_world() * unit_correction_economic()) ** beta_1_exp()
             ),
         ),
     )
 
 
 @component.add(
-    name="variation GFCF",
-    units="Mdollars/Year",
+    name="variation_GFCF",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 1,
-        "variation_historic_gfcf": 1,
-        "beta_1_gfcf": 2,
         "cc_total": 2,
-        "beta_0_gfcf": 1,
+        "unit_correction_economic": 2,
+        "variation_historic_gfcf": 1,
+        "nvs_1_year": 1,
+        "beta_1_gfcf": 2,
         "variation_cc": 1,
+        "beta_0_gfcf": 1,
         "time": 1,
     },
 )
@@ -392,40 +412,44 @@ def variation_gfcf():
             lambda: variation_historic_gfcf(),
             lambda: np.exp(beta_0_gfcf())
             * (
-                (cc_total() + variation_cc()) ** beta_1_gfcf()
-                - cc_total() ** beta_1_gfcf()
+                (
+                    (cc_total() + variation_cc() * nvs_1_year())
+                    * unit_correction_economic()
+                )
+                ** beta_1_gfcf()
+                - (cc_total() * unit_correction_economic()) ** beta_1_gfcf()
             ),
         ),
     )
 
 
 @component.add(
-    name="variation historic exports demand",
-    units="Mdollars/Year",
+    name="variation_historic_exports_demand",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "historic_exports_demand": 2},
+    depends_on={"time": 2, "time_step": 2, "historic_exports_demand": 2},
 )
 def variation_historic_exports_demand():
     """
     Historic variation of exports (WIOD-35 sectors)
     """
-    return historic_exports_demand(integer(time() + 1)) - historic_exports_demand(
-        integer(time())
-    )
+    return (
+        historic_exports_demand(time() + time_step()) - historic_exports_demand(time())
+    ) / time_step()
 
 
 @component.add(
-    name="variation historic GFCF",
-    units="Mdollars/Year",
+    name="variation_historic_GFCF",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "historic_gfcf": 2},
+    depends_on={"time": 2, "time_step": 2, "historic_gfcf": 2},
 )
 def variation_historic_gfcf():
     """
     Historic variation of gross fixed capital formation (WIOD-35 sectors)
     """
-    return historic_gfcf(integer(time() + 1)) - historic_gfcf(integer(time()))
+    return (historic_gfcf(time() + time_step()) - historic_gfcf(time())) / time_step()

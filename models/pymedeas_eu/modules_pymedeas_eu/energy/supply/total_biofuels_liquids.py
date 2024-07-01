@@ -1,12 +1,11 @@
 """
-Module total_biofuels_liquids
-Translated using PySD version 3.2.0
+Module energy.supply.total_biofuels_liquids
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="Additional PE production of bioenergy for biofuels",
-    units="EJ/Year",
+    name="Additional_PE_production_of_bioenergy_for_biofuels",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -22,8 +21,8 @@ def additional_pe_production_of_bioenergy_for_biofuels():
 
 
 @component.add(
-    name="FES total biofuels production EJ",
-    units="EJ/Year",
+    name="FES_total_biofuels_production_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -44,21 +43,21 @@ def fes_total_biofuels_production_ej():
 
 
 @component.add(
-    name="FES total biofuels production EJ 2",
-    units="EJ/Year",
+    name="FES_total_biofuels_production_EJ_2",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_liquids_ej": 1, "potential_peavail_total_biofuels": 1},
+    depends_on={"ped_fs_liquids": 1, "potential_peavail_total_biofuels": 1},
 )
 def fes_total_biofuels_production_ej_2():
     """
     Final energy supply total biofuels liquids production. Equivalent to "FES total biofuels production EJ" but obtained aggregately to estimate the "share biofuels overcapacity".
     """
-    return np.minimum(ped_liquids_ej(), potential_peavail_total_biofuels())
+    return np.minimum(ped_fs_liquids(), potential_peavail_total_biofuels())
 
 
 @component.add(
-    name='"FES total biofuels production Mb/d"',
+    name='"FES_total_biofuels_production_Mb/d"',
     units="Mb/d",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -72,8 +71,8 @@ def fes_total_biofuels_production_mbd():
 
 
 @component.add(
-    name="Max PEavail biofuels potential",
-    units="EJ/Year",
+    name="Max_PEavail_biofuels_potential",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -94,8 +93,8 @@ def max_peavail_biofuels_potential():
 
 
 @component.add(
-    name="Oil liquids saved by biofuels EJ",
-    units="EJ/Year",
+    name="Oil_liquids_saved_by_biofuels_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"fes_total_biofuels_production_ej": 1},
@@ -108,13 +107,13 @@ def oil_liquids_saved_by_biofuels_ej():
 
 
 @component.add(
-    name="PE biomass for biofuels production EJ",
-    units="EJ/Year",
+    name="PE_biomass_for_biofuels_production_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pe_biofuels_land_marg_ej": 1,
-        "pe_cellulosic_biofuel_ej": 1,
+        "pe_cellulosic_biofuel": 1,
         "pe_biofuels_prod_2gen3gen_ej": 1,
     },
 )
@@ -124,14 +123,14 @@ def pe_biomass_for_biofuels_production_ej():
     """
     return (
         pe_biofuels_land_marg_ej()
-        + pe_cellulosic_biofuel_ej()
+        + pe_cellulosic_biofuel()
         + pe_biofuels_prod_2gen3gen_ej()
     )
 
 
 @component.add(
-    name="Potential PEavail total biofuels",
-    units="EJ",
+    name="Potential_PEavail_total_biofuels",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -151,7 +150,7 @@ def potential_peavail_total_biofuels():
 
 
 @component.add(
-    name="remaining potential biofuels",
+    name="remaining_potential_biofuels",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -173,7 +172,7 @@ def remaining_potential_biofuels():
 
 
 @component.add(
-    name="share biofuels overcapacity",
+    name="share_biofuels_overcapacity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",

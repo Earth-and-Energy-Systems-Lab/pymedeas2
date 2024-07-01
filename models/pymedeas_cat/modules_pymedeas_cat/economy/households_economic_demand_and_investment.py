@@ -1,11 +1,10 @@
 """
-Module households_economic_demand_and_investment
-Translated using PySD version 3.2.0
+Module economy.households_economic_demand_and_investment
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="beta 0 GFCF",
+    name="beta_0_GFCF",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -31,7 +30,7 @@ _ext_constant_beta_0_gfcf = ExtConstant(
 
 
 @component.add(
-    name="beta 0 HD",
+    name="beta_0_HD",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -57,7 +56,7 @@ _ext_constant_beta_0_hd = ExtConstant(
 
 
 @component.add(
-    name="beta 1 GFCF",
+    name="beta_1_GFCF",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -82,7 +81,7 @@ _ext_constant_beta_1_gfcf = ExtConstant(
 
 
 @component.add(
-    name="beta 1 HD",
+    name="beta_1_HD",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -107,8 +106,8 @@ _ext_constant_beta_1_hd = ExtConstant(
 
 
 @component.add(
-    name="GFCF not covered",
-    units="Mdollars/Year",
+    name="GFCF_not_covered",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -116,21 +115,27 @@ _ext_constant_beta_1_hd = ExtConstant(
         "time": 1,
         "gross_fixed_capital_formation": 1,
         "real_gfcf_by_sector": 1,
+        "nvs_1_year": 1,
     },
 )
 def gfcf_not_covered():
     """
     Gap between gross fixed capital formation required and real gross fixed capital formation (after energy-economy feedback)
     """
-    return if_then_else(
-        time() < 2009,
-        lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
-        lambda: gross_fixed_capital_formation() - real_gfcf_by_sector(),
+    return (
+        if_then_else(
+            time() < 2009,
+            lambda: xr.DataArray(
+                0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
+            ),
+            lambda: gross_fixed_capital_formation() - real_gfcf_by_sector(),
+        )
+        / nvs_1_year()
     )
 
 
 @component.add(
-    name="Gross fixed capital formation",
+    name="Gross_fixed_capital_formation",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -158,7 +163,7 @@ _integ_gross_fixed_capital_formation = Integ(
 
 
 @component.add(
-    name="historic GFCF",
+    name="historic_GFCF",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -188,7 +193,7 @@ _ext_lookup_historic_gfcf = ExtLookup(
 
 
 @component.add(
-    name="historic HD",
+    name="historic_HD",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -218,7 +223,7 @@ _ext_lookup_historic_hd = ExtLookup(
 
 
 @component.add(
-    name="Household demand",
+    name="Household_demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -249,26 +254,36 @@ _integ_household_demand = Integ(
 
 
 @component.add(
-    name="Household demand not covered",
-    units="Mdollars/Year",
+    name="Household_demand_not_covered",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "real_household_demand_by_sector": 1, "household_demand": 1},
+    depends_on={
+        "time": 1,
+        "real_household_demand_by_sector": 1,
+        "household_demand": 1,
+        "nvs_1_year": 1,
+    },
 )
 def household_demand_not_covered():
     """
     Gap between households consumption required and households real consumption (after energy-economy feedback)
     """
-    return if_then_else(
-        time() < 2009,
-        lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
-        lambda: household_demand() - real_household_demand_by_sector(),
+    return (
+        if_then_else(
+            time() < 2009,
+            lambda: xr.DataArray(
+                0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
+            ),
+            lambda: household_demand() - real_household_demand_by_sector(),
+        )
+        / nvs_1_year()
     )
 
 
 @component.add(
-    name="Household demand total",
+    name="Household_demand_total",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -282,7 +297,7 @@ def household_demand_total():
 
 
 @component.add(
-    name="initial GFCF",
+    name="initial_GFCF",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -297,7 +312,8 @@ def initial_gfcf():
 
 
 @component.add(
-    name="initial household demand",
+    name="initial_household_demand",
+    units="M$",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -311,7 +327,7 @@ def initial_household_demand():
 
 
 @component.add(
-    name="Total GFCF",
+    name="Total_GFCF",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -328,18 +344,30 @@ def total_gfcf():
 
 
 @component.add(
-    name="variation GFCF",
-    units="Mdollars/Year",
+    name="unit_correction_economic",
+    units="1/Mdollars",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def unit_correction_economic():
+    return 1
+
+
+@component.add(
+    name="variation_GFCF",
+    units="M$/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 1,
-        "beta_0_gfcf": 1,
         "cc_total": 2,
-        "variation_cc": 1,
+        "unit_correction_economic": 2,
         "variation_historic_gfcf": 1,
+        "nvs_1_year": 1,
         "beta_1_gfcf": 2,
+        "variation_cc": 1,
+        "beta_0_gfcf": 1,
         "time": 1,
     },
 )
@@ -355,56 +383,62 @@ def variation_gfcf():
             lambda: variation_historic_gfcf(),
             lambda: np.exp(beta_0_gfcf())
             * (
-                (cc_total() + variation_cc()) ** beta_1_gfcf()
-                - cc_total() ** beta_1_gfcf()
+                (
+                    (cc_total() + variation_cc() * nvs_1_year())
+                    * unit_correction_economic()
+                )
+                ** beta_1_gfcf()
+                - (cc_total() * unit_correction_economic()) ** beta_1_gfcf()
             ),
         ),
     )
 
 
 @component.add(
-    name="variation historic demand",
-    units="Mdollars/Year",
+    name="variation_historic_demand",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "historic_hd": 2},
+    depends_on={"time": 2, "time_step": 2, "historic_hd": 2},
 )
 def variation_historic_demand():
     """
     Variation of final demand by households
     """
-    return historic_hd(integer(time() + 1)) - historic_hd(integer(time()))
+    return (historic_hd(time() + time_step()) - historic_hd(time())) / time_step()
 
 
 @component.add(
-    name="variation historic GFCF",
-    units="Mdollars/Year",
+    name="variation_historic_GFCF",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "historic_gfcf": 2},
+    depends_on={"time": 2, "time_step": 2, "historic_gfcf": 2},
 )
 def variation_historic_gfcf():
     """
     Historic variation of gross fixed capital formation (WIOD-35 sectors)
     """
-    return historic_gfcf(integer(time() + 1)) - historic_gfcf(integer(time()))
+    return (historic_gfcf(time() + time_step()) - historic_gfcf(time())) / time_step()
 
 
 @component.add(
-    name="variation household demand",
-    units="Mdollars/Year",
+    name="variation_household_demand",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "beta_0_hd": 1,
         "lc": 2,
-        "variation_lc": 1,
+        "unit_correction_economic": 2,
         "beta_1_hd": 2,
+        "nvs_1_year": 1,
+        "variation_lc": 1,
+        "beta_0_hd": 1,
     },
 )
 def variation_household_demand():
@@ -415,5 +449,9 @@ def variation_household_demand():
         time() < 2009,
         lambda: variation_historic_demand(),
         lambda: np.exp(beta_0_hd())
-        * ((lc() + variation_lc()) ** beta_1_hd() - lc() ** beta_1_hd()),
+        * (
+            ((lc() + variation_lc() * nvs_1_year()) * unit_correction_economic())
+            ** beta_1_hd()
+            - (lc() * unit_correction_economic()) ** beta_1_hd()
+        ),
     )

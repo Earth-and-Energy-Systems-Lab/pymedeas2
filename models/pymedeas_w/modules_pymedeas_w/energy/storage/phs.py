@@ -1,72 +1,54 @@
 """
-Module phs
-Translated using PySD version 3.2.0
+Module energy.storage.phs
+Translated using PySD version 3.14.0
 """
 
+@component.add(
+    name="Cp_PHS",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_cp_phs"},
+)
+def cp_phs():
+    """
+    Capacity factor of pumped hydro storage (PHS).
+    """
+    return _ext_constant_cp_phs()
+
+
+_ext_constant_cp_phs = ExtConstant(
+    "../energy.xlsx", "World", "cp_phs", {}, _root, {}, "_ext_constant_cp_phs"
+)
+
 
 @component.add(
-    name="PHS capacity under construction",
+    name="initial_instal_cap_PHS",
     units="TW",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "phs_planned_capacity": 1,
-        "new_phs_installed": 1,
-        "time_construction_res_elec": 1,
-    },
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_instal_cap_phs"},
 )
-def phs_capacity_under_construction():
-    return (phs_planned_capacity() + new_phs_installed()) / float(
-        time_construction_res_elec().loc["hydro"]
-    )
+def initial_instal_cap_phs():
+    """
+    Installed capacity of PHS in the initial year 1995.
+    """
+    return _ext_constant_initial_instal_cap_phs()
 
 
-@component.add(
-    name="installed capacity PHS year delayed",
-    comp_type="Stateful",
-    comp_subtype="DelayFixed",
-    depends_on={"_delayfixed_installed_capacity_phs_year_delayed": 1},
-    other_deps={
-        "_delayfixed_installed_capacity_phs_year_delayed": {
-            "initial": {"time": 1},
-            "step": {"installed_capacity_phs": 1},
-        }
-    },
-)
-def installed_capacity_phs_year_delayed():
-    return _delayfixed_installed_capacity_phs_year_delayed()
-
-
-_delayfixed_installed_capacity_phs_year_delayed = DelayFixed(
-    lambda: installed_capacity_phs(),
-    lambda: time(),
-    lambda: 0,
-    time_step,
-    "_delayfixed_installed_capacity_phs_year_delayed",
+_ext_constant_initial_instal_cap_phs = ExtConstant(
+    "../energy.xlsx",
+    "World",
+    "initial_installed_capacity_phs",
+    {},
+    _root,
+    {},
+    "_ext_constant_initial_instal_cap_phs",
 )
 
 
 @component.add(
-    name="new PHS installed",
-    units="TW",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 1,
-        "installed_capacity_phs": 1,
-        "installed_capacity_phs_year_delayed": 1,
-    },
-)
-def new_phs_installed():
-    return if_then_else(
-        time() > 1995,
-        lambda: installed_capacity_phs() - installed_capacity_phs_year_delayed(),
-        lambda: 0.01,
-    )
-
-
-@component.add(
-    name="installed capacity PHS",
+    name="installed_capacity_PHS",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -81,7 +63,8 @@ def installed_capacity_phs():
 
 
 @component.add(
-    name="installed capacity PHS policies",
+    name="installed_capacity_PHS_policies",
+    units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -113,67 +96,7 @@ def installed_capacity_phs_policies():
 
 
 @component.add(
-    name="replacement capacity PHS",
-    units="TW",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"time": 1, "wear_phs": 1, "phs_overcapacity": 1},
-)
-def replacement_capacity_phs():
-    """
-    IF THEN ELSE(Time<2015,0,replacement rate PHS*wear PHS*(1-RES elec tot overcapacity))*remaining potential elec storage by RES techn2[RES elec]
-    """
-    return if_then_else(
-        time() < 2015, lambda: 0, lambda: wear_phs() * (1 - phs_overcapacity())
-    )
-
-
-@component.add(
-    name="Cp PHS",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_cp_phs"},
-)
-def cp_phs():
-    """
-    Capacity factor of pumped hydro storage (PHS).
-    """
-    return _ext_constant_cp_phs()
-
-
-_ext_constant_cp_phs = ExtConstant(
-    "../energy.xlsx", "World", "cp_phs", {}, _root, {}, "_ext_constant_cp_phs"
-)
-
-
-@component.add(
-    name="initial instal cap PHS",
-    units="TW",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_initial_instal_cap_phs"},
-)
-def initial_instal_cap_phs():
-    """
-    Installed capacity of PHS in the initial year 1995.
-    """
-    return _ext_constant_initial_instal_cap_phs()
-
-
-_ext_constant_initial_instal_cap_phs = ExtConstant(
-    "../energy.xlsx",
-    "World",
-    "initial_installed_capacity_phs",
-    {},
-    _root,
-    {},
-    "_ext_constant_initial_instal_cap_phs",
-)
-
-
-@component.add(
-    name="installed capacity PHS TW",
+    name="installed_capacity_PHS_TW",
     units="TW",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -197,7 +120,33 @@ _integ_installed_capacity_phs_tw = Integ(
 
 
 @component.add(
-    name="max capacity potential PHS",
+    name="installed_capacity_PHS_year_delayed",
+    units="TW",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_installed_capacity_phs_year_delayed": 1},
+    other_deps={
+        "_delayfixed_installed_capacity_phs_year_delayed": {
+            "initial": {"time": 1},
+            "step": {"installed_capacity_phs": 1},
+        }
+    },
+)
+def installed_capacity_phs_year_delayed():
+    return _delayfixed_installed_capacity_phs_year_delayed()
+
+
+_delayfixed_installed_capacity_phs_year_delayed = DelayFixed(
+    lambda: installed_capacity_phs(),
+    lambda: time(),
+    lambda: 0,
+    time_step,
+    "_delayfixed_installed_capacity_phs_year_delayed",
+)
+
+
+@component.add(
+    name="max_capacity_potential_PHS",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -211,7 +160,7 @@ def max_capacity_potential_phs():
 
 
 @component.add(
-    name="max potential PHS TWe",
+    name="max_potential_PHS_TWe",
     units="TWe",
     comp_type="Constant",
     comp_subtype="External",
@@ -236,8 +185,8 @@ _ext_constant_max_potential_phs_twe = ExtConstant(
 
 
 @component.add(
-    name="max potential PHS TWh",
-    units="TWh",
+    name="max_potential_PHS_TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"max_capacity_potential_phs": 1, "cp_phs": 1, "twe_per_twh": 1},
@@ -247,8 +196,27 @@ def max_potential_phs_twh():
 
 
 @component.add(
-    name="output PHS over lifetime",
-    units="EJ",
+    name="new_PHS_installed",
+    units="TW",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "installed_capacity_phs_year_delayed": 1,
+        "installed_capacity_phs": 1,
+    },
+)
+def new_phs_installed():
+    return if_then_else(
+        time() > 1995,
+        lambda: installed_capacity_phs() - installed_capacity_phs_year_delayed(),
+        lambda: 0.01,
+    )
+
+
+@component.add(
+    name="output_PHS_over_lifetime",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -273,7 +241,7 @@ def output_phs_over_lifetime():
 
 
 @component.add(
-    name="P PHS power",
+    name="P_PHS_power",
     units="TW",
     comp_type="Lookup",
     comp_subtype="External",
@@ -291,7 +259,7 @@ def p_phs_power(x, final_subs=None):
 
 _ext_lookup_p_phs_power = ExtLookup(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "year_RES_power",
     "p_PHS_power",
     {},
@@ -302,7 +270,24 @@ _ext_lookup_p_phs_power = ExtLookup(
 
 
 @component.add(
-    name="PHS overcapacity",
+    name="PHS_capacity_under_construction",
+    units="TW/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "phs_planned_capacity": 1,
+        "new_phs_installed": 1,
+        "time_construction_res_elec": 1,
+    },
+)
+def phs_capacity_under_construction():
+    return (phs_planned_capacity() + new_phs_installed()) / float(
+        time_construction_res_elec().loc["hydro"]
+    )
+
+
+@component.add(
+    name="PHS_overcapacity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -325,7 +310,7 @@ def phs_overcapacity():
 
 
 @component.add(
-    name="PHS planned capacity",
+    name="PHS_planned_capacity",
     units="TW",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -352,8 +337,8 @@ _integ_phs_planned_capacity = Integ(
 
 
 @component.add(
-    name="potential FE elec stored PHS TWh",
-    units="TWh",
+    name="potential_FE_elec_stored_PHS_TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"installed_capacity_phs_tw": 1, "cp_phs": 1, "twe_per_twh": 1},
@@ -366,8 +351,8 @@ def potential_fe_elec_stored_phs_twh():
 
 
 @component.add(
-    name="real FE elec stored PHS TWh",
-    units="TWh",
+    name="real_FE_elec_stored_PHS_TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"max_potential_phs_twh": 1, "potential_fe_elec_stored_phs_twh": 1},
@@ -380,8 +365,24 @@ def real_fe_elec_stored_phs_twh():
 
 
 @component.add(
-    name="table hist capacity PHS",
+    name="replacement_capacity_PHS",
     units="TW/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "wear_phs": 1, "phs_overcapacity": 1},
+)
+def replacement_capacity_phs():
+    """
+    IF THEN ELSE(Time<2015,0,replacement rate PHS*wear PHS*(1-RES elec tot overcapacity))*remaining potential elec storage by RES techn2[RES elec]
+    """
+    return if_then_else(
+        time() < 2015, lambda: 0, lambda: wear_phs() * (1 - phs_overcapacity())
+    )
+
+
+@component.add(
+    name="table_hist_capacity_PHS",
+    units="TW",
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -406,8 +407,8 @@ _ext_lookup_table_hist_capacity_phs = ExtLookup(
 
 
 @component.add(
-    name="wear PHS",
-    units="TW",
+    name="wear_PHS",
+    units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 1, "lifetime_res_elec": 1, "installed_capacity_phs_tw": 1},

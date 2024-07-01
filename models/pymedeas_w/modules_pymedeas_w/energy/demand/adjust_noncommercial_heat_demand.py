@@ -1,13 +1,12 @@
 """
-Module adjust_noncommercial_heat_demand
-Translated using PySD version 3.2.0
+Module energy.demand.adjust_noncommercial_heat_demand
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name='"FED by fuel for heat-nc"',
-    units="EJ",
-    subscripts=["final sources"],
+    name='"FED_by_fuel_for_heat-nc"',
+    units="EJ/year",
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -22,7 +21,7 @@ def fed_by_fuel_for_heatnc():
     Final energy demand (excluding distribution and generation losses) of non-commercial heat by final fuel.
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     value.loc[["electricity"]] = 0
     value.loc[["heat"]] = 0
@@ -33,14 +32,14 @@ def fed_by_fuel_for_heatnc():
 
 
 @component.add(
-    name='"FED coal for heat-nc"',
-    units="EJ",
+    name='"FED_coal_for_heat-nc"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_fuel_before_heat_correction": 1,
-        "share_feh_over_fed_by_final_fuel": 1,
         "share_feh_over_fed_solid_bioe": 1,
+        "share_feh_over_fed_by_final_fuel": 1,
         "efficiency_coal_for_heat_plants": 1,
         "share_heat_distribution_losses": 1,
     },
@@ -61,8 +60,8 @@ def fed_coal_for_heatnc():
 
 
 @component.add(
-    name='"FED nat. gas for heat-nc"',
-    units="EJ",
+    name='"FED_nat._gas_for_heat-nc"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -85,8 +84,8 @@ def fed_nat_gas_for_heatnc():
 
 
 @component.add(
-    name='"FED NRE for heat-nc"',
-    units="EJ",
+    name='"FED_NRE_for_heat-nc"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -100,8 +99,8 @@ def fed_nre_for_heatnc():
 
 
 @component.add(
-    name='"FED oil for heat-nc"',
-    units="EJ",
+    name='"FED_oil_for_heat-nc"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -124,8 +123,8 @@ def fed_oil_for_heatnc():
 
 
 @component.add(
-    name='"FED solid bioE for heat-nc"',
-    units="EJ",
+    name='"FED_solid_bioE_for_heat-nc"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -148,7 +147,7 @@ def fed_solid_bioe_for_heatnc():
 
 
 @component.add(
-    name='"ratio FED for heat-nc vs FED for heat-com"',
+    name='"ratio_FED_for_heat-nc_vs_FED_for_heat-com"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -162,13 +161,13 @@ def ratio_fed_for_heatnc_vs_fed_for_heatcom():
     Ratio FED for non-commercial heat vs FED for commercial heat (before climate change impacts).
     """
     return sum(
-        fed_by_fuel_for_heatnc().rename({"final sources": "final sources!"}),
-        dim=["final sources!"],
+        fed_by_fuel_for_heatnc().rename({"final_sources": "final_sources!"}),
+        dim=["final_sources!"],
     ) * zidz(1, float(required_fed_by_fuel_before_heat_correction().loc["heat"]))
 
 
 @component.add(
-    name='"share FED coal vs NRE heat-nc"',
+    name='"share_FED_coal_vs_NRE_heat-nc"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -182,7 +181,7 @@ def share_fed_coal_vs_nre_heatnc():
 
 
 @component.add(
-    name='"share FED gas vs NRE heat-nc"',
+    name='"share_FED_gas_vs_NRE_heat-nc"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -196,7 +195,7 @@ def share_fed_gas_vs_nre_heatnc():
 
 
 @component.add(
-    name='"share FED liquids vs NRE heat-nc"',
+    name='"share_FED_liquids_vs_NRE_heat-nc"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -210,16 +209,16 @@ def share_fed_liquids_vs_nre_heatnc():
 
 
 @component.add(
-    name="share FEH over FED by final fuel",
+    name="share_FEH_over_FED_by_final_fuel",
     units="Dmnl",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_feh_over_fed_oil": 1,
         "share_feh_over_fed_nat_gas": 1,
-        "share_feh_over_fed_coal": 1,
         "share_feh_over_fed_solid_bioe": 1,
+        "share_feh_over_fed_coal": 1,
     },
 )
 def share_feh_over_fed_by_final_fuel():
@@ -227,7 +226,7 @@ def share_feh_over_fed_by_final_fuel():
     Share FEH over FED by final fuel.
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     value.loc[["electricity"]] = 0
     value.loc[["heat"]] = 0
@@ -238,7 +237,7 @@ def share_feh_over_fed_by_final_fuel():
 
 
 @component.add(
-    name="share FEH over FED coal",
+    name="share_FEH_over_FED_coal",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -263,7 +262,7 @@ _ext_constant_share_feh_over_fed_coal = ExtConstant(
 
 
 @component.add(
-    name='"share FEH over FED nat. gas"',
+    name='"share_FEH_over_FED_nat._gas"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -288,7 +287,7 @@ _ext_constant_share_feh_over_fed_nat_gas = ExtConstant(
 
 
 @component.add(
-    name="share FEH over FED oil",
+    name="share_FEH_over_FED_oil",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -313,7 +312,7 @@ _ext_constant_share_feh_over_fed_oil = ExtConstant(
 
 
 @component.add(
-    name="share FEH over FED solid bioE",
+    name="share_FEH_over_FED_solid_bioE",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",

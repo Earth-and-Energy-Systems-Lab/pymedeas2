@@ -1,26 +1,16 @@
 """
-Module res_commercial_heat_capacities
-Translated using PySD version 3.2.0
+Module energy.supply.res_commercial_heat_capacities
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="threshold remaining potential new capacity",
-    comp_type="Constant",
-    comp_subtype="Normal",
-)
-def threshold_remaining_potential_new_capacity():
-    return 1
-
-
-@component.add(
-    name='"abundance RES heat-com"',
+    name='"abundance_RES_heat-com"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "fed_heatcom_after_priorities_ej": 3,
-        "fe_real_supply_res_for_heatcom_tot_ej": 1,
+        "fed_heatcom_after_priorities": 3,
+        "fe_real_supply_res_for_heatcom_tot": 1,
     },
 )
 def abundance_res_heatcom():
@@ -28,17 +18,17 @@ def abundance_res_heatcom():
     The parameter abundance varies between (1;0). The closest to 1 indicates that heat generation from RES is far to cover to whole heat demand, if "abundance RES heat"=0 it means that RES heat cover the whole heat demand. IF THEN ELSE(Total FED Heat EJ delayed 1yr=0,0, IF THEN ELSE(Total FED Heat EJ delayed 1yr > FE real supply RES for heat tot EJ, (Total FED Heat EJ delayed 1yr-FE real supply RES for heat tot EJ)/Total FED Heat EJ delayed 1yr, 0))
     """
     return if_then_else(
-        fed_heatcom_after_priorities_ej() == 0,
+        fed_heatcom_after_priorities() == 0,
         lambda: 0,
         lambda: zidz(
-            fed_heatcom_after_priorities_ej() - fe_real_supply_res_for_heatcom_tot_ej(),
-            fed_heatcom_after_priorities_ej(),
+            fed_heatcom_after_priorities() - fe_real_supply_res_for_heatcom_tot(),
+            fed_heatcom_after_priorities(),
         ),
     )
 
 
 @component.add(
-    name='"abundance RES heat-com2"',
+    name='"abundance_RES_heat-com2"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -52,9 +42,9 @@ def abundance_res_heatcom2():
 
 
 @component.add(
-    name='"adapt growth RES for heat-com"',
+    name='"adapt_growth_RES_for_heat-com"',
     units="1/year",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -83,7 +73,7 @@ def adapt_growth_res_for_heatcom():
 
 
 @component.add(
-    name="Efficiency conversion BioE plants to heat",
+    name="Efficiency_conversion_BioE_plants_to_heat",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -110,7 +100,7 @@ _ext_constant_efficiency_conversion_bioe_plants_to_heat = ExtConstant(
 
 
 @component.add(
-    name="Efficiency geothermal for heat",
+    name="Efficiency_geothermal_for_heat",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -132,9 +122,9 @@ _ext_constant_efficiency_geothermal_for_heat = ExtConstant(
 
 
 @component.add(
-    name="Efficiency RES heat",
+    name="Efficiency_RES_heat",
     units="Dmnl",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -146,18 +136,18 @@ _ext_constant_efficiency_geothermal_for_heat = ExtConstant(
 )
 def efficiency_res_heat():
     value = xr.DataArray(
-        np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
+        np.nan, {"RES_heat": _subscript_dict["RES_heat"]}, ["RES_heat"]
     )
-    value.loc[["solar heat"]] = (
+    value.loc[["solar_heat"]] = (
         efficiency_solar_panels_for_heat() * losses_solar_for_heat()
     )
-    value.loc[["geot heat"]] = efficiency_geothermal_for_heat()
-    value.loc[["solid bioE heat"]] = efficiency_conversion_bioe_plants_to_heat()
+    value.loc[["geot_heat"]] = efficiency_geothermal_for_heat()
+    value.loc[["solid_bioE_heat"]] = efficiency_conversion_bioe_plants_to_heat()
     return value
 
 
 @component.add(
-    name="Efficiency solar panels for heat",
+    name="Efficiency_solar_panels_for_heat",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -179,47 +169,44 @@ _ext_constant_efficiency_solar_panels_for_heat = ExtConstant(
 
 
 @component.add(
-    name='"FE real generation RES heat-com EJ"',
-    units="EJ",
-    subscripts=["RES heat"],
+    name='"FE_real_generation_RES_heat-com_EJ"',
+    units="EJ/year",
+    subscripts=["RES_heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "potential_fes_res_for_heatcom_ej": 1,
-        "res_heatcom_tot_overcapacity": 1,
-    },
+    depends_on={"potential_fes_res_for_heatcom": 1, "res_heatcom_tot_overcapacity": 1},
 )
 def fe_real_generation_res_heatcom_ej():
     """
     Commercial heat generation by RES technology.
     """
-    return potential_fes_res_for_heatcom_ej() * (1 - res_heatcom_tot_overcapacity())
+    return potential_fes_res_for_heatcom() * (1 - res_heatcom_tot_overcapacity())
 
 
 @component.add(
-    name='"FE real supply RES for heat-com tot EJ"',
-    units="EJ",
+    name='"FE_real_supply_RES_for_heat-com_tot"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "fed_heatcom_after_priorities_ej": 1,
-        "potential_fes_tot_res_for_heatcom_ej": 1,
+        "fed_heatcom_after_priorities": 1,
+        "potential_fes_tot_res_for_heatcom": 1,
     },
 )
-def fe_real_supply_res_for_heatcom_tot_ej():
+def fe_real_supply_res_for_heatcom_tot():
     """
     Total final energy supply delivered by RES for commercial heat.
     """
     return np.minimum(
-        np.maximum(fed_heatcom_after_priorities_ej(), 0),
-        potential_fes_tot_res_for_heatcom_ej(),
+        np.maximum(fed_heatcom_after_priorities(), 0),
+        potential_fes_tot_res_for_heatcom(),
     )
 
 
 @component.add(
-    name='"Historic RES capacity for heat-com"',
+    name='"Historic_RES_capacity_for_heat-com"',
     units="TW",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -239,17 +226,17 @@ _ext_lookup_historic_res_capacity_for_heatcom = ExtLookup(
     "World",
     "time_historic_data",
     "historic_res_capacity_for_heat_commercial",
-    {"RES heat": _subscript_dict["RES heat"]},
+    {"RES_heat": _subscript_dict["RES_heat"]},
     _root,
-    {"RES heat": _subscript_dict["RES heat"]},
+    {"RES_heat": _subscript_dict["RES_heat"]},
     "_ext_lookup_historic_res_capacity_for_heatcom",
 )
 
 
 @component.add(
-    name='"initial value RES for heat-com"',
+    name='"initial_value_RES_for_heat-com"',
     units="TW",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_initial_value_res_for_heatcom"},
@@ -265,17 +252,17 @@ _ext_constant_initial_value_res_for_heatcom = ExtConstant(
     "../energy.xlsx",
     "World",
     "initial_res_capacity_for_heat_commercial*",
-    {"RES heat": _subscript_dict["RES heat"]},
+    {"RES_heat": _subscript_dict["RES_heat"]},
     _root,
-    {"RES heat": _subscript_dict["RES heat"]},
+    {"RES_heat": _subscript_dict["RES_heat"]},
     "_ext_constant_initial_value_res_for_heatcom",
 )
 
 
 @component.add(
-    name='"installed capacity RES heat-com TW"',
+    name='"installed_capacity_RES_heat-com_TW"',
     units="TW",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_installed_capacity_res_heatcom_tw": 1},
@@ -307,9 +294,9 @@ _integ_installed_capacity_res_heatcom_tw = Integ(
 
 
 @component.add(
-    name="life time RES for heat",
+    name="life_time_RES_for_heat",
     units="year",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_life_time_res_for_heat"},
@@ -325,15 +312,15 @@ _ext_constant_life_time_res_for_heat = ExtConstant(
     "../energy.xlsx",
     "Global",
     "lifetime_res_for_heat*",
-    {"RES heat": _subscript_dict["RES heat"]},
+    {"RES_heat": _subscript_dict["RES_heat"]},
     _root,
-    {"RES heat": _subscript_dict["RES heat"]},
+    {"RES_heat": _subscript_dict["RES_heat"]},
     "_ext_constant_life_time_res_for_heat",
 )
 
 
 @component.add(
-    name="Losses solar for heat",
+    name="Losses_solar_for_heat",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -355,17 +342,18 @@ _ext_constant_losses_solar_for_heat = ExtConstant(
 
 
 @component.add(
-    name='"new RES capacity for heat-com TW"',
+    name='"new_RES_capacity_for_heat-com_TW"',
     units="TW/year",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
+        "nvs_1_year": 1,
         "historic_res_capacity_for_heatcom": 2,
-        "adapt_growth_res_for_heatcom": 1,
         "installed_capacity_res_heatcom_tw": 1,
         "remaining_potential_constraint_on_new_res_heat_capacity": 1,
+        "adapt_growth_res_for_heatcom": 1,
         "abundance_res_heatcom2": 1,
     },
 )
@@ -376,8 +364,11 @@ def new_res_capacity_for_heatcom_tw():
     return (
         if_then_else(
             time() < 2013,
-            lambda: historic_res_capacity_for_heatcom(time() + 1)
-            - historic_res_capacity_for_heatcom(time()),
+            lambda: (
+                historic_res_capacity_for_heatcom(time() + 1)
+                - historic_res_capacity_for_heatcom(time())
+            )
+            / nvs_1_year(),
             lambda: adapt_growth_res_for_heatcom()
             * installed_capacity_res_heatcom_tw()
             * remaining_potential_constraint_on_new_res_heat_capacity(),
@@ -387,7 +378,7 @@ def new_res_capacity_for_heatcom_tw():
 
 
 @component.add(
-    name="P geothermal for heat",
+    name="P_geothermal_for_heat",
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -402,7 +393,7 @@ def p_geothermal_for_heat():
 
 _ext_constant_p_geothermal_for_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "p_geothermal_heat_growth",
     {},
     _root,
@@ -412,9 +403,9 @@ _ext_constant_p_geothermal_for_heat = ExtConstant(
 
 
 @component.add(
-    name="P RES for heat",
+    name="P_RES_for_heat",
     units="1/year",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -428,16 +419,16 @@ def p_res_for_heat():
     Annual growth in RES supply for heat depending on the policy of the scenario.
     """
     value = xr.DataArray(
-        np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
+        np.nan, {"RES_heat": _subscript_dict["RES_heat"]}, ["RES_heat"]
     )
-    value.loc[["solar heat"]] = p_solar_for_heat()
-    value.loc[["geot heat"]] = p_geothermal_for_heat()
-    value.loc[["solid bioE heat"]] = p_solid_bioe_for_heat()
+    value.loc[["solar_heat"]] = p_solar_for_heat()
+    value.loc[["geot_heat"]] = p_geothermal_for_heat()
+    value.loc[["solid_bioE_heat"]] = p_solid_bioe_for_heat()
     return value
 
 
 @component.add(
-    name="P solar for heat",
+    name="P_solar_for_heat",
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -452,7 +443,7 @@ def p_solar_for_heat():
 
 _ext_constant_p_solar_for_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "p_solar_heat_growth",
     {},
     _root,
@@ -462,7 +453,7 @@ _ext_constant_p_solar_for_heat = ExtConstant(
 
 
 @component.add(
-    name="P solid bioE for heat",
+    name="P_solid_bioE_for_heat",
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -477,7 +468,7 @@ def p_solid_bioe_for_heat():
 
 _ext_constant_p_solid_bioe_for_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "p_solid_bioe_heat_growth",
     {},
     _root,
@@ -487,9 +478,9 @@ _ext_constant_p_solid_bioe_for_heat = ExtConstant(
 
 
 @component.add(
-    name='"past RES growth for heat-com"',
+    name='"past_RES_growth_for_heat-com"',
     units="1/year",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_past_res_growth_for_heatcom"},
@@ -505,17 +496,17 @@ _ext_constant_past_res_growth_for_heatcom = ExtConstant(
     "../energy.xlsx",
     "World",
     "historic_growth_res_for_heat_com*",
-    {"RES heat": _subscript_dict["RES heat"]},
+    {"RES_heat": _subscript_dict["RES_heat"]},
     _root,
-    {"RES heat": _subscript_dict["RES heat"]},
+    {"RES_heat": _subscript_dict["RES_heat"]},
     "_ext_constant_past_res_growth_for_heatcom",
 )
 
 
 @component.add(
-    name='"PES RES for heat-com by techn"',
-    units="EJ",
-    subscripts=["RES heat"],
+    name='"PES_RES_for_heat-com_by_techn"',
+    units="EJ/year",
+    subscripts=["RES_heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -529,31 +520,31 @@ def pes_res_for_heatcom_by_techn():
     Primary energy supply of RES technologies for commercial heat.
     """
     value = xr.DataArray(
-        np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
+        np.nan, {"RES_heat": _subscript_dict["RES_heat"]}, ["RES_heat"]
     )
-    value.loc[["geot heat"]] = float(
-        fe_real_generation_res_heatcom_ej().loc["geot heat"]
-    ) / float(efficiency_res_heat().loc["geot heat"])
-    value.loc[["solar heat"]] = (
-        float(fe_real_generation_res_heatcom_ej().loc["solar heat"])
+    value.loc[["geot_heat"]] = float(
+        fe_real_generation_res_heatcom_ej().loc["geot_heat"]
+    ) / float(efficiency_res_heat().loc["geot_heat"])
+    value.loc[["solar_heat"]] = (
+        float(fe_real_generation_res_heatcom_ej().loc["solar_heat"])
         * efficiency_solar_panels_for_heat()
-        / float(efficiency_res_heat().loc["solar heat"])
+        / float(efficiency_res_heat().loc["solar_heat"])
     )
-    value.loc[["solid bioE heat"]] = float(
-        fe_real_generation_res_heatcom_ej().loc["solid bioE heat"]
-    ) / float(efficiency_res_heat().loc["solid bioE heat"])
+    value.loc[["solid_bioE_heat"]] = float(
+        fe_real_generation_res_heatcom_ej().loc["solid_bioE_heat"]
+    ) / float(efficiency_res_heat().loc["solid_bioE_heat"])
     return value
 
 
 @component.add(
-    name='"potential FES RES for heat-com EJ"',
-    units="EJ",
-    subscripts=["RES heat"],
+    name='"potential_FES_RES_for_heat-com"',
+    units="EJ/year",
+    subscripts=["RES_heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"potential_fes_res_for_heatcom_twh": 1, "ej_per_twh": 1},
 )
-def potential_fes_res_for_heatcom_ej():
+def potential_fes_res_for_heatcom():
     """
     Potential final energy supply renewables for commercial heat given the installed capacity.
     """
@@ -561,9 +552,9 @@ def potential_fes_res_for_heatcom_ej():
 
 
 @component.add(
-    name='"potential FES RES for heat-com TWh"',
-    units="TWh",
-    subscripts=["RES heat"],
+    name='"potential_FES_RES_for_heat-com_TWh"',
+    units="TWh/year",
+    subscripts=["RES_heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -586,26 +577,26 @@ def potential_fes_res_for_heatcom_twh():
 
 
 @component.add(
-    name='"potential FES tot RES for heat-com EJ"',
-    units="EJ",
+    name='"potential_FES_tot_RES_for_heat-com"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"potential_fes_res_for_heatcom_ej": 1},
+    depends_on={"potential_fes_res_for_heatcom": 1},
 )
-def potential_fes_tot_res_for_heatcom_ej():
+def potential_fes_tot_res_for_heatcom():
     """
     Potential total final energy supply renewables for commercial heat given the installed capacity.
     """
     return sum(
-        potential_fes_res_for_heatcom_ej().rename({"RES heat": "RES heat!"}),
-        dim=["RES heat!"],
+        potential_fes_res_for_heatcom().rename({"RES_heat": "RES_heat!"}),
+        dim=["RES_heat!"],
     )
 
 
 @component.add(
-    name="remaining potential constraint on new RES heat capacity",
+    name="remaining_potential_constraint_on_new_RES_heat_capacity",
     units="Dmnl",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -621,7 +612,7 @@ def remaining_potential_constraint_on_new_res_heat_capacity():
         remaining_potential_res_for_heat()
         > threshold_remaining_potential_new_capacity(),
         lambda: xr.DataArray(
-            1, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
+            1, {"RES_heat": _subscript_dict["RES_heat"]}, ["RES_heat"]
         ),
         lambda: remaining_potential_res_for_heat()
         * (1 / threshold_remaining_potential_new_capacity()),
@@ -629,14 +620,14 @@ def remaining_potential_constraint_on_new_res_heat_capacity():
 
 
 @component.add(
-    name="remaining potential RES for heat",
+    name="remaining_potential_RES_for_heat",
     units="Dmnl",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "max_fe_potential_res_for_heat": 2,
-        "potential_fes_res_for_heatcom_ej": 1,
+        "potential_fes_res_for_heatcom": 1,
         "potential_fes_res_for_heatnc_ej": 1,
     },
 )
@@ -648,7 +639,7 @@ def remaining_potential_res_for_heat():
         np.maximum(
             0,
             max_fe_potential_res_for_heat()
-            - potential_fes_res_for_heatcom_ej()
+            - potential_fes_res_for_heatcom()
             - potential_fes_res_for_heatnc_ej(),
         ),
         max_fe_potential_res_for_heat(),
@@ -656,9 +647,35 @@ def remaining_potential_res_for_heat():
 
 
 @component.add(
-    name='"replacement RES for heat-com TW"',
+    name='"replacement_RES_for_heat-com"',
+    units="Dmnl",
+    subscripts=["RES_heat"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_replacement_res_for_heatcom"},
+)
+def replacement_res_for_heatcom():
+    """
+    If =1, we asume that all the power that reaches the end of its lifetime is replaced.
+    """
+    return _ext_constant_replacement_res_for_heatcom()
+
+
+_ext_constant_replacement_res_for_heatcom = ExtConstant(
+    "../energy.xlsx",
+    "Global",
+    "replacement_rate_res_for_heat*",
+    {"RES_heat": _subscript_dict["RES_heat"]},
+    _root,
+    {"RES_heat": _subscript_dict["RES_heat"]},
+    "_ext_constant_replacement_res_for_heatcom",
+)
+
+
+@component.add(
+    name='"replacement_RES_for_heat-com_TW"',
     units="TW/year",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -679,39 +696,13 @@ def replacement_res_for_heatcom_tw():
 
 
 @component.add(
-    name='"replacement RES for heat-com"',
-    units="Dmnl",
-    subscripts=["RES heat"],
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_replacement_res_for_heatcom"},
-)
-def replacement_res_for_heatcom():
-    """
-    If =1, we asume that all the power that reaches the end of its lifetime is replaced.
-    """
-    return _ext_constant_replacement_res_for_heatcom()
-
-
-_ext_constant_replacement_res_for_heatcom = ExtConstant(
-    "../energy.xlsx",
-    "Global",
-    "replacement_rate_res_for_heat*",
-    {"RES heat": _subscript_dict["RES heat"]},
-    _root,
-    {"RES heat": _subscript_dict["RES heat"]},
-    "_ext_constant_replacement_res_for_heatcom",
-)
-
-
-@component.add(
-    name='"RES heat-com tot overcapacity"',
+    name='"RES_heat-com_tot_overcapacity"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "potential_fes_tot_res_for_heatcom_ej": 3,
-        "fe_real_supply_res_for_heatcom_tot_ej": 1,
+        "potential_fes_tot_res_for_heatcom": 3,
+        "fe_real_supply_res_for_heatcom_tot": 1,
     },
 )
 def res_heatcom_tot_overcapacity():
@@ -719,18 +710,17 @@ def res_heatcom_tot_overcapacity():
     Overcapacity for each technology RES for heat-com taking into account the installed capacity and the real generation.
     """
     return if_then_else(
-        potential_fes_tot_res_for_heatcom_ej() == 0,
+        potential_fes_tot_res_for_heatcom() == 0,
         lambda: 0,
         lambda: (
-            potential_fes_tot_res_for_heatcom_ej()
-            - fe_real_supply_res_for_heatcom_tot_ej()
+            potential_fes_tot_res_for_heatcom() - fe_real_supply_res_for_heatcom_tot()
         )
-        / potential_fes_tot_res_for_heatcom_ej(),
+        / potential_fes_tot_res_for_heatcom(),
     )
 
 
 @component.add(
-    name="Start year P growth RES heat",
+    name="Start_year_P_growth_RES_heat",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -745,7 +735,7 @@ def start_year_p_growth_res_heat():
 
 _ext_constant_start_year_p_growth_res_heat = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "start_year_P_growth_RES_heat",
     {},
     _root,
@@ -755,9 +745,19 @@ _ext_constant_start_year_p_growth_res_heat = ExtConstant(
 
 
 @component.add(
-    name='"wear RES capacity for heat-com TW"',
+    name="threshold_remaining_potential_new_capacity",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def threshold_remaining_potential_new_capacity():
+    return 1
+
+
+@component.add(
+    name='"wear_RES_capacity_for_heat-com_TW"',
     units="TW/year",
-    subscripts=["RES heat"],
+    subscripts=["RES_heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"installed_capacity_res_heatcom_tw": 1, "life_time_res_for_heat": 1},

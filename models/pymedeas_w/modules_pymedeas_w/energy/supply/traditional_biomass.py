@@ -1,12 +1,11 @@
 """
-Module traditional_biomass
-Translated using PySD version 3.2.0
+Module energy.supply.traditional_biomass
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="modern BioE in households",
-    units="EJ",
+    name="modern_BioE_in_households",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -22,7 +21,7 @@ def modern_bioe_in_households():
 
 
 @component.add(
-    name="PE consumption trad biomass ref",
+    name="PE_consumption_trad_biomass_ref",
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -47,8 +46,8 @@ _ext_constant_pe_consumption_trad_biomass_ref = ExtConstant(
 
 
 @component.add(
-    name="PE traditional biomass consum EJ",
-    units="EJ",
+    name="PE_traditional_biomass_consum_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pe_traditional_biomass_demand_ej": 1},
@@ -61,8 +60,8 @@ def pe_traditional_biomass_consum_ej():
 
 
 @component.add(
-    name="PE traditional biomass demand EJ",
-    units="EJ",
+    name="PE_traditional_biomass_demand_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -81,36 +80,36 @@ def pe_traditional_biomass_demand_ej():
 
 
 @component.add(
-    name="PE traditional biomass EJ delayed 1yr",
+    name="PE_traditional_biomass_EJ_delayed",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
-    depends_on={"_delayfixed_pe_traditional_biomass_ej_delayed_1yr": 1},
+    depends_on={"_delayfixed_pe_traditional_biomass_ej_delayed": 1},
     other_deps={
-        "_delayfixed_pe_traditional_biomass_ej_delayed_1yr": {
-            "initial": {},
+        "_delayfixed_pe_traditional_biomass_ej_delayed": {
+            "initial": {"time_step": 1},
             "step": {"pe_traditional_biomass_consum_ej": 1},
         }
     },
 )
-def pe_traditional_biomass_ej_delayed_1yr():
+def pe_traditional_biomass_ej_delayed():
     """
-    Annual primary energy consumption of traditional biomass. It also includes charcoal and biosolids for solids.
+    *Annual primary energy consumption of traditional biomass. It also includes charcoal and biosolids for solids. *Original name: PE traditional biomass EJ delayed 1yr *PE traditional biomass consum EJ, 1, 30
     """
-    return _delayfixed_pe_traditional_biomass_ej_delayed_1yr()
+    return _delayfixed_pe_traditional_biomass_ej_delayed()
 
 
-_delayfixed_pe_traditional_biomass_ej_delayed_1yr = DelayFixed(
+_delayfixed_pe_traditional_biomass_ej_delayed = DelayFixed(
     lambda: pe_traditional_biomass_consum_ej(),
-    lambda: 1,
+    lambda: time_step(),
     lambda: 30,
     time_step,
-    "_delayfixed_pe_traditional_biomass_ej_delayed_1yr",
+    "_delayfixed_pe_traditional_biomass_ej_delayed",
 )
 
 
 @component.add(
-    name="People relying trad biomass ref",
+    name="People_relying_trad_biomass_ref",
     units="people",
     comp_type="Constant",
     comp_subtype="External",
@@ -135,8 +134,8 @@ _ext_constant_people_relying_trad_biomass_ref = ExtConstant(
 
 
 @component.add(
-    name="PEpc consumption people depending on trad biomass",
-    units="MToe/people",
+    name="PEpc_consumption_people_depending_on_trad_biomass",
+    units="EJ/(year*people)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -152,7 +151,7 @@ def pepc_consumption_people_depending_on_trad_biomass():
 
 
 @component.add(
-    name="Population dependent on trad biomass",
+    name="Population_dependent_on_trad_biomass",
     units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -172,7 +171,7 @@ def population_dependent_on_trad_biomass():
 
 
 @component.add(
-    name="share global pop dependent on trad biomass",
+    name="share_global_pop_dependent_on_trad_biomass",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -183,7 +182,7 @@ def share_global_pop_dependent_on_trad_biomass():
 
 
 @component.add(
-    name="share trad biomass vs solids in households",
+    name="share_trad_biomass_vs_solids_in_households",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",

@@ -1,11 +1,10 @@
 """
-Module res_elec_overcap_due_to_res_variabi
-Translated using PySD version 3.2.0
+Module energy.supply.res_elec_overcap_due_to_res_variabi
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="Cp exogenous RES elec dispatch reduction",
+    name="Cp_exogenous_RES_elec_dispatch_reduction",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -24,9 +23,9 @@ def cp_exogenous_res_elec_dispatch_reduction():
 
 
 @component.add(
-    name="Cp exogenous RES elec reduction",
+    name="Cp_exogenous_RES_elec_reduction",
     units="Dmnl",
-    subscripts=["RES elec"],
+    subscripts=["RES_elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -39,21 +38,21 @@ def cp_exogenous_res_elec_reduction():
     Reduction of Cp of RES elec due to the penetration of RES elec variables (modelling of overcapacities due to the intermittence of RES elec variables).
     """
     value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        np.nan, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
     )
     value.loc[["hydro"]] = cp_exogenous_res_elec_dispatch_reduction()
-    value.loc[["geot elec"]] = cp_exogenous_res_elec_dispatch_reduction()
-    value.loc[["solid bioE elec"]] = cp_exogenous_res_elec_dispatch_reduction()
+    value.loc[["geot_elec"]] = cp_exogenous_res_elec_dispatch_reduction()
+    value.loc[["solid_bioE_elec"]] = cp_exogenous_res_elec_dispatch_reduction()
     value.loc[["oceanic"]] = cp_exogenous_res_elec_dispatch_reduction()
-    value.loc[["wind onshore"]] = cp_exogenous_res_elec_var_reduction()
-    value.loc[["wind offshore"]] = cp_exogenous_res_elec_var_reduction()
-    value.loc[["solar PV"]] = cp_exogenous_res_elec_var_reduction()
+    value.loc[["wind_onshore"]] = cp_exogenous_res_elec_var_reduction()
+    value.loc[["wind_offshore"]] = cp_exogenous_res_elec_var_reduction()
+    value.loc[["solar_PV"]] = cp_exogenous_res_elec_var_reduction()
     value.loc[["CSP"]] = cp_exogenous_res_elec_var_reduction()
     return value
 
 
 @component.add(
-    name="Cp exogenous RES elec var reduction",
+    name="Cp_exogenous_RES_elec_var_reduction",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -69,8 +68,8 @@ def cp_exogenous_res_elec_var_reduction():
 
 
 @component.add(
-    name="Elec generation dispatch from RES TWh",
-    units="TWh",
+    name="Elec_generation_dispatch_from_RES_TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_generation_res_elec_twh": 1, "fes_elec_from_biogas_twh": 1},
@@ -82,16 +81,16 @@ def elec_generation_dispatch_from_res_twh():
     return (
         sum(
             real_generation_res_elec_twh()
-            .loc[_subscript_dict["RES ELEC DISPATCHABLE"]]
-            .rename({"RES elec": "RES ELEC DISPATCHABLE!"}),
-            dim=["RES ELEC DISPATCHABLE!"],
+            .loc[_subscript_dict["RES_ELEC_DISPATCHABLE"]]
+            .rename({"RES_elec": "RES_ELEC_DISPATCHABLE!"}),
+            dim=["RES_ELEC_DISPATCHABLE!"],
         )
         + fes_elec_from_biogas_twh()
     )
 
 
 @component.add(
-    name="Elec generation variable from RES TWh",
+    name="Elec_generation_variable_from_RES_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -103,31 +102,32 @@ def elec_generation_variable_from_res_twh():
     """
     return sum(
         real_generation_res_elec_twh()
-        .loc[_subscript_dict["RES ELEC VARIABLE"]]
-        .rename({"RES elec": "RES ELEC VARIABLE!"}),
-        dim=["RES ELEC VARIABLE!"],
+        .loc[_subscript_dict["RES_ELEC_VARIABLE"]]
+        .rename({"RES_elec": "RES_ELEC_VARIABLE!"}),
+        dim=["RES_ELEC_VARIABLE!"],
     )
 
 
 @component.add(
-    name="increase variable RES share elec vs total generation",
-    units="Dmnl",
+    name="increase_variable_RES_share_elec_vs_total_generation",
+    units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_variable_res_elec_generation_vs_total": 1,
         "share_variable_res_elec_vs_total_generation_delayed_1yr": 1,
+        "nvs_1_year": 1,
     },
 )
 def increase_variable_res_share_elec_vs_total_generation():
     return (
         share_variable_res_elec_generation_vs_total()
         - share_variable_res_elec_vs_total_generation_delayed_1yr()
-    )
+    ) / nvs_1_year()
 
 
 @component.add(
-    name="initial share variable RES elec gen vs total",
+    name="initial_share_variable_RES_elec_gen_vs_total",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -140,7 +140,7 @@ def initial_share_variable_res_elec_gen_vs_total():
 
 
 @component.add(
-    name="Share variable RES elec generation vs total",
+    name="Share_variable_RES_elec_generation_vs_total",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -170,7 +170,7 @@ def share_variable_res_elec_generation_vs_total():
 
 
 @component.add(
-    name="Share variable RES elec generation vs total gen",
+    name="Share_variable_RES_elec_generation_vs_total_gen",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -197,7 +197,7 @@ _integ_share_variable_res_elec_generation_vs_total_gen = Integ(
 
 
 @component.add(
-    name="Share variable RES elec vs total generation delayed 1yr",
+    name="Share_variable_RES_elec_vs_total_generation_delayed_1yr",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",

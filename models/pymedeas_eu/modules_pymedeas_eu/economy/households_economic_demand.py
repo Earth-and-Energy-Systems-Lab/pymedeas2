@@ -1,11 +1,10 @@
 """
-Module households_economic_demand
-Translated using PySD version 3.2.0
+Module economy.households_economic_demand
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="beta 0 HD",
+    name="beta_0_HD",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -31,7 +30,7 @@ _ext_constant_beta_0_hd = ExtConstant(
 
 
 @component.add(
-    name="beta 1 HD",
+    name="beta_1_HD",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -50,7 +49,7 @@ _ext_constant_beta_1_hd = ExtConstant(
 
 
 @component.add(
-    name="historic HD",
+    name="historic_HD",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -80,7 +79,7 @@ _ext_lookup_historic_hd = ExtLookup(
 
 
 @component.add(
-    name="Household demand",
+    name="Household_demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -111,26 +110,36 @@ _integ_household_demand = Integ(
 
 
 @component.add(
-    name="Household demand not covered",
-    units="Mdollars/Year",
+    name="Household_demand_not_covered",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "real_household_demand_by_sector": 1, "household_demand": 1},
+    depends_on={
+        "time": 1,
+        "real_household_demand_by_sector": 1,
+        "household_demand": 1,
+        "nvs_1_year": 1,
+    },
 )
 def household_demand_not_covered():
     """
     Gap between households consumption required and households real consumption (after energy-economy feedback)
     """
-    return if_then_else(
-        time() < 2009,
-        lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
-        lambda: household_demand() - real_household_demand_by_sector(),
+    return (
+        if_then_else(
+            time() < 2009,
+            lambda: xr.DataArray(
+                0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
+            ),
+            lambda: household_demand() - real_household_demand_by_sector(),
+        )
+        / nvs_1_year()
     )
 
 
 @component.add(
-    name="Household demand total",
+    name="Household_demand_total",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -144,7 +153,8 @@ def household_demand_total():
 
 
 @component.add(
-    name="initial household demand",
+    name="initial_household_demand",
+    units="M$",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -158,33 +168,45 @@ def initial_household_demand():
 
 
 @component.add(
-    name="variation historic demand",
-    units="Mdollars/Year",
+    name="unit_correction_economic",
+    units="1/Mdollars",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def unit_correction_economic():
+    return 1
+
+
+@component.add(
+    name="variation_historic_demand",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "historic_hd": 2},
+    depends_on={"time": 2, "time_step": 2, "historic_hd": 2},
 )
 def variation_historic_demand():
     """
     Variation of final demand by households
     """
-    return historic_hd(integer(time() + 1)) - historic_hd(integer(time()))
+    return (historic_hd(time() + time_step()) - historic_hd(time())) / time_step()
 
 
 @component.add(
-    name="variation household demand",
-    units="Mdollars/Year",
+    name="variation_household_demand",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "variation_lc": 1,
         "lc": 2,
-        "beta_0_hd": 1,
+        "unit_correction_economic": 2,
         "beta_1_hd": 2,
+        "nvs_1_year": 1,
+        "variation_lc": 1,
+        "beta_0_hd": 1,
     },
 )
 def variation_household_demand():
@@ -195,5 +217,9 @@ def variation_household_demand():
         time() < 2009,
         lambda: variation_historic_demand(),
         lambda: np.exp(beta_0_hd())
-        * ((lc() + variation_lc()) ** beta_1_hd() - lc() ** beta_1_hd()),
+        * (
+            ((lc() + variation_lc() * nvs_1_year()) * unit_correction_economic())
+            ** beta_1_hd()
+            - (lc() * unit_correction_economic()) ** beta_1_hd()
+        ),
     )

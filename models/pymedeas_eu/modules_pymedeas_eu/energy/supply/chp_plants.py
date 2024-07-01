@@ -1,11 +1,10 @@
 """
-Module chp_plants
-Translated using PySD version 3.2.0
+Module energy.supply.chp_plants
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="efficiency Elec coal CHP plants",
+    name="efficiency_Elec_coal_CHP_plants",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -36,7 +35,7 @@ _ext_data_efficiency_elec_coal_chp_plants = ExtData(
 
 
 @component.add(
-    name="efficiency Elec gas CHP plants",
+    name="efficiency_Elec_gas_CHP_plants",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -67,7 +66,7 @@ _ext_data_efficiency_elec_gas_chp_plants = ExtData(
 
 
 @component.add(
-    name="efficiency Elec oil CHP plants",
+    name="efficiency_Elec_oil_CHP_plants",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -98,7 +97,7 @@ _ext_data_efficiency_elec_oil_chp_plants = ExtData(
 
 
 @component.add(
-    name="efficiency Heat coal CHP plants",
+    name="efficiency_Heat_coal_CHP_plants",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -129,7 +128,7 @@ _ext_data_efficiency_heat_coal_chp_plants = ExtData(
 
 
 @component.add(
-    name="efficiency Heat gas CHP plants",
+    name="efficiency_Heat_gas_CHP_plants",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -160,7 +159,7 @@ _ext_data_efficiency_heat_gas_chp_plants = ExtData(
 
 
 @component.add(
-    name="efficiency Heat oil CHP plants",
+    name="efficiency_Heat_oil_CHP_plants",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -191,8 +190,8 @@ _ext_data_efficiency_heat_oil_chp_plants = ExtData(
 
 
 @component.add(
-    name="FED heat coal CHP plants EJ",
-    units="EJ",
+    name="FED_heat_coal_CHP_plants_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"fed_heat_fossil_fuels_chp_plants_ej": 1, "share_chp_plants_coal": 1},
@@ -205,13 +204,13 @@ def fed_heat_coal_chp_plants_ej():
 
 
 @component.add(
-    name="FED heat fossil fuels CHP plants EJ",
-    units="EJ",
+    name="FED_heat_fossil_fuels_CHP_plants_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "fed_heatcom_by_nre_chp_plants_ej": 1,
-        "fes_heatcom_nuclear_chp_plants_ej": 1,
+        "fes_heatcom_nuclear_chp_plants": 1,
     },
 )
 def fed_heat_fossil_fuels_chp_plants_ej():
@@ -219,13 +218,13 @@ def fed_heat_fossil_fuels_chp_plants_ej():
     Final energy demand of fossil fuels in CHP plants.
     """
     return np.maximum(
-        fed_heatcom_by_nre_chp_plants_ej() - fes_heatcom_nuclear_chp_plants_ej(), 0
+        fed_heatcom_by_nre_chp_plants_ej() - fes_heatcom_nuclear_chp_plants(), 0
     )
 
 
 @component.add(
-    name="FED heat gas CHP plants EJ",
-    units="EJ",
+    name="FED_heat_gas_CHP_plants_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -241,8 +240,8 @@ def fed_heat_gas_chp_plants_ej():
 
 
 @component.add(
-    name="FED heat liquids CHP plants EJ",
-    units="EJ",
+    name="FED_heat_liquids_CHP_plants_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"fed_heat_fossil_fuels_chp_plants_ej": 1, "share_chp_plants_oil": 1},
@@ -255,13 +254,13 @@ def fed_heat_liquids_chp_plants_ej():
 
 
 @component.add(
-    name='"FED heat-com by NRE CHP plants EJ"',
-    units="EJ",
+    name='"FED_heat-com_by_NRE_CHP_plants_EJ"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation": 1,
-        "fed_heatcom_nre_ej": 1,
+        "fed_heatcom_nre": 1,
     },
 )
 def fed_heatcom_by_nre_chp_plants_ej():
@@ -269,20 +268,19 @@ def fed_heatcom_by_nre_chp_plants_ej():
     Final energy demand of commercial heat in CHP plants without RES.
     """
     return (
-        share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation()
-        * fed_heatcom_nre_ej()
+        share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation() * fed_heatcom_nre()
     )
 
 
 @component.add(
-    name="FES Elec fossil fuel CHP plants EJ",
-    units="EJ/Year",
+    name="FES_Elec_fossil_fuel_CHP_plants_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "potential_fe_gen_elec_fossil_fuel_chp_plants_ej": 1,
-        "demand_elec_nre_twh": 1,
+        "potential_fe_gen_elec_fossil_fuel_chp_plants": 1,
         "ej_per_twh": 1,
+        "demand_elec_nre_twh": 1,
     },
 )
 def fes_elec_fossil_fuel_chp_plants_ej():
@@ -290,19 +288,24 @@ def fes_elec_fossil_fuel_chp_plants_ej():
     Final Energy supply of electricity from fossil fuels in CHP plants. We assign priority to it due to its better efficiency.
     """
     return np.minimum(
-        potential_fe_gen_elec_fossil_fuel_chp_plants_ej(),
+        sum(
+            potential_fe_gen_elec_fossil_fuel_chp_plants().rename(
+                {"matter_final_sources": "matter_final_sources!"}
+            ),
+            dim=["matter_final_sources!"],
+        ),
         demand_elec_nre_twh() * ej_per_twh(),
     )
 
 
 @component.add(
-    name='"FES heat-com fossil fuels CHP plants EJ"',
-    units="EJ",
+    name='"FES_heat-com_fossil_fuels_CHP_plants"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"fed_heat_fossil_fuels_chp_plants_ej": 1},
 )
-def fes_heatcom_fossil_fuels_chp_plants_ej():
+def fes_heatcom_fossil_fuels_chp_plants():
     """
     Final Energy supply of heat from fossil fuels in CHP plants. We assign priority to it due to its better efficiency.
     """
@@ -310,26 +313,57 @@ def fes_heatcom_fossil_fuels_chp_plants_ej():
 
 
 @component.add(
-    name='"FES Heat-com nuclear CHP plants EJ"',
-    units="EJ",
+    name='"FES_Heat-com_nuclear_CHP_plants"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "potential_fes_heatcom_nuclear_chp_plants_ej": 1,
-        "fed_heatcom_nre_ej": 1,
-    },
+    depends_on={"potential_fes_heatcom_nuclear_chp_plants_ej": 1, "fed_heatcom_nre": 1},
 )
-def fes_heatcom_nuclear_chp_plants_ej():
+def fes_heatcom_nuclear_chp_plants():
     """
     Commercial heat produced in cogeration nuclear plants.
     """
-    return np.minimum(
-        potential_fes_heatcom_nuclear_chp_plants_ej(), fed_heatcom_nre_ej()
-    )
+    return np.minimum(potential_fes_heatcom_nuclear_chp_plants_ej(), fed_heatcom_nre())
 
 
 @component.add(
-    name="historic share CHP plants gas",
+    name="Gen_losses_demand_for_CHP_plants",
+    units="EJ/year",
+    subscripts=["matter_final_sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "ped_gas_for_chp_plants_ej": 1,
+        "efficiency_elec_gas_chp_plants": 1,
+        "efficiency_heat_gas_chp_plants": 1,
+        "efficiency_elec_oil_chp_plants": 1,
+        "ped_oil_for_chp_plants_ej": 1,
+        "efficiency_heat_oil_chp_plants": 1,
+        "efficiency_heat_coal_chp_plants": 1,
+        "efficiency_elec_coal_chp_plants": 1,
+        "ped_coal_for_chp_plants_ej": 1,
+    },
+)
+def gen_losses_demand_for_chp_plants():
+    value = xr.DataArray(
+        np.nan,
+        {"matter_final_sources": _subscript_dict["matter_final_sources"]},
+        ["matter_final_sources"],
+    )
+    value.loc[["gases"]] = ped_gas_for_chp_plants_ej() * (
+        1 - efficiency_elec_gas_chp_plants() - efficiency_heat_gas_chp_plants()
+    )
+    value.loc[["liquids"]] = ped_oil_for_chp_plants_ej() * (
+        1 - efficiency_elec_oil_chp_plants() - efficiency_heat_oil_chp_plants()
+    )
+    value.loc[["solids"]] = ped_coal_for_chp_plants_ej() * (
+        1 - efficiency_heat_coal_chp_plants() - efficiency_elec_coal_chp_plants()
+    )
+    return value
+
+
+@component.add(
+    name="historic_share_CHP_plants_gas",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -360,7 +394,7 @@ _ext_data_historic_share_chp_plants_gas = ExtData(
 
 
 @component.add(
-    name="historic share CHP plants oil",
+    name="historic_share_CHP_plants_oil",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -391,8 +425,8 @@ _ext_data_historic_share_chp_plants_oil = ExtData(
 
 
 @component.add(
-    name="PED coal for CHP plants EJ",
-    units="EJ/Year",
+    name="PED_coal_for_CHP_plants_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"fed_heat_coal_chp_plants_ej": 1, "efficiency_heat_coal_chp_plants": 1},
@@ -405,8 +439,41 @@ def ped_coal_for_chp_plants_ej():
 
 
 @component.add(
-    name="PED gas for CHP plants EJ",
-    units="EJ/Year",
+    name="PED_FF_for_CHP_plants",
+    units="EJ/year",
+    subscripts=["matter_final_sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "fed_heat_gas_chp_plants_ej": 1,
+        "efficiency_heat_gas_chp_plants": 1,
+        "fed_heat_liquids_chp_plants_ej": 1,
+        "efficiency_heat_oil_chp_plants": 1,
+        "efficiency_heat_coal_chp_plants": 1,
+        "fed_heat_coal_chp_plants_ej": 1,
+    },
+)
+def ped_ff_for_chp_plants():
+    value = xr.DataArray(
+        np.nan,
+        {"matter_final_sources": _subscript_dict["matter_final_sources"]},
+        ["matter_final_sources"],
+    )
+    value.loc[["gases"]] = (
+        fed_heat_gas_chp_plants_ej() / efficiency_heat_gas_chp_plants()
+    )
+    value.loc[["liquids"]] = (
+        fed_heat_liquids_chp_plants_ej() / efficiency_heat_oil_chp_plants()
+    )
+    value.loc[["solids"]] = (
+        fed_heat_coal_chp_plants_ej() / efficiency_heat_coal_chp_plants()
+    )
+    return value
+
+
+@component.add(
+    name="PED_gas_for_CHP_plants_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"fed_heat_gas_chp_plants_ej": 1, "efficiency_heat_gas_chp_plants": 1},
@@ -419,8 +486,8 @@ def ped_gas_for_chp_plants_ej():
 
 
 @component.add(
-    name="PED oil for CHP plants EJ",
-    units="EJ/Year",
+    name="PED_oil_for_CHP_plants_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -436,8 +503,8 @@ def ped_oil_for_chp_plants_ej():
 
 
 @component.add(
-    name="Potential FE gen Elec coal CHP plants EJ",
-    units="EJ",
+    name="Potential_FE_gen_Elec_coal_CHP_plants_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ped_coal_for_chp_plants_ej": 1, "efficiency_elec_coal_chp_plants": 1},
@@ -450,30 +517,41 @@ def potential_fe_gen_elec_coal_chp_plants_ej():
 
 
 @component.add(
-    name="Potential FE gen Elec fossil fuel CHP plants EJ",
-    units="EJ/Year",
+    name="Potential_FE_gen_Elec_fossil_fuel_CHP_plants",
+    units="EJ/year",
+    subscripts=["matter_final_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "potential_fe_gen_elec_coal_chp_plants_ej": 1,
-        "potential_fe_gen_elec_gas_chp_plants_ej": 1,
-        "potential_fe_gen_elec_liquids_chp_plants_ej": 1,
+        "ped_coal_for_chp_plants_ej": 1,
+        "efficiency_elec_coal_chp_plants": 1,
+        "ped_gas_for_chp_plants_ej": 1,
+        "efficiency_elec_gas_chp_plants": 1,
+        "efficiency_elec_oil_chp_plants": 1,
+        "ped_oil_for_chp_plants_ej": 1,
     },
 )
-def potential_fe_gen_elec_fossil_fuel_chp_plants_ej():
-    """
-    Potential electricity generation from CHP plants burning fossil fuels.
-    """
-    return (
-        potential_fe_gen_elec_coal_chp_plants_ej()
-        + potential_fe_gen_elec_gas_chp_plants_ej()
-        + potential_fe_gen_elec_liquids_chp_plants_ej()
+def potential_fe_gen_elec_fossil_fuel_chp_plants():
+    value = xr.DataArray(
+        np.nan,
+        {"matter_final_sources": _subscript_dict["matter_final_sources"]},
+        ["matter_final_sources"],
     )
+    value.loc[["solids"]] = (
+        ped_coal_for_chp_plants_ej() * efficiency_elec_coal_chp_plants()
+    )
+    value.loc[["gases"]] = (
+        ped_gas_for_chp_plants_ej() * efficiency_elec_gas_chp_plants()
+    )
+    value.loc[["liquids"]] = (
+        ped_oil_for_chp_plants_ej() * efficiency_elec_oil_chp_plants()
+    )
+    return value
 
 
 @component.add(
-    name="Potential FE gen Elec gas CHP plants EJ",
-    units="EJ",
+    name="Potential_FE_gen_Elec_gas_CHP_plants_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ped_gas_for_chp_plants_ej": 1, "efficiency_elec_gas_chp_plants": 1},
@@ -486,8 +564,8 @@ def potential_fe_gen_elec_gas_chp_plants_ej():
 
 
 @component.add(
-    name="Potential FE gen Elec liquids CHP plants EJ",
-    units="EJ",
+    name="Potential_FE_gen_Elec_liquids_CHP_plants_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ped_oil_for_chp_plants_ej": 1, "efficiency_elec_oil_chp_plants": 1},
@@ -500,13 +578,14 @@ def potential_fe_gen_elec_liquids_chp_plants_ej():
 
 
 @component.add(
-    name='"Potential FES Heat-com nuclear CHP plants EJ"',
-    units="EJ",
+    name='"Potential_FES_Heat-com_nuclear_CHP_plants_EJ"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "fe_nuclear_elec_generation_twh": 1,
         "share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation": 1,
+        "ej_per_twh": 1,
     },
 )
 def potential_fes_heatcom_nuclear_chp_plants_ej():
@@ -516,11 +595,12 @@ def potential_fes_heatcom_nuclear_chp_plants_ej():
     return (
         fe_nuclear_elec_generation_twh()
         * share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation()
+        * ej_per_twh()
     )
 
 
 @component.add(
-    name="share CHP plants coal",
+    name="share_CHP_plants_coal",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -534,11 +614,11 @@ def share_chp_plants_coal():
 
 
 @component.add(
-    name="share CHP plants oil",
+    name="share_CHP_plants_oil",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "historic_share_chp_plants_oil": 1},
+    depends_on={"time": 2, "var_chp_plants_oil": 1, "historic_share_chp_plants_oil": 1},
 )
 def share_chp_plants_oil():
     """
@@ -547,7 +627,7 @@ def share_chp_plants_oil():
     return np.maximum(
         if_then_else(
             time() > 2014,
-            lambda: -0.002985 * time() + 6.04554,
+            lambda: var_chp_plants_oil() * time() + 6.04554,
             lambda: historic_share_chp_plants_oil(),
         ),
         0,
@@ -555,7 +635,169 @@ def share_chp_plants_oil():
 
 
 @component.add(
-    name='"Share heat-com CHP plants NRE vs NRE tot heat-com generation"',
+    name="share_efficiency_FF_for_elec_in_CHP_plants",
+    units="Dmnl",
+    subscripts=["matter_final_sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "efficiency_elec_oil_chp_plants": 2,
+        "efficiency_heat_oil_chp_plants": 1,
+        "efficiency_heat_coal_chp_plants": 1,
+        "efficiency_elec_coal_chp_plants": 2,
+        "efficiency_elec_gas_chp_plants": 2,
+        "efficiency_heat_gas_chp_plants": 1,
+    },
+)
+def share_efficiency_ff_for_elec_in_chp_plants():
+    value = xr.DataArray(
+        np.nan,
+        {"matter_final_sources": _subscript_dict["matter_final_sources"]},
+        ["matter_final_sources"],
+    )
+    value.loc[["liquids"]] = zidz(
+        efficiency_elec_oil_chp_plants(),
+        efficiency_elec_oil_chp_plants() + efficiency_heat_oil_chp_plants(),
+    )
+    value.loc[["solids"]] = zidz(
+        efficiency_elec_coal_chp_plants(),
+        efficiency_elec_coal_chp_plants() + efficiency_heat_coal_chp_plants(),
+    )
+    value.loc[["gases"]] = zidz(
+        efficiency_elec_gas_chp_plants(),
+        efficiency_elec_gas_chp_plants() + efficiency_heat_gas_chp_plants(),
+    )
+    return value
+
+
+@component.add(
+    name="share_elec_gen_in_CHP",
+    units="Dmnl",
+    subscripts=["matter_final_sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "potential_fe_gen_elec_fossil_fuel_chp_plants": 6,
+        "fed_heat_gas_chp_plants_ej": 1,
+        "fed_heat_liquids_chp_plants_ej": 1,
+        "fed_heat_coal_chp_plants_ej": 1,
+    },
+)
+def share_elec_gen_in_chp():
+    value = xr.DataArray(
+        np.nan,
+        {"matter_final_sources": _subscript_dict["matter_final_sources"]},
+        ["matter_final_sources"],
+    )
+    value.loc[["gases"]] = zidz(
+        float(potential_fe_gen_elec_fossil_fuel_chp_plants().loc["gases"]),
+        float(potential_fe_gen_elec_fossil_fuel_chp_plants().loc["gases"])
+        + fed_heat_gas_chp_plants_ej(),
+    )
+    value.loc[["liquids"]] = zidz(
+        float(potential_fe_gen_elec_fossil_fuel_chp_plants().loc["liquids"]),
+        float(potential_fe_gen_elec_fossil_fuel_chp_plants().loc["liquids"])
+        + fed_heat_liquids_chp_plants_ej(),
+    )
+    value.loc[["solids"]] = zidz(
+        float(potential_fe_gen_elec_fossil_fuel_chp_plants().loc["solids"]),
+        float(potential_fe_gen_elec_fossil_fuel_chp_plants().loc["solids"])
+        + fed_heat_coal_chp_plants_ej(),
+    )
+    return value
+
+
+@component.add(
+    name="share_Elec_gen_in_CHP_coal",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "potential_fe_gen_elec_coal_chp_plants_ej": 2,
+        "fed_heat_coal_chp_plants_ej": 1,
+    },
+)
+def share_elec_gen_in_chp_coal():
+    return zidz(
+        potential_fe_gen_elec_coal_chp_plants_ej(),
+        potential_fe_gen_elec_coal_chp_plants_ej() + fed_heat_coal_chp_plants_ej(),
+    )
+
+
+@component.add(
+    name="share_Elec_gen_in_CHP_nat_gas",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "potential_fe_gen_elec_gas_chp_plants_ej": 2,
+        "fed_heat_gas_chp_plants_ej": 1,
+    },
+)
+def share_elec_gen_in_chp_nat_gas():
+    return zidz(
+        potential_fe_gen_elec_gas_chp_plants_ej(),
+        potential_fe_gen_elec_gas_chp_plants_ej() + fed_heat_gas_chp_plants_ej(),
+    )
+
+
+@component.add(
+    name="share_Elec_gen_in_CHP_oil",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "potential_fe_gen_elec_liquids_chp_plants_ej": 2,
+        "fed_heat_liquids_chp_plants_ej": 1,
+    },
+)
+def share_elec_gen_in_chp_oil():
+    return zidz(
+        potential_fe_gen_elec_liquids_chp_plants_ej(),
+        potential_fe_gen_elec_liquids_chp_plants_ej()
+        + fed_heat_liquids_chp_plants_ej(),
+    )
+
+
+@component.add(
+    name="share_elec_gen_in_CHP_plants",
+    units="Dmnl",
+    subscripts=["matter_final_sources"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "potential_fe_gen_elec_fossil_fuel_chp_plants": 6,
+        "fed_heat_gas_chp_plants_ej": 1,
+        "fed_heat_coal_chp_plants_ej": 1,
+        "fed_heat_liquids_chp_plants_ej": 1,
+    },
+)
+def share_elec_gen_in_chp_plants():
+    value = xr.DataArray(
+        np.nan,
+        {"matter_final_sources": _subscript_dict["matter_final_sources"]},
+        ["matter_final_sources"],
+    )
+    value.loc[["gases"]] = zidz(
+        float(potential_fe_gen_elec_fossil_fuel_chp_plants().loc["gases"]),
+        float(potential_fe_gen_elec_fossil_fuel_chp_plants().loc["gases"])
+        + fed_heat_gas_chp_plants_ej(),
+    )
+    value.loc[["solids"]] = zidz(
+        float(potential_fe_gen_elec_fossil_fuel_chp_plants().loc["solids"]),
+        float(potential_fe_gen_elec_fossil_fuel_chp_plants().loc["solids"])
+        + fed_heat_coal_chp_plants_ej(),
+    )
+    value.loc[["liquids"]] = zidz(
+        float(potential_fe_gen_elec_fossil_fuel_chp_plants().loc["solids"]),
+        float(potential_fe_gen_elec_fossil_fuel_chp_plants().loc["solids"])
+        + fed_heat_liquids_chp_plants_ej(),
+    )
+    return value
+
+
+@component.add(
+    name='"Share_heat-com_CHP_plants_NRE_vs_NRE_tot_heat-com_generation"',
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -586,7 +828,7 @@ _ext_data_share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation = ExtData(
 
 
 @component.add(
-    name="share of heat production in CHP plants vs total nucelar elec generation",
+    name="share_of_heat_production_in_CHP_plants_vs_total_nucelar_elec_generation",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -615,31 +857,10 @@ _ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_gener
 
 
 @component.add(
-    name="Total gen losses demand for CHP plants EJ",
-    units="EJ",
-    comp_type="Auxiliary",
+    name="var_CHP_plants_oil",
+    units="1/year",
+    comp_type="Constant",
     comp_subtype="Normal",
-    depends_on={
-        "ped_gas_for_chp_plants_ej": 1,
-        "efficiency_heat_gas_chp_plants": 1,
-        "efficiency_elec_gas_chp_plants": 1,
-        "efficiency_elec_oil_chp_plants": 1,
-        "efficiency_heat_oil_chp_plants": 1,
-        "ped_oil_for_chp_plants_ej": 1,
-        "ped_coal_for_chp_plants_ej": 1,
-        "efficiency_elec_coal_chp_plants": 1,
-        "efficiency_heat_coal_chp_plants": 1,
-    },
 )
-def total_gen_losses_demand_for_chp_plants_ej():
-    """
-    Total generation losses associated to CHP plants.
-    """
-    return (
-        ped_gas_for_chp_plants_ej()
-        * (1 - efficiency_elec_gas_chp_plants() - efficiency_heat_gas_chp_plants())
-        + ped_oil_for_chp_plants_ej()
-        * (1 - efficiency_elec_oil_chp_plants() - efficiency_heat_oil_chp_plants())
-        + ped_coal_for_chp_plants_ej()
-        * (1 - efficiency_heat_coal_chp_plants() - efficiency_elec_coal_chp_plants())
-    )
+def var_chp_plants_oil():
+    return -0.002985

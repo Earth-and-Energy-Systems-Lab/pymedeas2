@@ -1,11 +1,10 @@
 """
-Module crops_for_biofuels
-Translated using PySD version 3.2.0
+Module energy.supply.crops_for_biofuels
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="BioE gen land marg available",
+    name="BioE_gen_land_marg_available",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -26,8 +25,8 @@ def bioe_gen_land_marg_available():
 
 
 @component.add(
-    name="BioE potential NPP marginal lands",
-    units="EJ",
+    name="BioE_potential_NPP_marginal_lands",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -48,7 +47,7 @@ def bioe_potential_npp_marginal_lands():
 
 
 @component.add(
-    name="Conv efficiency from NPP to biofuels",
+    name="Conv_efficiency_from_NPP_to_biofuels",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -73,7 +72,7 @@ _ext_constant_conv_efficiency_from_npp_to_biofuels = ExtConstant(
 
 
 @component.add(
-    name="Land occupation ratio biofuels marg land",
+    name="Land_occupation_ratio_biofuels_marg_land",
     units="MHa/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -100,8 +99,8 @@ _ext_constant_land_occupation_ratio_biofuels_marg_land = ExtConstant(
 
 
 @component.add(
-    name="Land productivity biofuels marg EJ MHa",
-    units="EJ/MHa",
+    name="Land_productivity_biofuels_marg_EJ_MHa",
+    units="EJ/(year*MHa)",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_land_productivity_biofuels_marg_ej_mha"},
@@ -125,8 +124,8 @@ _ext_constant_land_productivity_biofuels_marg_ej_mha = ExtConstant(
 
 
 @component.add(
-    name="Land required biofuels land marg",
-    units="MHa/Year",
+    name="Land_required_biofuels_land_marg",
+    units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -147,8 +146,8 @@ def land_required_biofuels_land_marg():
 
 
 @component.add(
-    name="Max PEavail potential biofuels marginal lands",
-    units="EJ",
+    name="Max_PEavail_potential_biofuels_marginal_lands",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -164,22 +163,23 @@ def max_peavail_potential_biofuels_marginal_lands():
 
 
 @component.add(
-    name="new biofuels land marg",
-    units="EJ/Year",
+    name="new_biofuels_land_marg",
+    units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
         "start_year_biofuels_land_marg": 3,
-        "ratio_land_productivity_2gen_vs_marg": 1,
-        "bioe_gen_land_marg_available": 1,
-        "constrain_liquids_exogenous_growth": 1,
-        "potential_marginal_lands_mha": 1,
-        "check_liquids": 1,
-        "start_production_biofuels": 1,
         "p_biofuels_marg_lands": 1,
+        "check_liquids": 1,
+        "nvs_1_year": 2,
+        "ratio_land_productivity_2gen_vs_marg": 1,
+        "potential_marginal_lands_mha": 1,
         "ej_per_ktoe": 1,
+        "constrain_liquids_exogenous_growth": 1,
+        "bioe_gen_land_marg_available": 1,
         "potential_peavail_biofuels_land_marg_ej": 2,
+        "start_production_biofuels": 1,
         "land_availability_constraint": 1,
     },
 )
@@ -199,12 +199,14 @@ def new_biofuels_land_marg():
                     lambda: start_production_biofuels(
                         time() - start_year_biofuels_land_marg()
                     )
+                    / nvs_1_year()
                     * ej_per_ktoe()
                     / ratio_land_productivity_2gen_vs_marg(),
                     lambda: if_then_else(
                         check_liquids() < 0,
                         lambda: constrain_liquids_exogenous_growth()
-                        * potential_peavail_biofuels_land_marg_ej(),
+                        * potential_peavail_biofuels_land_marg_ej()
+                        / nvs_1_year(),
                         lambda: p_biofuels_marg_lands()
                         * bioe_gen_land_marg_available()
                         * potential_peavail_biofuels_land_marg_ej(),
@@ -217,14 +219,15 @@ def new_biofuels_land_marg():
 
 
 @component.add(
-    name="new land marg for biofuels",
-    units="MHa",
+    name="new_land_marg_for_biofuels",
+    units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "new_biofuels_land_marg": 1,
         "land_occupation_ratio_biofuels_marg_land": 1,
         "conv_efficiency_from_npp_to_biofuels": 1,
+        "nvs_1_year": 1,
     },
 )
 def new_land_marg_for_biofuels():
@@ -232,12 +235,13 @@ def new_land_marg_for_biofuels():
         new_biofuels_land_marg()
         * land_occupation_ratio_biofuels_marg_land()
         / conv_efficiency_from_npp_to_biofuels()
+        * nvs_1_year()
     )
 
 
 @component.add(
-    name="P biofuels marg lands",
-    units="1/Year",
+    name="P_biofuels_marg_lands",
+    units="1/year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_p_biofuels_marg_lands"},
@@ -251,7 +255,7 @@ def p_biofuels_marg_lands():
 
 _ext_constant_p_biofuels_marg_lands = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "p_biofuels_land_marg_growth",
     {},
     _root,
@@ -261,7 +265,8 @@ _ext_constant_p_biofuels_marg_lands = ExtConstant(
 
 
 @component.add(
-    name="PE biofuels land marg EJ",
+    name="PE_biofuels_land_marg_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -277,8 +282,8 @@ def pe_biofuels_land_marg_ej():
 
 
 @component.add(
-    name="PEavail biofuels land marg EJ",
-    units="EJ",
+    name="PEavail_biofuels_land_marg_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -296,7 +301,7 @@ def peavail_biofuels_land_marg_ej():
 
 
 @component.add(
-    name="Potential marginal lands MHa",
+    name="Potential_marginal_lands_MHa",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
@@ -311,7 +316,7 @@ def potential_marginal_lands_mha():
 
 _ext_constant_potential_marginal_lands_mha = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "pot_marg_land_biofuels",
     {},
     _root,
@@ -321,22 +326,27 @@ _ext_constant_potential_marginal_lands_mha = ExtConstant(
 
 
 @component.add(
-    name="Potential PEavail biofuels land marg abandonned",
-    units="EJ/Year",
+    name="Potential_PEavail_biofuels_land_marg_abandonned",
+    units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "potential_peavail_biofuels_land_marg_ej": 1,
         "share_biofuels_overcapacity": 1,
+        "nvs_1_year": 1,
     },
 )
 def potential_peavail_biofuels_land_marg_abandonned():
-    return potential_peavail_biofuels_land_marg_ej() * share_biofuels_overcapacity()
+    return (
+        potential_peavail_biofuels_land_marg_ej()
+        * share_biofuels_overcapacity()
+        / nvs_1_year()
+    )
 
 
 @component.add(
-    name="Potential PEavail biofuels land marg EJ",
-    units="EJ/Year",
+    name="Potential_PEavail_biofuels_land_marg_EJ",
+    units="EJ/year",
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_potential_peavail_biofuels_land_marg_ej": 1},
@@ -366,7 +376,7 @@ _integ_potential_peavail_biofuels_land_marg_ej = Integ(
 
 
 @component.add(
-    name="ratio land productivity 2gen vs marg",
+    name="ratio_land_productivity_2gen_vs_marg",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -386,7 +396,7 @@ def ratio_land_productivity_2gen_vs_marg():
 
 
 @component.add(
-    name="remaining potential biofuels land marg",
+    name="remaining_potential_biofuels_land_marg",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -412,8 +422,8 @@ def remaining_potential_biofuels_land_marg():
 
 
 @component.add(
-    name="start production biofuels",
-    units="ktoe/Year",
+    name="start_production_biofuels",
+    units="ktoe/year",
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -430,7 +440,7 @@ def start_production_biofuels(x, final_subs=None):
 
 _ext_lookup_start_production_biofuels = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "delta_years",
     "start_production_biofuels",
     {},
@@ -441,8 +451,8 @@ _ext_lookup_start_production_biofuels = ExtLookup(
 
 
 @component.add(
-    name="start year biofuels land marg",
-    units="Year",
+    name="start_year_biofuels_land_marg",
+    units="year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_start_year_biofuels_land_marg"},
@@ -456,7 +466,7 @@ def start_year_biofuels_land_marg():
 
 _ext_constant_start_year_biofuels_land_marg = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "start_year_biofuels_land_marg",
     {},
     _root,

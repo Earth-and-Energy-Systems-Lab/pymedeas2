@@ -1,10 +1,15 @@
-# temporary_name models
+# pymedeas2
 [![coverage report](https://gitlab.com/gencat_creaf/pymedeas2/badges/master/coverage.svg)](https://gitlab.com/gencat_creaf/pymedeas2/-/commits/master)
 
-The models in this repository are loaded and run using the [PySD](https://github.com/JamesPHoughton/pysd) library.
+This repository holds the code for the pymedeas2 models, which are the latest iteration of the original pymedeas models, which were the main output of the H2020 MEDEAS project (2016-2019).
+
+The models are available at **3 regional levels (world, region, country)**, and are currently parametrized for World, EU27 and Catalonia.
 
 
-Please note that the three models are nested, hence **to run *pymedeas_cat* the two parent models (*pymedeas_w* and *temporary_name_eu*) need to be run first**. Child models will request the results file/s from the parents at runtime.
+A default normative decarbonization scenario, called NZP (Net Zero Pathway) is available for each of the three regional levels.
+
+
+Please note that the three models are nested, hence **to run *pymedeas_cat* the two parent models (*pymedeas_w* and *pymedeas_eu*) need to be run first (and in that same order)**. Child models will request the results file/s from the parents at runtime (unless they are passed with the -f argument using the CLI).
 
 
 ### Installation instructions for (Windows/Linux/MacOS) using venv
@@ -54,16 +59,16 @@ Please note that the three models are nested, hence **to run *pymedeas_cat* the 
 
 3. At this point, you should be able to run a default simulation with the following command:
     ```
-    python run.py -x BAU -p
+    python run.py
     ```
 
-4. By default, the World model will run, but you can use the `-m` option to select another model:
+4. By default, the World model will run under the NZP (Net Zero Pathway) scenario, but you can use the `-m` option to select another model, and the `-x` to use a scenario of your own:
     ```
-    python run.py -m pymedeas_eu -x BAU -p
+    python run.py -m pymedeas_eu
     ```
     or
     ```
-    python run.py -m pymedeas_cat -x BAU -p
+    python run.py -m pymedeas_cat -x MY_SCENARIO
     ```
 
 5. To see all user options and default parameter values, run:
@@ -76,30 +81,21 @@ Please note that the three models are nested, hence **to run *pymedeas_cat* the 
     deactivate
     ```
 
-### Using the plot GUI to plot previous simulation results from terminal (in csv format)
-
-1. Open a terminal and go to the project folder (using the *cd* command)
-
-2. If it's not active yet, ctivate the project virtual environment by running the appropriate command mentioned in step 4 of the *Installation instructions* section.
-
-3. Run the following command:
-
-    ```console
-    python plot_tool.py
-    ```
-
-4. Simulation results can be found either in the pymedeas_w, the pymedeas_eu or the pymedeas_cat folders. You can load an unlimited number of results files, to compare several simulation results.
-
-5. After finishing you can deactivate your environment:
-    ```
-    deactivate
-    ```
 ### Model outputs
 
-Simulation results (nc file) can be found either in the respective folder inside the *outputs* folder.
+Simulation results (nc file) for each model can be found in the respective folder inside the *outputs* directory.
 
 Unless the user provides the desired output file name with the -n option when launching the simulation (e.g. python run.py -n results_my_scenario.nc), the default results naming convention is the following:
 
 results_SCENARIO-NAME_INITIAL-DATE_FINAL-DATE_TIME-STEP.nc
 
 If a results file with the same name already exists, the characters "_old" will be added at the end of the file name. This can happen up to two times. NOTE that if a fourth simulation with the same name is run, the file of the first simulation result will be automatically deleted.
+
+
+### Using the plot GUI to plot simulation results
+
+Clone or download the code for the plot tool [from this repository](https://github.com/Earth-and-Energy-Systems-Lab/pymedeas_plots) and follow the instructions given in the README.
+
+
+### Contributions are welcome
+We welcome any contributions from the community. In particular

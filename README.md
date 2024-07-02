@@ -1,5 +1,4 @@
 # pymedeas2
-[![coverage report](https://gitlab.com/gencat_creaf/pymedeas2/badges/master/coverage.svg)](https://gitlab.com/gencat_creaf/pymedeas2/-/commits/master)
 
 This repository holds the code for the pymedeas2 models, which are the latest iteration of the original pymedeas models, which were the main output of the H2020 MEDEAS project (2016-2019).
 
@@ -95,3 +94,6 @@ If a results file with the same name already exists, the characters "_old" will 
 ### Using the plot GUI to plot simulation results
 
 Clone or download the code for the plot tool [from this repository](https://github.com/Earth-and-Energy-Systems-Lab/pymedeas_plots) and follow the instructions given in the README.
+
+### Acknowledgements
+The development of the pymedeas models was supported by the European Union through the funding of the MEDEAS project under the Horizon 2020 research and innovation programme (grant agreement No 69128), and by the Government of Catalonia through the contract programme between the Ministries of Territory and Sustainability and Business and Labour and the Centre for Research on Ecology and Forestry Applications (CREAF), approved by Government Agreement on March 16, 2021.

@@ -1,12 +1,11 @@
 """
-Module ped_from_nonelectric_res
-Translated using PySD version 3.2.0
+Module energy.supply.ped_from_nonelectric_res
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name='"Max potential PE non-electric RES"',
-    units="EJ/Year",
+    name='"Max_potential_PE_non-electric_RES"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -22,13 +21,13 @@ def max_potential_pe_nonelectric_res():
 
 
 @component.add(
-    name='"PE supply from RES non-elec without trad bioE EJ"',
-    units="EJ/Year",
+    name='"PE_supply_from_RES_non-elec_without_trad_bioE_EJ"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pes_tot_res_for_heat": 1,
-        "fes_total_biofuels_production_ej": 1,
+        "fes_total_biofuels_ej": 1,
         "pes_biogas_for_tfc": 1,
     },
 )
@@ -36,16 +35,12 @@ def pe_supply_from_res_nonelec_without_trad_bioe_ej():
     """
     Primary energy (non electric) supply from RES without traditional biomass.
     """
-    return (
-        pes_tot_res_for_heat()
-        + fes_total_biofuels_production_ej()
-        + pes_biogas_for_tfc()
-    )
+    return pes_tot_res_for_heat() + fes_total_biofuels_ej() + pes_biogas_for_tfc()
 
 
 @component.add(
-    name='"PE supply RES non-Elec EJ"',
-    units="EJ/Year",
+    name='"PE_supply_RES_non-Elec_EJ"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={

@@ -1,121 +1,126 @@
 """
-Module economic_demand
-Translated using PySD version 3.2.0
+Module economy.economic_demand
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="demand by sector FD adjusted",
+    name="demand_by_sector_FD_adjusted",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"demand_by_sector_fd_aut": 1, "diff_demand_aut": 1},
+    depends_on={"demand_by_sector_fd_cat": 1, "diff_demand_cat": 1},
 )
 def demand_by_sector_fd_adjusted():
     """
     Demand by sector after adjustment to match the desired GDP level.
     """
-    return demand_by_sector_fd_aut() * diff_demand_aut()
+    return demand_by_sector_fd_cat() * diff_demand_cat()
 
 
 @component.add(
-    name="Demand by sector FD AUT",
+    name="Demand_by_sector_FD_CAT",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
     comp_subtype="Integ",
-    depends_on={"_integ_demand_by_sector_fd_aut": 1},
+    depends_on={"_integ_demand_by_sector_fd_cat": 1},
     other_deps={
-        "_integ_demand_by_sector_fd_aut": {
+        "_integ_demand_by_sector_fd_cat": {
             "initial": {"initial_demand": 1},
             "step": {
-                "variation_demand_flow_fd_aut": 1,
-                "demand_not_covered_by_sector_fd_aut": 1,
+                "variation_demand_flow_fd_cat": 1,
+                "demand_not_covered_by_sector_fd_cat": 1,
             },
         }
     },
 )
-def demand_by_sector_fd_aut():
+def demand_by_sector_fd_cat():
     """
     Final demand by EU28 35 industrial sectors
     """
-    return _integ_demand_by_sector_fd_aut()
+    return _integ_demand_by_sector_fd_cat()
 
 
-_integ_demand_by_sector_fd_aut = Integ(
-    lambda: variation_demand_flow_fd_aut() - demand_not_covered_by_sector_fd_aut(),
+_integ_demand_by_sector_fd_cat = Integ(
+    lambda: variation_demand_flow_fd_cat() - demand_not_covered_by_sector_fd_cat(),
     lambda: initial_demand(),
-    "_integ_demand_by_sector_fd_aut",
+    "_integ_demand_by_sector_fd_cat",
 )
 
 
 @component.add(
-    name="demand not covered by sector FD AUT",
-    units="Mdollars/Year",
+    name="demand_not_covered_by_sector_FD_CAT",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "demand_by_sector_fd_aut": 1,
-        "real_final_demand_by_sector_aut": 1,
+        "real_final_demand_by_sector_cat": 1,
+        "nvs_1_year": 1,
+        "demand_by_sector_fd_cat": 1,
     },
 )
-def demand_not_covered_by_sector_fd_aut():
+def demand_not_covered_by_sector_fd_cat():
     """
     Gap between final demand required and real final demand (after energy-economy feedback)
     """
     return if_then_else(
         time() < 2009,
         lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
-        lambda: demand_by_sector_fd_aut() - real_final_demand_by_sector_aut(),
+        lambda: (demand_by_sector_fd_cat() - real_final_demand_by_sector_cat())
+        / nvs_1_year(),
     )
 
 
 @component.add(
-    name="demand not covered total FD",
-    units="Mdollars/Year",
+    name="demand_not_covered_total_FD",
+    units="Mdollars/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"demand_not_covered_by_sector_fd_aut": 1},
+    depends_on={"demand_not_covered_by_sector_fd_cat": 1},
 )
 def demand_not_covered_total_fd():
     return sum(
-        demand_not_covered_by_sector_fd_aut().rename({"sectors": "sectors!"}),
+        demand_not_covered_by_sector_fd_cat().rename({"sectors": "sectors!"}),
         dim=["sectors!"],
     )
 
 
 @component.add(
-    name="diff demand AUT",
-    units="Dmnl",
+    name="diff_demand_CAT",
+    units="1",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "real_demand_delayed_1yr": 1,
-        "desired_annual_total_demand_growth_rate_delayed_1_yr": 1,
         "total_demand": 1,
+        "desired_annual_total_demand_growth_rate_delayed_1_yr": 1,
+        "real_demand_delayed_1yr": 1,
+        "nvs_1_year": 1,
     },
 )
-def diff_demand_aut():
+def diff_demand_cat():
     """
     Ratio between the desired GDP and the real GDP level after applying the demand function.
     """
-    return if_then_else(
-        time() < 2009,
-        lambda: 1,
-        lambda: (
-            real_demand_delayed_1yr()
-            * (1 + desired_annual_total_demand_growth_rate_delayed_1_yr())
+    return (
+        if_then_else(
+            time() < 2009,
+            lambda: 1,
+            lambda: (
+                real_demand_delayed_1yr()
+                * (1 + desired_annual_total_demand_growth_rate_delayed_1_yr())
+            )
+            / total_demand(),
         )
-        / total_demand(),
+        * nvs_1_year()
     )
 
 
 @component.add(
-    name="historic change in inventories",
+    name="historic_change_in_inventories",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -145,7 +150,7 @@ _ext_lookup_historic_change_in_inventories = ExtLookup(
 
 
 @component.add(
-    name="historic demand",
+    name="historic_demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -156,7 +161,7 @@ _ext_lookup_historic_change_in_inventories = ExtLookup(
         "historic_hd": 1,
         "historic_goverment_expenditures": 1,
         "historic_change_in_inventories": 1,
-        "historic_exports_demand_0": 1,
+        "historic_exports_demand": 1,
         "historic_exports_demand_1": 1,
     },
 )
@@ -169,13 +174,14 @@ def historic_demand():
         + historic_hd(time())
         + historic_goverment_expenditures(time())
         + historic_change_in_inventories(time())
-        + historic_exports_demand_0(time())
+        + historic_exports_demand(time())
         + historic_exports_demand_1(time())
     )
 
 
 @component.add(
-    name="historic demand next year",
+    name="historic_demand_next_year",
+    units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -185,7 +191,7 @@ def historic_demand():
         "historic_hd": 1,
         "historic_goverment_expenditures": 1,
         "historic_change_in_inventories": 1,
-        "historic_exports_demand_0": 1,
+        "historic_exports_demand": 1,
         "historic_exports_demand_1": 1,
     },
 )
@@ -195,13 +201,13 @@ def historic_demand_next_year():
         + historic_hd(time() + 1)
         + historic_goverment_expenditures(time() + 1)
         + historic_change_in_inventories(time() + 1)
-        + historic_exports_demand_0(time() + 1)
+        + historic_exports_demand(time() + 1)
         + historic_exports_demand_1(time() + 1)
     )
 
 
 @component.add(
-    name="historic goverment expenditures",
+    name="historic_goverment_expenditures",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -231,22 +237,22 @@ _ext_lookup_historic_goverment_expenditures = ExtLookup(
 
 
 @component.add(
-    name="historic variation demand",
-    units="Mdollars",
+    name="historic_variation_demand",
+    units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"historic_demand_next_year": 1, "historic_demand": 1},
+    depends_on={"historic_demand_next_year": 1, "historic_demand": 1, "nvs_1_year": 1},
 )
 def historic_variation_demand():
     """
     Historic variation of demand (35 WIOD sectors). US$1995
     """
-    return historic_demand_next_year() - historic_demand()
+    return (historic_demand_next_year() - historic_demand()) / nvs_1_year()
 
 
 @component.add(
-    name="initial demand",
+    name="initial_demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -264,31 +270,33 @@ _initial_initial_demand = Initial(lambda: historic_demand(), "_initial_initial_d
 
 
 @component.add(
-    name="Real Exports demand to RoEU by sector",
+    name="Real_Exports_demand_to_RoEU_by_sector",
+    units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "real_final_demand_by_sector_aut": 1,
+        "real_final_demand_by_sector_cat": 1,
         "share_consum_goverment_and_inventories": 1,
         "share_exp_roeu_vs_gfcfhdexp": 1,
     },
 )
 def real_exports_demand_to_roeu_by_sector():
     return (
-        real_final_demand_by_sector_aut()
+        real_final_demand_by_sector_cat()
         * (1 - share_consum_goverment_and_inventories())
         * share_exp_roeu_vs_gfcfhdexp()
     )
 
 
 @component.add(
-    name="Real Exports demand to RoW by sector",
+    name="Real_Exports_demand_to_RoW_by_sector",
+    units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "real_final_demand_by_sector_aut": 1,
+        "real_final_demand_by_sector_cat": 1,
         "share_consum_goverment_and_inventories": 1,
         "share_exp_row_vs_gfcfhdexp": 1,
     },
@@ -298,20 +306,20 @@ def real_exports_demand_to_row_by_sector():
     Real exports after energy feedback.
     """
     return (
-        real_final_demand_by_sector_aut()
+        real_final_demand_by_sector_cat()
         * (1 - share_consum_goverment_and_inventories())
         * share_exp_row_vs_gfcfhdexp()
     )
 
 
 @component.add(
-    name="Real GFCF by sector",
+    name="Real_GFCF_by_sector",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "real_final_demand_by_sector_aut": 1,
+        "real_final_demand_by_sector_cat": 1,
         "share_consum_goverment_and_inventories": 1,
         "share_gfcf_vs_gfcfhdexp": 1,
     },
@@ -321,24 +329,24 @@ def real_gfcf_by_sector():
     Real Gross Fixed Capital Formation after energy feedback
     """
     return (
-        real_final_demand_by_sector_aut()
+        real_final_demand_by_sector_cat()
         * (1 - share_consum_goverment_and_inventories())
         * share_gfcf_vs_gfcfhdexp()
     )
 
 
 @component.add(
-    name="Real Household demand by sector",
+    name="Real_Household_demand_by_sector",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "real_final_demand_by_sector_aut": 1,
+        "real_final_demand_by_sector_cat": 1,
         "share_consum_goverment_and_inventories": 1,
+        "share_exp_roeu_vs_gfcfhdexp": 1,
         "share_exp_row_vs_gfcfhdexp": 1,
         "share_gfcf_vs_gfcfhdexp": 1,
-        "share_exp_roeu_vs_gfcfhdexp": 1,
     },
 )
 def real_household_demand_by_sector():
@@ -346,7 +354,7 @@ def real_household_demand_by_sector():
     Real Households demand after energy feedback.
     """
     return (
-        real_final_demand_by_sector_aut()
+        real_final_demand_by_sector_cat()
         * (1 - share_consum_goverment_and_inventories())
         * (
             1
@@ -358,7 +366,7 @@ def real_household_demand_by_sector():
 
 
 @component.add(
-    name="share consum goverment and inventories",
+    name="share_consum_goverment_and_inventories",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -380,15 +388,16 @@ def share_consum_goverment_and_inventories():
 
 
 @component.add(
-    name='"share Exp RoEU vs GFCF+HD+Exp"',
+    name='"share_Exp_RoEU_vs_GFCF+HD+Exp"',
+    units="Dmnl",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "exports_demand_to_roeu": 2,
-        "gross_fixed_capital_formation": 1,
-        "household_demand": 1,
         "exports_demand_to_row": 1,
+        "household_demand": 1,
+        "gross_fixed_capital_formation": 1,
     },
 )
 def share_exp_roeu_vs_gfcfhdexp():
@@ -401,15 +410,16 @@ def share_exp_roeu_vs_gfcfhdexp():
 
 
 @component.add(
-    name='"share Exp RoW vs GFCF+HD+Exp"',
+    name='"share_Exp_RoW_vs_GFCF+HD+Exp"',
+    units="Dmnl",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "exports_demand_to_row": 2,
+        "household_demand": 1,
         "gross_fixed_capital_formation": 1,
         "exports_demand_to_roeu": 1,
-        "household_demand": 1,
     },
 )
 def share_exp_row_vs_gfcfhdexp():
@@ -425,16 +435,16 @@ def share_exp_row_vs_gfcfhdexp():
 
 
 @component.add(
-    name='"share GFCF vs GFCF+HD+Exp"',
+    name='"share_GFCF_vs_GFCF+HD+Exp"',
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 2,
-        "exports_demand_to_roeu": 1,
-        "household_demand": 1,
         "exports_demand_to_row": 1,
+        "household_demand": 1,
+        "exports_demand_to_roeu": 1,
     },
 )
 def share_gfcf_vs_gfcfhdexp():
@@ -450,28 +460,28 @@ def share_gfcf_vs_gfcfhdexp():
 
 
 @component.add(
-    name="total demand",
+    name="total_demand",
     units="Tdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"demand_by_sector_fd_aut": 1},
+    depends_on={"demand_by_sector_fd_cat": 1, "m_to_t": 1},
 )
 def total_demand():
     """
     Total final demand
     """
     return (
-        sum(demand_by_sector_fd_aut().rename({"sectors": "sectors!"}), dim=["sectors!"])
-        / 1000000.0
+        sum(demand_by_sector_fd_cat().rename({"sectors": "sectors!"}), dim=["sectors!"])
+        * m_to_t()
     )
 
 
 @component.add(
-    name="total demand adjusted",
+    name="total_demand_adjusted",
     units="Tdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"demand_by_sector_fd_adjusted": 1},
+    depends_on={"demand_by_sector_fd_adjusted": 1, "m_to_t": 1},
 )
 def total_demand_adjusted():
     """
@@ -482,27 +492,27 @@ def total_demand_adjusted():
             demand_by_sector_fd_adjusted().rename({"sectors": "sectors!"}),
             dim=["sectors!"],
         )
-        / 1000000.0
+        * m_to_t()
     )
 
 
 @component.add(
-    name="variation demand flow FD AUT",
-    units="Mdollars/Year",
+    name="variation_demand_flow_FD_CAT",
+    units="M$/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "historic_variation_demand": 1,
-        "variation_exports_demand_to_roeu": 1,
+        "share_consum_goverment_and_inventories": 1,
+        "variation_gfcf": 1,
         "variation_exports_demand_to_row": 1,
         "variation_household_demand": 1,
-        "variation_gfcf": 1,
-        "share_consum_goverment_and_inventories": 1,
+        "variation_exports_demand_to_roeu": 1,
     },
 )
-def variation_demand_flow_fd_aut():
+def variation_demand_flow_fd_cat():
     """
     variation of final demand by EU28 industrial sectors
     """

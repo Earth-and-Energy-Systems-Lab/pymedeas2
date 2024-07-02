@@ -34,7 +34,7 @@ copyright = '2021, Roger Samsó, Eneko Martin Martinez, Enric Alcover'
 author = 'Roger Samsó, Eneko Martin Martinez, Enric Alcover'
 
 # The full version, including alpha/beta/rc tags
-exec(open('../pytools/_version.py').read())
+exec(open('../tools/_version.py').read())
 release = __version__
 
 
@@ -79,6 +79,3 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = '`pymedeas2`-doc'
-
-
-

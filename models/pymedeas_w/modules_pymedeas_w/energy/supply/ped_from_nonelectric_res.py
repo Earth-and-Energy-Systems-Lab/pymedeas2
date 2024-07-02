@@ -1,11 +1,10 @@
 """
-Module ped_from_nonelectric_res
-Translated using PySD version 3.2.0
+Module energy.supply.ped_from_nonelectric_res
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name='"Max potential PE non-electric RES"',
+    name='"Max_potential_PE_non-electric_RES"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -22,7 +21,7 @@ def max_potential_pe_nonelectric_res():
 
 
 @component.add(
-    name='"PE supply from RES non-elec without trad bioE EJ"',
+    name='"PE_supply_from_RES_non-elec_without_trad_bioE_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -44,13 +43,13 @@ def pe_supply_from_res_nonelec_without_trad_bioe_ej():
 
 
 @component.add(
-    name='"PE supply RES non-Elec EJ"',
+    name='"PE_supply_RES_non-Elec_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pe_supply_from_res_nonelec_without_trad_bioe_ej": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "pe_traditional_biomass_ej_delayed": 1,
         "losses_in_charcoal_plants_ej": 1,
     },
 )
@@ -60,6 +59,6 @@ def pe_supply_res_nonelec_ej():
     """
     return (
         pe_supply_from_res_nonelec_without_trad_bioe_ej()
-        + pe_traditional_biomass_ej_delayed_1yr()
+        + pe_traditional_biomass_ej_delayed()
         + losses_in_charcoal_plants_ej()
     )

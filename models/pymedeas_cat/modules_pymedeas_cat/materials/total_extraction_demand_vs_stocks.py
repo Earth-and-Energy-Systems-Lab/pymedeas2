@@ -1,11 +1,10 @@
 """
-Module total_extraction_demand_vs_stocks
-Translated using PySD version 3.2.0
+Module materials.total_extraction_demand_vs_stocks
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="cum materials to extract for alt techn from 2015 EU",
+    name="cum_materials_to_extract_for_alt_techn_from_2015_EU",
     units="Mt",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -26,8 +25,8 @@ def cum_materials_to_extract_for_alt_techn_from_2015_eu():
 
 
 @component.add(
-    name="current mineral reserves Mt",
-    units="Mdollars",
+    name="current_mineral_reserves_Mt",
+    units="Mt",
     subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
@@ -52,8 +51,8 @@ _ext_constant_current_mineral_reserves_mt = ExtConstant(
 
 
 @component.add(
-    name="current mineral resources Mt",
-    units="Mdollars",
+    name="current_mineral_resources_Mt",
+    units="Mt",
     subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
@@ -78,19 +77,19 @@ _ext_constant_current_mineral_resources_mt = ExtConstant(
 
 
 @component.add(
-    name='"materials availability (reserves)"',
+    name='"materials_availability_(reserves)"',
     units="Dmnl",
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"share_cum_materials_to_extract_alt_techn_aut_vs_reserves_world": 1},
+    depends_on={"share_cum_materials_to_extract_alt_techn_cat_vs_reserves_world": 1},
 )
 def materials_availability_reserves():
     """
     =1 while the cumulative demand is lower than the estimated resources, and =0 when the cumulative demand surpasses the estimated resources.
     """
     return if_then_else(
-        share_cum_materials_to_extract_alt_techn_aut_vs_reserves_world() < 1,
+        share_cum_materials_to_extract_alt_techn_cat_vs_reserves_world() < 1,
         lambda: xr.DataArray(
             1, {"materials": _subscript_dict["materials"]}, ["materials"]
         ),
@@ -101,19 +100,19 @@ def materials_availability_reserves():
 
 
 @component.add(
-    name='"materials availability (resources)"',
+    name='"materials_availability_(resources)"',
     units="Dmnl",
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"share_cum_materials_to_extract_alt_techn_aut_vs_resources_world": 1},
+    depends_on={"share_cum_materials_to_extract_alt_techn_cat_vs_resources_world": 1},
 )
 def materials_availability_resources():
     """
     =1 while the cumulative demand is lower than the estimated reserves, and =0 when the cumulative demand surpasses the estimated reserves.
     """
     return if_then_else(
-        share_cum_materials_to_extract_alt_techn_aut_vs_resources_world() < 1,
+        share_cum_materials_to_extract_alt_techn_cat_vs_resources_world() < 1,
         lambda: xr.DataArray(
             1, {"materials": _subscript_dict["materials"]}, ["materials"]
         ),
@@ -124,7 +123,7 @@ def materials_availability_resources():
 
 
 @component.add(
-    name="share cum materials to extract alt techn AUT vs reserves World",
+    name="share_cum_materials_to_extract_alt_techn_CAT_vs_reserves_World",
     units="Dmnl",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -134,7 +133,7 @@ def materials_availability_resources():
         "current_mineral_reserves_mt": 1,
     },
 )
-def share_cum_materials_to_extract_alt_techn_aut_vs_reserves_world():
+def share_cum_materials_to_extract_alt_techn_cat_vs_reserves_world():
     """
     Annual demand of materials for alternative technologies vs. current EU extraction of each material.
     """
@@ -145,7 +144,7 @@ def share_cum_materials_to_extract_alt_techn_aut_vs_reserves_world():
 
 
 @component.add(
-    name="share cum materials to extract alt techn AUT vs resources World",
+    name="share_cum_materials_to_extract_alt_techn_CAT_vs_resources_World",
     units="Dmnl",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -155,7 +154,7 @@ def share_cum_materials_to_extract_alt_techn_aut_vs_reserves_world():
         "current_mineral_resources_mt": 1,
     },
 )
-def share_cum_materials_to_extract_alt_techn_aut_vs_resources_world():
+def share_cum_materials_to_extract_alt_techn_cat_vs_resources_world():
     """
     Annual demand of materials for alternative technologies vs. current EU extraction of each material.
     """
@@ -166,8 +165,8 @@ def share_cum_materials_to_extract_alt_techn_aut_vs_resources_world():
 
 
 @component.add(
-    name='"Total materials to extract alt techn Mt/yr"',
-    units="Mt",
+    name='"Total_materials_to_extract_alt_techn_Mt/yr"',
+    units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",

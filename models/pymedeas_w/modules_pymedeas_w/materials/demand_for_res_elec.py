@@ -1,36 +1,10 @@
 """
-Module demand_for_res_elec
-Translated using PySD version 3.2.0
+Module materials.demand_for_res_elec
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name='"materials required for O&M RES elec Mt"',
-    units="Mt",
-    subscripts=["RES elec", "materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "installed_capacity_res_elec": 1,
-        "materials_for_om_per_capacity_installed_res_elec": 1,
-        "m_per_t": 1,
-        "kg_per_mt": 1,
-    },
-)
-def materials_required_for_om_res_elec_mt():
-    """
-    Annual materials required for the operation and maintenance of the capacity of RES for electricity in operation by technology.
-    """
-    return (
-        installed_capacity_res_elec()
-        * materials_for_om_per_capacity_installed_res_elec()
-        * m_per_t()
-        / kg_per_mt()
-    )
-
-
-@component.add(
-    name="cum materials requirements for RES elec",
+    name="cum_materials_requirements_for_RES_elec",
     units="Mt",
     subscripts=["materials"],
     comp_type="Stateful",
@@ -62,7 +36,7 @@ _integ_cum_materials_requirements_for_res_elec = Integ(
 
 
 @component.add(
-    name="cum materials to extract for RES elec",
+    name="cum_materials_to_extract_for_RES_elec",
     units="Mt",
     subscripts=["materials"],
     comp_type="Stateful",
@@ -94,7 +68,7 @@ _integ_cum_materials_to_extract_for_res_elec = Integ(
 
 
 @component.add(
-    name="cum materials to extract for RES elec from 2015",
+    name="cum_materials_to_extract_for_RES_elec_from_2015",
     units="Mt",
     subscripts=["materials"],
     comp_type="Stateful",
@@ -126,7 +100,7 @@ _integ_cum_materials_to_extract_for_res_elec_from_2015 = Integ(
 
 
 @component.add(
-    name='"include materials for overgrids?"',
+    name='"include_materials_for_overgrids?"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -139,7 +113,7 @@ def include_materials_for_overgrids():
 
 
 @component.add(
-    name="initial cumulated material requirements for RES elec 1995",
+    name="initial_cumulated_material_requirements_for_RES_elec_1995",
     units="Mt",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -149,7 +123,7 @@ def initial_cumulated_material_requirements_for_res_elec_1995():
 
 
 @component.add(
-    name="kg per Mt", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+    name="kg_per_Mt", units="kg/Mt", comp_type="Constant", comp_subtype="Normal"
 )
 def kg_per_mt():
     """
@@ -159,19 +133,9 @@ def kg_per_mt():
 
 
 @component.add(
-    name="M per T", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
-)
-def m_per_t():
-    """
-    Conversion factor from Tera (T, 1e12) to Mega (M, 1e6).
-    """
-    return 1000000.0
-
-
-@component.add(
-    name="materials for new RES elec per capacity installed",
+    name="materials_for_new_RES_elec_per_capacity_installed",
     units="kg/MW",
-    subscripts=["RES elec", "materials"],
+    subscripts=["RES_elec", "materials"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -185,13 +149,13 @@ def materials_for_new_res_elec_per_capacity_installed():
     value = xr.DataArray(
         np.nan,
         {
-            "RES elec": _subscript_dict["RES elec"],
+            "RES_elec": _subscript_dict["RES_elec"],
             "materials": _subscript_dict["materials"],
         },
-        ["RES elec", "materials"],
+        ["RES_elec", "materials"],
     )
-    value.loc[_subscript_dict["RES ELEC DISPATCHABLE"], :] = 0
-    value.loc[_subscript_dict["RES ELEC VARIABLE"], :] = (
+    value.loc[_subscript_dict["RES_ELEC_DISPATCHABLE"], :] = 0
+    value.loc[_subscript_dict["RES_ELEC_VARIABLE"], :] = (
         materials_per_new_capacity_installed_res()
         + (
             (
@@ -205,11 +169,11 @@ def materials_for_new_res_elec_per_capacity_installed():
 
 
 @component.add(
-    name='"materials for O&M per capacity installed RES elec"',
-    units="kg/MW",
-    subscripts=["RES elec", "materials"],
+    name='"materials_for_O&M_per_capacity_installed_RES_elec"',
+    units="kg/(MW*year)",
+    subscripts=["RES_elec", "materials"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
     depends_on={
         "__external__": "_ext_constant_materials_for_om_per_capacity_installed_res_elec"
     },
@@ -221,15 +185,19 @@ def materials_for_om_per_capacity_installed_res_elec():
     value = xr.DataArray(
         np.nan,
         {
-            "RES elec": _subscript_dict["RES elec"],
+            "RES_elec": _subscript_dict["RES_elec"],
             "materials": _subscript_dict["materials"],
         },
-        ["RES elec", "materials"],
+        ["RES_elec", "materials"],
     )
-    value.loc[_subscript_dict["RES ELEC DISPATCHABLE"], :] = 0
-    value.loc[
-        ["wind onshore", "wind offshore", "solar PV", "CSP"], :
-    ] = _ext_constant_materials_for_om_per_capacity_installed_res_elec().values
+    value.loc[_subscript_dict["RES_ELEC_DISPATCHABLE"], :] = 0
+    def_subs = xr.zeros_like(value, dtype=bool)
+    def_subs.loc[["wind_onshore", "wind_offshore", "solar_PV", "CSP"], :] = True
+    value.values[
+        def_subs.values
+    ] = _ext_constant_materials_for_om_per_capacity_installed_res_elec().values[
+        def_subs.values
+    ]
     return value
 
 
@@ -238,12 +206,12 @@ _ext_constant_materials_for_om_per_capacity_installed_res_elec = ExtConstant(
     "Global",
     "materials_for_om_per_capacity_installed_res_elec*",
     {
-        "RES elec": _subscript_dict["RES ELEC VARIABLE"],
+        "RES_elec": _subscript_dict["RES_ELEC_VARIABLE"],
         "materials": _subscript_dict["materials"],
     },
     _root,
     {
-        "RES elec": ["wind onshore", "wind offshore", "solar PV", "CSP"],
+        "RES_elec": _subscript_dict["RES_elec"],
         "materials": _subscript_dict["materials"],
     },
     "_ext_constant_materials_for_om_per_capacity_installed_res_elec",
@@ -251,9 +219,9 @@ _ext_constant_materials_for_om_per_capacity_installed_res_elec = ExtConstant(
 
 
 @component.add(
-    name="materials per new capacity installed RES",
+    name="materials_per_new_capacity_installed_RES",
     units="kg/MW",
-    subscripts=["RES ELEC VARIABLE", "materials"],
+    subscripts=["RES_ELEC_VARIABLE", "materials"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
@@ -272,12 +240,12 @@ _ext_constant_materials_per_new_capacity_installed_res = ExtConstant(
     "Global",
     "materials_per_new_capacity_installed_res*",
     {
-        "RES ELEC VARIABLE": _subscript_dict["RES ELEC VARIABLE"],
+        "RES_ELEC_VARIABLE": _subscript_dict["RES_ELEC_VARIABLE"],
         "materials": _subscript_dict["materials"],
     },
     _root,
     {
-        "RES ELEC VARIABLE": _subscript_dict["RES ELEC VARIABLE"],
+        "RES_ELEC_VARIABLE": _subscript_dict["RES_ELEC_VARIABLE"],
         "materials": _subscript_dict["materials"],
     },
     "_ext_constant_materials_per_new_capacity_installed_res",
@@ -285,7 +253,7 @@ _ext_constant_materials_per_new_capacity_installed_res = ExtConstant(
 
 
 @component.add(
-    name="materials per new RES elec capacity installed HVDCs",
+    name="materials_per_new_RES_elec_capacity_installed_HVDCs",
     units="kg/MW",
     subscripts=["materials"],
     comp_type="Constant",
@@ -313,7 +281,7 @@ _ext_constant_materials_per_new_res_elec_capacity_installed_hvdcs = ExtConstant(
 
 
 @component.add(
-    name="materials per new RES elec capacity installed material overgrid high power",
+    name="materials_per_new_RES_elec_capacity_installed_material_overgrid_high_power",
     units="kg/MW",
     subscripts=["materials"],
     comp_type="Constant",
@@ -343,15 +311,15 @@ _ext_constant_materials_per_new_res_elec_capacity_installed_material_overgrid_hi
 
 
 @component.add(
-    name="materials required for new RES elec Mt",
-    units="Mt",
-    subscripts=["RES elec", "materials"],
+    name="materials_required_for_new_RES_elec_Mt",
+    units="Mt/year",
+    subscripts=["RES_elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "res_elec_capacity_under_construction_tw": 1,
         "materials_for_new_res_elec_per_capacity_installed": 1,
-        "m_per_t": 1,
+        "mw_per_tw": 1,
         "kg_per_mt": 1,
     },
 )
@@ -362,14 +330,39 @@ def materials_required_for_new_res_elec_mt():
     return (
         res_elec_capacity_under_construction_tw()
         * materials_for_new_res_elec_per_capacity_installed()
-        * m_per_t()
+        * mw_per_tw()
         / kg_per_mt()
     )
 
 
 @component.add(
-    name="Total materials required for new RES elec Mt",
-    units="Mt",
+    name='"materials_required_for_O&M_RES_elec_Mt"',
+    units="Mt/year",
+    subscripts=["RES_elec", "materials"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "installed_capacity_res_elec": 1,
+        "materials_for_om_per_capacity_installed_res_elec": 1,
+        "mw_per_tw": 1,
+        "kg_per_mt": 1,
+    },
+)
+def materials_required_for_om_res_elec_mt():
+    """
+    Annual materials required for the operation and maintenance of the capacity of RES for electricity in operation by technology.
+    """
+    return (
+        installed_capacity_res_elec()
+        * materials_for_om_per_capacity_installed_res_elec()
+        * mw_per_tw()
+        / kg_per_mt()
+    )
+
+
+@component.add(
+    name="Total_materials_required_for_new_RES_elec_Mt",
+    units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -380,14 +373,14 @@ def total_materials_required_for_new_res_elec_mt():
     Total annual materials requirements per new installed capacity of RES for electricity generation.
     """
     return sum(
-        materials_required_for_new_res_elec_mt().rename({"RES elec": "RES elec!"}),
-        dim=["RES elec!"],
+        materials_required_for_new_res_elec_mt().rename({"RES_elec": "RES_elec!"}),
+        dim=["RES_elec!"],
     )
 
 
 @component.add(
-    name='"Total materials required for O&M RES elec Mt"',
-    units="Mt",
+    name='"Total_materials_required_for_O&M_RES_elec_Mt"',
+    units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -398,13 +391,13 @@ def total_materials_required_for_om_res_elec_mt():
     Total annual materials required for the operation and maintenance of the capacity of RES for electricity in operation by technology.
     """
     return sum(
-        materials_required_for_om_res_elec_mt().rename({"RES elec": "RES elec!"}),
-        dim=["RES elec!"],
+        materials_required_for_om_res_elec_mt().rename({"RES_elec": "RES_elec!"}),
+        dim=["RES_elec!"],
     )
 
 
 @component.add(
-    name="Total materials required for RES elec Mt",
+    name="Total_materials_required_for_RES_elec_Mt",
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -425,7 +418,7 @@ def total_materials_required_for_res_elec_mt():
 
 
 @component.add(
-    name="Total materials to extract for RES elec from 2015 Mt",
+    name="Total_materials_to_extract_for_RES_elec_from_2015_Mt",
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -446,7 +439,7 @@ def total_materials_to_extract_for_res_elec_from_2015_mt():
 
 
 @component.add(
-    name="Total materials to extract for RES elec Mt",
+    name="Total_materials_to_extract_for_RES_elec_Mt",
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -466,8 +459,8 @@ def total_materials_to_extract_for_res_elec_mt():
 
 
 @component.add(
-    name="Total recycled materials for RES elec Mt",
-    units="Mt",
+    name="Total_recycled_materials_for_RES_elec_Mt",
+    units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",

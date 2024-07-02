@@ -1,12 +1,11 @@
 """
-Module energy_indicators
-Translated using PySD version 3.2.0
+Module energy.supply.energy_indicators
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="Average elec consumption per capita",
-    units="kWh/people",
+    name="Average_elec_consumption_per_capita",
+    units="kWh/(year*people)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_fe_elec_consumption_twh": 1, "kwh_per_twh": 1, "population": 1},
@@ -19,7 +18,7 @@ def average_elec_consumption_per_capita():
 
 
 @component.add(
-    name="Average TPES per capita",
+    name="Average_TPES_per_capita",
     units="GJ/(year*people)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -33,8 +32,8 @@ def average_tpes_per_capita():
 
 
 @component.add(
-    name='"Average TPESpc (without trad biomass)"',
-    units="GJ/people",
+    name='"Average_TPESpc_(without_trad_biomass)"',
+    units="GJ/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -53,7 +52,7 @@ def average_tpespc_without_trad_biomass():
 
 
 @component.add(
-    name="GJ per EJ", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+    name="GJ_per_EJ", units="GJ/EJ", comp_type="Constant", comp_subtype="Normal"
 )
 def gj_per_ej():
     """
@@ -63,7 +62,7 @@ def gj_per_ej():
 
 
 @component.add(
-    name="kWh per TWh", units="kWh/TWh", comp_type="Constant", comp_subtype="Normal"
+    name="kWh_per_TWh", units="kWh/TWh", comp_type="Constant", comp_subtype="Normal"
 )
 def kwh_per_twh():
     """
@@ -73,8 +72,8 @@ def kwh_per_twh():
 
 
 @component.add(
-    name="Net TFEC per capita",
-    units="GJ/person",
+    name="Net_TFEC_per_capita",
+    units="GJ/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_tfec": 1, "gj_per_ej": 1, "population": 1},
@@ -84,7 +83,7 @@ def net_tfec_per_capita():
 
 
 @component.add(
-    name="Pop not dependent on trad biomass",
+    name="Pop_not_dependent_on_trad_biomass",
     units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -98,8 +97,8 @@ def pop_not_dependent_on_trad_biomass():
 
 
 @component.add(
-    name="TFEC from RES per capita",
-    units="GJ/person",
+    name="TFEC_from_RES_per_capita",
+    units="GJ/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"tfec_res_ej": 1, "gj_per_ej": 1, "population": 1},
@@ -109,8 +108,8 @@ def tfec_from_res_per_capita():
 
 
 @component.add(
-    name="TFEC per capita",
-    units="GJ/person",
+    name="TFEC_per_capita",
+    units="GJ/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_tfec": 1, "gj_per_ej": 1, "population": 1},
@@ -120,8 +119,8 @@ def tfec_per_capita():
 
 
 @component.add(
-    name="TFEC RES EJ",
-    units="EJ",
+    name="TFEC_RES_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -146,14 +145,14 @@ def tfec_res_ej():
 
 
 @component.add(
-    name='"TPES (without trad biomass)"',
-    units="EJ",
+    name='"TPES_(without_trad_biomass)"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"tpes_ej": 1, "pe_traditional_biomass_ej_delayed_1yr": 1},
+    depends_on={"tpes_ej": 1, "pe_traditional_biomass_ej_delayed": 1},
 )
 def tpes_without_trad_biomass():
     """
     TPES without accounting for traditional biomass.
     """
-    return tpes_ej() - pe_traditional_biomass_ej_delayed_1yr()
+    return tpes_ej() - pe_traditional_biomass_ej_delayed()

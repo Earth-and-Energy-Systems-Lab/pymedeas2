@@ -1,33 +1,51 @@
 """
-Module total_fe_elec_generation
-Translated using PySD version 3.2.0
+Module energy.supply.total_fe_elec_generation
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="Abundance electricity",
+    name="Abundance_electricity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_fe_elec_generation_twh_aut": 2, "total_fe_elec_demand_twh": 3},
+    depends_on={"total_fe_elec_consumption_twh": 2, "fe_demand_elec_consum_twh": 3},
 )
 def abundance_electricity():
     """
     The parameter abundance varies between (1;0). Abundance=1 while the supply covers the demand; the closest to 0 indicates a higher divergence between supply and demand.
     """
     return if_then_else(
-        total_fe_elec_generation_twh_aut() > total_fe_elec_demand_twh(),
+        total_fe_elec_consumption_twh() > fe_demand_elec_consum_twh(),
         lambda: 1,
         lambda: 1
         - zidz(
-            total_fe_elec_demand_twh() - total_fe_elec_generation_twh_aut(),
-            total_fe_elec_demand_twh(),
+            fe_demand_elec_consum_twh() - total_fe_elec_consumption_twh(),
+            fe_demand_elec_consum_twh(),
         ),
     )
 
 
 @component.add(
-    name="Annual growth rate electricity generation RES elec tot",
+    name="abundance_NRE_elec",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"fe_elec_generation_from_nre_twh": 2, "demand_elec_nre_twh": 3},
+)
+def abundance_nre_elec():
+    return if_then_else(
+        fe_elec_generation_from_nre_twh() > demand_elec_nre_twh(),
+        lambda: 1,
+        lambda: 1
+        - zidz(
+            demand_elec_nre_twh() - fe_elec_generation_from_nre_twh(),
+            demand_elec_nre_twh(),
+        ),
+    )
+
+
+@component.add(
+    name="Annual_growth_rate_electricity_generation_RES_elec_tot",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -48,88 +66,75 @@ def annual_growth_rate_electricity_generation_res_elec_tot():
 
 
 @component.add(
-    name="FE Elec generation from coal TWh",
-    units="TWh/Year",
+    name="FE_Elec_generation_FF_TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "extraction_coal_aut": 1,
-        "imports_aut_coal_from_row_ej": 1,
-        "efficiency_coal_for_electricity": 1,
-        "share_coal_dem_for_elec": 1,
-        "ej_per_twh": 1,
-    },
+    depends_on={"fe_elec_generation_from_fossil_fuels": 1, "ej_per_twh": 1},
 )
-def fe_elec_generation_from_coal_twh():
-    """
-    Final energy electricity generation from coal (TWh).
-    """
+def fe_elec_generation_ff_twh():
     return (
-        (extraction_coal_aut() + imports_aut_coal_from_row_ej())
-        * efficiency_coal_for_electricity()
-        * share_coal_dem_for_elec()
+        sum(
+            fe_elec_generation_from_fossil_fuels().rename(
+                {"fossil_fuels": "fossil_fuels!"}
+            ),
+            dim=["fossil_fuels!"],
+        )
         / ej_per_twh()
     )
 
 
 @component.add(
-    name="FE Elec generation from conv gas TWh",
-    units="TWh/Year",
+    name="FE_Elec_generation_from_fossil_fuels",
+    units="EJ/year",
+    subscripts=["fossil_fuels"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "real_extraction_conv_gas_ej": 1,
-        "imports_aut_conv_gas_from_row_ej": 1,
-        "share_nat_gas_dem_for_elec": 1,
+        "fes_elec_fossil_fuel_chp_plants_ej": 3,
+        "pec_nat_gas": 1,
         "efficiency_gas_for_electricity": 1,
-        "ej_per_twh": 1,
+        "share_gas_elec_plants": 1,
+        "share_coal_elec_plants": 1,
+        "efficiency_coal_for_electricity": 1,
+        "pec_coal": 1,
+        "pec_total_oil": 1,
+        "share_oil_elec_plants": 1,
+        "efficiency_liquids_for_electricity": 1,
     },
 )
-def fe_elec_generation_from_conv_gas_twh():
-    """
-    Final energy electricity generation from conventional gas (TWh).
-    """
-    return (
-        (real_extraction_conv_gas_ej() + imports_aut_conv_gas_from_row_ej())
-        * share_nat_gas_dem_for_elec()
-        * efficiency_gas_for_electricity()
-        / ej_per_twh()
-    )
-
-
-@component.add(
-    name="FE Elec generation from fossil fuels TWh",
-    units="TWh/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "fe_elec_generation_from_coal_twh": 1,
-        "fe_elec_generation_from_conv_gas_twh": 1,
-        "fe_elec_generation_from_unconv_gas_twh": 1,
-        "fe_elec_generation_from_total_oil_twh": 1,
-        "fes_elec_fossil_fuel_chp_plants_twh": 1,
-    },
-)
-def fe_elec_generation_from_fossil_fuels_twh():
+def fe_elec_generation_from_fossil_fuels():
     """
     Final energy electricity generation from fossil fuels (TWh).
     """
-    return (
-        fe_elec_generation_from_coal_twh()
-        + fe_elec_generation_from_conv_gas_twh()
-        + fe_elec_generation_from_unconv_gas_twh()
-        + fe_elec_generation_from_total_oil_twh()
-        + fes_elec_fossil_fuel_chp_plants_twh()
+    value = xr.DataArray(
+        np.nan, {"fossil_fuels": _subscript_dict["fossil_fuels"]}, ["fossil_fuels"]
     )
+    value.loc[["natural_gas"]] = (
+        float(fes_elec_fossil_fuel_chp_plants_ej().loc["natural_gas"])
+        + share_gas_elec_plants() * pec_nat_gas() * efficiency_gas_for_electricity()
+    )
+    value.loc[["coal"]] = (
+        float(fes_elec_fossil_fuel_chp_plants_ej().loc["coal"])
+        + pec_coal() * share_coal_elec_plants() * efficiency_coal_for_electricity()
+    )
+    value.loc[["oil"]] = (
+        float(fes_elec_fossil_fuel_chp_plants_ej().loc["oil"])
+        + pec_total_oil()
+        * share_oil_elec_plants()
+        * efficiency_liquids_for_electricity()
+    )
+    return value
 
 
 @component.add(
-    name="FE Elec generation from NRE TWh",
-    units="TWh/Year",
+    name="FE_Elec_generation_from_NRE_TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "fe_elec_generation_from_fossil_fuels_twh": 1,
+        "fe_elec_generation_from_fossil_fuels": 1,
+        "ej_per_twh": 1,
         "fe_nuclear_elec_generation_twh": 1,
     },
 )
@@ -137,66 +142,25 @@ def fe_elec_generation_from_nre_twh():
     """
     Electricity generation from non-renewable resources (fossil fuels and uranium).
     """
-    return fe_elec_generation_from_fossil_fuels_twh() + fe_nuclear_elec_generation_twh()
-
-
-@component.add(
-    name="FE Elec generation from total oil TWh",
-    units="TWh/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "pes_total_oil_ej_aut": 1,
-        "imports_aut_total_oil_from_row_ej": 1,
-        "share_oil_dem_for_elec": 1,
-        "efficiency_liquids_for_electricity": 1,
-        "ej_per_twh": 1,
-    },
-)
-def fe_elec_generation_from_total_oil_twh():
-    """
-    Electricity generation (final energy) from total oil.
-    """
     return (
-        (pes_total_oil_ej_aut() + imports_aut_total_oil_from_row_ej())
-        * share_oil_dem_for_elec()
-        * efficiency_liquids_for_electricity()
+        sum(
+            fe_elec_generation_from_fossil_fuels().rename(
+                {"fossil_fuels": "fossil_fuels!"}
+            ),
+            dim=["fossil_fuels!"],
+        )
         / ej_per_twh()
+        + fe_nuclear_elec_generation_twh()
     )
 
 
 @component.add(
-    name="FE Elec generation from unconv gas TWh",
-    units="TWh/Year",
+    name="FE_nuclear_Elec_generation_TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "real_extraction_unconv_gas_ej": 1,
-        "imports_aut_unconv_gas_from_row_ej": 1,
-        "share_nat_gas_dem_for_elec": 1,
-        "efficiency_gas_for_electricity": 1,
-        "ej_per_twh": 1,
-    },
-)
-def fe_elec_generation_from_unconv_gas_twh():
-    """
-    Final energy electricity generation from unconventional gas (TWh).
-    """
-    return (
-        (real_extraction_unconv_gas_ej() + imports_aut_unconv_gas_from_row_ej())
-        * share_nat_gas_dem_for_elec()
-        * efficiency_gas_for_electricity()
-        / ej_per_twh()
-    )
-
-
-@component.add(
-    name="FE nuclear Elec generation TWh",
-    units="TWh/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "extraction_uranium_ej_aut": 1,
+        "extraction_uranium_ej_cat": 1,
         "extraction_uranium_row": 1,
         "efficiency_uranium_for_electricity": 1,
         "ej_per_twh": 1,
@@ -207,15 +171,15 @@ def fe_nuclear_elec_generation_twh():
     Final energy electricity generation from uranium (TWh).
     """
     return (
-        (extraction_uranium_ej_aut() + extraction_uranium_row())
+        (extraction_uranium_ej_cat() + extraction_uranium_row())
         * efficiency_uranium_for_electricity()
         / ej_per_twh()
     )
 
 
 @component.add(
-    name="FE tot generation all RES elec TWh delayed 1yr",
-    units="Tdollars/Year",
+    name="FE_tot_generation_all_RES_elec_TWh_delayed_1yr",
+    units="TWh/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr": 1},
@@ -243,14 +207,14 @@ _delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="FES elec from BioW",
-    units="TWh",
+    name="FES_elec_from_BioW",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "real_generation_res_elec_twh": 1,
         "fes_elec_from_biogas_twh": 1,
-        "fes_elec_from_waste_twh": 1,
+        "fes_elec_from_waste": 1,
     },
 )
 def fes_elec_from_biow():
@@ -258,32 +222,32 @@ def fes_elec_from_biow():
     Electricity generation of total bioenergy and waste (to compare with more common statistics).
     """
     return (
-        float(real_generation_res_elec_twh().loc["solid bioE elec"])
+        float(real_generation_res_elec_twh().loc["solid_bioE_elec"])
         + fes_elec_from_biogas_twh()
-        + fes_elec_from_waste_twh()
+        + fes_elec_from_waste()
     )
 
 
 @component.add(
-    name="share RES electricity generation",
+    name="share_RES_electricity_generation",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "fe_tot_generation_all_res_elec_twh": 1,
-        "total_fe_elec_generation_twh_aut": 1,
+        "total_fe_elec_generation_twh_cat": 1,
     },
 )
 def share_res_electricity_generation():
     """
     Share of RES in the electricity generation.
     """
-    return fe_tot_generation_all_res_elec_twh() / total_fe_elec_generation_twh_aut()
+    return fe_tot_generation_all_res_elec_twh() / total_fe_elec_generation_twh_cat()
 
 
 @component.add(
-    name="Total FE Elec consumption EJ",
-    units="EJ",
+    name="Total_FE_Elec_consumption_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_fe_elec_consumption_twh": 1, "ej_per_twh": 1},
@@ -296,50 +260,53 @@ def total_fe_elec_consumption_ej():
 
 
 @component.add(
-    name="Total FE Elec consumption TWh",
-    units="TWh/Year",
+    name="Total_FE_Elec_consumption_TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "total_fe_elec_generation_twh_aut": 1,
-        "importsexports_electricity": 1,
+        "fe_demand_elec_consum_twh": 1,
         "share_transmdistr_elec_losses": 1,
+        "elec_exports_share": 1,
+        "total_fe_elec_generation_twh_cat": 1,
     },
 )
 def total_fe_elec_consumption_twh():
     """
     Total final energy electricity consumption (fossil fuels, nuclear, waste & renewables) (TWh) excluding distribution losses.
     """
-    return (total_fe_elec_generation_twh_aut() + importsexports_electricity()) / (
-        1 + share_transmdistr_elec_losses()
+    return np.minimum(
+        fe_demand_elec_consum_twh(),
+        total_fe_elec_generation_twh_cat()
+        / (1 + share_transmdistr_elec_losses() + elec_exports_share()),
     )
 
 
 @component.add(
-    name="Total FE Elec generation TWh AUT",
-    units="TWh/Year",
+    name="Total_FE_Elec_generation_TWh_CAT",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "fe_elec_generation_from_nre_twh": 1,
         "fe_tot_generation_all_res_elec_twh": 1,
-        "fes_elec_from_waste_twh": 1,
+        "fes_elec_from_waste": 1,
     },
 )
-def total_fe_elec_generation_twh_aut():
+def total_fe_elec_generation_twh_cat():
     """
     Total final energy electricity generation (fossil fuels, nuclear, waste & renewables) (TWh).
     """
     return (
         fe_elec_generation_from_nre_twh()
         + fe_tot_generation_all_res_elec_twh()
-        + fes_elec_from_waste_twh()
+        + fes_elec_from_waste()
     )
 
 
 @component.add(
-    name="Year scarcity Elec",
-    units="Year",
+    name="Year_scarcity_Elec",
+    units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"abundance_electricity": 1, "time": 1},

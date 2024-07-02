@@ -1,0 +1,16 @@
+{
+    "model_arguments": {
+        "initial_time": 1995.0,
+        "time_step": 0.03125,
+        "final_time": 2050.0,
+        "return_timestamp": 1.0,
+        "update_initials": {}
+    },
+    "aggregation": "14sectors_cat",
+    "region": "pymedeas_w",
+    "silent": false,
+    "headless": false,
+    "missing_values": "warning",
+    "scenario_sheet": "NZP",
+    "progress": true
+}

@@ -1,0 +1,140 @@
+"""
+Module climate.emissions_per_sector
+Translated using PySD version 3.14.0
+"""
+
+@component.add(
+    name="CH4_emissions_households_and_sectors",
+    units="MtCH4/year",
+    subscripts=["final_sources", "SECTORS_and_HOUSEHOLDS"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "ch4_emissions_per_fuel": 1,
+        "share_energy_consumption_from_households_and_sectors": 1,
+    },
+)
+def ch4_emissions_households_and_sectors():
+    return (
+        ch4_emissions_per_fuel()
+        * share_energy_consumption_from_households_and_sectors()
+    )
+
+
+@component.add(
+    name="CO2_emissions_households_and_sectors",
+    units="GtCO2/year",
+    subscripts=["SECTORS_and_HOUSEHOLDS"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "co2_emissions_households_and_sectors_before_ccs": 1,
+        "co2_captured_sector_ccs": 1,
+    },
+)
+def co2_emissions_households_and_sectors():
+    """
+    CO2 emissions after substracting the CCS absorbed emissions
+    """
+    return (
+        sum(
+            co2_emissions_households_and_sectors_before_ccs().rename(
+                {"final_sources": "final_sources!"}
+            ),
+            dim=["final_sources!"],
+        )
+        - co2_captured_sector_ccs()
+    )
+
+
+@component.add(
+    name="CO2_emissions_households_and_sectors_before_ccs",
+    units="GtCO2/year",
+    subscripts=["final_sources", "SECTORS_and_HOUSEHOLDS"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "co2_emissions_per_fuel": 1,
+        "share_energy_consumption_from_households_and_sectors": 1,
+    },
+)
+def co2_emissions_households_and_sectors_before_ccs():
+    """
+    CO2 emissions per sector/househols and final source before substracting the captured by CCS technologies. The electricity and heat emissions correspond to the emissions produced by burning fossil fuels to generate electricity and heat for that sector/households.
+    """
+    return (
+        co2_emissions_per_fuel()
+        * share_energy_consumption_from_households_and_sectors()
+    )
+
+
+@component.add(
+    name="energy_consumption_from_households_and_sectors",
+    units="EJ/year",
+    subscripts=["final_sources", "SECTORS_and_HOUSEHOLDS"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "households_final_energy_demand": 1,
+        "real_final_energy_by_sector_and_fuel_eu": 1,
+    },
+)
+def energy_consumption_from_households_and_sectors():
+    value = xr.DataArray(
+        np.nan,
+        {
+            "final_sources": _subscript_dict["final_sources"],
+            "SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"],
+        },
+        ["final_sources", "SECTORS_and_HOUSEHOLDS"],
+    )
+    value.loc[:, ["Households"]] = (
+        households_final_energy_demand()
+        .expand_dims({"SECTORS_and_HOUSEHOLDS": ["Households"]}, 1)
+        .values
+    )
+    value.loc[:, _subscript_dict["sectors"]] = (
+        real_final_energy_by_sector_and_fuel_eu().values
+    )
+    return value
+
+
+@component.add(
+    name="share_energy_consumption_from_households_and_sectors",
+    units="Dmnl",
+    subscripts=["final_sources", "SECTORS_and_HOUSEHOLDS"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"energy_consumption_from_households_and_sectors": 2},
+)
+def share_energy_consumption_from_households_and_sectors():
+    return zidz(
+        energy_consumption_from_households_and_sectors(),
+        sum(
+            energy_consumption_from_households_and_sectors().rename(
+                {"SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!"}
+            ),
+            dim=["SECTORS_and_HOUSEHOLDS!"],
+        ).expand_dims(
+            {"SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"]}, 1
+        ),
+    )
+
+
+@component.add(
+    name="Total_CO2_emissions_GTCO2",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"co2_emissions_households_and_sectors_before_ccs": 1},
+)
+def total_co2_emissions_gtco2():
+    return sum(
+        co2_emissions_households_and_sectors_before_ccs().rename(
+            {
+                "final_sources": "final_sources!",
+                "SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!",
+            }
+        ),
+        dim=["final_sources!", "SECTORS_and_HOUSEHOLDS!"],
+    )

@@ -1,12 +1,11 @@
 """
-Module rest_demand
-Translated using PySD version 3.2.0
+Module materials.rest_demand
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="\"'a' extraction projection minerals\"",
-    units="Mt/year",
+    name="\"'a'_extraction_projection_minerals\"",
+    units="t/(year*year*T$)",
     subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
@@ -28,7 +27,7 @@ _ext_constant_a_extraction_projection_minerals = ExtConstant(
 
 
 @component.add(
-    name="cum materials to extract Rest",
+    name="cum_materials_to_extract_Rest",
     units="Mt",
     subscripts=["materials"],
     comp_type="Stateful",
@@ -60,7 +59,7 @@ _integ_cum_materials_to_extract_rest = Integ(
 
 
 @component.add(
-    name="cum materials to extract Rest from 2015",
+    name="cum_materials_to_extract_Rest_from_2015",
     units="Mt",
     subscripts=["materials"],
     comp_type="Stateful",
@@ -92,8 +91,8 @@ _integ_cum_materials_to_extract_rest_from_2015 = Integ(
 
 
 @component.add(
-    name="Historical extraction minerals Rest",
-    units="t",
+    name="Historical_extraction_minerals_Rest",
+    units="t/year",
     subscripts=["materials"],
     comp_type="Lookup",
     comp_subtype="External",
@@ -122,24 +121,24 @@ _ext_lookup_historical_extraction_minerals_rest = ExtLookup(
 
 
 @component.add(
-    name="Historical variation minerals extraction Rest",
-    units="t",
+    name="Historical_variation_minerals_extraction_Rest",
+    units="t/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "historical_extraction_minerals_rest": 2},
+    depends_on={"time": 2, "time_step": 1, "historical_extraction_minerals_rest": 2},
 )
 def historical_variation_minerals_extraction_rest():
     """
     Historical variation in the extraction of minerals of the rest of the economy.
     """
     return historical_extraction_minerals_rest(
-        time() + 1
+        time() + time_step()
     ) - historical_extraction_minerals_rest(time())
 
 
 @component.add(
-    name="initial cumulated material requirements for Rest 1995",
+    name="initial_cumulated_material_requirements_for_Rest_1995",
     units="Mt",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -149,8 +148,8 @@ def initial_cumulated_material_requirements_for_rest_1995():
 
 
 @component.add(
-    name="initial minerals extraction Rest",
-    units="t",
+    name="initial_minerals_extraction_Rest",
+    units="t/year",
     subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
@@ -175,7 +174,7 @@ _ext_constant_initial_minerals_extraction_rest = ExtConstant(
 
 
 @component.add(
-    name="Materials to extract Rest from 2015 Mt",
+    name="Materials_to_extract_Rest_from_2015_Mt",
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -196,7 +195,7 @@ def materials_to_extract_rest_from_2015_mt():
 
 
 @component.add(
-    name="Materials to extract Rest Mt",
+    name="Materials_to_extract_Rest_Mt",
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -211,8 +210,8 @@ def materials_to_extract_rest_mt():
 
 
 @component.add(
-    name="Minerals consumption estimation Rest cte rr",
-    units="Mt",
+    name="Minerals_consumption_estimation_Rest_cte_rr",
+    units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -231,8 +230,8 @@ def minerals_consumption_estimation_rest_cte_rr():
 
 
 @component.add(
-    name="Minerals extraction projection Rest cte rr",
-    units="Mt",
+    name="Minerals_extraction_projection_Rest_cte_rr",
+    units="Mt/year",
     subscripts=["materials"],
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -259,8 +258,8 @@ _integ_minerals_extraction_projection_rest_cte_rr = Integ(
 
 
 @component.add(
-    name="Minerals extraction projection Rest with rr",
-    units="Mt",
+    name="Minerals_extraction_projection_Rest_with_rr",
+    units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -279,7 +278,7 @@ def minerals_extraction_projection_rest_with_rr():
 
 
 @component.add(
-    name="Mt per t", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+    name="Mt_per_t", units="Mt/t", comp_type="Constant", comp_subtype="Normal"
 )
 def mt_per_t():
     """
@@ -289,7 +288,7 @@ def mt_per_t():
 
 
 @component.add(
-    name="share minerals consumption alt techn vs total economy",
+    name="share_minerals_consumption_alt_techn_vs_total_economy",
     units="Dmnl",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -308,7 +307,7 @@ def share_minerals_consumption_alt_techn_vs_total_economy():
 
 
 @component.add(
-    name='"Total materials required for RES elec + EV batteries Mt"',
+    name='"Total_materials_required_for_RES_elec_+_EV_batteries_Mt"',
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -326,8 +325,8 @@ def total_materials_required_for_res_elec_ev_batteries_mt():
 
 
 @component.add(
-    name="Total recycled materials for other Mt",
-    units="Mt",
+    name="Total_recycled_materials_for_other_Mt",
+    units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -344,18 +343,19 @@ def total_recycled_materials_for_other_mt():
 
 
 @component.add(
-    name="variation minerals extraction Rest",
-    units="Mt",
+    name="variation_minerals_extraction_Rest",
+    units="Mt/(year*year)",
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
+        "time_step": 1,
         "historical_variation_minerals_extraction_rest": 1,
-        "gdp": 1,
         "minerals_extraction_projection_rest_cte_rr": 1,
-        "a_extraction_projection_minerals": 1,
         "gdp_delayed_1yr": 1,
+        "a_extraction_projection_minerals": 1,
+        "gdp": 1,
         "mt_per_t": 1,
     },
 )
@@ -366,7 +366,7 @@ def variation_minerals_extraction_rest():
     return (
         if_then_else(
             time() < 2015,
-            lambda: historical_variation_minerals_extraction_rest(),
+            lambda: historical_variation_minerals_extraction_rest() / time_step(),
             lambda: if_then_else(
                 minerals_extraction_projection_rest_cte_rr() > 0.01,
                 lambda: a_extraction_projection_minerals()

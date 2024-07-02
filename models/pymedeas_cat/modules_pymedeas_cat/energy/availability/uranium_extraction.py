@@ -1,18 +1,17 @@
 """
-Module uranium_extraction
-Translated using PySD version 3.2.0
+Module energy.availability.uranium_extraction
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="abundance uranium",
+    name="abundance_uranium",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "pe_demand_uranium_aut_ej": 4,
-        "extraction_uranium_ej_aut": 2,
+        "pe_demand_uranium_cat_ej": 4,
         "extraction_uranium_row": 2,
+        "extraction_uranium_ej_cat": 2,
     },
 )
 def abundance_uranium():
@@ -21,50 +20,50 @@ def abundance_uranium():
     """
     return if_then_else(
         np.logical_or(
-            pe_demand_uranium_aut_ej() == 0,
-            extraction_uranium_ej_aut() + extraction_uranium_row()
-            > pe_demand_uranium_aut_ej(),
+            pe_demand_uranium_cat_ej() == 0,
+            extraction_uranium_ej_cat() + extraction_uranium_row()
+            > pe_demand_uranium_cat_ej(),
         ),
         lambda: 1,
         lambda: 1
         - (
-            pe_demand_uranium_aut_ej()
-            - extraction_uranium_ej_aut()
+            pe_demand_uranium_cat_ej()
+            - extraction_uranium_ej_cat()
             - extraction_uranium_row()
         )
-        / pe_demand_uranium_aut_ej(),
+        / pe_demand_uranium_cat_ej(),
     )
 
 
 @component.add(
-    name="av past AUT domestic uranium extraction",
-    units="tonnes",
+    name="av_past_CAT_domestic_uranium_extraction",
+    units="tonnes/year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
-        "__external__": "_ext_constant_av_past_aut_domestic_uranium_extraction"
+        "__external__": "_ext_constant_av_past_cat_domestic_uranium_extraction"
     },
 )
-def av_past_aut_domestic_uranium_extraction():
+def av_past_cat_domestic_uranium_extraction():
     """
     Average 2010-2015 past uranium extraction in the UE.
     """
-    return _ext_constant_av_past_aut_domestic_uranium_extraction()
+    return _ext_constant_av_past_cat_domestic_uranium_extraction()
 
 
-_ext_constant_av_past_aut_domestic_uranium_extraction = ExtConstant(
+_ext_constant_av_past_cat_domestic_uranium_extraction = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "historic_average_domestic_uranium_extraction",
     {},
     _root,
     {},
-    "_ext_constant_av_past_aut_domestic_uranium_extraction",
+    "_ext_constant_av_past_cat_domestic_uranium_extraction",
 )
 
 
 @component.add(
-    name="Cumulated uranium extraction",
+    name="Cumulated_uranium_extraction",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -72,7 +71,7 @@ _ext_constant_av_past_aut_domestic_uranium_extraction = ExtConstant(
     other_deps={
         "_integ_cumulated_uranium_extraction": {
             "initial": {"cumulated_uranium_extraction_to_1995": 1},
-            "step": {"extraction_uranium_ej_aut": 1},
+            "step": {"extraction_uranium_ej_cat": 1},
         }
     },
 )
@@ -84,14 +83,14 @@ def cumulated_uranium_extraction():
 
 
 _integ_cumulated_uranium_extraction = Integ(
-    lambda: extraction_uranium_ej_aut(),
+    lambda: extraction_uranium_ej_cat(),
     lambda: cumulated_uranium_extraction_to_1995(),
     "_integ_cumulated_uranium_extraction",
 )
 
 
 @component.add(
-    name="cumulated uranium extraction to 1995",
+    name="cumulated_uranium_extraction_to_1995",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -106,7 +105,7 @@ def cumulated_uranium_extraction_to_1995():
 
 _ext_constant_cumulated_uranium_extraction_to_1995 = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "cumulative_uranium_extraction_until_1995",
     {},
     _root,
@@ -116,23 +115,21 @@ _ext_constant_cumulated_uranium_extraction_to_1995 = ExtConstant(
 
 
 @component.add(
-    name="extraction uranium EJ AUT",
-    units="EJ/Year",
+    name="extraction_uranium_EJ_CAT",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "rurr_uranium": 1,
-        "unlimited_nre": 1,
-        "historic_uranium_domestic_extracted": 1,
-        "unlimited_uranium": 1,
-        "kt_uranium_per_ej": 1,
-        "tonnes_per_kt": 1,
         "max_extraction_uranium_ej": 1,
-        "pe_demand_uranium_aut_ej": 2,
+        "tonnes_per_kt": 1,
+        "pe_demand_uranium_cat_ej": 1,
         "time": 1,
+        "kt_uranium_per_ej": 1,
+        "historic_uranium_domestic_extracted": 1,
     },
 )
-def extraction_uranium_ej_aut():
+def extraction_uranium_ej_cat():
     """
     Annual extraction of uranium.
     """
@@ -143,35 +140,29 @@ def extraction_uranium_ej_aut():
             time() < 2016,
             lambda: historic_uranium_domestic_extracted()
             / (kt_uranium_per_ej() * tonnes_per_kt()),
-            lambda: if_then_else(
-                np.logical_or(unlimited_nre() == 1, unlimited_uranium() == 1),
-                lambda: pe_demand_uranium_aut_ej(),
-                lambda: np.minimum(
-                    pe_demand_uranium_aut_ej(), max_extraction_uranium_ej()
-                ),
-            ),
+            lambda: np.minimum(pe_demand_uranium_cat_ej(), max_extraction_uranium_ej()),
         ),
     )
 
 
 @component.add(
-    name="extraction uranium RoW",
-    units="EJ",
+    name="extraction_uranium_RoW",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"extraction_uranium_ej_world": 2, "imports_aut_uranium_from_row": 2},
+    depends_on={"extraction_uranium_ej_world": 2, "imports_cat_uranium_from_row": 2},
 )
 def extraction_uranium_row():
     return if_then_else(
-        extraction_uranium_ej_world() > imports_aut_uranium_from_row(),
-        lambda: imports_aut_uranium_from_row(),
+        extraction_uranium_ej_world() > imports_cat_uranium_from_row(),
+        lambda: imports_cat_uranium_from_row(),
         lambda: extraction_uranium_ej_world(),
     )
 
 
 @component.add(
-    name="Historic uranium domestic extracted",
-    units="EJ",
+    name="Historic_uranium_domestic_extracted",
+    units="ton/year",
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -189,7 +180,7 @@ def historic_uranium_domestic_extracted():
 
 _ext_data_historic_uranium_domestic_extracted = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_domestic_uranium_extraction",
     "interpolate",
@@ -201,18 +192,18 @@ _ext_data_historic_uranium_domestic_extracted = ExtData(
 
 
 @component.add(
-    name="imports AUT uranium from RoW",
-    units="EJ",
+    name="imports_CAT_uranium_from_RoW",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pe_demand_uranium_aut_ej": 1, "extraction_uranium_ej_aut": 1},
+    depends_on={"pe_demand_uranium_cat_ej": 1, "extraction_uranium_ej_cat": 1},
 )
-def imports_aut_uranium_from_row():
-    return pe_demand_uranium_aut_ej() - extraction_uranium_ej_aut()
+def imports_cat_uranium_from_row():
+    return pe_demand_uranium_cat_ej() - extraction_uranium_ej_cat()
 
 
 @component.add(
-    name="kt uranium per EJ", units="Kt/EJ", comp_type="Constant", comp_subtype="Normal"
+    name="kt_uranium_per_EJ", units="Kt/EJ", comp_type="Constant", comp_subtype="Normal"
 )
 def kt_uranium_per_ej():
     """
@@ -222,16 +213,16 @@ def kt_uranium_per_ej():
 
 
 @component.add(
-    name="max extraction uranium EJ",
-    units="EJ/Year",
+    name="max_extraction_uranium_EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "av_past_aut_domestic_uranium_extraction": 1,
+        "av_past_cat_domestic_uranium_extraction": 1,
         "kt_uranium_per_ej": 1,
         "tonnes_per_kt": 1,
-        "table_max_extraction_uranium": 1,
         "rurr_uranium": 1,
+        "table_max_extraction_uranium": 1,
     },
 )
 def max_extraction_uranium_ej():
@@ -240,25 +231,25 @@ def max_extraction_uranium_ej():
     """
     return if_then_else(
         1 == 1,
-        lambda: av_past_aut_domestic_uranium_extraction()
+        lambda: av_past_cat_domestic_uranium_extraction()
         / (kt_uranium_per_ej() * tonnes_per_kt()),
         lambda: table_max_extraction_uranium(rurr_uranium()),
     )
 
 
 @component.add(
-    name="PEC uranium",
-    units="EJ",
+    name="PEC_uranium",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"extraction_uranium_ej_aut": 1, "extraction_uranium_row": 1},
+    depends_on={"extraction_uranium_ej_cat": 1, "extraction_uranium_row": 1},
 )
 def pec_uranium():
-    return extraction_uranium_ej_aut() + extraction_uranium_row()
+    return extraction_uranium_ej_cat() + extraction_uranium_row()
 
 
 @component.add(
-    name="RURR uranium",
+    name="RURR_uranium",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -266,7 +257,7 @@ def pec_uranium():
     other_deps={
         "_integ_rurr_uranium": {
             "initial": {"urr_uranium": 1, "cumulated_uranium_extraction_to_1995": 1},
-            "step": {"extraction_uranium_ej_aut": 1},
+            "step": {"extraction_uranium_ej_cat": 1},
         }
     },
 )
@@ -278,29 +269,29 @@ def rurr_uranium():
 
 
 _integ_rurr_uranium = Integ(
-    lambda: -extraction_uranium_ej_aut(),
+    lambda: -extraction_uranium_ej_cat(),
     lambda: urr_uranium() - cumulated_uranium_extraction_to_1995(),
     "_integ_rurr_uranium",
 )
 
 
 @component.add(
-    name="share imports AUT uranium from RoW vs extraction World",
+    name="share_imports_CAT_uranium_from_RoW_vs_extraction_World",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"imports_aut_uranium_from_row": 1, "extraction_uranium_ej_world": 1},
+    depends_on={"imports_cat_uranium_from_row": 1, "extraction_uranium_ej_world": 1},
 )
-def share_imports_aut_uranium_from_row_vs_extraction_world():
+def share_imports_cat_uranium_from_row_vs_extraction_world():
     """
     Share of EU uranium imports vs total uranium extraction.
     """
-    return zidz(imports_aut_uranium_from_row(), extraction_uranium_ej_world())
+    return zidz(imports_cat_uranium_from_row(), extraction_uranium_ej_world())
 
 
 @component.add(
-    name="table max extraction uranium",
-    units="EJ/Year",
+    name="table_max_extraction_uranium",
+    units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -314,7 +305,7 @@ def table_max_extraction_uranium(x, final_subs=None):
 
 _ext_lookup_table_max_extraction_uranium = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "RURR_uranium",
     "max_extraction_uranium",
     {},
@@ -325,57 +316,28 @@ _ext_lookup_table_max_extraction_uranium = ExtLookup(
 
 
 @component.add(
-    name="tonnes per kt", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+    name="tonnes_per_kt", units="ton/Kt", comp_type="Constant", comp_subtype="Normal"
 )
 def tonnes_per_kt():
     return 1000
 
 
 @component.add(
-    name='"unlimited uranium?"',
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_unlimited_uranium"},
-)
-def unlimited_uranium():
-    """
-    Switch to consider if uranium is unlimited (1), or if it is limited (0). If limited then the available depletion curves are considered.
-    """
-    return _ext_constant_unlimited_uranium()
-
-
-_ext_constant_unlimited_uranium = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
-    "unlimited_uranium",
-    {},
-    _root,
-    {},
-    "_ext_constant_unlimited_uranium",
-)
-
-
-@component.add(
-    name="URR uranium",
+    name="URR_uranium",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"unlimited_nre": 1, "unlimited_uranium": 1, "urr_uranium_input": 1},
+    depends_on={"urr_uranium_input": 1},
 )
 def urr_uranium():
     """
     Ultimately Recoverable Resources (URR) associated to the selected depletion curve.
     """
-    return if_then_else(
-        np.logical_or(unlimited_nre() == 1, unlimited_uranium() == 1),
-        lambda: np.nan,
-        lambda: urr_uranium_input(),
-    )
+    return urr_uranium_input()
 
 
 @component.add(
-    name="URR uranium input",
+    name="URR_uranium_input",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -387,7 +349,7 @@ def urr_uranium_input():
 
 _ext_constant_urr_uranium_input = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "URR_uranium",
     {},
     _root,
@@ -397,8 +359,8 @@ _ext_constant_urr_uranium_input = ExtConstant(
 
 
 @component.add(
-    name="Year scarcity uranium",
-    units="Year",
+    name="Year_scarcity_uranium",
+    units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"abundance_uranium": 1, "time": 1},

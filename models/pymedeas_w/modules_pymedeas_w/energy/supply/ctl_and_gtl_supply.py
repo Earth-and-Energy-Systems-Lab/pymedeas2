@@ -1,11 +1,10 @@
 """
-Module ctl_and_gtl_supply
-Translated using PySD version 3.2.0
+Module energy.supply.ctl_and_gtl_supply
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="abundance liquids CTL",
+    name="abundance_liquids_CTL",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -21,23 +20,23 @@ def abundance_liquids_ctl():
 
 
 @component.add(
-    name="abundance liquids GTL",
+    name="abundance_liquids_GTL",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_liquids_ej": 2, "gtl_potential_production": 1},
+    depends_on={"ped_liquids_ej": 2, "gtl_potential_prodiuction": 1},
 )
 def abundance_liquids_gtl():
     """
     Variable to moderate the growth of GTL when it comes close to supply all the liquids. This variable limits the growth of a technology supplying a particular final energy type when its supply increases its share in relation to the total supply of this energy type (to avoid overshootings).
     """
     return np.sqrt(
-        np.abs((ped_liquids_ej() - gtl_potential_production()) / ped_liquids_ej())
+        np.abs((ped_liquids_ej() - gtl_potential_prodiuction()) / ped_liquids_ej())
     )
 
 
 @component.add(
-    name='"Additional PE production of CTL+GTL for liquids"',
+    name='"Additional_PE_production_of_CTL+GTL_for_liquids"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -55,7 +54,7 @@ def additional_pe_production_of_ctlgtl_for_liquids():
 
 
 @component.add(
-    name='"Crash programme CTL?"',
+    name='"Crash_programme_CTL?"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -70,7 +69,7 @@ def crash_programme_ctl():
 
 _ext_constant_crash_programme_ctl = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "crash_programme_CTL",
     {},
     _root,
@@ -80,7 +79,7 @@ _ext_constant_crash_programme_ctl = ExtConstant(
 
 
 @component.add(
-    name='"Crash programme GTL?"',
+    name='"Crash_programme_GTL?"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -95,7 +94,7 @@ def crash_programme_gtl():
 
 _ext_constant_crash_programme_gtl = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "crash_programme_GTL",
     {},
     _root,
@@ -105,7 +104,7 @@ _ext_constant_crash_programme_gtl = ExtConstant(
 
 
 @component.add(
-    name="CTL efficiency",
+    name="CTL_efficiency",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -130,7 +129,7 @@ _ext_constant_ctl_efficiency = ExtConstant(
 
 
 @component.add(
-    name="CTL potential production",
+    name="CTL_potential_production",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -157,8 +156,8 @@ _integ_ctl_potential_production = Integ(
 
 
 @component.add(
-    name="CTL production",
-    units="EJ",
+    name="CTL_production",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ctl_potential_production": 1, "share_ctlgtl_overcapacity": 1},
@@ -171,7 +170,7 @@ def ctl_production():
 
 
 @component.add(
-    name='"CTL+GTL Gb"',
+    name='"CTL+GTL_Gb"',
     units="Gboe/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -185,16 +184,16 @@ def ctlgtl_gb():
 
 
 @component.add(
-    name="Exogenous growth CTL",
+    name="Exogenous_growth_CTL",
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "hist_growth_ctl": 2,
-        "p_ctl": 2,
-        "abundance_liquids": 1,
         "crash_programme_ctl": 2,
+        "abundance_liquids": 1,
+        "p_ctl": 2,
     },
 )
 def exogenous_growth_ctl():
@@ -217,16 +216,16 @@ def exogenous_growth_ctl():
 
 
 @component.add(
-    name="Exogenous growth GTL",
+    name="Exogenous_growth_GTL",
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "hist_growth_gtl": 2,
-        "crash_programme_gtl": 2,
         "abundance_liquids": 1,
         "p_gtl": 2,
+        "crash_programme_gtl": 2,
     },
 )
 def exogenous_growth_gtl():
@@ -249,7 +248,7 @@ def exogenous_growth_gtl():
 
 
 @component.add(
-    name='"FES CTL+GTL EJ"',
+    name='"FES_CTL+GTL_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -263,7 +262,7 @@ def fes_ctlgtl_ej():
 
 
 @component.add(
-    name="Gboe per EJ", units="EJ/Gboe", comp_type="Constant", comp_subtype="Normal"
+    name="Gboe_per_EJ", units="EJ/Gboe", comp_type="Constant", comp_subtype="Normal"
 )
 def gboe_per_ej():
     """
@@ -273,7 +272,7 @@ def gboe_per_ej():
 
 
 @component.add(
-    name="GTL efficiency",
+    name="GTL_efficiency",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -298,48 +297,48 @@ _ext_constant_gtl_efficiency = ExtConstant(
 
 
 @component.add(
-    name="GTL potential production",
+    name="GTL_potential_prodiuction",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="Integ",
-    depends_on={"_integ_gtl_potential_production": 1},
+    depends_on={"_integ_gtl_potential_prodiuction": 1},
     other_deps={
-        "_integ_gtl_potential_production": {
+        "_integ_gtl_potential_prodiuction": {
             "initial": {"initial_gtl_production": 1},
             "step": {"replacement_gtl": 1, "variation_gtl": 1, "wear_gtl": 1},
         }
     },
 )
-def gtl_potential_production():
+def gtl_potential_prodiuction():
     """
     Annual GTL potential production.
     """
-    return _integ_gtl_potential_production()
+    return _integ_gtl_potential_prodiuction()
 
 
-_integ_gtl_potential_production = Integ(
+_integ_gtl_potential_prodiuction = Integ(
     lambda: replacement_gtl() + variation_gtl() - wear_gtl(),
     lambda: initial_gtl_production(),
-    "_integ_gtl_potential_production",
+    "_integ_gtl_potential_prodiuction",
 )
 
 
 @component.add(
-    name="GTL production",
-    units="EJ",
+    name="GTL_production",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"gtl_potential_production": 1, "share_ctlgtl_overcapacity": 1},
+    depends_on={"gtl_potential_prodiuction": 1, "share_ctlgtl_overcapacity": 1},
 )
 def gtl_production():
     """
     GTL production.
     """
-    return gtl_potential_production() * (1 - share_ctlgtl_overcapacity())
+    return gtl_potential_prodiuction() * (1 - share_ctlgtl_overcapacity())
 
 
 @component.add(
-    name="Hist growth CTL",
+    name="Hist_growth_CTL",
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -364,7 +363,7 @@ _ext_constant_hist_growth_ctl = ExtConstant(
 
 
 @component.add(
-    name="Hist growth GTL",
+    name="Hist_growth_GTL",
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -389,7 +388,7 @@ _ext_constant_hist_growth_gtl = ExtConstant(
 
 
 @component.add(
-    name="Historic CTL production",
+    name="Historic_CTL_production",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -418,7 +417,7 @@ _ext_lookup_historic_ctl_production = ExtLookup(
 
 
 @component.add(
-    name="historic GTL production",
+    name="historic_GTL_production",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -447,7 +446,7 @@ _ext_lookup_historic_gtl_production = ExtLookup(
 
 
 @component.add(
-    name="initial CTL production",
+    name="initial_CTL_production",
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -472,7 +471,7 @@ _ext_constant_initial_ctl_production = ExtConstant(
 
 
 @component.add(
-    name="initial GTL production",
+    name="initial_GTL_production",
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -497,7 +496,7 @@ _ext_constant_initial_gtl_production = ExtConstant(
 
 
 @component.add(
-    name="lifetime CTL",
+    name="lifetime_CTL",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -522,7 +521,7 @@ _ext_constant_lifetime_ctl = ExtConstant(
 
 
 @component.add(
-    name="lifetime GTL",
+    name="lifetime_GTL",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -547,7 +546,7 @@ _ext_constant_lifetime_gtl = ExtConstant(
 
 
 @component.add(
-    name="P CTL",
+    name="P_CTL",
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -562,7 +561,7 @@ def p_ctl():
 
 _ext_constant_p_ctl = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "p_CTL_annual_growth",
     {},
     _root,
@@ -572,7 +571,7 @@ _ext_constant_p_ctl = ExtConstant(
 
 
 @component.add(
-    name="P GTL",
+    name="P_GTL",
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -587,7 +586,7 @@ def p_gtl():
 
 _ext_constant_p_gtl = ExtConstant(
     "../../scenarios/scen_w.xlsx",
-    "BAU",
+    "NZP",
     "p_gtl_growth",
     {},
     _root,
@@ -597,7 +596,7 @@ _ext_constant_p_gtl = ExtConstant(
 
 
 @component.add(
-    name="PED coal for CTL EJ",
+    name="PED_coal_for_CTL_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -611,7 +610,7 @@ def ped_coal_for_ctl_ej():
 
 
 @component.add(
-    name='"PED nat. gas for GTL EJ"',
+    name='"PED_nat._gas_for_GTL_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -625,18 +624,18 @@ def ped_nat_gas_for_gtl_ej():
 
 
 @component.add(
-    name='"Potential FES CTL+GTL EJ"',
-    units="EJ",
+    name='"Potential_FES_CTL+GTL_EJ"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ctl_potential_production": 1, "gtl_potential_production": 1},
+    depends_on={"ctl_potential_production": 1, "gtl_potential_prodiuction": 1},
 )
 def potential_fes_ctlgtl_ej():
-    return ctl_potential_production() + gtl_potential_production()
+    return ctl_potential_production() + gtl_potential_prodiuction()
 
 
 @component.add(
-    name="real growth CTL",
+    name="real_growth_CTL",
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -666,7 +665,7 @@ def real_growth_ctl():
 
 
 @component.add(
-    name="real growth GTL",
+    name="real_growth_GTL",
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -696,15 +695,15 @@ def real_growth_gtl():
 
 
 @component.add(
-    name="replacement CTL",
-    units="EJ/year",
+    name="replacement_CTL",
+    units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "constrain_liquids_exogenous_growth": 1,
         "crash_programme_ctl": 1,
         "wear_ctl": 2,
+        "constrain_liquids_exogenous_growth": 1,
         "check_liquids": 1,
         "scarcity_conv_oil": 1,
     },
@@ -732,16 +731,16 @@ def replacement_ctl():
 
 
 @component.add(
-    name="replacement GTL",
-    units="EJ/year",
+    name="replacement_GTL",
+    units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
+        "wear_gtl": 2,
         "crash_programme_gtl": 1,
         "constrain_liquids_exogenous_growth": 1,
         "check_liquids": 1,
-        "wear_gtl": 2,
         "scarcity_conv_oil": 1,
     },
 )
@@ -768,7 +767,7 @@ def replacement_gtl():
 
 
 @component.add(
-    name='"share CTL+GTL overcapacity"',
+    name='"share_CTL+GTL_overcapacity"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -779,17 +778,19 @@ def share_ctlgtl_overcapacity():
 
 
 @component.add(
-    name="variation CTL",
-    units="EJ/year",
+    name="variation_CTL",
+    units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
         "historic_ctl_production": 2,
+        "time_step": 2,
+        "check_liquids": 1,
+        "nvs_1_year": 1,
         "constrain_liquids_exogenous_growth": 1,
         "real_growth_ctl": 1,
         "ctl_potential_production": 2,
-        "check_liquids": 1,
     },
 )
 def variation_ctl():
@@ -798,27 +799,35 @@ def variation_ctl():
     """
     return if_then_else(
         time() < 2013,
-        lambda: historic_ctl_production(time() + 1) - historic_ctl_production(time()),
+        lambda: (
+            historic_ctl_production(time() + time_step())
+            - historic_ctl_production(time())
+        )
+        / time_step(),
         lambda: if_then_else(
             check_liquids() < -0.0001,
-            lambda: constrain_liquids_exogenous_growth() * ctl_potential_production(),
+            lambda: constrain_liquids_exogenous_growth()
+            * ctl_potential_production()
+            / nvs_1_year(),
             lambda: ctl_potential_production() * real_growth_ctl(),
         ),
     )
 
 
 @component.add(
-    name="variation GTL",
-    units="EJ/year",
+    name="variation_GTL",
+    units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
+        "time_step": 2,
         "historic_gtl_production": 2,
-        "constrain_liquids_exogenous_growth": 1,
-        "gtl_potential_production": 2,
         "check_liquids": 1,
+        "nvs_1_year": 1,
+        "constrain_liquids_exogenous_growth": 1,
         "real_growth_gtl": 1,
+        "gtl_potential_prodiuction": 2,
     },
 )
 def variation_gtl():
@@ -827,21 +836,27 @@ def variation_gtl():
     """
     return if_then_else(
         time() < 2013,
-        lambda: historic_gtl_production(time() + 1) - historic_gtl_production(time()),
+        lambda: (
+            historic_gtl_production(time() + time_step())
+            - historic_gtl_production(time())
+        )
+        / time_step(),
         lambda: if_then_else(
             check_liquids() < -0.0001,
-            lambda: constrain_liquids_exogenous_growth() * gtl_potential_production(),
-            lambda: gtl_potential_production() * real_growth_gtl(),
+            lambda: constrain_liquids_exogenous_growth()
+            * gtl_potential_prodiuction()
+            / nvs_1_year(),
+            lambda: gtl_potential_prodiuction() * real_growth_gtl(),
         ),
     )
 
 
 @component.add(
-    name="wear CTL",
-    units="EJ/year",
+    name="wear_CTL",
+    units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "lifetime_ctl": 1, "ctl_potential_production": 1},
+    depends_on={"time": 1, "ctl_potential_production": 1, "lifetime_ctl": 1},
 )
 def wear_ctl():
     """
@@ -853,16 +868,16 @@ def wear_ctl():
 
 
 @component.add(
-    name="wear GTL",
-    units="EJ/year",
+    name="wear_GTL",
+    units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "lifetime_gtl": 1, "gtl_potential_production": 1},
+    depends_on={"time": 1, "lifetime_gtl": 1, "gtl_potential_prodiuction": 1},
 )
 def wear_gtl():
     """
     Depreciation of GTL plants.
     """
     return if_then_else(
-        time() < 2015, lambda: 0, lambda: gtl_potential_production() / lifetime_gtl()
+        time() < 2015, lambda: 0, lambda: gtl_potential_prodiuction() / lifetime_gtl()
     )

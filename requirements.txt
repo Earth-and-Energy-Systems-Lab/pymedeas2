@@ -1,5 +1,3 @@
 pysd
 dacite
-matplotlib
-tabulate
 netCDF4

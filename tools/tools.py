@@ -19,7 +19,6 @@ from tkinter.filedialog import askopenfilename
 
 import pandas as pd
 import pysd
-from tabulate import tabulate
 
 # PySD imports for replaced functions
 from pysd.py_backend.model import Model

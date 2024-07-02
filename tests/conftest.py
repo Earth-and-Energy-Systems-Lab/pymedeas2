@@ -115,11 +115,8 @@ def cli_input_long_names():
                 "--headless",  # headless
                 "--fname",  # results file name
                 "test_model.nc",
-                "--return-columns",  # return columns
-                "var1, var2, var3",
                 "--export",  # export results to pickle format
                 "outputs/exported.pickle",
-                "--plot",  # plot results at the end
                 "var1=5",
                 "var2=7.5",
                 "var3=[[1, 2, 3], [4, 5, 6]]",
@@ -150,11 +147,8 @@ def cli_input_short_names():
                 "-b",  # headless
                 "-n",  # results file name
                 "test_model.nc",
-                "-r",  # return columns
-                "var1, var2, var3",
                 "-e",  # export results to pickle format
                 "outputs/exported.pickle",
-                "-p",  # plot results at the end
                 "var1=5",
                 "var2=7.5",
                 "var3=[[1, 2, 3], [4, 5, 6]]",
@@ -246,11 +240,9 @@ def expected_conf_cli_input_long_and_short(tmp_path, default_config):
     updated_conf.scenario_sheet = "test_scenario"
     updated_conf.silent = True
     updated_conf.headless = True
-    updated_conf.plot = True
     updated_conf.model_arguments.final_time = 1996.0
     updated_conf.model_arguments.time_step = 2.0
     updated_conf.model_arguments.return_timestamp = 5.0
-    updated_conf.model_arguments.return_columns = ["var1", "var2", "var3"]
     updated_conf.model.parent[0].results_file_path = tmp_path.joinpath(
         "outputs", "pymedeas_w", "results_BAU_1995.0_1996.0_0.03125.nc"
         ).resolve()

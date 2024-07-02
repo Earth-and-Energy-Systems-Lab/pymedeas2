@@ -41,20 +41,6 @@ def check_output(string):
     return string
 
 
-def split_columns(string):
-    """
-    Splits the return-columns argument or reads it from .txt
-    --return-columns 'temperature c, "heat$"' -> ['temperature c', '"heat$"']
-    --return-columns my_vars.txt -> ['temperature c', '"heat$"']
-
-    """
-    if string.endswith('.txt'):
-        with open(string, 'r') as file:
-            return [col.rstrip('\n').strip() for col in file]
-
-    return [s.strip() for s in string.split(',')]
-
-
 def split_vars(string):
     """
     Splits the arguments from new_values.

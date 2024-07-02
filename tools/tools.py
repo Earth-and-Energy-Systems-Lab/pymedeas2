@@ -301,7 +301,7 @@ def user_select_data_file_gui(parent: ParentModel) -> str:
     return askopenfilename(
         initialdir=dir_path,
         title="Select external data file",
-        filetypes=((".csv files", "*.csv"), ("All files", "*")),
+        filetypes=((".nc files", "*.nc"), ("All files", "*")),
     )
 
 
@@ -357,7 +357,7 @@ def user_select_data_file_headless(parent: ParentModel) -> Path:
 
 def create_parent_models_data_file_paths(config: Params) -> List[Path]:
     """
-    This function lists all csv (results) files in the pymedeas_w and/or
+    This function lists all nc (results) files in the pymedeas_w and/or
     pymedeas_eu folder/s and asks the user to choose one, so that all the
     external data required by the EU or country model can be imported.
     Updates config with the paths.
@@ -385,9 +385,9 @@ def create_parent_models_data_file_paths(config: Params) -> List[Path]:
                 "If you want to run in silent mode, please provide the name "
                 "of the results file/s from which you want to "
                 "import data. Examples below:\n"
-                "\t-f pymedeas_w: outputs/results_w.csv\n"
-                "\t-f pymedeas_w: outputs/results_w.csv, pymedeas_eu: "
-                "outputs/results_eu.csv\n"
+                "\t-f pymedeas_w: outputs/results_w.nc\n"
+                "\t-f pymedeas_w: outputs/results_w.nc, pymedeas_eu: "
+                "outputs/results_eu.nc\n"
             )
             sys.exit(0)
 

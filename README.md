@@ -95,7 +95,3 @@ If a results file with the same name already exists, the characters "_old" will 
 ### Using the plot GUI to plot simulation results
 
 Clone or download the code for the plot tool [from this repository](https://github.com/Earth-and-Energy-Systems-Lab/pymedeas_plots) and follow the instructions given in the README.
-
-
-### Contributions are welcome
-We welcome any contributions from the community. In particular

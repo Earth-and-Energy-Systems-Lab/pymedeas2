@@ -587,6 +587,9 @@ def create_parent_models_data_file_paths(config: Params) -> List[Path]:
 def load(config: Params, data_files: Union[list, None] = None) -> Model:
     """
     Load PySD model and changes the paths to load excel data.
+    PySD expects the _subscripts_model_name.json file to be in the same folder
+    than the main file of the model (e.g. pymedeas_w.py), so it temporarily
+    copies this file in the main folder.
 
     Parameters
     ----------

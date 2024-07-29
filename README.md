@@ -1,3 +1,15 @@
+
+# Table of contents
+- [Table of contents](#table-of-contents)
+- [pymedeas2](#pymedeas2)
+- [1. Installing and running the models:](#1-installing-and-running-the-models)
+  - [1.1 Instructions for running the code with Python (Windows/Linux/MacOS)](#11-instructions-for-running-the-code-with-python-windowslinuxmacos)
+  - [Running a simulation from terminal (Windows/Linux/MacOS)](#running-a-simulation-from-terminal-windowslinuxmacos)
+  - [2. Instructions for running the code in a Docker container](#2-instructions-for-running-the-code-in-a-docker-container)
+- [Model outputs](#model-outputs)
+    - [Using the plot GUI to plot simulation results](#using-the-plot-gui-to-plot-simulation-results)
+    - [Acknowledgements](#acknowledgements)
+
 # pymedeas2
 
 This repository holds the code for the pymedeas2 models, which are the latest iteration of the original pymedeas models, which were the main output of the H2020 MEDEAS project (2016-2019).
@@ -11,9 +23,14 @@ A default normative decarbonization scenario, called NZP (Net Zero Pathway) is a
 Please note that the three models are nested, hence **to run *pymedeas_cat* the two parent models (*pymedeas_w* and *pymedeas_eu*) need to be run first (and in that same order)**. Child models will request the results file/s from the parents at runtime (unless they are passed with the -f argument using the CLI).
 
 
-### Installation instructions for (Windows/Linux/MacOS) using venv
+# 1. Installing and running the models:
+First clone or download this repository on your computer. Then, there are two ways to run the code, each requiring different procedures:
+  1. With the Python of your system (requires that you install python and all project dependencies): see [instructions here](#11-instructions-for-running-the-code-with-python-windowslinuxmacos)
+  2. In a docker container (requires that you have Docker installed on your machine): see [instructions here](#2-instructions-for-running-the-code-in-a-docker-container)
 
-0. Clone or download this repository to your computer.
+
+## 1.1 Instructions for running the code with Python (Windows/Linux/MacOS)
+
 
 1. If not installed yet, [download and install Python](https://www.python.org/downloads/) on your computer.
 
@@ -50,7 +67,7 @@ Please note that the three models are nested, hence **to run *pymedeas_cat* the 
 
 6. Now move on to the *Running a simulation from terminal* section of this document to run your first simulation.
 
-### Running a simulation from terminal (Windows/Linux/MacOS)
+## Running a simulation from terminal (Windows/Linux/MacOS)
 
 1. Open a terminal and navigate to the project folder (using the `cd` command).
 
@@ -80,7 +97,35 @@ Please note that the three models are nested, hence **to run *pymedeas_cat* the 
     deactivate
     ```
 
-### Model outputs
+
+## 2. Instructions for running the code in a Docker container
+
+1. Install Docker on your system.
+2. Get to the project folder (you should see the `Dockerfile` in it) and build the Docker image with:
+
+```bash
+docker build -t pymedeas2 .
+```
+
+Now you are ready to run a simulation. However, before that, let's see the different configuration options we can change:
+
+```bash
+docker run pymedeas2 -h
+```
+
+Now, to run a default simulation with the world model, just run:
+
+```bash
+docker run pymedeas2
+```
+
+Finally, to run a simulation with another model (say, the EU model), run:
+
+```bash
+docker run pymedeas2 -m pymedeas_eu
+```
+
+# Model outputs
 
 Simulation results (nc file) for each model can be found in the respective folder inside the *outputs* directory.
 

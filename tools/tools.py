@@ -458,14 +458,14 @@ def load(config: Params, data_files: Union[list, None] = None) -> Model:
     scen_file = f"../../scenarios/{config.aggregation}/{config.model.scenario_file}"
     input_folder = f"../{config.aggregation}/"
     for element in model._external_elements:
-        # Replace only scenario sheets
-        element.sheets = [
+        # Replace only scenario tabs
+        element.tabs = [
             (
                 config.scenario_sheet
                 if "../../scenarios/scen" in file_name
                 else config.model.inputs_sheet if sheet_name != "Global" else sheet_name
             )
-            for sheet_name, file_name in zip(element.sheets, element.files)
+            for sheet_name, file_name in zip(element.tabs, element.files)
         ]
         # Select he input files from the agrregation
         element.files = [

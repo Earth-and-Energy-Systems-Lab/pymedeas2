@@ -149,13 +149,6 @@
             "year_shale_oil_step"
         ]
     },
-    "debug_energy_intensities": [
-        "energy_consumption_sectors",
-        "energy_intensisty_households",
-        "energy_intensity_sectors",
-        "gross_inland_energy_consumption",
-        "total_energy_intensity"
-    ],
     "economy": {
         "coefficient_matrices": [
             "historic_a_matrix",
@@ -1206,7 +1199,6 @@
                 "bioe_residues_for_nonbiofuels_available",
                 "cellulosic_biofuels_available",
                 "efficiency_bioe_residues_to_cellulosic_liquids",
-                "growth_bioe_residues",
                 "max_npp_potential_bioe_residues",
                 "max_npp_potential_bioe_residues_for_cellulosic_biofuels",
                 "max_npp_potential_bioe_residues_for_nonbiofuels",
@@ -1214,7 +1206,6 @@
                 "new_bioe_residues_for_nonbiofuels",
                 "new_cellulosic_biofuels",
                 "p_bioe_residues",
-                "p_bioe_residues_delayed",
                 "pe_bioe_residues_nonbiofuels_ej",
                 "pe_cellulosic_biofuel",
                 "peavail_cellulosic_biofuel_ej",
@@ -1635,7 +1626,7 @@
                 "target_year_f1_solar_pv",
                 "twmha_per_wem2"
             ],
-            "solids_mix_delete": [
+            "solids_mix": [
                 "coal_in_fec_cat",
                 "ped_totat_solids",
                 "share_coal_total_fed",
@@ -1891,6 +1882,7 @@
                 "agricultural_land_2015",
                 "land_requirements_res_elec_compet_uses",
                 "land_saved_by_urban_pv",
+                "real_share_pv_urban_vs_total_pv_delayed",
                 "share_land_compet_biofuels",
                 "share_land_res_land_compet_vs_arable",
                 "share_land_total_res_vs_arable",

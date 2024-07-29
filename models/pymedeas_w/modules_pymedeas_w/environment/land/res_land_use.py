@@ -1,10 +1,10 @@
 """
 Module environment.land.res_land_use
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Global_arable_land",
+    name="Global arable land",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
@@ -18,7 +18,7 @@ def global_arable_land():
 
 
 _ext_constant_global_arable_land = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "World",
     "global_arable_land",
     {},
@@ -29,9 +29,9 @@ _ext_constant_global_arable_land = ExtConstant(
 
 
 @component.add(
-    name='"power_density_RES_elec_TWe/Mha"',
+    name='"power density RES elec TWe/Mha"',
     units="TWe/MHa",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_power_density_res_elec_twemha"},
@@ -44,20 +44,20 @@ def power_density_res_elec_twemha():
 
 
 _ext_constant_power_density_res_elec_twemha = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "power_density_res_elec*",
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_power_density_res_elec_twemha",
 )
 
 
 @component.add(
-    name='"power_density_RES_elec_TW/Mha"',
+    name='"power density RES elec TW/Mha"',
     units="TW/MHa",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"power_density_res_elec_twemha": 1, "cpini_res_elec": 1},
@@ -67,7 +67,7 @@ def power_density_res_elec_twmha():
 
 
 @component.add(
-    name="Share_land_compet_biofuels",
+    name="Share land compet biofuels",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -84,7 +84,7 @@ def share_land_compet_biofuels():
 
 
 @component.add(
-    name="share_land_RES_land_compet_vs_arable",
+    name="share land RES land compet vs arable",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -104,7 +104,7 @@ def share_land_res_land_compet_vs_arable():
 
 
 @component.add(
-    name="share_land_total_RES_vs_arable",
+    name="share land total RES vs arable",
     units="1",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -118,7 +118,7 @@ def share_land_total_res_vs_arable():
 
 
 @component.add(
-    name="share_land_total_RES_vs_urban_surface",
+    name="share land total RES vs urban surface",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -132,7 +132,7 @@ def share_land_total_res_vs_urban_surface():
 
 
 @component.add(
-    name="surface_CSP_Mha",
+    name="surface CSP Mha",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -146,7 +146,7 @@ def surface_csp_mha():
 
 
 @component.add(
-    name="surface_hydro_Mha",
+    name="surface hydro Mha",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -160,7 +160,7 @@ def surface_hydro_mha():
 
 
 @component.add(
-    name="surface_onshore_wind_Mha",
+    name="surface onshore wind Mha",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -170,13 +170,13 @@ def surface_onshore_wind_mha():
     """
     Surface required to produce "onshore wind TWe".
     """
-    return float(surface_res_elec().loc["wind_onshore"])
+    return float(surface_res_elec().loc["wind onshore"])
 
 
 @component.add(
-    name="surface_RES_elec",
+    name="surface RES elec",
     units="MHa",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"power_density_res_elec_twmha": 2, "res_installed_capacity_delayed": 1},
@@ -185,14 +185,14 @@ def surface_res_elec():
     return if_then_else(
         power_density_res_elec_twmha() == 0,
         lambda: xr.DataArray(
-            0, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
+            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
         ),
         lambda: res_installed_capacity_delayed() / power_density_res_elec_twmha(),
     )
 
 
 @component.add(
-    name="surface_solar_PV_Mha",
+    name="surface solar PV Mha",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -202,11 +202,11 @@ def surface_solar_pv_mha():
     """
     Area required for solar PV plants on land.
     """
-    return float(surface_res_elec().loc["solar_PV"])
+    return float(surface_res_elec().loc["solar PV"])
 
 
 @component.add(
-    name="Total_land_requirements_renew_Mha",
+    name="Total land requirements renew Mha",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -235,7 +235,7 @@ def total_land_requirements_renew_mha():
 
 
 @component.add(
-    name="urban_surface_2008",
+    name="urban surface 2008",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
@@ -249,7 +249,7 @@ def urban_surface_2008():
 
 
 _ext_constant_urban_surface_2008 = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "World",
     "urban_surface_2008",
     {},

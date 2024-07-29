@@ -1,10 +1,10 @@
 """
 Module energy.supply.total_fe_elec_generation
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Abundance_electricity",
+    name="Abundance electricity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -26,7 +26,7 @@ def abundance_electricity():
 
 
 @component.add(
-    name="abundance_NRE_elec",
+    name="abundance NRE elec",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -45,7 +45,7 @@ def abundance_nre_elec():
 
 
 @component.add(
-    name="Annual_growth_rate_electricity_generation_RES_elec_tot",
+    name="Annual growth rate electricity generation RES elec tot",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -66,29 +66,29 @@ def annual_growth_rate_electricity_generation_res_elec_tot():
 
 
 @component.add(
-    name="FE_Elec_generation_from_fossil_fuels",
+    name="FE Elec generation from fossil fuels",
     units="EJ/year",
-    subscripts=["matter_final_sources"],
+    subscripts=["matter final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "potential_fe_gen_elec_fossil_fuel_chp_plants_ej": 3,
-        "efficiency_liquids_for_electricity": 1,
-        "pes_oil_ej": 1,
         "share_oil_dem_for_elec": 1,
+        "pes_oil_ej": 1,
+        "efficiency_liquids_for_electricity": 1,
         "share_coal_dem_for_elec": 1,
-        "efficiency_coal_for_electricity": 1,
         "extraction_coal_ej": 1,
-        "share_nat_gas_dem_for_elec": 1,
-        "efficiency_gas_for_electricity": 1,
+        "efficiency_coal_for_electricity": 1,
         "pes_nat_gas": 1,
+        "efficiency_gas_for_electricity": 1,
+        "share_nat_gas_dem_for_elec": 1,
     },
 )
 def fe_elec_generation_from_fossil_fuels():
     value = xr.DataArray(
         np.nan,
-        {"matter_final_sources": _subscript_dict["matter_final_sources"]},
-        ["matter_final_sources"],
+        {"matter final sources": _subscript_dict["matter final sources"]},
+        ["matter final sources"],
     )
     value.loc[["liquids"]] = (
         float(potential_fe_gen_elec_fossil_fuel_chp_plants_ej().loc["liquids"])
@@ -110,7 +110,7 @@ def fe_elec_generation_from_fossil_fuels():
 
 
 @component.add(
-    name="FE_Elec_generation_from_fossil_fuels_TWh",
+    name="FE Elec generation from fossil fuels TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -127,9 +127,9 @@ def fe_elec_generation_from_fossil_fuels_twh():
     return (
         sum(
             fe_elec_generation_from_fossil_fuels().rename(
-                {"matter_final_sources": "matter_final_sources!"}
+                {"matter final sources": "matter final sources!"}
             ),
-            dim=["matter_final_sources!"],
+            dim=["matter final sources!"],
         )
         / ej_per_twh()
         + fe_nuclear_elec_generation_twh()
@@ -137,7 +137,7 @@ def fe_elec_generation_from_fossil_fuels_twh():
 
 
 @component.add(
-    name="FE_Elec_generation_from_NRE_TWh",
+    name="FE Elec generation from NRE TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -154,7 +154,7 @@ def fe_elec_generation_from_nre_twh():
 
 
 @component.add(
-    name="FE_nuclear_Elec_generation_TWh",
+    name="FE nuclear Elec generation TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -172,7 +172,7 @@ def fe_nuclear_elec_generation_twh():
 
 
 @component.add(
-    name="FE_tot_generation_all_RES_elec_TWh_delayed_1yr",
+    name="FE tot generation all RES elec TWh delayed 1yr",
     units="TWh/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -201,7 +201,7 @@ _delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="FES_elec_from_BioW",
+    name="FES elec from BioW",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -216,14 +216,14 @@ def fes_elec_from_biow():
     Electricity generation of total bioenergy and waste (to compare with more common statistics).
     """
     return (
-        float(real_generation_res_elec_twh().loc["solid_bioE_elec"])
+        float(real_generation_res_elec_twh().loc["solid bioE elec"])
         + fes_elec_from_biogas_twh()
         + fes_elec_from_waste()
     )
 
 
 @component.add(
-    name="share_RES_electricity_generation",
+    name="share RES electricity generation",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -240,7 +240,7 @@ def share_res_electricity_generation():
 
 
 @component.add(
-    name="Total_FE_Elec_consumption_TWh",
+    name="Total FE Elec consumption TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -254,7 +254,7 @@ def total_fe_elec_consumption_twh():
 
 
 @component.add(
-    name="Total_FE_Elec_generation_TWh",
+    name="Total FE Elec generation TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -276,7 +276,7 @@ def total_fe_elec_generation_twh():
 
 
 @component.add(
-    name="Year_scarcity_Elec",
+    name="Year scarcity Elec",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

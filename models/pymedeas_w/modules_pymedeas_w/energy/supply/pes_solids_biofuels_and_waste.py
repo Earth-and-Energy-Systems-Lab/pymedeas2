@@ -1,10 +1,10 @@
 """
 Module energy.supply.pes_solids_biofuels_and_waste
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Losses_in_charcoal_plants_EJ",
+    name="Losses in charcoal plants EJ",
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
@@ -22,7 +22,7 @@ def losses_in_charcoal_plants_ej():
 
 
 _ext_data_losses_in_charcoal_plants_ej = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "time_efficiencies",
     "historic_losses_charcoal_plants",
@@ -35,7 +35,7 @@ _ext_data_losses_in_charcoal_plants_ej = ExtData(
 
 
 @component.add(
-    name="PES_solids_bioE_EJ",
+    name="PES solids bioE EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -53,15 +53,15 @@ def pes_solids_bioe_ej():
     """
     return (
         losses_in_charcoal_plants_ej()
-        + float(pe_real_generation_res_elec().loc["solid_bioE_elec"])
+        + float(pe_real_generation_res_elec().loc["solid bioE elec"])
         + pe_traditional_biomass_ej_delayed()
-        + float(pes_res_for_heatcom_by_techn().loc["solid_bioE_heat"])
-        + float(pes_res_for_heatnc_by_techn().loc["solid_bioE_heat"])
+        + float(pes_res_for_heatcom_by_techn().loc["solid bioE heat"])
+        + float(pes_res_for_heatnc_by_techn().loc["solid bioE heat"])
     )
 
 
 @component.add(
-    name='"PES_solids_bioE_&_waste_EJ"',
+    name='"PES solids bioE & waste EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

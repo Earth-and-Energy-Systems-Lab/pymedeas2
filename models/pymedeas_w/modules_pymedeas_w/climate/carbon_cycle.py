@@ -1,10 +1,10 @@
 """
 Module climate.carbon_cycle
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="atm_ocean_mixing_time",
+    name="atm ocean mixing time",
     units="year",
     limits=(0.25, 10.0, 0.25),
     comp_type="Constant",
@@ -19,7 +19,7 @@ def atm_ocean_mixing_time():
 
 
 _ext_constant_atm_ocean_mixing_time = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "atm_ocean_mixing_time",
     {},
@@ -30,7 +30,7 @@ _ext_constant_atm_ocean_mixing_time = ExtConstant(
 
 
 @component.add(
-    name="biomass_residence_time",
+    name="biomass residence time",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -44,7 +44,7 @@ def biomass_residence_time():
 
 
 _ext_constant_biomass_residence_time = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "biomass_residence_time",
     {},
@@ -55,7 +55,7 @@ _ext_constant_biomass_residence_time = ExtConstant(
 
 
 @component.add(
-    name="biostim_coeff",
+    name="biostim coeff",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -69,7 +69,7 @@ def biostim_coeff():
 
 
 @component.add(
-    name="biostim_coeff_index",
+    name="biostim coeff index",
     units="Dmnl",
     limits=(0.6, 1.7, 0.05),
     comp_type="Constant",
@@ -84,7 +84,7 @@ def biostim_coeff_index():
 
 
 _ext_constant_biostim_coeff_index = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "biostim_coeff_index",
     {},
@@ -95,7 +95,7 @@ _ext_constant_biostim_coeff_index = ExtConstant(
 
 
 @component.add(
-    name="biostim_coeff_mean",
+    name="biostim coeff mean",
     units="Dmnl",
     limits=(0.3, 0.7),
     comp_type="Constant",
@@ -110,7 +110,7 @@ def biostim_coeff_mean():
 
 
 _ext_constant_biostim_coeff_mean = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "biostim_coeff_mean",
     {},
@@ -121,7 +121,7 @@ _ext_constant_biostim_coeff_mean = ExtConstant(
 
 
 @component.add(
-    name="buffer_C_coeff",
+    name="buffer C coeff",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -135,7 +135,7 @@ def buffer_c_coeff():
 
 
 _ext_constant_buffer_c_coeff = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "buffer_C_coeff",
     {},
@@ -146,7 +146,7 @@ _ext_constant_buffer_c_coeff = ExtConstant(
 
 
 @component.add(
-    name="Buffer_Factor",
+    name="Buffer Factor",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -156,9 +156,9 @@ _ext_constant_buffer_c_coeff = ExtConstant(
             "initial": {"ref_buffer_factor": 1},
             "step": {
                 "ref_buffer_factor": 1,
-                "preindustrial_c_in_mixed_layer": 1,
-                "c_in_mixed_layer": 1,
                 "buffer_c_coeff": 1,
+                "c_in_mixed_layer": 1,
+                "preindustrial_c_in_mixed_layer": 1,
             },
         }
     },
@@ -176,7 +176,7 @@ def buffer_factor():
 
 
 @component.add(
-    name="C_from_CH4_oxidation",
+    name="C from CH4 oxidation",
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -190,7 +190,7 @@ def c_from_ch4_oxidation():
 
 
 @component.add(
-    name="C_humification_fraction",
+    name="C humification fraction",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -204,7 +204,7 @@ def c_humification_fraction():
 
 
 _ext_constant_c_humification_fraction = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "C_humification_fraction",
     {},
@@ -215,7 +215,7 @@ _ext_constant_c_humification_fraction = ExtConstant(
 
 
 @component.add(
-    name="C_humus_residence_time",
+    name="C humus residence time",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -229,7 +229,7 @@ def c_humus_residence_time():
 
 
 _ext_constant_c_humus_residence_time = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "C_humus_residence_time",
     {},
@@ -240,7 +240,7 @@ _ext_constant_c_humus_residence_time = ExtConstant(
 
 
 @component.add(
-    name="C_in_Atmosphere",
+    name="C in Atmosphere",
     units="GtC",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -281,7 +281,7 @@ _integ_c_in_atmosphere = Integ(
 
 
 @component.add(
-    name="C_in_Biomass",
+    name="C in Biomass",
     units="GtC",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -316,7 +316,7 @@ _integ_c_in_biomass = Integ(
 
 
 @component.add(
-    name="C_in_Deep_Ocean",
+    name="C in Deep Ocean",
     units="GtC",
     subscripts=["Layers"],
     comp_type="Stateful",
@@ -375,7 +375,7 @@ _integ_c_in_deep_ocean_1 = Integ(
 
 
 @component.add(
-    name="C_in_deep_ocean_per_meter",
+    name="C in deep ocean per meter",
     units="GtC/meter",
     subscripts=["Layers"],
     comp_type="Auxiliary",
@@ -390,7 +390,7 @@ def c_in_deep_ocean_per_meter():
 
 
 @component.add(
-    name="C_in_Humus",
+    name="C in Humus",
     units="GtC",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -421,7 +421,7 @@ _integ_c_in_humus = Integ(
 
 
 @component.add(
-    name="C_in_Mixed_Layer",
+    name="C in Mixed Layer",
     units="GtC",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -448,7 +448,7 @@ _integ_c_in_mixed_layer = Integ(
 
 
 @component.add(
-    name="C_in_mixed_layer_per_meter",
+    name="C in mixed layer per meter",
     units="GtC/meter",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -459,7 +459,7 @@ def c_in_mixed_layer_per_meter():
 
 
 @component.add(
-    name="CH4_generation_rate_from_biomass",
+    name="CH4 generation rate from biomass",
     units="1/year",
     limits=(0.0, 0.00014),
     comp_type="Constant",
@@ -474,7 +474,7 @@ def ch4_generation_rate_from_biomass():
 
 
 _ext_constant_ch4_generation_rate_from_biomass = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "CH4_generation_rate_from_biomass",
     {},
@@ -485,7 +485,7 @@ _ext_constant_ch4_generation_rate_from_biomass = ExtConstant(
 
 
 @component.add(
-    name="CH4_generation_rate_from_humus",
+    name="CH4 generation rate from humus",
     units="1/year",
     limits=(0.0, 0.00016),
     comp_type="Constant",
@@ -500,7 +500,7 @@ def ch4_generation_rate_from_humus():
 
 
 _ext_constant_ch4_generation_rate_from_humus = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "CH4_generation_rate_from_humus",
     {},
@@ -511,7 +511,7 @@ _ext_constant_ch4_generation_rate_from_humus = ExtConstant(
 
 
 @component.add(
-    name="CO2_ppm_concentrations",
+    name="CO2 ppm concentrations",
     units="ppm",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -525,7 +525,7 @@ def co2_ppm_concentrations():
 
 
 @component.add(
-    name="Diffusion_Flux",
+    name="Diffusion Flux",
     units="GtC/year",
     subscripts=["Layers"],
     comp_type="Auxiliary",
@@ -573,7 +573,7 @@ def diffusion_flux():
 
 
 @component.add(
-    name="eddy_diffusion_coef",
+    name="eddy diffusion coef",
     units="m*m/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -587,7 +587,7 @@ def eddy_diffusion_coef():
 
 
 @component.add(
-    name="eddy_diffusion_coef_index",
+    name="eddy diffusion coef index",
     units="Dmnl",
     limits=(0.85, 1.15, 0.05),
     comp_type="Constant",
@@ -602,7 +602,7 @@ def eddy_diffusion_coef_index():
 
 
 _ext_constant_eddy_diffusion_coef_index = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "eddy_diffusion_coef_index",
     {},
@@ -613,7 +613,7 @@ _ext_constant_eddy_diffusion_coef_index = ExtConstant(
 
 
 @component.add(
-    name="eddy_diffusion_mean",
+    name="eddy diffusion mean",
     units="m*m/year",
     limits=(2000.0, 8000.0),
     comp_type="Constant",
@@ -628,7 +628,7 @@ def eddy_diffusion_mean():
 
 
 _ext_constant_eddy_diffusion_mean = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "eddy_diffusion_mean",
     {},
@@ -639,7 +639,7 @@ _ext_constant_eddy_diffusion_mean = ExtConstant(
 
 
 @component.add(
-    name="Effect_of_Temp_on_DIC_pCO2",
+    name="Effect of Temp on DIC pCO2",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -653,7 +653,7 @@ def effect_of_temp_on_dic_pco2():
 
 
 @component.add(
-    name="Effect_of_Warming_on_C_flux_to_biomass",
+    name="Effect of Warming on C flux to biomass",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -670,7 +670,7 @@ def effect_of_warming_on_c_flux_to_biomass():
 
 
 @component.add(
-    name="Effect_of_Warming_on_CH4_Release_from_Biological_Activity",
+    name="Effect of Warming on CH4 Release from Biological Activity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -693,15 +693,15 @@ def effect_of_warming_on_ch4_release_from_biological_activity():
 
 
 @component.add(
-    name="Equil_C_in_Mixed_Layer",
+    name="Equil C in Mixed Layer",
     units="GtC",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "preindustrial_c_in_mixed_layer": 1,
         "effect_of_temp_on_dic_pco2": 1,
-        "c_in_atmosphere": 1,
         "preindustrial_c": 1,
+        "c_in_atmosphere": 1,
         "buffer_factor": 1,
     },
 )
@@ -717,7 +717,7 @@ def equil_c_in_mixed_layer():
 
 
 @component.add(
-    name="Equilibrium_C_per_meter_in_Mixed_Layer",
+    name="Equilibrium C per meter in Mixed Layer",
     units="GtC/meter",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -731,15 +731,15 @@ def equilibrium_c_per_meter_in_mixed_layer():
 
 
 @component.add(
-    name="Flux_Atm_to_Biomass",
+    name="Flux Atm to Biomass",
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "init_npp": 1,
+        "biostim_coeff": 1,
         "c_in_atmosphere": 1,
         "preindustrial_c": 1,
-        "biostim_coeff": 1,
         "effect_of_warming_on_c_flux_to_biomass": 1,
     },
 )
@@ -755,7 +755,7 @@ def flux_atm_to_biomass():
 
 
 @component.add(
-    name="Flux_Atm_to_Ocean",
+    name="Flux Atm to Ocean",
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -773,7 +773,7 @@ def flux_atm_to_ocean():
 
 
 @component.add(
-    name="Flux_Biomass_to_Atmosphere",
+    name="Flux Biomass to Atmosphere",
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -791,7 +791,7 @@ def flux_biomass_to_atmosphere():
 
 
 @component.add(
-    name="Flux_Biomass_to_CH4",
+    name="Flux Biomass to CH4",
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -813,7 +813,7 @@ def flux_biomass_to_ch4():
 
 
 @component.add(
-    name="Flux_Biomass_to_Humus",
+    name="Flux Biomass to Humus",
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -831,7 +831,7 @@ def flux_biomass_to_humus():
 
 
 @component.add(
-    name="Flux_Biosphere_to_CH4",
+    name="Flux Biosphere to CH4",
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -845,7 +845,7 @@ def flux_biosphere_to_ch4():
 
 
 @component.add(
-    name="Flux_Humus_to_Atmosphere",
+    name="Flux Humus to Atmosphere",
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -859,7 +859,7 @@ def flux_humus_to_atmosphere():
 
 
 @component.add(
-    name="Flux_Humus_to_CH4",
+    name="Flux Humus to CH4",
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -881,7 +881,7 @@ def flux_humus_to_ch4():
 
 
 @component.add(
-    name="GtC_per_GtCO2", units="GtC/GtCO2", comp_type="Constant", comp_subtype="Normal"
+    name="GtC per GtCO2", units="GtC/GtCO2", comp_type="Constant", comp_subtype="Normal"
 )
 def gtc_per_gtco2():
     """
@@ -891,7 +891,7 @@ def gtc_per_gtco2():
 
 
 @component.add(
-    name="GtC_per_ppm", units="(GtC)/ppm", comp_type="Constant", comp_subtype="Normal"
+    name="GtC per ppm", units="(GtC)/ppm", comp_type="Constant", comp_subtype="Normal"
 )
 def gtc_per_ppm():
     """
@@ -901,7 +901,7 @@ def gtc_per_ppm():
 
 
 @component.add(
-    name="GtCH4_per_GtC", units="GtCH4/GtC", comp_type="Constant", comp_subtype="Normal"
+    name="GtCH4 per GtC", units="GtCH4/GtC", comp_type="Constant", comp_subtype="Normal"
 )
 def gtch4_per_gtc():
     """
@@ -911,7 +911,7 @@ def gtch4_per_gtc():
 
 
 @component.add(
-    name="init_C_in_atm",
+    name="init C in atm",
     units="GtC",
     limits=(500.0, 1000.0),
     comp_type="Auxiliary",
@@ -926,7 +926,7 @@ def init_c_in_atm():
 
 
 @component.add(
-    name="init_C_in_biomass",
+    name="init C in biomass",
     units="GtC",
     comp_type="Constant",
     comp_subtype="External",
@@ -940,7 +940,7 @@ def init_c_in_biomass():
 
 
 _ext_constant_init_c_in_biomass = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "init_C_in_biomass",
     {},
@@ -951,7 +951,7 @@ _ext_constant_init_c_in_biomass = ExtConstant(
 
 
 @component.add(
-    name="init_C_in_deep_ocean",
+    name="init C in deep ocean",
     units="GtC/meter",
     subscripts=["Layers"],
     comp_type="Constant",
@@ -966,7 +966,7 @@ def init_c_in_deep_ocean():
 
 
 _ext_constant_init_c_in_deep_ocean = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "init_C_in_deep_ocean*",
     {"Layers": _subscript_dict["Layers"]},
@@ -977,7 +977,7 @@ _ext_constant_init_c_in_deep_ocean = ExtConstant(
 
 
 @component.add(
-    name="init_C_in_humus",
+    name="init C in humus",
     units="GtC",
     comp_type="Constant",
     comp_subtype="External",
@@ -991,7 +991,7 @@ def init_c_in_humus():
 
 
 _ext_constant_init_c_in_humus = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "init_C_in_humus",
     {},
@@ -1002,7 +1002,7 @@ _ext_constant_init_c_in_humus = ExtConstant(
 
 
 @component.add(
-    name="init_C_in_mixed_ocean",
+    name="init C in mixed ocean",
     units="GtC/meter",
     comp_type="Constant",
     comp_subtype="External",
@@ -1016,7 +1016,7 @@ def init_c_in_mixed_ocean():
 
 
 _ext_constant_init_c_in_mixed_ocean = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "init_C_in_mixed_ocean",
     {},
@@ -1027,7 +1027,7 @@ _ext_constant_init_c_in_mixed_ocean = ExtConstant(
 
 
 @component.add(
-    name="init_CO2_in_atm_ppm",
+    name="init CO2 in atm ppm",
     units="ppm",
     comp_type="Constant",
     comp_subtype="External",
@@ -1041,7 +1041,7 @@ def init_co2_in_atm_ppm():
 
 
 _ext_constant_init_co2_in_atm_ppm = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "init_CO2_in_atm_ppm",
     {},
@@ -1052,7 +1052,7 @@ _ext_constant_init_co2_in_atm_ppm = ExtConstant(
 
 
 @component.add(
-    name="init_NPP",
+    name="init NPP",
     units="GtC/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1066,12 +1066,12 @@ def init_npp():
 
 
 _ext_constant_init_npp = ExtConstant(
-    "../climate.xlsx", "World", "init_NPP", {}, _root, {}, "_ext_constant_init_npp"
+    r"../climate.xlsx", "World", "init_NPP", {}, _root, {}, "_ext_constant_init_npp"
 )
 
 
 @component.add(
-    name="layer_depth",
+    name="layer depth",
     units="m",
     subscripts=["Layers"],
     comp_type="Constant",
@@ -1086,7 +1086,7 @@ def layer_depth():
 
 
 _ext_constant_layer_depth = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "layer_depth*",
     {"Layers": _subscript_dict["Layers"]},
@@ -1097,15 +1097,15 @@ _ext_constant_layer_depth = ExtConstant(
 
 
 @component.add(
-    name="Layer_Time_Constant",
+    name="Layer Time Constant",
     units="year",
     subscripts=["Layers"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "layer_depth": 2,
-        "mean_depth_of_adjacent_layers": 2,
         "eddy_diffusion_coef": 2,
+        "mean_depth_of_adjacent_layers": 2,
     },
 )
 def layer_time_constant():
@@ -1129,7 +1129,7 @@ def layer_time_constant():
 
 
 @component.add(
-    name="Mean_Depth_of_Adjacent_Layers",
+    name="Mean Depth of Adjacent Layers",
     units="meter",
     subscripts=["Layers"],
     comp_type="Auxiliary",
@@ -1162,7 +1162,7 @@ def mean_depth_of_adjacent_layers():
 
 
 @component.add(
-    name="mixed_layer_depth",
+    name="mixed layer depth",
     units="meter",
     comp_type="Constant",
     comp_subtype="External",
@@ -1176,7 +1176,7 @@ def mixed_layer_depth():
 
 
 _ext_constant_mixed_layer_depth = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "mixed_layer_depth",
     {},
@@ -1187,7 +1187,7 @@ _ext_constant_mixed_layer_depth = ExtConstant(
 
 
 @component.add(
-    name="MtCH4_per_GtCH4",
+    name="MtCH4 per GtCH4",
     units="MtCH4/GtCH4",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -1200,7 +1200,7 @@ def mtch4_per_gtch4():
 
 
 @component.add(
-    name="natural_CH4_emissions",
+    name="natural CH4 emissions",
     units="MtCH4/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1214,7 +1214,7 @@ def natural_ch4_emissions():
 
 
 @component.add(
-    name="preindustrial_C",
+    name="preindustrial C",
     units="GtC",
     comp_type="Constant",
     comp_subtype="External",
@@ -1228,7 +1228,7 @@ def preindustrial_c():
 
 
 _ext_constant_preindustrial_c = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "preindustrial_C",
     {},
@@ -1239,7 +1239,7 @@ _ext_constant_preindustrial_c = ExtConstant(
 
 
 @component.add(
-    name="preindustrial_C_in_mixed_layer",
+    name="preindustrial C in mixed layer",
     units="GtC",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1253,7 +1253,7 @@ def preindustrial_c_in_mixed_layer():
 
 
 @component.add(
-    name="preindustrial_C_in_ocean",
+    name="preindustrial C in ocean",
     units="GtC/m",
     comp_type="Constant",
     comp_subtype="External",
@@ -1267,7 +1267,7 @@ def preindustrial_c_in_ocean():
 
 
 _ext_constant_preindustrial_c_in_ocean = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "preind_C_in_ocean",
     {},
@@ -1278,7 +1278,7 @@ _ext_constant_preindustrial_c_in_ocean = ExtConstant(
 
 
 @component.add(
-    name="Ref_Buffer_Factor",
+    name="Ref Buffer Factor",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1292,7 +1292,7 @@ def ref_buffer_factor():
 
 
 _ext_constant_ref_buffer_factor = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "ref_buffer_factor",
     {},
@@ -1303,7 +1303,7 @@ _ext_constant_ref_buffer_factor = ExtConstant(
 
 
 @component.add(
-    name="reference_temperature_change_for_effect_of_warming_on_CH4_from_respiration",
+    name="reference temperature change for effect of warming on CH4 from respiration",
     units="ºC",
     comp_type="Constant",
     comp_subtype="External",
@@ -1321,7 +1321,7 @@ def reference_temperature_change_for_effect_of_warming_on_ch4_from_respiration()
 
 
 _ext_constant_reference_temperature_change_for_effect_of_warming_on_ch4_from_respiration = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "reference_temperature_change_for_effect_of_warming_on_CH4_from_respiration",
     {},
@@ -1332,7 +1332,7 @@ _ext_constant_reference_temperature_change_for_effect_of_warming_on_ch4_from_res
 
 
 @component.add(
-    name="sensitivity_of_C_uptake_to_temperature",
+    name="sensitivity of C uptake to temperature",
     units="Dmnl",
     limits=(0.0, 2.5, 0.1),
     comp_type="Constant",
@@ -1347,7 +1347,7 @@ def sensitivity_of_c_uptake_to_temperature():
 
 
 _ext_constant_sensitivity_of_c_uptake_to_temperature = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "sensitivity_of_C_uptake_to_temperature",
     {},
@@ -1358,7 +1358,7 @@ _ext_constant_sensitivity_of_c_uptake_to_temperature = ExtConstant(
 
 
 @component.add(
-    name="sensitivity_of_methane_emissions_to_temperature",
+    name="sensitivity of methane emissions to temperature",
     units="Dmnl",
     limits=(0.0, 2.5, 0.1),
     comp_type="Constant",
@@ -1375,7 +1375,7 @@ def sensitivity_of_methane_emissions_to_temperature():
 
 
 _ext_constant_sensitivity_of_methane_emissions_to_temperature = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "sensitivity_of_methane_emissions_to_temperature",
     {},
@@ -1386,7 +1386,7 @@ _ext_constant_sensitivity_of_methane_emissions_to_temperature = ExtConstant(
 
 
 @component.add(
-    name="sensitivity_of_pCO2_DIC_to_temperature",
+    name="sensitivity of pCO2 DIC to temperature",
     units="1/ºC",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1406,7 +1406,7 @@ def sensitivity_of_pco2_dic_to_temperature():
 
 
 @component.add(
-    name="sensitivity_of_pCO2_DIC_to_temperature_mean",
+    name="sensitivity of pCO2 DIC to temperature mean",
     units="1/ºC",
     comp_type="Constant",
     comp_subtype="External",
@@ -1422,7 +1422,7 @@ def sensitivity_of_pco2_dic_to_temperature_mean():
 
 
 _ext_constant_sensitivity_of_pco2_dic_to_temperature_mean = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "sensitivity_of_pCO2_DIC_to_temperature_mean",
     {},
@@ -1433,7 +1433,7 @@ _ext_constant_sensitivity_of_pco2_dic_to_temperature_mean = ExtConstant(
 
 
 @component.add(
-    name="Strength_of_Temp_Effect_on_C_Flux_to_Land",
+    name="Strength of Temp Effect on C Flux to Land",
     units="1/ºC",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1453,7 +1453,7 @@ def strength_of_temp_effect_on_c_flux_to_land():
 
 
 @component.add(
-    name="Strength_of_temp_effect_on_land_C_flux_mean",
+    name="Strength of temp effect on land C flux mean",
     units="1/ºC",
     comp_type="Constant",
     comp_subtype="External",
@@ -1469,7 +1469,7 @@ def strength_of_temp_effect_on_land_c_flux_mean():
 
 
 _ext_constant_strength_of_temp_effect_on_land_c_flux_mean = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "World",
     "strength_of_temp_effect_on_land_C_flux_mean",
     {},
@@ -1480,7 +1480,7 @@ _ext_constant_strength_of_temp_effect_on_land_c_flux_mean = ExtConstant(
 
 
 @component.add(
-    name="Total_C_anthro_emissions",
+    name="Total C anthro emissions",
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

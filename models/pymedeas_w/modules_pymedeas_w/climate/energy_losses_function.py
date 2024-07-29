@@ -1,10 +1,10 @@
 """
 Module climate.energy_losses_function
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="a_logistic",
+    name="a logistic",
     units="ppm",
     comp_type="Constant",
     comp_subtype="External",
@@ -18,7 +18,7 @@ def a_logistic():
 
 
 _ext_constant_a_logistic = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "World",
     "damage_function_parameter_a",
     {},
@@ -29,7 +29,7 @@ _ext_constant_a_logistic = ExtConstant(
 
 
 @component.add(
-    name="activate_ELF",
+    name="activate ELF",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -43,7 +43,7 @@ def activate_elf():
 
 
 _ext_constant_activate_elf = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
+    r"../../scenarios/scen_w.xlsx",
     "NZP",
     "ELF",
     {},
@@ -54,7 +54,7 @@ _ext_constant_activate_elf = ExtConstant(
 
 
 @component.add(
-    name="b_logistic",
+    name="b logistic",
     units="ppm",
     comp_type="Constant",
     comp_subtype="External",
@@ -68,7 +68,7 @@ def b_logistic():
 
 
 _ext_constant_b_logistic = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "World",
     "damage_function_parameter_b",
     {},
@@ -85,8 +85,8 @@ _ext_constant_b_logistic = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "activate_elf": 1,
-        "b_logistic": 1,
         "a_logistic": 1,
+        "b_logistic": 1,
         "co2_ppm_concentrations": 1,
     },
 )
@@ -100,7 +100,7 @@ def elf():
 
 
 @component.add(
-    name="ELF_2015",
+    name="ELF 2015",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -119,7 +119,7 @@ _sampleiftrue_elf_2015 = SampleIfTrue(
 
 
 @component.add(
-    name="share_E_losses_CC",
+    name="share E losses CC",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",

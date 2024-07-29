@@ -1,10 +1,10 @@
 """
 Module energy.supply.ped_from_nonelectric_res
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name='"Max_potential_PE_non-electric_RES"',
+    name='"Max potential PE non-electric RES"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -21,7 +21,7 @@ def max_potential_pe_nonelectric_res():
 
 
 @component.add(
-    name='"PE_supply_from_RES_non-elec_without_trad_bioE_EJ"',
+    name='"PE supply from RES non-elec without trad bioE EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -39,7 +39,7 @@ def pe_supply_from_res_nonelec_without_trad_bioe_ej():
 
 
 @component.add(
-    name='"PE_supply_RES_non-Elec_EJ"',
+    name='"PE supply RES non-Elec EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

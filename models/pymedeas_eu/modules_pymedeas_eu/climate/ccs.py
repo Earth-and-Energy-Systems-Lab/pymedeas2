@@ -1,12 +1,12 @@
 """
 Module climate.ccs
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="CCS_cp",
+    name="CCS cp",
     units="Dmnl",
-    subscripts=["CCS_tech"],
+    subscripts=["CCS tech"],
     comp_type="Constant",
     comp_subtype="Normal",
 )
@@ -14,13 +14,13 @@ def ccs_cp():
     """
     Capacity factor of the carbon capture and storage technologies
     """
-    return xr.DataArray(0.9, {"CCS_tech": _subscript_dict["CCS_tech"]}, ["CCS_tech"])
+    return xr.DataArray(0.9, {"CCS tech": _subscript_dict["CCS tech"]}, ["CCS tech"])
 
 
 @component.add(
-    name="CCS_efficiency",
+    name="CCS efficiency",
     units="GtCO2/TWh",
-    subscripts=["CCS_tech"],
+    subscripts=["CCS tech"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_ccs_efficiency"},
@@ -30,20 +30,20 @@ def ccs_efficiency():
 
 
 _ext_constant_ccs_efficiency = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ccs_efficiency*",
-    {"CCS_tech": _subscript_dict["CCS_tech"]},
+    {"CCS tech": _subscript_dict["CCS tech"]},
     _root,
-    {"CCS_tech": _subscript_dict["CCS_tech"]},
+    {"CCS tech": _subscript_dict["CCS tech"]},
     "_ext_constant_ccs_efficiency",
 )
 
 
 @component.add(
-    name="CCS_energy_consumption_sector",
+    name="CCS energy consumption sector",
     units="TWh/year",
-    subscripts=["SECTORS_and_HOUSEHOLDS"],
+    subscripts=["SECTORS and HOUSEHOLDS"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ccs_energy_demand_sect": 1, "scarcity_final_fuels": 1},
@@ -53,9 +53,9 @@ def ccs_energy_consumption_sector():
 
 
 @component.add(
-    name="CCS_energy_demand_sect",
+    name="CCS energy demand sect",
     units="TWh/year",
-    subscripts=["SECTORS_and_HOUSEHOLDS"],
+    subscripts=["SECTORS and HOUSEHOLDS"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ccs_energy_demand_sect_tech": 1},
@@ -65,15 +65,15 @@ def ccs_energy_demand_sect():
     Total energy demand for CCS (electricity) by sector
     """
     return sum(
-        ccs_energy_demand_sect_tech().rename({"CCS_tech": "CCS_tech!"}),
-        dim=["CCS_tech!"],
+        ccs_energy_demand_sect_tech().rename({"CCS tech": "CCS tech!"}),
+        dim=["CCS tech!"],
     )
 
 
 @component.add(
-    name="CCS_energy_demand_sect_tech",
+    name="CCS energy demand sect tech",
     units="TWh/year",
-    subscripts=["SECTORS_and_HOUSEHOLDS", "CCS_tech"],
+    subscripts=["SECTORS and HOUSEHOLDS", "CCS tech"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ccs_sector_tech": 1, "ccs_cp": 1, "twe_per_twh": 1},
@@ -86,9 +86,9 @@ def ccs_energy_demand_sect_tech():
 
 
 @component.add(
-    name="CCS_policy",
+    name="CCS policy",
     units="TW",
-    subscripts=["SECTORS_and_HOUSEHOLDS"],
+    subscripts=["SECTORS and HOUSEHOLDS"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -101,24 +101,24 @@ def ccs_policy(x, final_subs=None):
 
 
 _ext_lookup_ccs_policy = ExtLookup(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "year_RES_power",
     "p_CCS",
-    {"SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"]},
+    {"SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"]},
     _root,
-    {"SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"]},
+    {"SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"]},
     "_ext_lookup_ccs_policy",
 )
 
 
 @component.add(
-    name="CCS_sector_tech",
+    name="CCS sector tech",
     units="TW",
-    subscripts=["SECTORS_and_HOUSEHOLDS", "CCS_tech"],
+    subscripts=["SECTORS and HOUSEHOLDS", "CCS tech"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "ccs_policy": 1, "ccs_tech_share": 1},
+    depends_on={"time": 3, "ccs_tech_share": 1, "ccs_policy": 1},
 )
 def ccs_sector_tech():
     return if_then_else(
@@ -126,19 +126,19 @@ def ccs_sector_tech():
         lambda: xr.DataArray(
             0,
             {
-                "SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"],
-                "CCS_tech": _subscript_dict["CCS_tech"],
+                "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+                "CCS tech": _subscript_dict["CCS tech"],
             },
-            ["SECTORS_and_HOUSEHOLDS", "CCS_tech"],
+            ["SECTORS and HOUSEHOLDS", "CCS tech"],
         ),
         lambda: ccs_policy(time()) * ccs_tech_share(time()),
     )
 
 
 @component.add(
-    name="CCS_tech_share",
+    name="CCS tech share",
     units="Dmnl",
-    subscripts=["SECTORS_and_HOUSEHOLDS", "CCS_tech"],
+    subscripts=["SECTORS and HOUSEHOLDS", "CCS tech"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -151,188 +151,188 @@ def ccs_tech_share(x, final_subs=None):
 
 
 _ext_lookup_ccs_tech_share = ExtLookup(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_hh",
-    {"SECTORS_and_HOUSEHOLDS": ["Households"], "CCS_tech": _subscript_dict["CCS_tech"]},
+    {"SECTORS and HOUSEHOLDS": ["Households"], "CCS tech": _subscript_dict["CCS tech"]},
     _root,
     {
-        "SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
     "_ext_lookup_ccs_tech_share",
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_agr",
     {
-        "SECTORS_and_HOUSEHOLDS": ["Agriculture"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": ["Agriculture"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_mqes",
     {
-        "SECTORS_and_HOUSEHOLDS": ["Mining_quarrying_and_energy_supply"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": ["Mining quarrying and energy supply"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_fbt",
     {
-        "SECTORS_and_HOUSEHOLDS": ["Food_Beverages_and_Tobacco"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": ["Food Beverages and Tobacco"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_tex",
     {
-        "SECTORS_and_HOUSEHOLDS": ["Textiles_and_leather_etc"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": ["Textiles and leather etc"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_coke",
     {
-        "SECTORS_and_HOUSEHOLDS": [
-            "Coke_refined_petroleum_nuclear_fuel_and_chemicals_etc"
+        "SECTORS and HOUSEHOLDS": [
+            "Coke refined petroleum nuclear fuel and chemicals etc"
         ],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_eoete",
     {
-        "SECTORS_and_HOUSEHOLDS": [
-            "Electrical_and_optical_equipment_and_Transport_equipment"
+        "SECTORS and HOUSEHOLDS": [
+            "Electrical and optical equipment and Transport equipment"
         ],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_om",
     {
-        "SECTORS_and_HOUSEHOLDS": ["Other_manufacturing"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": ["Other manufacturing"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_cons",
     {
-        "SECTORS_and_HOUSEHOLDS": ["Construction"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": ["Construction"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_dist",
     {
-        "SECTORS_and_HOUSEHOLDS": ["Distribution"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": ["Distribution"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_hr",
     {
-        "SECTORS_and_HOUSEHOLDS": ["Hotels_and_restaurant"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": ["Hotels and restaurant"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_tsc",
     {
-        "SECTORS_and_HOUSEHOLDS": ["Transport_storage_and_communication"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": ["Transport storage and communication"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_fi",
     {
-        "SECTORS_and_HOUSEHOLDS": ["Financial_Intermediation"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": ["Financial Intermediation"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_re",
     {
-        "SECTORS_and_HOUSEHOLDS": ["Real_estate_renting_and_busine_activitie"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": ["Real estate renting and busine activitie"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 _ext_lookup_ccs_tech_share.add(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Europe",
     "year_ccs_tech",
     "ccs_tech_share_nms",
     {
-        "SECTORS_and_HOUSEHOLDS": ["Non_Market_Service"],
-        "CCS_tech": _subscript_dict["CCS_tech"],
+        "SECTORS and HOUSEHOLDS": ["Non Market Service"],
+        "CCS tech": _subscript_dict["CCS tech"],
     },
 )
 
 
 @component.add(
-    name="CO2_captured_sector_CCS",
+    name="CO2 captured sector CCS",
     units="GtCO2/year",
-    subscripts=["SECTORS_and_HOUSEHOLDS"],
+    subscripts=["SECTORS and HOUSEHOLDS"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "co2_captured_sector_tech_ccs": 1,
-        "co2_emissions_households_and_sectors_fossil_fuels": 1,
         "scarcity_final_fuels": 1,
+        "co2_emissions_households_and_sectors_fossil_fuels": 1,
     },
 )
 def co2_captured_sector_ccs():
@@ -341,8 +341,8 @@ def co2_captured_sector_ccs():
     """
     return np.minimum(
         sum(
-            co2_captured_sector_tech_ccs().rename({"CCS_tech": "CCS_tech!"}),
-            dim=["CCS_tech!"],
+            co2_captured_sector_tech_ccs().rename({"CCS tech": "CCS tech!"}),
+            dim=["CCS tech!"],
         ),
         co2_emissions_households_and_sectors_fossil_fuels()
         * float(scarcity_final_fuels().loc["electricity"]),
@@ -350,9 +350,9 @@ def co2_captured_sector_ccs():
 
 
 @component.add(
-    name="CO2_captured_sector_tech_CCS",
+    name="CO2 captured sector tech CCS",
     units="GtCO2/year",
-    subscripts=["SECTORS_and_HOUSEHOLDS", "CCS_tech"],
+    subscripts=["SECTORS and HOUSEHOLDS", "CCS tech"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -366,18 +366,18 @@ def co2_captured_sector_tech_ccs():
     value = xr.DataArray(
         np.nan,
         {
-            "SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"],
-            "CCS_tech": _subscript_dict["CCS_tech"],
+            "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+            "CCS tech": _subscript_dict["CCS tech"],
         },
-        ["SECTORS_and_HOUSEHOLDS", "CCS_tech"],
+        ["SECTORS and HOUSEHOLDS", "CCS tech"],
     )
     except_subs = xr.ones_like(value, dtype=bool)
-    except_subs.loc[_subscript_dict["SECTORS_CCS"], :] = False
+    except_subs.loc[_subscript_dict["SECTORS CCS"], :] = False
     value.values[except_subs.values] = 0
-    value.loc[_subscript_dict["SECTORS_CCS"], :] = (
+    value.loc[_subscript_dict["SECTORS CCS"], :] = (
         ccs_sector_tech()
-        .loc[_subscript_dict["SECTORS_CCS"], :]
-        .rename({"SECTORS_and_HOUSEHOLDS": "SECTORS_CCS"})
+        .loc[_subscript_dict["SECTORS CCS"], :]
+        .rename({"SECTORS and HOUSEHOLDS": "SECTORS CCS"})
         * ccs_efficiency()
         * ccs_cp()
         / twe_per_twh()
@@ -386,9 +386,9 @@ def co2_captured_sector_tech_ccs():
 
 
 @component.add(
-    name="CO2_emissions_households_and_sectors_fossil_fuels",
+    name="CO2 emissions households and sectors fossil fuels",
     units="GtCO2/year",
-    subscripts=["SECTORS_and_HOUSEHOLDS"],
+    subscripts=["SECTORS and HOUSEHOLDS"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"co2_emissions_households_and_sectors_before_ccs": 1},
@@ -399,14 +399,14 @@ def co2_emissions_households_and_sectors_fossil_fuels():
     """
     return sum(
         co2_emissions_households_and_sectors_before_ccs()
-        .loc[_subscript_dict["matter_final_sources"], :]
-        .rename({"final_sources": "matter_final_sources!"}),
-        dim=["matter_final_sources!"],
+        .loc[_subscript_dict["matter final sources"], :]
+        .rename({"final sources": "matter final sources!"}),
+        dim=["matter final sources!"],
     )
 
 
 @component.add(
-    name="total_CO2_captured_CCS",
+    name="total CO2 captured CCS",
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -418,7 +418,7 @@ def total_co2_captured_ccs():
     """
     return sum(
         co2_captured_sector_ccs().rename(
-            {"SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!"}
+            {"SECTORS and HOUSEHOLDS": "SECTORS and HOUSEHOLDS!"}
         ),
-        dim=["SECTORS_and_HOUSEHOLDS!"],
+        dim=["SECTORS and HOUSEHOLDS!"],
     )

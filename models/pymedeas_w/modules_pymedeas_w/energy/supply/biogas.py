@@ -1,18 +1,18 @@
 """
 Module energy.supply.biogas
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="adapt_growth_biogas",
+    name="adapt growth biogas",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
         "past_biogas_growth": 3,
-        "nvs_5_years_ts": 1,
         "growth_biogas": 2,
+        "nvs_5_years_ts": 1,
     },
 )
 def adapt_growth_biogas():
@@ -34,7 +34,7 @@ def adapt_growth_biogas():
 
 
 @component.add(
-    name="biogas_evol",
+    name="biogas evol",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -48,7 +48,7 @@ def biogas_evol():
 
 
 _ext_constant_biogas_evol = ExtConstant(
-    "../../scenarios/scen_w.xlsx",
+    r"../../scenarios/scen_w.xlsx",
     "NZP",
     "p_biogas_evol",
     {},
@@ -59,7 +59,7 @@ _ext_constant_biogas_evol = ExtConstant(
 
 
 @component.add(
-    name="efficiency_biogas_for_elec_CHP_plants",
+    name="efficiency biogas for elec CHP plants",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -73,7 +73,7 @@ def efficiency_biogas_for_elec_chp_plants():
 
 
 _ext_constant_efficiency_biogas_for_elec_chp_plants = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "efficiency_biogas_for_elec_in_chp_plants",
     {},
@@ -84,7 +84,7 @@ _ext_constant_efficiency_biogas_for_elec_chp_plants = ExtConstant(
 
 
 @component.add(
-    name="efficiency_biogas_for_elec_plants",
+    name="efficiency biogas for elec plants",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -98,7 +98,7 @@ def efficiency_biogas_for_elec_plants():
 
 
 _ext_constant_efficiency_biogas_for_elec_plants = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "efficiency_biogas_for_elec_plants",
     {},
@@ -109,7 +109,7 @@ _ext_constant_efficiency_biogas_for_elec_plants = ExtConstant(
 
 
 @component.add(
-    name="efficiency_biogas_for_heat_CHP_plants",
+    name="efficiency biogas for heat CHP plants",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -123,7 +123,7 @@ def efficiency_biogas_for_heat_chp_plants():
 
 
 _ext_constant_efficiency_biogas_for_heat_chp_plants = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "efficiency_biogas_for_heat_chp_plants",
     {},
@@ -134,7 +134,7 @@ _ext_constant_efficiency_biogas_for_heat_chp_plants = ExtConstant(
 
 
 @component.add(
-    name="efficiency_biogas_for_heat_plants",
+    name="efficiency biogas for heat plants",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -148,7 +148,7 @@ def efficiency_biogas_for_heat_plants():
 
 
 _ext_constant_efficiency_biogas_for_heat_plants = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "efficiency_biogas_for_heat_plants",
     {},
@@ -159,7 +159,7 @@ _ext_constant_efficiency_biogas_for_heat_plants = ExtConstant(
 
 
 @component.add(
-    name='"FES_biogas_for_heat-com_plants"',
+    name='"FES biogas for heat-com plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -176,7 +176,7 @@ def fes_biogas_for_heatcom_plants():
 
 
 @component.add(
-    name="FES_elec_from_biogas_EJ",
+    name="FES elec from biogas EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -193,7 +193,7 @@ def fes_elec_from_biogas_ej():
 
 
 @component.add(
-    name="FES_elec_from_biogas_in_CHP_plants",
+    name="FES elec from biogas in CHP plants",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -207,7 +207,7 @@ def fes_elec_from_biogas_in_chp_plants():
 
 
 @component.add(
-    name="FES_elec_from_biogas_in_elec_plants",
+    name="FES elec from biogas in elec plants",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -224,7 +224,7 @@ def fes_elec_from_biogas_in_elec_plants():
 
 
 @component.add(
-    name="FES_elec_from_biogas_TWh",
+    name="FES elec from biogas TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -238,7 +238,7 @@ def fes_elec_from_biogas_twh():
 
 
 @component.add(
-    name='"FES_heat-com_from_biogas_EJ"',
+    name='"FES heat-com from biogas EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -255,7 +255,7 @@ def fes_heatcom_from_biogas_ej():
 
 
 @component.add(
-    name='"FES_heat-com_from_biogas_in_CHP_plants"',
+    name='"FES heat-com from biogas in CHP plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -269,7 +269,7 @@ def fes_heatcom_from_biogas_in_chp_plants():
 
 
 @component.add(
-    name="growth_biogas",
+    name="growth biogas",
     units="1/(year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -283,7 +283,7 @@ def growth_biogas():
 
 
 @component.add(
-    name="Historic_biogas_PES",
+    name="Historic biogas PES",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -300,7 +300,7 @@ def historic_biogas_pes(x, final_subs=None):
 
 
 _ext_lookup_historic_biogas_pes = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "time_efficiencies",
     "historic_primary_energy_supply_biogas",
@@ -312,7 +312,7 @@ _ext_lookup_historic_biogas_pes = ExtLookup(
 
 
 @component.add(
-    name="Losses_CHP_biogas",
+    name="Losses CHP biogas",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -334,7 +334,7 @@ def losses_chp_biogas():
 
 
 @component.add(
-    name="max_biogas_EJ",
+    name="max biogas EJ",
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -348,7 +348,7 @@ def max_biogas_ej():
 
 
 _ext_constant_max_biogas_ej = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "max_biogases_potential",
     {},
@@ -359,17 +359,17 @@ _ext_constant_max_biogas_ej = ExtConstant(
 
 
 @component.add(
-    name="new_PES_biogas",
+    name="new PES biogas",
     units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "historic_biogas_pes": 2,
         "time_step": 2,
+        "historic_biogas_pes": 2,
         "max_biogas_ej": 2,
-        "adapt_growth_biogas": 1,
         "pes_biogas_ej": 2,
+        "adapt_growth_biogas": 1,
     },
 )
 def new_pes_biogas():
@@ -389,7 +389,7 @@ def new_pes_biogas():
 
 
 @component.add(
-    name="past_biogas_growth",
+    name="past biogas growth",
     units="Dmnl/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -403,7 +403,7 @@ def past_biogas_growth():
 
 
 _ext_constant_past_biogas_growth = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "average_historic_primary_energy_supply_biogas",
     {},
@@ -414,7 +414,7 @@ _ext_constant_past_biogas_growth = ExtConstant(
 
 
 @component.add(
-    name="PES_Biogas_EJ",
+    name="PES Biogas EJ",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -439,7 +439,7 @@ _integ_pes_biogas_ej = Integ(
 
 
 @component.add(
-    name="PES_biogas_for_CHP",
+    name="PES biogas for CHP",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -453,7 +453,7 @@ def pes_biogas_for_chp():
 
 
 @component.add(
-    name="PES_biogas_for_elec_plants",
+    name="PES biogas for elec plants",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -467,7 +467,7 @@ def pes_biogas_for_elec_plants():
 
 
 @component.add(
-    name='"PES_biogas_for_heat-com_plants"',
+    name='"PES biogas for heat-com plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -481,7 +481,7 @@ def pes_biogas_for_heatcom_plants():
 
 
 @component.add(
-    name="PES_biogas_for_TFC",
+    name="PES biogas for TFC",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -495,7 +495,7 @@ def pes_biogas_for_tfc():
 
 
 @component.add(
-    name="PES_tot_biogas_for_elec",
+    name="PES tot biogas for elec",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -518,7 +518,7 @@ def pes_tot_biogas_for_elec():
 
 
 @component.add(
-    name='"PES_tot_biogas_for_heat-com"',
+    name='"PES tot biogas for heat-com"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -541,7 +541,7 @@ def pes_tot_biogas_for_heatcom():
 
 
 @component.add(
-    name="Potential_PES_biogas_for_TFC",
+    name="Potential PES biogas for TFC",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -555,7 +555,7 @@ def potential_pes_biogas_for_tfc():
 
 
 @component.add(
-    name="share_efficiency_biogas_for_elec_in_CHP_plants",
+    name="share efficiency biogas for elec in CHP plants",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -572,7 +572,7 @@ def share_efficiency_biogas_for_elec_in_chp_plants():
 
 
 @component.add(
-    name="share_PES_biogas_for_CHP",
+    name="share PES biogas for CHP",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -586,7 +586,7 @@ def share_pes_biogas_for_chp():
 
 
 _ext_constant_share_pes_biogas_for_chp = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "share_pes_biogas_for_chp_plants",
     {},
@@ -597,7 +597,7 @@ _ext_constant_share_pes_biogas_for_chp = ExtConstant(
 
 
 @component.add(
-    name="share_PES_biogas_for_elec",
+    name="share PES biogas for elec",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -608,7 +608,7 @@ def share_pes_biogas_for_elec():
 
 
 @component.add(
-    name="share_PES_biogas_for_elec_plants",
+    name="share PES biogas for elec plants",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -622,7 +622,7 @@ def share_pes_biogas_for_elec_plants():
 
 
 _ext_constant_share_pes_biogas_for_elec_plants = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "share_pes_biogas_for_elec_plants",
     {},
@@ -633,7 +633,7 @@ _ext_constant_share_pes_biogas_for_elec_plants = ExtConstant(
 
 
 @component.add(
-    name="share_PES_biogas_for_heat",
+    name="share PES biogas for heat",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -644,7 +644,7 @@ def share_pes_biogas_for_heat():
 
 
 @component.add(
-    name='"share_PES_biogas_for_heat-com_plants"',
+    name='"share PES biogas for heat-com plants"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -658,7 +658,7 @@ def share_pes_biogas_for_heatcom_plants():
 
 
 _ext_constant_share_pes_biogas_for_heatcom_plants = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "share_pes_biogas_for_heat_plants",
     {},
@@ -669,7 +669,7 @@ _ext_constant_share_pes_biogas_for_heatcom_plants = ExtConstant(
 
 
 @component.add(
-    name="share_PES_biogas_TFC",
+    name="share PES biogas TFC",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -683,7 +683,7 @@ def share_pes_biogas_tfc():
 
 
 _ext_constant_share_pes_biogas_tfc = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "share_pes_biogas_tfc",
     {},

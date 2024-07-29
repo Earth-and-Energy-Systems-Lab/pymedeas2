@@ -1,10 +1,10 @@
 """
 Module energy.supply.crop_and_forest_residues
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name='"BioE_residues_for_non-biofuels_available"',
+    name='"BioE residues for non-biofuels available"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -25,7 +25,7 @@ def bioe_residues_for_nonbiofuels_available():
 
 
 @component.add(
-    name="Cellulosic_biofuels_available",
+    name="Cellulosic biofuels available",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -46,7 +46,7 @@ def cellulosic_biofuels_available():
 
 
 @component.add(
-    name="Efficiency_bioE_residues_to_cellulosic_liquids",
+    name="Efficiency bioE residues to cellulosic liquids",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -60,7 +60,7 @@ def efficiency_bioe_residues_to_cellulosic_liquids():
 
 
 @component.add(
-    name="Max_NPP_potential_bioE_residues",
+    name="Max NPP potential bioE residues",
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -74,7 +74,7 @@ def max_npp_potential_bioe_residues():
 
 
 _ext_constant_max_npp_potential_bioe_residues = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "max_NPP_pot_bioe_residues",
     {},
@@ -85,7 +85,7 @@ _ext_constant_max_npp_potential_bioe_residues = ExtConstant(
 
 
 @component.add(
-    name="Max_NPP_potential_BioE_residues_for_cellulosic_biofuels",
+    name="Max NPP potential BioE residues for cellulosic biofuels",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -104,7 +104,7 @@ def max_npp_potential_bioe_residues_for_cellulosic_biofuels():
 
 
 @component.add(
-    name='"Max_NPP_potential_BioE_residues_for_non-biofuels"',
+    name='"Max NPP potential BioE residues for non-biofuels"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -123,7 +123,7 @@ def max_npp_potential_bioe_residues_for_nonbiofuels():
 
 
 @component.add(
-    name="Max_PEavail_potential_bioE_residues_for_cellulosic_biofuels",
+    name="Max PEavail potential bioE residues for cellulosic biofuels",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -140,20 +140,20 @@ def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
 
 
 @component.add(
-    name='"new_BioE_residues_for_non-biofuels"',
+    name='"new BioE residues for non-biofuels"',
     units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
         "start_year_bioe_residues_for_nonbiofuels": 3,
-        "bioe_residues_for_nonbiofuels_available": 1,
-        "p_bioe_residues": 1,
-        "nvs_1_year": 1,
         "ej_per_ktoe": 1,
-        "max_npp_potential_bioe_residues": 1,
         "start_production_biofuels": 1,
+        "p_bioe_residues": 1,
         "pe_bioe_residues_nonbiofuels": 1,
+        "nvs_1_year": 1,
+        "bioe_residues_for_nonbiofuels_available": 1,
+        "max_npp_potential_bioe_residues": 1,
     },
 )
 def new_bioe_residues_for_nonbiofuels():
@@ -182,22 +182,22 @@ def new_bioe_residues_for_nonbiofuels():
 
 
 @component.add(
-    name="new_cellulosic_biofuels",
+    name="new cellulosic biofuels",
     units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
         "start_year_3gen_cellulosic_biofuels": 3,
-        "p_bioe_residues": 1,
-        "check_liquids": 1,
-        "nvs_1_year": 2,
-        "cellulosic_biofuels_available": 1,
         "ej_per_ktoe": 1,
-        "constrain_liquids_exogenous_growth": 1,
-        "max_npp_potential_bioe_residues": 1,
+        "check_liquids": 1,
         "start_production_biofuels": 1,
         "potential_pe_cellulosic_biofuel_ej": 2,
+        "constrain_liquids_exogenous_growth": 1,
+        "cellulosic_biofuels_available": 1,
+        "p_bioe_residues": 1,
+        "nvs_1_year": 2,
+        "max_npp_potential_bioe_residues": 1,
     },
 )
 def new_cellulosic_biofuels():
@@ -232,7 +232,7 @@ def new_cellulosic_biofuels():
 
 
 @component.add(
-    name="P_bioE_residues",
+    name="P bioE residues",
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -246,7 +246,7 @@ def p_bioe_residues():
 
 
 _ext_constant_p_bioe_residues = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "p_bioe_residues_growth",
     {},
@@ -257,7 +257,7 @@ _ext_constant_p_bioe_residues = ExtConstant(
 
 
 @component.add(
-    name='"PE_bioE_residues_non-biofuels"',
+    name='"PE bioE residues non-biofuels"',
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -284,7 +284,7 @@ _integ_pe_bioe_residues_nonbiofuels = Integ(
 
 
 @component.add(
-    name="PE_cellulosic_biofuel",
+    name="PE cellulosic biofuel",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -301,7 +301,7 @@ def pe_cellulosic_biofuel():
 
 
 @component.add(
-    name="PEavail_cellulosic_biofuel_EJ",
+    name="PEavail cellulosic biofuel EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -318,7 +318,7 @@ def peavail_cellulosic_biofuel_ej():
 
 
 @component.add(
-    name="Potential_PE_cellulosic_biofuel_abanndoned",
+    name="Potential PE cellulosic biofuel abanndoned",
     units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -337,7 +337,7 @@ def potential_pe_cellulosic_biofuel_abanndoned():
 
 
 @component.add(
-    name="Potential_PE_cellulosic_biofuel_EJ",
+    name="Potential PE cellulosic biofuel EJ",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -367,7 +367,7 @@ _integ_potential_pe_cellulosic_biofuel_ej = Integ(
 
 
 @component.add(
-    name="Potential_PEavail_cellulosic_biofuel_EJ",
+    name="Potential PEavail cellulosic biofuel EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -381,7 +381,7 @@ def potential_peavail_cellulosic_biofuel_ej():
 
 
 @component.add(
-    name="share_cellulosic_biofuels_vs_BioE_residues",
+    name="share cellulosic biofuels vs BioE residues",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -397,7 +397,7 @@ def share_cellulosic_biofuels_vs_bioe_residues():
 
 
 _ext_constant_share_cellulosic_biofuels_vs_bioe_residues = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "share_cellulosic_biof_vs_bioe_res",
     {},
@@ -408,7 +408,7 @@ _ext_constant_share_cellulosic_biofuels_vs_bioe_residues = ExtConstant(
 
 
 @component.add(
-    name='"start_year_BioE_residues_for_non-biofuels"',
+    name='"start year BioE residues for non-biofuels"',
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -424,7 +424,7 @@ def start_year_bioe_residues_for_nonbiofuels():
 
 
 _ext_constant_start_year_bioe_residues_for_nonbiofuels = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "start_year_bioe_residues_non_biofuels",
     {},

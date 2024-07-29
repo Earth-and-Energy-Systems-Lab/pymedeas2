@@ -299,6 +299,7 @@
             "required_fed_sectors_by_fuel",
             "required_final_energy_by_sector_and_fuel_eu",
             "share_e_losses_cc_world",
+            "share_electricity_tfec",
             "shortage_coef_without_min_without_elosses",
             "total_domestic_output_required_by_sector",
             "total_fed",
@@ -1219,7 +1220,7 @@
                 "pe_losses_uranium_for_heat",
                 "pe_losses_waste_for_heat"
             ],
-            "heat_total_pes_delete": [
+            "heat_total_pes": [
                 "pes_nre_heat",
                 "pes_nre_heatcom",
                 "pes_nre_heatnc",
@@ -1752,6 +1753,7 @@
                 "agricultural_land_2015",
                 "land_requirements_res_elec_compet_uses",
                 "land_saved_by_urban_pv",
+                "real_share_pv_urban_vs_total_pv_delayed",
                 "share_land_compet_biofuels",
                 "share_land_res_land_compet_vs_arable",
                 "share_land_total_res_vs_arable",

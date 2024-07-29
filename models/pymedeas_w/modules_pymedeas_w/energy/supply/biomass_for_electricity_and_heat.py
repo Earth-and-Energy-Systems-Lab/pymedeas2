@@ -1,10 +1,10 @@
 """
 Module energy.supply.biomass_for_electricity_and_heat
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="available_PE_potential_solid_bioE_for_elec",
+    name="available PE potential solid bioE for elec",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -21,13 +21,13 @@ def available_pe_potential_solid_bioe_for_elec():
     return np.maximum(
         0,
         total_pe_solid_bioe_potential_heatelec()
-        - float(pes_res_for_heatcom_by_techn().loc["solid_bioE_heat"])
-        - float(pes_res_for_heatnc_by_techn().loc["solid_bioE_heat"]),
+        - float(pes_res_for_heatcom_by_techn().loc["solid bioE heat"])
+        - float(pes_res_for_heatnc_by_techn().loc["solid bioE heat"]),
     )
 
 
 @component.add(
-    name="available_PE_potential_solid_bioE_for_heat",
+    name="available PE potential solid bioE for heat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -43,12 +43,12 @@ def available_pe_potential_solid_bioe_for_heat():
     return np.maximum(
         0,
         total_pe_solid_bioe_potential_heatelec()
-        - float(pe_real_generation_res_elec().loc["solid_bioE_elec"]),
+        - float(pe_real_generation_res_elec().loc["solid bioE elec"]),
     )
 
 
 @component.add(
-    name="available_potential_FE_solid_bioE_for_elec",
+    name="available potential FE solid bioE for elec",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -68,7 +68,7 @@ def available_potential_fe_solid_bioe_for_elec():
 
 
 @component.add(
-    name='"Max_potential_NPP_bioE_conventional_for_heat+elec"',
+    name='"Max potential NPP bioE conventional for heat+elec"',
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -84,7 +84,7 @@ def max_potential_npp_bioe_conventional_for_heatelec():
 
 
 _ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "max_pot_NPP_bioe_conv",
     {},
@@ -95,7 +95,7 @@ _ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
 
 
 @component.add(
-    name='"Total_PE_solid_bioE_potential_heat+elec"',
+    name='"Total PE solid bioE potential heat+elec"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

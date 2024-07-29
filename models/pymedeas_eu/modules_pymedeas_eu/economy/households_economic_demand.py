@@ -1,10 +1,10 @@
 """
 Module economy.households_economic_demand
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="beta_0_HD",
+    name="beta 0 HD",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -19,7 +19,7 @@ def beta_0_hd():
 
 
 _ext_constant_beta_0_hd = ExtConstant(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Europe",
     "beta_0_HD*",
     {"sectors": _subscript_dict["sectors"]},
@@ -30,7 +30,7 @@ _ext_constant_beta_0_hd = ExtConstant(
 
 
 @component.add(
-    name="beta_1_HD",
+    name="beta 1 HD",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -44,12 +44,12 @@ def beta_1_hd():
 
 
 _ext_constant_beta_1_hd = ExtConstant(
-    "../economy.xlsx", "Europe", "beta_1_HD", {}, _root, {}, "_ext_constant_beta_1_hd"
+    r"../economy.xlsx", "Europe", "beta_1_HD", {}, _root, {}, "_ext_constant_beta_1_hd"
 )
 
 
 @component.add(
-    name="historic_HD",
+    name="historic HD",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -67,7 +67,7 @@ def historic_hd(x, final_subs=None):
 
 
 _ext_lookup_historic_hd = ExtLookup(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Europe",
     "time_index2009",
     "historic_HD",
@@ -79,7 +79,7 @@ _ext_lookup_historic_hd = ExtLookup(
 
 
 @component.add(
-    name="Household_demand",
+    name="Household demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -110,15 +110,15 @@ _integ_household_demand = Integ(
 
 
 @component.add(
-    name="Household_demand_not_covered",
+    name="Household demand not covered",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "real_household_demand_by_sector": 1,
         "household_demand": 1,
+        "real_household_demand_by_sector": 1,
         "nvs_1_year": 1,
     },
 )
@@ -139,7 +139,7 @@ def household_demand_not_covered():
 
 
 @component.add(
-    name="Household_demand_total",
+    name="Household demand total",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -153,7 +153,7 @@ def household_demand_total():
 
 
 @component.add(
-    name="initial_household_demand",
+    name="initial household demand",
     units="M$",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -168,7 +168,7 @@ def initial_household_demand():
 
 
 @component.add(
-    name="unit_correction_economic",
+    name="unit correction economic",
     units="1/Mdollars",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -178,7 +178,7 @@ def unit_correction_economic():
 
 
 @component.add(
-    name="variation_historic_demand",
+    name="variation historic demand",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -193,7 +193,7 @@ def variation_historic_demand():
 
 
 @component.add(
-    name="variation_household_demand",
+    name="variation household demand",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -201,12 +201,12 @@ def variation_historic_demand():
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "lc": 2,
-        "unit_correction_economic": 2,
-        "beta_1_hd": 2,
         "nvs_1_year": 1,
-        "variation_lc": 1,
+        "unit_correction_economic": 2,
+        "lc": 2,
+        "beta_1_hd": 2,
         "beta_0_hd": 1,
+        "variation_lc": 1,
     },
 )
 def variation_household_demand():

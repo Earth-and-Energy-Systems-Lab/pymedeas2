@@ -1,10 +1,10 @@
 """
 Module energy.availability.uranium_extraction
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="abundance_uranium",
+    name="abundance uranium",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -27,7 +27,7 @@ def abundance_uranium():
 
 
 @component.add(
-    name="Cumulated_uranium_extraction",
+    name="Cumulated uranium extraction",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -54,7 +54,7 @@ _integ_cumulated_uranium_extraction = Integ(
 
 
 @component.add(
-    name="cumulated_uranium_extraction_to_1995",
+    name="cumulated uranium extraction to 1995",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -68,7 +68,7 @@ def cumulated_uranium_extraction_to_1995():
 
 
 _ext_constant_cumulated_uranium_extraction_to_1995 = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "cumulative_uranium_extraction_until_1995",
     {},
@@ -79,7 +79,7 @@ _ext_constant_cumulated_uranium_extraction_to_1995 = ExtConstant(
 
 
 @component.add(
-    name="extraction_uranium_EJ",
+    name="extraction uranium EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -93,7 +93,7 @@ def extraction_uranium_ej():
 
 
 @component.add(
-    name="max_extraction_uranium",
+    name="max extraction uranium",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -107,7 +107,7 @@ def max_extraction_uranium():
 
 
 @component.add(
-    name="RURR_uranium",
+    name="RURR uranium",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -134,7 +134,7 @@ _integ_rurr_uranium = Integ(
 
 
 @component.add(
-    name="table_max_extraction_uranium",
+    name="table max extraction uranium",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -148,7 +148,7 @@ def table_max_extraction_uranium(x, final_subs=None):
 
 
 _ext_lookup_table_max_extraction_uranium = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "RURR_uranium",
     "max_extraction_uranium",
@@ -160,7 +160,7 @@ _ext_lookup_table_max_extraction_uranium = ExtLookup(
 
 
 @component.add(
-    name="URR_uranium",
+    name="URR uranium",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -174,7 +174,7 @@ def urr_uranium():
 
 
 @component.add(
-    name="URR_uranium_input",
+    name="URR uranium input",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -185,7 +185,7 @@ def urr_uranium_input():
 
 
 _ext_constant_urr_uranium_input = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "URR_uranium",
     {},
@@ -196,7 +196,7 @@ _ext_constant_urr_uranium_input = ExtConstant(
 
 
 @component.add(
-    name="Year_scarcity_uranium",
+    name="Year scarcity uranium",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

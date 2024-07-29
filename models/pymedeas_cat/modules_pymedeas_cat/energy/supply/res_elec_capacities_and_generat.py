@@ -1,10 +1,10 @@
 """
 Module energy.supply.res_elec_capacities_and_generat
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="abundance_RES_elec",
+    name="abundance RES elec",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -33,9 +33,9 @@ def abundance_res_elec():
 
 
 @component.add(
-    name="Cp_baseload_reduction",
+    name="Cp baseload reduction",
     units="Dmnl",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"cp_res_elec": 1, "cpini_res_elec": 1},
@@ -45,15 +45,15 @@ def cp_baseload_reduction():
 
 
 @component.add(
-    name="Cp_RES_elec",
+    name="Cp RES elec",
     units="Dmnl",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "min_cp_baseload_res": 1,
-        "cpini_res_elec": 1,
         "shortage_bioe_for_elec": 1,
+        "cpini_res_elec": 1,
     },
 )
 def cp_res_elec():
@@ -66,9 +66,9 @@ def cp_res_elec():
 
 
 @component.add(
-    name='"Cp-ini_RES_elec"',
+    name='"Cp-ini RES elec"',
     units="Dmnl",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_cpini_res_elec"},
@@ -81,18 +81,18 @@ def cpini_res_elec():
 
 
 _ext_constant_cpini_res_elec = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "cp_initial_res_elec*",
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_cpini_res_elec",
 )
 
 
 @component.add(
-    name="curtailment_and_storage_share_variable_RES",
+    name="curtailment and storage share variable RES",
     units="Dmnl",
     comp_type="Lookup",
     comp_subtype="External",
@@ -109,7 +109,7 @@ def curtailment_and_storage_share_variable_res(x, final_subs=None):
 
 
 _ext_lookup_curtailment_and_storage_share_variable_res = ExtLookup(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "year_RES_power",
     "share_curtailment",
@@ -121,30 +121,30 @@ _ext_lookup_curtailment_and_storage_share_variable_res = ExtLookup(
 
 
 @component.add(
-    name="curtailment_RES",
+    name="curtailment RES",
     units="Dmnl",
-    subscripts=["RES_elec"],
-    comp_type="Constant, Auxiliary",
+    subscripts=["RES elec"],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"time": 4, "curtailment_and_storage_share_variable_res": 4},
 )
 def curtailment_res():
     value = xr.DataArray(
-        np.nan, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[["hydro"]] = 0
-    value.loc[["geot_elec"]] = 0
-    value.loc[["solid_bioE_elec"]] = 0
+    value.loc[["geot elec"]] = 0
+    value.loc[["solid bioE elec"]] = 0
     value.loc[["oceanic"]] = 0
-    value.loc[["wind_onshore"]] = curtailment_and_storage_share_variable_res(time())
-    value.loc[["wind_offshore"]] = curtailment_and_storage_share_variable_res(time())
-    value.loc[["solar_PV"]] = curtailment_and_storage_share_variable_res(time())
+    value.loc[["wind onshore"]] = curtailment_and_storage_share_variable_res(time())
+    value.loc[["wind offshore"]] = curtailment_and_storage_share_variable_res(time())
+    value.loc[["solar PV"]] = curtailment_and_storage_share_variable_res(time())
     value.loc[["CSP"]] = curtailment_and_storage_share_variable_res(time())
     return value
 
 
 @component.add(
-    name="end_hist_data",
+    name="end hist data",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -155,7 +155,7 @@ def end_hist_data():
 
 
 _ext_constant_end_hist_data = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "end_hist_data",
     {},
@@ -166,7 +166,7 @@ _ext_constant_end_hist_data = ExtConstant(
 
 
 @component.add(
-    name="FE_real_tot_generation_RES_elec",
+    name="FE real tot generation RES elec",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -183,9 +183,9 @@ def fe_real_tot_generation_res_elec():
 
 
 @component.add(
-    name="initial_instal_cap_RES_elec",
+    name="initial instal cap RES elec",
     units="TW",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_initial_instal_cap_res_elec"},
@@ -198,20 +198,20 @@ def initial_instal_cap_res_elec():
 
 
 _ext_constant_initial_instal_cap_res_elec = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "initial_installed_capacity_res_for_electricity*",
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_initial_instal_cap_res_elec",
 )
 
 
 @component.add(
-    name="installed_capacity_RES_elec",
+    name="installed capacity RES elec",
     units="TW",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"installed_capacity_res_elec_policies": 2, "max_res_elec_twe": 2},
@@ -225,9 +225,9 @@ def installed_capacity_res_elec():
 
 
 @component.add(
-    name="Installed_capacity_RES_elec_delayed",
+    name="Installed capacity RES elec delayed",
     units="TW",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_installed_capacity_res_elec_delayed": 1},
@@ -252,17 +252,17 @@ _delayfixed_installed_capacity_res_elec_delayed = DelayFixed(
 
 
 @component.add(
-    name="Installed_capacity_RES_elec_policies",
+    name="Installed capacity RES elec policies",
     units="TW",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
-        "start_year_p_growth_res_elec": 3,
         "p_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def installed_capacity_res_elec_policies():
@@ -286,9 +286,9 @@ def installed_capacity_res_elec_policies():
 
 
 @component.add(
-    name="lifetime_RES_elec",
+    name="lifetime RES elec",
     units="Years",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_lifetime_res_elec"},
@@ -301,20 +301,20 @@ def lifetime_res_elec():
 
 
 _ext_constant_lifetime_res_elec = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "lifetime_res_elec*",
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_lifetime_res_elec",
 )
 
 
 @component.add(
-    name="min_Cp_baseload_RES",
+    name="min Cp baseload RES",
     units="Dmnl",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_min_cp_baseload_res"},
@@ -327,26 +327,26 @@ def min_cp_baseload_res():
 
 
 _ext_constant_min_cp_baseload_res = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "minimum_cp_baseload_res*",
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_min_cp_baseload_res",
 )
 
 
 @component.add(
-    name="new_RES_installed_capacity",
+    name="new RES installed capacity",
     units="TW/year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "installed_capacity_res_elec": 1,
         "res_installed_capacity_year_delayed": 1,
+        "installed_capacity_res_elec": 1,
         "nvs_1_year": 1,
     },
 )
@@ -357,7 +357,7 @@ def new_res_installed_capacity():
             lambda: installed_capacity_res_elec()
             - res_installed_capacity_year_delayed(),
             lambda: xr.DataArray(
-                0, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
+                0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
             ),
         )
         / nvs_1_year()
@@ -365,9 +365,9 @@ def new_res_installed_capacity():
 
 
 @component.add(
-    name="P_power",
+    name="P power",
     units="TW",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -380,21 +380,21 @@ def p_power(x, final_subs=None):
 
 
 _ext_lookup_p_power = ExtLookup(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "year_RES_power",
     "p_RES_power",
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_lookup_p_power",
 )
 
 
 @component.add(
-    name="potential_generation_RES_elec_TWh",
+    name="potential generation RES elec TWh",
     units="TWh/year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -417,9 +417,9 @@ def potential_generation_res_elec_twh():
 
 
 @component.add(
-    name="potential_RES_elec_after_intermitt_TWh",
+    name="potential RES elec after intermitt TWh",
     units="TWh/year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"max_res_elec_twe": 1, "cp_baseload_reduction": 1, "twe_per_twh": 1},
@@ -432,7 +432,7 @@ def potential_res_elec_after_intermitt_twh():
 
 
 @component.add(
-    name="potential_tot_generation_RES_elec_TWh",
+    name="potential tot generation RES elec TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -443,23 +443,23 @@ def potential_tot_generation_res_elec_twh():
     Total potential generation of electricity from RES given the installed capacity.
     """
     return sum(
-        potential_generation_res_elec_twh().rename({"RES_elec": "RES_elec!"}),
-        dim=["RES_elec!"],
+        potential_generation_res_elec_twh().rename({"RES elec": "RES elec!"}),
+        dim=["RES elec!"],
     )
 
 
 @component.add(
-    name="real_Cp_RES_elec",
+    name="real Cp RES elec",
     units="Dmnl",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "real_generation_res_elec_twh": 1,
         "twe_per_twh": 1,
         "replaced_capacity_res_elec_tw": 2,
+        "real_generation_res_elec_twh": 1,
     },
 )
 def real_cp_res_elec():
@@ -469,7 +469,7 @@ def real_cp_res_elec():
         lambda: if_then_else(
             replaced_capacity_res_elec_tw() == 0,
             lambda: xr.DataArray(
-                0, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
+                0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
             ),
             lambda: real_generation_res_elec_twh()
             * twe_per_twh()
@@ -479,9 +479,9 @@ def real_cp_res_elec():
 
 
 @component.add(
-    name="real_generation_RES_elec_TWh",
+    name="real generation RES elec TWh",
     units="TWh/year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -502,9 +502,9 @@ def real_generation_res_elec_twh():
 
 
 @component.add(
-    name="remaining_potential_RES_elec_after_intermitt",
+    name="remaining potential RES elec after intermitt",
     units="Dmnl",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -521,15 +521,15 @@ def remaining_potential_res_elec_after_intermitt():
             potential_res_elec_after_intermitt_twh(),
         ),
         lambda: xr.DataArray(
-            0, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
+            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
         ),
     )
 
 
 @component.add(
-    name="replaced_capacity_RES_elec_TW",
+    name="replaced capacity RES elec TW",
     units="TW",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_replaced_capacity_res_elec_tw": 1},
@@ -555,9 +555,9 @@ _integ_replaced_capacity_res_elec_tw = Integ(
 
 
 @component.add(
-    name="replacement_capacity_RES_elec",
+    name="replacement capacity RES elec",
     units="TW/year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -575,7 +575,7 @@ def replacement_capacity_res_elec():
         if_then_else(
             time() < 2015,
             lambda: xr.DataArray(
-                0, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
+                0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
             ),
             lambda: wear_res_elec() * (1 - res_elec_tot_overcapacity()),
         )
@@ -584,9 +584,9 @@ def replacement_capacity_res_elec():
 
 
 @component.add(
-    name="RES_elec_capacity_under_construction_TW",
+    name="RES elec capacity under construction TW",
     units="TW/year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"new_res_installed_capacity": 1},
@@ -599,9 +599,9 @@ def res_elec_capacity_under_construction_tw():
 
 
 @component.add(
-    name="RES_elec_planned_capacity_TW",
+    name="RES elec planned capacity TW",
     units="TW",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_res_elec_planned_capacity_tw": 1},
@@ -624,13 +624,13 @@ def res_elec_planned_capacity_tw():
 
 _integ_res_elec_planned_capacity_tw = Integ(
     lambda: replacement_capacity_res_elec() - res_elec_capacity_under_construction_tw(),
-    lambda: xr.DataArray(0, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]),
+    lambda: xr.DataArray(0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]),
     "_integ_res_elec_planned_capacity_tw",
 )
 
 
 @component.add(
-    name="RES_elec_tot_overcapacity",
+    name="RES elec tot overcapacity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -650,9 +650,9 @@ def res_elec_tot_overcapacity():
 
 
 @component.add(
-    name="RES_installed_capacity_year_delayed",
+    name="RES installed capacity year delayed",
     units="TW",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_res_installed_capacity_year_delayed": 1},
@@ -670,16 +670,16 @@ def res_installed_capacity_year_delayed():
 _delayfixed_res_installed_capacity_year_delayed = DelayFixed(
     lambda: installed_capacity_res_elec(),
     lambda: 1,
-    lambda: xr.DataArray(0, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]),
+    lambda: xr.DataArray(0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]),
     time_step,
     "_delayfixed_res_installed_capacity_year_delayed",
 )
 
 
 @component.add(
-    name="table_hist_capacity_RES_elec",
+    name="table hist capacity RES elec",
     units="TW",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -692,19 +692,19 @@ def table_hist_capacity_res_elec(x, final_subs=None):
 
 
 _ext_lookup_table_hist_capacity_res_elec = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_installed_capacity_res_for_electricity",
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_lookup_table_hist_capacity_res_elec",
 )
 
 
 @component.add(
-    name="threshold_remaining_potential_new_capacity",
+    name="threshold remaining potential new capacity",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -717,9 +717,9 @@ def threshold_remaining_potential_new_capacity():
 
 
 @component.add(
-    name="time_construction_RES_elec",
+    name="time construction RES elec",
     units="year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_time_construction_res_elec"},
@@ -732,20 +732,20 @@ def time_construction_res_elec():
 
 
 _ext_constant_time_construction_res_elec = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "construction_time_res_elec*",
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_time_construction_res_elec",
 )
 
 
 @component.add(
-    name="time_planification_RES_elec",
+    name="time planification RES elec",
     units="year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_time_planification_res_elec"},
@@ -758,20 +758,20 @@ def time_planification_res_elec():
 
 
 _ext_constant_time_planification_res_elec = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "planning_time_res_elec*",
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_time_planification_res_elec",
 )
 
 
 @component.add(
-    name='"total_time_plan+constr_RES_elec"',
+    name='"total time plan+constr RES elec"',
     units="year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -787,9 +787,9 @@ def total_time_planconstr_res_elec():
 
 
 @component.add(
-    name="wear_RES_elec",
+    name="wear RES elec",
     units="TW/year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 1, "lifetime_res_elec": 1, "replaced_capacity_res_elec_tw": 1},
@@ -801,7 +801,7 @@ def wear_res_elec():
     return if_then_else(
         time() < 2015,
         lambda: xr.DataArray(
-            0, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
+            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
         ),
         lambda: replaced_capacity_res_elec_tw() / lifetime_res_elec(),
     )

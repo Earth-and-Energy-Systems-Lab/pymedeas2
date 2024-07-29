@@ -1,12 +1,12 @@
 """
 Module transport.transport_energy_demand
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Share_demand_by_fuel_in_transport",
+    name="Share demand by fuel in transport",
     units="Dmnl",
-    subscripts=["final_sources"],
+    subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_transport_fed_by_fuel": 1, "transport_tfed": 1},
@@ -19,7 +19,7 @@ def share_demand_by_fuel_in_transport():
 
 
 @component.add(
-    name="Share_demand_electricity_in_transport",
+    name="Share demand electricity in transport",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -33,7 +33,7 @@ def share_demand_electricity_in_transport():
 
 
 @component.add(
-    name="Share_demand_gas_in_transport",
+    name="Share demand gas in transport",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -47,7 +47,7 @@ def share_demand_gas_in_transport():
 
 
 @component.add(
-    name="Share_demand_heat_in_transport",
+    name="Share demand heat in transport",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -61,7 +61,7 @@ def share_demand_heat_in_transport():
 
 
 @component.add(
-    name="Share_demand_liquids_in_transport",
+    name="Share demand liquids in transport",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -75,7 +75,7 @@ def share_demand_liquids_in_transport():
 
 
 @component.add(
-    name="Share_demand_solids_in_transport",
+    name="Share demand solids in transport",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -89,9 +89,9 @@ def share_demand_solids_in_transport():
 
 
 @component.add(
-    name="Total_transport_FED_by_fuel",
+    name="Total transport FED by fuel",
     units="EJ/year",
-    subscripts=["final_sources"],
+    subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -117,7 +117,7 @@ def total_transport_fed_by_fuel():
 
 
 @component.add(
-    name="transport_fraction",
+    name="transport fraction",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -129,7 +129,7 @@ def transport_fraction():
 
 
 _ext_constant_transport_fraction = ExtConstant(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Global",
     "transport_fraction",
     {"sectors": _subscript_dict["sectors"]},
@@ -140,7 +140,7 @@ _ext_constant_transport_fraction = ExtConstant(
 
 
 @component.add(
-    name="Transport_TFED",
+    name="Transport TFED",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -151,13 +151,13 @@ def transport_tfed():
     Total Final Energy demand in transport
     """
     return sum(
-        total_transport_fed_by_fuel().rename({"final_sources": "final_sources!"}),
-        dim=["final_sources!"],
+        total_transport_fed_by_fuel().rename({"final sources": "final sources!"}),
+        dim=["final sources!"],
     )
 
 
 @component.add(
-    name="Transport_TFED_energy_intensity",
+    name="Transport TFED energy intensity",
     units="EJ/Tdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",

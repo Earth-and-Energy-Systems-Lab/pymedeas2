@@ -1,10 +1,10 @@
 """
-Module energy.supply.heat_total_pes_delete
-Translated using PySD version 3.14.0
+Module energy.supply.heat_total_pes
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="PES_heat_RES",
+    name="PES heat RES",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -21,18 +21,18 @@ def pes_heat_res():
     return (
         pes_tot_biogas_for_heatcom()
         + sum(
-            pes_res_for_heatcom_by_techn().rename({"RES_heat": "RES_heat!"}),
-            dim=["RES_heat!"],
+            pes_res_for_heatcom_by_techn().rename({"RES heat": "RES heat!"}),
+            dim=["RES heat!"],
         )
         + sum(
-            pes_res_for_heatnc_by_techn().rename({"RES_heat": "RES_heat!"}),
-            dim=["RES_heat!"],
+            pes_res_for_heatnc_by_techn().rename({"RES heat": "RES heat!"}),
+            dim=["RES heat!"],
         )
     )
 
 
 @component.add(
-    name="PES_NRE_heat",
+    name="PES NRE heat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -43,7 +43,7 @@ def pes_nre_heat():
 
 
 @component.add(
-    name='"PES_NRE_Heat-com"',
+    name='"PES NRE Heat-com"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -62,7 +62,7 @@ def pes_nre_heatcom():
 
 
 @component.add(
-    name='"PES_NRE_Heat-nc"',
+    name='"PES NRE Heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -81,7 +81,7 @@ def pes_nre_heatnc():
 
 
 @component.add(
-    name="TPES_heat",
+    name="TPES heat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

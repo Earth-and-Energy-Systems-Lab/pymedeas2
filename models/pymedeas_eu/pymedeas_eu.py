@@ -8,21 +8,21 @@ import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
+    step,
     zidz,
+    invert_matrix,
     xidz,
     integer,
-    step,
-    if_then_else,
     sum,
-    invert_matrix,
+    if_then_else,
 )
-from pysd.py_backend.statefuls import Smooth, Integ, Initial, DelayFixed, SampleIfTrue
-from pysd.py_backend.external import ExtConstant, ExtLookup, ExtData
+from pysd.py_backend.statefuls import Smooth, DelayFixed, Initial, SampleIfTrue, Integ
+from pysd.py_backend.external import ExtData, ExtLookup, ExtConstant
 from pysd.py_backend.data import TabData
-from pysd.py_backend.utils import load_modules, load_model_data
+from pysd.py_backend.utils import load_model_data, load_modules
 from pysd import Component
 
-__pysd_version__ = "3.14.0"
+__pysd_version__ = "3.14.1"
 
 __data = {"scope": None, "time": lambda: 0}
 
@@ -58,7 +58,7 @@ def time():
 
 
 @component.add(
-    name="FINAL_TIME", units="year", comp_type="Constant", comp_subtype="Normal"
+    name="FINAL TIME", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def final_time():
     """
@@ -68,7 +68,7 @@ def final_time():
 
 
 @component.add(
-    name="INITIAL_TIME", units="year", comp_type="Constant", comp_subtype="Normal"
+    name="INITIAL TIME", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def initial_time():
     """
@@ -92,7 +92,7 @@ def saveper():
 
 
 @component.add(
-    name="TIME_STEP",
+    name="TIME STEP",
     units="year",
     limits=(0.0, np.nan),
     comp_type="Constant",

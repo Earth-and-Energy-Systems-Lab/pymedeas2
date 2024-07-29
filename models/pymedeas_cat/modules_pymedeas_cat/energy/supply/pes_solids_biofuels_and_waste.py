@@ -1,10 +1,10 @@
 """
 Module energy.supply.pes_solids_biofuels_and_waste
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Losses_in_charcoal_plants_EJ",
+    name="Losses in charcoal plants EJ",
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
@@ -22,7 +22,7 @@ def losses_in_charcoal_plants_ej():
 
 
 _ext_data_losses_in_charcoal_plants_ej = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_efficiencies",
     "historic_losses_charcoal_plants",
@@ -35,7 +35,7 @@ _ext_data_losses_in_charcoal_plants_ej = ExtData(
 
 
 @component.add(
-    name="PES_solids_bioE_EJ",
+    name="PES solids bioE EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -53,15 +53,15 @@ def pes_solids_bioe_ej():
     """
     return (
         losses_in_charcoal_plants_ej()
-        + float(pe_real_generation_res_elec().loc["solid_bioE_elec"])
+        + float(pe_real_generation_res_elec().loc["solid bioE elec"])
         + pe_traditional_biomass_ej_delayed_1yr()
-        + float(pes_res_for_heat_by_techn().loc["solid_bioE_heat"])
+        + float(pes_res_for_heat_by_techn().loc["solid bioE heat"])
         + fes_biomass()
     )
 
 
 @component.add(
-    name='"PES_solids_bioE_&_waste_EJ"',
+    name='"PES solids bioE & waste EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -75,7 +75,7 @@ def pes_solids_bioe_waste_ej():
 
 
 @component.add(
-    name="solid_bioE_emissions_relevant_EJ",
+    name="solid bioE emissions relevant EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -90,7 +90,7 @@ def solid_bioe_emissions_relevant_ej():
     Solids bioenergy primary energy supply for estimating the CO2 emissions (we assume the CO2 emissions from traditional biomass are already included in land-use change emissions).
     """
     return (
-        float(pe_real_generation_res_elec().loc["solid_bioE_elec"])
-        + float(pes_res_for_heat_by_techn().loc["solid_bioE_heat"])
+        float(pe_real_generation_res_elec().loc["solid bioE elec"])
+        + float(pes_res_for_heat_by_techn().loc["solid bioE heat"])
         + fes_biomass()
     )

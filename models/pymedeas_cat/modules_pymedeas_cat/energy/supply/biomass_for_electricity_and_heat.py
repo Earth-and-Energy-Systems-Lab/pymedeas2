@@ -1,10 +1,10 @@
 """
 Module energy.supply.biomass_for_electricity_and_heat
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="available_max_PE_solid_bioE_for_elec",
+    name="available max PE solid bioE for elec",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -20,12 +20,12 @@ def available_max_pe_solid_bioe_for_elec():
     return np.maximum(
         0,
         total_pe_solid_bioe_potential_heatelec()
-        - float(pes_res_for_heat_by_techn().loc["solid_bioE_heat"]),
+        - float(pes_res_for_heat_by_techn().loc["solid bioE heat"]),
     )
 
 
 @component.add(
-    name="available_max_PE_solid_bioE_for_heat_EJ",
+    name="available max PE solid bioE for heat EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -41,12 +41,12 @@ def available_max_pe_solid_bioe_for_heat_ej():
     return np.maximum(
         0,
         total_pe_solid_bioe_potential_heatelec()
-        - float(pe_real_generation_res_elec().loc["solid_bioE_elec"]),
+        - float(pe_real_generation_res_elec().loc["solid bioE elec"]),
     )
 
 
 @component.add(
-    name="FES_biomass",
+    name="FES biomass",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -69,7 +69,7 @@ def fes_biomass():
 
 
 @component.add(
-    name="FES_biomass_sectors",
+    name="FES biomass sectors",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -80,7 +80,7 @@ def fes_biomass_sectors():
 
 
 @component.add(
-    name="historic_biomass_FEC",
+    name="historic biomass FEC",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -94,7 +94,7 @@ def historic_biomass_fec(x, final_subs=None):
 
 
 _ext_lookup_historic_biomass_fec = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_efficiencies",
     "historic_final_energy_consumption_biomass",
@@ -106,7 +106,7 @@ _ext_lookup_historic_biomass_fec = ExtLookup(
 
 
 @component.add(
-    name="max_PE_potential_solid_bioE_for_elec_EJ",
+    name="max PE potential solid bioE for elec EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -125,7 +125,7 @@ def max_pe_potential_solid_bioe_for_elec_ej():
 
 
 @component.add(
-    name="max_PE_potential_solid_bioE_for_heat_EJ",
+    name="max PE potential solid bioE for heat EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -144,7 +144,7 @@ def max_pe_potential_solid_bioe_for_heat_ej():
 
 
 @component.add(
-    name='"Max_potential_NPP_bioE_conventional_for_heat+elec"',
+    name='"Max potential NPP bioE conventional for heat+elec"',
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -157,7 +157,7 @@ def max_potential_npp_bioe_conventional_for_heatelec():
 
 
 _ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "max_pot_NPP_bioe_conv",
     {},
@@ -168,7 +168,7 @@ _ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
 
 
 @component.add(
-    name="policy_solid_bioE",
+    name="policy solid bioE",
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
@@ -183,7 +183,7 @@ def policy_solid_bioe():
 
 
 _ext_data_policy_solid_bioe = ExtData(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "year_RES_power",
     "p_solid_bioE",
@@ -196,7 +196,7 @@ _ext_data_policy_solid_bioe = ExtData(
 
 
 @component.add(
-    name="share_solids_bioE_for_elec_vs_heat",
+    name="share solids bioE for elec vs heat",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -207,14 +207,14 @@ def share_solids_bioe_for_elec_vs_heat():
     Share of solids bioenergy for electricity vs electricity+heat.
     """
     return zidz(
-        float(pe_real_generation_res_elec().loc["solid_bioE_elec"]),
-        float(pe_real_generation_res_elec().loc["solid_bioE_elec"])
-        + float(pes_res_for_heat_by_techn().loc["solid_bioE_heat"]),
+        float(pe_real_generation_res_elec().loc["solid bioE elec"]),
+        float(pe_real_generation_res_elec().loc["solid bioE elec"])
+        + float(pes_res_for_heat_by_techn().loc["solid bioE heat"]),
     )
 
 
 @component.add(
-    name="Total_PE_solid_bioE_potential_EJ",
+    name="Total PE solid bioE potential EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -234,7 +234,7 @@ def total_pe_solid_bioe_potential_ej():
 
 
 @component.add(
-    name='"Total_PE_solid_bioE_potential_heat+elec"',
+    name='"Total PE solid bioE potential heat+elec"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

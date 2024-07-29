@@ -1,10 +1,10 @@
 """
 Module energy.supply.total_biofuels_liquids
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Additional_PE_production_of_bioenergy_for_biofuels",
+    name="Additional PE production of bioenergy for biofuels",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -21,7 +21,7 @@ def additional_pe_production_of_bioenergy_for_biofuels():
 
 
 @component.add(
-    name="FES_total_biofuels_production_EJ",
+    name="FES total biofuels production EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -45,7 +45,7 @@ def fes_total_biofuels_production_ej():
 
 
 @component.add(
-    name="FES_total_biofuels_production_EJ_2",
+    name="FES total biofuels production EJ 2",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -59,7 +59,7 @@ def fes_total_biofuels_production_ej_2():
 
 
 @component.add(
-    name='"FES_total_biofuels_production_Mb/d"',
+    name='"FES total biofuels production Mb/d"',
     units="Mb/d",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -73,7 +73,7 @@ def fes_total_biofuels_production_mbd():
 
 
 @component.add(
-    name="Max_PEavail_biofuels_potential",
+    name="Max PEavail biofuels potential",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -95,7 +95,7 @@ def max_peavail_biofuels_potential():
 
 
 @component.add(
-    name="Oil_liquids_saved_by_biofuels_EJ",
+    name="Oil liquids saved by biofuels EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -109,7 +109,7 @@ def oil_liquids_saved_by_biofuels_ej():
 
 
 @component.add(
-    name="PE_biomass_for_biofuels_production_EJ",
+    name="PE biomass for biofuels production EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -131,7 +131,7 @@ def pe_biomass_for_biofuels_production_ej():
 
 
 @component.add(
-    name="Potential_PEavail_total_biofuels",
+    name="Potential PEavail total biofuels",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -152,7 +152,7 @@ def potential_peavail_total_biofuels():
 
 
 @component.add(
-    name="share_biofuels_overcapacity",
+    name="share biofuels overcapacity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",

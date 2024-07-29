@@ -1,10 +1,10 @@
 """
 Module energy.demand.electricity_demand
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="EJ_per_TWh", units="EJ/TWh", comp_type="Constant", comp_subtype="Normal"
+    name="EJ per TWh", units="EJ/TWh", comp_type="Constant", comp_subtype="Normal"
 )
 def ej_per_twh():
     """
@@ -14,7 +14,7 @@ def ej_per_twh():
 
 
 @component.add(
-    name="Electrical_distribution_losses_EJ",
+    name="Electrical distribution losses EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -28,7 +28,7 @@ def electrical_distribution_losses_ej():
 
 
 @component.add(
-    name="Electrical_distribution_losses_TWh",
+    name="Electrical distribution losses TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -42,7 +42,7 @@ def electrical_distribution_losses_twh():
 
 
 @component.add(
-    name="FE_demand_Elec_consum_TWh",
+    name="FE demand Elec consum TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -56,7 +56,7 @@ def fe_demand_elec_consum_twh():
 
 
 @component.add(
-    name="FE_Elec_demand_consum_EJ",
+    name="FE Elec demand consum EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -70,7 +70,7 @@ def fe_elec_demand_consum_ej():
 
 
 @component.add(
-    name='"Max_share_transm&distr_elec_losses"',
+    name='"Max share transm&distr elec losses"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -86,7 +86,7 @@ def max_share_transmdistr_elec_losses():
 
 
 @component.add(
-    name='"remaining_share_transm&distr_elec_losses"',
+    name='"remaining share transm&distr elec losses"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -105,7 +105,7 @@ def remaining_share_transmdistr_elec_losses():
 
 
 @component.add(
-    name='"share_transm&distr_elec_losses"',
+    name='"share transm&distr elec losses"',
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -132,7 +132,7 @@ _integ_share_transmdistr_elec_losses = Integ(
 
 
 @component.add(
-    name='"share_transm&distr_elec_losses_initial"',
+    name='"share transm&distr elec losses initial"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -146,7 +146,7 @@ def share_transmdistr_elec_losses_initial():
 
 
 _ext_constant_share_transmdistr_elec_losses_initial = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "share_transm_and_distribution_elec_losses_initial",
     {},
@@ -157,7 +157,7 @@ _ext_constant_share_transmdistr_elec_losses_initial = ExtConstant(
 
 
 @component.add(
-    name="Total_FE_Elec_demand_EJ",
+    name="Total FE Elec demand EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -171,7 +171,7 @@ def total_fe_elec_demand_ej():
 
 
 @component.add(
-    name="Total_FE_Elec_demand_TWh",
+    name="Total FE Elec demand TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -185,14 +185,14 @@ def total_fe_elec_demand_twh():
 
 
 @component.add(
-    name='"variation_share_transm&distr_elec_losses"',
+    name='"variation share transm&distr elec losses"',
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "remaining_share_transmdistr_elec_losses": 1,
         "variation_share_transmdistr_losses_elec": 1,
+        "remaining_share_transmdistr_elec_losses": 1,
     },
 )
 def variation_share_transmdistr_elec_losses():
@@ -208,7 +208,7 @@ def variation_share_transmdistr_elec_losses():
 
 
 @component.add(
-    name='"variation_share_transm&distr_losses_elec"',
+    name='"variation share transm&distr losses elec"',
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

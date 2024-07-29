@@ -1,18 +1,18 @@
 """
 Module energy.supply.nonenergy_use
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name='"a_lin_reg_non-energy"',
+    name='"a lin reg non-energy"',
     units="EJ/(year*T$)",
-    subscripts=["final_sources"],
+    subscripts=["final sources"],
     comp_type="Constant",
     comp_subtype="Normal",
 )
 def a_lin_reg_nonenergy():
     value = xr.DataArray(
-        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     value.loc[["electricity"]] = 0
     value.loc[["heat"]] = 0
@@ -23,9 +23,9 @@ def a_lin_reg_nonenergy():
 
 
 @component.add(
-    name="Annual_variation_nonenergy_use",
+    name="Annual variation nonenergy use",
     units="EJ/(year*year)",
-    subscripts=["final_sources"],
+    subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -39,21 +39,24 @@ def annual_variation_nonenergy_use():
     """
     Annual variation non-energy use by final fuel.
     """
-    return if_then_else(
-        time() > 2009,
-        lambda: variation_nonenergy_use(),
-        lambda: (
-            historic_nonenergy_use(time() + time_step())
-            - historic_nonenergy_use(time())
+    return (
+        if_then_else(
+            time() > 2009,
+            lambda: variation_nonenergy_use(),
+            lambda: (
+                historic_nonenergy_use(time() + time_step())
+                - historic_nonenergy_use(time())
+            )
+            / time_step(),
         )
-        / time_step(),
+        / 5
     )
 
 
 @component.add(
-    name="historic_nonenergy_use",
+    name="historic nonenergy use",
     units="EJ/year",
-    subscripts=["final_sources"],
+    subscripts=["final sources"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -69,21 +72,21 @@ def historic_nonenergy_use(x, final_subs=None):
 
 
 _ext_lookup_historic_nonenergy_use = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "time_historic_data",
     "historic_non_energy_use",
-    {"final_sources": _subscript_dict["final_sources"]},
+    {"final sources": _subscript_dict["final sources"]},
     _root,
-    {"final_sources": _subscript_dict["final_sources"]},
+    {"final sources": _subscript_dict["final sources"]},
     "_ext_lookup_historic_nonenergy_use",
 )
 
 
 @component.add(
-    name="initial_nonenergy_use",
+    name="initial nonenergy use",
     units="EJ/year",
-    subscripts=["final_sources"],
+    subscripts=["final sources"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_initial_nonenergy_use"},
@@ -96,20 +99,20 @@ def initial_nonenergy_use():
 
 
 _ext_constant_initial_nonenergy_use = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "initial_non_energy_use*",
-    {"final_sources": _subscript_dict["final_sources"]},
+    {"final sources": _subscript_dict["final sources"]},
     _root,
-    {"final_sources": _subscript_dict["final_sources"]},
+    {"final sources": _subscript_dict["final sources"]},
     "_ext_constant_initial_nonenergy_use",
 )
 
 
 @component.add(
-    name='"Non-energy_use_demand_by_final_fuel_EJ"',
+    name='"Non-energy use demand by final fuel EJ"',
     units="EJ/year",
-    subscripts=["final_sources"],
+    subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_nonenergy_use_demand_by_final_fuel_ej": 1},
@@ -135,7 +138,7 @@ _integ_nonenergy_use_demand_by_final_fuel_ej = Integ(
 
 
 @component.add(
-    name="Total_real_nonenergy_use_consumption_EJ",
+    name="Total real nonenergy use consumption EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -144,24 +147,24 @@ _integ_nonenergy_use_demand_by_final_fuel_ej = Integ(
 def total_real_nonenergy_use_consumption_ej():
     return sum(
         nonenergy_use_demand_by_final_fuel_ej().rename(
-            {"final_sources": "final_sources!"}
+            {"final sources": "final sources!"}
         ),
-        dim=["final_sources!"],
+        dim=["final sources!"],
     )
 
 
 @component.add(
-    name="variation_nonenergy_use",
+    name="variation nonenergy use",
     units="EJ/(year*year)",
-    subscripts=["final_sources"],
+    subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel_ej": 1,
         "a_lin_reg_nonenergy": 1,
         "gdp_delayed_1yr": 1,
-        "nvs_1_year": 1,
         "gdp": 1,
+        "nvs_1_year": 1,
     },
 )
 def variation_nonenergy_use():
@@ -169,6 +172,6 @@ def variation_nonenergy_use():
         nonenergy_use_demand_by_final_fuel_ej() > 0.01,
         lambda: a_lin_reg_nonenergy() * (gdp() - gdp_delayed_1yr()) / nvs_1_year(),
         lambda: xr.DataArray(
-            0, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
+            0, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
         ),
     )

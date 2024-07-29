@@ -1,12 +1,12 @@
 """
 Module energy.storage.storage_demand_and_supply
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="constraint_elec_storage_availability",
+    name="constraint elec storage availability",
     units="Dmnl",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -22,7 +22,7 @@ def constraint_elec_storage_availability():
     return if_then_else(
         res_elec_variables() == 0,
         lambda: xr.DataArray(
-            1, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
+            1, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
         ),
         lambda: xr.DataArray(
             if_then_else(
@@ -35,14 +35,14 @@ def constraint_elec_storage_availability():
                     / total_capacity_elec_storage_tw(),
                 ),
             ),
-            {"RES_elec": _subscript_dict["RES_elec"]},
-            ["RES_elec"],
+            {"RES elec": _subscript_dict["RES elec"]},
+            ["RES elec"],
         ),
     )
 
 
 @component.add(
-    name="Cp_EV_batteries_for_elec_storage",
+    name="Cp EV batteries for elec storage",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -61,7 +61,7 @@ def cp_ev_batteries_for_elec_storage():
 
 
 @component.add(
-    name="Cp_EV_batteries_required",
+    name="Cp EV batteries required",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -72,7 +72,7 @@ def cp_ev_batteries_required():
 
 
 @component.add(
-    name="demand_EV_batteries_for_elec_storage",
+    name="demand EV batteries for elec storage",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -86,7 +86,7 @@ def demand_ev_batteries_for_elec_storage():
 
 
 @component.add(
-    name="demand_storage_capacity",
+    name="demand storage capacity",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -105,7 +105,7 @@ def demand_storage_capacity():
 
 
 @component.add(
-    name="ESOI_elec_storage",
+    name="ESOI elec storage",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -128,7 +128,7 @@ def esoi_elec_storage():
 
 
 @component.add(
-    name="max_capacity_elec_storage",
+    name="max capacity elec storage",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -145,7 +145,7 @@ def max_capacity_elec_storage():
 
 
 @component.add(
-    name="real_FE_elec_stored_EV_batteries_TWh",
+    name="real FE elec stored EV batteries TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -159,9 +159,9 @@ def real_fe_elec_stored_ev_batteries_twh():
 
 
 @component.add(
-    name="remaining_potential_elec_storage_by_RES_techn",
+    name="remaining potential elec storage by RES techn",
     units="Dmnl",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"max_capacity_elec_storage": 3, "demand_storage_capacity": 2},
@@ -177,21 +177,21 @@ def remaining_potential_elec_storage_by_res_techn():
             / max_capacity_elec_storage(),
             lambda: 0,
         ),
-        {"RES_elec": _subscript_dict["RES_elec"]},
-        ["RES_elec"],
+        {"RES elec": _subscript_dict["RES elec"]},
+        ["RES elec"],
     )
 
 
 @component.add(
-    name="rt_elec_storage_efficiency",
+    name="rt elec storage efficiency",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "rt_storage_efficiency_phs": 1,
         "installed_capacity_phs_tw": 1,
-        "rt_storage_efficiency_ev_batteries": 1,
         "used_ev_batteries_for_elec_storage": 1,
+        "rt_storage_efficiency_ev_batteries": 1,
         "total_capacity_elec_storage_tw": 1,
     },
 )
@@ -206,7 +206,7 @@ def rt_elec_storage_efficiency():
 
 
 @component.add(
-    name="rt_storage_efficiency_EV_batteries",
+    name="rt storage efficiency EV batteries",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -220,7 +220,7 @@ def rt_storage_efficiency_ev_batteries():
 
 
 _ext_constant_rt_storage_efficiency_ev_batteries = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "round_trip_storage_efficiency_ev_batteries",
     {},
@@ -231,7 +231,7 @@ _ext_constant_rt_storage_efficiency_ev_batteries = ExtConstant(
 
 
 @component.add(
-    name="rt_storage_efficiency_PHS",
+    name="rt storage efficiency PHS",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -245,7 +245,7 @@ def rt_storage_efficiency_phs():
 
 
 _ext_constant_rt_storage_efficiency_phs = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "round_trip_storage_efficiency_phs",
     {},
@@ -256,7 +256,7 @@ _ext_constant_rt_storage_efficiency_phs = ExtConstant(
 
 
 @component.add(
-    name='"share_capacity_storage/RES_elec_var"',
+    name='"share capacity storage/RES elec var"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -270,7 +270,7 @@ def share_capacity_storageres_elec_var():
 
 
 @component.add(
-    name="Total_capacity_elec_storage_TW",
+    name="Total capacity elec storage TW",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -287,7 +287,7 @@ def total_capacity_elec_storage_tw():
 
 
 @component.add(
-    name="Total_installed_capacity_RES_elec_var",
+    name="Total installed capacity RES elec var",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -299,14 +299,14 @@ def total_installed_capacity_res_elec_var():
     """
     return sum(
         installed_capacity_res_elec()
-        .loc[_subscript_dict["RES_ELEC_VARIABLE"]]
-        .rename({"RES_elec": "RES_ELEC_VARIABLE!"}),
-        dim=["RES_ELEC_VARIABLE!"],
+        .loc[_subscript_dict["RES ELEC VARIABLE"]]
+        .rename({"RES elec": "RES ELEC VARIABLE!"}),
+        dim=["RES ELEC VARIABLE!"],
     )
 
 
 @component.add(
-    name="Used_EV_batteries_for_elec_storage",
+    name="Used EV batteries for elec storage",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",

@@ -1,10 +1,10 @@
 """
 Module society.res_employment
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="D_jobs_fuel_supply_solids_bioE",
+    name="D jobs fuel supply solids bioE",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -21,9 +21,9 @@ def d_jobs_fuel_supply_solids_bioe():
 
 
 @component.add(
-    name="D_jobs_new_installed_RES_elec_per_techn",
+    name="D jobs new installed RES elec per techn",
     units="people/year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -44,9 +44,9 @@ def d_jobs_new_installed_res_elec_per_techn():
 
 
 @component.add(
-    name="D_jobs_new_installed_RES_heat_per_techn",
+    name="D jobs new installed RES heat per techn",
     units="people/year",
-    subscripts=["RES_heat"],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -75,7 +75,7 @@ def d_jobs_new_installed_res_heat_per_techn():
 
 
 @component.add(
-    name="Employment_factor_biofuels",
+    name="Employment factor biofuels",
     units="people/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -89,7 +89,7 @@ def employment_factor_biofuels():
 
 
 _ext_constant_employment_factor_biofuels = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Global",
     "employment_factor_biofuels",
     {},
@@ -100,7 +100,7 @@ _ext_constant_employment_factor_biofuels = ExtConstant(
 
 
 @component.add(
-    name="Employment_factor_fuel_supply_solids_bioE",
+    name="Employment factor fuel supply solids bioE",
     units="people/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -116,7 +116,7 @@ def employment_factor_fuel_supply_solids_bioe():
 
 
 _ext_constant_employment_factor_fuel_supply_solids_bioe = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Global",
     "employment_factor_fuel_supply_solids_bioe",
     {},
@@ -127,9 +127,9 @@ _ext_constant_employment_factor_fuel_supply_solids_bioe = ExtConstant(
 
 
 @component.add(
-    name="Employment_factors_new_RES_elec",
+    name="Employment factors new RES elec",
     units="people/MW",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_employment_factors_new_res_elec"},
@@ -142,20 +142,20 @@ def employment_factors_new_res_elec():
 
 
 _ext_constant_employment_factors_new_res_elec = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Global",
     "employment_factors_new_res_elec*",
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_employment_factors_new_res_elec",
 )
 
 
 @component.add(
-    name="Employment_factors_new_RES_heat",
+    name="Employment factors new RES heat",
     units="people/MW",
-    subscripts=["RES_heat"],
+    subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_employment_factors_new_res_heat"},
@@ -168,20 +168,20 @@ def employment_factors_new_res_heat():
 
 
 _ext_constant_employment_factors_new_res_heat = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Global",
     "employment_factors_new_res_heat*",
-    {"RES_heat": _subscript_dict["RES_heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES_heat": _subscript_dict["RES_heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_employment_factors_new_res_heat",
 )
 
 
 @component.add(
-    name='"Employment_factors_O&M_RES_elec"',
+    name='"Employment factors O&M RES elec"',
     units="people/(year*MW)",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_employment_factors_om_res_elec"},
@@ -194,20 +194,20 @@ def employment_factors_om_res_elec():
 
 
 _ext_constant_employment_factors_om_res_elec = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Global",
     "employment_factors_o_m_res_elec*",
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_employment_factors_om_res_elec",
 )
 
 
 @component.add(
-    name='"Employment_factors_O&M_RES_heat"',
+    name='"Employment factors O&M RES heat"',
     units="people/(year*MW)",
-    subscripts=["RES_heat"],
+    subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_employment_factors_om_res_heat"},
@@ -220,20 +220,20 @@ def employment_factors_om_res_heat():
 
 
 _ext_constant_employment_factors_om_res_heat = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Global",
     "employment_factors_o_m_res_heat*",
-    {"RES_heat": _subscript_dict["RES_heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES_heat": _subscript_dict["RES_heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_employment_factors_om_res_heat",
 )
 
 
 @component.add(
-    name='"Jobs_O&M_RES_elec_per_techn"',
+    name='"Jobs O&M RES elec per techn"',
     units="people/year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -252,9 +252,9 @@ def jobs_om_res_elec_per_techn():
 
 
 @component.add(
-    name='"Jobs_O&M_RES_heat_per_techn"',
+    name='"Jobs O&M RES heat per techn"',
     units="people/year",
-    subscripts=["RES_heat"],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -276,9 +276,9 @@ def jobs_om_res_heat_per_techn():
 
 
 @component.add(
-    name="Ratio_total_vs_D_jobs_RES_elec",
+    name="Ratio total vs D jobs RES elec",
     units="Dmnl",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_ratio_total_vs_d_jobs_res_elec"},
@@ -291,20 +291,20 @@ def ratio_total_vs_d_jobs_res_elec():
 
 
 _ext_constant_ratio_total_vs_d_jobs_res_elec = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Global",
     "ratio_total_vs_direct_jobs_res_elec*",
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     _root,
-    {"RES_elec": _subscript_dict["RES_elec"]},
+    {"RES elec": _subscript_dict["RES elec"]},
     "_ext_constant_ratio_total_vs_d_jobs_res_elec",
 )
 
 
 @component.add(
-    name="Ratio_total_vs_D_jobs_RES_heat",
+    name="Ratio total vs D jobs RES heat",
     units="Dmnl",
-    subscripts=["RES_heat"],
+    subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_ratio_total_vs_d_jobs_res_heat"},
@@ -317,20 +317,20 @@ def ratio_total_vs_d_jobs_res_heat():
 
 
 _ext_constant_ratio_total_vs_d_jobs_res_heat = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Global",
     "ratio_total_vs_direct_jobs_res_heat*",
-    {"RES_heat": _subscript_dict["RES_heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     _root,
-    {"RES_heat": _subscript_dict["RES_heat"]},
+    {"RES heat": _subscript_dict["RES heat"]},
     "_ext_constant_ratio_total_vs_d_jobs_res_heat",
 )
 
 
 @component.add(
-    name="Total_D_jobs_RES_elec_per_techn",
+    name="Total D jobs RES elec per techn",
     units="people/year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -346,9 +346,9 @@ def total_d_jobs_res_elec_per_techn():
 
 
 @component.add(
-    name="Total_D_jobs_RES_heat_per_techn",
+    name="Total D jobs RES heat per techn",
     units="people/year",
-    subscripts=["RES_heat"],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -364,9 +364,9 @@ def total_d_jobs_res_heat_per_techn():
 
 
 @component.add(
-    name='"Total_D+I_jobs_RES_elec_per_techn"',
+    name='"Total D+I jobs RES elec per techn"',
     units="people/year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -382,9 +382,9 @@ def total_di_jobs_res_elec_per_techn():
 
 
 @component.add(
-    name='"Total_D+I_jobs_RES_heat_per_techn"',
+    name='"Total D+I jobs RES heat per techn"',
     units="people/year",
-    subscripts=["RES_heat"],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -400,7 +400,7 @@ def total_di_jobs_res_heat_per_techn():
 
 
 @component.add(
-    name="total_jobs_biofuels",
+    name="total jobs biofuels",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -414,7 +414,7 @@ def total_jobs_biofuels():
 
 
 @component.add(
-    name="Total_jobs_RES",
+    name="Total jobs RES",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -438,7 +438,7 @@ def total_jobs_res():
 
 
 @component.add(
-    name="Total_jobs_RES_elec",
+    name="Total jobs RES elec",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -449,13 +449,13 @@ def total_jobs_res_elec():
     Total jobs RES elec.
     """
     return sum(
-        total_di_jobs_res_elec_per_techn().rename({"RES_elec": "RES_elec!"}),
-        dim=["RES_elec!"],
+        total_di_jobs_res_elec_per_techn().rename({"RES elec": "RES elec!"}),
+        dim=["RES elec!"],
     )
 
 
 @component.add(
-    name="Total_jobs_RES_heat",
+    name="Total jobs RES heat",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -466,6 +466,6 @@ def total_jobs_res_heat():
     Total jobs RES heat.
     """
     return sum(
-        total_di_jobs_res_heat_per_techn().rename({"RES_heat": "RES_heat!"}),
-        dim=["RES_heat!"],
+        total_di_jobs_res_heat_per_techn().rename({"RES heat": "RES heat!"}),
+        dim=["RES heat!"],
     )

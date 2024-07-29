@@ -1,10 +1,10 @@
 """
 Module materials.rest_demand
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="\"'a'_extraction_projection_minerals\"",
+    name="\"'a' extraction projection minerals\"",
     units="t/(year*year*T$)",
     subscripts=["materials"],
     comp_type="Constant",
@@ -16,7 +16,7 @@ def a_extraction_projection_minerals():
 
 
 _ext_constant_a_extraction_projection_minerals = ExtConstant(
-    "../materials.xlsx",
+    r"../materials.xlsx",
     "Global",
     "a_extraction_projection_minerals*",
     {"materials": _subscript_dict["materials"]},
@@ -27,7 +27,7 @@ _ext_constant_a_extraction_projection_minerals = ExtConstant(
 
 
 @component.add(
-    name="cum_materials_to_extract_Rest",
+    name="cum materials to extract Rest",
     units="Mt",
     subscripts=["materials"],
     comp_type="Stateful",
@@ -59,7 +59,7 @@ _integ_cum_materials_to_extract_rest = Integ(
 
 
 @component.add(
-    name="cum_materials_to_extract_Rest_from_2015",
+    name="cum materials to extract Rest from 2015",
     units="Mt",
     subscripts=["materials"],
     comp_type="Stateful",
@@ -91,7 +91,7 @@ _integ_cum_materials_to_extract_rest_from_2015 = Integ(
 
 
 @component.add(
-    name="Historical_extraction_minerals_Rest",
+    name="Historical extraction minerals Rest",
     units="t/year",
     subscripts=["materials"],
     comp_type="Lookup",
@@ -109,7 +109,7 @@ def historical_extraction_minerals_rest(x, final_subs=None):
 
 
 _ext_lookup_historical_extraction_minerals_rest = ExtLookup(
-    "../materials.xlsx",
+    r"../materials.xlsx",
     "Global",
     "time",
     "historical_extraction_minerals_rest",
@@ -121,7 +121,7 @@ _ext_lookup_historical_extraction_minerals_rest = ExtLookup(
 
 
 @component.add(
-    name="Historical_variation_minerals_extraction_Rest",
+    name="Historical variation minerals extraction Rest",
     units="t/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -138,7 +138,7 @@ def historical_variation_minerals_extraction_rest():
 
 
 @component.add(
-    name="initial_cumulated_material_requirements_for_Rest_1995",
+    name="initial cumulated material requirements for Rest 1995",
     units="Mt",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -148,7 +148,7 @@ def initial_cumulated_material_requirements_for_rest_1995():
 
 
 @component.add(
-    name="initial_minerals_extraction_Rest",
+    name="initial minerals extraction Rest",
     units="t/year",
     subscripts=["materials"],
     comp_type="Constant",
@@ -163,7 +163,7 @@ def initial_minerals_extraction_rest():
 
 
 _ext_constant_initial_minerals_extraction_rest = ExtConstant(
-    "../materials.xlsx",
+    r"../materials.xlsx",
     "Global",
     "initial_minerals_extraction_rest*",
     {"materials": _subscript_dict["materials"]},
@@ -174,7 +174,7 @@ _ext_constant_initial_minerals_extraction_rest = ExtConstant(
 
 
 @component.add(
-    name="Materials_to_extract_Rest_from_2015_Mt",
+    name="Materials to extract Rest from 2015 Mt",
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -195,7 +195,7 @@ def materials_to_extract_rest_from_2015_mt():
 
 
 @component.add(
-    name="Materials_to_extract_Rest_Mt",
+    name="Materials to extract Rest Mt",
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -210,7 +210,7 @@ def materials_to_extract_rest_mt():
 
 
 @component.add(
-    name="Minerals_consumption_estimation_Rest_cte_rr",
+    name="Minerals consumption estimation Rest cte rr",
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -230,7 +230,7 @@ def minerals_consumption_estimation_rest_cte_rr():
 
 
 @component.add(
-    name="Minerals_extraction_projection_Rest_cte_rr",
+    name="Minerals extraction projection Rest cte rr",
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Stateful",
@@ -258,7 +258,7 @@ _integ_minerals_extraction_projection_rest_cte_rr = Integ(
 
 
 @component.add(
-    name="Minerals_extraction_projection_Rest_with_rr",
+    name="Minerals extraction projection Rest with rr",
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -278,7 +278,7 @@ def minerals_extraction_projection_rest_with_rr():
 
 
 @component.add(
-    name="Mt_per_t", units="Mt/t", comp_type="Constant", comp_subtype="Normal"
+    name="Mt per t", units="Mt/t", comp_type="Constant", comp_subtype="Normal"
 )
 def mt_per_t():
     """
@@ -288,7 +288,7 @@ def mt_per_t():
 
 
 @component.add(
-    name="share_minerals_consumption_alt_techn_vs_total_economy",
+    name="share minerals consumption alt techn vs total economy",
     units="Dmnl",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -307,7 +307,7 @@ def share_minerals_consumption_alt_techn_vs_total_economy():
 
 
 @component.add(
-    name='"Total_materials_required_for_RES_elec_+_EV_batteries_Mt"',
+    name='"Total materials required for RES elec + EV batteries Mt"',
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -325,7 +325,7 @@ def total_materials_required_for_res_elec_ev_batteries_mt():
 
 
 @component.add(
-    name="Total_recycled_materials_for_other_Mt",
+    name="Total recycled materials for other Mt",
     units="Mt/year",
     subscripts=["materials"],
     comp_type="Auxiliary",
@@ -343,19 +343,19 @@ def total_recycled_materials_for_other_mt():
 
 
 @component.add(
-    name="variation_minerals_extraction_Rest",
+    name="variation minerals extraction Rest",
     units="Mt/(year*year)",
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "time_step": 1,
         "historical_variation_minerals_extraction_rest": 1,
-        "minerals_extraction_projection_rest_cte_rr": 1,
+        "time_step": 1,
         "gdp_delayed_1yr": 1,
-        "a_extraction_projection_minerals": 1,
+        "minerals_extraction_projection_rest_cte_rr": 1,
         "gdp": 1,
+        "a_extraction_projection_minerals": 1,
         "mt_per_t": 1,
     },
 )

@@ -1,10 +1,10 @@
 """
 Module energy.supply.total_fe_heat_generation
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Abundance_heat",
+    name="Abundance heat",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -23,7 +23,7 @@ def abundance_heat():
 
 
 @component.add(
-    name="Annual_growth_rate_RES_for_heat",
+    name="Annual growth rate RES for heat",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -37,7 +37,7 @@ def annual_growth_rate_res_for_heat():
 
 
 @component.add(
-    name="FES_heat_from_BioW",
+    name="FES heat from BioW",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -61,7 +61,7 @@ def fes_heat_from_biow():
 
 
 @component.add(
-    name="FES_Heat_from_coal",
+    name="FES Heat from coal",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -81,7 +81,7 @@ def fes_heat_from_coal():
 
 
 @component.add(
-    name='"FES_Heat_from_nat._gas"',
+    name='"FES Heat from nat. gas"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -101,7 +101,7 @@ def fes_heat_from_nat_gas():
 
 
 @component.add(
-    name="FES_Heat_from_oil",
+    name="FES Heat from oil",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -121,7 +121,7 @@ def fes_heat_from_oil():
 
 
 @component.add(
-    name="FES_NRE_for_heat",
+    name="FES NRE for heat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -147,7 +147,7 @@ def fes_nre_for_heat():
 
 
 @component.add(
-    name="FES_RES_for_heat",
+    name="FES RES for heat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -169,7 +169,7 @@ def fes_res_for_heat():
 
 
 @component.add(
-    name="FES_RES_for_heat_delayed_1yr",
+    name="FES RES for heat delayed 1yr",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -198,7 +198,7 @@ _delayfixed_fes_res_for_heat_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name='"PES_coal_for_Heat-com_plants"',
+    name='"PES coal for Heat-com plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -214,7 +214,7 @@ def pes_coal_for_heatcom_plants():
 
 
 @component.add(
-    name='"PES_coal_for_Heat-nc_plants"',
+    name='"PES coal for Heat-nc plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -228,7 +228,7 @@ def pes_coal_for_heatnc_plants():
 
 
 @component.add(
-    name='"PES_nat._gas_for_Heat-com_plants"',
+    name='"PES nat. gas for Heat-com plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -242,7 +242,7 @@ def pes_nat_gas_for_heatcom_plants():
 
 
 @component.add(
-    name='"PES_nat._gas_for_Heat-nc_plants"',
+    name='"PES nat. gas for Heat-nc plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -258,7 +258,7 @@ def pes_nat_gas_for_heatnc_plants():
 
 
 @component.add(
-    name='"PES_oil_for_Heat-com_plants"',
+    name='"PES oil for Heat-com plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -274,7 +274,7 @@ def pes_oil_for_heatcom_plants():
 
 
 @component.add(
-    name='"PES_oil_for_Heat-nc_plants"',
+    name='"PES oil for Heat-nc plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -288,7 +288,7 @@ def pes_oil_for_heatnc_plants():
 
 
 @component.add(
-    name="share_RES_heat_generation",
+    name="share RES heat generation",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -302,7 +302,7 @@ def share_res_heat_generation():
 
 
 @component.add(
-    name="Total_FE_Heat_consumption",
+    name="Total FE Heat consumption",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -316,7 +316,7 @@ def total_fe_heat_consumption():
 
 
 @component.add(
-    name="Total_FE_Heat_generation",
+    name="Total FE Heat generation",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -334,7 +334,7 @@ def total_fe_heat_generation():
 
 
 @component.add(
-    name="Year_scarcity_Heat",
+    name="Year scarcity Heat",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

@@ -8,21 +8,21 @@ import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
-    zidz,
-    xidz,
-    active_initial,
-    integer,
-    step,
     if_then_else,
     sum,
+    zidz,
     invert_matrix,
+    active_initial,
+    integer,
+    xidz,
+    step,
 )
 from pysd.py_backend.statefuls import Initial, Integ, DelayFixed, SampleIfTrue
-from pysd.py_backend.external import ExtLookup, ExtConstant, ExtData
+from pysd.py_backend.external import ExtLookup, ExtData, ExtConstant
 from pysd.py_backend.utils import load_modules, load_model_data
 from pysd import Component
 
-__pysd_version__ = "3.14.0"
+__pysd_version__ = "3.14.1"
 
 __data = {"scope": None, "time": lambda: 0}
 
@@ -58,7 +58,7 @@ def time():
 
 
 @component.add(
-    name="FINAL_TIME", units="year", comp_type="Constant", comp_subtype="Normal"
+    name="FINAL TIME", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def final_time():
     """
@@ -68,7 +68,7 @@ def final_time():
 
 
 @component.add(
-    name="INITIAL_TIME", units="year", comp_type="Constant", comp_subtype="Normal"
+    name="INITIAL TIME", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def initial_time():
     """
@@ -92,7 +92,7 @@ def saveper():
 
 
 @component.add(
-    name="TIME_STEP",
+    name="TIME STEP",
     units="year",
     limits=(0.0, np.nan),
     comp_type="Constant",
@@ -111,18 +111,3 @@ def time_step():
 
 # load modules from modules_pymedeas_w directory
 exec(load_modules("modules_pymedeas_w", _modules, _root, []))
-
-
-@component.add(
-    name="Total_CO2_emissions_per_sector",
-    units="GtCO2/year",
-    subscripts=["SECTORS_and_HOUSEHOLDS"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"co2_emissions_households_and_sectors": 1},
-)
-def total_co2_emissions_per_sector():
-    """
-    Total CO2 emissions per sector including electricity generation emissions
-    """
-    return co2_emissions_households_and_sectors()

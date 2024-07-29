@@ -1,10 +1,10 @@
 """
 Module energy.storage.transport_electric_batteries
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="bat_number_EV",
+    name="bat number EV",
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -20,7 +20,7 @@ def bat_number_ev():
 
 
 @component.add(
-    name="bat_number_hib",
+    name="bat number hib",
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -41,7 +41,7 @@ def bat_number_hib():
 
 
 @component.add(
-    name="bateries_ratio_hib_HV",
+    name="bateries ratio hib HV",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -55,7 +55,7 @@ def bateries_ratio_hib_hv():
 
 
 _ext_constant_bateries_ratio_hib_hv = ExtConstant(
-    "../transport.xlsx",
+    r"../transport.xlsx",
     "Global",
     "bateries_ratio_hib_hv",
     {},
@@ -66,7 +66,7 @@ _ext_constant_bateries_ratio_hib_hv = ExtConstant(
 
 
 @component.add(
-    name='"batteries_EV+hib+2wE"',
+    name='"batteries EV+hib+2wE"',
     units="batteries",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -97,7 +97,7 @@ _integ_batteries_evhib2we = Integ(
 
 
 @component.add(
-    name="discarded_batteries",
+    name="discarded batteries",
     units="batteries/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -111,7 +111,7 @@ def discarded_batteries():
 
 
 @component.add(
-    name="EV_batteries_TW",
+    name="EV batteries TW",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -125,7 +125,7 @@ def ev_batteries_tw():
 
 
 @component.add(
-    name="kW_per_battery_EV",
+    name="kW per battery EV",
     units="kW/battery",
     comp_type="Constant",
     comp_subtype="External",
@@ -139,7 +139,7 @@ def kw_per_battery_ev():
 
 
 _ext_constant_kw_per_battery_ev = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "kw_per_battery_ev",
     {},
@@ -150,14 +150,14 @@ _ext_constant_kw_per_battery_ev = ExtConstant(
 
 
 @component.add(
-    name="kW_per_TW", units="kW/TW", comp_type="Constant", comp_subtype="Normal"
+    name="kW per TW", units="kW/TW", comp_type="Constant", comp_subtype="Normal"
 )
 def kw_per_tw():
     return 1000000000.0
 
 
 @component.add(
-    name="new_batteries",
+    name="new batteries",
     units="batteries/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -175,7 +175,7 @@ def new_batteries():
 
 
 @component.add(
-    name='"new+replaced_batteries_TW"',
+    name='"new+replaced batteries TW"',
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -196,7 +196,7 @@ def newreplaced_batteries_tw():
 
 
 @component.add(
-    name="replacement_batteries",
+    name="replacement batteries",
     units="batteries/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -210,7 +210,7 @@ def replacement_batteries():
 
 
 @component.add(
-    name="required_number_standard_batteries",
+    name="required number standard batteries",
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",

@@ -1,10 +1,10 @@
 """
 Module energy.storage.esoi_ev_batteries
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Cp_EV_batteries_for_Transp",
+    name="Cp EV batteries for Transp",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -14,15 +14,15 @@ def cp_ev_batteries_for_transp():
 
 
 @component.add(
-    name='"Energy_intensity_construction_EV_batteries_MJ/MW"',
+    name='"Energy intensity construction EV batteries MJ/MW"',
     units="MJ/MW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "total_energy_required_for_total_material_consumption_for_ev_batteries": 1,
         "mj_per_ej": 1,
-        "mw_per_tw": 1,
         "newreplaced_batteries_tw": 1,
+        "mw_per_tw": 1,
     },
 )
 def energy_intensity_construction_ev_batteries_mjmw():
@@ -37,7 +37,7 @@ def energy_intensity_construction_ev_batteries_mjmw():
 
 
 @component.add(
-    name="ESOI_EV_batteries",
+    name="ESOI EV batteries",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -45,10 +45,10 @@ def energy_intensity_construction_ev_batteries_mjmw():
         "lifetime_ev_batteries": 1,
         "cp_ev_batteries_for_elec_storage": 1,
         "mw_in_1_year_to_mj": 1,
-        "grid_correction_factor_ev_batteries": 1,
-        "quality_of_electricity": 1,
-        "share_energy_requirements_for_decom_ev_batteries": 1,
         "energy_intensity_construction_ev_batteries_mjmw": 1,
+        "quality_of_electricity": 1,
+        "grid_correction_factor_ev_batteries": 1,
+        "share_energy_requirements_for_decom_ev_batteries": 1,
     },
 )
 def esoi_ev_batteries():
@@ -72,7 +72,7 @@ def esoi_ev_batteries():
 
 
 @component.add(
-    name="FEI_EV_batteries",
+    name="FEI EV batteries",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -89,7 +89,7 @@ def fei_ev_batteries():
 
 
 @component.add(
-    name="Grid_correction_factor_EV_batteries",
+    name="Grid correction factor EV batteries",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -100,7 +100,7 @@ def grid_correction_factor_ev_batteries():
 
 
 _ext_constant_grid_correction_factor_ev_batteries = ExtConstant(
-    "../materials.xlsx",
+    r"../materials.xlsx",
     "Global",
     "grid_correction_factor_ev_batteries",
     {},
@@ -111,7 +111,7 @@ _ext_constant_grid_correction_factor_ev_batteries = ExtConstant(
 
 
 @component.add(
-    name="kW_per_MW", units="kW/MW", comp_type="Constant", comp_subtype="Normal"
+    name="kW per MW", units="kW/MW", comp_type="Constant", comp_subtype="Normal"
 )
 def kw_per_mw():
     """
@@ -121,17 +121,17 @@ def kw_per_mw():
 
 
 @component.add(
-    name="lifetime_EV_batteries",
+    name="lifetime EV batteries",
     units="years",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "net_stored_energy_ev_battery_over_lifetime": 1,
-        "kw_per_battery_ev": 1,
-        "mw_in_1_year_to_mj": 1,
+        "cp_ev_batteries_for_elec_storage": 1,
         "cp_ev_batteries_for_transp": 1,
         "kw_per_mw": 1,
-        "cp_ev_batteries_for_elec_storage": 1,
+        "kw_per_battery_ev": 1,
+        "mw_in_1_year_to_mj": 1,
     },
 )
 def lifetime_ev_batteries():
@@ -147,16 +147,16 @@ def lifetime_ev_batteries():
 
 
 @component.add(
-    name="max_Cp_EV_batteries",
+    name="max Cp EV batteries",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "net_stored_energy_ev_battery_over_lifetime": 1,
-        "min_lifetime_ev_batteries": 1,
+        "kw_per_mw": 1,
         "kw_per_battery_ev": 1,
         "mw_in_1_year_to_mj": 1,
-        "kw_per_mw": 1,
+        "min_lifetime_ev_batteries": 1,
     },
 )
 def max_cp_ev_batteries():
@@ -171,7 +171,7 @@ def max_cp_ev_batteries():
 
 
 @component.add(
-    name="max_Cp_EV_batteries_for_elec_storage",
+    name="max Cp EV batteries for elec storage",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -185,7 +185,7 @@ def max_cp_ev_batteries_for_elec_storage():
 
 
 @component.add(
-    name="min_lifetime_EV_batteries",
+    name="min lifetime EV batteries",
     units="years",
     comp_type="Constant",
     comp_subtype="External",
@@ -199,7 +199,7 @@ def min_lifetime_ev_batteries():
 
 
 _ext_constant_min_lifetime_ev_batteries = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "minimum_lifetime_ev_batteries",
     {},
@@ -210,7 +210,7 @@ _ext_constant_min_lifetime_ev_batteries = ExtConstant(
 
 
 @component.add(
-    name="MW_in_1_year_to_MJ",
+    name="MW in 1 year to MJ",
     units="MJ/(MW*year)",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -223,7 +223,7 @@ def mw_in_1_year_to_mj():
 
 
 @component.add(
-    name="Net_stored_energy_EV_battery_over_lifetime",
+    name="Net stored energy EV battery over lifetime",
     units="MJ/battery",
     comp_type="Constant",
     comp_subtype="External",
@@ -239,7 +239,7 @@ def net_stored_energy_ev_battery_over_lifetime():
 
 
 _ext_constant_net_stored_energy_ev_battery_over_lifetime = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "net_stored_energy_ev_battery_over_lifetime",
     {},
@@ -250,7 +250,7 @@ _ext_constant_net_stored_energy_ev_battery_over_lifetime = ExtConstant(
 
 
 @component.add(
-    name="output_EV_bateries_for_storage_over_lifetime",
+    name="output EV bateries for storage over lifetime",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -276,7 +276,7 @@ def output_ev_bateries_for_storage_over_lifetime():
 
 
 @component.add(
-    name="Share_energy_requirements_for_decom_EV_batteries",
+    name="Share energy requirements for decom EV batteries",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -289,7 +289,7 @@ def share_energy_requirements_for_decom_ev_batteries():
 
 
 _ext_constant_share_energy_requirements_for_decom_ev_batteries = ExtConstant(
-    "../materials.xlsx",
+    r"../materials.xlsx",
     "Global",
     "share_energy_requirements_for_decom_ev_batteries",
     {},

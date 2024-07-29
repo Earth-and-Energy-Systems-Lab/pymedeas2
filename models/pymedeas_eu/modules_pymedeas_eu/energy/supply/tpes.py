@@ -1,10 +1,10 @@
 """
 Module energy.supply.tpes
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="abundance_TPE",
+    name="abundance TPE",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -22,7 +22,7 @@ def abundance_tpe():
 
 
 @component.add(
-    name='"g=quality_of_electricity"',
+    name='"g=quality of electricity"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -44,7 +44,7 @@ def gquality_of_electricity():
 
 
 @component.add(
-    name="quality_of_electricity_2015",
+    name="quality of electricity 2015",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -62,7 +62,7 @@ def quality_of_electricity_2015():
 
 
 @component.add(
-    name="share_imports_EU_NRE_from_RoW_vs_world_extraction",
+    name="share imports EU NRE from RoW vs world extraction",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -73,7 +73,7 @@ def share_imports_eu_nre_from_row_vs_world_extraction():
 
 
 @component.add(
-    name="share_imports_EU_NRE_vs_TPEC",
+    name="share imports EU NRE vs TPEC",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -84,7 +84,7 @@ def share_imports_eu_nre_vs_tpec():
 
 
 @component.add(
-    name="share_total_final_energy_vs_TPES",
+    name="share total final energy vs TPES",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -102,7 +102,7 @@ def share_total_final_energy_vs_tpes():
 
 
 @component.add(
-    name='"static/dynamic_quality_of_electricity?"',
+    name='"static/dynamic quality of electricity?"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -115,7 +115,7 @@ def staticdynamic_quality_of_electricity():
 
 
 @component.add(
-    name="Total_consumption_NRE_EJ",
+    name="Total consumption NRE EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -151,7 +151,7 @@ def total_consumption_nre_ej():
 
 
 @component.add(
-    name="Total_imports_EU_NRE_from_Row",
+    name="Total imports EU NRE from Row",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -172,7 +172,7 @@ def total_imports_eu_nre_from_row():
 
 
 @component.add(
-    name="TPE_from_RES_EJ",
+    name="TPE from RES EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -186,7 +186,7 @@ def tpe_from_res_ej():
 
 
 @component.add(
-    name="TPED_by_fuel",
+    name="TPED by fuel",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -214,7 +214,7 @@ def tped_by_fuel():
 
 
 @component.add(
-    name="TPES_EJ",
+    name="TPES EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -228,7 +228,7 @@ def tpes_ej():
 
 
 @component.add(
-    name="Year_scarcity_TPE",
+    name="Year scarcity TPE",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

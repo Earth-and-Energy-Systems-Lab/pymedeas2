@@ -1,10 +1,10 @@
 """
 Module energy.supply.res_elec_overcap_due_to_res_variabi
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Cp_exogenous_RES_elec_dispatch_reduction",
+    name="Cp exogenous RES elec dispatch reduction",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -23,7 +23,7 @@ def cp_exogenous_res_elec_dispatch_reduction():
 
 
 @component.add(
-    name="Cp_exogenous_RES_elec_var_reduction",
+    name="Cp exogenous RES elec var reduction",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -39,7 +39,7 @@ def cp_exogenous_res_elec_var_reduction():
 
 
 @component.add(
-    name="Elec_generation_dispatch_from_RES_TWh",
+    name="Elec generation dispatch from RES TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -52,16 +52,16 @@ def elec_generation_dispatch_from_res_twh():
     return (
         sum(
             real_generation_res_elec_twh()
-            .loc[_subscript_dict["RES_ELEC_DISPATCHABLE"]]
-            .rename({"RES_elec": "RES_ELEC_DISPATCHABLE!"}),
-            dim=["RES_ELEC_DISPATCHABLE!"],
+            .loc[_subscript_dict["RES ELEC DISPATCHABLE"]]
+            .rename({"RES elec": "RES ELEC DISPATCHABLE!"}),
+            dim=["RES ELEC DISPATCHABLE!"],
         )
         + fes_elec_from_biogas_twh()
     )
 
 
 @component.add(
-    name="Elec_generation_variable_from_RES_TWh",
+    name="Elec generation variable from RES TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -73,14 +73,14 @@ def elec_generation_variable_from_res_twh():
     """
     return sum(
         real_generation_res_elec_twh()
-        .loc[_subscript_dict["RES_ELEC_VARIABLE"]]
-        .rename({"RES_elec": "RES_ELEC_VARIABLE!"}),
-        dim=["RES_ELEC_VARIABLE!"],
+        .loc[_subscript_dict["RES ELEC VARIABLE"]]
+        .rename({"RES elec": "RES ELEC VARIABLE!"}),
+        dim=["RES ELEC VARIABLE!"],
     )
 
 
 @component.add(
-    name="increase_variable_RES_share_elec_vs_total_generation",
+    name="increase variable RES share elec vs total generation",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -98,7 +98,7 @@ def increase_variable_res_share_elec_vs_total_generation():
 
 
 @component.add(
-    name="initial_share_variable_RES_elec_gen_vs_total",
+    name="initial share variable RES elec gen vs total",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -111,7 +111,7 @@ def initial_share_variable_res_elec_gen_vs_total():
 
 
 @component.add(
-    name="Share_variable_RES_elec_generation_vs_total",
+    name="Share variable RES elec generation vs total",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -141,7 +141,7 @@ def share_variable_res_elec_generation_vs_total():
 
 
 @component.add(
-    name="Share_variable_RES_elec_generation_vs_total_gen",
+    name="Share variable RES elec generation vs total gen",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -168,7 +168,7 @@ _integ_share_variable_res_elec_generation_vs_total_gen = Integ(
 
 
 @component.add(
-    name="Share_variable_RES_elec_vs_total_generation_delayed_TS",
+    name="Share variable RES elec vs total generation delayed TS",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",

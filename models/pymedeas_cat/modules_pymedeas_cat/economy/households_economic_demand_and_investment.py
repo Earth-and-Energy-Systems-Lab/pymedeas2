@@ -1,10 +1,10 @@
 """
 Module economy.households_economic_demand_and_investment
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="beta_0_GFCF",
+    name="beta 0 GFCF",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -19,7 +19,7 @@ def beta_0_gfcf():
 
 
 _ext_constant_beta_0_gfcf = ExtConstant(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "beta_0_GFCF*",
     {"sectors": _subscript_dict["sectors"]},
@@ -30,7 +30,7 @@ _ext_constant_beta_0_gfcf = ExtConstant(
 
 
 @component.add(
-    name="beta_0_HD",
+    name="beta 0 HD",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -45,7 +45,7 @@ def beta_0_hd():
 
 
 _ext_constant_beta_0_hd = ExtConstant(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "beta_0_HD*",
     {"sectors": _subscript_dict["sectors"]},
@@ -56,7 +56,7 @@ _ext_constant_beta_0_hd = ExtConstant(
 
 
 @component.add(
-    name="beta_1_GFCF",
+    name="beta 1 GFCF",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -70,7 +70,7 @@ def beta_1_gfcf():
 
 
 _ext_constant_beta_1_gfcf = ExtConstant(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "beta_1_GFCF",
     {},
@@ -81,7 +81,7 @@ _ext_constant_beta_1_gfcf = ExtConstant(
 
 
 @component.add(
-    name="beta_1_HD",
+    name="beta 1 HD",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -95,7 +95,7 @@ def beta_1_hd():
 
 
 _ext_constant_beta_1_hd = ExtConstant(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "beta_1_HD",
     {},
@@ -106,7 +106,7 @@ _ext_constant_beta_1_hd = ExtConstant(
 
 
 @component.add(
-    name="GFCF_not_covered",
+    name="GFCF not covered",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -135,7 +135,7 @@ def gfcf_not_covered():
 
 
 @component.add(
-    name="Gross_fixed_capital_formation",
+    name="Gross fixed capital formation",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -163,7 +163,7 @@ _integ_gross_fixed_capital_formation = Integ(
 
 
 @component.add(
-    name="historic_GFCF",
+    name="historic GFCF",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -181,7 +181,7 @@ def historic_gfcf(x, final_subs=None):
 
 
 _ext_lookup_historic_gfcf = ExtLookup(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "time_index2009",
     "historic_GFCF",
@@ -193,7 +193,7 @@ _ext_lookup_historic_gfcf = ExtLookup(
 
 
 @component.add(
-    name="historic_HD",
+    name="historic HD",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -211,7 +211,7 @@ def historic_hd(x, final_subs=None):
 
 
 _ext_lookup_historic_hd = ExtLookup(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "time_index2009",
     "historic_HD",
@@ -223,7 +223,7 @@ _ext_lookup_historic_hd = ExtLookup(
 
 
 @component.add(
-    name="Household_demand",
+    name="Household demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -254,7 +254,7 @@ _integ_household_demand = Integ(
 
 
 @component.add(
-    name="Household_demand_not_covered",
+    name="Household demand not covered",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -283,7 +283,7 @@ def household_demand_not_covered():
 
 
 @component.add(
-    name="Household_demand_total",
+    name="Household demand total",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -297,7 +297,7 @@ def household_demand_total():
 
 
 @component.add(
-    name="initial_GFCF",
+    name="initial GFCF",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -312,7 +312,7 @@ def initial_gfcf():
 
 
 @component.add(
-    name="initial_household_demand",
+    name="initial household demand",
     units="M$",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -327,7 +327,7 @@ def initial_household_demand():
 
 
 @component.add(
-    name="Total_GFCF",
+    name="Total GFCF",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -344,7 +344,7 @@ def total_gfcf():
 
 
 @component.add(
-    name="unit_correction_economic",
+    name="unit correction economic",
     units="1/Mdollars",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -354,21 +354,21 @@ def unit_correction_economic():
 
 
 @component.add(
-    name="variation_GFCF",
+    name="variation GFCF",
     units="M$/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 1,
-        "cc_total": 2,
-        "unit_correction_economic": 2,
-        "variation_historic_gfcf": 1,
-        "nvs_1_year": 1,
-        "beta_1_gfcf": 2,
-        "variation_cc": 1,
-        "beta_0_gfcf": 1,
         "time": 1,
+        "nvs_1_year": 1,
+        "variation_cc": 1,
+        "cc_total": 2,
+        "beta_1_gfcf": 2,
+        "variation_historic_gfcf": 1,
+        "unit_correction_economic": 2,
+        "beta_0_gfcf": 1,
     },
 )
 def variation_gfcf():
@@ -395,7 +395,7 @@ def variation_gfcf():
 
 
 @component.add(
-    name="variation_historic_demand",
+    name="variation historic demand",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -410,7 +410,7 @@ def variation_historic_demand():
 
 
 @component.add(
-    name="variation_historic_GFCF",
+    name="variation historic GFCF",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -425,7 +425,7 @@ def variation_historic_gfcf():
 
 
 @component.add(
-    name="variation_household_demand",
+    name="variation household demand",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -433,11 +433,11 @@ def variation_historic_gfcf():
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "lc": 2,
-        "unit_correction_economic": 2,
-        "beta_1_hd": 2,
-        "nvs_1_year": 1,
         "variation_lc": 1,
+        "lc": 2,
+        "nvs_1_year": 1,
+        "beta_1_hd": 2,
+        "unit_correction_economic": 2,
         "beta_0_hd": 1,
     },
 )

@@ -1,10 +1,10 @@
 """
 Module energy.storage.phs
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Cp_PHS",
+    name="Cp PHS",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -18,12 +18,12 @@ def cp_phs():
 
 
 _ext_constant_cp_phs = ExtConstant(
-    "../energy.xlsx", "Catalonia", "cp_phs", {}, _root, {}, "_ext_constant_cp_phs"
+    r"../energy.xlsx", "Catalonia", "cp_phs", {}, _root, {}, "_ext_constant_cp_phs"
 )
 
 
 @component.add(
-    name="initial_instal_cap_PHS",
+    name="initial instal cap PHS",
     units="TW",
     comp_type="Constant",
     comp_subtype="External",
@@ -37,7 +37,7 @@ def initial_instal_cap_phs():
 
 
 _ext_constant_initial_instal_cap_phs = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "initial_installed_capacity_phs",
     {},
@@ -48,7 +48,7 @@ _ext_constant_initial_instal_cap_phs = ExtConstant(
 
 
 @component.add(
-    name="installed_capacity_PHS",
+    name="installed capacity PHS",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -63,7 +63,7 @@ def installed_capacity_phs():
 
 
 @component.add(
-    name="installed_capacity_PHS_policies",
+    name="installed capacity PHS policies",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -96,7 +96,7 @@ def installed_capacity_phs_policies():
 
 
 @component.add(
-    name="installed_capacity_PHS_TW",
+    name="installed capacity PHS TW",
     units="TW",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -120,7 +120,7 @@ _integ_installed_capacity_phs_tw = Integ(
 
 
 @component.add(
-    name="installed_capacity_PHS_year_delayed",
+    name="installed capacity PHS year delayed",
     units="TW",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -146,7 +146,7 @@ _delayfixed_installed_capacity_phs_year_delayed = DelayFixed(
 
 
 @component.add(
-    name="max_capacity_potential_PHS",
+    name="max capacity potential PHS",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -160,7 +160,7 @@ def max_capacity_potential_phs():
 
 
 @component.add(
-    name="max_potential_PHS_TWe",
+    name="max potential PHS TWe",
     units="TWe",
     comp_type="Constant",
     comp_subtype="External",
@@ -174,7 +174,7 @@ def max_potential_phs_twe():
 
 
 _ext_constant_max_potential_phs_twe = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "max_PHS_potential",
     {},
@@ -185,7 +185,7 @@ _ext_constant_max_potential_phs_twe = ExtConstant(
 
 
 @component.add(
-    name="max_potential_PHS_TWh",
+    name="max potential PHS TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -196,7 +196,7 @@ def max_potential_phs_twh():
 
 
 @component.add(
-    name="new_PHS_installed",
+    name="new PHS installed",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -215,7 +215,7 @@ def new_phs_installed():
 
 
 @component.add(
-    name="output_PHS_over_lifetime",
+    name="output PHS over lifetime",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -241,7 +241,7 @@ def output_phs_over_lifetime():
 
 
 @component.add(
-    name="P_PHS_power",
+    name="P PHS power",
     units="TW",
     comp_type="Lookup",
     comp_subtype="External",
@@ -258,7 +258,7 @@ def p_phs_power(x, final_subs=None):
 
 
 _ext_lookup_p_phs_power = ExtLookup(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "year_RES_power",
     "p_PHS_power",
@@ -270,7 +270,7 @@ _ext_lookup_p_phs_power = ExtLookup(
 
 
 @component.add(
-    name="PHS_capacity_under_construction",
+    name="PHS capacity under construction",
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -287,7 +287,7 @@ def phs_capacity_under_construction():
 
 
 @component.add(
-    name="PHS_overcapacity",
+    name="PHS overcapacity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -307,7 +307,7 @@ def phs_overcapacity():
 
 
 @component.add(
-    name="PHS_planned_capacity",
+    name="PHS planned capacity",
     units="TW",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -334,7 +334,7 @@ _integ_phs_planned_capacity = Integ(
 
 
 @component.add(
-    name="potential_FE_elec_stored_PHS_TWh",
+    name="potential FE elec stored PHS TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -345,7 +345,7 @@ def potential_fe_elec_stored_phs_twh():
 
 
 @component.add(
-    name="real_FE_elec_stored_PHS_TWh",
+    name="real FE elec stored PHS TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -359,7 +359,7 @@ def real_fe_elec_stored_phs_twh():
 
 
 @component.add(
-    name="replacement_capacity_PHS",
+    name="replacement capacity PHS",
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -375,7 +375,7 @@ def replacement_capacity_phs():
 
 
 @component.add(
-    name="table_hist_capacity_PHS",
+    name="table hist capacity PHS",
     units="TW",
     comp_type="Lookup",
     comp_subtype="External",
@@ -389,7 +389,7 @@ def table_hist_capacity_phs(x, final_subs=None):
 
 
 _ext_lookup_table_hist_capacity_phs = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_installed_capacity_phs",
@@ -401,7 +401,7 @@ _ext_lookup_table_hist_capacity_phs = ExtLookup(
 
 
 @component.add(
-    name="wear_PHS",
+    name="wear PHS",
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

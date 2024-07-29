@@ -1,10 +1,10 @@
 """
 Module energy.storage.esoi_phs
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="a_lineal_regr",
+    name="a lineal regr",
     units="1/TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -21,7 +21,7 @@ def a_lineal_regr():
 
 
 @component.add(
-    name="b_lineal_regr",
+    name="b lineal regr",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -38,7 +38,7 @@ def b_lineal_regr():
 
 
 @component.add(
-    name="CED_per_TW_over_lifetime_PHS",
+    name="CED per TW over lifetime PHS",
     units="EJ/TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -47,8 +47,8 @@ def b_lineal_regr():
         "lifetime_res_elec": 1,
         "ej_per_twh": 1,
         "twe_per_twh": 1,
-        "esoi_static_phs": 1,
         "quality_of_electricity_2015": 1,
+        "esoi_static_phs": 1,
     },
 )
 def ced_per_tw_over_lifetime_phs():
@@ -62,7 +62,7 @@ def ced_per_tw_over_lifetime_phs():
 
 
 @component.add(
-    name="CEDtot_over_lifetime_PHS",
+    name="CEDtot over lifetime PHS",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -76,14 +76,14 @@ def cedtot_over_lifetime_phs():
 
 
 @component.add(
-    name="ESOI_PHS",
+    name="ESOI PHS",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "output_phs_over_lifetime": 1,
-        "cedtot_over_lifetime_phs": 1,
         "gquality_of_electricity": 1,
+        "cedtot_over_lifetime_phs": 1,
     },
 )
 def esoi_phs():
@@ -97,7 +97,7 @@ def esoi_phs():
 
 
 @component.add(
-    name="ESOI_PHS_depleted_potential",
+    name="ESOI PHS depleted potential",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -111,7 +111,7 @@ def esoi_phs_depleted_potential():
 
 
 _ext_constant_esoi_phs_depleted_potential = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "esoi_phs_depleted_potential",
     {},
@@ -122,7 +122,7 @@ _ext_constant_esoi_phs_depleted_potential = ExtConstant(
 
 
 @component.add(
-    name="ESOI_PHS_full_potential",
+    name="ESOI PHS full potential",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -138,7 +138,7 @@ def esoi_phs_full_potential():
 
 
 @component.add(
-    name="ESOI_static_PHS",
+    name="ESOI static PHS",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -154,7 +154,7 @@ def esoi_static_phs():
 
 
 @component.add(
-    name="Final_energy_invested_PHS",
+    name="Final energy invested PHS",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

@@ -1,10 +1,10 @@
 """
 Module energy.supply.res_elec_supply_by_technology
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Demand_Elec_NRE_TWh",
+    name="Demand Elec NRE TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -27,7 +27,7 @@ def demand_elec_nre_twh():
 
 
 @component.add(
-    name="efficiency_conversion_bioE_to_Elec",
+    name="efficiency conversion bioE to Elec",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -41,7 +41,7 @@ def efficiency_conversion_bioe_to_elec():
 
 
 _ext_constant_efficiency_conversion_bioe_to_elec = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "efficiency_conversion_bioe_to_elec",
     {},
@@ -52,7 +52,7 @@ _ext_constant_efficiency_conversion_bioe_to_elec = ExtConstant(
 
 
 @component.add(
-    name="FE_tot_generation_all_RES_elec_TWh",
+    name="FE tot generation all RES elec TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -69,7 +69,7 @@ def fe_tot_generation_all_res_elec_twh():
 
 
 @component.add(
-    name="FES_elec_from_RES_with_priority",
+    name="FES elec from RES with priority",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -80,7 +80,7 @@ def fes_elec_from_res_with_priority():
 
 
 @component.add(
-    name="MToe_per_EJ", units="MToe/EJ", comp_type="Constant", comp_subtype="Normal"
+    name="MToe per EJ", units="MToe/EJ", comp_type="Constant", comp_subtype="Normal"
 )
 def mtoe_per_ej():
     """
@@ -90,7 +90,7 @@ def mtoe_per_ej():
 
 
 @component.add(
-    name="PE_BioW_for_Elec_generation_Mtoe",
+    name="PE BioW for Elec generation Mtoe",
     units="MToe/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -100,11 +100,11 @@ def pe_biow_for_elec_generation_mtoe():
     """
     Annual primary energy to generate electricity (Direct Equivalent Method).
     """
-    return float(pe_real_generation_res_elec().loc["solid_bioE_elec"]) * mtoe_per_ej()
+    return float(pe_real_generation_res_elec().loc["solid bioE elec"]) * mtoe_per_ej()
 
 
 @component.add(
-    name="PE_Elec_generation_from_RES_EJ",
+    name="PE Elec generation from RES EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -116,22 +116,22 @@ def pe_elec_generation_from_res_ej():
     """
     return (
         sum(
-            pe_real_generation_res_elec().rename({"RES_elec": "RES_elec!"}),
-            dim=["RES_elec!"],
+            pe_real_generation_res_elec().rename({"RES elec": "RES elec!"}),
+            dim=["RES elec!"],
         )
         + pes_tot_biogas_for_elec()
     )
 
 
 @component.add(
-    name="PE_losses_BioE_for_Elec_EJ",
+    name="PE losses BioE for Elec EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pe_real_generation_res_elec": 1,
-        "real_generation_res_elec_twh": 1,
         "ej_per_twh": 1,
+        "real_generation_res_elec_twh": 1,
     },
 )
 def pe_losses_bioe_for_elec_ej():
@@ -139,15 +139,15 @@ def pe_losses_bioe_for_elec_ej():
     (Primary energy) losses due to the production of electricity from solid bioenergy.
     """
     return (
-        float(pe_real_generation_res_elec().loc["solid_bioE_elec"])
-        - float(real_generation_res_elec_twh().loc["solid_bioE_elec"]) * ej_per_twh()
+        float(pe_real_generation_res_elec().loc["solid bioE elec"])
+        - float(real_generation_res_elec_twh().loc["solid bioE elec"]) * ej_per_twh()
     )
 
 
 @component.add(
-    name="PE_real_generation_RES_elec",
+    name="PE real generation RES elec",
     units="EJ/year",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -162,20 +162,20 @@ def pe_real_generation_res_elec():
     Primary energy supply of electricity production of RES.
     """
     value = xr.DataArray(
-        np.nan, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[["hydro"]] = (
         float(real_generation_res_elec_twh().loc["hydro"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )
-    value.loc[["geot_elec"]] = (
-        float(real_generation_res_elec_twh().loc["geot_elec"])
+    value.loc[["geot elec"]] = (
+        float(real_generation_res_elec_twh().loc["geot elec"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )
-    value.loc[["solid_bioE_elec"]] = (
-        float(real_generation_res_elec_twh().loc["solid_bioE_elec"])
+    value.loc[["solid bioE elec"]] = (
+        float(real_generation_res_elec_twh().loc["solid bioE elec"])
         / efficiency_conversion_bioe_to_elec()
     ) * ej_per_twh()
     value.loc[["oceanic"]] = (
@@ -183,18 +183,18 @@ def pe_real_generation_res_elec():
         * ej_per_twh()
         * res_to_fossil_accounting()
     )
-    value.loc[["wind_onshore"]] = (
-        float(real_generation_res_elec_twh().loc["wind_onshore"])
+    value.loc[["wind onshore"]] = (
+        float(real_generation_res_elec_twh().loc["wind onshore"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )
-    value.loc[["wind_offshore"]] = (
-        float(real_generation_res_elec_twh().loc["wind_offshore"])
+    value.loc[["wind offshore"]] = (
+        float(real_generation_res_elec_twh().loc["wind offshore"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )
-    value.loc[["solar_PV"]] = (
-        float(real_generation_res_elec_twh().loc["solar_PV"])
+    value.loc[["solar PV"]] = (
+        float(real_generation_res_elec_twh().loc["solar PV"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )
@@ -207,7 +207,7 @@ def pe_real_generation_res_elec():
 
 
 @component.add(
-    name="RES_to_fossil_accounting",
+    name="RES to fossil accounting",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -220,7 +220,7 @@ def res_to_fossil_accounting():
 
 
 @component.add(
-    name="share_Elec_demand_covered_by_RES",
+    name="share Elec demand covered by RES",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -240,7 +240,7 @@ def share_elec_demand_covered_by_res():
 
 
 @component.add(
-    name="Total_FE_Elec_demand_after_priorities",
+    name="Total FE Elec demand after priorities",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

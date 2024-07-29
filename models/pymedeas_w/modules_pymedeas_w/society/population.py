@@ -1,10 +1,10 @@
 """
 Module society.population
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Annual_population_growth_rate",
+    name="Annual population growth rate",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -15,7 +15,7 @@ def annual_population_growth_rate():
 
 
 @component.add(
-    name="historic_population",
+    name="historic population",
     units="people",
     comp_type="Lookup",
     comp_subtype="External",
@@ -32,7 +32,7 @@ def historic_population(x, final_subs=None):
 
 
 _ext_lookup_historic_population = ExtLookup(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "World",
     "time_historic_population",
     "historic_population",
@@ -44,7 +44,7 @@ _ext_lookup_historic_population = ExtLookup(
 
 
 @component.add(
-    name="initial_population",
+    name="initial population",
     units="people",
     comp_type="Constant",
     comp_subtype="External",
@@ -58,7 +58,7 @@ def initial_population():
 
 
 _ext_constant_initial_population = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "World",
     "initial_population",
     {},
@@ -69,7 +69,7 @@ _ext_constant_initial_population = ExtConstant(
 
 
 @component.add(
-    name="input_population",
+    name="input population",
     units="Mpeople",
     comp_type="Lookup",
     comp_subtype="External",
@@ -86,7 +86,7 @@ def input_population(x, final_subs=None):
 
 
 _ext_lookup_input_population = ExtLookup(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "World",
     "time_index_projection",
     "input_population",
@@ -98,7 +98,7 @@ _ext_lookup_input_population = ExtLookup(
 
 
 @component.add(
-    name="P_timeseries_pop_growth_rate",
+    name="P timeseries pop growth rate",
     units="Dmnl/year",
     comp_type="Data",
     comp_subtype="External",
@@ -116,7 +116,7 @@ def p_timeseries_pop_growth_rate():
 
 
 _ext_data_p_timeseries_pop_growth_rate = ExtData(
-    "../../scenarios/scen_w.xlsx",
+    r"../../scenarios/scen_w.xlsx",
     "NZP",
     "years_pop_growth",
     "pop_growth_timeseries",
@@ -129,7 +129,7 @@ _ext_data_p_timeseries_pop_growth_rate = ExtData(
 
 
 @component.add(
-    name="pop_variation",
+    name="pop variation",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -177,7 +177,7 @@ _integ_population = Integ(
 
 
 @component.add(
-    name="variation_historic_pop",
+    name="variation historic pop",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -198,7 +198,7 @@ def variation_historic_pop():
 
 
 @component.add(
-    name="variation_input_pop",
+    name="variation input pop",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",

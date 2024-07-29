@@ -1316,7 +1316,7 @@
                 "tfec_res_ej",
                 "tpes_without_trad_biomass"
             ],
-            "heat_total_pes_delete": [
+            "heat_total_pes": [
                 "pes_heat_res",
                 "pes_nre_heat",
                 "pes_nre_heatcom",

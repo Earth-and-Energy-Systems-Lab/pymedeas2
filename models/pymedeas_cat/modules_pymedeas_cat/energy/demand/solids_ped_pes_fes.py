@@ -1,10 +1,10 @@
 """
 Module energy.demand.solids_ped_pes_fes
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="abundance_solids",
+    name="abundance solids",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -22,7 +22,7 @@ def abundance_solids():
 
 
 @component.add(
-    name="historic_coal_extraction",
+    name="historic coal extraction",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -36,7 +36,7 @@ def historic_coal_extraction(x, final_subs=None):
 
 
 _ext_lookup_historic_coal_extraction = ExtLookup(
-    "../debugging.xlsx",
+    r"../debugging.xlsx",
     "Catalonia",
     "years_extraction",
     "historic_coal_extraction",
@@ -48,7 +48,7 @@ _ext_lookup_historic_coal_extraction = ExtLookup(
 
 
 @component.add(
-    name="historic_PEC_coal",
+    name="historic PEC coal",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -68,7 +68,7 @@ def historic_pec_coal():
 
 
 @component.add(
-    name="Historic_PES_peat_EJ",
+    name="Historic PES peat EJ",
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
@@ -86,7 +86,7 @@ def historic_pes_peat_ej():
 
 
 _ext_data_historic_pes_peat_ej = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_efficiencies",
     "historic_primary_energy_supply_peat",
@@ -99,7 +99,7 @@ _ext_data_historic_pes_peat_ej = ExtData(
 
 
 @component.add(
-    name="imports_CAT_coal_from_RoW_EJ",
+    name="imports CAT coal from RoW EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -110,7 +110,7 @@ def imports_cat_coal_from_row_ej():
 
 
 @component.add(
-    name="Other_solids_required",
+    name="Other solids required",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -129,7 +129,7 @@ def other_solids_required():
 
 
 @component.add(
-    name="PEC_coal",
+    name="PEC coal",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -140,7 +140,7 @@ def pec_coal():
 
 
 @component.add(
-    name="PED_coal_EJ",
+    name="PED coal EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -149,12 +149,12 @@ def pec_coal():
         "ped_coal_heatnc": 1,
         "ped_coal_elec_plants_ej": 1,
         "ped_coal_for_chp_plants_ej": 1,
-        "fes_biomass": 1,
-        "ped_solids": 1,
-        "pes_waste": 1,
         "pes_peat": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "ped_solids": 1,
         "losses_in_charcoal_plants_ej": 1,
+        "fes_biomass": 1,
+        "pes_waste": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
     },
 )
 def ped_coal_ej():
@@ -175,7 +175,7 @@ def ped_coal_ej():
 
 
 @component.add(
-    name="PED_domestic_CAT_coal_EJ",
+    name="PED domestic CAT coal EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -189,7 +189,7 @@ def ped_domestic_cat_coal_ej():
 
 
 @component.add(
-    name="PED_solids",
+    name="PED solids",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -226,7 +226,7 @@ def ped_solids():
 
 
 @component.add(
-    name="PES_peat",
+    name="PES peat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -237,7 +237,7 @@ def pes_peat():
 
 
 @component.add(
-    name="PES_solids",
+    name="PES solids",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -265,7 +265,7 @@ def pes_solids():
 
 
 @component.add(
-    name="real_FE_consumption_solids_EJ",
+    name="real FE consumption solids EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -289,7 +289,7 @@ def real_fe_consumption_solids_ej():
 
 
 @component.add(
-    name="Required_FED_by_solids",
+    name="Required FED by solids",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -303,7 +303,7 @@ def required_fed_by_solids():
 
 
 @component.add(
-    name="share_biomass_in_PES",
+    name="share biomass in PES",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -318,7 +318,7 @@ def share_biomass_in_pes():
 
 
 @component.add(
-    name='"share_coal_dem_for_Heat-com"',
+    name='"share coal dem for Heat-com"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -336,7 +336,7 @@ def share_coal_dem_for_heatcom():
 
 
 @component.add(
-    name='"share_coal_dem_for_Heat-nc"',
+    name='"share coal dem for Heat-nc"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -350,7 +350,7 @@ def share_coal_dem_for_heatnc():
 
 
 @component.add(
-    name="share_coal_elec_plants",
+    name="share coal elec plants",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -361,7 +361,7 @@ def share_coal_elec_plants():
 
 
 @component.add(
-    name="share_coal_for_CTL_emissions_relevant",
+    name="share coal for CTL emissions relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -372,14 +372,14 @@ def share_coal_for_ctl_emissions_relevant():
 
 
 @component.add(
-    name="share_coal_for_Elec_emissions_relevant",
+    name="share coal for Elec emissions relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ped_coal_elec_plants_ej": 1,
-        "share_elec_gen_in_chp": 1,
         "ped_coal_for_chp_plants_ej": 1,
+        "share_elec_gen_in_chp": 1,
         "ped_coal_ej": 1,
     },
 )
@@ -392,7 +392,7 @@ def share_coal_for_elec_emissions_relevant():
 
 
 @component.add(
-    name="share_coal_for_FC_emissions_relevant",
+    name="share coal for FC emissions relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -415,15 +415,15 @@ def share_coal_for_fc_emissions_relevant():
 
 
 @component.add(
-    name="share_coal_for_Heat_emissions_relevant",
+    name="share coal for Heat emissions relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ped_ff_for_heat_plants": 1,
         "ped_coal_heatnc": 1,
-        "share_elec_gen_in_chp": 1,
         "ped_coal_for_chp_plants_ej": 1,
+        "share_elec_gen_in_chp": 1,
         "ped_coal_ej": 1,
     },
 )
@@ -438,14 +438,14 @@ def share_coal_for_heat_emissions_relevant():
 
 
 @component.add(
-    name="share_solids_for_final_energy",
+    name="share solids for final energy",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_solids": 1,
-        "ped_solids": 1,
         "other_solids_required": 1,
+        "ped_solids": 1,
         "ped_coal_for_ctl": 1,
     },
 )

@@ -1,10 +1,10 @@
 """
 Module society.population
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Annual_population_growth_rate",
+    name="Annual population growth rate",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -15,7 +15,7 @@ def annual_population_growth_rate():
 
 
 @component.add(
-    name="historic_population",
+    name="historic population",
     units="people",
     comp_type="Lookup",
     comp_subtype="External",
@@ -32,7 +32,7 @@ def historic_population(x, final_subs=None):
 
 
 _ext_lookup_historic_population = ExtLookup(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Catalonia",
     "time_historic_population",
     "historic_population",
@@ -44,7 +44,7 @@ _ext_lookup_historic_population = ExtLookup(
 
 
 @component.add(
-    name="initial_population",
+    name="initial population",
     units="people",
     comp_type="Constant",
     comp_subtype="External",
@@ -58,7 +58,7 @@ def initial_population():
 
 
 _ext_constant_initial_population = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Catalonia",
     "initial_population",
     {},
@@ -69,7 +69,7 @@ _ext_constant_initial_population = ExtConstant(
 
 
 @component.add(
-    name="P_timeseries_pop_growth_rate",
+    name="P timeseries pop growth rate",
     units="Dmnl/year",
     comp_type="Data",
     comp_subtype="External",
@@ -87,7 +87,7 @@ def p_timeseries_pop_growth_rate():
 
 
 _ext_data_p_timeseries_pop_growth_rate = ExtData(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "year_pop_timeseries",
     "p_timeseries_pop_growth",
@@ -100,7 +100,7 @@ _ext_data_p_timeseries_pop_growth_rate = ExtData(
 
 
 @component.add(
-    name="pop_variation",
+    name="pop variation",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -148,11 +148,11 @@ _integ_population = Integ(
 
 
 @component.add(
-    name="variation_historic_pop",
+    name="variation historic pop",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "historic_population": 2, "time_step": 2},
+    depends_on={"time": 3, "time_step": 2, "historic_population": 2},
 )
 def variation_historic_pop():
     """

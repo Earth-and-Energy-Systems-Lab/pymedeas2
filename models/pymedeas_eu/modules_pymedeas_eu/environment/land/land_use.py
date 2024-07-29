@@ -1,10 +1,10 @@
 """
 Module environment.land.land_use
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
-    name="Agricultural_land",
+    name="Agricultural land",
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -41,7 +41,7 @@ _integ_agricultural_land = Integ(
 
 
 @component.add(
-    name="agricultural_land_until_2015",
+    name="agricultural land until 2015",
     units="MHa",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -69,7 +69,7 @@ _sampleiftrue_agricultural_land_until_2015 = SampleIfTrue(
 
 
 @component.add(
-    name="aux_reach_available_land",
+    name="aux reach available land",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="with Lookup",
@@ -87,7 +87,7 @@ def aux_reach_available_land():
 
 
 @component.add(
-    name="\"'Available'_forest_area\"",
+    name="\"'Available' forest area\"",
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -120,7 +120,7 @@ _integ_available_forest_area = Integ(
 
 
 @component.add(
-    name="\"'Available_land'\"",
+    name="\"'Available land'\"",
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -153,17 +153,17 @@ _integ_available_land = Integ(
 
 
 @component.add(
-    name="\"'Available'_to_primary_forest_rate\"",
+    name="\"'Available' to primary forest rate\"",
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 2,
         "hist_variation_primary_forest": 1,
-        "p_variation_primary_forest": 1,
-        "start_year_p_variation_primary_forest": 1,
-        "primary_forests_area": 2,
         "historic_av_variation_primary_forests_area": 1,
+        "p_variation_primary_forest": 1,
+        "primary_forests_area": 2,
+        "start_year_p_variation_primary_forest": 1,
     },
 )
 def available_to_primary_forest_rate():
@@ -183,7 +183,7 @@ def available_to_primary_forest_rate():
 
 
 @component.add(
-    name="Compet_agricultural_land_for_biofuels",
+    name="Compet agricultural land for biofuels",
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -210,7 +210,7 @@ _integ_compet_agricultural_land_for_biofuels = Integ(
 
 
 @component.add(
-    name="compet_land_for_biofuels_rate",
+    name="compet land for biofuels rate",
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -224,15 +224,15 @@ def compet_land_for_biofuels_rate():
 
 
 @component.add(
-    name="consum_forest_energy_non_traditional_EJ",
+    name="consum forest energy non traditional EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "demand_forest_energy_non_tradition_ej": 1,
-        "forest_consumption_ej": 1,
         "consum_forest_energy_traditional_ej": 1,
         "consum_wood_products_ej": 1,
+        "forest_consumption_ej": 1,
     },
 )
 def consum_forest_energy_non_traditional_ej():
@@ -248,7 +248,7 @@ def consum_forest_energy_non_traditional_ej():
 
 
 @component.add(
-    name="consum_forest_energy_traditional_EJ",
+    name="consum forest energy traditional EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -262,14 +262,14 @@ def consum_forest_energy_traditional_ej():
 
 
 @component.add(
-    name="consum_wood_products_EJ",
+    name="consum wood products EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "demand_wood_products_ej": 1,
-        "forest_consumption_ej": 1,
         "consum_forest_energy_traditional_ej": 1,
+        "forest_consumption_ej": 1,
     },
 )
 def consum_wood_products_ej():
@@ -283,7 +283,7 @@ def consum_wood_products_ej():
 
 
 @component.add(
-    name="deficit_forest_biomass",
+    name="deficit forest biomass",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -307,7 +307,7 @@ def deficit_forest_biomass():
 
 
 @component.add(
-    name="deficit_wood_products",
+    name="deficit wood products",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -323,7 +323,7 @@ def deficit_wood_products():
 
 
 @component.add(
-    name="Deforestation_rate",
+    name="Deforestation rate",
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -345,7 +345,7 @@ def deforestation_rate():
 
 
 @component.add(
-    name="demand_forest_energy_non_tradition_EJ",
+    name="demand forest energy non tradition EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -364,7 +364,7 @@ def demand_forest_energy_non_tradition_ej():
 
 
 @component.add(
-    name="demand_forest_energy_traditional_EJ",
+    name="demand forest energy traditional EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -378,7 +378,7 @@ def demand_forest_energy_traditional_ej():
 
 
 @component.add(
-    name="demand_forest_wood_products_pc",
+    name="demand forest wood products pc",
     units="m3/(year*people)",
     comp_type="Constant",
     comp_subtype="External",
@@ -392,7 +392,7 @@ def demand_forest_wood_products_pc():
 
 
 _ext_constant_demand_forest_wood_products_pc = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Global",
     "demand_forest_wood_products",
     {},
@@ -403,7 +403,7 @@ _ext_constant_demand_forest_wood_products_pc = ExtConstant(
 
 
 @component.add(
-    name="demand_wood_products_EJ",
+    name="demand wood products EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -417,7 +417,7 @@ def demand_wood_products_ej():
 
 
 @component.add(
-    name="demand_wood_products_m3",
+    name="demand wood products m3",
     units="m3/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -431,7 +431,7 @@ def demand_wood_products_m3():
 
 
 @component.add(
-    name="EU_forest_energy_imports_from_RoW",
+    name="EU forest energy imports from RoW",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -445,7 +445,7 @@ def eu_forest_energy_imports_from_row():
 
 
 @component.add(
-    name="forest_consumption_EJ",
+    name="forest consumption EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -459,7 +459,7 @@ def forest_consumption_ej():
 
 
 @component.add(
-    name="forest_extraction_EJ",
+    name="forest extraction EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -467,8 +467,8 @@ def forest_consumption_ej():
         "available_forest_area": 1,
         "p_minimum_forest": 1,
         "p_forest_overexplotation": 1,
-        "total_demand_forest_biomass_ej": 1,
         "max_sustainable_forest_extraction_ej": 1,
+        "total_demand_forest_biomass_ej": 1,
     },
 )
 def forest_extraction_ej():
@@ -486,7 +486,7 @@ def forest_extraction_ej():
 
 
 @component.add(
-    name="forest_extraction_per_MHa",
+    name="forest extraction per MHa",
     units="EJ/(year*MHa)",
     comp_type="Constant",
     comp_subtype="External",
@@ -500,7 +500,7 @@ def forest_extraction_per_mha():
 
 
 _ext_constant_forest_extraction_per_mha = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Global",
     "forest_extraction",
     {},
@@ -511,7 +511,7 @@ _ext_constant_forest_extraction_per_mha = ExtConstant(
 
 
 @component.add(
-    name="Forest_loss_to_sustain_agriculture",
+    name="Forest loss to sustain agriculture",
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -537,7 +537,7 @@ def forest_loss_to_sustain_agriculture():
 
 
 @component.add(
-    name="forest_stock_ratio",
+    name="forest stock ratio",
     units="MHa/EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -555,7 +555,7 @@ def forest_stock_ratio():
 
 
 @component.add(
-    name="Growing_stock_forest_per_Ha",
+    name="Growing stock forest per Ha",
     units="m3/Ha",
     comp_type="Constant",
     comp_subtype="External",
@@ -569,7 +569,7 @@ def growing_stock_forest_per_ha():
 
 
 _ext_constant_growing_stock_forest_per_ha = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Global",
     "growing_stock_forest",
     {},
@@ -580,18 +580,18 @@ _ext_constant_growing_stock_forest_per_ha = ExtConstant(
 
 
 @component.add(
-    name="Ha_to_MHa", units="Ha/MHa", comp_type="Constant", comp_subtype="Normal"
+    name="Ha to MHa", units="Ha/MHa", comp_type="Constant", comp_subtype="Normal"
 )
 def ha_to_mha():
     return 1000000.0
 
 
 @component.add(
-    name="hist_variation_primary_forest",
+    name="hist variation primary forest",
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "time_step": 2, "historic_primary_forest": 2},
+    depends_on={"time": 3, "historic_primary_forest": 2, "time_step": 2},
 )
 def hist_variation_primary_forest():
     """
@@ -609,7 +609,7 @@ def hist_variation_primary_forest():
 
 
 @component.add(
-    name="hist_variation_urban_land",
+    name="hist variation urban land",
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -631,7 +631,7 @@ def hist_variation_urban_land():
 
 
 @component.add(
-    name="Historic_av_variation_primary_forests_area",
+    name="Historic av variation primary forests area",
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -647,7 +647,7 @@ def historic_av_variation_primary_forests_area():
 
 
 _ext_constant_historic_av_variation_primary_forests_area = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Europe",
     "variation_primary_forests_area",
     {},
@@ -658,7 +658,7 @@ _ext_constant_historic_av_variation_primary_forests_area = ExtConstant(
 
 
 @component.add(
-    name="Historic_primary_forest",
+    name="Historic primary forest",
     units="MHa",
     comp_type="Lookup",
     comp_subtype="External",
@@ -675,7 +675,7 @@ def historic_primary_forest(x, final_subs=None):
 
 
 _ext_lookup_historic_primary_forest = ExtLookup(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Europe",
     "time",
     "primary_forest",
@@ -687,7 +687,7 @@ _ext_lookup_historic_primary_forest = ExtLookup(
 
 
 @component.add(
-    name="Historic_urban_land",
+    name="Historic urban land",
     units="MHa",
     comp_type="Lookup",
     comp_subtype="External",
@@ -704,7 +704,7 @@ def historic_urban_land(x, final_subs=None):
 
 
 _ext_lookup_historic_urban_land = ExtLookup(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Europe",
     "time",
     "urban_land",
@@ -716,7 +716,7 @@ _ext_lookup_historic_urban_land = ExtLookup(
 
 
 @component.add(
-    name="Historic_urban_land_density",
+    name="Historic urban land density",
     units="MHa/people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -730,7 +730,7 @@ def historic_urban_land_density():
 
 
 @component.add(
-    name="increase_agricultural_land",
+    name="increase agricultural land",
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -755,7 +755,7 @@ def increase_agricultural_land():
 
 
 @component.add(
-    name="initial_agricultural_area",
+    name="initial agricultural area",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
@@ -766,7 +766,7 @@ def initial_agricultural_area():
 
 
 _ext_constant_initial_agricultural_area = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Europe",
     "initial_agricultural_area",
     {},
@@ -777,7 +777,7 @@ _ext_constant_initial_agricultural_area = ExtConstant(
 
 
 @component.add(
-    name="initial_'available'_forest_area",
+    name="initial 'available' forest area",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -794,7 +794,7 @@ def initial_available_forest_area():
 
 
 @component.add(
-    name="initial_'available_land'",
+    name="initial 'available land'",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
@@ -808,7 +808,7 @@ def initial_available_land():
 
 
 _ext_constant_initial_available_land = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Europe",
     "initial_available_land",
     {},
@@ -819,7 +819,7 @@ _ext_constant_initial_available_land = ExtConstant(
 
 
 @component.add(
-    name="initial_marginal_land_occupied_by_biofuels",
+    name="initial marginal land occupied by biofuels",
     units="MHa",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -832,7 +832,7 @@ def initial_marginal_land_occupied_by_biofuels():
 
 
 @component.add(
-    name="initial_other_naturally_regen_forest",
+    name="initial other naturally regen forest",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
@@ -846,7 +846,7 @@ def initial_other_naturally_regen_forest():
 
 
 _ext_constant_initial_other_naturally_regen_forest = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Europe",
     "initial_other_naturally_regen_forest",
     {},
@@ -857,7 +857,7 @@ _ext_constant_initial_other_naturally_regen_forest = ExtConstant(
 
 
 @component.add(
-    name='"initial_permanent_snows&glaciers_area"',
+    name='"initial permanent snows&glaciers area"',
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
@@ -871,7 +871,7 @@ def initial_permanent_snowsglaciers_area():
 
 
 _ext_constant_initial_permanent_snowsglaciers_area = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Europe",
     "initial_permanent_snow_glaciers_area",
     {},
@@ -882,7 +882,7 @@ _ext_constant_initial_permanent_snowsglaciers_area = ExtConstant(
 
 
 @component.add(
-    name="initial_planted_forests",
+    name="initial planted forests",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
@@ -896,7 +896,7 @@ def initial_planted_forests():
 
 
 _ext_constant_initial_planted_forests = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Europe",
     "initial_planted_forests",
     {},
@@ -907,7 +907,7 @@ _ext_constant_initial_planted_forests = ExtConstant(
 
 
 @component.add(
-    name="initial_primary_forest_area",
+    name="initial primary forest area",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
@@ -921,7 +921,7 @@ def initial_primary_forest_area():
 
 
 _ext_constant_initial_primary_forest_area = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Europe",
     "initial_primary_forest",
     {},
@@ -932,7 +932,7 @@ _ext_constant_initial_primary_forest_area = ExtConstant(
 
 
 @component.add(
-    name="initial_urban_land",
+    name="initial urban land",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
@@ -946,7 +946,7 @@ def initial_urban_land():
 
 
 _ext_constant_initial_urban_land = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Europe",
     "initial_urban",
     {},
@@ -957,7 +957,7 @@ _ext_constant_initial_urban_land = ExtConstant(
 
 
 @component.add(
-    name="Land_availability_constraint",
+    name="Land availability constraint",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -971,7 +971,7 @@ def land_availability_constraint():
 
 
 @component.add(
-    name="Land_for_RES_elec_rate",
+    name="Land for RES elec rate",
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -997,14 +997,14 @@ def land_for_res_elec_rate():
 
 
 @component.add(
-    name="Land_for_solar_and_hydro_RES",
+    name="Land for solar and hydro RES",
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_land_for_solar_and_hydro_res": 1},
     other_deps={
         "_integ_land_for_solar_and_hydro_res": {
-            "initial": {},
+            "initial": {"land_requirements_res_elec_compet_uses": 1},
             "step": {"land_for_res_elec_rate": 1},
         }
     },
@@ -1017,19 +1017,21 @@ def land_for_solar_and_hydro_res():
 
 
 _integ_land_for_solar_and_hydro_res = Integ(
-    lambda: land_for_res_elec_rate(), lambda: 0.9, "_integ_land_for_solar_and_hydro_res"
+    lambda: land_for_res_elec_rate(),
+    lambda: land_requirements_res_elec_compet_uses(),
+    "_integ_land_for_solar_and_hydro_res",
 )
 
 
 @component.add(
-    name='"Land_requirements_RES_elec_compet_uses_t-1"',
+    name='"Land requirements RES elec compet uses t-1"',
     units="MHa",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_land_requirements_res_elec_compet_uses_t1": 1},
     other_deps={
         "_delayfixed_land_requirements_res_elec_compet_uses_t1": {
-            "initial": {},
+            "initial": {"land_requirements_res_elec_compet_uses": 1},
             "step": {"land_requirements_res_elec_compet_uses": 1},
         }
     },
@@ -1044,14 +1046,14 @@ def land_requirements_res_elec_compet_uses_t1():
 _delayfixed_land_requirements_res_elec_compet_uses_t1 = DelayFixed(
     lambda: land_requirements_res_elec_compet_uses(),
     lambda: 1,
-    lambda: 0.9115,
+    lambda: land_requirements_res_elec_compet_uses(),
     time_step,
     "_delayfixed_land_requirements_res_elec_compet_uses_t1",
 )
 
 
 @component.add(
-    name="Marginal_land_for_biofuels",
+    name="Marginal land for biofuels",
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1078,7 +1080,7 @@ _integ_marginal_land_for_biofuels = Integ(
 
 
 @component.add(
-    name="Marginal_land_for_biofuels_rate",
+    name="Marginal land for biofuels rate",
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1092,7 +1094,7 @@ def marginal_land_for_biofuels_rate():
 
 
 @component.add(
-    name="max_E_forest_available_non_trad",
+    name="max E forest available non trad",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1111,7 +1113,7 @@ def max_e_forest_available_non_trad():
 
 
 @component.add(
-    name="max_E_forest_energy_non_trad",
+    name="max E forest energy non trad",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1125,7 +1127,7 @@ def max_e_forest_energy_non_trad():
 
 
 @component.add(
-    name="max_E_tot_forest_available",
+    name="max E tot forest available",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1147,7 +1149,7 @@ def max_e_tot_forest_available():
 
 
 @component.add(
-    name="max_sustainable_forest_extraction_EJ",
+    name="max sustainable forest extraction EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1161,7 +1163,7 @@ def max_sustainable_forest_extraction_ej():
 
 
 @component.add(
-    name="Mha_to_m2", units="m2/MHa", comp_type="Constant", comp_subtype="Normal"
+    name="Mha to m2", units="m2/MHa", comp_type="Constant", comp_subtype="Normal"
 )
 def mha_to_m2():
     """
@@ -1171,7 +1173,7 @@ def mha_to_m2():
 
 
 @component.add(
-    name="P_forest_overexplotation",
+    name="P forest overexplotation",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1185,7 +1187,7 @@ def p_forest_overexplotation():
 
 
 _ext_constant_p_forest_overexplotation = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "forest_overexplotation",
     {},
@@ -1196,7 +1198,7 @@ _ext_constant_p_forest_overexplotation = ExtConstant(
 
 
 @component.add(
-    name="P_minimum_forest",
+    name="P minimum forest",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
@@ -1210,7 +1212,7 @@ def p_minimum_forest():
 
 
 _ext_constant_p_minimum_forest = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "minimum_forest",
     {},
@@ -1221,7 +1223,7 @@ _ext_constant_p_minimum_forest = ExtConstant(
 
 
 @component.add(
-    name="P_urban_land_density",
+    name="P urban land density",
     units="m2/people",
     comp_type="Constant",
     comp_subtype="External",
@@ -1235,7 +1237,7 @@ def p_urban_land_density():
 
 
 _ext_constant_p_urban_land_density = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "urban_land_density",
     {},
@@ -1246,7 +1248,7 @@ _ext_constant_p_urban_land_density = ExtConstant(
 
 
 @component.add(
-    name="P_urban_land_density_MHa",
+    name="P urban land density MHa",
     units="MHa/people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1257,7 +1259,7 @@ def p_urban_land_density_mha():
 
 
 @component.add(
-    name="P_variation_primary_forest",
+    name="P variation primary forest",
     units="Dmnl/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1271,7 +1273,7 @@ def p_variation_primary_forest():
 
 
 _ext_constant_p_variation_primary_forest = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "variation_primary_forest",
     {},
@@ -1282,7 +1284,7 @@ _ext_constant_p_variation_primary_forest = ExtConstant(
 
 
 @component.add(
-    name="Primary_forests_area",
+    name="Primary forests area",
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1309,9 +1311,9 @@ _integ_primary_forests_area = Integ(
 
 
 @component.add(
-    name="shortage_BioE_for_elec",
+    name="shortage BioE for elec",
     units="Dmnl",
-    subscripts=["RES_elec"],
+    subscripts=["RES elec"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"shortage_bioe_non_trad_delayed_1yr": 1},
@@ -1321,23 +1323,23 @@ def shortage_bioe_for_elec():
     Shortage of bioenergy for supplying RES power plants for electricity generation.
     """
     value = xr.DataArray(
-        np.nan, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[["hydro"]] = 1
-    value.loc[["geot_elec"]] = 1
-    value.loc[["solid_bioE_elec"]] = shortage_bioe_non_trad_delayed_1yr()
+    value.loc[["geot elec"]] = 1
+    value.loc[["solid bioE elec"]] = shortage_bioe_non_trad_delayed_1yr()
     value.loc[["oceanic"]] = 1
-    value.loc[["wind_onshore"]] = 1
-    value.loc[["wind_offshore"]] = 1
-    value.loc[["solar_PV"]] = 1
+    value.loc[["wind onshore"]] = 1
+    value.loc[["wind offshore"]] = 1
+    value.loc[["solar PV"]] = 1
     value.loc[["CSP"]] = 1
     return value
 
 
 @component.add(
-    name="shortage_BioE_for_heat",
+    name="shortage BioE for heat",
     units="Dmnl",
-    subscripts=["RES_heat"],
+    subscripts=["RES heat"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"shortage_bioe_non_trad_delayed_1yr": 1},
@@ -1347,16 +1349,16 @@ def shortage_bioe_for_heat():
     Shortage of bioenergy for supplying RES power plants for heat generation.
     """
     value = xr.DataArray(
-        np.nan, {"RES_heat": _subscript_dict["RES_heat"]}, ["RES_heat"]
+        np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
-    value.loc[["solar_heat"]] = 1
-    value.loc[["geot_heat"]] = 1
-    value.loc[["solid_bioE_heat"]] = shortage_bioe_non_trad_delayed_1yr()
+    value.loc[["solar heat"]] = 1
+    value.loc[["geot heat"]] = 1
+    value.loc[["solid bioE heat"]] = shortage_bioe_non_trad_delayed_1yr()
     return value
 
 
 @component.add(
-    name="shortage_BioE_non_trad",
+    name="shortage BioE non trad",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1376,7 +1378,7 @@ def shortage_bioe_non_trad():
 
 
 @component.add(
-    name="shortage_BioE_non_trad_delayed_1yr",
+    name="shortage BioE non trad delayed 1yr",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -1405,7 +1407,7 @@ _delayfixed_shortage_bioe_non_trad_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="Start_year_P_urban_land_density",
+    name="Start year P urban land density",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1419,7 +1421,7 @@ def start_year_p_urban_land_density():
 
 
 _ext_constant_start_year_p_urban_land_density = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "start_year_P_urban_land_density",
     {},
@@ -1430,7 +1432,7 @@ _ext_constant_start_year_p_urban_land_density = ExtConstant(
 
 
 @component.add(
-    name="Start_year_P_variation_primary_forest",
+    name="Start year P variation primary forest",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1444,7 +1446,7 @@ def start_year_p_variation_primary_forest():
 
 
 _ext_constant_start_year_p_variation_primary_forest = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "start_year_variation_primary_forest",
     {},
@@ -1455,7 +1457,7 @@ _ext_constant_start_year_p_variation_primary_forest = ExtConstant(
 
 
 @component.add(
-    name="Target_year_P_urban_land_density",
+    name="Target year P urban land density",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1469,7 +1471,7 @@ def target_year_p_urban_land_density():
 
 
 _ext_constant_target_year_p_urban_land_density = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "target_year_P_urban_land_density",
     {},
@@ -1480,7 +1482,7 @@ _ext_constant_target_year_p_urban_land_density = ExtConstant(
 
 
 @component.add(
-    name="total_demand_energy_forest_EJ",
+    name="total demand energy forest EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1499,7 +1501,7 @@ def total_demand_energy_forest_ej():
 
 
 @component.add(
-    name="total_demand_forest_biomass_EJ",
+    name="total demand forest biomass EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1521,7 +1523,7 @@ def total_demand_forest_biomass_ej():
 
 
 @component.add(
-    name="Total_EU_land_endogenous",
+    name="Total EU land endogenous",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1552,7 +1554,7 @@ def total_eu_land_endogenous():
 
 
 @component.add(
-    name="Total_land_occupied_by_RES",
+    name="Total land occupied by RES",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1574,7 +1576,7 @@ def total_land_occupied_by_res():
 
 
 @component.add(
-    name="unsustainable_loggin",
+    name="unsustainable loggin",
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1596,7 +1598,7 @@ def unsustainable_loggin():
 
 
 @component.add(
-    name="Urban_land",
+    name="Urban land",
     units="MHa",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1621,7 +1623,7 @@ _integ_urban_land = Integ(
 
 
 @component.add(
-    name="urban_land_density",
+    name="urban land density",
     units="MHa/people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1659,15 +1661,15 @@ def urban_land_density():
 
 
 @component.add(
-    name="urban_land_rate",
+    name="urban land rate",
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "hist_variation_urban_land": 1,
-        "urban_land_density": 1,
         "pop_variation": 1,
+        "urban_land_density": 1,
     },
 )
 def urban_land_rate():
@@ -1682,7 +1684,7 @@ def urban_land_rate():
 
 
 @component.add(
-    name="wood_energy_density",
+    name="wood energy density",
     units="EJ/m3",
     comp_type="Constant",
     comp_subtype="External",
@@ -1696,7 +1698,7 @@ def wood_energy_density():
 
 
 _ext_constant_wood_energy_density = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Global",
     "wood_energy_density",
     {},

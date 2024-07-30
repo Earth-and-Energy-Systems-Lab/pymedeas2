@@ -36,10 +36,10 @@ def historic_coal_extraction(x, final_subs=None):
 
 
 _ext_lookup_historic_coal_extraction = ExtLookup(
-    r"../debugging.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
-    "years_extraction",
-    "historic_coal_extraction",
+    "time_historic_data",
+    "historic_domestic_coal_extraction",
     {},
     _root,
     {},

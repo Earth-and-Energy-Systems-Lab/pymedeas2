@@ -100,30 +100,38 @@ First clone or download this repository on your computer. Then, there are two wa
 
 ## 2. Instructions for running the code in a Docker container
 
-1. Install Docker on your system.
+1. Install [Docker compose](https://docs.docker.com/compose/install/) on your system.
 2. Get to the project folder (you should see the `Dockerfile` in it) and build the Docker image with:
 
 ```bash
-docker build -t pymedeas2 .
+docker-compose build
 ```
 
-Now you are ready to run a simulation. However, before that, let's see the different configuration options we can change:
+```bash
+docker-compose up -d
+```
+
+Now you are ready to run a simulation. However, before that, let's see the different configuration options we can tune to our needs:
 
 ```bash
-docker run pymedeas2 -h
+docker-compose run pymedeas2 -h
 ```
 
 Now, to run a default simulation with the world model, just run:
 
 ```bash
-docker run pymedeas2
+docker-compose run pymedeas2
 ```
 
 Finally, to run a simulation with another model (say, the EU model), run:
 
 ```bash
-docker run pymedeas2 -m pymedeas_eu
+docker-compose run pymedeas2 -m pymedeas_eu -f pymedeas_w:outputs/14sectors_cat/pymedeas_w/results_NZP_1995_2050_0.03125.nc
 ```
+
+Note that the EU model requires the outputs from the world model to run. The same is true for the catalan model, which requires the outputs from both the world and EU models. In the previous command, the path to the results of the EU model is passed after the `-f` argument. Note as well, that you need to prefix the path with the name of the model the results belong to (in this case `pymedeas_w`).
+
+Note as well, that **the path to the results file must be relative to the outputs folder** (as in the previous example), as this folder is mounted in the Docker container.
 
 # Model outputs
 

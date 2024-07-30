@@ -375,15 +375,15 @@ def create_parent_models_data_file_paths(config: Params) -> List[Path]:
     # if the user passed the file paths from the CLI, they should be here
     paths_from_user_input = all([dic.results_file_path for dic in config.model.parent])
 
-    if config.silent:
+    if config.silent or running_in_container():
         # no user input asked during execution, hence external files must
         # be provided beforehand
         if not paths_from_user_input:
             # silent mode and file names not provided -> error
             print(
-                "If you want to run in silent mode, please provide the name "
-                "of the results file/s from which you want to "
-                "import data. Examples below:\n"
+                "If you want to run in silent mode or in a Docker container",
+                "please provide the name of the results file/s from which you "
+                "want to import data. Examples below:\n"
                 "\t-f pymedeas_w: outputs/results_w.nc\n"
                 "\t-f pymedeas_w: outputs/results_w.nc, pymedeas_eu: "
                 "outputs/results_eu.nc\n"
@@ -507,3 +507,9 @@ def load_model(
     user_config.region = region
     read_model_config(user_config)
     return load(user_config, data_files)
+
+
+def running_in_container():
+    """Checks if the app is containerized"""
+    path = '/.dockerenv'
+    return Path(path).exists()

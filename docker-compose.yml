@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  pymedeas2:
+    build: .  # This tells Docker Compose to build the image from the Dockerfile in the current directory
+    volumes:
+      - ./outputs:/app/outputs
+    entrypoint: ["python", "run.py"]  # Replace with your actual script if needed
+    container_name: pymedeas2

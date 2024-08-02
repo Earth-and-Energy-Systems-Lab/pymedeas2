@@ -11,8 +11,8 @@ Translated using PySD version 3.14.1
     depends_on={
         "share_in_target_year_oil_for_heat": 1,
         "historic_share_liquids_for_heat_plants": 1,
-        "start_year_policy_phaseout_oil_for_heat": 1,
         "target_year_policy_phaseout_oil_for_heat": 1,
+        "start_year_policy_phaseout_oil_for_heat": 1,
     },
 )
 def a_lineal_regr_phaseout_oil_for_heat():
@@ -34,8 +34,8 @@ def a_lineal_regr_phaseout_oil_for_heat():
     comp_subtype="Normal",
     depends_on={
         "share_in_target_year_oil_for_heat": 1,
-        "a_lineal_regr_phaseout_oil_for_heat": 1,
         "target_year_policy_phaseout_oil_for_heat": 1,
+        "a_lineal_regr_phaseout_oil_for_heat": 1,
     },
 )
 def b_lineal_regr_phaseout_oil_for_heat():
@@ -313,10 +313,10 @@ def ped_coal_for_heat_plants_ej():
     depends_on={
         "fed_heat_liquids_plants_ej": 1,
         "efficiency_liquids_for_heat_plants": 1,
-        "efficiency_gases_for_heat_plants": 1,
         "fed_heat_gas_plants_ej": 1,
-        "efficiency_coal_for_heat_plants": 1,
+        "efficiency_gases_for_heat_plants": 1,
         "fed_heat_coal_plants": 1,
+        "efficiency_coal_for_heat_plants": 1,
     },
 )
 def ped_ff_for_heat_plants():
@@ -471,9 +471,9 @@ _ext_constant_share_in_target_year_oil_for_heat = ExtConstant(
     depends_on={
         "time": 2,
         "historic_share_liquids_for_heat_plants": 3,
-        "start_year_policy_phaseout_oil_for_heat": 1,
         "phaseout_oil_for_heat": 1,
         "p_share_oil_for_heat": 1,
+        "start_year_policy_phaseout_oil_for_heat": 1,
     },
 )
 def share_liquids_for_heat_plants():

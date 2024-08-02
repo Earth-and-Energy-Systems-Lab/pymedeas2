@@ -8,18 +8,18 @@ import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
-    step,
     zidz,
-    invert_matrix,
-    xidz,
-    integer,
+    step,
     sum,
     if_then_else,
+    invert_matrix,
+    integer,
+    xidz,
 )
-from pysd.py_backend.statefuls import Smooth, DelayFixed, Initial, SampleIfTrue, Integ
-from pysd.py_backend.external import ExtData, ExtLookup, ExtConstant
+from pysd.py_backend.statefuls import Integ, Initial, SampleIfTrue, DelayFixed, Smooth
+from pysd.py_backend.external import ExtLookup, ExtData, ExtConstant
 from pysd.py_backend.data import TabData
-from pysd.py_backend.utils import load_model_data, load_modules
+from pysd.py_backend.utils import load_modules, load_model_data
 from pysd import Component
 
 __pysd_version__ = "3.14.1"

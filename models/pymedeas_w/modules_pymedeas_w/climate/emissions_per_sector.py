@@ -52,10 +52,14 @@ def co2_emissions_from_year():
     comp_subtype="Normal",
     depends_on={
         "co2_emissions_households_and_sectors_before_ccs": 1,
-        "co2_captured_sector_ccs": 1,
+        "co2_captured_by_sector_energy_related": 1,
+        "dac_co2_captured_energy_per_sector": 1,
     },
 )
 def co2_emissions_households_and_sectors():
+    """
+    CO2 emissions after substracting the CCS and DACC absorbed emissions
+    """
     return (
         sum(
             co2_emissions_households_and_sectors_before_ccs().rename(
@@ -63,7 +67,8 @@ def co2_emissions_households_and_sectors():
             ),
             dim=["final sources!"],
         )
-        - co2_captured_sector_ccs()
+        - co2_captured_by_sector_energy_related()
+        - dac_co2_captured_energy_per_sector()
     )
 
 
@@ -173,6 +178,28 @@ def share_energy_consumption_from_households_and_sectors():
         ).expand_dims(
             {"SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"]}, 1
         ),
+    )
+
+
+@component.add(
+    name="Total CO2 emissions after LULUCF",
+    units="GTCO2e/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "total_co2_emissions_gtco2": 1,
+        "co2_soilluc_emissions": 1,
+        "afforestation_program_2020_gtco2": 1,
+    },
+)
+def total_co2_emissions_after_lulucf():
+    """
+    Total emissions taking into account the carbon capture technologies and the LULUCF
+    """
+    return (
+        total_co2_emissions_gtco2()
+        + co2_soilluc_emissions()
+        - afforestation_program_2020_gtco2()
     )
 
 

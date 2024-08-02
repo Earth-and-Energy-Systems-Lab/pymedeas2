@@ -346,8 +346,8 @@ def extraction_coal_without_ctl_ej():
         "activate_force_leaving_underground": 1,
         "max_extraction_coal_technical": 3,
         "start_year_policy_leave_in_ground_coal": 1,
-        "time": 1,
         "max_extraction_coal_policy": 1,
+        "time": 1,
     },
 )
 def max_extraction_coal():

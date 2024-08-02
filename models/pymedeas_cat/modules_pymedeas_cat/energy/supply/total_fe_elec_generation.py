@@ -92,15 +92,15 @@ def fe_elec_generation_ff_twh():
     comp_subtype="Normal",
     depends_on={
         "fes_elec_fossil_fuel_chp_plants_ej": 3,
-        "efficiency_gas_for_electricity": 1,
         "share_gas_elec_plants": 1,
+        "efficiency_gas_for_electricity": 1,
         "pec_nat_gas": 1,
+        "share_coal_elec_plants": 1,
         "efficiency_coal_for_electricity": 1,
         "pec_coal": 1,
-        "share_coal_elec_plants": 1,
         "efficiency_liquids_for_electricity": 1,
-        "pec_total_oil": 1,
         "share_oil_elec_plants": 1,
+        "pec_total_oil": 1,
     },
 )
 def fe_elec_generation_from_fossil_fuels():
@@ -266,9 +266,9 @@ def total_fe_elec_consumption_ej():
     comp_subtype="Normal",
     depends_on={
         "fe_demand_elec_consum_twh": 1,
+        "share_transmdistr_elec_losses": 1,
         "elec_exports_share": 1,
         "total_fe_elec_generation_twh_cat": 1,
-        "share_transmdistr_elec_losses": 1,
     },
 )
 def total_fe_elec_consumption_twh():

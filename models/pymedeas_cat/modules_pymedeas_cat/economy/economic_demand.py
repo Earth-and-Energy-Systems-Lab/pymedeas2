@@ -344,9 +344,9 @@ def real_gfcf_by_sector():
     depends_on={
         "real_final_demand_by_sector_cat": 1,
         "share_consum_goverment_and_inventories": 1,
+        "share_gfcf_vs_gfcfhdexp": 1,
         "share_exp_row_vs_gfcfhdexp": 1,
         "share_exp_roeu_vs_gfcfhdexp": 1,
-        "share_gfcf_vs_gfcfhdexp": 1,
     },
 )
 def real_household_demand_by_sector():
@@ -418,8 +418,8 @@ def share_exp_roeu_vs_gfcfhdexp():
     depends_on={
         "exports_demand_to_row": 2,
         "gross_fixed_capital_formation": 1,
-        "exports_demand_to_roeu": 1,
         "household_demand": 1,
+        "exports_demand_to_roeu": 1,
     },
 )
 def share_exp_row_vs_gfcfhdexp():
@@ -442,9 +442,9 @@ def share_exp_row_vs_gfcfhdexp():
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 2,
+        "exports_demand_to_row": 1,
         "household_demand": 1,
         "exports_demand_to_roeu": 1,
-        "exports_demand_to_row": 1,
     },
 )
 def share_gfcf_vs_gfcfhdexp():
@@ -506,9 +506,9 @@ def total_demand_adjusted():
         "time": 1,
         "historic_variation_demand": 1,
         "variation_household_demand": 1,
+        "share_consum_goverment_and_inventories": 1,
         "variation_exports_demand_to_row": 1,
         "variation_exports_demand_to_roeu": 1,
-        "share_consum_goverment_and_inventories": 1,
         "variation_gfcf": 1,
     },
 )

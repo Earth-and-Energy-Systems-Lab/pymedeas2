@@ -34,8 +34,8 @@ def abundance_storage():
     comp_subtype="Normal",
     depends_on={
         "res_elec_variables": 1,
-        "demand_storage_capacity": 2,
         "total_capacity_elec_storage_tw": 3,
+        "demand_storage_capacity": 2,
     },
 )
 def constraint_elec_storage_availability():
@@ -137,8 +137,8 @@ def demand_storage_capacity():
     depends_on={
         "esoi_phs": 1,
         "installed_capacity_phs": 1,
-        "used_ev_batteries_for_elec_storage": 1,
         "esoi_ev_batteries": 1,
+        "used_ev_batteries_for_elec_storage": 1,
         "total_capacity_elec_storage_tw": 1,
     },
 )

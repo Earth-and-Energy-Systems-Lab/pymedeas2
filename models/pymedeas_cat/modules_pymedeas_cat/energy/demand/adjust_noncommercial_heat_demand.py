@@ -57,13 +57,13 @@ _ext_constant_debug_share_feh_oil_over_fed_solids = ExtConstant(
     name='"FED by fuel for heat-nc"',
     units="EJ/year",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "fed_oil_for_heatnc": 1,
         "fed_nat_gas_for_heatnc": 1,
-        "fed_solid_bioe_for_heatnc": 1,
         "fed_coal_for_heatnc": 1,
+        "fed_solid_bioe_for_heatnc": 1,
     },
 )
 def fed_by_fuel_for_heatnc():
@@ -262,13 +262,13 @@ def share_fed_liquids_vs_nre_heatnc():
     name="share FEH over FED by final fuel",
     units="Dmnl",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "debug_share_feh_oil_over_fed_solids": 1,
         "share_feh_over_fed_nat_gas": 1,
-        "share_feh_over_fed_solid_bioe": 1,
         "debug_share_coal_feh_over_fed_solids": 1,
+        "share_feh_over_fed_solid_bioe": 1,
     },
 )
 def share_feh_over_fed_by_final_fuel():

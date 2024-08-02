@@ -132,9 +132,9 @@ def maximum_oil_available_in_cat():
     depends_on={
         "ped_coal_ej": 1,
         "historic_coal_imports": 1,
-        "time": 3,
-        "last_historical_year": 1,
         "maximum_coal_available_in_cat": 1,
+        "last_historical_year": 1,
+        "time": 3,
         "projected_net_coal_flux_cat": 1,
     },
 )
@@ -158,11 +158,11 @@ def net_coal_flux_cat():
     comp_subtype="Normal",
     depends_on={
         "ped_nat_gas_ej": 1,
+        "maximum_gas_available_in_cat": 1,
+        "last_historical_year": 1,
         "time": 3,
         "historic_gas_imports": 1,
-        "last_historical_year": 1,
         "projected_net_gas_flux_cat": 1,
-        "maximum_gas_available_in_cat": 1,
     },
 )
 def net_gas_flux_cat():
@@ -185,11 +185,11 @@ def net_gas_flux_cat():
     comp_subtype="Normal",
     depends_on={
         "ped_total_oil_ej": 1,
-        "historic_oil_imports": 1,
-        "time": 3,
-        "last_historical_year": 1,
-        "projected_net_oil_flux_cat": 1,
         "maximum_oil_available_in_cat": 1,
+        "projected_net_oil_flux_cat": 1,
+        "last_historical_year": 1,
+        "time": 3,
+        "historic_oil_imports": 1,
     },
 )
 def net_oil_flux_cat():

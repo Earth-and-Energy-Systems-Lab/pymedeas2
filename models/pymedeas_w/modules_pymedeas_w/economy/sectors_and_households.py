@@ -236,8 +236,8 @@ def demand_by_sector_fd_adjusted():
         "time": 1,
         "end_historical_year": 1,
         "demand_by_sector_fd": 1,
-        "nvs_1_year": 1,
         "real_demand_by_sector": 1,
+        "nvs_1_year": 1,
     },
 )
 def demand_not_covered_by_sector_fd():
@@ -285,8 +285,8 @@ def desired_annual_gdp_growth_rate():
         "time": 1,
         "total_demand": 1,
         "population": 1,
-        "dollars_to_tdollars": 1,
         "desired_gdppc": 1,
+        "dollars_to_tdollars": 1,
     },
 )
 def desired_gdp():
@@ -309,10 +309,10 @@ def desired_gdp():
         "time": 1,
         "desired_gdp": 1,
         "historic_gdp_growth_rate": 1,
-        "desired_gdppc": 1,
         "population": 1,
-        "annual_gdppc_growth_rate": 1,
         "dollars_to_tdollars": 1,
+        "desired_gdppc": 1,
+        "annual_gdppc_growth_rate": 1,
     },
 )
 def desired_gdp_next_year():
@@ -357,11 +357,11 @@ _integ_desired_gdppc = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
+        "historic_gdppc": 1,
         "historic_gdppc_delayed": 1,
         "time_step": 2,
-        "historic_gdppc": 1,
-        "ts_growth_rate": 1,
         "desired_gdppc": 1,
+        "ts_growth_rate": 1,
     },
 )
 def desired_variation_gdppc():
@@ -379,10 +379,10 @@ def desired_variation_gdppc():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "nvs_1_year": 1,
+        "total_demand": 1,
         "gdp_delayed_1yr": 1,
         "desired_annual_gdp_growth_rate": 1,
-        "total_demand": 1,
+        "nvs_1_year": 1,
     },
 )
 def diff_demand():
@@ -454,8 +454,8 @@ def gdppc_initial_year():
     depends_on={
         "time": 1,
         "end_historical_year": 1,
-        "real_gfcf": 1,
         "gross_fixed_capital_formation": 1,
+        "real_gfcf": 1,
         "nvs_1_year": 1,
     },
 )
@@ -938,8 +938,8 @@ _integ_household_demand = Integ(
     depends_on={
         "time": 1,
         "end_historical_year": 1,
-        "real_household_demand": 1,
         "household_demand": 1,
+        "real_household_demand": 1,
         "nvs_1_year": 1,
     },
 )
@@ -1130,8 +1130,8 @@ _integ_labour_share = Integ(
     depends_on={
         "p_labour_share": 1,
         "initial_labour_share": 2,
-        "time_step": 1,
         "year_final_labour_share": 1,
+        "time_step": 1,
         "year_initial_labour_share": 1,
     },
 )
@@ -1398,7 +1398,7 @@ def total_demand_adjusted():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"annual_gdppc_growth_rate": 1, "nvs_1_year": 1, "time_step": 1},
+    depends_on={"annual_gdppc_growth_rate": 1, "time_step": 1, "nvs_1_year": 1},
 )
 def ts_growth_rate():
     return (1 + annual_gdppc_growth_rate()) ** (time_step() / nvs_1_year()) - 1
@@ -1421,9 +1421,9 @@ def unit_correction_economic():
     comp_subtype="Normal",
     depends_on={
         "capital_share": 1,
-        "nvs_1_year": 1,
-        "desired_annual_gdp_growth_rate": 2,
         "growth_capital_share": 2,
+        "desired_annual_gdp_growth_rate": 2,
+        "nvs_1_year": 1,
         "real_demand": 1,
     },
 )
@@ -1475,9 +1475,9 @@ def variation_cc_sectoral():
         "time": 1,
         "end_historical_year": 1,
         "historic_variation_demand": 1,
+        "variation_household_demand": 1,
         "share_consum_goverment_and_inventories": 1,
         "variation_gfcf": 1,
-        "variation_household_demand": 1,
     },
 )
 def variation_demand_flow_fd():
@@ -1502,12 +1502,12 @@ def variation_demand_flow_fd():
         "time": 1,
         "end_historical_year": 1,
         "variation_historic_gfcf": 1,
-        "unit_correction_economic": 2,
         "variation_cc_sectoral": 1,
-        "beta_0_gfcf": 1,
-        "cc_sectoral": 2,
         "nvs_1_year": 1,
         "beta_1_gfcf": 2,
+        "cc_sectoral": 2,
+        "beta_0_gfcf": 1,
+        "unit_correction_economic": 2,
     },
 )
 def variation_gfcf():
@@ -1551,10 +1551,10 @@ def variation_historic_demand():
     comp_subtype="Normal",
     depends_on={
         "time": 5,
-        "historic_population": 2,
         "dollar_per_mdollar": 1,
         "time_step": 3,
         "historic_gdp": 2,
+        "historic_population": 2,
     },
 )
 def variation_historic_gdppc():
@@ -1599,12 +1599,12 @@ def variation_historic_gfcf():
         "time": 1,
         "end_historical_year": 1,
         "variation_historic_demand": 1,
+        "beta_0_hd": 1,
+        "lc": 2,
+        "nvs_1_year": 1,
+        "beta_1_hd": 2,
         "variation_lc": 1,
         "unit_correction_economic": 2,
-        "lc": 2,
-        "beta_0_hd": 1,
-        "beta_1_hd": 2,
-        "nvs_1_year": 1,
     },
 )
 def variation_household_demand():
@@ -1645,9 +1645,9 @@ def variation_labour_share():
     depends_on={
         "real_demand": 1,
         "labour_share": 1,
-        "nvs_1_year": 1,
-        "growth_labour_share": 2,
         "desired_annual_gdp_growth_rate": 2,
+        "growth_labour_share": 2,
+        "nvs_1_year": 1,
     },
 )
 def variation_lc():

@@ -363,9 +363,9 @@ def imports_eu_unconv_oil_from_row_ej():
     comp_subtype="Normal",
     depends_on={
         "share_ff_for_nonenergy_use": 1,
-        "energy_distr_losses_ff": 1,
         "pes_fs": 1,
         "transformation_ff_losses": 1,
+        "energy_distr_losses_ff": 1,
     },
 )
 def nonenergy_use_consumption():
@@ -627,11 +627,11 @@ def ped_nat_gas_ej():
         "ped_nre_fs_liquids": 1,
         "ped_fs": 2,
         "pes_biogas_for_tfc": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
-        "modern_solids_bioe_demand_households": 1,
-        "pes_waste_for_tfc": 1,
-        "losses_in_charcoal_plants": 1,
         "pes_peat": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "losses_in_charcoal_plants": 1,
+        "pes_waste_for_tfc": 1,
+        "modern_solids_bioe_demand_households": 1,
     },
 )
 def ped_nre_fs():
@@ -885,9 +885,9 @@ def share_ff_for_fc_emission_relevant():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_fuel": 1,
-        "energy_distr_losses_ff": 1,
         "ped_fs": 1,
         "transformation_ff_losses": 1,
+        "energy_distr_losses_ff": 1,
     },
 )
 def share_ff_for_final_energy():
@@ -948,9 +948,9 @@ def share_ff_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
-        "energy_distr_losses_ff": 1,
         "ped_fs": 1,
         "transformation_ff_losses": 1,
+        "energy_distr_losses_ff": 1,
     },
 )
 def share_ff_for_nonenergy_use():

@@ -446,11 +446,12 @@ def real_final_demand_by_sector_eu():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "required_final_energy_by_sector_and_fuel_eu": 2,
-        "energy_scarcity_feedback_shortage_coeff_eu": 2,
+        "required_final_energy_by_sector_and_fuel_eu": 3,
+        "energy_scarcity_feedback_shortage_coeff_eu": 3,
         "cc_impacts_feedback_shortage_coeff": 1,
-        "ej_per_twh": 1,
         "ccs_energy_consumption_sector": 1,
+        "ej_per_twh": 3,
+        "dac_energy_consumption_by_sector_and_fuel": 2,
     },
 )
 def real_final_energy_by_sector_and_fuel_eu():
@@ -466,7 +467,7 @@ def real_final_energy_by_sector_and_fuel_eu():
         ["final sources", "sectors"],
     )
     except_subs = xr.ones_like(value, dtype=bool)
-    except_subs.loc[["electricity"], :] = False
+    except_subs.loc[_subscript_dict["dac final sources"], :] = False
     value.values[except_subs.values] = (
         required_final_energy_by_sector_and_fuel_eu()
         * energy_scarcity_feedback_shortage_coeff_eu()
@@ -482,8 +483,28 @@ def real_final_energy_by_sector_and_fuel_eu():
             .loc[_subscript_dict["sectors"]]
             .rename({"SECTORS and HOUSEHOLDS": "sectors"})
             * ej_per_twh()
+            - dac_energy_consumption_by_sector_and_fuel()
+            .loc["electricity", _subscript_dict["sectors"]]
+            .reset_coords(drop=True)
+            .rename({"SECTORS and HOUSEHOLDS": "sectors"})
+            * ej_per_twh()
         )
         .expand_dims({"final sources": ["electricity"]}, 0)
+        .values
+    )
+    value.loc[["heat"], :] = (
+        (
+            required_final_energy_by_sector_and_fuel_eu()
+            .loc["heat", :]
+            .reset_coords(drop=True)
+            * float(energy_scarcity_feedback_shortage_coeff_eu().loc["heat"])
+            - dac_energy_consumption_by_sector_and_fuel()
+            .loc["heat", _subscript_dict["sectors"]]
+            .reset_coords(drop=True)
+            .rename({"SECTORS and HOUSEHOLDS": "sectors"})
+            * ej_per_twh()
+        )
+        .expand_dims({"final sources": ["heat"]}, 0)
         .values
     )
     return value
@@ -550,8 +571,8 @@ def real_total_output():
         "real_final_energy_by_sector_and_fuel_eu": 1,
         "nvs_1_year": 1,
         "final_energy_intensity_by_sector_and_fuel_eu": 1,
-        "m_to_t": 2,
         "total_output_required_by_sector": 1,
+        "m_to_t": 2,
     },
 )
 def real_total_output_by_fuel_and_sector():
@@ -660,6 +681,36 @@ def required_fed_by_fuel_before_heat_correction():
 
 
 @component.add(
+    name="required FED by sector",
+    units="EJ/year",
+    subscripts=["SECTORS and HOUSEHOLDS"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "required_final_energy_by_sector_and_fuel_eu": 1,
+        "households_final_energy_demand": 1,
+    },
+)
+def required_fed_by_sector():
+    value = xr.DataArray(
+        np.nan,
+        {"SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"]},
+        ["SECTORS and HOUSEHOLDS"],
+    )
+    value.loc[_subscript_dict["sectors"]] = sum(
+        required_final_energy_by_sector_and_fuel_eu().rename(
+            {"final sources": "final sources!"}
+        ),
+        dim=["final sources!"],
+    ).values
+    value.loc[["Households"]] = sum(
+        households_final_energy_demand().rename({"final sources": "final sources!"}),
+        dim=["final sources!"],
+    )
+    return value
+
+
+@component.add(
     name="required FED sectors by fuel",
     units="EJ/year",
     subscripts=["final sources"],
@@ -681,11 +732,12 @@ def required_fed_sectors_by_fuel():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "total_output_required_by_sector": 2,
-        "final_energy_intensity_by_sector_and_fuel_eu": 2,
-        "m_to_t": 2,
-        "nvs_1_year": 2,
-        "ej_per_twh": 1,
+        "total_output_required_by_sector": 3,
+        "final_energy_intensity_by_sector_and_fuel_eu": 3,
+        "m_to_t": 3,
+        "nvs_1_year": 3,
+        "dac_energy_demand_per_sector_and_fuel": 2,
+        "ej_per_twh": 3,
         "ccs_energy_demand_sect": 1,
     },
 )
@@ -702,7 +754,7 @@ def required_final_energy_by_sector_and_fuel_eu():
         ["final sources", "sectors"],
     )
     except_subs = xr.ones_like(value, dtype=bool)
-    except_subs.loc[["electricity"], :] = False
+    except_subs.loc[_subscript_dict["dac final sources"], :] = False
     value.values[except_subs.values] = (
         (
             total_output_required_by_sector()
@@ -727,8 +779,30 @@ def required_final_energy_by_sector_and_fuel_eu():
             .loc[_subscript_dict["sectors"]]
             .rename({"SECTORS and HOUSEHOLDS": "sectors"})
             * ej_per_twh()
+            + dac_energy_demand_per_sector_and_fuel()
+            .loc["electricity", _subscript_dict["sectors"]]
+            .reset_coords(drop=True)
+            .rename({"SECTORS and HOUSEHOLDS": "sectors"})
+            * ej_per_twh()
         )
         .expand_dims({"final sources": ["electricity"]}, 0)
+        .values
+    )
+    value.loc[["heat"], :] = (
+        (
+            total_output_required_by_sector()
+            * final_energy_intensity_by_sector_and_fuel_eu()
+            .loc["heat", :]
+            .reset_coords(drop=True)
+            * m_to_t()
+            / nvs_1_year()
+            + dac_energy_demand_per_sector_and_fuel()
+            .loc["heat", _subscript_dict["sectors"]]
+            .reset_coords(drop=True)
+            .rename({"SECTORS and HOUSEHOLDS": "sectors"})
+            * ej_per_twh()
+        )
+        .expand_dims({"final sources": ["heat"]}, 0)
         .values
     )
     return value
@@ -762,6 +836,23 @@ def share_electricity_tfec():
 
 
 @component.add(
+    name="share FED by sector",
+    units="1",
+    subscripts=["SECTORS and HOUSEHOLDS"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"required_fed_by_sector": 2},
+)
+def share_fed_by_sector():
+    return required_fed_by_sector() / sum(
+        required_fed_by_sector().rename(
+            {"SECTORS and HOUSEHOLDS": "SECTORS and HOUSEHOLDS!"}
+        ),
+        dim=["SECTORS and HOUSEHOLDS!"],
+    )
+
+
+@component.add(
     name='"Shortage coef without MIN without E-losses"',
     units="Dmnl",
     subscripts=["final sources"],
@@ -779,6 +870,22 @@ def shortage_coef_without_min_without_elosses():
     return (
         real_fe_consumption_by_fuel_before_heat_correction()
         / required_fed_by_fuel_before_heat_correction()
+    )
+
+
+@component.add(
+    name="TFEI sectors",
+    units="EJ/T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"final_energy_intensity_by_sector_and_fuel_eu": 1},
+)
+def tfei_sectors():
+    return sum(
+        final_energy_intensity_by_sector_and_fuel_eu().rename(
+            {"final sources": "final sources!", "sectors": "sectors!"}
+        ),
+        dim=["final sources!", "sectors!"],
     )
 
 

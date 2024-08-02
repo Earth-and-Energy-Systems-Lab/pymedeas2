@@ -54,8 +54,8 @@ _ext_lookup_historic_coal_extraction = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "historic_coal_extraction": 1,
         "imports_cat_coal_from_row_ej": 1,
+        "historic_coal_extraction": 1,
         "extraction_coal_cat": 1,
     },
 )
@@ -150,11 +150,11 @@ def pec_coal():
         "ped_coal_elec_plants_ej": 1,
         "ped_coal_for_chp_plants_ej": 1,
         "pes_peat": 1,
-        "ped_solids": 1,
         "losses_in_charcoal_plants_ej": 1,
         "fes_biomass": 1,
-        "pes_waste": 1,
         "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "pes_waste": 1,
+        "ped_solids": 1,
     },
 )
 def ped_coal_ej():
@@ -444,9 +444,9 @@ def share_coal_for_heat_emissions_relevant():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_solids": 1,
-        "other_solids_required": 1,
         "ped_solids": 1,
         "ped_coal_for_ctl": 1,
+        "other_solids_required": 1,
     },
 )
 def share_solids_for_final_energy():

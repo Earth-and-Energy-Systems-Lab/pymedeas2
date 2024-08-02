@@ -130,8 +130,8 @@ def pe_elec_generation_from_res_ej():
     comp_subtype="Normal",
     depends_on={
         "pe_real_generation_res_elec": 1,
-        "ej_per_twh": 1,
         "real_generation_res_elec_twh": 1,
+        "ej_per_twh": 1,
     },
 )
 def pe_losses_bioe_for_elec_ej():

@@ -31,7 +31,7 @@ def ch4_emissions_bioe_and_waste():
     name="CH4 emissions biofuels",
     units="MtCH4/year",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"mtch4_per_ej_biofuels": 1, "oil_liquids_saved_by_biofuels_ej": 1},
 )
@@ -52,7 +52,7 @@ def ch4_emissions_biofuels():
     name="CH4 emissions biogas",
     units="MtCH4/year",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "mtch4_per_ej_biogas": 3,
@@ -77,7 +77,7 @@ def ch4_emissions_biogas():
     name="CH4 emissions biomass",
     units="MtCH4/year",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "mtch4_per_ej_traditional_biomass": 1,
@@ -101,14 +101,14 @@ def ch4_emissions_biomass():
     name="CH4 emissions coal",
     units="MtCH4/year",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "mtch4_per_ej_coal": 3,
         "pec_coal": 4,
         "share_coal_for_elec_emissions_relevant": 2,
-        "share_coal_for_ctl_emissions_relevant": 1,
         "mtch4_per_ej_ctl": 1,
+        "share_coal_for_ctl_emissions_relevant": 1,
         "share_coal_for_fc_emissions_relevant": 1,
     },
 )
@@ -158,7 +158,7 @@ def ch4_emissions_fossil_fuels():
     name="CH4 emissions gas",
     units="MtCH4/year",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "mtch4_per_ej_gas": 3,
@@ -194,7 +194,7 @@ def ch4_emissions_gas():
     name="CH4 emissions oil",
     units="MtCH4/year",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "mtch4_per_ej_oil": 3,
@@ -225,7 +225,7 @@ def ch4_emissions_oil():
     name="CH4 emissions peat",
     units="MtCH4/year",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"pes_peat": 1, "mtch4_per_ej_peat": 1},
 )
@@ -256,7 +256,7 @@ def ch4_emissions_per_fuel():
     name="CH4 emissions solid bioE",
     units="MtCH4/year",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "mtch4_per_ej_solid_bioe": 3,
@@ -287,7 +287,7 @@ def ch4_emissions_solid_bioe():
     name="CH4 emissions waste",
     units="MtCH4/year",
     subscripts=["final sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "mtch4_per_ej_waste": 3,
@@ -489,8 +489,8 @@ _ext_constant_mtch4_per_ej_gtl = ExtConstant(
         "share_conv_vs_total_oil_extraction": 2,
         "mtch4_per_ej_conv_oil": 1,
         "mtch4_per_ej_shale_oil": 1,
-        "mtch4_per_ej_unconv_oil": 2,
         "adapt_emissions_shale_oil": 1,
+        "mtch4_per_ej_unconv_oil": 2,
     },
 )
 def mtch4_per_ej_oil():

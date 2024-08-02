@@ -357,9 +357,9 @@ _ext_constant_max_pe_waste = ExtConstant(
         "historic_pes_waste_ej": 2,
         "time_step": 2,
         "max_pe_waste": 3,
-        "p_waste_change": 1,
-        "pes_waste_ej": 3,
         "adapt_growth_waste": 1,
+        "pes_waste_ej": 3,
+        "p_waste_change": 1,
     },
 )
 def new_waste_supply_ej():

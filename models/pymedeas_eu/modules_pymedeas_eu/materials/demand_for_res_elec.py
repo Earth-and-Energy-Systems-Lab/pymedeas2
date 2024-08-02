@@ -163,7 +163,7 @@ def materials_for_new_res_elec_per_capacity_installed():
     units="kg/(MW*year)",
     subscripts=["RES elec", "materials"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
     depends_on={
         "__external__": "_ext_constant_materials_for_om_per_capacity_installed_res_elec"
     },

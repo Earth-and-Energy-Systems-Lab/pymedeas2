@@ -635,8 +635,8 @@ _ext_constant_start_year_policies_transport = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "tkm_slope": 1,
         "tkm_initial": 1,
+        "tkm_slope": 1,
         "gdp_eu": 1,
         "hist_tkm": 1,
     },

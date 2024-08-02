@@ -156,8 +156,8 @@ _ext_constant_buffer_c_coeff = ExtConstant(
             "initial": {"ref_buffer_factor": 1},
             "step": {
                 "ref_buffer_factor": 1,
-                "buffer_c_coeff": 1,
                 "c_in_mixed_layer": 1,
+                "buffer_c_coeff": 1,
                 "preindustrial_c_in_mixed_layer": 1,
             },
         }
@@ -737,9 +737,9 @@ def equilibrium_c_per_meter_in_mixed_layer():
     comp_subtype="Normal",
     depends_on={
         "init_npp": 1,
-        "biostim_coeff": 1,
-        "c_in_atmosphere": 1,
         "preindustrial_c": 1,
+        "c_in_atmosphere": 1,
+        "biostim_coeff": 1,
         "effect_of_warming_on_c_flux_to_biomass": 1,
     },
 )

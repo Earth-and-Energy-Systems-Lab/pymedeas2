@@ -190,6 +190,14 @@
         "Maritime",
         "Air"
     ],
+    "dac final sources": [
+        "heat",
+        "electricity"
+    ],
+    "dac tech": [
+        "liquids sorb",
+        "solid sorb"
+    ],
     "economic years": [
         "year1995",
         "year1996",

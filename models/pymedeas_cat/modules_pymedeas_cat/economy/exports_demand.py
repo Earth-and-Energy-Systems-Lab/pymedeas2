@@ -113,9 +113,9 @@ _ext_constant_beta_1_exp_1 = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "nvs_1_year": 1,
-        "real_exports_demand_to_row_by_sector": 1,
         "exports_demand_to_row": 1,
+        "real_exports_demand_to_row_by_sector": 1,
+        "nvs_1_year": 1,
     },
 )
 def exports_demand_not_covered_row():
@@ -385,10 +385,10 @@ def total_exports_to_row():
     depends_on={
         "exports_demand_to_roeu": 1,
         "variation_historic_exports_demand_to_roeu": 1,
-        "beta_1_exp_1": 2,
         "gdp_eu28_next_step": 1,
-        "time": 1,
+        "beta_1_exp_1": 2,
         "beta_0_exp_1": 1,
+        "time": 1,
         "gdp_eu28": 1,
         "unit_correction_economic": 2,
     },
@@ -420,12 +420,12 @@ def variation_exports_demand_to_roeu():
     comp_subtype="Normal",
     depends_on={
         "exports_demand_to_row": 1,
-        "variation_historic_exports_demand_row": 1,
-        "real_demand_world_next_step": 1,
-        "beta_0_exp_0": 1,
         "real_demand_world": 1,
-        "time": 1,
+        "beta_0_exp_0": 1,
         "beta_1_exp_0": 2,
+        "variation_historic_exports_demand_row": 1,
+        "time": 1,
+        "real_demand_world_next_step": 1,
         "unit_correction_economic": 2,
     },
 )

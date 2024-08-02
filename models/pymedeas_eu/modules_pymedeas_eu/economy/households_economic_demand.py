@@ -117,8 +117,8 @@ _integ_household_demand = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "household_demand": 1,
         "real_household_demand_by_sector": 1,
+        "household_demand": 1,
         "nvs_1_year": 1,
     },
 )
@@ -201,12 +201,12 @@ def variation_historic_demand():
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "nvs_1_year": 1,
-        "unit_correction_economic": 2,
-        "lc": 2,
-        "beta_1_hd": 2,
         "beta_0_hd": 1,
+        "lc": 2,
+        "nvs_1_year": 1,
+        "beta_1_hd": 2,
         "variation_lc": 1,
+        "unit_correction_economic": 2,
     },
 )
 def variation_household_demand():

@@ -114,7 +114,7 @@ def total_energy_requirements_om_for_water_consumption_res_elec():
     name='"Total water for O&M required by RES elec"',
     units="Mt",
     subscripts=["water"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_water_for_om_required_by_res_elec_per_techn": 1},
 )

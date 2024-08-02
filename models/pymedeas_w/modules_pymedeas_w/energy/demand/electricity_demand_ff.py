@@ -11,8 +11,8 @@ Translated using PySD version 3.14.1
     depends_on={
         "share_in_target_year_oil_for_elec": 1,
         "hist_share_oilff_elec": 1,
-        "target_year_policy_phaseout_oil_for_elec": 1,
         "start_year_policy_phaseout_oil_for_elec": 1,
+        "target_year_policy_phaseout_oil_for_elec": 1,
     },
 )
 def a_lineal_regr_phaseout_oil_for_elec():
@@ -29,7 +29,7 @@ def a_lineal_regr_phaseout_oil_for_elec():
     name="Abundance primary sources",
     units="Dmnl",
     subscripts=["primary sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "abundance_coal": 1,
@@ -128,8 +128,8 @@ def decrease_share_oil_for_elec():
         "switch_scarcityps_elec_substit": 1,
         "hist_share_oilff_elec": 2,
         "demand_elec_plants_fossil_fuels_twh": 3,
-        "future_share_gascoalff_for_elec": 1,
         "time": 1,
+        "future_share_gascoalff_for_elec": 1,
     },
 )
 def demand_elec_gas_and_coal_twh():
@@ -499,12 +499,12 @@ _ext_lookup_historic_efficiency_gas_for_electricity = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
+        "percent_to_share": 1,
         "historic_efficiency_gas_for_electricity": 2,
         "time_step": 2,
-        "percent_to_share": 1,
         "remaining_efficiency_improv_gas_for_electricity": 1,
-        "efficiency_gas_for_electricity": 1,
         "efficiency_improv_gas_for_electricity": 1,
+        "efficiency_gas_for_electricity": 1,
     },
 )
 def improvement_efficiency_gas_for_electricity():
@@ -1205,11 +1205,11 @@ _ext_constant_share_in_target_year_oil_for_elec = ExtConstant(
     depends_on={
         "switch_scarcityps_elec_substit": 1,
         "hist_share_oilff_elec": 3,
-        "start_year_policy_phaseout_oil_for_elec": 1,
+        "p_share_oil_for_elec": 1,
         "time": 2,
         "future_share_oilff_for_elec": 1,
+        "start_year_policy_phaseout_oil_for_elec": 1,
         "phaseout_oil_for_electricity": 1,
-        "p_share_oil_for_elec": 1,
     },
 )
 def share_oil_for_elec():

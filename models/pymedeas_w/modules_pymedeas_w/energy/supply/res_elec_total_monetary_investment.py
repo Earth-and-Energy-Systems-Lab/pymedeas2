@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_elec_total_monetary_investment
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -44,7 +44,7 @@ def balancing_costs_ref(x, final_subs=None):
 
 
 _ext_lookup_balancing_costs_ref = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "share_of_variable_res",
     "balancing_cost",
@@ -155,7 +155,7 @@ def grid_reinforcement_costs():
 
 
 _ext_constant_grid_reinforcement_costs = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "grid_reinforcement_costs",
     {},
@@ -192,7 +192,7 @@ def grid_reinforcement_costs_tdollar():
 @component.add(
     name="invest cost RES elec",
     units="T$/TW",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -209,7 +209,7 @@ def invest_cost_res_elec():
 
 
 _ext_data_invest_cost_res_elec = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "Time",
     "invest_cost_res_elec",
@@ -224,7 +224,7 @@ _ext_data_invest_cost_res_elec = ExtData(
 @component.add(
     name="invest RES elec",
     units="Tdollar/year",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -293,7 +293,7 @@ def share_extra_monet_invest_to_cope_with_variable_elec_res():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_monet_invest_res_for_elec_tdolar": 1, "gdp": 1, "nvs_1_year": 1},
+    depends_on={"total_monet_invest_res_for_elec_tdolar": 1, "nvs_1_year": 1, "gdp": 1},
 )
 def share_tot_monet_invest_elec_res_vs_gdp():
     """
@@ -317,7 +317,10 @@ def total_monet_invest_res_for_elec_tdolar():
     Annual total monetary investment for RES for electricity: capacity, balancing costs and grid improvements to cope with variability (1995 US$).
     """
     return (
-        sum(invest_res_elec().rename({"RES elec": "RES elec!"}), dim=["RES elec!"])
+        sum(
+            invest_res_elec().rename({np.str_("RES elec"): "RES elec!"}),
+            dim=["RES elec!"],
+        )
         + extra_monet_invest_to_cope_with_variable_elec_res()
     )
 

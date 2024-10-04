@@ -1,6 +1,6 @@
 """
 Module energy.supply.waste
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -48,7 +48,7 @@ def efficiency_waste_for_elec_chp_plants():
 
 
 _ext_constant_efficiency_waste_for_elec_chp_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "efficiency_waste_for_elec_chp_plants",
     {},
@@ -73,7 +73,7 @@ def efficiency_waste_for_elec_plants():
 
 
 _ext_constant_efficiency_waste_for_elec_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "efficiency_waste_for_elec_plants",
     {},
@@ -98,7 +98,7 @@ def efficiency_waste_for_heat_chp_plants():
 
 
 _ext_constant_efficiency_waste_for_heat_chp_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "efficiency_waste_for_heat_CHP_plants",
     {},
@@ -123,7 +123,7 @@ def efficiency_waste_for_heat_plants():
 
 
 _ext_constant_efficiency_waste_for_heat_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "efficiency_waste_for_heat_plants",
     {},
@@ -264,7 +264,7 @@ def historic_pes_waste_ej(x, final_subs=None):
 
 
 _ext_lookup_historic_pes_waste_ej = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_historic_data",
     "historic_primary_energy_supply_of_waste",
@@ -290,7 +290,7 @@ def initial_pes_waste():
 
 
 _ext_constant_initial_pes_waste = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "initial_primary_energy_supply_from_waste",
     {},
@@ -337,7 +337,7 @@ def max_waste():
 
 
 _ext_constant_max_waste = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "max_waste_potential",
     {},
@@ -354,12 +354,12 @@ _ext_constant_max_waste = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "historic_pes_waste_ej": 2,
         "nvs_1_year": 1,
-        "adapt_growth_waste": 1,
-        "p_waste_change": 1,
+        "historic_pes_waste_ej": 2,
         "max_waste": 3,
         "pes_waste": 3,
+        "adapt_growth_waste": 1,
+        "p_waste_change": 1,
     },
 )
 def new_waste_supply_ej():
@@ -395,7 +395,7 @@ def p_waste_change():
 
 
 _ext_constant_p_waste_change = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "pes_waste_growth",
     {},
@@ -420,7 +420,7 @@ def past_waste_growth():
 
 
 _ext_constant_past_waste_growth = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "historic_average_pes_from_waste_growth",
     {},
@@ -438,8 +438,8 @@ _ext_constant_past_waste_growth = ExtConstant(
     depends_on={
         "pes_waste_for_elec_plants": 1,
         "fes_elec_from_waste_in_chp_plants": 1,
-        "share_efficiency_waste_for_elec_in_chp_plants": 1,
         "losses_chp_waste": 1,
+        "share_efficiency_waste_for_elec_in_chp_plants": 1,
     },
 )
 def pes_tot_waste_for_elec():
@@ -461,8 +461,8 @@ def pes_tot_waste_for_elec():
     depends_on={
         "pes_waste_for_heatcom_plants": 1,
         "fes_heatcom_from_waste_in_chp_plants": 1,
-        "share_efficiency_waste_for_elec_in_chp_plants": 1,
         "losses_chp_waste": 1,
+        "share_efficiency_waste_for_elec_in_chp_plants": 1,
     },
 )
 def pes_tot_waste_for_heatcom():
@@ -588,7 +588,7 @@ def share_pes_waste_for_chp():
 
 
 _ext_constant_share_pes_waste_for_chp = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "share_pes_waste_for_chp",
     {},
@@ -613,7 +613,7 @@ def share_pes_waste_for_elec_plants():
 
 
 _ext_constant_share_pes_waste_for_elec_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "share_pes_waste_for_elec_plants",
     {},
@@ -638,7 +638,7 @@ def share_pes_waste_for_heatcom_plants():
 
 
 _ext_constant_share_pes_waste_for_heatcom_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "share_pes_waste_for_heat_plants",
     {},
@@ -663,7 +663,7 @@ def share_pes_waste_tfc():
 
 
 _ext_constant_share_pes_waste_tfc = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "share_pes_waste_tfc",
     {},

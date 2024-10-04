@@ -1,6 +1,6 @@
 """
 Module environment.land.res_land_use
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -18,7 +18,7 @@ def global_arable_land():
 
 
 _ext_constant_global_arable_land = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "World",
     "global_arable_land",
     {},
@@ -31,7 +31,7 @@ _ext_constant_global_arable_land = ExtConstant(
 @component.add(
     name='"power density RES elec TWe/Mha"',
     units="TWe/MHa",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_power_density_res_elec_twemha"},
@@ -44,7 +44,7 @@ def power_density_res_elec_twemha():
 
 
 _ext_constant_power_density_res_elec_twemha = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "power_density_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
@@ -57,7 +57,7 @@ _ext_constant_power_density_res_elec_twemha = ExtConstant(
 @component.add(
     name='"power density RES elec TW/Mha"',
     units="TW/MHa",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"power_density_res_elec_twemha": 1, "cpini_res_elec": 1},
@@ -176,7 +176,7 @@ def surface_onshore_wind_mha():
 @component.add(
     name="surface RES elec",
     units="MHa",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"power_density_res_elec_twmha": 2, "res_installed_capacity_delayed": 1},
@@ -215,8 +215,8 @@ def surface_solar_pv_mha():
         "surface_csp_mha": 1,
         "surface_hydro_mha": 1,
         "land_compet_required_dedicated_crops_for_biofuels": 1,
-        "land_required_biofuels_land_marg": 1,
         "nvs_1_year": 1,
+        "land_required_biofuels_land_marg": 1,
         "surface_onshore_wind_mha": 1,
     },
 )
@@ -249,7 +249,7 @@ def urban_surface_2008():
 
 
 _ext_constant_urban_surface_2008 = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "World",
     "urban_surface_2008",
     {},

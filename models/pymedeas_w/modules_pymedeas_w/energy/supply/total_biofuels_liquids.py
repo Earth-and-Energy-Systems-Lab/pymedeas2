@@ -1,6 +1,6 @@
 """
 Module energy.supply.total_biofuels_liquids
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -128,6 +128,20 @@ def pe_biomass_for_biofuels_production_ej():
         + pe_cellulosic_biofuel()
         + pe_biofuels_prod_2gen3gen_ej()
     )
+
+
+@component.add(
+    name="PE biomass losses for biofuels production",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "pe_biomass_for_biofuels_production_ej": 1,
+        "fes_total_biofuels_production_ej": 1,
+    },
+)
+def pe_biomass_losses_for_biofuels_production():
+    return pe_biomass_for_biofuels_production_ej() - fes_total_biofuels_production_ej()
 
 
 @component.add(

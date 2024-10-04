@@ -1,6 +1,6 @@
 """
 Module climate.total_ghg_emissions
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(

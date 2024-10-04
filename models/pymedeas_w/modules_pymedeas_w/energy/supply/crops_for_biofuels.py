@@ -1,6 +1,6 @@
 """
 Module energy.supply.crops_for_biofuels
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -38,7 +38,7 @@ def bioe_potential_npp_marginal_lands():
 
 
 _ext_constant_bioe_potential_npp_marginal_lands = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "bioe_potential_npp_marginal_lands",
     {},
@@ -63,7 +63,7 @@ def conv_efficiency_from_npp_to_biofuels():
 
 
 _ext_constant_conv_efficiency_from_npp_to_biofuels = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "conv_efficiency_from_npp_to_biofuels",
     {},
@@ -90,7 +90,7 @@ def land_occupation_ratio_biofuels_marg_land():
 
 
 _ext_constant_land_occupation_ratio_biofuels_marg_land = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "land_occupation_ratio_biofuels_marginal_land",
     {},
@@ -115,7 +115,7 @@ def land_productivity_biofuels_marg_ej_mha():
 
 
 _ext_constant_land_productivity_biofuels_marg_ej_mha = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "land_productivity_biofuels_marginal_land",
     {},
@@ -172,14 +172,14 @@ def max_peavail_potential_biofuels_marginal_lands():
     depends_on={
         "time": 3,
         "start_year_biofuels_land_marg": 3,
-        "ratio_land_productivity_2gen_vs_marg": 1,
-        "start_production_biofuels": 1,
         "ej_per_ktoe": 1,
-        "potential_peavail_biofuels_land_marg_ej": 2,
-        "nvs_1_year": 2,
-        "bioe_gen_land_marg_available": 1,
-        "constrain_liquids_exogenous_growth": 1,
         "adapt_growth_biofuels_2gen": 1,
+        "ratio_land_productivity_2gen_vs_marg": 1,
+        "bioe_gen_land_marg_available": 1,
+        "potential_peavail_biofuels_land_marg_ej": 2,
+        "constrain_liquids_exogenous_growth": 1,
+        "nvs_1_year": 2,
+        "start_production_biofuels": 1,
         "check_liquids": 1,
     },
 )
@@ -310,7 +310,7 @@ def start_production_biofuels(x, final_subs=None):
 
 
 _ext_lookup_start_production_biofuels = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "delta_years",
     "start_production_biofuels",
@@ -336,7 +336,7 @@ def start_year_biofuels_land_marg():
 
 
 _ext_constant_start_year_biofuels_land_marg = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "start_year_biofuels_land_marg",
     {},

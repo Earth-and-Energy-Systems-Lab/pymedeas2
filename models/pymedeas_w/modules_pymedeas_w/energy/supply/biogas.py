@@ -1,6 +1,6 @@
 """
 Module energy.supply.biogas
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -48,7 +48,7 @@ def biogas_evol():
 
 
 _ext_constant_biogas_evol = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "p_biogas_evol",
     {},
@@ -73,7 +73,7 @@ def efficiency_biogas_for_elec_chp_plants():
 
 
 _ext_constant_efficiency_biogas_for_elec_chp_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "efficiency_biogas_for_elec_in_chp_plants",
     {},
@@ -98,7 +98,7 @@ def efficiency_biogas_for_elec_plants():
 
 
 _ext_constant_efficiency_biogas_for_elec_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "efficiency_biogas_for_elec_plants",
     {},
@@ -123,7 +123,7 @@ def efficiency_biogas_for_heat_chp_plants():
 
 
 _ext_constant_efficiency_biogas_for_heat_chp_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "efficiency_biogas_for_heat_chp_plants",
     {},
@@ -148,7 +148,7 @@ def efficiency_biogas_for_heat_plants():
 
 
 _ext_constant_efficiency_biogas_for_heat_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "efficiency_biogas_for_heat_plants",
     {},
@@ -300,7 +300,7 @@ def historic_biogas_pes(x, final_subs=None):
 
 
 _ext_lookup_historic_biogas_pes = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_efficiencies",
     "historic_primary_energy_supply_biogas",
@@ -348,7 +348,7 @@ def max_biogas_ej():
 
 
 _ext_constant_max_biogas_ej = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "max_biogases_potential",
     {},
@@ -365,10 +365,10 @@ _ext_constant_max_biogas_ej = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "historic_biogas_pes": 2,
         "time_step": 2,
-        "adapt_growth_biogas": 1,
+        "historic_biogas_pes": 2,
         "pes_biogas_ej": 2,
+        "adapt_growth_biogas": 1,
         "max_biogas_ej": 2,
     },
 )
@@ -403,7 +403,7 @@ def past_biogas_growth():
 
 
 _ext_constant_past_biogas_growth = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "average_historic_primary_energy_supply_biogas",
     {},
@@ -485,13 +485,13 @@ def pes_biogas_for_heatcom_plants():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_gases": 1, "potential_pes_biogas_for_tfc": 1},
+    depends_on={"potential_pes_biogas_for_tfc": 1},
 )
 def pes_biogas_for_tfc():
     """
     Primary energy supply biogas for total final consumption.
     """
-    return np.minimum(ped_gases(), potential_pes_biogas_for_tfc())
+    return potential_pes_biogas_for_tfc()
 
 
 @component.add(
@@ -586,7 +586,7 @@ def share_pes_biogas_for_chp():
 
 
 _ext_constant_share_pes_biogas_for_chp = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "share_pes_biogas_for_chp_plants",
     {},
@@ -622,7 +622,7 @@ def share_pes_biogas_for_elec_plants():
 
 
 _ext_constant_share_pes_biogas_for_elec_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "share_pes_biogas_for_elec_plants",
     {},
@@ -658,7 +658,7 @@ def share_pes_biogas_for_heatcom_plants():
 
 
 _ext_constant_share_pes_biogas_for_heatcom_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "share_pes_biogas_for_heat_plants",
     {},
@@ -683,7 +683,7 @@ def share_pes_biogas_tfc():
 
 
 _ext_constant_share_pes_biogas_tfc = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "share_pes_biogas_tfc",
     {},

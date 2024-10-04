@@ -1,6 +1,6 @@
 """
 Module energy.supply.nuclear
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -43,7 +43,7 @@ def cp_nuclear_initial():
 
 
 _ext_constant_cp_nuclear_initial = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "cp_initial_nuclear",
     {},
@@ -90,7 +90,7 @@ def efficiency_uranium_for_electricity():
 
 
 _ext_constant_efficiency_uranium_for_electricity = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "efficiency_uranium_for_electricity",
     {},
@@ -118,7 +118,7 @@ def historic_nuclear_generation_twh(x, final_subs=None):
 
 
 _ext_lookup_historic_nuclear_generation_twh = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_historic_data",
     "historic_nuclear_generation",
@@ -171,7 +171,7 @@ def initial_gen_nuclear():
 
 
 _ext_constant_initial_gen_nuclear = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "initial_nuclear_generation",
     {},
@@ -246,7 +246,7 @@ def invest_cost_nuclear():
 
 
 _ext_data_invest_cost_nuclear = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "Time",
     "invest_cost_nuclear",
@@ -299,7 +299,7 @@ def life_time_nuclear():
 
 
 _ext_constant_life_time_nuclear = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "lifetime_nuclear",
     {},
@@ -324,7 +324,7 @@ def min_cp_nuclear():
 
 
 _ext_constant_min_cp_nuclear = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "minimum_cp_nuclear",
     {},
@@ -356,8 +356,8 @@ def new_nuclear_capacity_under_planning():
     depends_on={
         "time": 1,
         "demand_elec_nre_twh": 1,
-        "installed_capacity_nuclear_tw": 1,
         "p_nuclear_elec_gen": 1,
+        "installed_capacity_nuclear_tw": 1,
         "effects_shortage_uranium": 1,
         "cp_limit_nuclear": 1,
     },
@@ -388,9 +388,9 @@ def new_required_capacity_nuclear():
     depends_on={
         "selection_of_nuclear_scenario": 1,
         "start_year_nuclear_growth_scen34": 1,
+        "time": 1,
         "p_nuclear_scen34": 1,
         "installed_capacity_nuclear_tw": 1,
-        "time": 1,
     },
 )
 def nuclear_capacity_phaseout():
@@ -419,8 +419,8 @@ def nuclear_capacity_phaseout():
         "historic_nuclear_generation_twh": 2,
         "twe_per_twh": 1,
         "cp_nuclear": 1,
-        "time_construction_nuclear": 1,
         "planned_nuclear_capacity_tw": 1,
+        "time_construction_nuclear": 1,
     },
 )
 def nuclear_capacity_under_construction():
@@ -472,8 +472,8 @@ def nuclear_overcapacity():
     depends_on={
         "selection_of_nuclear_scenario": 3,
         "start_year_nuclear_growth_scen34": 1,
-        "p_nuclear_scen34": 1,
         "time": 1,
+        "p_nuclear_scen34": 1,
     },
 )
 def p_nuclear_elec_gen():
@@ -512,7 +512,7 @@ def p_nuclear_scen34():
 
 
 _ext_constant_p_nuclear_scen34 = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "p_nuclear_variation_scen_3_4",
     {},
@@ -607,10 +607,10 @@ def potential_generation_nuclear_elec_twh():
     depends_on={
         "time": 1,
         "nuclear_capacity_under_construction": 1,
-        "nuclear_overcapacity": 1,
-        "replacement_rate_nuclear": 1,
-        "selection_of_nuclear_scenario": 2,
         "wear_nuclear": 1,
+        "replacement_rate_nuclear": 1,
+        "nuclear_overcapacity": 1,
+        "selection_of_nuclear_scenario": 2,
         "cp_limit_nuclear": 1,
     },
 )
@@ -652,7 +652,7 @@ def replacement_rate_nuclear():
 
 
 _ext_constant_replacement_rate_nuclear = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "replacement_rate_nuclear",
     {},
@@ -707,7 +707,7 @@ def selection_of_nuclear_scenario():
 
 
 _ext_constant_selection_of_nuclear_scenario = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "nuclear_scenario_select",
     {},
@@ -732,7 +732,7 @@ def start_year_nuclear_growth_scen34():
 
 
 _ext_constant_start_year_nuclear_growth_scen34 = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "start_year_nuclear_variation_scen3_4",
     {},
@@ -757,7 +757,7 @@ def time_construction_nuclear():
 
 
 _ext_constant_time_construction_nuclear = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "construction_time_nuclear",
     {},
@@ -782,7 +782,7 @@ def time_planification_nuclear():
 
 
 _ext_constant_time_planification_nuclear = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "planning_time_nuclear",
     {},

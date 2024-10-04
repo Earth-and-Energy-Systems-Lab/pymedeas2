@@ -1,6 +1,6 @@
 """
 Module energy.storage.phs
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -18,7 +18,7 @@ def cp_phs():
 
 
 _ext_constant_cp_phs = ExtConstant(
-    r"../energy.xlsx", "World", "cp_phs", {}, _root, {}, "_ext_constant_cp_phs"
+    "../energy.xlsx", "World", "cp_phs", {}, _root, {}, "_ext_constant_cp_phs"
 )
 
 
@@ -37,7 +37,7 @@ def initial_instal_cap_phs():
 
 
 _ext_constant_initial_instal_cap_phs = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "initial_installed_capacity_phs",
     {},
@@ -174,7 +174,7 @@ def max_potential_phs_twe():
 
 
 _ext_constant_max_potential_phs_twe = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "max_PHS_potential",
     {},
@@ -258,7 +258,7 @@ def p_phs_power(x, final_subs=None):
 
 
 _ext_lookup_p_phs_power = ExtLookup(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "year_RES_power",
     "p_PHS_power",
@@ -395,7 +395,7 @@ def table_hist_capacity_phs(x, final_subs=None):
 
 
 _ext_lookup_table_hist_capacity_phs = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_historic_data",
     "historic_installed_capacity_phs",
@@ -411,7 +411,7 @@ _ext_lookup_table_hist_capacity_phs = ExtLookup(
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "lifetime_res_elec": 1, "installed_capacity_phs_tw": 1},
+    depends_on={"time": 1, "installed_capacity_phs_tw": 1, "lifetime_res_elec": 1},
 )
 def wear_phs():
     return if_then_else(

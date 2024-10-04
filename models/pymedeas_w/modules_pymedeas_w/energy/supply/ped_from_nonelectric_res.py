@@ -1,6 +1,6 @@
 """
 Module energy.supply.ped_from_nonelectric_res
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -29,6 +29,7 @@ def max_potential_pe_nonelectric_res():
         "pes_tot_res_for_heat": 1,
         "fes_total_biofuels_production_ej": 1,
         "pes_biogas_for_tfc": 1,
+        "modern_solid_bioenergy": 1,
     },
 )
 def pe_supply_from_res_nonelec_without_trad_bioe_ej():
@@ -39,6 +40,7 @@ def pe_supply_from_res_nonelec_without_trad_bioe_ej():
         pes_tot_res_for_heat()
         + fes_total_biofuels_production_ej()
         + pes_biogas_for_tfc()
+        + modern_solid_bioenergy()
     )
 
 
@@ -50,7 +52,7 @@ def pe_supply_from_res_nonelec_without_trad_bioe_ej():
     depends_on={
         "pe_supply_from_res_nonelec_without_trad_bioe_ej": 1,
         "pe_traditional_biomass_ej_delayed": 1,
-        "losses_in_charcoal_plants_ej": 1,
+        "losses_in_charcoal_plants_historic": 1,
     },
 )
 def pe_supply_res_nonelec_ej():
@@ -60,5 +62,5 @@ def pe_supply_res_nonelec_ej():
     return (
         pe_supply_from_res_nonelec_without_trad_bioe_ej()
         + pe_traditional_biomass_ej_delayed()
-        + losses_in_charcoal_plants_ej()
+        + losses_in_charcoal_plants_historic()
     )

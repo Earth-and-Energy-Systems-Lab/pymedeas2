@@ -1,6 +1,6 @@
 """
 Module climate.other_ghg_cycles
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -32,8 +32,8 @@ def ch4_atm_conc():
     depends_on={
         "sensitivity_of_methane_emissions_to_permafrost_and_clathrate": 1,
         "reference_sensitivity_of_ch4_from_permafrost_and_clathrate_to_temperature": 1,
-        "temperature_change": 1,
         "temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate": 1,
+        "temperature_change": 1,
     },
 )
 def ch4_emissions_from_permafrost_and_clathrate():
@@ -59,10 +59,10 @@ def ch4_emissions_from_permafrost_and_clathrate():
     comp_subtype="Normal",
     depends_on={
         "reference_ch4_time_constant": 1,
+        "stratospheric_ch4_path_share": 2,
+        "tropospheric_ch4_path_share": 2,
         "ch4_in_atm": 1,
         "preindustrial_ch4": 1,
-        "tropospheric_ch4_path_share": 2,
-        "stratospheric_ch4_path_share": 2,
     },
 )
 def ch4_fractional_uptake():
@@ -154,7 +154,7 @@ def choose_rcp():
 
 
 _ext_constant_choose_rcp = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "select_RCP",
     {},
@@ -172,8 +172,8 @@ _ext_constant_choose_rcp = ExtConstant(
     depends_on={
         "sensitivity_of_methane_emissions_to_permafrost_and_clathrate": 1,
         "reference_sensitivity_of_c_from_permafrost_and_clathrate_to_temperature": 1,
-        "temperature_change": 1,
         "temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate": 1,
+        "temperature_change": 1,
     },
 )
 def flux_c_from_permafrost_release():
@@ -235,7 +235,7 @@ def global_ch4_anthro_emissions():
 @component.add(
     name="global CH4 anthro emissions RCP",
     units="MtCH4/year",
-    subscripts=["RCP Scenario"],
+    subscripts=[np.str_("RCP Scenario")],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -252,7 +252,7 @@ def global_ch4_anthro_emissions_rcp():
 
 
 _ext_data_global_ch4_anthro_emissions_rcp = ExtData(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "CH4_emissions",
@@ -278,7 +278,7 @@ def global_ch4_emissions():
 @component.add(
     name="global HFC emissions",
     units="t/year",
-    subscripts=["HFC type"],
+    subscripts=[np.str_("HFC type")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"choose_rcp": 3, "global_hfc_emissions_rcp": 4},
@@ -309,7 +309,7 @@ def global_hfc_emissions():
 @component.add(
     name="global HFC emissions RCP",
     units="t/year",
-    subscripts=["RCP Scenario", "HFC type"],
+    subscripts=[np.str_("RCP Scenario"), np.str_("HFC type")],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -326,7 +326,7 @@ def global_hfc_emissions_rcp():
 
 
 _ext_data_global_hfc_emissions_rcp = ExtData(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "HFC134a_emissions",
@@ -341,7 +341,7 @@ _ext_data_global_hfc_emissions_rcp = ExtData(
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "HFC23_emissions",
@@ -350,7 +350,7 @@ _ext_data_global_hfc_emissions_rcp.add(
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "HFC32_emissions",
@@ -359,7 +359,7 @@ _ext_data_global_hfc_emissions_rcp.add(
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "HFC125_emissions",
@@ -368,7 +368,7 @@ _ext_data_global_hfc_emissions_rcp.add(
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "HFC143a_emissions",
@@ -377,7 +377,7 @@ _ext_data_global_hfc_emissions_rcp.add(
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "HFC152a_emissions",
@@ -386,7 +386,7 @@ _ext_data_global_hfc_emissions_rcp.add(
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "HFC227ea_emissions",
@@ -395,7 +395,7 @@ _ext_data_global_hfc_emissions_rcp.add(
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "HFC245ca_emissions",
@@ -404,7 +404,7 @@ _ext_data_global_hfc_emissions_rcp.add(
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "HFC4310mee_emissions",
@@ -442,7 +442,7 @@ def global_n2o_anthro_emissions():
 @component.add(
     name="global N2O anthro emissions RCP",
     units="MtN/year",
-    subscripts=["RCP Scenario"],
+    subscripts=[np.str_("RCP Scenario")],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -459,7 +459,7 @@ def global_n2o_anthro_emissions_rcp():
 
 
 _ext_data_global_n2o_anthro_emissions_rcp = ExtData(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "N2O_emissions",
@@ -511,7 +511,7 @@ def global_pfc_emissions():
 @component.add(
     name="global PFC emissions RCP",
     units="t/year",
-    subscripts=["RCP Scenario"],
+    subscripts=[np.str_("RCP Scenario")],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -528,7 +528,7 @@ def global_pfc_emissions_rcp():
 
 
 _ext_data_global_pfc_emissions_rcp = ExtData(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "PFCs_emissions",
@@ -569,7 +569,7 @@ def global_sf6_emissions():
 @component.add(
     name="global SF6 emissions RCP",
     units="t/year",
-    subscripts=["RCP Scenario"],
+    subscripts=[np.str_("RCP Scenario")],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -586,7 +586,7 @@ def global_sf6_emissions_rcp():
 
 
 _ext_data_global_sf6_emissions_rcp = ExtData(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "year_emissions",
     "SF6_emissions",
@@ -612,7 +612,7 @@ def global_total_pfc_emissions():
 @component.add(
     name="HFC atm conc",
     units="ppt",
-    subscripts=["HFC type"],
+    subscripts=[np.str_("HFC type")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"hfc_in_atm": 1, "ppt_hfc_per_tons_hfc": 1},
@@ -625,7 +625,7 @@ def hfc_atm_conc():
     name="HFC in Atm",
     units="t",
     limits=(2.5924e-43, np.nan),
-    subscripts=["HFC type"],
+    subscripts=[np.str_("HFC type")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_hfc_in_atm": 1},
@@ -650,7 +650,7 @@ _integ_hfc_in_atm = Integ(
 @component.add(
     name="HFC molar mass",
     units="g/mole",
-    subscripts=["HFC type"],
+    subscripts=[np.str_("HFC type")],
     comp_type="Constant",
     comp_subtype="Normal",
 )
@@ -661,14 +661,14 @@ def hfc_molar_mass():
     return xr.DataArray(
         [102.0, 70.0, 52.0, 120.0, 84.0, 66.0, 170.0, 134.0, 252.0],
         {"HFC type": _subscript_dict["HFC type"]},
-        ["HFC type"],
+        [np.str_("HFC type")],
     )
 
 
 @component.add(
     name="HFC radiative efficiency",
     units="W/(ppb*m*m)",
-    subscripts=["HFC type"],
+    subscripts=[np.str_("HFC type")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_hfc_radiative_efficiency"},
@@ -681,7 +681,7 @@ def hfc_radiative_efficiency():
 
 
 _ext_constant_hfc_radiative_efficiency = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "HFC_radiative_efficiency*",
     {"HFC type": _subscript_dict["HFC type"]},
@@ -694,7 +694,7 @@ _ext_constant_hfc_radiative_efficiency = ExtConstant(
 @component.add(
     name="HFC RF",
     units="W/(m*m)",
-    subscripts=["HFC type"],
+    subscripts=[np.str_("HFC type")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -715,7 +715,7 @@ def hfc_rf():
 @component.add(
     name="HFC uptake",
     units="t/year",
-    subscripts=["HFC type"],
+    subscripts=[np.str_("HFC type")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"hfc_in_atm": 1, "time_const_for_hfc": 1},
@@ -750,7 +750,7 @@ def init_pfc_in_atm_con():
 
 
 _ext_constant_init_pfc_in_atm_con = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "init_PFC_in_atm_con",
     {},
@@ -763,7 +763,7 @@ _ext_constant_init_pfc_in_atm_con = ExtConstant(
 @component.add(
     name="inital HFC con",
     units="ppt",
-    subscripts=["HFC type"],
+    subscripts=[np.str_("HFC type")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_inital_hfc_con"},
@@ -773,7 +773,7 @@ def inital_hfc_con():
 
 
 _ext_constant_inital_hfc_con = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "inital_HFC_con*",
     {"HFC type": _subscript_dict["HFC type"]},
@@ -809,7 +809,7 @@ def initial_ch4_conc():
 
 
 _ext_constant_initial_ch4_conc = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "initial_CH4_conc",
     {},
@@ -822,7 +822,7 @@ _ext_constant_initial_ch4_conc = ExtConstant(
 @component.add(
     name="Initial HFC",
     units="t",
-    subscripts=["HFC type"],
+    subscripts=[np.str_("HFC type")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"inital_hfc_con": 1, "ppt_hfc_per_tons_hfc": 1},
@@ -857,7 +857,7 @@ def initial_n2o_conc():
 
 
 _ext_constant_initial_n2o_conc = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "initial_N2O_conc",
     {},
@@ -893,7 +893,7 @@ def initial_sf6_conc():
 
 
 _ext_constant_initial_sf6_conc = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "initial_SF6_conc",
     {},
@@ -979,7 +979,7 @@ def natural_n2o_emissions():
 
 
 _ext_constant_natural_n2o_emissions = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "natural_N2O_emissions",
     {},
@@ -1051,7 +1051,7 @@ def pfc_radiative_efficiency():
 
 
 _ext_constant_pfc_radiative_efficiency = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "PFC_radiative_efficiency",
     {},
@@ -1135,7 +1135,7 @@ def ppb_n2o_per_mtonn():
 @component.add(
     name="ppt HFC per Tons HFC",
     units="ppt/t",
-    subscripts=["HFC type"],
+    subscripts=[np.str_("HFC type")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ppt_per_mol": 1, "hfc_molar_mass": 1, "g_per_t": 1},
@@ -1204,7 +1204,7 @@ def preindustrial_ch4():
 
 
 _ext_constant_preindustrial_ch4 = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "preindustrial_CH4",
     {},
@@ -1226,7 +1226,7 @@ def preindustrial_hfc_conc():
 
 
 _ext_constant_preindustrial_hfc_conc = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "preindustrial_HFC_conc",
     {},
@@ -1259,7 +1259,7 @@ def preindustrial_pfc_conc():
 
 
 _ext_constant_preindustrial_pfc_conc = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "preindustrial_PFC_conc",
     {},
@@ -1281,7 +1281,7 @@ def preindustrial_sf6_conc():
 
 
 _ext_constant_preindustrial_sf6_conc = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "preindustrial_SF6_conc",
     {},
@@ -1307,7 +1307,7 @@ def reference_ch4_time_constant():
 
 
 _ext_constant_reference_ch4_time_constant = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "reference_CH4_time_constant",
     {},
@@ -1333,7 +1333,7 @@ def reference_sensitivity_of_c_from_permafrost_and_clathrate_to_temperature():
 
 
 _ext_constant_reference_sensitivity_of_c_from_permafrost_and_clathrate_to_temperature = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "reference_sensitivity_of_C_from_permafrost_and_clathrate_to_temperature",
     {},
@@ -1362,7 +1362,7 @@ def reference_sensitivity_of_ch4_from_permafrost_and_clathrate_to_temperature():
 
 
 _ext_constant_reference_sensitivity_of_ch4_from_permafrost_and_clathrate_to_temperature = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "reference_sensitivity_of_CH4_from_permafrost_and_clathrate_to_temperature",
     {},
@@ -1391,7 +1391,7 @@ def sensitivity_of_methane_emissions_to_permafrost_and_clathrate():
 
 _ext_constant_sensitivity_of_methane_emissions_to_permafrost_and_clathrate = (
     ExtConstant(
-        r"../climate.xlsx",
+        "../climate.xlsx",
         "World",
         "sensitivity_of_methane_emissions_to_permafrost_and_clathrate",
         {},
@@ -1461,7 +1461,7 @@ def sf6_radiative_efficiency():
 
 
 _ext_constant_sf6_radiative_efficiency = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "SF6_radiative_efficiency",
     {},
@@ -1518,7 +1518,7 @@ def stratospheric_ch4_path_share():
 
 
 _ext_constant_stratospheric_ch4_path_share = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "stratospheric_CH4_path_share",
     {},
@@ -1565,7 +1565,7 @@ def temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate():
 
 
 _ext_constant_temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate",
     {},
@@ -1590,7 +1590,7 @@ def time_const_for_ch4():
 @component.add(
     name="Time Const for HFC",
     units="years",
-    subscripts=["HFC type"],
+    subscripts=[np.str_("HFC type")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_time_const_for_hfc"},
@@ -1603,7 +1603,7 @@ def time_const_for_hfc():
 
 
 _ext_constant_time_const_for_hfc = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "time_const_for_HFC*",
     {"HFC type": _subscript_dict["HFC type"]},
@@ -1628,7 +1628,7 @@ def time_const_for_n2o():
 
 
 _ext_constant_time_const_for_n2o = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "time_const_for_N2O",
     {},
@@ -1653,7 +1653,7 @@ def time_const_for_pfc():
 
 
 _ext_constant_time_const_for_pfc = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "time_const_for_PFC",
     {},
@@ -1678,7 +1678,7 @@ def time_const_for_sf6():
 
 
 _ext_constant_time_const_for_sf6 = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "time_const_for_SF6",
     {},
@@ -1772,7 +1772,7 @@ def tropospheric_ch4_path_share():
 
 
 _ext_constant_tropospheric_ch4_path_share = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "tropospheric_CH4_path_share",
     {},

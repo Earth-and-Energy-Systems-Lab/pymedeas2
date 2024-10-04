@@ -4,6 +4,20 @@
         "pre",
         "oxyfuel"
     ],
+    "E to synthetic": [
+        "amonia",
+        "synthetic liq",
+        "hydrogen",
+        "synthetic gas"
+    ],
+    "ETG": [
+        "hydrogen",
+        "synthetic gas"
+    ],
+    "ETL": [
+        "amonia",
+        "synthetic liq"
+    ],
     "HFC type": [
         "HFC134a",
         "HFC23",
@@ -14,14 +28,6 @@
         "HFC227ea",
         "HFC245ca",
         "HFC4310mee"
-    ],
-    "Households vehicles": [
-        "liq 4wheels",
-        "elec 4wheels",
-        "hib 4wheels",
-        "gas 4wheels",
-        "liq 2wheels",
-        "elec 2wheels"
     ],
     "Layers": [
         "Layer1",

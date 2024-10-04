@@ -1,6 +1,6 @@
 """
 Module climate.energy_losses_function
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -18,7 +18,7 @@ def a_logistic():
 
 
 _ext_constant_a_logistic = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "World",
     "damage_function_parameter_a",
     {},
@@ -43,7 +43,7 @@ def activate_elf():
 
 
 _ext_constant_activate_elf = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "ELF",
     {},
@@ -68,7 +68,7 @@ def b_logistic():
 
 
 _ext_constant_b_logistic = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "World",
     "damage_function_parameter_b",
     {},
@@ -86,8 +86,8 @@ _ext_constant_b_logistic = ExtConstant(
     depends_on={
         "activate_elf": 1,
         "co2_ppm_concentrations": 1,
-        "b_logistic": 1,
         "a_logistic": 1,
+        "b_logistic": 1,
     },
 )
 def elf():

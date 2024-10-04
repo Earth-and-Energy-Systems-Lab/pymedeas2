@@ -1,6 +1,6 @@
 """
 Module energy.supply.tpes
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(

@@ -1,6 +1,6 @@
 """
 Module energy.supply.total_fe_elec_generation
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -77,11 +77,11 @@ def annual_growth_rate_electricity_generation_res_elec_tot():
         "pes_oil_ej": 1,
         "efficiency_liquids_for_electricity": 1,
         "share_coal_dem_for_elec": 1,
-        "extraction_coal_ej": 1,
         "efficiency_coal_for_electricity": 1,
-        "pes_nat_gas": 1,
+        "extraction_coal_ej": 1,
         "efficiency_gas_for_electricity": 1,
         "share_nat_gas_dem_for_elec": 1,
+        "pes_nat_gas": 1,
     },
 )
 def fe_elec_generation_from_fossil_fuels():
@@ -114,11 +114,7 @@ def fe_elec_generation_from_fossil_fuels():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "fe_elec_generation_from_fossil_fuels": 1,
-        "ej_per_twh": 1,
-        "fe_nuclear_elec_generation_twh": 1,
-    },
+    depends_on={"fe_elec_generation_from_fossil_fuels": 1, "ej_per_twh": 1},
 )
 def fe_elec_generation_from_fossil_fuels_twh():
     """
@@ -132,7 +128,6 @@ def fe_elec_generation_from_fossil_fuels_twh():
             dim=["matter final sources!"],
         )
         / ej_per_twh()
-        + fe_nuclear_elec_generation_twh()
     )
 
 
@@ -244,13 +239,17 @@ def share_res_electricity_generation():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_fe_elec_generation_twh": 1, "share_transmdistr_elec_losses": 1},
+    depends_on={
+        "total_fe_elec_generation_twh": 1,
+        "time": 1,
+        "share_trans_and_dist_losses": 1,
+    },
 )
 def total_fe_elec_consumption_twh():
     """
     Total final energy electricity consumption (fossil fuels, nuclear, waste & renewables) (TWh) excluding distribution losses.
     """
-    return total_fe_elec_generation_twh() / (1 + share_transmdistr_elec_losses())
+    return total_fe_elec_generation_twh() / (1 + share_trans_and_dist_losses(time()))
 
 
 @component.add(

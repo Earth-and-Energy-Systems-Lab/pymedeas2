@@ -1,6 +1,6 @@
 """
 Module energy.supply.traditional_biomass
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -35,7 +35,7 @@ def pe_consumption_trad_biomass_ref():
 
 
 _ext_constant_pe_consumption_trad_biomass_ref = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "pe_consumption_trad_biomass_ref",
     {},
@@ -64,19 +64,13 @@ def pe_traditional_biomass_consum_ej():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "households_final_energy_demand": 1,
-        "share_trad_biomass_vs_solids_in_households": 1,
-    },
+    depends_on={"households_final_energy_demand": 1, "share_trad_biomass": 1},
 )
 def pe_traditional_biomass_demand_ej():
     """
     Annual primary energy demand of traditional biomass driven by population and energy intensity evolution. It also includes charcoal and biosolids for solids.
     """
-    return (
-        float(households_final_energy_demand().loc["solids"])
-        * share_trad_biomass_vs_solids_in_households()
-    )
+    return float(households_final_energy_demand().loc["solids"]) * share_trad_biomass()
 
 
 @component.add(
@@ -123,7 +117,7 @@ def people_relying_trad_biomass_ref():
 
 
 _ext_constant_people_relying_trad_biomass_ref = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "World",
     "people_relying_on_traditional_biomass",
     {},
@@ -148,6 +142,27 @@ def pepc_consumption_people_depending_on_trad_biomass():
     Primary energy per capita consumption of people currently depending on trad biomass.
     """
     return pe_consumption_trad_biomass_ref() / people_relying_trad_biomass_ref()
+
+
+@component.add(
+    name='"phase out trad biomass?"',
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_phase_out_trad_biomass"},
+)
+def phase_out_trad_biomass():
+    return _ext_constant_phase_out_trad_biomass()
+
+
+_ext_constant_phase_out_trad_biomass = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "phase_out_biomass",
+    {},
+    _root,
+    {},
+    "_ext_constant_phase_out_trad_biomass",
+)
 
 
 @component.add(
@@ -182,6 +197,31 @@ def share_global_pop_dependent_on_trad_biomass():
 
 
 @component.add(
+    name="share trad biomass",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "phase_out_trad_biomass": 1,
+        "time": 2,
+        "share_trad_biomass_vs_solids_in_households": 4,
+    },
+)
+def share_trad_biomass():
+    return if_then_else(
+        phase_out_trad_biomass() == 1,
+        lambda: if_then_else(
+            time() < 2015,
+            lambda: share_trad_biomass_vs_solids_in_households(),
+            lambda: share_trad_biomass_vs_solids_in_households()
+            - share_trad_biomass_vs_solids_in_households()
+            / (2050 - 2015)
+            * (time() - 2015),
+        ),
+        lambda: share_trad_biomass_vs_solids_in_households(),
+    )
+
+
+@component.add(
     name="share trad biomass vs solids in households",
     units="Dmnl",
     comp_type="Constant",
@@ -195,7 +235,7 @@ def share_trad_biomass_vs_solids_in_households():
 
 
 _ext_constant_share_trad_biomass_vs_solids_in_households = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "share_trad_biomass_vs_solids_in_households",
     {},

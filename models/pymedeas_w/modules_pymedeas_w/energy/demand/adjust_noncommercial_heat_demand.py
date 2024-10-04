@@ -1,12 +1,34 @@
 """
 Module energy.demand.adjust_noncommercial_heat_demand
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
+
+@component.add(
+    name="end year policy share FEH over FED",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_end_year_policy_share_feh_over_fed"},
+)
+def end_year_policy_share_feh_over_fed():
+    return _ext_constant_end_year_policy_share_feh_over_fed()
+
+
+_ext_constant_end_year_policy_share_feh_over_fed = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "Year_policy_share_res_heat",
+    {},
+    _root,
+    {},
+    "_ext_constant_end_year_policy_share_feh_over_fed",
+)
+
 
 @component.add(
     name='"FED by fuel for heat-nc"',
     units="EJ/year",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -21,7 +43,9 @@ def fed_by_fuel_for_heatnc():
     Final energy demand (excluding distribution and generation losses) of non-commercial heat by final fuel.
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     value.loc[["electricity"]] = 0
     value.loc[["heat"]] = 0
@@ -39,21 +63,17 @@ def fed_by_fuel_for_heatnc():
     depends_on={
         "required_fed_by_fuel_before_heat_correction": 1,
         "share_feh_over_fed_by_final_fuel": 1,
-        "share_feh_over_fed_solid_bioe": 1,
         "efficiency_coal_for_heat_plants": 1,
         "share_heat_distribution_losses": 1,
     },
 )
 def fed_coal_for_heatnc():
     """
-    Final energy demand (excluding distribution and generation losses) of non-commercial heat from coal.
+    Final energy demand (excluding distribution and generation losses) of non-commercial heat from coal. Required FED by fuel before heat correction[solids]*(share FEH over FED by final fuel[solids]-share FEH over FED solid bioE)*efficiency coal for heat plants /(1+Share heat distribution losses)
     """
     return (
         float(required_fed_by_fuel_before_heat_correction().loc["solids"])
-        * (
-            float(share_feh_over_fed_by_final_fuel().loc["solids"])
-            - share_feh_over_fed_solid_bioe()
-        )
+        * float(share_feh_over_fed_by_final_fuel().loc["solids"])
         * efficiency_coal_for_heat_plants()
         / (1 + share_heat_distribution_losses())
     )
@@ -129,7 +149,7 @@ def fed_oil_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_fuel_before_heat_correction": 1,
-        "share_feh_over_fed_solid_bioe": 1,
+        "hist_share_feh_over_fed_solid_bioe": 1,
         "efficiency_conversion_bioe_plants_to_heat": 1,
         "share_heat_distribution_losses": 1,
     },
@@ -140,10 +160,197 @@ def fed_solid_bioe_for_heatnc():
     """
     return (
         float(required_fed_by_fuel_before_heat_correction().loc["solids"])
-        * share_feh_over_fed_solid_bioe()
+        * hist_share_feh_over_fed_solid_bioe()
         * efficiency_conversion_bioe_plants_to_heat()
         / (1 + share_heat_distribution_losses())
     )
+
+
+@component.add(
+    name="hist share FEH over FED by final fuel",
+    units="Dmnl",
+    subscripts=[np.str_("final sources")],
+    comp_type="Constant, Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "hist_share_feh_over_fed_oil": 1,
+        "nist_share_feh_over_fed_nat_gas": 1,
+        "hist_share_feh_over_fed_coal": 1,
+        "hist_share_feh_over_fed_solid_bioe": 1,
+    },
+)
+def hist_share_feh_over_fed_by_final_fuel():
+    """
+    Share FEH over FED by final fuel.
+    """
+    value = xr.DataArray(
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
+    )
+    value.loc[["electricity"]] = 0
+    value.loc[["heat"]] = 0
+    value.loc[["liquids"]] = hist_share_feh_over_fed_oil()
+    value.loc[["gases"]] = nist_share_feh_over_fed_nat_gas()
+    value.loc[["solids"]] = (
+        hist_share_feh_over_fed_coal() + hist_share_feh_over_fed_solid_bioe()
+    )
+    return value
+
+
+@component.add(
+    name="hist share FEH over FED coal",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_hist_share_feh_over_fed_coal"},
+)
+def hist_share_feh_over_fed_coal():
+    """
+    Estimated share of FEH over FED for coal solids (IEA, 2014 and own calculations).
+    """
+    return _ext_constant_hist_share_feh_over_fed_coal()
+
+
+_ext_constant_hist_share_feh_over_fed_coal = ExtConstant(
+    "../energy.xlsx",
+    "World",
+    "share_feh_over_fed_coal",
+    {},
+    _root,
+    {},
+    "_ext_constant_hist_share_feh_over_fed_coal",
+)
+
+
+@component.add(
+    name="hist share FEH over FED oil",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_hist_share_feh_over_fed_oil"},
+)
+def hist_share_feh_over_fed_oil():
+    """
+    Estimated share of FEH over FED for liquids (IEA, 2014 and own calculations).
+    """
+    return _ext_constant_hist_share_feh_over_fed_oil()
+
+
+_ext_constant_hist_share_feh_over_fed_oil = ExtConstant(
+    "../energy.xlsx",
+    "World",
+    "share_feh_over_fed_oil",
+    {},
+    _root,
+    {},
+    "_ext_constant_hist_share_feh_over_fed_oil",
+)
+
+
+@component.add(
+    name="hist share FEH over FED solid bioE",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_hist_share_feh_over_fed_solid_bioe"},
+)
+def hist_share_feh_over_fed_solid_bioe():
+    """
+    Estimated share of FEH over FED for solid bioenergy for the year 2011 (IEA, 2014 and own calculations).
+    """
+    return _ext_constant_hist_share_feh_over_fed_solid_bioe()
+
+
+_ext_constant_hist_share_feh_over_fed_solid_bioe = ExtConstant(
+    "../energy.xlsx",
+    "World",
+    "share_feh_over_fed_solids_bioe",
+    {},
+    _root,
+    {},
+    "_ext_constant_hist_share_feh_over_fed_solid_bioe",
+)
+
+
+@component.add(
+    name='"nist share FEH over FED nat. gas"',
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_nist_share_feh_over_fed_nat_gas"},
+)
+def nist_share_feh_over_fed_nat_gas():
+    """
+    Estimated share of FEH over FED for gases (IEA, 2014 and own calculations).
+    """
+    return _ext_constant_nist_share_feh_over_fed_nat_gas()
+
+
+_ext_constant_nist_share_feh_over_fed_nat_gas = ExtConstant(
+    "../energy.xlsx",
+    "World",
+    "share_feh_over_fed_nat_gas",
+    {},
+    _root,
+    {},
+    "_ext_constant_nist_share_feh_over_fed_nat_gas",
+)
+
+
+@component.add(
+    name="policy share FEH over FED",
+    units="Dmnl",
+    subscripts=["final sources"],
+    comp_type="Constant",
+    comp_subtype="External, Normal",
+    depends_on={"__external__": "_ext_constant_policy_share_feh_over_fed"},
+)
+def policy_share_feh_over_fed():
+    value = xr.DataArray(
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+    )
+    def_subs = xr.zeros_like(value, dtype=bool)
+    def_subs.loc[["liquids", "gases", "solids"]] = True
+    value.values[def_subs.values] = _ext_constant_policy_share_feh_over_fed().values[
+        def_subs.values
+    ]
+    value.loc[["electricity"]] = 0
+    value.loc[["heat"]] = 0
+    return value
+
+
+_ext_constant_policy_share_feh_over_fed = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "p_share_FEH_vs_FED*",
+    {"final sources": _subscript_dict["matter final sources"]},
+    _root,
+    {"final sources": _subscript_dict["final sources"]},
+    "_ext_constant_policy_share_feh_over_fed",
+)
+
+
+@component.add(
+    name="policy share FEH over FED bioE",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_policy_share_feh_over_fed_bioe"},
+)
+def policy_share_feh_over_fed_bioe():
+    return _ext_constant_policy_share_feh_over_fed_bioe()
+
+
+_ext_constant_policy_share_feh_over_fed_bioe = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "p_share_FEH_vs_FED_bioE",
+    {},
+    _root,
+    {},
+    "_ext_constant_policy_share_feh_over_fed_bioe",
+)
 
 
 @component.add(
@@ -161,7 +368,7 @@ def ratio_fed_for_heatnc_vs_fed_for_heatcom():
     Ratio FED for non-commercial heat vs FED for commercial heat (before climate change impacts).
     """
     return sum(
-        fed_by_fuel_for_heatnc().rename({"final sources": "final sources!"}),
+        fed_by_fuel_for_heatnc().rename({np.str_("final sources"): "final sources!"}),
         dim=["final sources!"],
     ) * zidz(1, float(required_fed_by_fuel_before_heat_correction().loc["heat"]))
 
@@ -210,127 +417,43 @@ def share_fed_liquids_vs_nre_heatnc():
 
 @component.add(
     name="share FEH over FED by final fuel",
-    units="Dmnl",
-    subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "share_feh_over_fed_oil": 1,
-        "share_feh_over_fed_nat_gas": 1,
-        "share_feh_over_fed_solid_bioe": 1,
-        "share_feh_over_fed_coal": 1,
+        "time": 4,
+        "hist_share_feh_over_fed_by_final_fuel": 6,
+        "policy_share_feh_over_fed": 2,
+        "end_year_policy_share_feh_over_fed": 2,
+        "policy_share_feh_over_fed_bioe": 1,
     },
 )
 def share_feh_over_fed_by_final_fuel():
-    """
-    Share FEH over FED by final fuel.
-    """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
-    value.loc[["electricity"]] = 0
-    value.loc[["heat"]] = 0
-    value.loc[["liquids"]] = share_feh_over_fed_oil()
-    value.loc[["gases"]] = share_feh_over_fed_nat_gas()
-    value.loc[["solids"]] = share_feh_over_fed_coal() + share_feh_over_fed_solid_bioe()
+    except_subs = xr.ones_like(value, dtype=bool)
+    except_subs.loc[["solids"]] = False
+    value.values[except_subs.values] = if_then_else(
+        time() < 2015,
+        lambda: hist_share_feh_over_fed_by_final_fuel(),
+        lambda: hist_share_feh_over_fed_by_final_fuel()
+        - (hist_share_feh_over_fed_by_final_fuel() - policy_share_feh_over_fed())
+        / (end_year_policy_share_feh_over_fed() - 2015)
+        * (time() - 2015),
+    ).values[except_subs.values]
+    value.loc[["solids"]] = if_then_else(
+        time() < 2015,
+        lambda: float(hist_share_feh_over_fed_by_final_fuel().loc["solids"]),
+        lambda: float(hist_share_feh_over_fed_by_final_fuel().loc["solids"])
+        - (
+            float(hist_share_feh_over_fed_by_final_fuel().loc["solids"])
+            - float(policy_share_feh_over_fed().loc["solids"])
+            - policy_share_feh_over_fed_bioe()
+        )
+        / (end_year_policy_share_feh_over_fed() - 2015)
+        * (time() - 2015),
+    )
     return value
-
-
-@component.add(
-    name="share FEH over FED coal",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_share_feh_over_fed_coal"},
-)
-def share_feh_over_fed_coal():
-    """
-    Estimated share of FEH over FED for coal solids (IEA, 2014 and own calculations).
-    """
-    return _ext_constant_share_feh_over_fed_coal()
-
-
-_ext_constant_share_feh_over_fed_coal = ExtConstant(
-    r"../energy.xlsx",
-    "World",
-    "share_feh_over_fed_coal",
-    {},
-    _root,
-    {},
-    "_ext_constant_share_feh_over_fed_coal",
-)
-
-
-@component.add(
-    name='"share FEH over FED nat. gas"',
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_share_feh_over_fed_nat_gas"},
-)
-def share_feh_over_fed_nat_gas():
-    """
-    Estimated share of FEH over FED for gases (IEA, 2014 and own calculations).
-    """
-    return _ext_constant_share_feh_over_fed_nat_gas()
-
-
-_ext_constant_share_feh_over_fed_nat_gas = ExtConstant(
-    r"../energy.xlsx",
-    "World",
-    "share_feh_over_fed_nat_gas",
-    {},
-    _root,
-    {},
-    "_ext_constant_share_feh_over_fed_nat_gas",
-)
-
-
-@component.add(
-    name="share FEH over FED oil",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_share_feh_over_fed_oil"},
-)
-def share_feh_over_fed_oil():
-    """
-    Estimated share of FEH over FED for liquids (IEA, 2014 and own calculations).
-    """
-    return _ext_constant_share_feh_over_fed_oil()
-
-
-_ext_constant_share_feh_over_fed_oil = ExtConstant(
-    r"../energy.xlsx",
-    "World",
-    "share_feh_over_fed_oil",
-    {},
-    _root,
-    {},
-    "_ext_constant_share_feh_over_fed_oil",
-)
-
-
-@component.add(
-    name="share FEH over FED solid bioE",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_share_feh_over_fed_solid_bioe"},
-)
-def share_feh_over_fed_solid_bioe():
-    """
-    Estimated share of FEH over FED for solid bioenergy for the year 2011 (IEA, 2014 and own calculations).
-    """
-    return _ext_constant_share_feh_over_fed_solid_bioe()
-
-
-_ext_constant_share_feh_over_fed_solid_bioe = ExtConstant(
-    r"../energy.xlsx",
-    "World",
-    "share_feh_over_fed_solids_bioe",
-    {},
-    _root,
-    {},
-    "_ext_constant_share_feh_over_fed_solid_bioe",
-)

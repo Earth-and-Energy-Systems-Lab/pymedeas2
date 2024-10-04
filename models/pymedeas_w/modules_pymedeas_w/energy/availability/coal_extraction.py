@@ -1,6 +1,6 @@
 """
 Module energy.availability.coal_extraction
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -36,7 +36,7 @@ def activate_force_leaving_underground():
 
 
 _ext_constant_activate_force_leaving_underground = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "activate_policy_leaving_underground",
     {},
@@ -105,7 +105,7 @@ def cumulated_coal_extraction_to_1995():
 
 
 _ext_constant_cumulated_coal_extraction_to_1995 = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "cumulative_coal_extraction_until_1995",
     {},
@@ -203,8 +203,8 @@ _delayfixed_evol_coal_extraction_rate_delayed = DelayFixed(
         "time": 1,
         "ped_coal_ej": 3,
         "activate_force_leaving_underground": 1,
-        "max_extraction_coal": 2,
         "nvs_1_year": 1,
+        "max_extraction_coal": 2,
         "remaining_extractable_coal_with_left_underground": 1,
     },
 )
@@ -263,9 +263,9 @@ _delayfixed_extraction_coal_ej_delayed = DelayFixed(
     depends_on={
         "activate_force_leaving_underground": 1,
         "max_extraction_coal_technical": 3,
-        "start_year_policy_leave_in_ground_coal": 1,
         "max_extraction_coal_policy": 1,
         "time": 1,
+        "start_year_policy_leave_in_ground_coal": 1,
     },
 )
 def max_extraction_coal():
@@ -403,7 +403,7 @@ def share_rurr_coal_to_leave_underground():
 
 
 _ext_constant_share_rurr_coal_to_leave_underground = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "share_RURR_coal_underground",
     {},
@@ -428,7 +428,7 @@ def start_year_policy_leave_in_ground_coal():
 
 
 _ext_constant_start_year_policy_leave_in_ground_coal = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "start_policy_year_coal_underground",
     {},
@@ -456,7 +456,7 @@ def table_max_extraction_coal_technical(x, final_subs=None):
 
 
 _ext_lookup_table_max_extraction_coal_technical = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "RURR_coal",
     "max_extraction_coal",
@@ -482,7 +482,7 @@ def urr_coal():
 
 
 _ext_constant_urr_coal = ExtConstant(
-    r"../energy.xlsx", "World", "URR_coal", {}, _root, {}, "_ext_constant_urr_coal"
+    "../energy.xlsx", "World", "URR_coal", {}, _root, {}, "_ext_constant_urr_coal"
 )
 
 
@@ -501,7 +501,7 @@ def year_reference_rurr():
 
 
 _ext_constant_year_reference_rurr = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "year_ref_RURR",
     {},

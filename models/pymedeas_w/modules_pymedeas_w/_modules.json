@@ -731,21 +731,25 @@
         },
         "demand": {
             "adjust_noncommercial_heat_demand": [
+                "end_year_policy_share_feh_over_fed",
                 "fed_by_fuel_for_heatnc",
                 "fed_coal_for_heatnc",
                 "fed_nat_gas_for_heatnc",
                 "fed_nre_for_heatnc",
                 "fed_oil_for_heatnc",
                 "fed_solid_bioe_for_heatnc",
+                "hist_share_feh_over_fed_by_final_fuel",
+                "hist_share_feh_over_fed_coal",
+                "hist_share_feh_over_fed_oil",
+                "hist_share_feh_over_fed_solid_bioe",
+                "nist_share_feh_over_fed_nat_gas",
+                "policy_share_feh_over_fed",
+                "policy_share_feh_over_fed_bioe",
                 "ratio_fed_for_heatnc_vs_fed_for_heatcom",
                 "share_fed_coal_vs_nre_heatnc",
                 "share_fed_gas_vs_nre_heatnc",
                 "share_fed_liquids_vs_nre_heatnc",
-                "share_feh_over_fed_by_final_fuel",
-                "share_feh_over_fed_coal",
-                "share_feh_over_fed_nat_gas",
-                "share_feh_over_fed_oil",
-                "share_feh_over_fed_solid_bioe"
+                "share_feh_over_fed_by_final_fuel"
             ],
             "commercial_heat_demand_covered": [
                 "a_lineal_regr_phaseout_oil_for_heat",
@@ -778,14 +782,9 @@
                 "electrical_distribution_losses_twh",
                 "fe_demand_elec_consum_twh",
                 "fe_elec_demand_consum_ej",
-                "max_share_transmdistr_elec_losses",
-                "remaining_share_transmdistr_elec_losses",
-                "share_transmdistr_elec_losses",
-                "share_transmdistr_elec_losses_initial",
+                "share_trans_and_dist_losses",
                 "total_fe_elec_demand_ej",
-                "total_fe_elec_demand_twh",
-                "variation_share_transmdistr_elec_losses",
-                "variation_share_transmdistr_losses_elec"
+                "total_fe_elec_demand_twh"
             ],
             "electricity_demand_ff": [
                 "a_lineal_regr_phaseout_oil_for_elec",
@@ -795,6 +794,7 @@
                 "decrease_share_oil_for_elec",
                 "demand_elec_gas_and_coal_twh",
                 "demand_elec_plants_fossil_fuels_twh",
+                "desired_share_gascoalgas_elec",
                 "efficiency_coal_for_electricity",
                 "efficiency_gas_for_electricity",
                 "efficiency_improv_gas_for_electricity",
@@ -832,6 +832,7 @@
                 "perception_of_interfuel_ps_scarcity_oilff",
                 "perception_of_interfuel_ps_scarcity_oilnatgas",
                 "phaseout_oil_for_electricity",
+                "policy_share_gascoalgas_elec",
                 "reduction_in_perception_ps_scarcity",
                 "remaining_efficiency_improv_gas_for_electricity",
                 "scarcity_primary_sources",
@@ -843,6 +844,7 @@
                 "share_oilff_for_elec_in_2015",
                 "start_year_policy_phaseout_oil_for_elec",
                 "switch_scarcityps_elec_substit",
+                "target_year_policy_gas_electricity",
                 "target_year_policy_phaseout_oil_for_elec",
                 "total_gen_losses_demand_for_elec_plants_ej"
             ],
@@ -946,6 +948,7 @@
                 "share_nat_gas_for_fc_emissions_relevant",
                 "share_nat_gas_for_gtl_emissions_relevant",
                 "share_nat_gas_for_heat_emissions_relevant",
+                "share_nat_gas_pes",
                 "year_scarcity_gases"
             ],
             "heat_demand": [
@@ -990,6 +993,7 @@
                 "share_oil_for_elec_emissions_relevant",
                 "share_oil_for_fc_emissions_relevant",
                 "share_oil_for_heat_emissions_relevant",
+                "share_oil_pes",
                 "total_demand_liquids_mbd",
                 "year_scarcity_liquids"
             ],
@@ -998,11 +1002,13 @@
                 "abundance_solids",
                 "b_lin_reg_peat",
                 "historic_pes_peat_ej",
+                "modern_solid_bioenergy",
                 "other_solids_required",
                 "ped_coal_ej",
                 "ped_solids",
                 "pes_peat",
                 "pes_solids",
+                "policy_modern_solid_bioe",
                 "required_fed_solids",
                 "share_coal_dem_for_elec",
                 "share_coal_dem_for_heatcom",
@@ -1351,6 +1357,15 @@
                 "pes_nre_heatnc",
                 "tpes_heat"
             ],
+            "hydrgen_and_synthetic": [
+                "efficiency_electricity_to_synthetic",
+                "electricity_consumption_for_synthetic_fuels",
+                "electricity_demand_for_synthetic_fuels",
+                "policy_ets",
+                "synthethic_fuel_generation",
+                "synthethic_fuel_generation_delayed",
+                "total_electricity_demand_for_synthetic"
+            ],
             "losses_in_transformation_and_distri": [
                 "energy_distr_losses_ff_ej",
                 "historic_share_of_losses_vs_extraction",
@@ -1413,7 +1428,7 @@
                 "pe_supply_res_nonelec_ej"
             ],
             "pes_solids_biofuels_and_waste": [
-                "losses_in_charcoal_plants_ej",
+                "losses_in_charcoal_plants_historic",
                 "pes_solids_bioe_ej",
                 "pes_solids_bioe_waste_ej"
             ],
@@ -1585,6 +1600,7 @@
                 "max_peavail_biofuels_potential",
                 "oil_liquids_saved_by_biofuels_ej",
                 "pe_biomass_for_biofuels_production_ej",
+                "pe_biomass_losses_for_biofuels_production",
                 "potential_peavail_total_biofuels",
                 "share_biofuels_overcapacity"
             ],
@@ -1643,8 +1659,10 @@
                 "pe_traditional_biomass_ej_delayed",
                 "people_relying_trad_biomass_ref",
                 "pepc_consumption_people_depending_on_trad_biomass",
+                "phase_out_trad_biomass",
                 "population_dependent_on_trad_biomass",
                 "share_global_pop_dependent_on_trad_biomass",
+                "share_trad_biomass",
                 "share_trad_biomass_vs_solids_in_households"
             ],
             "waste": [

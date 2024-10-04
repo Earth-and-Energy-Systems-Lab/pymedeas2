@@ -1,6 +1,6 @@
 """
 Module energy.storage.esoi_phs
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -82,8 +82,8 @@ def cedtot_over_lifetime_phs():
     comp_subtype="Normal",
     depends_on={
         "output_phs_over_lifetime": 1,
-        "cedtot_over_lifetime_phs": 1,
         "quality_of_electricity": 1,
+        "cedtot_over_lifetime_phs": 1,
     },
 )
 def esoi_phs():
@@ -111,7 +111,7 @@ def esoi_phs_depleted_potential():
 
 
 _ext_constant_esoi_phs_depleted_potential = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "esoi_phs_depleted_potential",
     {},
@@ -126,7 +126,7 @@ _ext_constant_esoi_phs_depleted_potential = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"eroiini_res_elec_dispatch": 1, "cpini_res_elec": 1, "cp_phs": 1},
+    depends_on={"eroiini_res_elec_dispatch": 1, "cp_phs": 1, "cpini_res_elec": 1},
 )
 def esoi_phs_full_potential():
     """

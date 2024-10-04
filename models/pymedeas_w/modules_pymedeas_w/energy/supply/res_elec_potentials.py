@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_elec_potentials
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -18,7 +18,7 @@ def efficiency_conversion_geot_pe_to_elec():
 
 
 _ext_constant_efficiency_conversion_geot_pe_to_elec = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "efficiency_conversion_geot_pe_to_elec",
     {},
@@ -57,7 +57,7 @@ def max_pe_geotelec_twth():
 
 
 _ext_constant_max_pe_geotelec_twth = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "max_PE_geot_elect_potential",
     {},
@@ -70,16 +70,16 @@ _ext_constant_max_pe_geotelec_twth = ExtConstant(
 @component.add(
     name="max potential RES elec TWe",
     units="TW",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Constant, Auxiliary",
     comp_subtype="External, Normal",
     depends_on={
         "__external__": "_ext_constant_max_potential_res_elec_twe",
-        "max_pe_geotelec_twth": 1,
         "efficiency_conversion_geot_pe_to_elec": 1,
-        "available_potential_fe_solid_bioe_for_elec": 1,
-        "twe_per_twh": 1,
+        "max_pe_geotelec_twth": 1,
         "ej_per_twh": 1,
+        "twe_per_twh": 1,
+        "available_potential_fe_solid_bioe_for_elec": 1,
         "max_solar_pv_on_land_mha": 1,
         "power_density_res_elec_twemha": 2,
         "max_csp_on_land_mha": 1,
@@ -90,7 +90,7 @@ def max_potential_res_elec_twe():
     Maximum potential of RES for electricity per technology considering an optimal Cp.
     """
     value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, [np.str_("RES elec")]
     )
     def_subs = xr.zeros_like(value, dtype=bool)
     def_subs.loc[["hydro"]] = True
@@ -104,7 +104,7 @@ def max_potential_res_elec_twe():
         max_pe_geotelec_twth() * efficiency_conversion_geot_pe_to_elec()
     )
     value.loc[["solid bioE elec"]] = (
-        available_potential_fe_solid_bioe_for_elec() * twe_per_twh() / ej_per_twh()
+        available_potential_fe_solid_bioe_for_elec() / ej_per_twh() * twe_per_twh()
     )
     value.loc[["solar PV"]] = max_solar_pv_on_land_mha() * float(
         power_density_res_elec_twemha().loc["solar PV"]
@@ -116,7 +116,7 @@ def max_potential_res_elec_twe():
 
 
 _ext_constant_max_potential_res_elec_twe = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "max_hydro_potential",
     {"RES elec": ["hydro"]},
@@ -126,18 +126,18 @@ _ext_constant_max_potential_res_elec_twe = ExtConstant(
 )
 
 _ext_constant_max_potential_res_elec_twe.add(
-    r"../energy.xlsx", "World", "max_oceanic_potential", {"RES elec": ["oceanic"]}
+    "../energy.xlsx", "World", "max_oceanic_potential", {"RES elec": ["oceanic"]}
 )
 
 _ext_constant_max_potential_res_elec_twe.add(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "max_onshore_wind_potential",
     {"RES elec": ["wind onshore"]},
 )
 
 _ext_constant_max_potential_res_elec_twe.add(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "max_offshore_wind_potential",
     {"RES elec": ["wind offshore"]},
@@ -147,7 +147,7 @@ _ext_constant_max_potential_res_elec_twe.add(
 @component.add(
     name="max potential RES elec TWh",
     units="TWh/year",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"max_potential_res_elec_twe": 1, "twe_per_twh": 1},
@@ -168,9 +168,9 @@ def max_potential_res_elec_twh():
         "max_potential_res_elec_twh": 1,
         "twe_per_twh": 1,
         "max_potential_phs_twe": 1,
-        "share_pes_biogas_for_elec": 1,
-        "max_biogas_ej": 1,
         "ej_per_twh": 1,
+        "max_biogas_ej": 1,
+        "share_pes_biogas_for_elec": 1,
     },
 )
 def max_potential_tot_res_elec_twh():
@@ -179,7 +179,7 @@ def max_potential_tot_res_elec_twh():
     """
     return (
         sum(
-            max_potential_res_elec_twh().rename({"RES elec": "RES elec!"}),
+            max_potential_res_elec_twh().rename({np.str_("RES elec"): "RES elec!"}),
             dim=["RES elec!"],
         )
         + max_potential_phs_twe() / twe_per_twh()
@@ -202,7 +202,7 @@ def max_solar_on_land_mha():
 
 
 _ext_constant_max_solar_on_land_mha = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "max_solar_on_land_potential",
     {},
@@ -243,7 +243,7 @@ def percent_remaining_potential_tot_res_elec():
 @component.add(
     name="remaining potential",
     units="Dmnl",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"max_potential_res_elec_twh": 3, "real_generation_res_elec_twh": 2},

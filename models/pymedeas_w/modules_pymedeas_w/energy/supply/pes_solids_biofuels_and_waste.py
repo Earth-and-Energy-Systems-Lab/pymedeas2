@@ -1,28 +1,28 @@
 """
 Module energy.supply.pes_solids_biofuels_and_waste
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="Losses in charcoal plants EJ",
+    name="Losses in charcoal plants historic",
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
     depends_on={
-        "__external__": "_ext_data_losses_in_charcoal_plants_ej",
-        "__data__": "_ext_data_losses_in_charcoal_plants_ej",
+        "__external__": "_ext_data_losses_in_charcoal_plants_historic",
+        "__data__": "_ext_data_losses_in_charcoal_plants_historic",
         "time": 1,
     },
 )
-def losses_in_charcoal_plants_ej():
+def losses_in_charcoal_plants_historic():
     """
     Losses of energy (EJ) produced in charcoal plants.
     """
-    return _ext_data_losses_in_charcoal_plants_ej(time())
+    return _ext_data_losses_in_charcoal_plants_historic(time())
 
 
-_ext_data_losses_in_charcoal_plants_ej = ExtData(
-    r"../energy.xlsx",
+_ext_data_losses_in_charcoal_plants_historic = ExtData(
+    "../energy.xlsx",
     "World",
     "time_efficiencies",
     "historic_losses_charcoal_plants",
@@ -30,7 +30,7 @@ _ext_data_losses_in_charcoal_plants_ej = ExtData(
     {},
     _root,
     {},
-    "_ext_data_losses_in_charcoal_plants_ej",
+    "_ext_data_losses_in_charcoal_plants_historic",
 )
 
 
@@ -40,7 +40,7 @@ _ext_data_losses_in_charcoal_plants_ej = ExtData(
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "losses_in_charcoal_plants_ej": 1,
+        "losses_in_charcoal_plants_historic": 1,
         "pe_real_generation_res_elec": 1,
         "pe_traditional_biomass_ej_delayed": 1,
         "pes_res_for_heatcom_by_techn": 1,
@@ -52,7 +52,7 @@ def pes_solids_bioe_ej():
     Total biomass supply.It aggregates supply for electricity, heat and traditional biomass.
     """
     return (
-        losses_in_charcoal_plants_ej()
+        losses_in_charcoal_plants_historic()
         + float(pe_real_generation_res_elec().loc["solid bioE elec"])
         + pe_traditional_biomass_ej_delayed()
         + float(pes_res_for_heatcom_by_techn().loc["solid bioE heat"])

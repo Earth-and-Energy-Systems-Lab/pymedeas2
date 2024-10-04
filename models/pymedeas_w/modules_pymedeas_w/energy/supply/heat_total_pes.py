@@ -1,6 +1,6 @@
 """
 Module energy.supply.heat_total_pes
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -21,11 +21,11 @@ def pes_heat_res():
     return (
         pes_tot_biogas_for_heatcom()
         + sum(
-            pes_res_for_heatcom_by_techn().rename({"RES heat": "RES heat!"}),
+            pes_res_for_heatcom_by_techn().rename({np.str_("RES heat"): "RES heat!"}),
             dim=["RES heat!"],
         )
         + sum(
-            pes_res_for_heatnc_by_techn().rename({"RES heat": "RES heat!"}),
+            pes_res_for_heatnc_by_techn().rename({np.str_("RES heat"): "RES heat!"}),
             dim=["RES heat!"],
         )
     )

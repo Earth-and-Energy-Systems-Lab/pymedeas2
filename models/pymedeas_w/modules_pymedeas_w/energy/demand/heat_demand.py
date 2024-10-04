@@ -1,6 +1,6 @@
 """
 Module energy.demand.heat_demand
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -244,7 +244,7 @@ def share_heat_distribution_losses():
 
 
 _ext_constant_share_heat_distribution_losses = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "share_heat_distribution_losses",
     {},
@@ -266,7 +266,7 @@ def total_fe_real_supply_res_for_heatcom_ej():
     Total final energy supply delivered by RES for commercial heat.
     """
     return sum(
-        fe_real_generation_res_heatcom_ej().rename({"RES heat": "RES heat!"}),
+        fe_real_generation_res_heatcom_ej().rename({np.str_("RES heat"): "RES heat!"}),
         dim=["RES heat!"],
     )
 
@@ -283,7 +283,7 @@ def total_fe_real_supply_res_for_heatnc_ej():
     Total final energy supply delivered by RES for non-commercial heat.
     """
     return sum(
-        fe_real_generation_res_heatnc().rename({"RES heat": "RES heat!"}),
+        fe_real_generation_res_heatnc().rename({np.str_("RES heat"): "RES heat!"}),
         dim=["RES heat!"],
     )
 

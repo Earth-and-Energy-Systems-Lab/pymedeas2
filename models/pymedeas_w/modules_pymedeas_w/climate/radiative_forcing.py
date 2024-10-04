@@ -1,6 +1,6 @@
 """
 Module climate.radiative_forcing
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -11,8 +11,8 @@ Translated using PySD version 3.14.1
     depends_on={
         "other_forcings": 1,
         "mineral_aerosols_and_land_rf": 1,
-        "last_historical_rf_year": 1,
         "time": 1,
+        "last_historical_rf_year": 1,
     },
 )
 def adjusted_other_forcings():
@@ -34,12 +34,12 @@ def adjusted_other_forcings():
     depends_on={
         "ch4_n2o_interaction_coef_1": 1,
         "ch4_atm_conc": 3,
-        "ch4_n2o_interaction_coef_3": 1,
         "ch4_n2o_interaction_coef_2": 1,
-        "n2o_reference_conc": 2,
         "ch4_n2o_unit_adj": 5,
-        "ch4_n2o_interaction_exp_2": 1,
         "ch4_n2o_interaction_exp_1": 1,
+        "n2o_reference_conc": 2,
+        "ch4_n2o_interaction_exp_2": 1,
+        "ch4_n2o_interaction_coef_3": 1,
     },
 )
 def adjustment_for_ch4_and_n2oref():
@@ -76,13 +76,13 @@ def adjustment_for_ch4_and_n2oref():
     comp_subtype="Normal",
     depends_on={
         "ch4_n2o_interaction_coef_1": 1,
-        "ch4_reference_conc": 3,
-        "ch4_n2o_interaction_coef_3": 1,
         "ch4_n2o_interaction_coef_2": 1,
         "ch4_n2o_unit_adj": 5,
-        "n2o_atm_conc": 2,
-        "ch4_n2o_interaction_exp_2": 1,
         "ch4_n2o_interaction_exp_1": 1,
+        "ch4_reference_conc": 3,
+        "ch4_n2o_interaction_exp_2": 1,
+        "n2o_atm_conc": 2,
+        "ch4_n2o_interaction_coef_3": 1,
     },
 )
 def adjustment_for_ch4ref_and_n2o():
@@ -119,13 +119,13 @@ def adjustment_for_ch4ref_and_n2o():
     comp_subtype="Normal",
     depends_on={
         "ch4_n2o_interaction_coef_1": 1,
-        "ch4_reference_conc": 3,
-        "ch4_n2o_interaction_coef_3": 1,
         "ch4_n2o_interaction_coef_2": 1,
-        "n2o_reference_conc": 2,
         "ch4_n2o_unit_adj": 5,
-        "ch4_n2o_interaction_exp_2": 1,
         "ch4_n2o_interaction_exp_1": 1,
+        "ch4_reference_conc": 3,
+        "n2o_reference_conc": 2,
+        "ch4_n2o_interaction_exp_2": 1,
+        "ch4_n2o_interaction_coef_3": 1,
     },
 )
 def adjustment_for_ch4ref_and_n2oref():
@@ -184,7 +184,7 @@ def ch4_n2o_interaction_coef_1():
 
 
 _ext_constant_ch4_n2o_interaction_coef_1 = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "CH4_N2O_interaction_coef_1",
     {},
@@ -209,7 +209,7 @@ def ch4_n2o_interaction_coef_2():
 
 
 _ext_constant_ch4_n2o_interaction_coef_2 = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "CH4_N2O_interaction_coef_2",
     {},
@@ -234,7 +234,7 @@ def ch4_n2o_interaction_coef_3():
 
 
 _ext_constant_ch4_n2o_interaction_coef_3 = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "CH4_N2O_interaction_coef_3",
     {},
@@ -259,7 +259,7 @@ def ch4_n2o_interaction_exp_1():
 
 
 _ext_constant_ch4_n2o_interaction_exp_1 = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "CH4_N2O_interaction_exp_1",
     {},
@@ -284,7 +284,7 @@ def ch4_n2o_interaction_exp_2():
 
 
 _ext_constant_ch4_n2o_interaction_exp_2 = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "CH4_N2O_interaction_exp_2",
     {},
@@ -309,7 +309,7 @@ def ch4_n2o_unit_adj():
 
 
 _ext_constant_ch4_n2o_unit_adj = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "CH4_N2O_unit_adj",
     {},
@@ -334,7 +334,7 @@ def ch4_radiative_efficiency_coef():
 
 
 _ext_constant_ch4_radiative_efficiency_coef = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "CH4_radiative_efficiency_coef",
     {},
@@ -351,11 +351,11 @@ _ext_constant_ch4_radiative_efficiency_coef = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "ch4_radiative_efficiency_coef": 1,
-        "ch4_reference_conc": 1,
         "ch4_atm_conc": 1,
         "ch4_n2o_unit_adj": 2,
-        "adjustment_for_ch4ref_and_n2oref": 1,
+        "ch4_reference_conc": 1,
         "adjustment_for_ch4_and_n2oref": 1,
+        "adjustment_for_ch4ref_and_n2oref": 1,
     },
 )
 def ch4_radiative_forcing():
@@ -383,7 +383,7 @@ def ch4_reference_conc():
 
 
 _ext_constant_ch4_reference_conc = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "CH4_reference_conc",
     {},
@@ -400,8 +400,8 @@ _ext_constant_ch4_reference_conc = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "reference_co2_radiative_forcing": 1,
-        "preindustrial_c": 1,
         "c_in_atmosphere": 1,
+        "preindustrial_c": 1,
     },
 )
 def co2_radiative_forcing():
@@ -466,7 +466,7 @@ def hfc_rf_total():
     """
     The sum of the RFs of the individual HFC types.
     """
-    return sum(hfc_rf().rename({"HFC type": "HFC type!"}), dim=["HFC type!"])
+    return sum(hfc_rf().rename({np.str_("HFC type"): "HFC type!"}), dim=["HFC type!"])
 
 
 @component.add(
@@ -484,7 +484,7 @@ def last_historical_rf_year():
 
 
 _ext_constant_last_historical_rf_year = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "last_historical_RF_year",
     {},
@@ -510,7 +510,7 @@ def mineral_aerosols_and_land_rf():
 
 
 _ext_constant_mineral_aerosols_and_land_rf = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "mineral_aerosols_and_land_RF",
     {},
@@ -539,7 +539,7 @@ def mp_rf_total():
 
 
 _ext_data_mp_rf_total = ExtData(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "MP_RF_total_time",
     "MP_RF_total",
@@ -566,7 +566,7 @@ def n2o_radiative_efficiency_coeff():
 
 
 _ext_constant_n2o_radiative_efficiency_coeff = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "N2O_radiative_efficiency_coeff",
     {},
@@ -584,8 +584,8 @@ _ext_constant_n2o_radiative_efficiency_coeff = ExtConstant(
     depends_on={
         "n2o_radiative_efficiency_coeff": 1,
         "n2o_atm_conc": 1,
-        "n2o_reference_conc": 1,
         "ch4_n2o_unit_adj": 2,
+        "n2o_reference_conc": 1,
         "adjustment_for_ch4ref_and_n2oref": 1,
         "adjustment_for_ch4ref_and_n2o": 1,
     },
@@ -615,7 +615,7 @@ def n2o_reference_conc():
 
 
 _ext_constant_n2o_reference_conc = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "N2O_reference_conc",
     {},
@@ -667,7 +667,7 @@ def other_forcings_history():
 
 
 _ext_data_other_forcings_history = ExtData(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "other_forcings_history_time",
     "other_forcings_history",
@@ -708,7 +708,7 @@ def other_forcings_rcp():
 @component.add(
     name="other forcings RCP Scenario",
     units="W/(m*m)",
-    subscripts=["RCP Scenario"],
+    subscripts=[np.str_("RCP Scenario")],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -725,7 +725,7 @@ def other_forcings_rcp_scenario():
 
 
 _ext_data_other_forcings_rcp_scenario = ExtData(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "other_forcings_RCP_time",
     "other_forcings_RCP",
@@ -778,7 +778,7 @@ def time_to_commit_rf():
 
 
 _ext_constant_time_to_commit_rf = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "World",
     "time_to_commit_RF",
     {},

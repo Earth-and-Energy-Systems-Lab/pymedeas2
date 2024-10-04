@@ -1,6 +1,6 @@
 """
 Module energy.demand.gases_ped_pes_fes
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -100,6 +100,8 @@ def other_gases_required():
         "ped_gas_for_chp_plants_ej": 1,
         "ped_gas_heatnc": 1,
         "other_gases_required": 1,
+        "pes_biogas_ej": 1,
+        "pes_biogas_for_tfc": 1,
     },
 )
 def ped_gases():
@@ -114,7 +116,9 @@ def ped_gases():
         + ped_gases_for_heat_plants_ej()
         + ped_gas_for_chp_plants_ej()
         + ped_gas_heatnc()
-        + other_gases_required(),
+        + other_gases_required()
+        + pes_biogas_ej()
+        - pes_biogas_for_tfc(),
     )
 
 
@@ -123,13 +127,27 @@ def ped_gases():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_gases": 1, "pes_biogas_for_tfc": 1},
+    depends_on={
+        "ped_gases": 1,
+        "pes_biogas_ej": 1,
+        "synthethic_fuel_generation_delayed": 1,
+    },
 )
 def ped_nat_gas_ej():
     """
     Primary energy demand of natural (fossil) gas.
     """
-    return np.maximum(0, ped_gases() - pes_biogas_for_tfc())
+    return np.maximum(
+        0,
+        ped_gases()
+        - pes_biogas_ej()
+        - sum(
+            synthethic_fuel_generation_delayed()
+            .loc[_subscript_dict["ETG"]]
+            .rename({np.str_("E to synthetic"): "ETG!"}),
+            dim=["ETG!"],
+        ),
+    )
 
 
 @component.add(
@@ -137,13 +155,26 @@ def ped_nat_gas_ej():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pes_nat_gas": 1, "pes_biogas_for_tfc": 1},
+    depends_on={
+        "pes_nat_gas": 1,
+        "synthethic_fuel_generation_delayed": 1,
+        "pes_biogas_ej": 1,
+    },
 )
 def pes_gases():
     """
     Primary energy supply gas.
     """
-    return pes_nat_gas() + pes_biogas_for_tfc()
+    return (
+        pes_nat_gas()
+        + sum(
+            synthethic_fuel_generation_delayed()
+            .loc[_subscript_dict["ETG"]]
+            .rename({np.str_("E to synthetic"): "ETG!"}),
+            dim=["ETG!"],
+        )
+        + pes_biogas_ej()
+    )
 
 
 @component.add(
@@ -195,9 +226,9 @@ def share_gases_dem_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_gas": 1,
-        "other_gases_required": 1,
-        "ped_nat_gas_for_gtl_ej": 1,
         "ped_gases": 1,
+        "ped_nat_gas_for_gtl_ej": 1,
+        "other_gases_required": 1,
     },
 )
 def share_gases_for_final_energy():
@@ -271,25 +302,13 @@ def share_nat_gas_for_elec_emissions_relevant():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "nonenergy_use_demand_by_final_fuel_ej": 1,
-        "ped_nat_gas_ej": 1,
-        "share_nat_gas_for_elec_emissions_relevant": 1,
-        "share_nat_gas_for_gtl_emissions_relevant": 1,
-        "share_nat_gas_for_heat_emissions_relevant": 1,
-    },
+    depends_on={"share_gases_for_final_energy": 1, "share_nat_gas_pes": 1},
 )
 def share_nat_gas_for_fc_emissions_relevant():
-    return (
-        1
-        - zidz(
-            float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"]),
-            ped_nat_gas_ej(),
-        )
-        - share_nat_gas_for_elec_emissions_relevant()
-        - share_nat_gas_for_gtl_emissions_relevant()
-        - share_nat_gas_for_heat_emissions_relevant()
-    )
+    """
+    1-ZIDZ("Non-energy use demand by final fuel EJ"[gases],"PED nat. gas EJ")-share nat gas for Elec emissions relevant-share nat gas for GTL emissions relevant-share nat gas for Heat emissions relevant
+    """
+    return share_gases_for_final_energy() * share_nat_gas_pes()
 
 
 @component.add(
@@ -323,6 +342,17 @@ def share_nat_gas_for_heat_emissions_relevant():
         + ped_gas_for_chp_plants_ej() * (1 - share_elec_gen_in_chp_nat_gas()),
         ped_nat_gas_ej(),
     )
+
+
+@component.add(
+    name="share nat gas PES",
+    units="1",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pes_nat_gas": 1, "pes_gases": 1},
+)
+def share_nat_gas_pes():
+    return pes_nat_gas() / pes_gases()
 
 
 @component.add(

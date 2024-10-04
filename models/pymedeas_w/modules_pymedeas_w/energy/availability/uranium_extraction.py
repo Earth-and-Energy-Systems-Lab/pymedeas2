@@ -1,6 +1,6 @@
 """
 Module energy.availability.uranium_extraction
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -68,7 +68,7 @@ def cumulated_uranium_extraction_to_1995():
 
 
 _ext_constant_cumulated_uranium_extraction_to_1995 = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "cumulative_uranium_extraction_until_1995",
     {},
@@ -148,7 +148,7 @@ def table_max_extraction_uranium(x, final_subs=None):
 
 
 _ext_lookup_table_max_extraction_uranium = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "RURR_uranium",
     "max_extraction_uranium",
@@ -185,7 +185,7 @@ def urr_uranium_input():
 
 
 _ext_constant_urr_uranium_input = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "URR_uranium",
     {},

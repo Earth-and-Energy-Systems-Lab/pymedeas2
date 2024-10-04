@@ -1,6 +1,6 @@
 """
 Module energy.supply.crop_and_forest_residues
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -73,7 +73,7 @@ def max_npp_potential_bioe_residues():
 
 
 _ext_constant_max_npp_potential_bioe_residues = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "max_NPP_pot_bioe_res",
     {},
@@ -146,12 +146,12 @@ def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
     depends_on={
         "time": 3,
         "start_year_bioe_residues_for_heatelec": 3,
-        "pe_bioe_residues_for_heatelec_ej": 1,
-        "bioe_residues_for_heatelec_available": 1,
-        "start_production_biofuels": 1,
-        "p_bioe_residues_for_heatelec": 1,
         "ej_per_ktoe": 1,
+        "bioe_residues_for_heatelec_available": 1,
+        "pe_bioe_residues_for_heatelec_ej": 1,
+        "p_bioe_residues_for_heatelec": 1,
         "nvs_1_year": 1,
+        "start_production_biofuels": 1,
     },
 )
 def new_bioe_residues_for_heatelec():
@@ -183,13 +183,13 @@ def new_bioe_residues_for_heatelec():
     depends_on={
         "time": 3,
         "start_year_cellulosic_biofuels": 3,
-        "cellulosic_biofuels_available": 1,
-        "start_production_biofuels": 1,
         "ej_per_ktoe": 1,
-        "nvs_1_year": 2,
-        "constrain_liquids_exogenous_growth": 1,
+        "cellulosic_biofuels_available": 1,
         "p_cellulosic_biofuels": 1,
         "potential_pe_cellulosic_biofuel_ej": 2,
+        "constrain_liquids_exogenous_growth": 1,
+        "nvs_1_year": 2,
+        "start_production_biofuels": 1,
         "check_liquids": 1,
     },
 )
@@ -233,7 +233,7 @@ def p_bioe_residues_for_heatelec():
 
 
 _ext_constant_p_bioe_residues_for_heatelec = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "p_bioe_residues_for_heat_electr",
     {},
@@ -258,7 +258,7 @@ def p_cellulosic_biofuels():
 
 
 _ext_constant_p_cellulosic_biofuels = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "p_cellulosic_biofuels",
     {},
@@ -387,7 +387,7 @@ def share_cellulosic_biofuels_vs_bioe_residues():
 
 
 _ext_constant_share_cellulosic_biofuels_vs_bioe_residues = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "share_cell_biofuels_vs_bioe_residues",
     {},
@@ -412,7 +412,7 @@ def start_year_bioe_residues_for_heatelec():
 
 
 _ext_constant_start_year_bioe_residues_for_heatelec = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "start_year_bioe_residues_heat_electr",
     {},
@@ -437,7 +437,7 @@ def start_year_cellulosic_biofuels():
 
 
 _ext_constant_start_year_cellulosic_biofuels = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    "../../scenarios/scen_w.xlsx",
     "NZP",
     "start_year_cell_biofuels",
     {},

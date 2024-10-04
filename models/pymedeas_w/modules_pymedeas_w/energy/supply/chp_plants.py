@@ -1,6 +1,6 @@
 """
 Module energy.supply.chp_plants
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -22,7 +22,7 @@ def efficiency_elec_coal_chp_plants():
 
 
 _ext_data_efficiency_elec_coal_chp_plants = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_efficiencies",
     "historic_efficiency_electricity_coal_chp_plants",
@@ -53,7 +53,7 @@ def efficiency_elec_gas_chp_plants():
 
 
 _ext_data_efficiency_elec_gas_chp_plants = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_efficiencies",
     "historic_efficiency_electricity_gas_chp_plants",
@@ -84,7 +84,7 @@ def efficiency_elec_oil_chp_plants():
 
 
 _ext_data_efficiency_elec_oil_chp_plants = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_efficiencies",
     "historic_efficiency_electricity_liquids_chp_plants",
@@ -115,7 +115,7 @@ def efficiency_heat_coal_chp_plants():
 
 
 _ext_data_efficiency_heat_coal_chp_plants = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_efficiencies",
     "historic_efficiency_heat_coal_chp_plants",
@@ -146,7 +146,7 @@ def efficiency_heat_gas_chp_plants():
 
 
 _ext_data_efficiency_heat_gas_chp_plants = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_efficiencies",
     "historic_efficiency_heat_gas_chp_plants",
@@ -177,7 +177,7 @@ def efficiency_heat_oil_chp_plants():
 
 
 _ext_data_efficiency_heat_oil_chp_plants = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_efficiencies",
     "historic_efficiency_heat_liquids_chp_plants",
@@ -351,7 +351,7 @@ def historic_share_chp_plants_gas():
 
 
 _ext_data_historic_share_chp_plants_gas = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_historic_data",
     "historic_share_chp_plants_gas",
@@ -382,7 +382,7 @@ def historic_share_chp_plants_oil():
 
 
 _ext_data_historic_share_chp_plants_oil = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_historic_data",
     "historic_share_chp_plants_oil",
@@ -636,7 +636,7 @@ def share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation():
 
 
 _ext_data_share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "time_historic_data",
     "historic_share_commercial_heat_in_chp_on_total_commercial_heat_generation",
@@ -667,7 +667,7 @@ def share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation():
 
 
 _ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "World",
     "share_heat_output_vs_electricity_in_nuclear",
     {},
@@ -684,14 +684,14 @@ _ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_gener
     comp_subtype="Normal",
     depends_on={
         "ped_gas_for_chp_plants_ej": 1,
-        "efficiency_heat_gas_chp_plants": 1,
         "efficiency_elec_gas_chp_plants": 1,
-        "efficiency_heat_oil_chp_plants": 1,
-        "ped_oil_for_chp_plants_ej": 1,
+        "efficiency_heat_gas_chp_plants": 1,
         "efficiency_elec_oil_chp_plants": 1,
-        "ped_coal_for_chp_plants_ej": 1,
+        "ped_oil_for_chp_plants_ej": 1,
+        "efficiency_heat_oil_chp_plants": 1,
         "efficiency_heat_coal_chp_plants": 1,
         "efficiency_elec_coal_chp_plants": 1,
+        "ped_coal_for_chp_plants_ej": 1,
     },
 )
 def total_gen_losses_demand_for_chp_plants_ej():

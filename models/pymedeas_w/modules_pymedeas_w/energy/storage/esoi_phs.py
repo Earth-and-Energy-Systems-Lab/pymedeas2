@@ -47,8 +47,8 @@ def b_lineal_regr():
         "lifetime_res_elec": 1,
         "ej_per_twh": 1,
         "twe_per_twh": 1,
-        "quality_of_electricity_2015": 1,
         "esoi_static_phs": 1,
+        "quality_of_electricity_2015": 1,
     },
 )
 def ced_per_tw_over_lifetime_phs():
@@ -82,8 +82,8 @@ def cedtot_over_lifetime_phs():
     comp_subtype="Normal",
     depends_on={
         "output_phs_over_lifetime": 1,
-        "quality_of_electricity": 1,
         "cedtot_over_lifetime_phs": 1,
+        "quality_of_electricity": 1,
     },
 )
 def esoi_phs():

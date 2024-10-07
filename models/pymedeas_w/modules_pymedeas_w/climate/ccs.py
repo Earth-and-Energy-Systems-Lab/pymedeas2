@@ -122,7 +122,7 @@ _ext_lookup_ccs_policy = ExtLookup(
     subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("CCS tech")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "ccs_tech_share": 1, "ccs_policy": 1},
+    depends_on={"time": 3, "ccs_policy": 1, "ccs_tech_share": 1},
 )
 def ccs_sector_tech():
     return if_then_else(
@@ -335,8 +335,9 @@ _ext_lookup_ccs_tech_share.add(
     comp_subtype="Normal",
     depends_on={
         "co2_captured_sector_ccs": 2,
-        "time": 2,
         "share_ccs_energy_related": 2,
+        "time": 4,
+        "share_beccs": 2,
         "co2_emissions_households_and_sectors_fossil_fuels": 2,
         "co2_emissions_per_fuel": 2,
     },
@@ -350,14 +351,17 @@ def co2_captured_by_sector_energy_related():
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["Mining quarrying and energy supply"]] = False
     value.values[except_subs.values] = np.minimum(
-        co2_captured_sector_ccs() * share_ccs_energy_related(time()),
+        co2_captured_sector_ccs()
+        * share_ccs_energy_related(time())
+        * (1 + share_beccs(time())),
         co2_emissions_households_and_sectors_fossil_fuels(),
     ).values[except_subs.values]
     value.loc[["Mining quarrying and energy supply"]] = np.minimum(
         float(co2_captured_sector_ccs().loc["Mining quarrying and energy supply"])
         * float(
             share_ccs_energy_related(time()).loc["Mining quarrying and energy supply"]
-        ),
+        )
+        * (1 + share_beccs(time())),
         float(
             co2_emissions_households_and_sectors_fossil_fuels().loc[
                 "Mining quarrying and energy supply"
@@ -640,13 +644,39 @@ _ext_lookup_dac_tech_share = ExtLookup(
     subscripts=[np.str_("SECTORS and HOUSEHOLDS")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"co2_captured_sector_ccs": 1, "time": 1, "share_ccs_energy_related": 1},
+    depends_on={"co2_captured_sector_ccs": 1, "share_ccs_energy_related": 1, "time": 1},
 )
 def process_co2_captured_ccs():
     """
     Process emissions captured by CCS technologies
     """
     return co2_captured_sector_ccs() * (1 - share_ccs_energy_related(time()))
+
+
+@component.add(
+    name="share BECCS",
+    units="Dmnl",
+    comp_type="Lookup",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_share_beccs",
+        "__lookup__": "_ext_lookup_share_beccs",
+    },
+)
+def share_beccs(x, final_subs=None):
+    return _ext_lookup_share_beccs(x, final_subs)
+
+
+_ext_lookup_share_beccs = ExtLookup(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "year_RES_power",
+    "share_BECCS",
+    {},
+    _root,
+    {},
+    "_ext_lookup_share_beccs",
+)
 
 
 @component.add(
@@ -748,9 +778,9 @@ def share_heat_vs_electricity_in_dac_per_tech():
     comp_subtype="Normal",
     depends_on={
         "co2_captured_by_sector_energy_related": 1,
-        "time": 2,
-        "co2_captured_sector_ccs": 1,
         "share_ccs_energy_related": 2,
+        "co2_captured_sector_ccs": 1,
+        "time": 2,
     },
 )
 def share_non_captured_sector():

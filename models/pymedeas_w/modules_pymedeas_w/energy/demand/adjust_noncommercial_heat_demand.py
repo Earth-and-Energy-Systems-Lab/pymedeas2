@@ -34,8 +34,8 @@ _ext_constant_end_year_policy_share_feh_over_fed = ExtConstant(
     depends_on={
         "fed_oil_for_heatnc": 1,
         "fed_nat_gas_for_heatnc": 1,
-        "fed_coal_for_heatnc": 1,
         "fed_solid_bioe_for_heatnc": 1,
+        "fed_coal_for_heatnc": 1,
     },
 )
 def fed_by_fuel_for_heatnc():
@@ -175,8 +175,8 @@ def fed_solid_bioe_for_heatnc():
     depends_on={
         "hist_share_feh_over_fed_oil": 1,
         "nist_share_feh_over_fed_nat_gas": 1,
-        "hist_share_feh_over_fed_coal": 1,
         "hist_share_feh_over_fed_solid_bioe": 1,
+        "hist_share_feh_over_fed_coal": 1,
     },
 )
 def hist_share_feh_over_fed_by_final_fuel():
@@ -303,7 +303,7 @@ _ext_constant_nist_share_feh_over_fed_nat_gas = ExtConstant(
     units="Dmnl",
     subscripts=["final sources"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
     depends_on={"__external__": "_ext_constant_policy_share_feh_over_fed"},
 )
 def policy_share_feh_over_fed():
@@ -423,8 +423,8 @@ def share_fed_liquids_vs_nre_heatnc():
     depends_on={
         "time": 4,
         "hist_share_feh_over_fed_by_final_fuel": 6,
-        "policy_share_feh_over_fed": 2,
         "end_year_policy_share_feh_over_fed": 2,
+        "policy_share_feh_over_fed": 2,
         "policy_share_feh_over_fed_bioe": 1,
     },
 )

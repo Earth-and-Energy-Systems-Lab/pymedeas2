@@ -589,8 +589,8 @@ _ext_constant_saving_ratios_vehicles_tkm = ExtConstant(
     depends_on={
         "time": 2,
         "tkmgdp_slope": 1,
-        "tkm_initial": 1,
         "gdp": 1,
+        "tkm_initial": 1,
         "hist_tkm": 1,
     },
 )
@@ -754,10 +754,10 @@ def tkm_fuel_share_inland():
     depends_on={
         "time": 5,
         "end_historical_data": 4,
-        "fuel_share_1995": 2,
         "initial_fuel_share_maritime_tkm": 3,
-        "start_year_policies_transport": 3,
+        "fuel_share_1995": 2,
         "fuel_share_maritime": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def tkm_fuel_share_maritime():

@@ -68,8 +68,8 @@ _ext_constant_additional_land_compet_available_for_biofuels = ExtConstant(
     depends_on={
         "annual_additional_historic_product_biofuels_2gen": 1,
         "ej_per_ktoe": 1,
-        "land_productivity_biofuels_2gen_ej_mha": 1,
         "nvs_1_year": 1,
+        "land_productivity_biofuels_2gen_ej_mha": 1,
     },
 )
 def annual_additional_historic_land_use_biofuels_2gen():
@@ -431,10 +431,10 @@ _ext_constant_land_productivity_biofuels_2gen_ej_mha = ExtConstant(
     depends_on={
         "time": 2,
         "start_year_3gen": 2,
-        "land_compet_biofuels_3gen_mha": 1,
-        "annual_shift_from_2gen_to_3gen": 1,
-        "land_compet_biofuels_2gen_mha": 1,
         "land_compet_2gen_vs_total_land_compet": 2,
+        "land_compet_biofuels_3gen_mha": 1,
+        "land_compet_biofuels_2gen_mha": 1,
+        "annual_shift_from_2gen_to_3gen": 1,
         "biofuels_3gen_land_compet_available": 2,
         "p_biofuels_3gen": 1,
     },
@@ -488,8 +488,8 @@ def max_land_compet_biofuels_2gen():
     depends_on={
         "time": 1,
         "start_year_3gen": 1,
-        "land_productivity_biofuels_2gen_ej_mha": 2,
         "max_land_compet_biofuels_2gen": 2,
+        "land_productivity_biofuels_2gen_ej_mha": 2,
         "efficiency_improvement_biofuels_3gen": 1,
     },
 )
@@ -514,9 +514,9 @@ def max_peavail_potential_biofuels_23gen():
     comp_subtype="Normal",
     depends_on={
         "check_liquids": 1,
-        "land_compet_biofuels_2gen_mha": 2,
         "constrain_liquids_exogenous_growth": 1,
         "nvs_1_year": 1,
+        "land_compet_biofuels_2gen_mha": 2,
         "annual_additional_historic_land_use_biofuels_2gen": 1,
         "adapt_growth_biofuels_2gen": 1,
         "biofuels_land_compet_available": 1,

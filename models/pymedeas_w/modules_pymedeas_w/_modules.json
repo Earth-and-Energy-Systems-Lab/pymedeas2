@@ -92,6 +92,7 @@
             "dac_policy_electricity",
             "dac_tech_share",
             "process_co2_captured_ccs",
+            "share_beccs",
             "share_ccs_energy_related",
             "share_energy_related_average",
             "share_fed_by_sector_delayed",

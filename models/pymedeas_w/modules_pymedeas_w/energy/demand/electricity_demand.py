@@ -34,8 +34,8 @@ def electrical_distribution_losses_ej():
     comp_subtype="Normal",
     depends_on={
         "total_fe_elec_demand_twh": 1,
-        "time": 1,
         "share_trans_and_dist_losses": 1,
+        "time": 1,
     },
 )
 def electrical_distribution_losses_twh():
@@ -123,8 +123,8 @@ def total_fe_elec_demand_ej():
     comp_subtype="Normal",
     depends_on={
         "fe_demand_elec_consum_twh": 1,
-        "time": 1,
         "share_trans_and_dist_losses": 1,
+        "time": 1,
     },
 )
 def total_fe_elec_demand_twh():

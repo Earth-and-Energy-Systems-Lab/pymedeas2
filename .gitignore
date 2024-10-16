@@ -16,5 +16,4 @@ model_updated.py
 *.csv
 .coverage
 myenv/
-outputs/
 pymedeas_plots/

@@ -17,3 +17,4 @@ model_updated.py
 .coverage
 myenv/
 pymedeas_plots/
+outputs/

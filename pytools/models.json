@@ -1,0 +1,181 @@
+{
+"14sectors_cat": {
+    "pymedeas_w": {
+        "model_file": "models/pymedeas_w/pymedeas_w.py",
+        "subscripts_file": "_subscripts_pymedeas_w.json",
+        "scenario_file": "scen_w.xlsx",
+        "inputs_sheet": "World",
+        "out_default": [
+            "tpe_from_res_ej",
+            "total_extraction_nre_ej",
+            "pes_oil_ej",
+            "pes_nat_gas",
+            "extraction_coal_ej",
+            "extraction_uranium_ej",
+            "share_e_losses_cc",
+            "share_conv_vs_total_gas_extraction",
+            "share_conv_vs_total_oil_extraction",
+            "real_demand_by_sector",
+            "real_total_output_by_sector",
+            "real_final_energy_by_sector_and_fuel",
+            "annual_gdp_growth_rate",
+            "abundance_coal",
+            "abundance_total_nat_gas",
+            "abundance_total_oil",
+            "temperature_change",
+            "total_land_requirements_renew_mha",
+            "gdppc",
+            "eroist_system",
+            "real_tfec",
+            "gdp",
+            "population"
+            ],
+        "parent": []
+        },
+    "pymedeas_eu": {
+            "model_file": "models/pymedeas_eu/pymedeas_eu.py",
+            "subscripts_file": "_subscripts_pymedeas_eu.json",
+            "scenario_file": "scen_eu.xlsx",
+            "inputs_sheet": "Europe",
+            "out_default": [
+                "gdp_eu",
+                "total_fe_elec_generation_twh_eu",
+                "annual_gdp_growth_rate_eu",
+                "real_final_demand_by_sector_eu",
+                "real_total_output_by_sector_eu",
+                "real_final_energy_by_sector_and_fuel_eu"
+                ],
+            "parent": [
+                {
+                    "name": "pymedeas_w",
+                    "default_results_folder": "outputs/pymedeas_w"
+                }
+            ]
+        },
+    "pymedeas_cat": {
+            "model_file": "models/pymedeas_cat/pymedeas_cat.py",
+            "subscripts_file": "_subscripts_pymedeas_cat.json",
+            "scenario_file": "scen_cat.xlsx",
+            "inputs_sheet": "Catalonia",
+            "out_default": [],
+            "parent": [
+                {
+                    "name": "pymedeas_w",
+                    "default_results_folder": "outputs/pymedeas_w"
+                },
+                {
+                    "name": "pymedeas_eu",
+                    "default_results_folder": "outputs/pymedeas_eu"
+                }
+            ]
+        }
+    },
+"27sectors_exiobase": {
+    "pymedeas_w": {
+        "model_file": "models/pymedeas_w/pymedeas_w.py",
+        "subscripts_file": "_subscripts_pymedeas_w.json",
+        "scenario_file": "scen_w.xlsx",
+        "inputs_sheet": "World",
+        "out_default": [
+            "tpe_from_res_ej",
+            "total_extraction_nre_ej",
+            "pes_oil_ej",
+            "pes_nat_gas",
+            "extraction_coal_ej",
+            "extraction_uranium_ej",
+            "share_e_losses_cc",
+            "share_conv_vs_total_gas_extraction",
+            "share_conv_vs_total_oil_extraction",
+            "real_demand_by_sector",
+            "real_total_output_by_sector",
+            "real_final_energy_by_sector_and_fuel",
+            "annual_gdp_growth_rate",
+            "abundance_coal",
+            "abundance_total_nat_gas",
+            "abundance_total_oil",
+            "temperature_change",
+            "total_land_requirements_renew_mha",
+            "gdppc",
+            "eroist_system",
+            "real_tfec",
+            "gdp",
+            "population"
+            ],
+        "parent": []
+        },
+    "pymedeas_eu": {
+            "model_file": "models/pymedeas_eu/pymedeas_eu.py",
+            "subscripts_file": "_subscripts_pymedeas_eu.json",
+            "scenario_file": "scen_eu.xlsx",
+            "inputs_sheet": "Europe",
+            "out_default": [
+                "gdp_eu",
+                "total_fe_elec_generation_twh_eu",
+                "annual_gdp_growth_rate_eu",
+                "real_final_demand_by_sector_eu",
+                "real_total_output_by_sector_eu",
+                "real_final_energy_by_sector_and_fuel_eu"
+                ],
+            "parent": [
+                {
+                    "name": "pymedeas_w",
+                    "default_results_folder": "outputs/pymedeas_w"
+                }
+            ]
+        }
+    },
+    "16sectors_qb": {
+        "pymedeas_w": {
+            "model_file": "models/pymedeas_w/pymedeas_w.py",
+            "subscripts_file": "_subscripts_pymedeas_w.json",
+            "scenario_file": "scen_w.xlsx",
+            "inputs_sheet": "World",
+            "out_default": [
+                "tpe_from_res_ej",
+                "total_extraction_nre_ej",
+                "pes_oil_ej",
+                "pes_nat_gas",
+                "extraction_coal_ej",
+                "extraction_uranium_ej",
+                "share_e_losses_cc",
+                "share_conv_vs_total_gas_extraction",
+                "share_conv_vs_total_oil_extraction",
+                "real_demand_by_sector",
+                "real_total_output_by_sector",
+                "real_final_energy_by_sector_and_fuel",
+                "annual_gdp_growth_rate",
+                "abundance_coal",
+                "abundance_total_nat_gas",
+                "abundance_total_oil",
+                "temperature_change",
+                "total_land_requirements_renew_mha",
+                "gdppc",
+                "eroist_system",
+                "real_tfec",
+                "gdp",
+                "population"
+                ],
+            "parent": []
+            },
+        "pymedeas_qb": {
+                "model_file": "models/pymedeas_eu/pymedeas_eu.py",
+                "subscripts_file": "_subscripts_pymedeas_qb.json",
+                "scenario_file": "scen_qb.xlsx",
+                "inputs_sheet": "Quebec",
+                "out_default": [
+                    "gdp_eu",
+                    "total_fe_elec_generation_twh_eu",
+                    "annual_gdp_growth_rate_eu",
+                    "real_final_demand_by_sector_eu",
+                    "real_total_output_by_sector_eu",
+                    "real_final_energy_by_sector_and_fuel_eu"
+                    ],
+                "parent": [
+                    {
+                        "name": "pymedeas_w",
+                        "default_results_folder": "outputs/pymedeas_w"
+                    }
+                ]
+            }
+        }
+}

@@ -1,39 +1,16 @@
 """
-Module energy.supply.nonenergy_use
-Translated using PySD version 3.14.1
+Module nonenergy_use
+Translated using PySD version 3.2.0
 """
-
-@component.add(
-    name='"a lin reg non-energy"',
-    units="EJ/(year*T$)",
-    subscripts=["final sources"],
-    comp_type="Constant",
-    comp_subtype="Normal",
-)
-def a_lin_reg_nonenergy():
-    value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
-    )
-    value.loc[["electricity"]] = 0
-    value.loc[["heat"]] = 0
-    value.loc[["liquids"]] = -0.461414
-    value.loc[["gases"]] = 0.123925
-    value.loc[["solids"]] = 0.0797511
-    return value
 
 
 @component.add(
     name='"Annual variation non-energy use"',
-    units="EJ/(year*year)",
+    units="EJ",
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "time": 3,
-        "variation_nonenergy_use": 1,
-        "historic_nonenergy_use": 2,
-        "time_step": 2,
-    },
+    depends_on={"time": 3, "variation_nonenergy_use": 1, "historic_nonenergy_use": 2},
 )
 def annual_variation_nonenergy_use():
     """
@@ -42,17 +19,14 @@ def annual_variation_nonenergy_use():
     return if_then_else(
         time() > 2009,
         lambda: variation_nonenergy_use(),
-        lambda: (
-            historic_nonenergy_use(time() + time_step())
-            - historic_nonenergy_use(time())
-        )
-        / time_step(),
+        lambda: historic_nonenergy_use(integer(time() + 1))
+        - historic_nonenergy_use(integer(time())),
     )
 
 
 @component.add(
     name="historic nonenergy use",
-    units="EJ/year",
+    units="EJ",
     subscripts=["final sources"],
     comp_type="Lookup",
     comp_subtype="External",
@@ -69,8 +43,8 @@ def historic_nonenergy_use(x, final_subs=None):
 
 
 _ext_lookup_historic_nonenergy_use = ExtLookup(
-    r"../energy.xlsx",
-    "Catalonia",
+    "../energy.xlsx",
+    "Austria",
     "time_historic_data",
     "historic_non_energy_use",
     {"final sources": _subscript_dict["final sources"]},
@@ -82,7 +56,7 @@ _ext_lookup_historic_nonenergy_use = ExtLookup(
 
 @component.add(
     name="initial nonenergy use",
-    units="EJ/year",
+    units="EJ",
     subscripts=["final sources"],
     comp_type="Constant",
     comp_subtype="External",
@@ -96,8 +70,8 @@ def initial_nonenergy_use():
 
 
 _ext_constant_initial_nonenergy_use = ExtConstant(
-    r"../energy.xlsx",
-    "Catalonia",
+    "../energy.xlsx",
+    "Austria",
     "initial_non_energy_use*",
     {"final sources": _subscript_dict["final sources"]},
     _root,
@@ -107,43 +81,43 @@ _ext_constant_initial_nonenergy_use = ExtConstant(
 
 
 @component.add(
-    name='"Non-energy use demand by final fuel"',
-    units="EJ/year",
+    name='"Non-energy use demand by final fuel EJ"',
+    units="EJ",
     subscripts=["final sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
-    depends_on={"_integ_nonenergy_use_demand_by_final_fuel": 1},
+    depends_on={"_integ_nonenergy_use_demand_by_final_fuel_ej": 1},
     other_deps={
-        "_integ_nonenergy_use_demand_by_final_fuel": {
+        "_integ_nonenergy_use_demand_by_final_fuel_ej": {
             "initial": {"initial_nonenergy_use": 1},
             "step": {"annual_variation_nonenergy_use": 1},
         }
     },
 )
-def nonenergy_use_demand_by_final_fuel():
+def nonenergy_use_demand_by_final_fuel_ej():
     """
     Non-energy use demand by final fuel
     """
-    return _integ_nonenergy_use_demand_by_final_fuel()
+    return _integ_nonenergy_use_demand_by_final_fuel_ej()
 
 
-_integ_nonenergy_use_demand_by_final_fuel = Integ(
+_integ_nonenergy_use_demand_by_final_fuel_ej = Integ(
     lambda: annual_variation_nonenergy_use(),
     lambda: initial_nonenergy_use(),
-    "_integ_nonenergy_use_demand_by_final_fuel",
+    "_integ_nonenergy_use_demand_by_final_fuel_ej",
 )
 
 
 @component.add(
     name='"Total real non-energy use consumption EJ"',
-    units="EJ/year",
+    units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"nonenergy_use_demand_by_final_fuel": 1},
+    depends_on={"nonenergy_use_demand_by_final_fuel_ej": 1},
 )
 def total_real_nonenergy_use_consumption_ej():
     return sum(
-        nonenergy_use_demand_by_final_fuel().rename(
+        nonenergy_use_demand_by_final_fuel_ej().rename(
             {"final sources": "final sources!"}
         ),
         dim=["final sources!"],
@@ -152,23 +126,35 @@ def total_real_nonenergy_use_consumption_ej():
 
 @component.add(
     name='"variation non-energy use"',
-    units="EJ/(year*year)",
+    units="EJ",
     subscripts=["final sources"],
-    comp_type="Auxiliary",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "nonenergy_use_demand_by_final_fuel": 1,
-        "gdp_delayed_1yr": 1,
-        "a_lin_reg_nonenergy": 1,
-        "gdp_cat": 1,
-        "nvs_1_year": 1,
+        "nonenergy_use_demand_by_final_fuel_ej": 3,
+        "gdp_aut": 3,
+        "gdp_delayed_1yr": 3,
     },
 )
 def variation_nonenergy_use():
-    return if_then_else(
-        nonenergy_use_demand_by_final_fuel() > 0.01,
-        lambda: a_lin_reg_nonenergy() * (gdp_cat() - gdp_delayed_1yr()) / nvs_1_year(),
-        lambda: xr.DataArray(
-            0, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
-        ),
+    value = xr.DataArray(
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
+    value.loc[["electricity"]] = 0
+    value.loc[["heat"]] = 0
+    value.loc[["liquids"]] = if_then_else(
+        float(nonenergy_use_demand_by_final_fuel_ej().loc["liquids"]) > 0.01,
+        lambda: 0.461414 * (gdp_aut() - gdp_delayed_1yr()),
+        lambda: 0,
+    )
+    value.loc[["gases"]] = if_then_else(
+        float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"]) > 0.01,
+        lambda: 0.123925 * (gdp_aut() - gdp_delayed_1yr()),
+        lambda: 0,
+    )
+    value.loc[["solids"]] = if_then_else(
+        float(nonenergy_use_demand_by_final_fuel_ej().loc["solids"]) > 0.01,
+        lambda: 0.0797511 * (gdp_aut() - gdp_delayed_1yr()),
+        lambda: 0,
+    )
+    return value

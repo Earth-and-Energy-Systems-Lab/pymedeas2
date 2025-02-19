@@ -11,8 +11,8 @@ Translated using PySD version 3.14.0
     depends_on={
         "share_in_target_year_oil_for_elec": 1,
         "hist_share_oilff_elec": 1,
-        "start_year_policy_phaseout_oil_for_elec": 1,
         "target_year_policy_phaseout_oil_for_elec": 1,
+        "start_year_policy_phaseout_oil_for_elec": 1,
     },
 )
 def a_lineal_regr_phaseout_oil_for_elec():
@@ -126,20 +126,19 @@ def decrease_share_oil_for_elec():
     comp_subtype="Normal",
     depends_on={
         "switch_scarcityps_elec_substit": 1,
-        "hist_share_oilff_elec": 2,
         "demand_elec_plants_fossil_fuels_twh": 3,
-        "time": 1,
+        "share_oil_for_elec": 2,
         "future_share_gascoalff_for_elec": 1,
+        "time": 1,
     },
 )
 def demand_elec_gas_and_coal_twh():
     return if_then_else(
         switch_scarcityps_elec_substit() == 0,
-        lambda: demand_elec_plants_fossil_fuels_twh() * (1 - hist_share_oilff_elec()),
+        lambda: demand_elec_plants_fossil_fuels_twh() * (1 - share_oil_for_elec()),
         lambda: if_then_else(
             time() < 2016,
-            lambda: demand_elec_plants_fossil_fuels_twh()
-            * (1 - hist_share_oilff_elec()),
+            lambda: demand_elec_plants_fossil_fuels_twh() * (1 - share_oil_for_elec()),
             lambda: demand_elec_plants_fossil_fuels_twh()
             * future_share_gascoalff_for_elec(),
         ),
@@ -309,13 +308,13 @@ _ext_constant_efficiency_liquids_for_electricity = ExtConstant(
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"share_coal_for_elec": 1, "demand_elec_gas_and_coal_twh": 1},
+    depends_on={"share_gascoal_gas_for_elec": 1, "demand_elec_gas_and_coal_twh": 1},
 )
 def fe_demand_coal_elec_plants_twh():
     """
     Final energy demand of coal for electricity consumption (TWh).
     """
-    return share_coal_for_elec() * demand_elec_gas_and_coal_twh()
+    return (1 - share_gascoal_gas_for_elec()) * demand_elec_gas_and_coal_twh()
 
 
 @component.add(
@@ -323,13 +322,13 @@ def fe_demand_coal_elec_plants_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"desired_share_gascoalgas_elec": 1, "demand_elec_gas_and_coal_twh": 1},
+    depends_on={"share_gascoal_gas_for_elec": 1, "demand_elec_gas_and_coal_twh": 1},
 )
 def fe_demand_gas_elec_plants_twh():
     """
     Final energy demand of natural gas for electricity consumption (TWh).
     """
-    return desired_share_gascoalgas_elec() * demand_elec_gas_and_coal_twh()
+    return share_gascoal_gas_for_elec() * demand_elec_gas_and_coal_twh()
 
 
 @component.add(
@@ -365,10 +364,10 @@ def fes_elec_fossil_fuel_chp_plants_twh():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"future_share_oilff_for_elec": 1},
+    depends_on={"share_oil_for_elec": 1},
 )
 def future_share_gascoalff_for_elec():
-    return 1 - future_share_oilff_for_elec()
+    return 1 - share_oil_for_elec()
 
 
 @component.add(
@@ -530,11 +529,11 @@ _ext_lookup_historic_efficiency_gas_for_electricity = ExtLookup(
     depends_on={
         "time": 3,
         "percent_to_share": 1,
-        "time_step": 2,
         "historic_efficiency_gas_for_electricity": 2,
+        "time_step": 2,
+        "remaining_efficiency_improv_gas_for_electricity": 1,
         "efficiency_gas_for_electricity": 1,
         "efficiency_improv_gas_for_electricity": 1,
-        "remaining_efficiency_improv_gas_for_electricity": 1,
     },
 )
 def improvement_efficiency_gas_for_electricity():
@@ -1159,20 +1158,6 @@ def scarcity_primary_sources():
 
 
 @component.add(
-    name="share coal for Elec",
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"desired_share_gascoalgas_elec": 1},
-)
-def share_coal_for_elec():
-    """
-    Coal is assumed to cover the rest of the electricity demand after RES, nuclear, oil and gas.
-    """
-    return 1 - desired_share_gascoalgas_elec()
-
-
-@component.add(
     name='"share gas/(coal +gas) for Elec"',
     units="Dmnl",
     comp_type="Auxiliary",
@@ -1258,8 +1243,8 @@ _ext_constant_share_in_target_year_oil_for_elec = ExtConstant(
         "switch_scarcityps_elec_substit": 1,
         "hist_share_oilff_elec": 3,
         "start_year_policy_phaseout_oil_for_elec": 1,
-        "future_share_oilff_for_elec": 1,
         "phaseout_oil_for_electricity": 1,
+        "future_share_oilff_for_elec": 1,
         "p_share_oil_for_elec": 1,
         "time": 2,
     },

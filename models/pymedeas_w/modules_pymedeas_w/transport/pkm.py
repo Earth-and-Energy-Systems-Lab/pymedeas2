@@ -727,8 +727,8 @@ def pkm_fuel_share():
         "end_historical_data": 4,
         "fuel_share_1995": 2,
         "initial_fuel_share_air_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_air_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_air():
@@ -765,10 +765,10 @@ def pkm_fuel_share_air():
     depends_on={
         "time": 5,
         "end_historical_data": 4,
-        "initial_fuel_share_households_pkm": 3,
         "fuel_share_1995": 2,
-        "start_year_policies_transport": 3,
+        "initial_fuel_share_households_pkm": 3,
         "fuel_share_households_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_households():
@@ -805,10 +805,10 @@ def pkm_fuel_share_households():
     depends_on={
         "time": 5,
         "end_historical_data": 4,
-        "initial_fuel_share_inland_pkm": 3,
         "fuel_share_1995": 2,
-        "start_year_policies_transport": 3,
+        "initial_fuel_share_inland_pkm": 3,
         "fuel_share_inland_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_inland():
@@ -845,10 +845,10 @@ def pkm_fuel_share_inland():
     depends_on={
         "time": 5,
         "end_historical_data": 4,
-        "initial_fuel_share_maritime_pkm": 3,
         "fuel_share_1995": 2,
-        "start_year_policies_transport": 3,
+        "initial_fuel_share_maritime_pkm": 3,
         "fuel_share_maritime_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_maritime():

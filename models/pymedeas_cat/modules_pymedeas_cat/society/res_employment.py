@@ -1,11 +1,12 @@
 """
-Module society.res_employment
-Translated using PySD version 3.14.1
+Module res_employment
+Translated using PySD version 3.2.0
 """
+
 
 @component.add(
     name="D jobs fuel supply solids bioE",
-    units="people/year",
+    units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -24,14 +25,14 @@ def d_jobs_fuel_supply_solids_bioe():
 
 @component.add(
     name="D jobs new installed RES elec per techn",
-    units="people/year",
+    units="people",
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "res_elec_capacity_under_construction_tw": 1,
         "employment_factors_new_res_elec": 1,
-        "mw_per_tw": 1,
+        "m_per_t": 1,
     },
 )
 def d_jobs_new_installed_res_elec_per_techn():
@@ -42,13 +43,13 @@ def d_jobs_new_installed_res_elec_per_techn():
         0,
         res_elec_capacity_under_construction_tw()
         * employment_factors_new_res_elec()
-        * mw_per_tw(),
+        * m_per_t(),
     )
 
 
 @component.add(
     name="D jobs new installed RES heat per techn",
-    units="people/year",
+    units="people",
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -58,7 +59,7 @@ def d_jobs_new_installed_res_elec_per_techn():
         "new_res_capacity_for_heatnc_tw": 1,
         "replacement_res_for_heatnc_tw": 1,
         "employment_factors_new_res_heat": 1,
-        "mw_per_tw": 1,
+        "m_per_t": 1,
     },
 )
 def d_jobs_new_installed_res_heat_per_techn():
@@ -74,7 +75,7 @@ def d_jobs_new_installed_res_heat_per_techn():
             + replacement_res_for_heatnc_tw()
         )
         * employment_factors_new_res_heat()
-        * mw_per_tw(),
+        * m_per_t(),
     )
 
 
@@ -93,7 +94,7 @@ def employment_factor_biofuels():
 
 
 _ext_constant_employment_factor_biofuels = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "Global",
     "employment_factor_biofuels",
     {},
@@ -120,7 +121,7 @@ def employment_factor_fuel_supply_solids_bioe():
 
 
 _ext_constant_employment_factor_fuel_supply_solids_bioe = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "Global",
     "employment_factor_fuel_supply_solids_bioe",
     {},
@@ -132,7 +133,7 @@ _ext_constant_employment_factor_fuel_supply_solids_bioe = ExtConstant(
 
 @component.add(
     name="Employment factors new RES elec",
-    units="people/MW",
+    units="people*Year/MW",
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
@@ -146,7 +147,7 @@ def employment_factors_new_res_elec():
 
 
 _ext_constant_employment_factors_new_res_elec = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "Global",
     "employment_factors_new_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
@@ -158,7 +159,7 @@ _ext_constant_employment_factors_new_res_elec = ExtConstant(
 
 @component.add(
     name="Employment factors new RES heat",
-    units="people/MW",
+    units="people*Year/MW",
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
@@ -172,7 +173,7 @@ def employment_factors_new_res_heat():
 
 
 _ext_constant_employment_factors_new_res_heat = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "Global",
     "employment_factors_new_res_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
@@ -184,7 +185,7 @@ _ext_constant_employment_factors_new_res_heat = ExtConstant(
 
 @component.add(
     name='"Employment factors O&M RES elec"',
-    units="people/(year*MW)",
+    units="people/MW",
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
@@ -198,7 +199,7 @@ def employment_factors_om_res_elec():
 
 
 _ext_constant_employment_factors_om_res_elec = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "Global",
     "employment_factors_o_m_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
@@ -210,7 +211,7 @@ _ext_constant_employment_factors_om_res_elec = ExtConstant(
 
 @component.add(
     name='"Employment factors O&M RES heat"',
-    units="people/(year*MW)",
+    units="people/MW",
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
@@ -224,7 +225,7 @@ def employment_factors_om_res_heat():
 
 
 _ext_constant_employment_factors_om_res_heat = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "Global",
     "employment_factors_o_m_res_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
@@ -236,14 +237,14 @@ _ext_constant_employment_factors_om_res_heat = ExtConstant(
 
 @component.add(
     name='"Jobs O&M RES elec per techn"',
-    units="people/year",
+    units="people",
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "installed_capacity_res_elec": 1,
         "employment_factors_om_res_elec": 1,
-        "mw_per_tw": 1,
+        "m_per_t": 1,
     },
 )
 def jobs_om_res_elec_per_techn():
@@ -251,14 +252,13 @@ def jobs_om_res_elec_per_techn():
     Annual jobs operation&maintenance of RES elec per technology.
     """
     return np.maximum(
-        0,
-        installed_capacity_res_elec() * employment_factors_om_res_elec() * mw_per_tw(),
+        0, installed_capacity_res_elec() * employment_factors_om_res_elec() * m_per_t()
     )
 
 
 @component.add(
     name='"Jobs O&M RES heat per techn"',
-    units="people/year",
+    units="people",
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -266,7 +266,7 @@ def jobs_om_res_elec_per_techn():
         "installed_capacity_res_heatcom_tw": 1,
         "installed_capacity_res_heatnc_tw": 1,
         "employment_factors_om_res_heat": 1,
-        "mw_per_tw": 1,
+        "m_per_t": 1,
     },
 )
 def jobs_om_res_heat_per_techn():
@@ -277,13 +277,13 @@ def jobs_om_res_heat_per_techn():
         0,
         (installed_capacity_res_heatcom_tw() + installed_capacity_res_heatnc_tw())
         * employment_factors_om_res_heat()
-        * mw_per_tw(),
+        * m_per_t(),
     )
 
 
 @component.add(
     name="Ratio total vs D jobs RES elec",
-    units="Dmnl",
+    units="people*Year/MW",
     subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="External",
@@ -297,7 +297,7 @@ def ratio_total_vs_d_jobs_res_elec():
 
 
 _ext_constant_ratio_total_vs_d_jobs_res_elec = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "Global",
     "ratio_total_vs_direct_jobs_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
@@ -309,7 +309,7 @@ _ext_constant_ratio_total_vs_d_jobs_res_elec = ExtConstant(
 
 @component.add(
     name="Ratio total vs D jobs RES heat",
-    units="Dmnl",
+    units="people*Year/MW",
     subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
@@ -323,7 +323,7 @@ def ratio_total_vs_d_jobs_res_heat():
 
 
 _ext_constant_ratio_total_vs_d_jobs_res_heat = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "Global",
     "ratio_total_vs_direct_jobs_res_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
@@ -335,7 +335,7 @@ _ext_constant_ratio_total_vs_d_jobs_res_heat = ExtConstant(
 
 @component.add(
     name="Total D jobs RES elec per techn",
-    units="people/year",
+    units="people",
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -353,7 +353,7 @@ def total_d_jobs_res_elec_per_techn():
 
 @component.add(
     name="Total D jobs RES heat per techn",
-    units="people/year",
+    units="people",
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -371,7 +371,7 @@ def total_d_jobs_res_heat_per_techn():
 
 @component.add(
     name='"Total D+I jobs RES elec per techn"',
-    units="people/year",
+    units="people",
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -389,7 +389,7 @@ def total_di_jobs_res_elec_per_techn():
 
 @component.add(
     name='"Total D+I jobs RES heat per techn"',
-    units="people/year",
+    units="people",
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -407,21 +407,21 @@ def total_di_jobs_res_heat_per_techn():
 
 @component.add(
     name="total jobs biofuels",
-    units="people/year",
+    units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"employment_factor_biofuels": 1, "fes_total_biofuels_ej": 1},
+    depends_on={"employment_factor_biofuels": 1, "fes_total_biofuels_production_ej": 1},
 )
 def total_jobs_biofuels():
     """
     Total (direct+indirect) jobs biofuels.
     """
-    return employment_factor_biofuels() * fes_total_biofuels_ej()
+    return employment_factor_biofuels() * fes_total_biofuels_production_ej()
 
 
 @component.add(
     name="Total jobs RES",
-    units="people/year",
+    units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -445,7 +445,7 @@ def total_jobs_res():
 
 @component.add(
     name="Total jobs RES elec",
-    units="people/year",
+    units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_di_jobs_res_elec_per_techn": 1},
@@ -462,7 +462,7 @@ def total_jobs_res_elec():
 
 @component.add(
     name="Total jobs RES heat",
-    units="people/year",
+    units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_di_jobs_res_heat_per_techn": 1},

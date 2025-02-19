@@ -1,7 +1,8 @@
 """
-Module energy.storage.storage_demand_and_supply
-Translated using PySD version 3.14.1
+Module storage_demand_and_supply
+Translated using PySD version 3.2.0
 """
+
 
 @component.add(
     name="constraint elec storage availability",
@@ -62,7 +63,7 @@ def cp_ev_batteries_for_elec_storage():
 
 @component.add(
     name="Cp EV batteries required",
-    units="Dmnl",
+    units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"demand_ev_batteries_for_elec_storage": 1, "ev_batteries_tw": 1},
@@ -112,8 +113,8 @@ def demand_storage_capacity():
     depends_on={
         "esoi_phs": 1,
         "installed_capacity_phs_tw": 1,
-        "esoi_ev_batteries": 1,
         "used_ev_batteries_for_elec_storage": 1,
+        "esoi_ev_batteries": 1,
         "total_capacity_elec_storage_tw": 1,
     },
 )
@@ -146,7 +147,7 @@ def max_capacity_elec_storage():
 
 @component.add(
     name="real FE elec stored EV batteries TWh",
-    units="TWh/year",
+    units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"used_ev_batteries_for_elec_storage": 1, "twe_per_twh": 1},
@@ -190,8 +191,8 @@ def remaining_potential_elec_storage_by_res_techn():
     depends_on={
         "rt_storage_efficiency_phs": 1,
         "installed_capacity_phs_tw": 1,
-        "rt_storage_efficiency_ev_batteries": 1,
         "used_ev_batteries_for_elec_storage": 1,
+        "rt_storage_efficiency_ev_batteries": 1,
         "total_capacity_elec_storage_tw": 1,
     },
 )
@@ -220,7 +221,7 @@ def rt_storage_efficiency_ev_batteries():
 
 
 _ext_constant_rt_storage_efficiency_ev_batteries = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "round_trip_storage_efficiency_ev_batteries",
     {},
@@ -245,7 +246,7 @@ def rt_storage_efficiency_phs():
 
 
 _ext_constant_rt_storage_efficiency_phs = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "round_trip_storage_efficiency_phs",
     {},

@@ -69,8 +69,8 @@ def afforestation_program_2020():
 
 
 _ext_data_afforestation_program_2020 = ExtData(
-    "../parameters.xlsx",
-    "World",
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
     "time_afforestation",
     "afforestation",
     "interpolate",
@@ -209,7 +209,7 @@ def co2_emissions_biogas():
     name="CO2 emissions biomass",
     units="GtCO2/year",
     subscripts=[np.str_("final sources")],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_traditional_biomass": 1,
@@ -242,8 +242,8 @@ def co2_emissions_biomass():
         "extraction_coal_ej": 4,
         "share_coal_for_elec_emissions_relevant": 1,
         "share_coal_for_heat_emissions_relevant": 1,
-        "gtco2_per_ej_ctl": 1,
         "share_coal_for_ctl_emissions_relevant": 1,
+        "gtco2_per_ej_ctl": 1,
         "share_coal_for_fc_emissions_relevant": 1,
     },
 )
@@ -310,8 +310,8 @@ def co2_emissions_fossil_fuels():
         "pes_nat_gas": 4,
         "share_nat_gas_for_elec_emissions_relevant": 1,
         "share_nat_gas_for_heat_emissions_relevant": 1,
-        "gtco2_per_ej_gtl": 1,
         "share_nat_gas_for_gtl_emissions_relevant": 1,
+        "gtco2_per_ej_gtl": 1,
         "share_nat_gas_for_fc_emissions_relevant": 1,
     },
 )
@@ -375,7 +375,7 @@ def co2_emissions_oil():
     name="CO2 emissions peat",
     units="GtCO2/year",
     subscripts=[np.str_("final sources")],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"pes_peat": 1, "gtco2_per_ej_peat": 1},
 )
@@ -485,8 +485,8 @@ def co2_landuse_change_emissions_exogenous(x, final_subs=None):
 
 
 _ext_lookup_co2_landuse_change_emissions_exogenous = ExtLookup(
-    "../parameters.xlsx",
-    "World",
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
     "years_co2_luc",
     "co2_luc",
     {},
@@ -672,8 +672,8 @@ _ext_constant_gtco2_per_ej_gtl = ExtConstant(
     depends_on={
         "share_conv_vs_total_oil_extraction": 2,
         "gtco2_per_ej_conv_oil": 1,
-        "gtco2_per_ej_shale_oil": 1,
         "adapt_emissions_shale_oil": 1,
+        "gtco2_per_ej_shale_oil": 1,
         "gtco2_per_ej_unconv_oil": 2,
     },
 )

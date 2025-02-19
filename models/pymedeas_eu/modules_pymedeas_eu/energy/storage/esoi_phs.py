@@ -1,6 +1,6 @@
 """
 Module energy.storage.esoi_phs
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -47,8 +47,8 @@ def b_lineal_regr():
         "lifetime_res_elec": 1,
         "ej_per_twh": 1,
         "twe_per_twh": 1,
-        "quality_of_electricity_2015": 1,
         "esoi_static_phs": 1,
+        "quality_of_electricity_2015": 1,
     },
 )
 def ced_per_tw_over_lifetime_phs():
@@ -111,7 +111,7 @@ def esoi_phs_depleted_potential():
 
 
 _ext_constant_esoi_phs_depleted_potential = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "esoi_phs_depleted_potential",
     {},

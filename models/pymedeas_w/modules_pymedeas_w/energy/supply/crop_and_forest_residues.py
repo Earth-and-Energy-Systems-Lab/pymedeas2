@@ -147,11 +147,11 @@ def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
         "time": 3,
         "start_year_bioe_residues_for_heatelec": 3,
         "ej_per_ktoe": 1,
-        "bioe_residues_for_heatelec_available": 1,
-        "p_bioe_residues_for_heatelec": 1,
-        "start_production_biofuels": 1,
         "pe_bioe_residues_for_heatelec_ej": 1,
         "nvs_1_year": 1,
+        "bioe_residues_for_heatelec_available": 1,
+        "start_production_biofuels": 1,
+        "p_bioe_residues_for_heatelec": 1,
     },
 )
 def new_bioe_residues_for_heatelec():
@@ -184,13 +184,13 @@ def new_bioe_residues_for_heatelec():
         "time": 3,
         "start_year_cellulosic_biofuels": 3,
         "ej_per_ktoe": 1,
-        "p_cellulosic_biofuels": 1,
-        "start_production_biofuels": 1,
         "cellulosic_biofuels_available": 1,
-        "nvs_1_year": 2,
-        "check_liquids": 1,
         "potential_pe_cellulosic_biofuel_ej": 2,
+        "nvs_1_year": 2,
+        "start_production_biofuels": 1,
         "constrain_liquids_exogenous_growth": 1,
+        "check_liquids": 1,
+        "p_cellulosic_biofuels": 1,
     },
 )
 def new_cellulosic_biofuels():

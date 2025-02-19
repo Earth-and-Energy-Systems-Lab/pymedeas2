@@ -1,6 +1,6 @@
 """
 Module energy.supply.biomass_for_electricity_and_heat
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -97,7 +97,7 @@ def max_potential_npp_bioe_conventional_for_heatelec():
 
 
 _ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "max_pot_NPP_bioe_conv",
     {},

@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_heat_potential
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -36,7 +36,7 @@ def geot_pe_potential_for_heat_twth():
 
 
 _ext_constant_geot_pe_potential_for_heat_twth = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "geot_PE_potential_heat",
     {},
@@ -69,7 +69,7 @@ def max_fe_potential_biogas_for_heat():
 @component.add(
     name="Max FE potential RES for heat",
     units="EJ/year",
-    subscripts=["RES heat"],
+    subscripts=[np.str_("RES heat")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -80,7 +80,7 @@ def max_fe_potential_biogas_for_heat():
 )
 def max_fe_potential_res_for_heat():
     value = xr.DataArray(
-        np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
+        np.nan, {"RES heat": _subscript_dict["RES heat"]}, [np.str_("RES heat")]
     )
     value.loc[["solar heat"]] = float(max_fe_res_for_heat().loc["solar heat"])
     value.loc[["geot heat"]] = float(max_fe_res_for_heat().loc["geot heat"])
@@ -93,7 +93,7 @@ def max_fe_potential_res_for_heat():
 @component.add(
     name="Max FE RES for heat",
     units="EJ/year",
-    subscripts=["RES heat"],
+    subscripts=[np.str_("RES heat")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -109,7 +109,7 @@ def max_fe_res_for_heat():
     Maximum level of final energy for producing heat from renewables by technology. For technologies solar heat and geot heat this variable corresponds with the maximum potential, but not for solids bioenergy due to the competing use for heat and electricity.
     """
     value = xr.DataArray(
-        np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
+        np.nan, {"RES heat": _subscript_dict["RES heat"]}, [np.str_("RES heat")]
     )
     value.loc[["solar heat"]] = (
         max_fe_solar_thermal_urban_twth() * ej_per_twh() / twe_per_twh()
@@ -140,7 +140,7 @@ def max_pe_potential_biogas_for_heat():
 @component.add(
     name="Max PE potential RES for heat",
     units="EJ/year",
-    subscripts=["RES heat"],
+    subscripts=[np.str_("RES heat")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -153,7 +153,7 @@ def max_pe_potential_biogas_for_heat():
 )
 def max_pe_potential_res_for_heat():
     value = xr.DataArray(
-        np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
+        np.nan, {"RES heat": _subscript_dict["RES heat"]}, [np.str_("RES heat")]
     )
     value.loc[["solar heat"]] = (
         max_pe_solar_thermal_for_heat() / twe_per_twh() * ej_per_twh()
@@ -178,7 +178,7 @@ def max_pe_potential_tot_res_heat_ej():
     Maximum total primary energy potential of RES for heat.
     """
     return max_pe_potential_biogas_for_heat() + sum(
-        max_pe_potential_res_for_heat().rename({"RES heat": "RES heat!"}),
+        max_pe_potential_res_for_heat().rename({np.str_("RES heat"): "RES heat!"}),
         dim=["RES heat!"],
     )
 
@@ -235,7 +235,7 @@ def max_tot_fe_potential_res_for_heat():
     """
     return (
         sum(
-            max_fe_potential_res_for_heat().rename({"RES heat": "RES heat!"}),
+            max_fe_potential_res_for_heat().rename({np.str_("RES heat"): "RES heat!"}),
             dim=["RES heat!"],
         )
         + max_fe_potential_biogas_for_heat()

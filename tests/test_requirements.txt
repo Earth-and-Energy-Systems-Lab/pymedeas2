@@ -1,0 +1,8 @@
+pysd>=3.0
+matplotlib
+dacite
+pytest
+pytest-cov
+pytest-xdist
+pytest-mock
+coverage

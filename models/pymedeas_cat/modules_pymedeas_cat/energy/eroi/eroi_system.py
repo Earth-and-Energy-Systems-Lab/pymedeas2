@@ -1,7 +1,8 @@
 """
-Module energy.eroi.eroi_system
-Translated using PySD version 3.14.1
+Module eroi_system
+Translated using PySD version 3.2.0
 """
+
 
 @component.add(
     name="EROIst system",
@@ -19,7 +20,7 @@ def eroist_system():
 
 @component.add(
     name="FE tot generation all RES elec EJ",
-    units="EJ/year",
+    units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -41,7 +42,7 @@ def fe_tot_generation_all_res_elec_ej():
 
 @component.add(
     name="FEIst system",
-    units="EJ/year",
+    units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -64,7 +65,7 @@ def feist_system():
 
 @component.add(
     name='"Historic energy industry own-use"',
-    units="EJ/year",
+    units="EJ",
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -80,8 +81,8 @@ def historic_energy_industry_ownuse(x, final_subs=None):
 
 
 _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
-    r"../energy.xlsx",
-    "Catalonia",
+    "../energy.xlsx",
+    "Austria",
     "time_historic_data",
     "historic_energy_industry_own_use",
     {},
@@ -99,8 +100,8 @@ _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
     depends_on={
         "time": 2,
         "fe_tot_generation_all_res_elec_ej": 1,
-        "real_tfec": 1,
         "historic_energy_industry_ownuse": 1,
+        "real_tfec": 1,
     },
 )
 def historic_share_e_industry_ownuse_vs_tfec():
@@ -142,7 +143,7 @@ _sampleiftrue_share_e_industry_ownuse_vs_tfec_in_2015 = SampleIfTrue(
 
 @component.add(
     name="Total dyn FEI RES",
-    units="EJ/year",
+    units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={

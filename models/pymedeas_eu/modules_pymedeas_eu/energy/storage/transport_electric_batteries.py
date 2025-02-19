@@ -1,6 +1,6 @@
 """
 Module energy.storage.transport_electric_batteries
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -55,7 +55,7 @@ def bateries_ratio_hib_hv():
 
 
 _ext_constant_bateries_ratio_hib_hv = ExtConstant(
-    r"../transport.xlsx",
+    "../transport.xlsx",
     "Global",
     "bateries_ratio_hib_hv",
     {},
@@ -139,7 +139,7 @@ def kw_per_battery_ev():
 
 
 _ext_constant_kw_per_battery_ev = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "kw_per_battery_ev",
     {},

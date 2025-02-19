@@ -1,7 +1,8 @@
 """
-Module energy.supply.res_elec_overcap_due_to_res_variabi
-Translated using PySD version 3.14.1
+Module res_elec_overcap_due_to_res_variabi
+Translated using PySD version 3.2.0
 """
+
 
 @component.add(
     name="Cp exogenous RES elec dispatch reduction",
@@ -69,7 +70,7 @@ def cp_exogenous_res_elec_var_reduction():
 
 @component.add(
     name="Elec generation dispatch from RES TWh",
-    units="TWh/year",
+    units="TWh",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_generation_res_elec_twh": 1, "fes_elec_from_biogas_twh": 1},
@@ -91,7 +92,7 @@ def elec_generation_dispatch_from_res_twh():
 
 @component.add(
     name="Elec generation variable from RES TWh",
-    units="TWh/year",
+    units="TWh/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_generation_res_elec_twh": 1},
@@ -110,20 +111,19 @@ def elec_generation_variable_from_res_twh():
 
 @component.add(
     name="increase variable RES share elec vs total generation",
-    units="Dmnl/year",
+    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_variable_res_elec_generation_vs_total": 1,
-        "share_variable_res_elec_vs_total_generation_delayed_ts": 1,
-        "time_step": 1,
+        "share_variable_res_elec_vs_total_generation_delayed_1yr": 1,
     },
 )
 def increase_variable_res_share_elec_vs_total_generation():
     return (
         share_variable_res_elec_generation_vs_total()
-        - share_variable_res_elec_vs_total_generation_delayed_ts()
-    ) / time_step()
+        - share_variable_res_elec_vs_total_generation_delayed_1yr()
+    )
 
 
 @component.add(
@@ -197,31 +197,31 @@ _integ_share_variable_res_elec_generation_vs_total_gen = Integ(
 
 
 @component.add(
-    name="Share variable RES elec vs total generation delayed TS",
+    name="Share variable RES elec vs total generation delayed 1yr",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={
-        "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_ts": 1
+        "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr": 1
     },
     other_deps={
-        "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_ts": {
-            "initial": {"time_step": 1},
+        "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr": {
+            "initial": {},
             "step": {"share_variable_res_elec_generation_vs_total": 1},
         }
     },
 )
-def share_variable_res_elec_vs_total_generation_delayed_ts():
+def share_variable_res_elec_vs_total_generation_delayed_1yr():
     """
     "Share variable RES elec generation vs total" delayed 1 year.
     """
-    return _delayfixed_share_variable_res_elec_vs_total_generation_delayed_ts()
+    return _delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr()
 
 
-_delayfixed_share_variable_res_elec_vs_total_generation_delayed_ts = DelayFixed(
+_delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr = DelayFixed(
     lambda: share_variable_res_elec_generation_vs_total(),
-    lambda: time_step(),
+    lambda: 1,
     lambda: 0.0071,
     time_step,
-    "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_ts",
+    "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr",
 )

@@ -1,6 +1,6 @@
 """
 Module energy.supply.solar_potential_in_urban_areas
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -18,7 +18,7 @@ def av_solar_i():
 
 
 _ext_constant_av_solar_i = ExtConstant(
-    r"../parameters.xlsx",
+    "../parameters.xlsx",
     "Europe",
     "average_solar_I",
     {},
@@ -43,7 +43,7 @@ def f1_pv_solar_in_target_year():
 
 
 _ext_constant_f1_pv_solar_in_target_year = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "cell_efficiency_target_year",
     {},
@@ -61,9 +61,9 @@ _ext_constant_f1_pv_solar_in_target_year = ExtConstant(
     depends_on={
         "time": 4,
         "f1ini_solar_pv": 4,
-        "target_year_f1_solar_pv": 2,
         "start_year_p_f1_solar_pv": 3,
         "f1_pv_solar_in_target_year": 2,
+        "target_year_f1_solar_pv": 2,
     },
 )
 def f1_solar_pv():
@@ -103,7 +103,7 @@ def f1ini_solar_pv():
 
 
 _ext_constant_f1ini_solar_pv = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "cell_efficiency_conversion_of_solar_pv",
     {},
@@ -128,7 +128,7 @@ def f2_pf_solar_pv():
 
 
 _ext_constant_f2_pf_solar_pv = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "performance_ratio_over_the_plant_lifecycle_of_solar_pv",
     {},
@@ -153,7 +153,7 @@ def f3_solar_pv_on_land():
 
 
 _ext_constant_f3_solar_pv_on_land = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "land_occupation_ratio_of_solar_pv",
     {},
@@ -194,7 +194,7 @@ def max_solar_pv_urban():
 @component.add(
     name='"power density initial RES elec TWe/Mha"',
     units="TWe/MHa",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_power_density_initial_res_elec_twemha"},
@@ -207,7 +207,7 @@ def power_density_initial_res_elec_twemha():
 
 
 _ext_constant_power_density_initial_res_elec_twemha = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "power_density_res_elec*",
     {"RES elec": _subscript_dict["RES elec"]},
@@ -220,7 +220,7 @@ _ext_constant_power_density_initial_res_elec_twemha = ExtConstant(
 @component.add(
     name='"power density RES elec TWe/Mha"',
     units="TWe/MHa",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"power_density_initial_res_elec_twemha": 1, "cpini_res_elec": 1},
@@ -329,7 +329,7 @@ def share_available_roof():
 
 
 _ext_constant_share_available_roof = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "share_available_roof",
     {},
@@ -354,7 +354,7 @@ def share_available_roof_for_rooftop_pv():
 
 
 _ext_constant_share_available_roof_for_rooftop_pv = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "share_available_roof_for_rooftop_PV",
     {},
@@ -379,7 +379,7 @@ def share_available_roof_for_solar_thermal():
 
 
 _ext_constant_share_available_roof_for_solar_thermal = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "share_roof_solar_thermal",
     {},
@@ -404,7 +404,7 @@ def start_year_p_f1_solar_pv():
 
 
 _ext_constant_start_year_p_f1_solar_pv = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "start_year_cell_efficency_PV",
     {},
@@ -429,7 +429,7 @@ def target_year_f1_solar_pv():
 
 
 _ext_constant_target_year_f1_solar_pv = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "targ_year_cell_efficiency_PV",
     {},

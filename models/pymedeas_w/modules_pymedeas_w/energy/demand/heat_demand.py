@@ -331,6 +331,17 @@ def total_fed_heatnc():
 
 
 @component.add(
+    name="Total FED NRE Heat",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"fed_heatcom_nre_ej": 1, "total_fed_nre_heatnc": 1},
+)
+def total_fed_nre_heat():
+    return fed_heatcom_nre_ej() + total_fed_nre_heatnc()
+
+
+@component.add(
     name='"Total FED NRE Heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",

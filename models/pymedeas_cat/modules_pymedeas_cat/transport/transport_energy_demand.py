@@ -1,7 +1,8 @@
 """
-Module transport.transport_energy_demand
-Translated using PySD version 3.14.1
+Module transport_energy_demand
+Translated using PySD version 3.2.0
 """
+
 
 @component.add(
     name="Share demand by fuel in transport",
@@ -90,12 +91,12 @@ def share_demand_solids_in_transport():
 
 @component.add(
     name="Total transport FED by fuel",
-    units="EJ/year",
+    units="EJ/Year",
     subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "required_final_energy_by_sector_and_fuel_cat": 1,
+        "required_final_energy_by_sector_and_fuel_aut": 1,
         "transport_fraction": 1,
         "transport_households_final_energy_demand": 1,
     },
@@ -106,7 +107,7 @@ def total_transport_fed_by_fuel():
     """
     return (
         sum(
-            required_final_energy_by_sector_and_fuel_cat().rename(
+            required_final_energy_by_sector_and_fuel_aut().rename(
                 {"sectors": "sectors!"}
             )
             * transport_fraction().rename({"sectors": "sectors!"}),
@@ -129,7 +130,7 @@ def transport_fraction():
 
 
 _ext_constant_transport_fraction = ExtConstant(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Global",
     "transport_fraction",
     {"sectors": _subscript_dict["sectors"]},
@@ -141,7 +142,7 @@ _ext_constant_transport_fraction = ExtConstant(
 
 @component.add(
     name="Transport TFED",
-    units="EJ/year",
+    units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_transport_fed_by_fuel": 1},
@@ -161,7 +162,7 @@ def transport_tfed():
     units="EJ/Tdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"transport_tfed": 1, "gdp_cat": 1, "nvs_1_year": 1},
+    depends_on={"transport_tfed": 1, "gdp_aut": 1},
 )
 def transport_tfed_energy_intensity():
-    return zidz(transport_tfed(), gdp_cat()) * nvs_1_year()
+    return zidz(transport_tfed(), gdp_aut())

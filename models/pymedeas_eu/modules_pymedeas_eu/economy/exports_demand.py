@@ -1,12 +1,12 @@
 """
 Module economy.exports_demand
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
     name="beta 0 EXP",
     units="Dmnl",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_beta_0_exp"},
@@ -19,7 +19,7 @@ def beta_0_exp():
 
 
 _ext_constant_beta_0_exp = ExtConstant(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Europe",
     "beta_0_EXP*",
     {"sectors": _subscript_dict["sectors"]},
@@ -32,7 +32,7 @@ _ext_constant_beta_0_exp = ExtConstant(
 @component.add(
     name="beta 0 GFCF",
     units="Dmnl",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_beta_0_gfcf"},
@@ -45,7 +45,7 @@ def beta_0_gfcf():
 
 
 _ext_constant_beta_0_gfcf = ExtConstant(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Europe",
     "beta_0_GFCF*",
     {"sectors": _subscript_dict["sectors"]},
@@ -70,13 +70,7 @@ def beta_1_exp():
 
 
 _ext_constant_beta_1_exp = ExtConstant(
-    r"../economy.xlsx",
-    "Europe",
-    "beta_1_EXP",
-    {},
-    _root,
-    {},
-    "_ext_constant_beta_1_exp",
+    "../economy.xlsx", "Europe", "beta_1_EXP", {}, _root, {}, "_ext_constant_beta_1_exp"
 )
 
 
@@ -95,7 +89,7 @@ def beta_1_gfcf():
 
 
 _ext_constant_beta_1_gfcf = ExtConstant(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Europe",
     "beta_1_GFCF",
     {},
@@ -108,7 +102,7 @@ _ext_constant_beta_1_gfcf = ExtConstant(
 @component.add(
     name="Exports demand",
     units="Mdollars",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_exports_demand": 1},
@@ -136,13 +130,13 @@ _integ_exports_demand = Integ(
 @component.add(
     name="Exports demand not covered",
     units="Mdollars/year",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "real_exports_demand_by_sector": 1,
         "exports_demand": 1,
+        "real_exports_demand_by_sector": 1,
         "nvs_1_year": 1,
     },
 )
@@ -152,7 +146,7 @@ def exports_demand_not_covered():
     """
     return (
         if_then_else(
-            time() < 2009,
+            time() < 2019,
             lambda: xr.DataArray(
                 0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
             ),
@@ -165,13 +159,13 @@ def exports_demand_not_covered():
 @component.add(
     name="GFCF not covered",
     units="Mdollars/year",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "real_gfcf_by_sector": 1,
         "gross_fixed_capital_formation": 1,
+        "real_gfcf_by_sector": 1,
         "nvs_1_year": 1,
     },
 )
@@ -181,7 +175,7 @@ def gfcf_not_covered():
     """
     return (
         if_then_else(
-            time() < 2009,
+            time() < 2019,
             lambda: xr.DataArray(
                 0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
             ),
@@ -194,7 +188,7 @@ def gfcf_not_covered():
 @component.add(
     name="Gross fixed capital formation",
     units="Mdollars",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_gross_fixed_capital_formation": 1},
@@ -222,7 +216,7 @@ _integ_gross_fixed_capital_formation = Integ(
 @component.add(
     name="historic exports demand",
     units="Mdollars",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -238,9 +232,9 @@ def historic_exports_demand(x, final_subs=None):
 
 
 _ext_lookup_historic_exports_demand = ExtLookup(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Europe",
-    "time_index_2009",
+    "time_index2019",
     "historic_exports_demand",
     {"sectors": _subscript_dict["sectors"]},
     _root,
@@ -252,7 +246,7 @@ _ext_lookup_historic_exports_demand = ExtLookup(
 @component.add(
     name="historic GFCF",
     units="Mdollars",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -268,9 +262,9 @@ def historic_gfcf(x, final_subs=None):
 
 
 _ext_lookup_historic_gfcf = ExtLookup(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Europe",
-    "time_index2009",
+    "time_index2019",
     "historic_GFCF",
     {"sectors": _subscript_dict["sectors"]},
     _root,
@@ -282,7 +276,7 @@ _ext_lookup_historic_gfcf = ExtLookup(
 @component.add(
     name="Initial exports demand",
     units="Mdollars",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"historic_exports_demand": 1},
@@ -297,7 +291,7 @@ def initial_exports_demand():
 @component.add(
     name="initial GFCF",
     units="M$",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"historic_gfcf": 1},
@@ -321,6 +315,17 @@ def real_demand_world_next_step():
 
 
 @component.add(
+    name="share exports gdp",
+    units="Mdollars/T$",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"total_exports": 1, "gdp_eu": 1},
+)
+def share_exports_gdp():
+    return (total_exports() / 1000000.0) / gdp_eu()
+
+
+@component.add(
     name="Total exports",
     units="Mdollars",
     comp_type="Auxiliary",
@@ -331,7 +336,9 @@ def total_exports():
     """
     Whole economy exports
     """
-    return sum(exports_demand().rename({"sectors": "sectors!"}), dim=["sectors!"])
+    return sum(
+        exports_demand().rename({np.str_("sectors"): "sectors!"}), dim=["sectors!"]
+    )
 
 
 @component.add(
@@ -346,7 +353,7 @@ def total_gfcf():
     Whole economy domestic gross fixed capital formation
     """
     return sum(
-        gross_fixed_capital_formation().rename({"sectors": "sectors!"}),
+        gross_fixed_capital_formation().rename({np.str_("sectors"): "sectors!"}),
         dim=["sectors!"],
     )
 
@@ -354,18 +361,18 @@ def total_gfcf():
 @component.add(
     name="variation exports demand",
     units="Mdollars/year",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "exports_demand": 1,
-        "real_demand_world": 1,
-        "beta_0_exp": 1,
-        "beta_1_exp": 2,
-        "time": 1,
         "variation_historic_exports_demand": 1,
         "real_demand_world_next_step": 1,
+        "real_demand_world": 1,
+        "time": 1,
+        "beta_0_exp": 1,
         "unit_correction_economic": 2,
+        "beta_1_exp": 2,
     },
 )
 def variation_exports_demand():
@@ -376,7 +383,7 @@ def variation_exports_demand():
         exports_demand() < 0,
         lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
         lambda: if_then_else(
-            time() < 2009,
+            time() < 2019,
             lambda: variation_historic_exports_demand(),
             lambda: np.exp(beta_0_exp())
             * (
@@ -391,19 +398,19 @@ def variation_exports_demand():
 @component.add(
     name="variation GFCF",
     units="Mdollars/year",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 1,
-        "cc_total": 2,
-        "variation_cc": 1,
-        "nvs_1_year": 1,
-        "beta_1_gfcf": 2,
         "variation_historic_gfcf": 1,
-        "time": 1,
+        "cc_total": 2,
         "beta_0_gfcf": 1,
+        "beta_1_gfcf": 2,
+        "nvs_1_year": 1,
+        "time": 1,
         "unit_correction_economic": 2,
+        "variation_cc": 1,
     },
 )
 def variation_gfcf():
@@ -414,7 +421,7 @@ def variation_gfcf():
         gross_fixed_capital_formation() <= 0,
         lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
         lambda: if_then_else(
-            time() < 2009,
+            time() < 2019,
             lambda: variation_historic_gfcf(),
             lambda: np.exp(beta_0_gfcf())
             * (
@@ -432,7 +439,7 @@ def variation_gfcf():
 @component.add(
     name="variation historic exports demand",
     units="Mdollars/year",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 2, "time_step": 2, "historic_exports_demand": 2},
@@ -449,7 +456,7 @@ def variation_historic_exports_demand():
 @component.add(
     name="variation historic GFCF",
     units="Mdollars/year",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 2, "time_step": 2, "historic_gfcf": 2},

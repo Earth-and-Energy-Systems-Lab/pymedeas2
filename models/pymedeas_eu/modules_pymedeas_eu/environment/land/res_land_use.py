@@ -1,6 +1,6 @@
 """
 Module environment.land.res_land_use
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -15,7 +15,7 @@ def agricultural_land_2015():
 
 
 _ext_constant_agricultural_land_2015 = ExtConstant(
-    r"../land.xlsx",
+    "../land.xlsx",
     "Europe",
     "agricultural_land_2015",
     {},
@@ -57,8 +57,8 @@ def land_requirements_res_elec_compet_uses():
     depends_on={
         "potential_generation_res_elec_twh": 1,
         "real_share_pv_urban_vs_total_pv": 1,
-        "power_density_res_elec_twemha": 1,
         "twe_per_twh": 1,
+        "power_density_res_elec_twemha": 1,
     },
 )
 def land_saved_by_urban_pv():
@@ -215,7 +215,7 @@ def surface_onshore_wind_mha():
 @component.add(
     name="surface RES elec",
     units="MHa",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -229,7 +229,7 @@ def surface_res_elec():
     Land requirements by renewable technologies for electricity generation.
     """
     value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, [np.str_("RES elec")]
     )
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["solar PV"]] = False
@@ -303,7 +303,7 @@ def urban_surface_2015():
 
 
 _ext_constant_urban_surface_2015 = ExtConstant(
-    r"../land.xlsx",
+    "../land.xlsx",
     "Europe",
     "urban_surface_2015",
     {},

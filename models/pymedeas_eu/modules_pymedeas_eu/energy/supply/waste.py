@@ -1,6 +1,6 @@
 """
 Module energy.supply.waste
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -48,7 +48,7 @@ def efficiency_waste_for_elec_chp_plants():
 
 
 _ext_constant_efficiency_waste_for_elec_chp_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "efficiency_waste_for_elec_chp_plants",
     {},
@@ -73,7 +73,7 @@ def efficiency_waste_for_elec_plants():
 
 
 _ext_constant_efficiency_waste_for_elec_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "efficiency_waste_for_elec_plants",
     {},
@@ -98,7 +98,7 @@ def efficiency_waste_for_heat_chp_plants():
 
 
 _ext_constant_efficiency_waste_for_heat_chp_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "efficiency_waste_for_heat_CHP_plants",
     {},
@@ -123,7 +123,7 @@ def efficiency_waste_for_heat_plants():
 
 
 _ext_constant_efficiency_waste_for_heat_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "efficiency_waste_for_heat_plants",
     {},
@@ -264,7 +264,7 @@ def historic_pes_waste_ej(x, final_subs=None):
 
 
 _ext_lookup_historic_pes_waste_ej = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_primary_energy_supply_of_waste",
@@ -290,7 +290,7 @@ def initial_pes_waste():
 
 
 _ext_constant_initial_pes_waste = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "initial_primary_energy_supply_from_waste",
     {},
@@ -337,7 +337,7 @@ def max_pe_waste():
 
 
 _ext_constant_max_pe_waste = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "max_PE_waste",
     {},
@@ -354,8 +354,8 @@ _ext_constant_max_pe_waste = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "historic_pes_waste_ej": 2,
         "time_step": 2,
+        "historic_pes_waste_ej": 2,
         "max_pe_waste": 3,
         "adapt_growth_waste": 1,
         "pes_waste_ej": 3,
@@ -397,7 +397,7 @@ def p_waste_change():
 
 
 _ext_constant_p_waste_change = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "p_waste_growth",
     {},
@@ -422,7 +422,7 @@ def past_waste_growth():
 
 
 _ext_constant_past_waste_growth = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "historic_average_pes_from_waste_growth",
     {},
@@ -609,7 +609,7 @@ def share_pes_waste_for_chp():
 
 
 _ext_constant_share_pes_waste_for_chp = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "share_pes_waste_for_chp",
     {},
@@ -634,7 +634,7 @@ def share_pes_waste_for_elec_plants():
 
 
 _ext_constant_share_pes_waste_for_elec_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "share_pes_waste_for_elec_plants",
     {},
@@ -659,7 +659,7 @@ def share_pes_waste_for_heatcom_plants():
 
 
 _ext_constant_share_pes_waste_for_heatcom_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "share_pes_waste_for_heat_plants",
     {},
@@ -684,7 +684,7 @@ def share_pes_waste_tfc():
 
 
 _ext_constant_share_pes_waste_tfc = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "share_pes_waste_tfc",
     {},

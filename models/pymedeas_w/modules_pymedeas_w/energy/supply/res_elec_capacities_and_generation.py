@@ -114,7 +114,7 @@ _ext_lookup_curtailment_and_storage_share_variable_res = ExtLookup(
     name="curtailment RES",
     units="Dmnl",
     subscripts=[np.str_("RES elec")],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"time": 4, "curtailment_and_storage_share_variable_res": 4},
 )
@@ -404,8 +404,8 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "real_generation_res_elec_twh": 1,
         "installed_capacity_res_elec": 2,
+        "real_generation_res_elec_twh": 1,
         "twe_per_twh": 1,
     },
 )
@@ -721,8 +721,8 @@ _ext_constant_time_planification_res_elec = ExtConstant(
     depends_on={
         "time_construction_res_elec": 1,
         "time_step": 1,
-        "time_planification_res_elec": 1,
         "time": 1,
+        "time_planification_res_elec": 1,
     },
 )
 def total_time_planconstr_res_elec():
@@ -739,8 +739,8 @@ def total_time_planconstr_res_elec():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "lifetime_res_elec": 1,
         "constructed_capacity_res_elec_tw": 1,
+        "lifetime_res_elec": 1,
     },
 )
 def wear_res_elec():

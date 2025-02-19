@@ -1,6 +1,6 @@
 """
 Module energy.supply.heat_related_losses
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -28,7 +28,7 @@ def pe_losses_biogas_for_heat():
 @component.add(
     name="PE losses FF for Heat",
     units="EJ/year",
-    subscripts=["matter final sources"],
+    subscripts=[np.str_("matter final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -59,7 +59,7 @@ def pe_losses_nre_heat():
     return (
         sum(
             pe_losses_ff_for_heat().rename(
-                {"matter final sources": "matter final sources!"}
+                {np.str_("matter final sources"): "matter final sources!"}
             ),
             dim=["matter final sources!"],
         )

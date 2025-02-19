@@ -20,10 +20,10 @@ def activate_bottom_up_method():
         [np.str_("SECTORS and HOUSEHOLDS")],
     )
     except_subs = xr.ones_like(value, dtype=bool)
-    except_subs.loc[["Transport storage and communication"]] = False
+    except_subs.loc[["Land Transport"]] = False
     except_subs.loc[["Households"]] = False
     value.values[except_subs.values] = 0
-    value.loc[["Transport storage and communication"]] = 0
+    value.loc[["Land Transport"]] = 0
     value.loc[["Households"]] = 0
     return value
 
@@ -37,7 +37,7 @@ def activate_bottom_up_method():
     depends_on={
         "time": 1,
         "global_energy_intensity_by_sector": 1,
-        "initial_global_energy_intensity_2009": 2,
+        "initial_global_energy_intensity_2019": 2,
         "min_energy_intensity_vs_intial": 2,
     },
 )
@@ -48,15 +48,15 @@ def available_improvement_efficiency():
     return np.minimum(
         1,
         if_then_else(
-            time() > 2009,
+            time() > 2019,
             lambda: zidz(
                 global_energy_intensity_by_sector()
                 - min_energy_intensity_vs_intial()
-                * initial_global_energy_intensity_2009()
+                * initial_global_energy_intensity_2019()
                 .loc[_subscript_dict["sectors"]]
                 .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"}),
                 (1 - min_energy_intensity_vs_intial())
-                * initial_global_energy_intensity_2009()
+                * initial_global_energy_intensity_2019()
                 .loc[_subscript_dict["sectors"]]
                 .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"}),
             ),
@@ -102,12 +102,12 @@ _ext_constant_choose_final_sectoral_energy_intensities_evolution_method = ExtCon
     comp_subtype="Normal",
     depends_on={
         "activate_bottom_up_method": 1,
-        "global_energy_intensity_by_sector": 1,
-        "evol_final_energy_intensity_by_sector_and_fuel": 2,
-        "minimum_fraction_source": 1,
-        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
         "pressure_to_change_energy_technology": 1,
+        "evol_final_energy_intensity_by_sector_and_fuel": 2,
+        "global_energy_intensity_by_sector": 1,
+        "minimum_fraction_source": 1,
         "max_yearly_change_between_sources": 1,
+        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
     },
 )
 def decrease_of_intensity_due_to_energy_a_technology_change_top_down():
@@ -419,6 +419,23 @@ def fuel_scarcity_pressure():
 
 
 @component.add(
+    name="Global energy intensity by fuel",
+    units="EJ/T$",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"evol_final_energy_intensity_by_sector_and_fuel": 1},
+)
+def global_energy_intensity_by_fuel():
+    return sum(
+        evol_final_energy_intensity_by_sector_and_fuel().rename(
+            {np.str_("sectors"): "sectors!"}
+        ),
+        dim=["sectors!"],
+    )
+
+
+@component.add(
     name="Global energy intensity by sector",
     units="EJ/Tdollars",
     subscripts=[np.str_("sectors")],
@@ -459,7 +476,7 @@ def historic_final_energy_intensity(x, final_subs=None):
 _ext_lookup_historic_final_energy_intensity = ExtLookup(
     "../economy.xlsx",
     "World",
-    "time_index2009",
+    "time_index2019",
     "historic_final_energy_intensity_electricity",
     {
         "final sources": ["electricity"],
@@ -476,7 +493,7 @@ _ext_lookup_historic_final_energy_intensity = ExtLookup(
 _ext_lookup_historic_final_energy_intensity.add(
     "../economy.xlsx",
     "World",
-    "time_index2009",
+    "time_index2019",
     "historic_final_energy_intensity_heat",
     {
         "final sources": ["heat"],
@@ -487,7 +504,7 @@ _ext_lookup_historic_final_energy_intensity.add(
 _ext_lookup_historic_final_energy_intensity.add(
     "../economy.xlsx",
     "World",
-    "time_index2009",
+    "time_index2019",
     "historic_final_energy_intensity_liquids",
     {
         "final sources": ["liquids"],
@@ -498,7 +515,7 @@ _ext_lookup_historic_final_energy_intensity.add(
 _ext_lookup_historic_final_energy_intensity.add(
     "../economy.xlsx",
     "World",
-    "time_index2009",
+    "time_index2019",
     "historic_final_energy_intensity_gases",
     {
         "final sources": ["gases"],
@@ -509,7 +526,7 @@ _ext_lookup_historic_final_energy_intensity.add(
 _ext_lookup_historic_final_energy_intensity.add(
     "../economy.xlsx",
     "World",
-    "time_index2009",
+    "time_index2019",
     "historic_final_energy_intensity_solids",
     {
         "final sources": ["solids"],
@@ -628,9 +645,9 @@ def historic_rate_final_energy_intensity():
         "year_policy_change_energy": 9,
         "year_to_finish_energy_intensity_policies": 5,
         "time": 5,
-        "exp_slow_evol_change_energy": 1,
         "policy_change_energy_speed": 3,
         "exp_rapid_evol_change_energy": 1,
+        "exp_slow_evol_change_energy": 1,
     },
 )
 def implementation_policy_to_change_final_energy():
@@ -722,9 +739,9 @@ def implementation_policy_to_change_final_energy():
         "year_policy_to_improve_efficiency": 9,
         "year_to_finish_energy_intensity_policies": 5,
         "time": 5,
-        "exp_rapid_evol_improve_efficiency": 1,
-        "exp_slow_evol_improve_efficiency": 1,
         "policy_to_improve_efficiency_speed": 3,
+        "exp_slow_evol_improve_efficiency": 1,
+        "exp_rapid_evol_improve_efficiency": 1,
     },
 )
 def implementation_policy_to_improve_energy_intensity_efficiency():
@@ -908,24 +925,24 @@ def increase_of_intensity_due_to_energy_a_technology_net():
     depends_on={
         "time": 2,
         "historic_rate_final_energy_intensity": 1,
-        "available_improvement_efficiency": 4,
-        "historic_mean_rate_energy_intensity": 6,
-        "efficiency_energy_acceleration": 12,
-        "variation_energy_intensity_target": 1,
-        "choose_final_sectoral_energy_intensities_evolution_method": 2,
         "rate_change_intensity_bottom_up": 4,
-        "evol_final_energy_intensity_by_sector_and_fuel": 4,
-        "activate_bottom_up_method": 4,
-        "initial_energy_intensity_1995": 4,
         "year_energy_intensity_target": 1,
+        "historic_mean_rate_energy_intensity": 6,
+        "evol_final_energy_intensity_by_sector_and_fuel": 4,
+        "choose_final_sectoral_energy_intensities_evolution_method": 2,
+        "activate_bottom_up_method": 4,
+        "variation_energy_intensity_target": 1,
+        "initial_energy_intensity_1995": 4,
+        "available_improvement_efficiency": 4,
+        "efficiency_energy_acceleration": 12,
     },
 )
 def inertial_rate_energy_intensity_top_down():
     """
-    This variable models the variation of the energy intensity according to the historical trend and represents the variation of the technological energy efficiency in each economic sector for each type of energy. By default it will follow the historical trend but can be modified by policies or market conditions that accelerate change. IF THEN ELSE(Choose final sectoral energy intensities evolution method=3,IF THEN ELSE(Time<2009, historic rate final energy intensity[sectors,final sources],IF THEN ELSE(Time<2020,IF THEN ELSE(Activate BOTTOM UP method [sectors]=0:OR:rate change intensity BOTTOM UP[ sectors,final sources]=0, IF THEN ELSE((historical mean rate energy intensity[sectors,final sources]+Efficiency energy acceleration [sectors,final sources])<0,Evol final energy intensity by sector and fuel [sectors,final sources]*(historical mean rate energy intensity[sectors,final sources] +Efficiency energy acceleration[sectors,final sources])*available improvement efficiency[sectors],Initial energy intensity 1995 [sectors,final sources] *(historical mean rate energy intensity[sectors,final sources]+Efficiency energy acceleration[ sectors,final sources])),0), IF THEN ELSE (Activate BOTTOM UP method[sectors]=0:OR:rate change intensity BOTTOM UP[ sectors,final sources]=0, IF THEN ELSE((Efficiency energy acceleration [sectors,final sources])<0,Evol final energy intensity by sector and fuel [sectors,final sources]*(Efficiency energy acceleration[sectors,final sources])*available improvement efficiency [sectors],Initial energy intensity 1995 [sectors,final sources] *(Efficiency energy acceleration[ sectors,final sources])),0)))+variation energy intensity TARGET[sectors,final sources],IF THEN ELSE(Time>2009, IF THEN ELSE(Activate BOTTOM UP method [sectors]=0:OR:rate change intensity BOTTOM UP[ sectors,final sources]=0, IF THEN ELSE((historical mean rate energy intensity[sectors,final sources]+Efficiency energy acceleration [sectors,final sources])<0,Evol final energy intensity by sector and fuel [sectors,final sources]*(historical mean rate energy intensity[sectors,final sources] +Efficiency energy acceleration[sectors,final sources])*available improvement efficiency[sectors],Initial energy intensity 1995 [sectors,final sources] *(historical mean rate energy intensity[sectors,final sources]+Efficiency energy acceleration[ sectors,final sources])),0), historic rate final energy intensity[sectors,final sources]))
+    This variable models the variation of the energy intensity according to the historical trend and represents the variation of the technological energy efficiency in each economic sector for each type of energy. By default it will follow the historical trend but can be modified by policies or market conditions that accelerate change. IF THEN ELSE(Choose final sectoral energy intensities evolution method=3,IF THEN ELSE(Time<2019, historic rate final energy intensity[sectors,final sources],IF THEN ELSE(Time<2020,IF THEN ELSE(Activate BOTTOM UP method [sectors]=0:OR:rate change intensity BOTTOM UP[ sectors,final sources]=0, IF THEN ELSE((historical mean rate energy intensity[sectors,final sources]+Efficiency energy acceleration [sectors,final sources])<0,Evol final energy intensity by sector and fuel [sectors,final sources]*(historical mean rate energy intensity[sectors,final sources] +Efficiency energy acceleration[sectors,final sources])*available improvement efficiency[sectors],Initial energy intensity 1995 [sectors,final sources] *(historical mean rate energy intensity[sectors,final sources]+Efficiency energy acceleration[ sectors,final sources])),0), IF THEN ELSE (Activate BOTTOM UP method[sectors]=0:OR:rate change intensity BOTTOM UP[ sectors,final sources]=0, IF THEN ELSE((Efficiency energy acceleration [sectors,final sources])<0,Evol final energy intensity by sector and fuel [sectors,final sources]*(Efficiency energy acceleration[sectors,final sources])*available improvement efficiency [sectors],Initial energy intensity 1995 [sectors,final sources] *(Efficiency energy acceleration[ sectors,final sources])),0)))+variation energy intensity TARGET[sectors,final sources],IF THEN ELSE(Time>2019, IF THEN ELSE(Activate BOTTOM UP method [sectors]=0:OR:rate change intensity BOTTOM UP[ sectors,final sources]=0, IF THEN ELSE((historical mean rate energy intensity[sectors,final sources]+Efficiency energy acceleration [sectors,final sources])<0,Evol final energy intensity by sector and fuel [sectors,final sources]*(historical mean rate energy intensity[sectors,final sources] +Efficiency energy acceleration[sectors,final sources])*available improvement efficiency[sectors],Initial energy intensity 1995 [sectors,final sources] *(historical mean rate energy intensity[sectors,final sources]+Efficiency energy acceleration[ sectors,final sources])),0), historic rate final energy intensity[sectors,final sources]))
     """
     return if_then_else(
-        time() < 2009,
+        time() < 2019,
         lambda: historic_rate_final_energy_intensity()
         .loc[_subscript_dict["sectors"], :]
         .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"}),
@@ -1130,20 +1147,20 @@ def initial_energy_intensity_1995():
 
 
 @component.add(
-    name="initial global energy intensity 2009",
+    name="initial global energy intensity 2019",
     units="EJ/Tdollar",
     subscripts=[np.str_("SECTORS and HOUSEHOLDS")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"historic_final_energy_intensity": 1, "mdollar_per_tdollar": 1},
 )
-def initial_global_energy_intensity_2009():
+def initial_global_energy_intensity_2019():
     """
-    Initial global energy intensity by sector 2009
+    Initial global energy intensity by sector 2019
     """
     return (
         sum(
-            historic_final_energy_intensity(2009).rename(
+            historic_final_energy_intensity(2019).rename(
                 {np.str_("final sources"): "final sources!"}
             ),
             dim=["final sources!"],
@@ -1486,9 +1503,9 @@ def pressure_to_improve_energy_intensity_efficiency():
     comp_subtype="Normal",
     depends_on={
         "activate_bottom_up_method": 1,
+        "percentage_variation_ei_commercial_transport": 1,
         "evol_final_energy_intensity_by_sector_and_fuel": 1,
         "time_step": 1,
-        "percentage_variation_ei_commercial_transport": 1,
     },
 )
 def rate_change_intensity_bottom_up():
@@ -1592,13 +1609,13 @@ def share_tech_change_fuel():
     comp_subtype="Normal",
     depends_on={
         "choose_energy_intensity_target_method": 1,
-        "final_year_energy_intensity_target": 4,
-        "evol_final_energy_intensity_by_sector_and_fuel": 2,
         "year_energy_intensity_target": 2,
-        "time": 6,
         "energy_intensity_target": 1,
-        "pct_change_energy_intensity_target": 1,
+        "evol_final_energy_intensity_by_sector_and_fuel": 2,
+        "time": 6,
+        "final_year_energy_intensity_target": 4,
         "final_energy_intensity_2020": 1,
+        "pct_change_energy_intensity_target": 1,
     },
 )
 def variation_energy_intensity_target():

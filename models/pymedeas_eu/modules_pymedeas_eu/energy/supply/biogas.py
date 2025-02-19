@@ -1,6 +1,6 @@
 """
 Module energy.supply.biogas
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -8,7 +8,7 @@ Translated using PySD version 3.14.1
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "past_biogas_growth": 3, "p_biogas": 2, "nvs_5_years_ts": 1},
+    depends_on={"time": 3, "past_biogas_growth": 3, "nvs_5_years_ts": 1, "p_biogas": 2},
 )
 def adapt_growth_biogas():
     """
@@ -41,7 +41,7 @@ def efficiency_biogas_for_elec_chp_plants():
 
 
 _ext_constant_efficiency_biogas_for_elec_chp_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "efficiency_biogas_for_elec_in_chp_plants",
     {},
@@ -66,7 +66,7 @@ def efficiency_biogas_for_elec_plants():
 
 
 _ext_constant_efficiency_biogas_for_elec_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "efficiency_biogas_for_elec_plants",
     {},
@@ -105,7 +105,7 @@ def efficiency_biogas_for_heat_chp_plants():
 
 
 _ext_constant_efficiency_biogas_for_heat_chp_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "efficiency_biogas_for_heat_chp_plants",
     {},
@@ -130,7 +130,7 @@ def efficiency_biogas_for_heat_plants():
 
 
 _ext_constant_efficiency_biogas_for_heat_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "efficiency_biogas_for_heat_plants",
     {},
@@ -268,7 +268,7 @@ def historic_biogas_pes(x, final_subs=None):
 
 
 _ext_lookup_historic_biogas_pes = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "time_efficiencies",
     "historic_primary_energy_supply_biogas",
@@ -330,7 +330,7 @@ def max_pe_biogas_ej():
 
 
 _ext_constant_max_pe_biogas_ej = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "max_PE_biogas",
     {},
@@ -347,11 +347,11 @@ _ext_constant_max_pe_biogas_ej = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "historic_biogas_pes": 2,
         "time_step": 2,
-        "adapt_growth_biogas": 1,
+        "historic_biogas_pes": 2,
         "pes_biogas_ej": 2,
         "max_pe_biogas_ej": 2,
+        "adapt_growth_biogas": 1,
     },
 )
 def new_pes_biogas():
@@ -386,7 +386,7 @@ def p_biogas():
 
 
 _ext_constant_p_biogas = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "p_biogas_growth",
     {},
@@ -411,7 +411,7 @@ def past_biogas_growth():
 
 
 _ext_constant_past_biogas_growth = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "average_historic_primary_energy_supply_biogas",
     {},
@@ -493,13 +493,13 @@ def pes_biogas_for_heatcom_plants():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_fs": 1, "potential_pes_biogas_for_tfc": 1},
+    depends_on={"potential_pes_biogas_for_tfc": 1},
 )
 def pes_biogas_for_tfc():
     """
     Primary energy supply biogas for total final consumption.
     """
-    return np.minimum(float(ped_fs().loc["gases"]), potential_pes_biogas_for_tfc())
+    return potential_pes_biogas_for_tfc()
 
 
 @component.add(
@@ -594,7 +594,7 @@ def share_pes_biogas_for_chp():
 
 
 _ext_constant_share_pes_biogas_for_chp = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "share_pes_biogas_for_chp_plants",
     {},
@@ -630,7 +630,7 @@ def share_pes_biogas_for_elec_plants():
 
 
 _ext_constant_share_pes_biogas_for_elec_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "share_pes_biogas_for_elec_plants",
     {},
@@ -666,7 +666,7 @@ def share_pes_biogas_for_heatcom_plants():
 
 
 _ext_constant_share_pes_biogas_for_heatcom_plants = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "share_pes_biogas_for_heat_plants",
     {},
@@ -691,7 +691,7 @@ def share_pes_biogas_tfc():
 
 
 _ext_constant_share_pes_biogas_tfc = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "share_pes_biogas_tfc",
     {},

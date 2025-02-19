@@ -1,6 +1,6 @@
 """
 Module climate.total_co2_emissions
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -18,7 +18,7 @@ def activate_affores_program():
 
 
 _ext_constant_activate_affores_program = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "activate_afforestation_program",
     {},
@@ -60,14 +60,14 @@ def adapt_emissions_shale_oil():
 )
 def afforestation_program_2020():
     """
-    Afforestation program from 2020 following [Nilsson 1995] (time to inverse the deforestation trend).
+    Afforestation program from 2024
     """
     return _ext_data_afforestation_program_2020(time())
 
 
 _ext_data_afforestation_program_2020 = ExtData(
-    r"../parameters.xlsx",
-    "Europe",
+    "../../scenarios/scen_eu.xlsx",
+    "NZP",
     "time_afforestation",
     "afforestation",
     "interpolate",
@@ -86,7 +86,6 @@ _ext_data_afforestation_program_2020 = ExtData(
     depends_on={
         "afforestation_program_2020": 1,
         "activate_affores_program": 1,
-        "gtc_per_gtco2": 1,
         "mtc_per_gtc": 1,
     },
 )
@@ -94,11 +93,7 @@ def afforestation_program_2020_gtco2():
     """
     Annual emissions captured by the afforestation program.
     """
-    return (
-        afforestation_program_2020()
-        * activate_affores_program()
-        / (gtc_per_gtco2() * mtc_per_gtc())
-    )
+    return afforestation_program_2020() * activate_affores_program() / mtc_per_gtc()
 
 
 @component.add(
@@ -106,53 +101,58 @@ def afforestation_program_2020_gtco2():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "co2_emissions_per_fuel": 1,
-        "co2_soillucf_emissions": 1,
-        "afforestation_program_2020_gtco2": 1,
-    },
+    depends_on={"co2_emissions_per_fuel": 1},
 )
 def aux_total_co2_emissions_gtco2():
     """
     Auxiliary variable to allocate the total annual CO2 emission. Then CCS captured CO2 is substracted to each sector
     """
-    return (
-        sum(
-            co2_emissions_per_fuel().rename({"final sources": "final sources!"}),
-            dim=["final sources!"],
-        )
-        + co2_soillucf_emissions()
-        - afforestation_program_2020_gtco2()
+    return sum(
+        co2_emissions_per_fuel().rename({np.str_("final sources"): "final sources!"}),
+        dim=["final sources!"],
     )
 
 
 @component.add(
     name="CO2 emissions BioE and Waste",
     units="GtCO2/year",
-    subscripts=["final sources"],
-    comp_type="Constant",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary",
     comp_subtype="Normal",
+    depends_on={
+        "co2_emissions_biofuels": 1,
+        "co2_emissions_biogas": 1,
+        "co2_emissions_biomass": 1,
+        "co2_emissions_solid_bioe": 1,
+        "co2_emissions_waste": 1,
+    },
 )
 def co2_emissions_bioe_and_waste():
     """
     CO2 emissions biofuels[final sources]+CO2 emissions biogas[final sources]+CO2 emissions biomass[final sources]+CO2 emissions solid bioE[final sources]+CO2 emissions waste[final sources]
     """
-    return xr.DataArray(
-        0, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+    return (
+        co2_emissions_biofuels()
+        + co2_emissions_biogas()
+        + co2_emissions_biomass()
+        + co2_emissions_solid_bioe()
+        + co2_emissions_waste()
     )
 
 
 @component.add(
     name="CO2 emissions biofuels",
     units="GtCO2/year",
-    subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"gtco2_per_ej_biofuels": 1, "oil_liquids_saved_by_biofuels_ej": 1},
 )
 def co2_emissions_biofuels():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["liquids"]] = False
@@ -166,8 +166,8 @@ def co2_emissions_biofuels():
 @component.add(
     name="CO2 emissions biogas",
     units="GtCO2/year",
-    subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_biogas": 3,
@@ -178,7 +178,9 @@ def co2_emissions_biofuels():
 )
 def co2_emissions_biogas():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     value.loc[["electricity"]] = gtco2_per_ej_biogas() * pes_tot_biogas_for_elec()
     value.loc[["heat"]] = gtco2_per_ej_biogas() * pes_tot_biogas_for_heatcom()
@@ -191,8 +193,8 @@ def co2_emissions_biogas():
 @component.add(
     name="CO2 emissions biomass",
     units="GtCO2/year",
-    subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_traditional_biomass": 1,
@@ -201,7 +203,9 @@ def co2_emissions_biogas():
 )
 def co2_emissions_biomass():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["solids"]] = False
@@ -215,22 +219,24 @@ def co2_emissions_biomass():
 @component.add(
     name="CO2 emissions coal",
     units="GtCO2/year",
-    subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_coal": 3,
         "pec_ff": 4,
         "share_ff_for_elec_emissions_relevant": 1,
         "share_ff_for_heat_emissions_relevant": 1,
-        "gtco2_per_ej_ctl": 1,
         "share_coal_for_ctl_emissions_relevant": 1,
+        "gtco2_per_ej_ctl": 1,
         "share_ff_for_fc_emission_relevant": 1,
     },
 )
 def co2_emissions_coal():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     value.loc[["electricity"]] = (
         gtco2_per_ej_coal()
@@ -259,7 +265,7 @@ def co2_emissions_coal():
 @component.add(
     name="CO2 emissions fossil fuels",
     units="GtCO2/year",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -281,22 +287,24 @@ def co2_emissions_fossil_fuels():
 @component.add(
     name="CO2 emissions gas",
     units="GtCO2/year",
-    subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_gas": 3,
         "pec_ff": 4,
         "share_ff_for_elec_emissions_relevant": 1,
         "share_ff_for_heat_emissions_relevant": 1,
-        "share_nat_gas_for_gtl_emissions_relevant": 1,
         "gtco2_per_ej_gtl": 1,
+        "share_nat_gas_for_gtl_emissions_relevant": 1,
         "share_ff_for_fc_emission_relevant": 1,
     },
 )
 def co2_emissions_gas():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     value.loc[["electricity"]] = (
         gtco2_per_ej_gas()
@@ -325,8 +333,8 @@ def co2_emissions_gas():
 @component.add(
     name="CO2 emissions oil",
     units="GtCO2/year",
-    subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_oil": 3,
@@ -338,7 +346,9 @@ def co2_emissions_gas():
 )
 def co2_emissions_oil():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     value.loc[["electricity"]] = (
         gtco2_per_ej_oil()
@@ -363,8 +373,8 @@ def co2_emissions_oil():
 @component.add(
     name="CO2 emissions peat",
     units="GtCO2/year",
-    subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"pes_peat": 1, "gtco2_per_ej_peat": 1},
 )
@@ -373,7 +383,9 @@ def co2_emissions_peat():
     CO2 emissions from peat.
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["solids"]] = False
@@ -385,7 +397,7 @@ def co2_emissions_peat():
 @component.add(
     name="CO2 emissions per fuel",
     units="GtCO2/year",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"co2_emissions_fossil_fuels": 1, "co2_emissions_bioe_and_waste": 1},
@@ -400,20 +412,22 @@ def co2_emissions_per_fuel():
 @component.add(
     name="CO2 emissions solid bioE",
     units="GtCO2/year",
-    subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_solid_bioe": 3,
         "pe_real_generation_res_elec": 1,
-        "pes_res_for_heatcom_by_techn": 1,
         "pes_res_for_heatnc_by_techn": 1,
+        "pes_res_for_heatcom_by_techn": 1,
         "modern_bioe_in_households": 1,
     },
 )
 def co2_emissions_solid_bioe():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     value.loc[["electricity"]] = gtco2_per_ej_solid_bioe() * float(
         pe_real_generation_res_elec().loc["solid bioE elec"]
@@ -431,8 +445,8 @@ def co2_emissions_solid_bioe():
 @component.add(
     name="CO2 emissions waste",
     units="GtCO2/year",
-    subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_waste": 3,
@@ -443,7 +457,9 @@ def co2_emissions_solid_bioe():
 )
 def co2_emissions_waste():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     value.loc[["electricity"]] = gtco2_per_ej_waste() * pes_tot_waste_for_elec()
     value.loc[["heat"]] = gtco2_per_ej_waste() * pes_tot_waste_for_heatcom()
@@ -454,17 +470,58 @@ def co2_emissions_waste():
 
 
 @component.add(
+    name='"CO2 land-use change emissions exogenous"',
+    units="GtCO2/year",
+    comp_type="Lookup",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_co2_landuse_change_emissions_exogenous",
+        "__lookup__": "_ext_lookup_co2_landuse_change_emissions_exogenous",
+    },
+)
+def co2_landuse_change_emissions_exogenous(x, final_subs=None):
+    return _ext_lookup_co2_landuse_change_emissions_exogenous(x, final_subs)
+
+
+_ext_lookup_co2_landuse_change_emissions_exogenous = ExtLookup(
+    "../../scenarios/scen_eu.xlsx",
+    "NZP",
+    "years_co2_luc",
+    "co2_luc",
+    {},
+    _root,
+    {},
+    "_ext_lookup_co2_landuse_change_emissions_exogenous",
+)
+
+
+@component.add(
     name="CO2 LULCF",
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"past_trends_co2_lucf": 1},
+    depends_on={
+        "time": 5,
+        "past_trends_co2_lucf": 3,
+        "co2_landuse_change_emissions_exogenous": 2,
+    },
 )
 def co2_lulcf():
     """
     CO2 emissions from Land-Use Change and Forestry.
     """
-    return past_trends_co2_lucf()
+    return if_then_else(
+        time() < 2015,
+        lambda: past_trends_co2_lucf(),
+        lambda: if_then_else(
+            time() < 2020,
+            lambda: past_trends_co2_lucf()
+            + (co2_landuse_change_emissions_exogenous(time()) - past_trends_co2_lucf())
+            / 5
+            * (time() - 2015),
+            lambda: co2_landuse_change_emissions_exogenous(time()),
+        ),
+    )
 
 
 @component.add(
@@ -503,7 +560,7 @@ def gtco2_per_ej_biofuels():
 
 
 _ext_constant_gtco2_per_ej_biofuels = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_biofuels",
     {},
@@ -525,7 +582,7 @@ def gtco2_per_ej_biogas():
 
 
 _ext_constant_gtco2_per_ej_biogas = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_biogas",
     {},
@@ -547,7 +604,7 @@ def gtco2_per_ej_coal():
 
 
 _ext_constant_gtco2_per_ej_coal = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_coal",
     {},
@@ -569,7 +626,7 @@ def gtco2_per_ej_conv_gas():
 
 
 _ext_constant_gtco2_per_ej_conv_gas = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_conv_gas",
     {},
@@ -591,7 +648,7 @@ def gtco2_per_ej_conv_oil():
 
 
 _ext_constant_gtco2_per_ej_conv_oil = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_conv_oil",
     {},
@@ -613,7 +670,7 @@ def gtco2_per_ej_ctl():
 
 
 _ext_constant_gtco2_per_ej_ctl = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_ctl",
     {},
@@ -653,7 +710,7 @@ def gtco2_per_ej_gtl():
 
 
 _ext_constant_gtco2_per_ej_gtl = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_gtl",
     {},
@@ -698,7 +755,7 @@ def gtco2_per_ej_peat():
 
 
 _ext_constant_gtco2_per_ej_peat = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_peat",
     {},
@@ -720,7 +777,7 @@ def gtco2_per_ej_shale_oil():
 
 
 _ext_constant_gtco2_per_ej_shale_oil = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_shale_oil",
     {},
@@ -742,7 +799,7 @@ def gtco2_per_ej_solid_bioe():
 
 
 _ext_constant_gtco2_per_ej_solid_bioe = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_solid_bioe",
     {},
@@ -764,7 +821,7 @@ def gtco2_per_ej_traditional_biomass():
 
 
 _ext_constant_gtco2_per_ej_traditional_biomass = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_traditional_biomass",
     {},
@@ -786,7 +843,7 @@ def gtco2_per_ej_unconv_gas():
 
 
 _ext_constant_gtco2_per_ej_unconv_gas = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_unconv_gas",
     {},
@@ -808,7 +865,7 @@ def gtco2_per_ej_unconv_oil():
 
 
 _ext_constant_gtco2_per_ej_unconv_oil = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_unconv_oil",
     {},
@@ -830,7 +887,7 @@ def gtco2_per_ej_waste():
 
 
 _ext_constant_gtco2_per_ej_waste = ExtConstant(
-    r"../climate.xlsx",
+    "../climate.xlsx",
     "Global",
     "co2_waste",
     {},
@@ -873,7 +930,7 @@ def past_trends_co2_lucf():
 
 
 _ext_data_past_trends_co2_lucf = ExtData(
-    r"../land.xlsx",
+    "../land.xlsx",
     "Europe",
     "time",
     "historic_co2_emissions_from_land_use_change_and_forestry",

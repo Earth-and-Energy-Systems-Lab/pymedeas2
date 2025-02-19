@@ -1,6 +1,6 @@
 """
 Module energy.supply.ctl_and_gtl_supply
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -107,7 +107,7 @@ def crash_programme_ctl():
 
 
 _ext_constant_crash_programme_ctl = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "crash_programme_CTL",
     {},
@@ -132,7 +132,7 @@ def crash_programme_gtl():
 
 
 _ext_constant_crash_programme_gtl = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "crash_programme_GTL",
     {},
@@ -157,7 +157,7 @@ def ctl_efficiency():
 
 
 _ext_constant_ctl_efficiency = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "ctl_efficiency",
     {},
@@ -230,9 +230,9 @@ def ctlgtl_gb():
     depends_on={
         "time": 1,
         "hist_growth_ctl": 2,
+        "crash_programme_ctl": 2,
         "abundance_fs": 1,
         "p_ctl": 2,
-        "crash_programme_ctl": 2,
     },
 )
 def exogenous_growth_ctl():
@@ -330,7 +330,7 @@ def gtl_efficiency():
 
 
 _ext_constant_gtl_efficiency = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "gtl_efficiency",
     {},
@@ -396,7 +396,7 @@ def hist_growth_ctl():
 
 
 _ext_constant_hist_growth_ctl = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "historic_growth_ctl",
     {},
@@ -421,7 +421,7 @@ def hist_growth_gtl():
 
 
 _ext_constant_hist_growth_gtl = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "historic_growth_gtl",
     {},
@@ -449,7 +449,7 @@ def historic_ctl_production(x, final_subs=None):
 
 
 _ext_lookup_historic_ctl_production = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_ctl_production",
@@ -478,7 +478,7 @@ def historic_gtl_production(x, final_subs=None):
 
 
 _ext_lookup_historic_gtl_production = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_gtl_production",
@@ -504,7 +504,7 @@ def initial_ctl_production():
 
 
 _ext_constant_initial_ctl_production = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "initial_ctl_production",
     {},
@@ -529,7 +529,7 @@ def initial_gtl_production():
 
 
 _ext_constant_initial_gtl_production = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "initial_gtl_production",
     {},
@@ -554,7 +554,7 @@ def lifetime_ctl():
 
 
 _ext_constant_lifetime_ctl = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "lifetime_ctl",
     {},
@@ -579,7 +579,7 @@ def lifetime_gtl():
 
 
 _ext_constant_lifetime_gtl = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "lifetime_gtl",
     {},
@@ -604,7 +604,7 @@ def p_ctl():
 
 
 _ext_constant_p_ctl = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "p_CTL_growth",
     {},
@@ -629,7 +629,7 @@ def p_gtl():
 
 
 _ext_constant_p_gtl = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "p_GTL_growth",
     {},
@@ -747,9 +747,9 @@ def real_growth_gtl():
     depends_on={
         "time": 1,
         "constrain_liquids_exogenous_growth": 1,
-        "check_liquids": 1,
-        "wear_ctl": 2,
         "crash_programme_ctl": 1,
+        "wear_ctl": 2,
+        "check_liquids": 1,
         "scarcity_conv_oil": 1,
     },
 )
@@ -782,10 +782,10 @@ def replacement_ctl():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "crash_programme_gtl": 1,
         "constrain_liquids_exogenous_growth": 1,
-        "check_liquids": 1,
         "wear_gtl": 2,
+        "check_liquids": 1,
+        "crash_programme_gtl": 1,
         "scarcity_conv_oil": 1,
     },
 )
@@ -831,11 +831,11 @@ def share_ctlgtl_overcapacity():
         "time": 3,
         "time_step": 2,
         "historic_ctl_production": 2,
-        "ctl_potential_production": 2,
-        "nvs_1_year": 1,
-        "constrain_liquids_exogenous_growth": 1,
         "real_growth_ctl": 1,
         "check_liquids": 1,
+        "nvs_1_year": 1,
+        "constrain_liquids_exogenous_growth": 1,
+        "ctl_potential_production": 2,
     },
 )
 def variation_ctl():
@@ -866,13 +866,13 @@ def variation_ctl():
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "time_step": 2,
         "historic_gtl_production": 2,
-        "real_growth_gtl": 1,
+        "time_step": 2,
         "gtl_potential_production": 2,
-        "nvs_1_year": 1,
-        "constrain_liquids_exogenous_growth": 1,
         "check_liquids": 1,
+        "nvs_1_year": 1,
+        "real_growth_gtl": 1,
+        "constrain_liquids_exogenous_growth": 1,
     },
 )
 def variation_gtl():
@@ -901,7 +901,7 @@ def variation_gtl():
     units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "ctl_potential_production": 1, "lifetime_ctl": 1},
+    depends_on={"time": 1, "lifetime_ctl": 1, "ctl_potential_production": 1},
 )
 def wear_ctl():
     """
@@ -917,7 +917,7 @@ def wear_ctl():
     units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "gtl_potential_production": 1, "lifetime_gtl": 1},
+    depends_on={"time": 1, "lifetime_gtl": 1, "gtl_potential_production": 1},
 )
 def wear_gtl():
     """

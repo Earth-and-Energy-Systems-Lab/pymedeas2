@@ -1,6 +1,6 @@
 """
 Module energy.storage.storage_demand_and_supply
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -29,13 +29,13 @@ def abundance_storage():
 @component.add(
     name="constraint elec storage availability",
     units="Dmnl",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "res_elec_variables": 1,
-        "total_capacity_elec_storage_tw": 3,
         "demand_storage_capacity": 2,
+        "total_capacity_elec_storage_tw": 3,
     },
 )
 def constraint_elec_storage_availability():
@@ -137,8 +137,8 @@ def demand_storage_capacity():
     depends_on={
         "esoi_phs": 1,
         "installed_capacity_phs": 1,
-        "esoi_ev_batteries": 1,
         "used_ev_batteries_for_elec_storage": 1,
+        "esoi_ev_batteries": 1,
         "total_capacity_elec_storage_tw": 1,
     },
 )
@@ -186,7 +186,7 @@ def real_fe_elec_stored_ev_batteries_twh():
 @component.add(
     name="remaining potential elec storage by RES techn",
     units="Dmnl",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"max_capacity_elec_storage": 3, "demand_storage_capacity": 2},
@@ -203,7 +203,7 @@ def remaining_potential_elec_storage_by_res_techn():
             lambda: 0,
         ),
         {"RES elec": _subscript_dict["RES elec"]},
-        ["RES elec"],
+        [np.str_("RES elec")],
     )
 
 
@@ -215,8 +215,8 @@ def remaining_potential_elec_storage_by_res_techn():
     depends_on={
         "rt_storage_efficiency_phs": 1,
         "installed_capacity_phs": 1,
-        "rt_storage_efficiency_ev_batteries": 1,
         "used_ev_batteries_for_elec_storage": 1,
+        "rt_storage_efficiency_ev_batteries": 1,
         "total_capacity_elec_storage_tw": 1,
     },
 )
@@ -245,7 +245,7 @@ def rt_storage_efficiency_ev_batteries():
 
 
 _ext_constant_rt_storage_efficiency_ev_batteries = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "round_trip_storage_efficiency_ev_batteries",
     {},
@@ -270,7 +270,7 @@ def rt_storage_efficiency_phs():
 
 
 _ext_constant_rt_storage_efficiency_phs = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "round_trip_storage_efficiency_phs",
     {},
@@ -322,7 +322,7 @@ def total_installed_capacity_res_elec_var():
     return sum(
         installed_capacity_res_elec()
         .loc[_subscript_dict["RES ELEC VARIABLE"]]
-        .rename({"RES elec": "RES ELEC VARIABLE!"}),
+        .rename({np.str_("RES elec"): "RES ELEC VARIABLE!"}),
         dim=["RES ELEC VARIABLE!"],
     )
 

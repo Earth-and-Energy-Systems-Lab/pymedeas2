@@ -1,6 +1,6 @@
 """
 Module energy.demand.ff_ped_pes_fes
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -16,7 +16,7 @@ def a_lin_reg_peat():
 @component.add(
     name="abundance FS",
     units="Dmnl",
-    subscripts=["matter final sources"],
+    subscripts=[np.str_("matter final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ped_fs": 3, "pes_fs": 2},
@@ -56,7 +56,7 @@ def historic_conv_nat_gas_domestic_eu_extracted_ej():
 
 
 _ext_data_historic_conv_nat_gas_domestic_eu_extracted_ej = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_domestic_natural_gas_extraction",
@@ -84,7 +84,7 @@ def historic_conv_oil_domestic_eu_extracted():
 
 
 _ext_data_historic_conv_oil_domestic_eu_extracted = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_domestic_conventional_oil_extraction",
@@ -115,7 +115,7 @@ def historic_pes_peat_ej():
 
 
 _ext_data_historic_pes_peat_ej = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "time_efficiencies",
     "historic_primary_energy_supply_peat",
@@ -238,7 +238,7 @@ def historic_unconv_nat_gas_domestic_eu_extracted_ej():
 
 
 _ext_data_historic_unconv_nat_gas_domestic_eu_extracted_ej = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_domestic_unconventional_natural_gas_extraction",
@@ -269,7 +269,7 @@ def historic_unconv_oil_domestic_eu_extracted():
 
 
 _ext_data_historic_unconv_oil_domestic_eu_extracted = ExtData(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_unconventional_oil_extraction",
@@ -358,14 +358,14 @@ def imports_eu_unconv_oil_from_row_ej():
 @component.add(
     name='"Non-energy use consumption"',
     units="EJ/year",
-    subscripts=["matter final sources"],
+    subscripts=[np.str_("matter final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_ff_for_nonenergy_use": 1,
         "pes_fs": 1,
-        "transformation_ff_losses": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses": 1,
     },
 )
 def nonenergy_use_consumption():
@@ -373,10 +373,10 @@ def nonenergy_use_consumption():
         pes_fs()
         - transformation_ff_losses()
         .loc[_subscript_dict["matter final sources"]]
-        .rename({"final sources": "matter final sources"})
+        .rename({np.str_("final sources"): "matter final sources"})
         - energy_distr_losses_ff()
         .loc[_subscript_dict["matter final sources"]]
-        .rename({"final sources": "matter final sources"})
+        .rename({np.str_("final sources"): "matter final sources"})
     )
 
 
@@ -431,6 +431,34 @@ def other_ff_required_liquids():
 
 
 @component.add(
+    name="Other FS demands",
+    units="EJ/year",
+    subscripts=["matter final sources"],
+    comp_type="Auxiliary, Constant",
+    comp_subtype="Normal",
+    depends_on={
+        "pes_biogas_ej": 1,
+        "pes_biogas_for_tfc": 1,
+        "pes_waste_ej": 1,
+        "pes_waste_for_tfc": 1,
+        "pe_solidbioe_for_heat_and_electricity": 1,
+    },
+)
+def other_fs_demands():
+    value = xr.DataArray(
+        np.nan,
+        {"matter final sources": _subscript_dict["matter final sources"]},
+        ["matter final sources"],
+    )
+    value.loc[["gases"]] = pes_biogas_ej() - pes_biogas_for_tfc()
+    value.loc[["liquids"]] = 0
+    value.loc[["solids"]] = (
+        pes_waste_ej() - pes_waste_for_tfc() + pe_solidbioe_for_heat_and_electricity()
+    )
+    return value
+
+
+@component.add(
     name="Other liquids supply EJ",
     units="EJ/year",
     comp_type="Auxiliary",
@@ -439,6 +467,7 @@ def other_ff_required_liquids():
         "oil_refinery_gains_ej": 1,
         "fes_ctlgtl_ej": 1,
         "fes_total_biofuels_production_ej": 1,
+        "synthethic_fuel_generation_delayed": 1,
     },
 )
 def other_liquids_supply_ej():
@@ -446,7 +475,15 @@ def other_liquids_supply_ej():
     Other liquids refer to: refinery gains, CTL, GTL and biofuels.
     """
     return (
-        oil_refinery_gains_ej() + fes_ctlgtl_ej() + fes_total_biofuels_production_ej()
+        oil_refinery_gains_ej()
+        + fes_ctlgtl_ej()
+        + fes_total_biofuels_production_ej()
+        + sum(
+            synthethic_fuel_generation_delayed()
+            .loc[_subscript_dict["ETL"]]
+            .rename({np.str_("E to synthetic"): "ETL!"}),
+            dim=["ETL!"],
+        )
     )
 
 
@@ -517,8 +554,8 @@ def ped_domestic_eu_conv_ff():
         "ped_nre_fs": 2,
         "imports_eu_coal_from_row_ej": 1,
         "imports_eu_nat_gas_from_row_ej": 1,
-        "imports_eu_total_oil_from_row_ej": 1,
         "ped_total_oil_ej": 1,
+        "imports_eu_total_oil_from_row_ej": 1,
     },
 )
 def ped_domestic_ff():
@@ -542,7 +579,7 @@ def ped_domestic_ff():
 @component.add(
     name="PED FS",
     units="EJ/year",
-    subscripts=["matter final sources"],
+    subscripts=[np.str_("matter final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -553,6 +590,7 @@ def ped_domestic_ff():
         "ped_ff_for_heat_plants": 1,
         "ped_ff_for_chp_plants": 1,
         "ped_ff_heatnc": 1,
+        "other_fs_demands": 1,
     },
 )
 def ped_fs():
@@ -560,15 +598,16 @@ def ped_fs():
         0,
         required_fed_by_fuel()
         .loc[_subscript_dict["matter final sources"]]
-        .rename({"final sources": "matter final sources"})
+        .rename({np.str_("final sources"): "matter final sources"})
         + nonenergy_use_demand_by_final_fuel()
         .loc[_subscript_dict["matter final sources"]]
-        .rename({"final sources": "matter final sources"})
+        .rename({np.str_("final sources"): "matter final sources"})
         + other_ff_required()
         + ped_ff_elec_plants()
         + ped_ff_for_heat_plants()
         + ped_ff_for_chp_plants()
-        + ped_ff_heatnc(),
+        + ped_ff_heatnc()
+        + other_fs_demands(),
     )
 
 
@@ -625,13 +664,15 @@ def ped_nat_gas_ej():
     comp_subtype="Normal",
     depends_on={
         "ped_nre_fs_liquids": 1,
+        "synthethic_fuel_generation_delayed": 2,
         "ped_fs": 2,
-        "pes_biogas_for_tfc": 1,
-        "pes_peat": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
-        "losses_in_charcoal_plants": 1,
-        "pes_waste_for_tfc": 1,
+        "pes_biogas_ej": 1,
         "modern_solids_bioe_demand_households": 1,
+        "losses_in_charcoal_plants": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "pe_solidbioe_for_heat_and_electricity": 1,
+        "pes_waste_for_tfc": 1,
+        "pes_peat": 1,
     },
 )
 def ped_nre_fs():
@@ -643,8 +684,26 @@ def ped_nre_fs():
         {"matter final sources": _subscript_dict["matter final sources"]},
         ["matter final sources"],
     )
-    value.loc[["liquids"]] = ped_nre_fs_liquids()
-    value.loc[["gases"]] = float(ped_fs().loc["gases"]) - pes_biogas_for_tfc()
+    value.loc[["liquids"]] = np.maximum(
+        0,
+        ped_nre_fs_liquids()
+        - sum(
+            synthethic_fuel_generation_delayed()
+            .loc[_subscript_dict["ETL"]]
+            .rename({np.str_("E to synthetic"): "ETL!"}),
+            dim=["ETL!"],
+        ),
+    )
+    value.loc[["gases"]] = (
+        float(ped_fs().loc["gases"])
+        - pes_biogas_ej()
+        - sum(
+            synthethic_fuel_generation_delayed()
+            .loc[_subscript_dict["ETG"]]
+            .rename({np.str_("E to synthetic"): "ETG!"}),
+            dim=["ETG!"],
+        )
+    )
     value.loc[["solids"]] = (
         float(ped_fs().loc["solids"])
         - pe_traditional_biomass_ej_delayed_1yr()
@@ -652,6 +711,7 @@ def ped_nre_fs():
         - modern_solids_bioe_demand_households()
         - pes_peat()
         - losses_in_charcoal_plants()
+        - pe_solidbioe_for_heat_and_electricity()
     )
     return value
 
@@ -695,12 +755,15 @@ def ped_total_oil_ej():
     comp_subtype="Normal",
     depends_on={
         "pec_ff": 3,
-        "pes_waste_for_tfc": 1,
+        "pes_waste_ej": 1,
         "pes_peat": 1,
         "pe_traditional_biomass_ej_delayed_1yr": 1,
         "modern_solids_bioe_demand_households": 1,
         "losses_in_charcoal_plants": 1,
+        "pe_solidbioe_for_heat_and_electricity": 1,
         "other_liquids_supply_ej": 1,
+        "synthethic_fuel_generation_delayed": 1,
+        "pes_biogas_ej": 1,
         "pes_biogas_for_tfc": 1,
     },
 )
@@ -712,14 +775,25 @@ def pes_fs():
     )
     value.loc[["solids"]] = (
         float(pec_ff().loc["solids"])
-        + pes_waste_for_tfc()
+        + pes_waste_ej()
         + pes_peat()
         + pe_traditional_biomass_ej_delayed_1yr()
         + modern_solids_bioe_demand_households()
         + losses_in_charcoal_plants()
+        + pe_solidbioe_for_heat_and_electricity()
     )
     value.loc[["liquids"]] = float(pec_ff().loc["liquids"]) + other_liquids_supply_ej()
-    value.loc[["gases"]] = float(pec_ff().loc["gases"]) + pes_biogas_for_tfc()
+    value.loc[["gases"]] = (
+        float(pec_ff().loc["gases"])
+        + pes_biogas_for_tfc()
+        + sum(
+            synthethic_fuel_generation_delayed()
+            .loc[_subscript_dict["ETG"]]
+            .rename({np.str_("E to synthetic"): "ETG!"}),
+            dim=["ETG!"],
+        )
+        + pes_biogas_ej()
+    )
     return value
 
 
@@ -749,7 +823,7 @@ def pes_peat():
 @component.add(
     name="real FE consumption FS",
     units="EJ/year",
-    subscripts=["matter final sources"],
+    subscripts=[np.str_("matter final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -764,10 +838,10 @@ def real_fe_consumption_fs():
         pes_fs()
         - transformation_ff_losses()
         .loc[_subscript_dict["matter final sources"]]
-        .rename({"final sources": "matter final sources"})
+        .rename({np.str_("final sources"): "matter final sources"})
         - energy_distr_losses_ff()
         .loc[_subscript_dict["matter final sources"]]
-        .rename({"final sources": "matter final sources"})
+        .rename({np.str_("final sources"): "matter final sources"})
     ) * share_ff_for_final_energy()
 
 
@@ -785,7 +859,7 @@ def share_coal_for_ctl_emissions_relevant():
 @component.add(
     name='"share FF dem for Heat-com"',
     units="Dmnl",
-    subscripts=["matter final sources"],
+    subscripts=[np.str_("matter final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ped_ff_for_heat_plants": 1, "ped_nre_fs": 1},
@@ -797,13 +871,13 @@ def share_ff_dem_for_heatcom():
 @component.add(
     name="share FF for elec emissions relevant",
     units="Dmnl",
-    subscripts=["matter final sources"],
+    subscripts=[np.str_("matter final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ped_ff_elec_plants": 1,
-        "ped_ff_for_chp_plants": 1,
         "share_elec_gen_in_chp": 1,
+        "ped_ff_for_chp_plants": 1,
         "ped_nre_fs": 1,
     },
 )
@@ -817,7 +891,7 @@ def share_ff_for_elec_emissions_relevant():
 @component.add(
     name="share FF for electricity",
     units="Dmnl",
-    subscripts=["matter final sources"],
+    subscripts=[np.str_("matter final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ped_ff_elec_plants": 1, "ped_nre_fs": 1},
@@ -835,6 +909,7 @@ def share_ff_for_electricity():
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 3,
         "ped_fs": 3,
+        "share_ff_fs": 3,
         "share_ff_for_elec_emissions_relevant": 3,
         "share_ff_for_heat_emissions_relevant": 3,
         "share_coal_for_ctl_emissions_relevant": 1,
@@ -852,6 +927,7 @@ def share_ff_for_fc_emission_relevant():
             float(nonenergy_use_demand_by_final_fuel().loc["solids"]),
             float(ped_fs().loc["solids"]),
         )
+        * float(share_ff_fs().loc["solids"])
         - float(share_ff_for_elec_emissions_relevant().loc["solids"])
         - float(share_ff_for_heat_emissions_relevant().loc["solids"])
         - share_coal_for_ctl_emissions_relevant()
@@ -862,6 +938,7 @@ def share_ff_for_fc_emission_relevant():
             float(nonenergy_use_demand_by_final_fuel().loc["liquids"]),
             float(ped_fs().loc["liquids"]),
         )
+        * float(share_ff_fs().loc["liquids"])
         - float(share_ff_for_elec_emissions_relevant().loc["liquids"])
         - float(share_ff_for_heat_emissions_relevant().loc["liquids"])
     )
@@ -871,6 +948,7 @@ def share_ff_for_fc_emission_relevant():
             float(nonenergy_use_demand_by_final_fuel().loc["gases"]),
             float(ped_fs().loc["gases"]),
         )
+        * float(share_ff_fs().loc["gases"])
         - float(share_ff_for_elec_emissions_relevant().loc["gases"])
         - float(share_ff_for_heat_emissions_relevant().loc["gases"])
     )
@@ -880,42 +958,42 @@ def share_ff_for_fc_emission_relevant():
 @component.add(
     name="share FF for final energy",
     units="Dmnl",
-    subscripts=["matter final sources"],
+    subscripts=[np.str_("matter final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_fuel": 1,
         "ped_fs": 1,
-        "transformation_ff_losses": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses": 1,
     },
 )
 def share_ff_for_final_energy():
     return zidz(
         required_fed_by_fuel()
         .loc[_subscript_dict["matter final sources"]]
-        .rename({"final sources": "matter final sources"}),
+        .rename({np.str_("final sources"): "matter final sources"}),
         ped_fs()
         - transformation_ff_losses()
         .loc[_subscript_dict["matter final sources"]]
-        .rename({"final sources": "matter final sources"})
+        .rename({np.str_("final sources"): "matter final sources"})
         - energy_distr_losses_ff()
         .loc[_subscript_dict["matter final sources"]]
-        .rename({"final sources": "matter final sources"}),
+        .rename({np.str_("final sources"): "matter final sources"}),
     )
 
 
 @component.add(
     name="share FF for heat emissions relevant",
     units="Dmnl",
-    subscripts=["matter final sources"],
+    subscripts=[np.str_("matter final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ped_ff_for_heat_plants": 1,
         "ped_ff_heatnc": 1,
-        "ped_ff_for_chp_plants": 1,
         "share_elec_gen_in_chp": 1,
+        "ped_ff_for_chp_plants": 1,
         "ped_nre_fs": 1,
     },
 )
@@ -931,7 +1009,7 @@ def share_ff_for_heat_emissions_relevant():
 @component.add(
     name='"share FF for Heat-nc"',
     units="Dmnl",
-    subscripts=["matter final sources"],
+    subscripts=[np.str_("matter final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ped_ff_heatnc": 1, "ped_nre_fs": 1},
@@ -943,29 +1021,41 @@ def share_ff_for_heatnc():
 @component.add(
     name='"share FF for non-energy use"',
     units="Dmnl",
-    subscripts=["matter final sources"],
+    subscripts=[np.str_("matter final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
         "ped_fs": 1,
-        "transformation_ff_losses": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses": 1,
     },
 )
 def share_ff_for_nonenergy_use():
     return zidz(
         nonenergy_use_demand_by_final_fuel()
         .loc[_subscript_dict["matter final sources"]]
-        .rename({"final sources": "matter final sources"}),
+        .rename({np.str_("final sources"): "matter final sources"}),
         ped_fs()
         - transformation_ff_losses()
         .loc[_subscript_dict["matter final sources"]]
-        .rename({"final sources": "matter final sources"})
+        .rename({np.str_("final sources"): "matter final sources"})
         - energy_distr_losses_ff()
         .loc[_subscript_dict["matter final sources"]]
-        .rename({"final sources": "matter final sources"}),
+        .rename({np.str_("final sources"): "matter final sources"}),
     )
+
+
+@component.add(
+    name="share FF FS",
+    units="1",
+    subscripts=[np.str_("matter final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"ped_nre_fs": 1, "ped_fs": 1},
+)
+def share_ff_fs():
+    return ped_nre_fs() / ped_fs()
 
 
 @component.add(
@@ -976,4 +1066,4 @@ def share_ff_for_nonenergy_use():
     depends_on={"ped_nat_gas_for_gtl_ej": 1, "ped_nat_gas_ej": 1},
 )
 def share_nat_gas_for_gtl_emissions_relevant():
-    return ped_nat_gas_for_gtl_ej() / ped_nat_gas_ej()
+    return zidz(ped_nat_gas_for_gtl_ej(), ped_nat_gas_ej())

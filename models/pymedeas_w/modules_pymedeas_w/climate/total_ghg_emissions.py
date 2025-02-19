@@ -82,10 +82,11 @@ def total_co2e_all_ghg():
     depends_on={
         "total_ch4_emissions_mtch4": 1,
         "gwp_100_years_ch4": 1,
-        "total_co2_emissions_gtco2": 1,
+        "total_co2_emissions_gtco2_after_capture": 1,
     },
 )
 def total_co2e_gwp100_years():
     return (
-        total_ch4_emissions_mtch4() * gwp_100_years_ch4() + total_co2_emissions_gtco2()
+        total_ch4_emissions_mtch4() * gwp_100_years_ch4()
+        + total_co2_emissions_gtco2_after_capture()
     )

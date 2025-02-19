@@ -8,16 +8,16 @@ Translated using PySD version 3.14.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_liquids_ej": 3, "pes_liquids_ej": 2},
+    depends_on={"ped_liquids_ej": 3, "pes_liquids": 2},
 )
 def abundance_liquids():
     """
     The parameter abundance varies between (1;0). Abundance=1 while the supply covers the demand; the closest to 0 indicates a higher divergence between supply and demand.
     """
     return if_then_else(
-        ped_liquids_ej() < pes_liquids_ej(),
+        ped_liquids_ej() < pes_liquids(),
         lambda: 1,
-        lambda: 1 - zidz(ped_liquids_ej() - pes_liquids_ej(), ped_liquids_ej()),
+        lambda: 1 - zidz(ped_liquids_ej() - pes_liquids(), ped_liquids_ej()),
     )
 
 
@@ -26,13 +26,13 @@ def abundance_liquids():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_liquids_ej": 1, "pes_liquids_ej": 2},
+    depends_on={"ped_liquids_ej": 1, "pes_liquids": 2},
 )
 def check_liquids():
     """
     If=0, demand=supply. If>0, demand>supply (liquids scarcity). If<0, demand<supply (oversupply). Variable to avoid energy oversupply caused by exogenously driven policies.
     """
-    return zidz(ped_liquids_ej() - pes_liquids_ej(), pes_liquids_ej())
+    return zidz(ped_liquids_ej() - pes_liquids(), pes_liquids())
 
 
 @component.add(
@@ -91,6 +91,7 @@ def other_liquids_required_ej():
         "fes_ctlgtl_ej": 1,
         "fes_total_biofuels_production_ej": 1,
         "synthethic_fuel_generation_delayed": 1,
+        "oil_refinery_gains_ej": 1,
     },
 )
 def other_liquids_supply_ej():
@@ -106,6 +107,7 @@ def other_liquids_supply_ej():
             .rename({np.str_("E to synthetic"): "ETL!"}),
             dim=["ETL!"],
         )
+        + oil_refinery_gains_ej()
     )
 
 
@@ -127,14 +129,17 @@ def ped_liquids_ej():
     """
     Primary energy demand of total liquids.
     """
-    return np.maximum(
-        0,
-        required_fed_by_liquids_ej()
-        + other_liquids_required_ej()
-        + pe_demand_oil_elec_plants_ej()
-        + ped_oil_for_heat_plants_ej()
-        + ped_oil_for_chp_plants_ej()
-        + ped_liquids_heatnc(),
+    return (
+        np.maximum(
+            0,
+            required_fed_by_liquids_ej()
+            + other_liquids_required_ej()
+            + pe_demand_oil_elec_plants_ej()
+            + ped_oil_for_heat_plants_ej()
+            + ped_oil_for_chp_plants_ej()
+            + ped_liquids_heatnc(),
+        )
+        + 2
     )
 
 
@@ -171,23 +176,23 @@ def ped_nre_liquids():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_nre_liquids": 1, "fes_ctlgtl_ej": 1},
+    depends_on={"ped_nre_liquids": 1, "fes_ctlgtl_ej": 1, "oil_refinery_gains_ej": 1},
 )
 def ped_total_oil_ej():
     """
     Primary energy demand of total oil (conventional and unconventional).
     """
-    return np.maximum(0, ped_nre_liquids() - fes_ctlgtl_ej())
+    return np.maximum(0, ped_nre_liquids() - fes_ctlgtl_ej() - oil_refinery_gains_ej())
 
 
 @component.add(
-    name="PES Liquids EJ",
+    name="PES Liquids",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pes_oil_ej": 1, "other_liquids_supply_ej": 1},
 )
-def pes_liquids_ej():
+def pes_liquids():
     """
     Total primary supply of liquids.
     """
@@ -213,13 +218,13 @@ def required_fed_by_liquids_ej():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"fes_total_biofuels_production_ej": 1, "pes_liquids_ej": 1},
+    depends_on={"fes_total_biofuels_production_ej": 1, "pes_liquids": 1},
 )
 def share_biofuel_in_pes():
     """
     Share of biofuels in total liquids primary energy
     """
-    return zidz(fes_total_biofuels_production_ej(), pes_liquids_ej())
+    return zidz(fes_total_biofuels_production_ej(), pes_liquids())
 
 
 @component.add(
@@ -227,13 +232,13 @@ def share_biofuel_in_pes():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_liquids_heatnc": 1, "pes_liquids_ej": 1},
+    depends_on={"ped_liquids_heatnc": 1, "pes_liquids": 1},
 )
 def share_liquids_dem_for_heatnc():
     """
     Share of liquids demand for non-commercial Heat plants in relation to the total demand of liquids.
     """
-    return zidz(ped_liquids_heatnc(), pes_liquids_ej())
+    return zidz(ped_liquids_heatnc(), pes_liquids())
 
 
 @component.add(
@@ -254,6 +259,17 @@ def share_liquids_for_final_energy():
     return zidz(
         required_fed_by_liquids_ej(), ped_liquids_ej() - other_liquids_required_ej()
     )
+
+
+@component.add(
+    name="share liquids for others",
+    units="1",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"other_liquids_required_ej": 1, "ped_liquids_ej": 1},
+)
+def share_liquids_for_others():
+    return other_liquids_required_ej() / ped_liquids_ej()
 
 
 @component.add(
@@ -299,8 +315,8 @@ def share_oil_dem_for_heatcom():
     comp_subtype="Normal",
     depends_on={
         "pe_demand_oil_elec_plants_ej": 1,
-        "ped_oil_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp_oil": 1,
+        "ped_oil_for_chp_plants_ej": 1,
         "ped_total_oil_ej": 1,
     },
 )
@@ -317,13 +333,28 @@ def share_oil_for_elec_emissions_relevant():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"share_liquids_for_final_energy": 1, "share_oil_pes": 1},
+    depends_on={
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
+        "ped_liquids_ej": 2,
+        "ped_total_oil_ej": 1,
+        "share_oil_for_elec_emissions_relevant": 1,
+        "share_oil_for_heat_emissions_relevant": 1,
+    },
 )
 def share_oil_for_fc_emissions_relevant():
     """
     1-ZIDZ("Non-energy use demand by final fuel EJ"[liquids],PED total oil EJ)-share oil for Elec emissions relevant-share oil for Heat emissions relevant
     """
-    return share_liquids_for_final_energy() * share_oil_pes()
+    return (
+        1
+        - zidz(
+            float(nonenergy_use_demand_by_final_fuel_ej().loc["liquids"]),
+            ped_liquids_ej(),
+        )
+        * (ped_total_oil_ej() / ped_liquids_ej())
+        - share_oil_for_elec_emissions_relevant()
+        - share_oil_for_heat_emissions_relevant()
+    )
 
 
 @component.add(
@@ -334,8 +365,8 @@ def share_oil_for_fc_emissions_relevant():
     depends_on={
         "ped_oil_for_heat_plants_ej": 1,
         "ped_liquids_heatnc": 1,
-        "ped_oil_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp_oil": 1,
+        "ped_oil_for_chp_plants_ej": 1,
         "ped_total_oil_ej": 1,
     },
 )
@@ -353,10 +384,10 @@ def share_oil_for_heat_emissions_relevant():
     units="1",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pes_oil_ej": 1, "pes_liquids_ej": 1},
+    depends_on={"pes_oil_ej": 1, "pes_liquids": 1},
 )
 def share_oil_pes():
-    return pes_oil_ej() / pes_liquids_ej()
+    return pes_oil_ej() / pes_liquids()
 
 
 @component.add(

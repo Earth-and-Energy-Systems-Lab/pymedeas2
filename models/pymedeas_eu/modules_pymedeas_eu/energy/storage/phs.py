@@ -1,6 +1,6 @@
 """
 Module energy.storage.phs
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -18,7 +18,7 @@ def cp_phs():
 
 
 _ext_constant_cp_phs = ExtConstant(
-    r"../energy.xlsx", "Europe", "cp_phs", {}, _root, {}, "_ext_constant_cp_phs"
+    "../energy.xlsx", "Europe", "cp_phs", {}, _root, {}, "_ext_constant_cp_phs"
 )
 
 
@@ -37,7 +37,7 @@ def initial_instal_cap_phs():
 
 
 _ext_constant_initial_instal_cap_phs = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "initial_installed_capacity_phs",
     {},
@@ -74,8 +74,8 @@ def installed_capacity_phs():
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_phs": 3,
-        "start_year_p_growth_res_elec": 3,
         "p_phs_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def installed_capacity_phs_policies():
@@ -153,7 +153,7 @@ def max_potential_phs_twe():
 
 
 _ext_constant_max_potential_phs_twe = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "max_PHS_potential",
     {},
@@ -181,8 +181,8 @@ def max_potential_phs_twh():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "installed_capacity_phs": 1,
         "installed_capacity_phs_year_delayed": 1,
+        "installed_capacity_phs": 1,
     },
 )
 def new_phs_installed():
@@ -234,7 +234,7 @@ def p_phs_power(x, final_subs=None):
 
 
 _ext_lookup_p_phs_power = ExtLookup(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "year_RES_power",
     "p_PHS_power",
@@ -360,7 +360,7 @@ _integ_renewed_capacity_phs_tw = Integ(
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "wear_phs": 1, "phs_overcapacity": 1},
+    depends_on={"time": 1, "phs_overcapacity": 1, "wear_phs": 1},
 )
 def replacement_capacity_phs():
     """
@@ -386,7 +386,7 @@ def table_hist_capacity_phs(x, final_subs=None):
 
 
 _ext_lookup_table_hist_capacity_phs = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_installed_capacity_phs",

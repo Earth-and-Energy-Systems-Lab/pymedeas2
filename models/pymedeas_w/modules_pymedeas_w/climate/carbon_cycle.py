@@ -706,9 +706,9 @@ def effect_of_warming_on_ch4_release_from_biological_activity():
     depends_on={
         "preindustrial_c_in_mixed_layer": 1,
         "effect_of_temp_on_dic_pco2": 1,
-        "c_in_atmosphere": 1,
         "buffer_factor": 1,
         "preindustrial_c": 1,
+        "c_in_atmosphere": 1,
     },
 )
 def equil_c_in_mixed_layer():
@@ -743,9 +743,9 @@ def equilibrium_c_per_meter_in_mixed_layer():
     comp_subtype="Normal",
     depends_on={
         "init_npp": 1,
-        "c_in_atmosphere": 1,
         "biostim_coeff": 1,
         "preindustrial_c": 1,
+        "c_in_atmosphere": 1,
         "effect_of_warming_on_c_flux_to_biomass": 1,
     },
 )
@@ -1110,8 +1110,8 @@ _ext_constant_layer_depth = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "layer_depth": 2,
-        "eddy_diffusion_coef": 2,
         "mean_depth_of_adjacent_layers": 2,
+        "eddy_diffusion_coef": 2,
     },
 )
 def layer_time_constant():
@@ -1496,10 +1496,10 @@ _ext_constant_strength_of_temp_effect_on_land_c_flux_mean = ExtConstant(
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_co2_emissions_gtco2": 1, "gtc_per_gtco2": 1},
+    depends_on={"total_co2_emissions_gtco2_after_capture": 1, "gtc_per_gtco2": 1},
 )
 def total_c_anthro_emissions():
     """
     Total annual CO2 emissions converted to GtC/year.
     """
-    return total_co2_emissions_gtco2() * gtc_per_gtco2()
+    return total_co2_emissions_gtco2_after_capture() * gtc_per_gtco2()

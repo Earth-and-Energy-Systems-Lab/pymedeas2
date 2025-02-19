@@ -1,9 +1,4 @@
 {
-    "CCS tech": [
-        "post",
-        "pre",
-        "oxyfuel"
-    ],
     "GHGs": [
         "CO2",
         "CH4",
@@ -149,14 +144,6 @@
         "geot heat",
         "solid bioE heat"
     ],
-    "SECTORS CCS": [
-        "Mining quarrying and energy supply",
-        "Food Beverages and Tobacco",
-        "Textiles and leather etc",
-        "Coke refined petroleum nuclear fuel and chemicals etc",
-        "Electrical and optical equipment and Transport equipment",
-        "Other manufacturing"
-    ],
     "SECTORS and HOUSEHOLDS": [
         "Households",
         "Agriculture",
@@ -173,30 +160,6 @@
         "Financial Intermediation",
         "Real estate renting and busine activitie",
         "Non Market Service"
-    ],
-    "Transport Modes": [
-        "Inland",
-        "Maritime",
-        "Air"
-    ],
-    "Transport Modes pkm": [
-        "Inland",
-        "Maritime",
-        "Air",
-        "Househ"
-    ],
-    "Transport Modes pkm Commercial": [
-        "Inland",
-        "Maritime",
-        "Air"
-    ],
-    "dac final sources": [
-        "heat",
-        "electricity"
-    ],
-    "dac tech": [
-        "liquids sorb",
-        "solid sorb"
     ],
     "economic years": [
         "year1995",
@@ -233,27 +196,6 @@
         "liquids",
         "gases",
         "solids"
-    ],
-    "fossil fuels": [
-        "coal",
-        "oil",
-        "natural gas"
-    ],
-    "fuel": [
-        "liq",
-        "gas",
-        "elect"
-    ],
-    "fuels": [
-        "liq",
-        "gas",
-        "elect",
-        "hybrid"
-    ],
-    "fuels2": [
-        "liq",
-        "gas",
-        "elect"
     ],
     "materials": [
         "Adhesive",
@@ -314,11 +256,6 @@
         "vanadium",
         "wires",
         "zinc"
-    ],
-    "matter final sources": [
-        "liquids",
-        "gases",
-        "solids"
     ],
     "primary sources": [
         "coal",
@@ -562,10 +499,6 @@
         "bus gas",
         "train liq",
         "train elec"
-    ],
-    "vehicles bat": [
-        "electric vehicles",
-        "hybrid vehicles"
     ],
     "water": [
         "blue water",

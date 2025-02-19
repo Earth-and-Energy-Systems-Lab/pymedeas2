@@ -285,9 +285,9 @@ def heat_transfer():
     depends_on={
         "heat_transfer_rate": 1,
         "mean_depth_of_adjacent_layers": 1,
-        "eddy_diffusion_coef": 1,
         "heat_diffusion_covar": 2,
         "eddy_diffusion_mean": 1,
+        "eddy_diffusion_coef": 1,
     },
 )
 def heat_transfer_coeff():
@@ -501,9 +501,9 @@ def temperature_change():
     comp_subtype="Normal",
     depends_on={
         "earth_surface_area": 1,
-        "land_area_fraction": 2,
-        "land_thickness": 1,
         "mixed_layer_depth": 1,
+        "land_thickness": 1,
+        "land_area_fraction": 2,
     },
 )
 def upper_layer_volume_vu():

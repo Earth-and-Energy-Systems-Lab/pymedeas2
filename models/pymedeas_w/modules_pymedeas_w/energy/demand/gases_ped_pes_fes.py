@@ -69,21 +69,16 @@ def fes_total_biogas():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "transformation_ff_losses_ej": 2,
-        "energy_distr_losses_ff_ej": 2,
-        "nonenergy_use_demand_by_final_fuel_ej": 2,
+        "transformation_ff_losses_ej": 1,
+        "energy_distr_losses_ff_ej": 1,
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
     },
 )
 def other_gases_required():
-    return if_then_else(
+    return (
         float(transformation_ff_losses_ej().loc["gases"])
         + float(energy_distr_losses_ff_ej().loc["gases"])
         + float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"])
-        < 0,
-        lambda: 0,
-        lambda: float(transformation_ff_losses_ej().loc["gases"])
-        + float(energy_distr_losses_ff_ej().loc["gases"])
-        + float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"]),
     )
 
 
@@ -210,7 +205,7 @@ def share_biogas_in_pes():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_gas_heatnc": 1, "pes_gases": 1, "ped_nat_gas_for_gtl_ej": 1},
+    depends_on={"ped_gas_heatnc": 1, "ped_nat_gas_for_gtl_ej": 1, "pes_gases": 1},
 )
 def share_gases_dem_for_heatnc():
     """
@@ -226,9 +221,9 @@ def share_gases_dem_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_gas": 1,
-        "ped_gases": 1,
-        "other_gases_required": 1,
         "ped_nat_gas_for_gtl_ej": 1,
+        "other_gases_required": 1,
+        "ped_gases": 1,
     },
 )
 def share_gases_for_final_energy():
@@ -302,13 +297,28 @@ def share_nat_gas_for_elec_emissions_relevant():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"share_gases_for_final_energy": 1, "share_nat_gas_pes": 1},
+    depends_on={
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
+        "ped_gases": 2,
+        "ped_nat_gas_ej": 1,
+        "share_nat_gas_for_elec_emissions_relevant": 1,
+        "share_nat_gas_for_gtl_emissions_relevant": 1,
+        "share_nat_gas_for_heat_emissions_relevant": 1,
+    },
 )
 def share_nat_gas_for_fc_emissions_relevant():
     """
     1-ZIDZ("Non-energy use demand by final fuel EJ"[gases],"PED nat. gas EJ")-share nat gas for Elec emissions relevant-share nat gas for GTL emissions relevant-share nat gas for Heat emissions relevant
     """
-    return share_gases_for_final_energy() * share_nat_gas_pes()
+    return (
+        1
+        - zidz(float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"]), ped_gases())
+        * ped_nat_gas_ej()
+        / ped_gases()
+        - share_nat_gas_for_elec_emissions_relevant()
+        - share_nat_gas_for_gtl_emissions_relevant()
+        - share_nat_gas_for_heat_emissions_relevant()
+    )
 
 
 @component.add(

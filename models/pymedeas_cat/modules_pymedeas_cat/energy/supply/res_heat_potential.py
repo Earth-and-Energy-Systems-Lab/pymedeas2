@@ -1,11 +1,12 @@
 """
-Module energy.supply.res_heat_potential
-Translated using PySD version 3.14.1
+Module res_heat_potential
+Translated using PySD version 3.2.0
 """
+
 
 @component.add(
     name="Geot PE potential for heat EJ",
-    units="EJ/year",
+    units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -36,8 +37,8 @@ def geot_pe_potential_for_heat_twth():
 
 
 _ext_constant_geot_pe_potential_for_heat_twth = ExtConstant(
-    r"../energy.xlsx",
-    "Catalonia",
+    "../energy.xlsx",
+    "Austria",
     "geot_PE_potential_heat",
     {},
     _root,
@@ -48,7 +49,7 @@ _ext_constant_geot_pe_potential_for_heat_twth = ExtConstant(
 
 @component.add(
     name="max FE potential biogas for heat",
-    units="EJ/year",
+    units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -68,14 +69,14 @@ def max_fe_potential_biogas_for_heat():
 
 @component.add(
     name="Max FE potential RES for heat",
-    units="EJ/year",
+    units="EJ",
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "max_fe_res_for_heat": 2,
-        "efficiency_res_heat": 1,
         "max_pe_potential_solid_bioe_for_heat_ej": 1,
+        "efficiency_res_heat": 1,
     },
 )
 def max_fe_potential_res_for_heat():
@@ -92,7 +93,7 @@ def max_fe_potential_res_for_heat():
 
 @component.add(
     name="Max FE RES for heat",
-    units="EJ/year",
+    units="EJ",
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -100,8 +101,8 @@ def max_fe_potential_res_for_heat():
         "max_fe_solar_thermal_urban_twth": 1,
         "ej_per_twh": 1,
         "twe_per_twh": 1,
-        "efficiency_res_heat": 2,
         "max_pe_res_for_heat": 2,
+        "efficiency_res_heat": 2,
     },
 )
 def max_fe_res_for_heat():
@@ -125,7 +126,7 @@ def max_fe_res_for_heat():
 
 @component.add(
     name="max PE potential biogas for heat",
-    units="EJ/year",
+    units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"max_pe_biogas_ej": 1, "share_pes_biogas_for_heat": 1},
@@ -139,25 +140,17 @@ def max_pe_potential_biogas_for_heat():
 
 @component.add(
     name="Max PE potential RES for heat",
-    units="EJ/year",
+    units="EJ",
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "max_pe_solar_thermal_for_heat": 1,
-        "twe_per_twh": 1,
-        "ej_per_twh": 1,
-        "max_pe_res_for_heat": 1,
-        "max_pe_potential_solid_bioe_for_heat_ej": 1,
-    },
+    depends_on={"max_pe_res_for_heat": 2, "max_pe_potential_solid_bioe_for_heat_ej": 1},
 )
 def max_pe_potential_res_for_heat():
     value = xr.DataArray(
         np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
-    value.loc[["solar heat"]] = (
-        max_pe_solar_thermal_for_heat() / twe_per_twh() * ej_per_twh()
-    )
+    value.loc[["solar heat"]] = float(max_pe_res_for_heat().loc["solar heat"])
     value.loc[["geot heat"]] = float(max_pe_res_for_heat().loc["geot heat"])
     value.loc[["solid bioE heat"]] = max_pe_potential_solid_bioe_for_heat_ej()
     return value
@@ -165,7 +158,7 @@ def max_pe_potential_res_for_heat():
 
 @component.add(
     name="max PE potential tot RES heat EJ",
-    units="EJ/year",
+    units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -185,11 +178,13 @@ def max_pe_potential_tot_res_heat_ej():
 
 @component.add(
     name="Max PE RES for heat",
-    units="EJ/year",
+    units="EJ",
     subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
+        "max_fe_solar_thermal_urban_twth": 1,
+        "efficiency_res_heat": 1,
         "geot_pe_potential_for_heat_ej": 1,
         "available_max_pe_solid_bioe_for_heat_ej": 1,
     },
@@ -201,27 +196,17 @@ def max_pe_res_for_heat():
     value = xr.DataArray(
         np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
+    value.loc[["solar heat"]] = max_fe_solar_thermal_urban_twth() / float(
+        efficiency_res_heat().loc["solar heat"]
+    )
     value.loc[["geot heat"]] = geot_pe_potential_for_heat_ej()
     value.loc[["solid bioE heat"]] = available_max_pe_solid_bioe_for_heat_ej()
     return value
 
 
 @component.add(
-    name="Max PE solar thermal for heat",
-    units="TW",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"max_fe_solar_thermal_urban_twth": 1, "efficiency_res_heat": 1},
-)
-def max_pe_solar_thermal_for_heat():
-    return max_fe_solar_thermal_urban_twth() / float(
-        efficiency_res_heat().loc["solar heat"]
-    )
-
-
-@component.add(
     name="Max tot FE potential RES for heat",
-    units="EJ/year",
+    units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={

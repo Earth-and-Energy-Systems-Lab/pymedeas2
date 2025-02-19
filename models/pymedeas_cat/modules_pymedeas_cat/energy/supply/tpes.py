@@ -1,7 +1,8 @@
 """
-Module energy.supply.tpes
-Translated using PySD version 3.14.1
+Module tpes
+Translated using PySD version 3.2.0
 """
+
 
 @component.add(
     name="abundance TPE",
@@ -72,28 +73,28 @@ _sampleiftrue_quality_of_electricity_2015 = SampleIfTrue(
 
 
 @component.add(
-    name="share imports CAT NRE from RoW vs world extraction",
+    name="share imports AUT NRE from RoW vs world extraction",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "total_imports_cat_nre_from_row": 1,
+        "total_imports_aut_nre_from_row": 1,
         "total_extraction_nre_ej_world": 1,
     },
 )
-def share_imports_cat_nre_from_row_vs_world_extraction():
-    return total_imports_cat_nre_from_row() / total_extraction_nre_ej_world()
+def share_imports_aut_nre_from_row_vs_world_extraction():
+    return total_imports_aut_nre_from_row() / total_extraction_nre_ej_world()
 
 
 @component.add(
-    name="share imports CAT NRE vs TPEC",
+    name="share imports AUT NRE vs TPEC",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_imports_cat_nre_from_row": 1, "tpes_ej": 1},
+    depends_on={"total_imports_aut_nre_from_row": 1, "tpes_ej": 1},
 )
-def share_imports_cat_nre_vs_tpec():
-    return total_imports_cat_nre_from_row() / tpes_ej()
+def share_imports_aut_nre_vs_tpec():
+    return total_imports_aut_nre_from_row() / tpes_ej()
 
 
 @component.add(
@@ -103,8 +104,8 @@ def share_imports_cat_nre_vs_tpec():
     comp_subtype="Normal",
     depends_on={
         "real_tfec": 1,
-        "total_real_nonenergy_use_consumption_ej": 1,
         "tpes_ej": 1,
+        "total_real_nonenergy_use_consumption_ej": 1,
     },
 )
 def share_total_final_energy_vs_tpes():
@@ -129,19 +130,19 @@ def staticdynamic_quality_of_electricity():
 
 @component.add(
     name="Total consumption NRE EJ",
-    units="EJ/year",
+    units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "extraction_coal_cat": 1,
-        "imports_cat_coal_from_row_ej": 1,
-        "real_extraction_conv_gas": 1,
+        "extraction_coal_aut": 1,
+        "imports_aut_coal_from_row_ej": 1,
+        "real_extraction_conv_gas_ej": 1,
         "real_extraction_conv_oil_ej": 1,
-        "real_extraction_unconv_gas": 1,
+        "real_extraction_unconv_gas_ej": 1,
         "real_extraction_unconv_oil_ej": 1,
-        "extraction_uranium_ej_cat": 1,
-        "imports_cat_nat_gas_from_row_ej": 1,
-        "imports_cat_total_oil_from_row_ej": 1,
+        "extraction_uranium_ej_aut": 1,
+        "imports_aut_nat_gas_from_row_ej": 1,
+        "imports_aut_total_oil_from_row_ej": 1,
         "extraction_uranium_row": 1,
     },
 )
@@ -150,43 +151,43 @@ def total_consumption_nre_ej():
     Annual total consumption of non-renewable energy resources.
     """
     return (
-        extraction_coal_cat()
-        + imports_cat_coal_from_row_ej()
-        + real_extraction_conv_gas()
+        extraction_coal_aut()
+        + imports_aut_coal_from_row_ej()
+        + real_extraction_conv_gas_ej()
         + real_extraction_conv_oil_ej()
-        + real_extraction_unconv_gas()
+        + real_extraction_unconv_gas_ej()
         + real_extraction_unconv_oil_ej()
-        + extraction_uranium_ej_cat()
-        + imports_cat_nat_gas_from_row_ej()
-        + imports_cat_total_oil_from_row_ej()
+        + extraction_uranium_ej_aut()
+        + imports_aut_nat_gas_from_row_ej()
+        + imports_aut_total_oil_from_row_ej()
         + extraction_uranium_row()
     )
 
 
 @component.add(
-    name="Total imports CAT NRE from Row",
-    units="EJ/year",
+    name="Total imports AUT NRE from Row",
+    units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "extraction_uranium_row": 1,
-        "imports_cat_coal_from_row_ej": 1,
-        "imports_cat_nat_gas_from_row_ej": 1,
-        "imports_cat_total_oil_from_row_ej": 1,
+        "imports_aut_coal_from_row_ej": 1,
+        "imports_aut_nat_gas_from_row_ej": 1,
+        "imports_aut_total_oil_from_row_ej": 1,
     },
 )
-def total_imports_cat_nre_from_row():
+def total_imports_aut_nre_from_row():
     return (
         extraction_uranium_row()
-        + imports_cat_coal_from_row_ej()
-        + imports_cat_nat_gas_from_row_ej()
-        + imports_cat_total_oil_from_row_ej()
+        + imports_aut_coal_from_row_ej()
+        + imports_aut_nat_gas_from_row_ej()
+        + imports_aut_total_oil_from_row_ej()
     )
 
 
 @component.add(
     name="TPE from RES EJ",
-    units="EJ/year",
+    units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pe_elec_generation_from_res_ej": 1, "pe_supply_res_nonelec_ej": 1},
@@ -200,17 +201,17 @@ def tpe_from_res_ej():
 
 @component.add(
     name="TPED by fuel",
-    units="EJ/year",
+    units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "extraction_uranium_ej_cat": 1,
+        "extraction_uranium_ej_aut": 1,
         "pe_supply_res_nonelec_ej": 1,
         "pe_elec_generation_from_res_ej": 1,
         "ped_total_oil_ej": 1,
         "ped_coal_ej": 1,
         "ped_nat_gas_ej": 1,
-        "pes_waste": 1,
+        "pes_waste_ej": 1,
     },
 )
 def tped_by_fuel():
@@ -218,33 +219,33 @@ def tped_by_fuel():
     Total primary energy demand by fuel.
     """
     return (
-        extraction_uranium_ej_cat()
+        extraction_uranium_ej_aut()
         + pe_supply_res_nonelec_ej()
         + pe_elec_generation_from_res_ej()
         + ped_total_oil_ej()
         + ped_coal_ej()
         + ped_nat_gas_ej()
-        + pes_waste()
+        + pes_waste_ej()
     )
 
 
 @component.add(
     name="TPES EJ",
-    units="EJ/year",
+    units="EJ/Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_consumption_nre_ej": 1, "tpe_from_res_ej": 1, "pes_waste": 1},
+    depends_on={"total_consumption_nre_ej": 1, "tpe_from_res_ej": 1, "pes_waste_ej": 1},
 )
 def tpes_ej():
     """
     Total Primary Energy Supply.
     """
-    return total_consumption_nre_ej() + tpe_from_res_ej() + pes_waste()
+    return total_consumption_nre_ej() + tpe_from_res_ej() + pes_waste_ej()
 
 
 @component.add(
     name="Year scarcity TPE",
-    units="year",
+    units="Year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"abundance_tpe": 1, "time": 1},

@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_elec_supply_by_technology
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -41,7 +41,7 @@ def efficiency_conversion_bioe_to_elec():
 
 
 _ext_constant_efficiency_conversion_bioe_to_elec = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "efficiency_conversion_bioe_to_elec",
     {},
@@ -116,7 +116,7 @@ def pe_elec_generation_from_res_ej():
     """
     return (
         sum(
-            pe_real_generation_res_elec().rename({"RES elec": "RES elec!"}),
+            pe_real_generation_res_elec().rename({np.str_("RES elec"): "RES elec!"}),
             dim=["RES elec!"],
         )
         + pes_tot_biogas_for_elec()
@@ -130,8 +130,8 @@ def pe_elec_generation_from_res_ej():
     comp_subtype="Normal",
     depends_on={
         "pe_real_generation_res_elec": 1,
-        "real_generation_res_elec_twh": 1,
         "ej_per_twh": 1,
+        "real_generation_res_elec_twh": 1,
     },
 )
 def pe_losses_bioe_for_elec_ej():
@@ -147,7 +147,7 @@ def pe_losses_bioe_for_elec_ej():
 @component.add(
     name="PE real generation RES elec",
     units="EJ/year",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -162,7 +162,7 @@ def pe_real_generation_res_elec():
     Primary energy supply of electricity production of RES.
     """
     value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, [np.str_("RES elec")]
     )
     value.loc[["hydro"]] = (
         float(real_generation_res_elec_twh().loc["hydro"])

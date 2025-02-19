@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_elec_overcap_due_to_res_variabi
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -53,7 +53,7 @@ def elec_generation_dispatch_from_res_twh():
         sum(
             real_generation_res_elec_twh()
             .loc[_subscript_dict["RES ELEC DISPATCHABLE"]]
-            .rename({"RES elec": "RES ELEC DISPATCHABLE!"}),
+            .rename({np.str_("RES elec"): "RES ELEC DISPATCHABLE!"}),
             dim=["RES ELEC DISPATCHABLE!"],
         )
         + fes_elec_from_biogas_twh()
@@ -74,7 +74,7 @@ def elec_generation_variable_from_res_twh():
     return sum(
         real_generation_res_elec_twh()
         .loc[_subscript_dict["RES ELEC VARIABLE"]]
-        .rename({"RES elec": "RES ELEC VARIABLE!"}),
+        .rename({np.str_("RES elec"): "RES ELEC VARIABLE!"}),
         dim=["RES ELEC VARIABLE!"],
     )
 

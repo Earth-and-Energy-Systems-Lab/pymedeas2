@@ -1,7 +1,8 @@
 """
-Module economy.coefficient_matrices
-Translated using PySD version 3.14.1
+Module coefficient_matrices
+Translated using PySD version 3.2.0
 """
+
 
 @component.add(
     name="historic A Matrix",
@@ -19,7 +20,7 @@ def historic_a_matrix():
 
 
 _ext_constant_historic_a_matrix = ExtConstant(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year1995",
     {
@@ -37,7 +38,7 @@ _ext_constant_historic_a_matrix = ExtConstant(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year1996",
     {
@@ -48,7 +49,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year1997",
     {
@@ -59,7 +60,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year1998",
     {
@@ -70,7 +71,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year1999",
     {
@@ -81,7 +82,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2000",
     {
@@ -92,7 +93,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2001",
     {
@@ -103,7 +104,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2002",
     {
@@ -114,7 +115,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2003",
     {
@@ -125,7 +126,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2004",
     {
@@ -136,7 +137,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2005",
     {
@@ -147,7 +148,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2006",
     {
@@ -158,7 +159,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2007",
     {
@@ -169,7 +170,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2008",
     {
@@ -180,7 +181,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2009",
     {
@@ -191,7 +192,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2010",
     {
@@ -202,7 +203,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2011",
     {
@@ -213,7 +214,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2012",
     {
@@ -224,7 +225,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2013",
     {
@@ -235,7 +236,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    r"../economy.xlsx",
+    "../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2014",
     {
@@ -248,7 +249,6 @@ _ext_constant_historic_a_matrix.add(
 
 @component.add(
     name="historic IA Matrix",
-    units="Dmnl",
     subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -265,7 +265,6 @@ def historic_ia_matrix():
 
 @component.add(
     name="historic Leontief Matrix",
-    units="Dmnl",
     subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -277,7 +276,6 @@ def historic_leontief_matrix():
 
 @component.add(
     name="I Matrix",
-    units="Dmnl",
     subscripts=["sectors A matrix", "sectors A matrix1"],
     comp_type="Constant",
     comp_subtype="Normal",
@@ -315,7 +313,6 @@ def i_matrix():
 
 @component.add(
     name="IA Matrix",
-    units="Dmnl",
     subscripts=["sectors A matrix", "sectors A matrix1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -409,7 +406,6 @@ def ia_matrix():
 
 @component.add(
     name="IA Matrix Domestic",
-    units="Dmnl",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -431,7 +427,6 @@ def ia_matrix_domestic():
 
 @component.add(
     name="IA Matrix Exports 0",
-    units="Dmnl",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -453,7 +448,6 @@ def ia_matrix_exports_0():
 
 @component.add(
     name="IA Matrix Exports 1",
-    units="Dmnl",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -475,7 +469,6 @@ def ia_matrix_exports_1():
 
 @component.add(
     name="IA Matrix Imports 0",
-    units="Dmnl",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -497,7 +490,6 @@ def ia_matrix_imports_0():
 
 @component.add(
     name="IA Matrix Imports 1",
-    units="Dmnl",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -519,7 +511,6 @@ def ia_matrix_imports_1():
 
 @component.add(
     name="Leontief Matrix",
-    units="Dmnl",
     subscripts=["sectors A matrix", "sectors A matrix1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -617,7 +608,6 @@ def leontief_matrix():
 
 @component.add(
     name="Leontief Matrix Domestic",
-    units="Dmnl",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -639,7 +629,6 @@ def leontief_matrix_domestic():
 
 @component.add(
     name="Leontief Matrix Exports 0",
-    units="Dmnl",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -661,7 +650,6 @@ def leontief_matrix_exports_0():
 
 @component.add(
     name="Leontief Matrix Exports 1",
-    units="Dmnl",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -683,7 +671,6 @@ def leontief_matrix_exports_1():
 
 @component.add(
     name="Leontief Matrix Imports 0",
-    units="Dmnl",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -705,7 +692,6 @@ def leontief_matrix_imports_0():
 
 @component.add(
     name="Leontief Matrix Imports 1",
-    units="Dmnl",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",

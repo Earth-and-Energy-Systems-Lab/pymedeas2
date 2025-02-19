@@ -1,6 +1,6 @@
 """
 Module energy.demand.fe_intensity_households
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -11,8 +11,8 @@ Translated using PySD version 3.14.1
     depends_on={
         "time": 1,
         "global_energy_intensity_h": 1,
-        "initial_global_energy_intensity_2009": 2,
         "min_energy_intensity_vs_intial_h": 2,
+        "initial_global_energy_intensity_2009": 2,
     },
 )
 def available_improvement_efficiency_h():
@@ -71,7 +71,7 @@ def choose_energy_intensity_target_method():
 
 
 _ext_constant_choose_energy_intensity_target_method = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "choose_energy_intensity_target_method",
     {},
@@ -84,16 +84,16 @@ _ext_constant_choose_energy_intensity_target_method = ExtConstant(
 @component.add(
     name="Decrease of intensity due to change energy technology H TOP DOWN",
     units="EJ/(year*Tdollars)",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "evol_final_energy_intensity_h": 2,
         "global_energy_intensity_h": 1,
         "minimum_fraction_source": 1,
-        "pressure_to_change_energy_technology_h": 1,
         "max_yearly_change_between_sources": 1,
         "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
+        "pressure_to_change_energy_technology_h": 1,
     },
 )
 def decrease_of_intensity_due_to_change_energy_technology_h_top_down():
@@ -123,7 +123,7 @@ def decrease_of_intensity_due_to_change_energy_technology_h_top_down():
 @component.add(
     name="EI households transport delayed",
     units="EJ/T$",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_ei_households_transport_delayed": 1},
@@ -150,7 +150,7 @@ _delayfixed_ei_households_transport_delayed = DelayFixed(
 @component.add(
     name="Energy intensity of households",
     units="EJ/Tdollar",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -165,7 +165,7 @@ def energy_intensity_of_households():
     Energy intensity of households by final source
     """
     return if_then_else(
-        time() < 2009,
+        time() < 2019,
         lambda: energy_intensity_of_households_rest(),
         lambda: if_then_else(
             float(activate_bottom_up_method().loc["Households"]) == 0,
@@ -179,7 +179,7 @@ def energy_intensity_of_households():
 @component.add(
     name="Energy intensity of households rest",
     units="EJ/T$",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -193,7 +193,9 @@ def energy_intensity_of_households_rest():
     Energy intensity of households by final source without considering the energy of transports for households
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     value.loc[["liquids"]] = if_then_else(
         float(activate_bottom_up_method().loc["Households"]) == 1,
@@ -221,7 +223,7 @@ def energy_intensity_of_households_rest():
 @component.add(
     name="Evol final energy intensity H",
     units="EJ/Tdollars",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_evol_final_energy_intensity_h": 1},
@@ -257,7 +259,7 @@ _integ_evol_final_energy_intensity_h = Integ(
 @component.add(
     name="Final energy intensity 2020 H",
     units="EJ/Tdollars",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
     depends_on={"_sampleiftrue_final_energy_intensity_2020_h": 1},
@@ -294,7 +296,7 @@ _sampleiftrue_final_energy_intensity_2020_h = SampleIfTrue(
 @component.add(
     name="Fuel scarcity pressure H",
     units="Dmnl",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -327,7 +329,9 @@ def global_energy_intensity_h():
     Global energy intensity of households considering the energy intensity of five final fuels.
     """
     return sum(
-        evol_final_energy_intensity_h().rename({"final sources": "final sources!"}),
+        evol_final_energy_intensity_h().rename(
+            {np.str_("final sources"): "final sources!"}
+        ),
         dim=["final sources!"],
     )
 
@@ -335,7 +339,7 @@ def global_energy_intensity_h():
 @component.add(
     name="Households final energy demand",
     units="EJ/year",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -343,8 +347,8 @@ def global_energy_intensity_h():
         "energy_intensity_of_households": 2,
         "m_to_t": 2,
         "nvs_1_year": 2,
-        "ej_per_twh": 1,
         "ccs_energy_demand_sect": 1,
+        "ej_per_twh": 1,
     },
 )
 def households_final_energy_demand():
@@ -352,7 +356,9 @@ def households_final_energy_demand():
     Final energy demand of households
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["electricity"]] = False
@@ -375,7 +381,7 @@ def households_final_energy_demand():
 @component.add(
     name="Increase of intensity due to change energy technology eff H",
     units="EJ/(year*Tdollars)",
-    subscripts=["final sources1", "final sources"],
+    subscripts=[np.str_("final sources1"), np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -391,21 +397,31 @@ def increase_of_intensity_due_to_change_energy_technology_eff_h():
         efficiency_rate_of_substitution()
         .loc["Households", :, :]
         .reset_coords(drop=True)
-        .rename({"final sources": "final sources1", "final sources1": "final sources"})
+        .rename(
+            {
+                np.str_("final sources"): "final sources1",
+                np.str_("final sources1"): "final sources",
+            }
+        )
         == 0,
         lambda: increase_of_intensity_due_to_change_energy_technology_net_h(),
         lambda: increase_of_intensity_due_to_change_energy_technology_net_h()
         * efficiency_rate_of_substitution()
         .loc["Households", :, :]
         .reset_coords(drop=True)
-        .rename({"final sources": "final sources1", "final sources1": "final sources"}),
+        .rename(
+            {
+                np.str_("final sources"): "final sources1",
+                np.str_("final sources1"): "final sources",
+            }
+        ),
     )
 
 
 @component.add(
     name="Increase of intensity due to change energy technology H TOP DOWN",
     units="EJ/(year*T$)",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"increase_of_intensity_due_to_change_energy_technology_eff_h": 1},
@@ -416,7 +432,10 @@ def increase_of_intensity_due_to_change_energy_technology_h_top_down():
     """
     return sum(
         increase_of_intensity_due_to_change_energy_technology_eff_h().rename(
-            {"final sources1": "final sources", "final sources": "final sources1!"}
+            {
+                np.str_("final sources1"): "final sources",
+                np.str_("final sources"): "final sources1!",
+            }
         ),
         dim=["final sources1!"],
     )
@@ -425,7 +444,7 @@ def increase_of_intensity_due_to_change_energy_technology_h_top_down():
 @component.add(
     name="Increase of intensity due to change energy technology net H",
     units="EJ/(year*Tdollars)",
-    subscripts=["final sources1", "final sources"],
+    subscripts=[np.str_("final sources1"), np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -446,20 +465,20 @@ def increase_of_intensity_due_to_change_energy_technology_net_h():
 @component.add(
     name="inertial rate energy intensity H TOP DOWN",
     units="EJ/(year*Tdollars)",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 2,
         "historic_rate_final_energy_intensity": 1,
-        "choose_final_sectoral_energy_intensities_evolution_method": 2,
-        "year_energy_intensity_target": 1,
-        "variation_energy_intensity_target_h": 1,
-        "initial_energy_intensity_1995": 4,
-        "available_improvement_efficiency_h": 4,
-        "evol_final_energy_intensity_h": 4,
         "historic_mean_rate_energy_intensity": 6,
+        "evol_final_energy_intensity_h": 4,
+        "year_energy_intensity_target": 1,
+        "choose_final_sectoral_energy_intensities_evolution_method": 2,
+        "available_improvement_efficiency_h": 4,
+        "initial_energy_intensity_1995": 4,
         "efficiency_energy_acceleration": 12,
+        "variation_energy_intensity_target_h": 1,
     },
 )
 def inertial_rate_energy_intensity_h_top_down():
@@ -467,7 +486,7 @@ def inertial_rate_energy_intensity_h_top_down():
     This variable models the variation of the energy intensity according to the historical trend and represents the variation of the technological energy efficiency in households for each type of energy. By default it will follow the historical trend but can be modified by policies or market conditions that accelerate change.
     """
     return if_then_else(
-        time() < 2009,
+        time() < 2019,
         lambda: historic_rate_final_energy_intensity()
         .loc["Households", :]
         .reset_coords(drop=True),
@@ -581,7 +600,7 @@ def inertial_rate_energy_intensity_h_top_down():
 @component.add(
     name="initial households energy intensity",
     units="EJ/T$",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_initial_households_energy_intensity"},
@@ -591,7 +610,7 @@ def initial_households_energy_intensity():
 
 
 _ext_constant_initial_households_energy_intensity = ExtConstant(
-    r"../transport.xlsx",
+    "../transport.xlsx",
     "Europe",
     "initial_ei_households_transport*",
     {"final sources": _subscript_dict["final sources"]},
@@ -604,7 +623,7 @@ _ext_constant_initial_households_energy_intensity = ExtConstant(
 @component.add(
     name='"Inter-fuel scarcity pressure H"',
     units="Dmnl",
-    subscripts=["final sources", "final sources1"],
+    subscripts=[np.str_("final sources"), np.str_("final sources1")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -645,7 +664,7 @@ def min_energy_intensity_vs_intial_h():
 
 
 _ext_constant_min_energy_intensity_vs_intial_h = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "min_FEI_vs_initial",
     {},
@@ -670,7 +689,7 @@ def pct_change_energy_intensity_target():
 
 
 _ext_constant_pct_change_energy_intensity_target = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "pct_change_energy_intensity_target",
     {},
@@ -699,7 +718,7 @@ def percentage_of_change_over_the_historic_maximun_variation_of_energy_intensiti
 
 
 _ext_constant_percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "p_change_over_hist_max_variation_FEI",
     {},
@@ -712,7 +731,7 @@ _ext_constant_percentage_of_change_over_the_historic_maximun_variation_of_energy
 @component.add(
     name="Pressure to change energy technology by fuel H",
     units="Dmnl",
-    subscripts=["final sources", "final sources1"],
+    subscripts=[np.str_("final sources"), np.str_("final sources1")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -737,7 +756,7 @@ def pressure_to_change_energy_technology_by_fuel_h():
                 + implementation_policy_to_change_final_energy()
                 .loc["Households", :]
                 .reset_coords(drop=True)
-                .rename({"final sources": "final sources1"}),
+                .rename({np.str_("final sources"): "final sources1"}),
                 0,
             ),
             1,
@@ -748,7 +767,7 @@ def pressure_to_change_energy_technology_by_fuel_h():
 @component.add(
     name="Pressure to change energy technology H",
     units="Dmnl",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pressure_to_change_energy_technology_by_fuel_h": 1},
@@ -761,7 +780,10 @@ def pressure_to_change_energy_technology_h():
         1,
         sum(
             pressure_to_change_energy_technology_by_fuel_h().rename(
-                {"final sources": "final sources1!", "final sources1": "final sources"}
+                {
+                    np.str_("final sources"): "final sources1!",
+                    np.str_("final sources1"): "final sources",
+                }
             ),
             dim=["final sources1!"],
         ),
@@ -771,7 +793,7 @@ def pressure_to_change_energy_technology_h():
 @component.add(
     name="share tech change fuel H",
     units="Dmnl",
-    subscripts=["final sources1", "final sources"],
+    subscripts=[np.str_("final sources1"), np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pressure_to_change_energy_technology_by_fuel_h": 2},
@@ -782,11 +804,17 @@ def share_tech_change_fuel_h():
     """
     return zidz(
         pressure_to_change_energy_technology_by_fuel_h().rename(
-            {"final sources": "final sources1", "final sources1": "final sources"}
+            {
+                np.str_("final sources"): "final sources1",
+                np.str_("final sources1"): "final sources",
+            }
         ),
         sum(
             pressure_to_change_energy_technology_by_fuel_h().rename(
-                {"final sources": "final sources1!", "final sources1": "final sources"}
+                {
+                    np.str_("final sources"): "final sources1!",
+                    np.str_("final sources1"): "final sources",
+                }
             ),
             dim=["final sources1!"],
         ).expand_dims({"final sources1": _subscript_dict["final sources1"]}, 0),
@@ -805,7 +833,7 @@ def start_year_modification_ei():
 
 
 _ext_constant_start_year_modification_ei = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "start_year_modification_EI",
     {},
@@ -827,7 +855,9 @@ def total_fed_households():
     Final energy demand of households
     """
     return sum(
-        households_final_energy_demand().rename({"final sources": "final sources!"}),
+        households_final_energy_demand().rename(
+            {np.str_("final sources"): "final sources!"}
+        ),
         dim=["final sources!"],
     )
 
@@ -845,7 +875,7 @@ def total_fed_trasnport_households():
     """
     return sum(
         transport_households_final_energy_demand().rename(
-            {"final sources": "final sources!"}
+            {np.str_("final sources"): "final sources!"}
         ),
         dim=["final sources!"],
     )
@@ -854,7 +884,7 @@ def total_fed_trasnport_households():
 @component.add(
     name="Transport households final energy demand",
     units="EJ/year",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -879,18 +909,18 @@ def transport_households_final_energy_demand():
 @component.add(
     name="Variation energy intensity TARGET H",
     units="EJ/(year*T$)",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "choose_energy_intensity_target_method": 1,
-        "year_energy_intensity_target": 2,
         "evol_final_energy_intensity_h": 2,
         "energy_intensity_target": 1,
+        "year_energy_intensity_target": 2,
         "time": 6,
         "final_year_energy_intensity_target": 4,
-        "pct_change_energy_intensity_target": 1,
         "final_energy_intensity_2020_h": 1,
+        "pct_change_energy_intensity_target": 1,
     },
 )
 def variation_energy_intensity_target_h():
@@ -964,7 +994,7 @@ def year_change_pct_energy_intensity_target():
 
 
 _ext_constant_year_change_pct_energy_intensity_target = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "year_change_pct_energy_intensity_target",
     {},

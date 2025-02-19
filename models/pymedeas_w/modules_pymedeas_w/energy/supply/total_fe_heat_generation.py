@@ -276,13 +276,13 @@ def pes_oil_for_heatcom_plants():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pes_liquids_ej": 1, "share_liquids_dem_for_heatnc": 1},
+    depends_on={"pes_liquids": 1, "share_liquids_dem_for_heatnc": 1},
 )
 def pes_oil_for_heatnc_plants():
     """
     Primary energy supply of natural oil for non-commercial Heat plants.
     """
-    return pes_liquids_ej() * share_liquids_dem_for_heatnc()
+    return pes_liquids() * share_liquids_dem_for_heatnc()
 
 
 @component.add(
@@ -297,6 +297,17 @@ def share_res_heat_generation():
     Share of RES in the total heat generation.
     """
     return fes_res_for_heat_ej() / total_fe_heat_generation()
+
+
+@component.add(
+    name="Total FE Heat consumption",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"total_fe_heat_generation": 1, "share_heat_distribution_losses": 1},
+)
+def total_fe_heat_consumption():
+    return total_fe_heat_generation() / (1 + share_heat_distribution_losses())
 
 
 @component.add(

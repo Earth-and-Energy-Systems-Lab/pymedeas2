@@ -1,6 +1,6 @@
 """
 Module environment.land.crops_for_biofuels_also_supply
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -10,9 +10,9 @@ Translated using PySD version 3.14.1
     comp_subtype="Normal",
     depends_on={
         "time": 3,
+        "p_biofuels_2gen_land_compet": 2,
         "nvs_5_years_ts": 1,
         "past_biofuels_2gen": 2,
-        "p_biofuels_2gen_land_compet": 2,
     },
 )
 def adapt_growth_biofuels_2gen():
@@ -50,7 +50,7 @@ def additional_land_compet_available_for_biofuels():
 
 
 _ext_constant_additional_land_compet_available_for_biofuels = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "additional_land_compet_for_biofuels",
     {},
@@ -68,8 +68,8 @@ _ext_constant_additional_land_compet_available_for_biofuels = ExtConstant(
     depends_on={
         "annual_additional_historic_product_biofuels_2gen": 1,
         "ej_per_ktoe": 1,
-        "land_productivity_biofuels_2gen_ej_mha": 1,
         "nvs_1_year": 1,
+        "land_productivity_biofuels_2gen_ej_mha": 1,
     },
 )
 def annual_additional_historic_land_use_biofuels_2gen():
@@ -114,7 +114,7 @@ def annual_shift_from_2gen_to_3gen():
 
 
 _ext_constant_annual_shift_from_2gen_to_3gen = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "annual_shift_from_second_generation_to_third_generation",
     {},
@@ -177,7 +177,7 @@ def efficiency_improvement_biofuels_3gen():
 
 
 _ext_constant_efficiency_improvement_biofuels_3gen = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "efficiency_improvement_biofuels_third_generation",
     {},
@@ -237,7 +237,7 @@ def historic_produc_biofuels_2gen(x, final_subs=None):
 
 
 _ext_lookup_historic_produc_biofuels_2gen = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_production_of_second_generation_biofuels",
@@ -275,7 +275,7 @@ def initial_value_land_compet_biofuels_2gen_ktoe():
 
 
 _ext_constant_initial_value_land_compet_biofuels_2gen_ktoe = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "initial_production_of_second_generation_biofuels",
     {},
@@ -459,7 +459,7 @@ def land_productivity_biofuels_2gen_ej_mha():
 
 
 _ext_constant_land_productivity_biofuels_2gen_ej_mha = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Global",
     "land_productivity_biofuels_second_generation",
     {},
@@ -478,11 +478,11 @@ _ext_constant_land_productivity_biofuels_2gen_ej_mha = ExtConstant(
         "time": 2,
         "start_year_3gen_cellulosic_biofuels": 2,
         "p_biofuels_3gen_land_compet": 1,
-        "land_compet_2gen_vs_total_land_compet": 2,
-        "biofuels_3gen_land_compet_available": 2,
         "land_compet_biofuels_3gen_mha": 1,
-        "land_compet_biofuels_2gen_mha": 1,
+        "land_compet_2gen_vs_total_land_compet": 2,
         "annual_shift_from_2gen_to_3gen": 1,
+        "biofuels_3gen_land_compet_available": 2,
+        "land_compet_biofuels_2gen_mha": 1,
     },
 )
 def land_shifted_to_biofuels_3gen():
@@ -600,7 +600,7 @@ def p_biofuels_2gen_land_compet():
 
 
 _ext_constant_p_biofuels_2gen_land_compet = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "p_biofuels_2gen_land_compet",
     {},
@@ -625,7 +625,7 @@ def p_biofuels_3gen_land_compet():
 
 
 _ext_constant_p_biofuels_3gen_land_compet = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "p_biofuels_3gen_land_compet",
     {},
@@ -650,7 +650,7 @@ def past_biofuels_2gen():
 
 
 _ext_constant_past_biofuels_2gen = ExtConstant(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "historic_growth_biofuels_second_generation",
     {},
@@ -817,7 +817,7 @@ def start_year_3gen_cellulosic_biofuels():
 
 
 _ext_constant_start_year_3gen_cellulosic_biofuels = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    "../../scenarios/scen_eu.xlsx",
     "NZP",
     "start_year_3gen_cell_biofuels",
     {},

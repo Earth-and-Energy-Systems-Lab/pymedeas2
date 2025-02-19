@@ -1,7 +1,8 @@
 """
-Module energy.availability.primary_energy_abundances
-Translated using PySD version 3.14.1
+Module primary_energy_abundances
+Translated using PySD version 3.2.0
 """
+
 
 @component.add(
     name="Abundance primary sources",
@@ -33,7 +34,7 @@ def abundance_primary_sources():
 
 @component.add(
     name="increase in perception PS scarcity",
-    units="Dmnl/year",
+    units="Dmnl",
     subscripts=["primary sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -41,7 +42,6 @@ def abundance_primary_sources():
         "scarcity_primary_sources": 1,
         "sensitivity_to_scarcity": 1,
         "perception_in_primary_sources_scarcity": 1,
-        "nvs_1_year": 1,
     },
 )
 def increase_in_perception_ps_scarcity():
@@ -52,7 +52,6 @@ def increase_in_perception_ps_scarcity():
         scarcity_primary_sources()
         * sensitivity_to_scarcity()
         * (1 - perception_in_primary_sources_scarcity())
-        / nvs_1_year()
     )
 
 
@@ -127,7 +126,7 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"fossil fuels": ["coal"]}, 0)
+        .expand_dims({"primary sources1": ["coal"]}, 0)
         .values
     )
     value.loc[["oil"], :] = (
@@ -144,7 +143,7 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"fossil fuels": ["oil"]}, 0)
+        .expand_dims({"primary sources1": ["oil"]}, 0)
         .values
     )
     value.loc[["natural gas"], :] = (
@@ -161,7 +160,7 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"fossil fuels": ["natural gas"]}, 0)
+        .expand_dims({"primary sources1": ["natural gas"]}, 0)
         .values
     )
     value.loc[["others"], :] = (
@@ -186,7 +185,7 @@ def perception_of_interfuel_primary_sources_scarcity():
 
 @component.add(
     name="reduction in perception PS scarcity",
-    units="Dmnl/year",
+    units="Dmnl",
     subscripts=["primary sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",

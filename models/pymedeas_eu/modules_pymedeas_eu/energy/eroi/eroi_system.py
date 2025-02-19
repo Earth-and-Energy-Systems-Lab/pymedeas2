@@ -1,6 +1,6 @@
 """
 Module energy.eroi.eroi_system
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.0
 """
 
 @component.add(
@@ -25,7 +25,7 @@ def eroist_system():
     depends_on={
         "fe_tot_generation_all_res_elec_twh": 1,
         "ej_per_twh": 1,
-        "share_transmdistr_elec_losses": 1,
+        "share_trans_and_dist_losses": 1,
     },
 )
 def fe_tot_generation_all_res_elec_ej():
@@ -35,7 +35,7 @@ def fe_tot_generation_all_res_elec_ej():
     return (
         fe_tot_generation_all_res_elec_twh()
         * ej_per_twh()
-        * (1 - share_transmdistr_elec_losses())
+        * (1 - share_trans_and_dist_losses())
     )
 
 
@@ -80,7 +80,7 @@ def historic_energy_industry_ownuse(x, final_subs=None):
 
 
 _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
-    r"../energy.xlsx",
+    "../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_energy_industry_own_use",
@@ -98,9 +98,9 @@ _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "time": 2,
+        "historic_energy_industry_ownuse": 1,
         "fe_tot_generation_all_res_elec_ej": 1,
         "real_tfec": 1,
-        "historic_energy_industry_ownuse": 1,
     },
 )
 def historic_share_e_industry_ownuse_vs_tfec():
@@ -157,9 +157,14 @@ def total_dyn_fei_res():
     Total (dynamic) final energy investment for RES.
     """
     return (
-        sum(fei_res_elec_var().rename({"RES elec": "RES elec!"}), dim=["RES elec!"])
+        sum(
+            fei_res_elec_var().rename({np.str_("RES elec"): "RES elec!"}),
+            dim=["RES elec!"],
+        )
         + sum(
-            fei_over_lifetime_res_elec_dispatch().rename({"RES elec": "RES elec!"}),
+            fei_over_lifetime_res_elec_dispatch().rename(
+                {np.str_("RES elec"): "RES elec!"}
+            ),
             dim=["RES elec!"],
         )
         + fei_ev_batteries()

@@ -172,15 +172,15 @@ def max_peavail_potential_biofuels_marginal_lands():
     depends_on={
         "time": 3,
         "start_year_biofuels_land_marg": 3,
-        "ej_per_ktoe": 1,
-        "ratio_land_productivity_2gen_vs_marg": 1,
-        "nvs_1_year": 2,
-        "adapt_growth_biofuels_2gen": 1,
-        "bioe_gen_land_marg_available": 1,
         "start_production_biofuels": 1,
         "constrain_liquids_exogenous_growth": 1,
-        "check_liquids": 1,
+        "nvs_1_year": 2,
         "potential_peavail_biofuels_land_marg_ej": 2,
+        "check_liquids": 1,
+        "adapt_growth_biofuels_2gen": 1,
+        "ratio_land_productivity_2gen_vs_marg": 1,
+        "bioe_gen_land_marg_available": 1,
+        "ej_per_ktoe": 1,
     },
 )
 def new_biofuels_land_marg():

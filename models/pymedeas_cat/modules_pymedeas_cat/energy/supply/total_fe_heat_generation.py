@@ -1,27 +1,24 @@
 """
-Module total_fe_heat_generation
-Translated using PySD version 3.2.0
+Module energy.supply.total_fe_heat_generation
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name="Abundance heat",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_fe_heat_generation_ej": 2, "total_fed_heat_ej": 3},
+    depends_on={"total_fe_heat_generation": 2, "total_fed_heat_ej": 3},
 )
 def abundance_heat():
     """
     The parameter abundance varies between (1;0). Abundance=1 while the supply covers the demand; the closest to 0 indicates a higher divergence between supply and demand.
     """
     return if_then_else(
-        total_fe_heat_generation_ej() > total_fed_heat_ej(),
+        total_fe_heat_generation() > total_fed_heat_ej(),
         lambda: 1,
         lambda: 1
-        - zidz(
-            total_fed_heat_ej() - total_fe_heat_generation_ej(), total_fed_heat_ej()
-        ),
+        - zidz(total_fed_heat_ej() - total_fe_heat_generation(), total_fed_heat_ej()),
     )
 
 
@@ -36,16 +33,16 @@ def annual_growth_rate_res_for_heat():
     """
     Annual growth rate of heat generation from RES.
     """
-    return -1 + fes_res_for_heat_ej() / fes_res_for_heat_delayed_1yr()
+    return -1 + zidz(fes_res_for_heat_ej(), fes_res_for_heat_delayed_1yr())
 
 
 @component.add(
     name="FES heat from BioW",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "fe_real_supply_res_for_heatcom_tot_ej": 1,
+        "fe_real_supply_res_for_heatcom_tot": 1,
         "fe_real_supply_res_for_heatnc_tot_ej": 1,
         "fes_heatcom_from_biogas_ej": 1,
         "fes_heatcom_from_waste_ej": 1,
@@ -56,7 +53,7 @@ def fes_heat_from_biow():
     Heat generation of total bioenergy and waste (to compare with more common statistics).
     """
     return (
-        fe_real_supply_res_for_heatcom_tot_ej()
+        fe_real_supply_res_for_heatcom_tot()
         + fe_real_supply_res_for_heatnc_tot_ej()
         + fes_heatcom_from_biogas_ej()
         + fes_heatcom_from_waste_ej()
@@ -65,7 +62,7 @@ def fes_heat_from_biow():
 
 @component.add(
     name="FES Heat from coal",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -85,7 +82,7 @@ def fes_heat_from_coal():
 
 @component.add(
     name='"FES Heat from nat. gas"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -105,7 +102,7 @@ def fes_heat_from_nat_gas():
 
 @component.add(
     name="FES Heat from oil",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -125,11 +122,12 @@ def fes_heat_from_oil():
 
 @component.add(
     name="FES NRE for heat",
-    units="EJ",
+    units="EJ/year",
+    subscripts=[np.str_("primary sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "fes_heatcom_fossil_fuels_chp_plants_ej": 1,
+        "fes_heatcom_fossil_fuels_chp_plants_ej": 3,
         "fes_heat_from_coal": 1,
         "fes_heat_from_nat_gas": 1,
         "fes_heat_from_oil": 1,
@@ -140,18 +138,29 @@ def fes_nre_for_heat():
     """
     Heat from non-renewable energy resources.
     """
-    return (
-        fes_heatcom_fossil_fuels_chp_plants_ej()
-        + fes_heat_from_coal()
-        + fes_heat_from_nat_gas()
-        + fes_heat_from_oil()
-        + fes_heatcom_nuclear_chp_plants_ej()
+    value = xr.DataArray(
+        np.nan,
+        {"primary sources": _subscript_dict["primary sources"]},
+        [np.str_("primary sources")],
     )
+    value.loc[["coal"]] = (
+        float(fes_heatcom_fossil_fuels_chp_plants_ej().loc["coal"])
+        + fes_heat_from_coal()
+    )
+    value.loc[["natural gas"]] = (
+        float(fes_heatcom_fossil_fuels_chp_plants_ej().loc["natural gas"])
+        + fes_heat_from_nat_gas()
+    )
+    value.loc[["oil"]] = (
+        float(fes_heatcom_fossil_fuels_chp_plants_ej().loc["oil"]) + fes_heat_from_oil()
+    )
+    value.loc[["others"]] = fes_heatcom_nuclear_chp_plants_ej()
+    return value
 
 
 @component.add(
     name="FES RES for heat delayed 1yr",
-    units="Tdollars/Year",
+    units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_fes_res_for_heat_delayed_1yr": 1},
@@ -180,11 +189,11 @@ _delayfixed_fes_res_for_heat_delayed_1yr = DelayFixed(
 
 @component.add(
     name="FES RES for heat EJ",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "fe_real_supply_res_for_heatcom_tot_ej": 1,
+        "fe_real_supply_res_for_heatcom_tot": 1,
         "fe_real_supply_res_for_heatnc_tot_ej": 1,
         "fes_heatcom_from_biogas_ej": 1,
     },
@@ -194,7 +203,7 @@ def fes_res_for_heat_ej():
     Heat from renewable energy sources.
     """
     return (
-        fe_real_supply_res_for_heatcom_tot_ej()
+        fe_real_supply_res_for_heatcom_tot()
         + fe_real_supply_res_for_heatnc_tot_ej()
         + fes_heatcom_from_biogas_ej()
     )
@@ -202,12 +211,12 @@ def fes_res_for_heat_ej():
 
 @component.add(
     name='"PES coal for Heat-com plants"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "extraction_coal_aut": 1,
-        "imports_aut_coal_from_row_ej": 1,
+        "extraction_coal_cat": 1,
+        "imports_cat_coal_from_row_ej": 1,
         "share_coal_dem_for_heatcom": 1,
     },
 )
@@ -216,18 +225,18 @@ def pes_coal_for_heatcom_plants():
     Primary energy supply of coal for commercial Heat plants.
     """
     return (
-        extraction_coal_aut() + imports_aut_coal_from_row_ej()
+        extraction_coal_cat() + imports_cat_coal_from_row_ej()
     ) * share_coal_dem_for_heatcom()
 
 
 @component.add(
     name='"PES coal for Heat-nc plants"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "extraction_coal_aut": 1,
-        "imports_aut_coal_from_row_ej": 1,
+        "extraction_coal_cat": 1,
+        "imports_cat_coal_from_row_ej": 1,
         "share_coal_dem_for_heatnc": 1,
     },
 )
@@ -236,18 +245,18 @@ def pes_coal_for_heatnc_plants():
     Primary energy supply of coal for non-commercial Heat plants.
     """
     return (
-        extraction_coal_aut() + imports_aut_coal_from_row_ej()
+        extraction_coal_cat() + imports_cat_coal_from_row_ej()
     ) * share_coal_dem_for_heatnc()
 
 
 @component.add(
     name='"PES nat. gas for Heat-com plants"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "pes_nat_gas_aut_1": 1,
-        "imports_aut_nat_gas_from_row_ej": 1,
+        "pes_nat_gas_cat_": 1,
+        "imports_cat_nat_gas_from_row_ej": 1,
         "share_nat_gas_dem_for_heatcom": 1,
     },
 )
@@ -256,16 +265,17 @@ def pes_nat_gas_for_heatcom_plants():
     Primary energy supply of fossil natural gas for commercial Heat plants.
     """
     return (
-        pes_nat_gas_aut_1() + imports_aut_nat_gas_from_row_ej()
+        pes_nat_gas_cat_() + imports_cat_nat_gas_from_row_ej()
     ) * share_nat_gas_dem_for_heatcom()
 
 
 @component.add(
     name='"PES nat. gas for Heat-nc plants"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
+        "imports_cat_nat_gas_from_row_ej": 1,
         "pes_gases": 1,
         "ped_nat_gas_for_gtl_ej": 1,
         "share_gases_dem_for_heatnc": 1,
@@ -275,17 +285,19 @@ def pes_nat_gas_for_heatnc_plants():
     """
     Primary energy supply of natural gas for non-commercial Heat plants.
     """
-    return (pes_gases() - ped_nat_gas_for_gtl_ej()) * share_gases_dem_for_heatnc()
+    return (
+        imports_cat_nat_gas_from_row_ej() + pes_gases() - ped_nat_gas_for_gtl_ej()
+    ) * share_gases_dem_for_heatnc()
 
 
 @component.add(
     name='"PES oil for Heat-com plants"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "pes_total_oil_ej_aut": 1,
-        "imports_aut_total_oil_from_row_ej": 1,
+        "pes_total_oil_ej_cat": 1,
+        "imports_cat_total_oil_from_row_ej": 1,
         "share_oil_dem_for_heatcom": 1,
     },
 )
@@ -294,22 +306,28 @@ def pes_oil_for_heatcom_plants():
     Primary energy supply of oil for commercial Heat plants.
     """
     return (
-        pes_total_oil_ej_aut() + imports_aut_total_oil_from_row_ej()
+        pes_total_oil_ej_cat() + imports_cat_total_oil_from_row_ej()
     ) * share_oil_dem_for_heatcom()
 
 
 @component.add(
     name='"PES oil for Heat-nc plants"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pes_liquids_ej": 1, "share_liquids_dem_for_heatnc": 1},
+    depends_on={
+        "imports_cat_total_oil_from_row_ej": 1,
+        "pes_liquids": 1,
+        "share_liquids_dem_for_heatnc": 1,
+    },
 )
 def pes_oil_for_heatnc_plants():
     """
     Primary energy supply of natural oil for non-commercial Heat plants.
     """
-    return pes_liquids_ej() * share_liquids_dem_for_heatnc()
+    return (
+        imports_cat_total_oil_from_row_ej() + pes_liquids()
+    ) * share_liquids_dem_for_heatnc()
 
 
 @component.add(
@@ -317,32 +335,39 @@ def pes_oil_for_heatnc_plants():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"fes_res_for_heat_ej": 1, "total_fe_heat_generation_ej": 1},
+    depends_on={"fes_res_for_heat_ej": 1, "total_fe_heat_generation": 1},
 )
 def share_res_heat_generation():
     """
     Share of RES in the total heat generation.
     """
-    return fes_res_for_heat_ej() / total_fe_heat_generation_ej()
+    return fes_res_for_heat_ej() / total_fe_heat_generation()
 
 
 @component.add(
     name="Total FE Heat consumption EJ",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_fe_heat_generation_ej": 1, "share_heat_distribution_losses": 1},
+    depends_on={
+        "total_fe_heat_generation": 1,
+        "share_heat_distribution_losses": 1,
+        "total_fed_heat_ej": 1,
+    },
 )
 def total_fe_heat_consumption_ej():
     """
     Total final heat consumption (fossil fuels, nuclear, waste & renewables) (EJ).
     """
-    return total_fe_heat_generation_ej() / (1 + share_heat_distribution_losses())
+    return np.minimum(
+        total_fe_heat_generation() / (1 + share_heat_distribution_losses()),
+        total_fed_heat_ej(),
+    )
 
 
 @component.add(
-    name="Total FE Heat generation EJ",
-    units="EJ",
+    name="Total FE Heat generation",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -351,16 +376,23 @@ def total_fe_heat_consumption_ej():
         "fes_nre_for_heat": 1,
     },
 )
-def total_fe_heat_generation_ej():
+def total_fe_heat_generation():
     """
     Total final heat generation (fossil fuels, nuclear, waste & renewables) (EJ).
     """
-    return fes_res_for_heat_ej() + fes_heatcom_from_waste_ej() + fes_nre_for_heat()
+    return (
+        fes_res_for_heat_ej()
+        + fes_heatcom_from_waste_ej()
+        + sum(
+            fes_nre_for_heat().rename({np.str_("primary sources"): "primary sources!"}),
+            dim=["primary sources!"],
+        )
+    )
 
 
 @component.add(
     name="Year scarcity Heat",
-    units="Year",
+    units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"abundance_heat": 1, "time": 1},

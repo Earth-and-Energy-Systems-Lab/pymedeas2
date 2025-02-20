@@ -1,14 +1,13 @@
 """
-Module primary_energy_abundances
-Translated using PySD version 3.2.0
+Module energy.availability.primary_energy_abundances
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name="Abundance primary sources",
     units="Dmnl",
-    subscripts=["primary sources"],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("primary sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "abundance_coal_world": 1,
@@ -23,7 +22,7 @@ def abundance_primary_sources():
     value = xr.DataArray(
         np.nan,
         {"primary sources": _subscript_dict["primary sources"]},
-        ["primary sources"],
+        [np.str_("primary sources")],
     )
     value.loc[["coal"]] = abundance_coal_world()
     value.loc[["oil"]] = abundance_total_oil_world()
@@ -34,14 +33,15 @@ def abundance_primary_sources():
 
 @component.add(
     name="increase in perception PS scarcity",
-    units="Dmnl",
-    subscripts=["primary sources"],
+    units="Dmnl/year",
+    subscripts=[np.str_("primary sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "scarcity_primary_sources": 1,
         "sensitivity_to_scarcity": 1,
         "perception_in_primary_sources_scarcity": 1,
+        "nvs_1_year": 1,
     },
 )
 def increase_in_perception_ps_scarcity():
@@ -52,13 +52,14 @@ def increase_in_perception_ps_scarcity():
         scarcity_primary_sources()
         * sensitivity_to_scarcity()
         * (1 - perception_in_primary_sources_scarcity())
+        / nvs_1_year()
     )
 
 
 @component.add(
     name="perception in primary sources scarcity",
     units="Dmnl",
-    subscripts=["primary sources"],
+    subscripts=[np.str_("primary sources")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_perception_in_primary_sources_scarcity": 1},
@@ -126,7 +127,7 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["coal"]}, 0)
+        .expand_dims({"fossil fuels": ["coal"]}, 0)
         .values
     )
     value.loc[["oil"], :] = (
@@ -143,7 +144,7 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["oil"]}, 0)
+        .expand_dims({"fossil fuels": ["oil"]}, 0)
         .values
     )
     value.loc[["natural gas"], :] = (
@@ -160,7 +161,7 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["natural gas"]}, 0)
+        .expand_dims({"fossil fuels": ["natural gas"]}, 0)
         .values
     )
     value.loc[["others"], :] = (
@@ -185,8 +186,8 @@ def perception_of_interfuel_primary_sources_scarcity():
 
 @component.add(
     name="reduction in perception PS scarcity",
-    units="Dmnl",
-    subscripts=["primary sources"],
+    units="Dmnl/year",
+    subscripts=[np.str_("primary sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -204,7 +205,7 @@ def reduction_in_perception_ps_scarcity():
 @component.add(
     name="scarcity primary sources",
     units="Dmnl",
-    subscripts=["primary sources"],
+    subscripts=[np.str_("primary sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"abundance_primary_sources": 1},

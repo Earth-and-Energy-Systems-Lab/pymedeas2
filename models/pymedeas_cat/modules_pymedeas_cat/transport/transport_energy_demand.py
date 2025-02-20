@@ -1,13 +1,12 @@
 """
-Module transport_energy_demand
-Translated using PySD version 3.2.0
+Module transport.transport_energy_demand
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name="Share demand by fuel in transport",
     units="Dmnl",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_transport_fed_by_fuel": 1, "transport_tfed": 1},
@@ -91,12 +90,12 @@ def share_demand_solids_in_transport():
 
 @component.add(
     name="Total transport FED by fuel",
-    units="EJ/Year",
-    subscripts=["final sources"],
+    units="EJ/year",
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "required_final_energy_by_sector_and_fuel_aut": 1,
+        "required_final_energy_by_sector_and_fuel_cat": 1,
         "transport_fraction": 1,
         "transport_households_final_energy_demand": 1,
     },
@@ -107,10 +106,10 @@ def total_transport_fed_by_fuel():
     """
     return (
         sum(
-            required_final_energy_by_sector_and_fuel_aut().rename(
-                {"sectors": "sectors!"}
+            required_final_energy_by_sector_and_fuel_cat().rename(
+                {np.str_("sectors"): "sectors!"}
             )
-            * transport_fraction().rename({"sectors": "sectors!"}),
+            * transport_fraction().rename({np.str_("sectors"): "sectors!"}),
             dim=["sectors!"],
         )
         + transport_households_final_energy_demand()
@@ -120,7 +119,7 @@ def total_transport_fed_by_fuel():
 @component.add(
     name="transport fraction",
     units="Dmnl",
-    subscripts=["sectors"],
+    subscripts=[np.str_("sectors")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_transport_fraction"},
@@ -142,7 +141,7 @@ _ext_constant_transport_fraction = ExtConstant(
 
 @component.add(
     name="Transport TFED",
-    units="EJ/Year",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_transport_fed_by_fuel": 1},
@@ -152,7 +151,9 @@ def transport_tfed():
     Total Final Energy demand in transport
     """
     return sum(
-        total_transport_fed_by_fuel().rename({"final sources": "final sources!"}),
+        total_transport_fed_by_fuel().rename(
+            {np.str_("final sources"): "final sources!"}
+        ),
         dim=["final sources!"],
     )
 
@@ -162,7 +163,7 @@ def transport_tfed():
     units="EJ/Tdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"transport_tfed": 1, "gdp_aut": 1},
+    depends_on={"transport_tfed": 1, "gdp_cat": 1, "nvs_1_year": 1},
 )
 def transport_tfed_energy_intensity():
-    return zidz(transport_tfed(), gdp_aut())
+    return zidz(transport_tfed(), gdp_cat()) * nvs_1_year()

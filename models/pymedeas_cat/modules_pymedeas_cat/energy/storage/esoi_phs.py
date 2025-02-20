@@ -1,11 +1,11 @@
 """
-Module esoi_phs
-Translated using PySD version 3.2.0
+Module energy.storage.esoi_phs
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name="a lineal regr",
+    units="1/TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -22,6 +22,7 @@ def a_lineal_regr():
 
 @component.add(
     name="b lineal regr",
+    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -46,8 +47,8 @@ def b_lineal_regr():
         "lifetime_res_elec": 1,
         "ej_per_twh": 1,
         "twe_per_twh": 1,
-        "esoi_static_phs": 1,
         "quality_of_electricity_2015": 1,
+        "esoi_static_phs": 1,
     },
 )
 def ced_per_tw_over_lifetime_phs():
@@ -62,7 +63,7 @@ def ced_per_tw_over_lifetime_phs():
 
 @component.add(
     name="CEDtot over lifetime PHS",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -154,7 +155,7 @@ def esoi_static_phs():
 
 @component.add(
     name="Final energy invested PHS",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_fe_elec_stored_phs_twh": 1, "ej_per_twh": 1, "esoi_phs": 1},

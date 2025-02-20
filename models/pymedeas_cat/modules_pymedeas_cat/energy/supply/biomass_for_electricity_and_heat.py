@@ -1,37 +1,36 @@
 """
-Module biomass_for_electricity_and_heat
-Translated using PySD version 3.2.0
+Module energy.supply.biomass_for_electricity_and_heat
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="available max PE solid bioE for elec EJ",
-    units="EJ",
+    name="available max PE solid bioE for elec",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "total_pe_solid_bioe_potential_heatelec_ej": 1,
+        "total_pe_solid_bioe_potential_heatelec": 1,
         "pes_res_for_heat_by_techn": 1,
     },
 )
-def available_max_pe_solid_bioe_for_elec_ej():
+def available_max_pe_solid_bioe_for_elec():
     """
     Maximum available (primary energy) solid bioenergy for electricity.
     """
     return np.maximum(
         0,
-        total_pe_solid_bioe_potential_heatelec_ej()
+        total_pe_solid_bioe_potential_heatelec()
         - float(pes_res_for_heat_by_techn().loc["solid bioE heat"]),
     )
 
 
 @component.add(
     name="available max PE solid bioE for heat EJ",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "total_pe_solid_bioe_potential_heatelec_ej": 1,
+        "total_pe_solid_bioe_potential_heatelec": 1,
         "pe_real_generation_res_elec": 1,
     },
 )
@@ -41,18 +40,78 @@ def available_max_pe_solid_bioe_for_heat_ej():
     """
     return np.maximum(
         0,
-        total_pe_solid_bioe_potential_heatelec_ej()
+        total_pe_solid_bioe_potential_heatelec()
         - float(pe_real_generation_res_elec().loc["solid bioE elec"]),
     )
 
 
 @component.add(
-    name="max PE potential solid bioE for elec EJ",
-    units="EJ",
+    name="FES biomass",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "total_pe_solid_bioe_potential_heatelec_ej": 1,
+        "time": 2,
+        "end_hist_data": 1,
+        "historic_biomass_fec": 1,
+        "policy_solid_bioe": 1,
+    },
+)
+def fes_biomass():
+    """
+    Final energy supply of biomass, biomass used for electricity generation is obtained from scenarios RES energy capacity development.
+    """
+    return if_then_else(
+        time() < end_hist_data(),
+        lambda: historic_biomass_fec(time()),
+        lambda: policy_solid_bioe(),
+    )
+
+
+@component.add(
+    name="FES biomass sectors",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"fes_biomass": 1, "modern_solids_bioe_demand_households": 1},
+)
+def fes_biomass_sectors():
+    return fes_biomass() - modern_solids_bioe_demand_households()
+
+
+@component.add(
+    name="historic biomass FEC",
+    units="EJ/year",
+    comp_type="Lookup",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_biomass_fec",
+        "__lookup__": "_ext_lookup_historic_biomass_fec",
+    },
+)
+def historic_biomass_fec(x, final_subs=None):
+    return _ext_lookup_historic_biomass_fec(x, final_subs)
+
+
+_ext_lookup_historic_biomass_fec = ExtLookup(
+    "../energy.xlsx",
+    "Catalonia",
+    "time_efficiencies",
+    "historic_final_energy_consumption_biomass",
+    {},
+    _root,
+    {},
+    "_ext_lookup_historic_biomass_fec",
+)
+
+
+@component.add(
+    name="max PE potential solid bioE for elec EJ",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "total_pe_solid_bioe_potential_heatelec": 1,
         "share_solids_bioe_for_elec_vs_heat": 1,
     },
 )
@@ -61,18 +120,17 @@ def max_pe_potential_solid_bioe_for_elec_ej():
     Maximum potential (primary energy) of solid bioenergy for generating electricity.
     """
     return (
-        total_pe_solid_bioe_potential_heatelec_ej()
-        * share_solids_bioe_for_elec_vs_heat()
+        total_pe_solid_bioe_potential_heatelec() * share_solids_bioe_for_elec_vs_heat()
     )
 
 
 @component.add(
     name="max PE potential solid bioE for heat EJ",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "total_pe_solid_bioe_potential_heatelec_ej": 1,
+        "total_pe_solid_bioe_potential_heatelec": 1,
         "share_solids_bioe_for_elec_vs_heat": 1,
     },
 )
@@ -80,13 +138,14 @@ def max_pe_potential_solid_bioe_for_heat_ej():
     """
     Maximum potential (primary energy) of solid bioenergy for generating heat.
     """
-    return total_pe_solid_bioe_potential_heatelec_ej() * (
+    return total_pe_solid_bioe_potential_heatelec() * (
         1 - share_solids_bioe_for_elec_vs_heat()
     )
 
 
 @component.add(
     name='"Max potential NPP bioE conventional for heat+elec"',
+    units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
@@ -99,12 +158,40 @@ def max_potential_npp_bioe_conventional_for_heatelec():
 
 _ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "max_pot_NPP_bioe_conv",
     {},
     _root,
     {},
     "_ext_constant_max_potential_npp_bioe_conventional_for_heatelec",
+)
+
+
+@component.add(
+    name="policy solid bioE",
+    units="EJ/year",
+    comp_type="Data",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_policy_solid_bioe",
+        "__data__": "_ext_data_policy_solid_bioe",
+        "time": 1,
+    },
+)
+def policy_solid_bioe():
+    return _ext_data_policy_solid_bioe(time())
+
+
+_ext_data_policy_solid_bioe = ExtData(
+    "../../scenarios/scen_cat.xlsx",
+    "NZP",
+    "year_RES_power",
+    "p_solid_bioE",
+    "interpolate",
+    {},
+    _root,
+    {},
+    "_ext_data_policy_solid_bioe",
 )
 
 
@@ -128,6 +215,7 @@ def share_solids_bioe_for_elec_vs_heat():
 
 @component.add(
     name="Total PE solid bioE potential EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -146,8 +234,8 @@ def total_pe_solid_bioe_potential_ej():
 
 
 @component.add(
-    name='"Total PE solid bioE potential heat+elec EJ"',
-    units="EJ",
+    name='"Total PE solid bioE potential heat+elec"',
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -155,7 +243,7 @@ def total_pe_solid_bioe_potential_ej():
         "modern_solids_bioe_demand_households": 1,
     },
 )
-def total_pe_solid_bioe_potential_heatelec_ej():
+def total_pe_solid_bioe_potential_heatelec():
     return np.maximum(
         total_pe_solid_bioe_potential_ej() - modern_solids_bioe_demand_households(), 0
     )

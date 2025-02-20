@@ -1,12 +1,28 @@
 """
-Module traditional_biomass
-Translated using PySD version 3.2.0
+Module energy.supply.traditional_biomass
+Translated using PySD version 3.14.0
 """
+
+@component.add(
+    name="modern BioE in households",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "households_final_energy_demand": 1,
+        "pe_traditional_biomass_consum_ej": 1,
+    },
+)
+def modern_bioe_in_households():
+    return (
+        float(households_final_energy_demand().loc["solids"])
+        - pe_traditional_biomass_consum_ej()
+    )
 
 
 @component.add(
     name="modern solids BioE demand households",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -26,7 +42,7 @@ def modern_solids_bioe_demand_households():
 
 @component.add(
     name="PE consumption trad biomass ref",
-    units="EJ/Year",
+    units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_pe_consumption_trad_biomass_ref"},
@@ -40,7 +56,7 @@ def pe_consumption_trad_biomass_ref():
 
 _ext_constant_pe_consumption_trad_biomass_ref = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "pe_consumption_trad_biomass_ref",
     {},
     _root,
@@ -51,7 +67,7 @@ _ext_constant_pe_consumption_trad_biomass_ref = ExtConstant(
 
 @component.add(
     name="PE traditional biomass consum EJ",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"consum_forest_energy_traditional_ej": 1},
@@ -65,7 +81,7 @@ def pe_traditional_biomass_consum_ej():
 
 @component.add(
     name="PE traditional biomass demand EJ",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -85,7 +101,7 @@ def pe_traditional_biomass_demand_ej():
 
 @component.add(
     name="PE traditional biomass EJ delayed 1yr",
-    units="EJ/Year",
+    units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_pe_traditional_biomass_ej_delayed_1yr": 1},
@@ -128,7 +144,7 @@ def people_relying_trad_biomass_ref():
 
 _ext_constant_people_relying_trad_biomass_ref = ExtConstant(
     "../parameters.xlsx",
-    "Austria",
+    "Catalonia",
     "people_relying_on_traditional_biomass",
     {},
     _root,
@@ -139,7 +155,7 @@ _ext_constant_people_relying_trad_biomass_ref = ExtConstant(
 
 @component.add(
     name="PEpc consumption people depending on trad biomass",
-    units="MToe/people",
+    units="EJ/(year*people)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -200,7 +216,7 @@ def share_trad_biomass_vs_solids_in_households():
 
 _ext_constant_share_trad_biomass_vs_solids_in_households = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "share_trad_biomass_vs_solids_in_households",
     {},
     _root,

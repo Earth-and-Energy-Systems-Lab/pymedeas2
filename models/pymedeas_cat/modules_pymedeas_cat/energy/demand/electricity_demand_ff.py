@@ -1,18 +1,18 @@
 """
-Module electricity_demand_ff
-Translated using PySD version 3.2.0
+Module energy.demand.electricity_demand_ff
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name='"a lineal regr phase-out oil for elec"',
+    units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_in_target_year_ff_for_elec": 1,
         "hist_share_oilff_elec": 1,
-        "start_year_policy_phaseout_oil_for_elec": 1,
         "target_year_policy_phaseout_ff_for_elec": 1,
+        "start_year_policy_phaseout_oil_for_elec": 1,
     },
 )
 def a_lineal_regr_phaseout_oil_for_elec():
@@ -27,12 +27,13 @@ def a_lineal_regr_phaseout_oil_for_elec():
 
 @component.add(
     name='"b lineal regr phase-out FF for elec"',
+    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_in_target_year_ff_for_elec": 1,
-        "a_lineal_regr_phaseout_oil_for_elec": 1,
         "target_year_policy_phaseout_ff_for_elec": 1,
+        "a_lineal_regr_phaseout_oil_for_elec": 1,
     },
 )
 def b_lineal_regr_phaseout_ff_for_elec():
@@ -48,7 +49,7 @@ def b_lineal_regr_phaseout_ff_for_elec():
 
 @component.add(
     name="decrease share gas for Elec",
-    units="Dmnl",
+    units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -70,7 +71,7 @@ def decrease_share_gas_for_elec():
 
 @component.add(
     name="decrease share oil for Elec",
-    units="Dmnl",
+    units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -92,24 +93,24 @@ def decrease_share_oil_for_elec():
 
 @component.add(
     name="demand Elec gas and coal TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "switch_scarcityps_elec_substit": 1,
-        "hist_share_oilff_elec": 2,
         "demand_elec_plants_fossil_fuels_twh": 3,
-        "future_share_gascoalff_for_elec": 1,
+        "share_oil_for_elec": 2,
         "time": 1,
+        "future_share_gascoalff_for_elec": 1,
     },
 )
 def demand_elec_gas_and_coal_twh():
     return if_then_else(
         switch_scarcityps_elec_substit() == 0,
-        lambda: demand_elec_plants_fossil_fuels_twh() * (1 - hist_share_oilff_elec()),
+        lambda: demand_elec_plants_fossil_fuels_twh() * (1 - share_oil_for_elec()),
         lambda: if_then_else(
             time() < 2016,
-            lambda: demand_elec_plants_fossil_fuels_twh()
-            * (1 - hist_share_oilff_elec()),
+            lambda: demand_elec_plants_fossil_fuels_twh() * (1 - share_oil_for_elec()),
             lambda: demand_elec_plants_fossil_fuels_twh()
             * future_share_gascoalff_for_elec(),
         ),
@@ -118,7 +119,7 @@ def demand_elec_gas_and_coal_twh():
 
 @component.add(
     name="demand Elec plants fossil fuels TWh",
-    units="TWh/Year",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -155,7 +156,7 @@ def efficiency_coal_for_electricity():
 
 _ext_constant_efficiency_coal_for_electricity = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "efficiency_coal_for_electricity",
     {},
     _root,
@@ -196,7 +197,7 @@ _integ_efficiency_gas_for_electricity = Integ(
 
 @component.add(
     name="Efficiency improv gas for electricity",
-    units="Dmnl",
+    units="Dmnl/year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_efficiency_improv_gas_for_electricity"},
@@ -235,7 +236,7 @@ def efficiency_liquids_for_electricity():
 
 _ext_constant_efficiency_liquids_for_electricity = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "efficiency_liquids_for_electricity",
     {},
     _root,
@@ -246,7 +247,7 @@ _ext_constant_efficiency_liquids_for_electricity = ExtConstant(
 
 @component.add(
     name="FE demand coal Elec plants TWh",
-    units="TWh/Year",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"share_coal_for_elec": 1, "demand_elec_gas_and_coal_twh": 1},
@@ -260,7 +261,7 @@ def fe_demand_coal_elec_plants_twh():
 
 @component.add(
     name="FE demand gas Elec plants TWh",
-    units="TWh/Year",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"share_gascoal_gas_for_elec": 1, "demand_elec_gas_and_coal_twh": 1},
@@ -274,7 +275,7 @@ def fe_demand_gas_elec_plants_twh():
 
 @component.add(
     name="FE demand oil Elec plants TWh",
-    units="TWh/Year",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"share_oil_for_elec": 1, "demand_elec_plants_fossil_fuels_twh": 1},
@@ -288,7 +289,7 @@ def fe_demand_oil_elec_plants_twh():
 
 @component.add(
     name="FES Elec fossil fuel CHP plants TWh",
-    units="TWh/Year",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"fes_elec_fossil_fuel_chp_plants_ej": 1, "ej_per_twh": 1},
@@ -297,18 +298,26 @@ def fes_elec_fossil_fuel_chp_plants_twh():
     """
     Final Energy of fossil fuels to produce electricity (TWh) in CHP plants.
     """
-    return fes_elec_fossil_fuel_chp_plants_ej() / ej_per_twh()
+    return (
+        sum(
+            fes_elec_fossil_fuel_chp_plants_ej().rename(
+                {np.str_("fossil fuels"): "fossil fuels!"}
+            ),
+            dim=["fossil fuels!"],
+        )
+        / ej_per_twh()
+    )
 
 
 @component.add(
     name='"Future share gas+coal/FF for elec"',
-    units="Dnml",
+    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"future_share_oilff_for_elec": 1},
+    depends_on={"share_oil_for_elec": 1},
 )
 def future_share_gascoalff_for_elec():
-    return 1 - future_share_oilff_for_elec()
+    return 1 - share_oil_for_elec()
 
 
 @component.add(
@@ -372,6 +381,42 @@ _integ_future_share_oilff_for_elec = Integ(
 
 
 @component.add(
+    name="Gen losses demand for FF Elec plants EJ",
+    units="EJ/year",
+    subscripts=[np.str_("fossil fuels")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "ped_gas_elec_plants_ej": 1,
+        "efficiency_gas_for_electricity": 1,
+        "ped_coal_elec_plants_ej": 1,
+        "efficiency_coal_for_electricity": 1,
+        "efficiency_liquids_for_electricity": 1,
+        "ped_oil_elec_plants_ej": 1,
+    },
+)
+def gen_losses_demand_for_ff_elec_plants_ej():
+    """
+    Total generation losses associated to electricity demand.
+    """
+    value = xr.DataArray(
+        np.nan,
+        {"fossil fuels": _subscript_dict["fossil fuels"]},
+        [np.str_("fossil fuels")],
+    )
+    value.loc[["natural gas"]] = ped_gas_elec_plants_ej() * (
+        1 - efficiency_gas_for_electricity()
+    )
+    value.loc[["coal"]] = ped_coal_elec_plants_ej() * (
+        1 - efficiency_coal_for_electricity()
+    )
+    value.loc[["oil"]] = ped_oil_elec_plants_ej() * (
+        1 - efficiency_liquids_for_electricity()
+    )
+    return value
+
+
+@component.add(
     name='"Hist share gas/(coal +gas) Elec"',
     units="Dmnl",
     comp_type="Data",
@@ -391,7 +436,7 @@ def hist_share_gascoal_gas_elec():
 
 _ext_data_hist_share_gascoal_gas_elec = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_share_of_electricity_produced_from_gas_over_electricity_produced_coal_and_gas",
     "interpolate",
@@ -422,7 +467,7 @@ def hist_share_oilff_elec():
 
 _ext_data_hist_share_oilff_elec = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_share_of_electricity_produced_from_oil_over_total_fossil_electricity",
     "interpolate",
@@ -452,7 +497,7 @@ def historic_efficiency_gas_for_electricity(x, final_subs=None):
 
 _ext_lookup_historic_efficiency_gas_for_electricity = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_efficiencies",
     "historic_efficiency_gas_for_electricity",
     {},
@@ -464,16 +509,17 @@ _ext_lookup_historic_efficiency_gas_for_electricity = ExtLookup(
 
 @component.add(
     name="improvement efficiency gas for electricity",
-    units="Dmnl",
+    units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "percent_to_share": 1,
         "historic_efficiency_gas_for_electricity": 2,
-        "efficiency_gas_for_electricity": 1,
+        "time_step": 2,
+        "percent_to_share": 1,
         "remaining_efficiency_improv_gas_for_electricity": 1,
         "efficiency_improv_gas_for_electricity": 1,
+        "efficiency_gas_for_electricity": 1,
     },
 )
 def improvement_efficiency_gas_for_electricity():
@@ -483,10 +529,11 @@ def improvement_efficiency_gas_for_electricity():
     return if_then_else(
         time() < 2013,
         lambda: (
-            historic_efficiency_gas_for_electricity(integer(time() + 1))
-            - historic_efficiency_gas_for_electricity(integer(time()))
+            historic_efficiency_gas_for_electricity(time() + time_step())
+            - historic_efficiency_gas_for_electricity(time())
         )
-        * percent_to_share(),
+        * percent_to_share()
+        / time_step(),
         lambda: efficiency_gas_for_electricity()
         * remaining_efficiency_improv_gas_for_electricity()
         * efficiency_improv_gas_for_electricity(),
@@ -495,7 +542,7 @@ def improvement_efficiency_gas_for_electricity():
 
 @component.add(
     name="increase share gas for Elec",
-    units="Dmnl",
+    units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -517,7 +564,7 @@ def increase_share_gas_for_elec():
 
 @component.add(
     name="increase share oil for Elec",
-    units="Dmnl",
+    units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -553,7 +600,7 @@ def initial_efficiency_gas_for_electricity():
 
 _ext_constant_initial_efficiency_gas_for_electricity = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_efficiency_gas_for_electricity",
     {},
     _root,
@@ -563,7 +610,10 @@ _ext_constant_initial_efficiency_gas_for_electricity = ExtConstant(
 
 
 @component.add(
-    name="max auxiliar Elec", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+    name="max auxiliar Elec",
+    units="Dmnl/year",
+    comp_type="Constant",
+    comp_subtype="Normal",
 )
 def max_auxiliar_elec():
     """
@@ -574,7 +624,7 @@ def max_auxiliar_elec():
 
 @component.add(
     name="Max efficiency gas power plants",
-    units="Dnml",
+    units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_max_efficiency_gas_power_plants"},
@@ -620,8 +670,8 @@ def p_share_oil_oil_elec():
 
 
 @component.add(
-    name="PE demand coal Elec plants EJ",
-    units="EJ/Year",
+    name="PED coal Elec plants EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -630,7 +680,7 @@ def p_share_oil_oil_elec():
         "ej_per_twh": 1,
     },
 )
-def pe_demand_coal_elec_plants_ej():
+def ped_coal_elec_plants_ej():
     """
     Primary energy demand of coal (EJ) for electricity consumption (including generation losses).
     """
@@ -640,8 +690,8 @@ def pe_demand_coal_elec_plants_ej():
 
 
 @component.add(
-    name="PE demand gas Elec plants EJ",
-    units="EJ/Year",
+    name="PED gas Elec plants EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -650,7 +700,7 @@ def pe_demand_coal_elec_plants_ej():
         "ej_per_twh": 1,
     },
 )
-def pe_demand_gas_elec_plants_ej():
+def ped_gas_elec_plants_ej():
     """
     Primary energy demand of natural gas (EJ) for electricity consumption (including generation losses).
     """
@@ -660,8 +710,8 @@ def pe_demand_gas_elec_plants_ej():
 
 
 @component.add(
-    name="PE demand oil Elec plants EJ",
-    units="EJ/Year",
+    name="PED oil Elec plants EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -670,7 +720,7 @@ def pe_demand_gas_elec_plants_ej():
         "ej_per_twh": 1,
     },
 )
-def pe_demand_oil_elec_plants_ej():
+def ped_oil_elec_plants_ej():
     """
     Primary energy demand of oil (EJ) for electric generation (including generation losses).
     """
@@ -857,7 +907,7 @@ def phaseout_oil_for_electricity():
 
 _ext_constant_phaseout_oil_for_electricity = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "phase_out_oil_electr",
     {},
     _root,
@@ -942,7 +992,7 @@ def share_gascoalgas_for_elec_in_2014():
 
 _ext_constant_share_gascoalgas_for_elec_in_2014 = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "share_of_electricity_produced_from_gas_over_electricity_produced_coal_and_gas_2014",
     {},
     _root,
@@ -953,7 +1003,7 @@ _ext_constant_share_gascoalgas_for_elec_in_2014 = ExtConstant(
 
 @component.add(
     name="share in target year FF for elec",
-    units="1/Year",
+    units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_share_in_target_year_ff_for_elec"},
@@ -967,7 +1017,7 @@ def share_in_target_year_ff_for_elec():
 
 _ext_constant_share_in_target_year_ff_for_elec = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "share_target_year_oil_for_elec",
     {},
     _root,
@@ -984,11 +1034,11 @@ _ext_constant_share_in_target_year_ff_for_elec = ExtConstant(
     depends_on={
         "switch_scarcityps_elec_substit": 1,
         "hist_share_oilff_elec": 3,
-        "start_year_policy_phaseout_oil_for_elec": 1,
-        "phaseout_oil_for_electricity": 1,
-        "future_share_oilff_for_elec": 1,
         "time": 2,
+        "future_share_oilff_for_elec": 1,
         "p_share_oil_oil_elec": 1,
+        "phaseout_oil_for_electricity": 1,
+        "start_year_policy_phaseout_oil_for_elec": 1,
     },
 )
 def share_oil_for_elec():
@@ -1030,7 +1080,7 @@ def share_oilff_for_elec_in_2015():
 
 _ext_constant_share_oilff_for_elec_in_2015 = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "share_of_electricity_produced_from_oil_over_total_fossil_electricity_2015",
     {},
     _root,
@@ -1041,7 +1091,7 @@ _ext_constant_share_oilff_for_elec_in_2015 = ExtConstant(
 
 @component.add(
     name='"start year policy phase-out oil for elec"',
-    units="1/Year",
+    units="year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
@@ -1057,7 +1107,7 @@ def start_year_policy_phaseout_oil_for_elec():
 
 _ext_constant_start_year_policy_phaseout_oil_for_elec = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "start_year_policy_phase_out_oil_for_electricity",
     {},
     _root,
@@ -1081,7 +1131,7 @@ def switch_scarcityps_elec_substit():
 
 @component.add(
     name='"target year policy phase-out FF for elec"',
-    units="1/Year",
+    units="year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
@@ -1097,39 +1147,10 @@ def target_year_policy_phaseout_ff_for_elec():
 
 _ext_constant_target_year_policy_phaseout_ff_for_elec = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "target_year_policy_phase_out_oil_electricity",
     {},
     _root,
     {},
     "_ext_constant_target_year_policy_phaseout_ff_for_elec",
 )
-
-
-@component.add(
-    name="Total gen losses demand for Elec plants EJ",
-    units="EJ/Year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "pe_demand_gas_elec_plants_ej": 1,
-        "efficiency_gas_for_electricity": 1,
-        "efficiency_coal_for_electricity": 1,
-        "pe_demand_coal_elec_plants_ej": 1,
-        "pe_demand_oil_elec_plants_ej": 1,
-        "efficiency_liquids_for_electricity": 1,
-        "pe_losses_uranium_for_elec_ej": 1,
-        "pe_losses_bioe_for_elec_ej": 1,
-    },
-)
-def total_gen_losses_demand_for_elec_plants_ej():
-    """
-    Total generation losses associated to electricity demand.
-    """
-    return (
-        pe_demand_gas_elec_plants_ej() * (1 - efficiency_gas_for_electricity())
-        + pe_demand_coal_elec_plants_ej() * (1 - efficiency_coal_for_electricity())
-        + pe_demand_oil_elec_plants_ej() * (1 - efficiency_liquids_for_electricity())
-        + pe_losses_uranium_for_elec_ej()
-        + pe_losses_bioe_for_elec_ej()
-    )

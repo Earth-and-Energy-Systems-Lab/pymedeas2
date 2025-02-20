@@ -69,7 +69,7 @@ _ext_constant_end_historical_data = ExtConstant(
     name="energy by fuel tkm",
     units="EJ/year",
     subscripts=[np.str_("final sources")],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_tkm": 4},
 )
@@ -777,8 +777,8 @@ def tkm_fuel_share_inland():
         "time": 4,
         "end_historical_data": 3,
         "initial_fuel_share_maritime_tkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_maritime": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def tkm_fuel_share_maritime():
@@ -833,8 +833,8 @@ _ext_constant_tkm_initial = ExtConstant(
         "time": 5,
         "end_historical_data": 5,
         "hist_transport_share_tkm": 3,
-        "start_year_policies_transport": 3,
         "mode_share_tkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def tkm_mode_share():

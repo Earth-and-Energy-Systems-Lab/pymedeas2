@@ -33,8 +33,8 @@ def a_lin_reg_nonenergy():
     depends_on={
         "time": 3,
         "variation_nonenergy_use": 1,
-        "time_step": 2,
         "historic_nonenergy_use": 2,
+        "time_step": 2,
     },
 )
 def annual_variation_nonenergy_use():
@@ -160,10 +160,10 @@ def total_real_nonenergy_use_consumption_ej():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
-        "a_lin_reg_nonenergy": 1,
-        "gdp_delayed_1yr": 1,
         "gdp_eu": 1,
+        "a_lin_reg_nonenergy": 1,
         "nvs_1_year": 1,
+        "gdp_delayed_1yr": 1,
     },
 )
 def variation_nonenergy_use():

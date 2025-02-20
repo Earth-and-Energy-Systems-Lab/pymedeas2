@@ -279,8 +279,8 @@ def fed_heatcom_by_nre_chp_plants_ej():
     comp_subtype="Normal",
     depends_on={
         "potential_fe_gen_elec_fossil_fuel_chp_plants": 1,
-        "ej_per_twh": 1,
         "demand_elec_nre_twh": 1,
+        "ej_per_twh": 1,
     },
 )
 def fes_elec_fossil_fuel_chp_plants_ej():
@@ -337,11 +337,11 @@ def fes_heatcom_nuclear_chp_plants():
         "efficiency_elec_gas_chp_plants": 1,
         "efficiency_heat_gas_chp_plants": 1,
         "ped_oil_for_chp_plants_ej": 1,
-        "efficiency_elec_oil_chp_plants": 1,
         "efficiency_heat_oil_chp_plants": 1,
+        "efficiency_elec_oil_chp_plants": 1,
+        "ped_coal_for_chp_plants_ej": 1,
         "efficiency_heat_coal_chp_plants": 1,
         "efficiency_elec_coal_chp_plants": 1,
-        "ped_coal_for_chp_plants_ej": 1,
     },
 )
 def gen_losses_demand_for_chp_plants():
@@ -643,8 +643,8 @@ def share_chp_plants_oil():
     depends_on={
         "efficiency_elec_oil_chp_plants": 2,
         "efficiency_heat_oil_chp_plants": 1,
-        "efficiency_heat_coal_chp_plants": 1,
         "efficiency_elec_coal_chp_plants": 2,
+        "efficiency_heat_coal_chp_plants": 1,
         "efficiency_elec_gas_chp_plants": 2,
         "efficiency_heat_gas_chp_plants": 1,
     },

@@ -1,15 +1,19 @@
 """
-Module waste
-Translated using PySD version 3.2.0
+Module energy.supply.waste
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name="adapt growth waste",
-    units="1/Year",
+    units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "past_waste_growth": 3, "waste_change": 2},
+    depends_on={
+        "time": 3,
+        "past_waste_growth": 3,
+        "waste_change": 2,
+        "nvs_5_years_ts": 1,
+    },
 )
 def adapt_growth_waste():
     """
@@ -21,7 +25,9 @@ def adapt_growth_waste():
         lambda: if_then_else(
             time() < 2020,
             lambda: past_waste_growth()
-            + (waste_change() - past_waste_growth()) * (time() - 2015) / 5,
+            + (waste_change() - past_waste_growth())
+            * (time() - 2015)
+            / nvs_5_years_ts(),
             lambda: waste_change(),
         ),
     )
@@ -30,106 +36,144 @@ def adapt_growth_waste():
 @component.add(
     name="efficiency waste for elec CHP plants",
     units="Dmnl",
-    comp_type="Constant",
+    comp_type="Data",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_efficiency_waste_for_elec_chp_plants"},
+    depends_on={
+        "__external__": "_ext_data_efficiency_waste_for_elec_chp_plants",
+        "__data__": "_ext_data_efficiency_waste_for_elec_chp_plants",
+        "time": 1,
+    },
 )
 def efficiency_waste_for_elec_chp_plants():
     """
     Efficiency of the transformation of waste in elec in CHP plants.
     """
-    return _ext_constant_efficiency_waste_for_elec_chp_plants()
+    return _ext_data_efficiency_waste_for_elec_chp_plants(time())
 
 
-_ext_constant_efficiency_waste_for_elec_chp_plants = ExtConstant(
+_ext_data_efficiency_waste_for_elec_chp_plants = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
+    "year_waste_biogas",
     "efficiency_waste_for_elec_chp_plants",
+    "interpolate",
     {},
     _root,
     {},
-    "_ext_constant_efficiency_waste_for_elec_chp_plants",
+    "_ext_data_efficiency_waste_for_elec_chp_plants",
 )
 
 
 @component.add(
     name="efficiency waste for elec plants",
     units="Dmnl",
-    comp_type="Constant",
+    comp_type="Data",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_efficiency_waste_for_elec_plants"},
+    depends_on={
+        "__external__": "_ext_data_efficiency_waste_for_elec_plants",
+        "__data__": "_ext_data_efficiency_waste_for_elec_plants",
+        "time": 1,
+    },
 )
 def efficiency_waste_for_elec_plants():
     """
     Efficiency of the transformation of waste in elec plants.
     """
-    return _ext_constant_efficiency_waste_for_elec_plants()
+    return _ext_data_efficiency_waste_for_elec_plants(time())
 
 
-_ext_constant_efficiency_waste_for_elec_plants = ExtConstant(
+_ext_data_efficiency_waste_for_elec_plants = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
+    "year_waste_biogas",
     "efficiency_waste_for_elec_plants",
+    "interpolate",
     {},
     _root,
     {},
-    "_ext_constant_efficiency_waste_for_elec_plants",
+    "_ext_data_efficiency_waste_for_elec_plants",
 )
 
 
 @component.add(
     name="efficiency waste for heat CHP plants",
     units="Dmnl",
-    comp_type="Constant",
+    comp_type="Data",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_efficiency_waste_for_heat_chp_plants"},
+    depends_on={
+        "__external__": "_ext_data_efficiency_waste_for_heat_chp_plants",
+        "__data__": "_ext_data_efficiency_waste_for_heat_chp_plants",
+        "time": 1,
+    },
 )
 def efficiency_waste_for_heat_chp_plants():
     """
     Efficiency of the transformation of waste in heat in CHP plants.
     """
-    return _ext_constant_efficiency_waste_for_heat_chp_plants()
+    return _ext_data_efficiency_waste_for_heat_chp_plants(time())
 
 
-_ext_constant_efficiency_waste_for_heat_chp_plants = ExtConstant(
+_ext_data_efficiency_waste_for_heat_chp_plants = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
+    "year_waste_biogas",
     "efficiency_waste_for_heat_CHP_plants",
+    "interpolate",
     {},
     _root,
     {},
-    "_ext_constant_efficiency_waste_for_heat_chp_plants",
+    "_ext_data_efficiency_waste_for_heat_chp_plants",
 )
 
 
 @component.add(
     name="efficiency waste for heat plants",
     units="Dmnl",
-    comp_type="Constant",
+    comp_type="Data",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_efficiency_waste_for_heat_plants"},
+    depends_on={
+        "__external__": "_ext_data_efficiency_waste_for_heat_plants",
+        "__data__": "_ext_data_efficiency_waste_for_heat_plants",
+        "time": 1,
+    },
 )
 def efficiency_waste_for_heat_plants():
     """
     Efficiency of the transformation of waste in heat plants.
     """
-    return _ext_constant_efficiency_waste_for_heat_plants()
+    return _ext_data_efficiency_waste_for_heat_plants(time())
 
 
-_ext_constant_efficiency_waste_for_heat_plants = ExtConstant(
+_ext_data_efficiency_waste_for_heat_plants = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
+    "year_waste_biogas",
     "efficiency_waste_for_heat_plants",
+    "interpolate",
     {},
     _root,
     {},
-    "_ext_constant_efficiency_waste_for_heat_plants",
+    "_ext_data_efficiency_waste_for_heat_plants",
 )
 
 
 @component.add(
+    name="FES elec from waste",
+    units="TWh/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"fes_elec_from_waste_ej": 1, "ej_per_twh": 1},
+)
+def fes_elec_from_waste():
+    """
+    TFES electricity from waste.
+    """
+    return fes_elec_from_waste_ej() / ej_per_twh()
+
+
+@component.add(
     name="FES elec from waste EJ",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -146,7 +190,7 @@ def fes_elec_from_waste_ej():
 
 @component.add(
     name="FES elec from waste in CHP plants",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -163,7 +207,7 @@ def fes_elec_from_waste_in_chp_plants():
 
 @component.add(
     name="FES elec from waste in elec plants",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pes_waste_for_elec_plants": 1, "efficiency_waste_for_elec_plants": 1},
@@ -176,22 +220,8 @@ def fes_elec_from_waste_in_elec_plants():
 
 
 @component.add(
-    name="FES elec from waste TWh",
-    units="TWh",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"fes_elec_from_waste_ej": 1, "ej_per_twh": 1},
-)
-def fes_elec_from_waste_twh():
-    """
-    TFES electricity from waste.
-    """
-    return fes_elec_from_waste_ej() / ej_per_twh()
-
-
-@component.add(
     name='"FES heat-com from waste EJ"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -208,7 +238,7 @@ def fes_heatcom_from_waste_ej():
 
 @component.add(
     name='"FES heat-com from waste in CHP plants"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -225,7 +255,7 @@ def fes_heatcom_from_waste_in_chp_plants():
 
 @component.add(
     name='"FES waste for heat-com plants"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -242,7 +272,7 @@ def fes_waste_for_heatcom_plants():
 
 @component.add(
     name="Historic PES waste EJ",
-    units="EJ/Year",
+    units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -259,7 +289,7 @@ def historic_pes_waste_ej(x, final_subs=None):
 
 _ext_lookup_historic_pes_waste_ej = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_primary_energy_supply_of_waste",
     {},
@@ -271,7 +301,7 @@ _ext_lookup_historic_pes_waste_ej = ExtLookup(
 
 @component.add(
     name="initial PES waste",
-    units="EJ",
+    units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_initial_pes_waste"},
@@ -285,7 +315,7 @@ def initial_pes_waste():
 
 _ext_constant_initial_pes_waste = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "initial_primary_energy_supply_from_waste",
     {},
     _root,
@@ -296,7 +326,7 @@ _ext_constant_initial_pes_waste = ExtConstant(
 
 @component.add(
     name="Losses CHP waste",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -318,7 +348,7 @@ def losses_chp_waste():
 
 @component.add(
     name="max PE waste",
-    units="EJ",
+    units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_max_pe_waste"},
@@ -331,8 +361,8 @@ def max_pe_waste():
 
 
 _ext_constant_max_pe_waste = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "../energy.xlsx",
+    "Catalonia",
     "max_PE_waste",
     {},
     _root,
@@ -343,15 +373,16 @@ _ext_constant_max_pe_waste = ExtConstant(
 
 @component.add(
     name="new waste supply EJ",
-    units="EJ/Year",
+    units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
+        "time_step": 2,
         "historic_pes_waste_ej": 2,
         "max_pe_waste": 3,
-        "pes_waste_ej": 3,
         "adapt_growth_waste": 1,
+        "pes_waste": 3,
         "p_waste_change": 1,
     },
 )
@@ -361,20 +392,23 @@ def new_waste_supply_ej():
     """
     return if_then_else(
         time() < 2014,
-        lambda: historic_pes_waste_ej(time() + 1) - historic_pes_waste_ej(time()),
+        lambda: (
+            historic_pes_waste_ej(time() + time_step()) - historic_pes_waste_ej(time())
+        )
+        / time_step(),
         lambda: if_then_else(
             max_pe_waste() == 0,
-            lambda: pes_waste_ej() * p_waste_change(),
-            lambda: ((max_pe_waste() - pes_waste_ej()) / max_pe_waste())
+            lambda: pes_waste() * p_waste_change(),
+            lambda: ((max_pe_waste() - pes_waste()) / max_pe_waste())
             * adapt_growth_waste()
-            * pes_waste_ej(),
+            * pes_waste(),
         ),
     )
 
 
 @component.add(
     name="P waste change",
-    units="1/Year",
+    units="Dmnl/year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_p_waste_change"},
@@ -388,7 +422,7 @@ def p_waste_change():
 
 _ext_constant_p_waste_change = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "p_waste_growth",
     {},
     _root,
@@ -399,7 +433,7 @@ _ext_constant_p_waste_change = ExtConstant(
 
 @component.add(
     name="Past waste growth",
-    units="Dmnl",
+    units="Dmnl/year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_past_waste_growth"},
@@ -413,7 +447,7 @@ def past_waste_growth():
 
 _ext_constant_past_waste_growth = ExtConstant(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "historic_average_pes_from_waste_growth",
     {},
     _root,
@@ -424,14 +458,14 @@ _ext_constant_past_waste_growth = ExtConstant(
 
 @component.add(
     name="PES tot waste for elec",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pes_waste_for_elec_plants": 1,
         "fes_elec_from_waste_in_chp_plants": 1,
-        "losses_chp_waste": 1,
         "share_efficiency_waste_for_elec_in_chp_plants": 1,
+        "losses_chp_waste": 1,
     },
 )
 def pes_tot_waste_for_elec():
@@ -447,14 +481,14 @@ def pes_tot_waste_for_elec():
 
 @component.add(
     name='"PES tot waste for heat-com"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pes_waste_for_heatcom_plants": 1,
         "fes_heatcom_from_waste_in_chp_plants": 1,
-        "losses_chp_waste": 1,
         "share_efficiency_waste_for_elec_in_chp_plants": 1,
+        "losses_chp_waste": 1,
     },
 )
 def pes_tot_waste_for_heatcom():
@@ -469,84 +503,84 @@ def pes_tot_waste_for_heatcom():
 
 
 @component.add(
-    name="PES waste EJ",
-    units="EJ",
+    name="PES waste",
+    units="EJ/year",
     comp_type="Stateful",
     comp_subtype="Integ",
-    depends_on={"_integ_pes_waste_ej": 1},
+    depends_on={"_integ_pes_waste": 1},
     other_deps={
-        "_integ_pes_waste_ej": {
+        "_integ_pes_waste": {
             "initial": {"initial_pes_waste": 1},
             "step": {"new_waste_supply_ej": 1},
         }
     },
 )
-def pes_waste_ej():
+def pes_waste():
     """
     Waste primary energy supply (includes industrial and municipal (renew and non-renew).
     """
-    return _integ_pes_waste_ej()
+    return _integ_pes_waste()
 
 
-_integ_pes_waste_ej = Integ(
-    lambda: new_waste_supply_ej(), lambda: initial_pes_waste(), "_integ_pes_waste_ej"
+_integ_pes_waste = Integ(
+    lambda: new_waste_supply_ej(), lambda: initial_pes_waste(), "_integ_pes_waste"
 )
 
 
 @component.add(
     name="PES waste for CHP plants",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pes_waste_ej": 1, "share_pes_waste_for_chp": 1},
+    depends_on={"pes_waste": 1, "share_pes_waste_for_chp": 1},
 )
 def pes_waste_for_chp_plants():
     """
     Primary energy supply waste for CHP plants.
     """
-    return pes_waste_ej() * share_pes_waste_for_chp()
+    return pes_waste() * share_pes_waste_for_chp()
 
 
 @component.add(
     name="PES waste for elec plants",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pes_waste_ej": 1, "share_pes_waste_for_elec_plants": 1},
+    depends_on={"pes_waste": 1, "share_pes_waste_for_elec_plants": 1},
 )
 def pes_waste_for_elec_plants():
     """
     Primary energy supply of heat in Heat plants from waste.
     """
-    return pes_waste_ej() * share_pes_waste_for_elec_plants()
+    return pes_waste() * share_pes_waste_for_elec_plants()
 
 
 @component.add(
     name='"PES waste for heat-com plants"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pes_waste_ej": 1, "share_pes_waste_for_heatcom_plants": 1},
+    depends_on={"pes_waste": 1, "share_pes_waste_for_heatcom_plants": 1},
 )
 def pes_waste_for_heatcom_plants():
     """
     Primary energy supply of commercial heat in Heat plants from waste.
     """
-    return pes_waste_ej() * share_pes_waste_for_heatcom_plants()
+    return pes_waste() * share_pes_waste_for_heatcom_plants()
 
 
 @component.add(
     name="PES waste for TFC",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pes_waste_ej": 1, "share_pes_waste_tfc": 1},
+    depends_on={"pes_waste": 1, "share_pes_waste_tfc": 1},
 )
 def pes_waste_for_tfc():
     """
     Primary energy supply waste for total final consumption.
     """
-    return pes_waste_ej() * share_pes_waste_tfc()
+    return pes_waste() * share_pes_waste_tfc()
 
 
 @component.add(
@@ -560,124 +594,149 @@ def pes_waste_for_tfc():
     },
 )
 def share_efficiency_waste_for_elec_in_chp_plants():
-    return efficiency_waste_for_elec_chp_plants() / (
-        efficiency_waste_for_elec_chp_plants() + efficiency_waste_for_heat_chp_plants()
+    return zidz(
+        efficiency_waste_for_elec_chp_plants(),
+        efficiency_waste_for_elec_chp_plants() + efficiency_waste_for_heat_chp_plants(),
     )
 
 
 @component.add(
     name="share PES waste for CHP",
     units="Dmnl",
-    comp_type="Constant",
+    comp_type="Data",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_share_pes_waste_for_chp"},
+    depends_on={
+        "__external__": "_ext_data_share_pes_waste_for_chp",
+        "__data__": "_ext_data_share_pes_waste_for_chp",
+        "time": 1,
+    },
 )
 def share_pes_waste_for_chp():
     """
     Share of PES waste for CHP plants.
     """
-    return _ext_constant_share_pes_waste_for_chp()
+    return _ext_data_share_pes_waste_for_chp(time())
 
 
-_ext_constant_share_pes_waste_for_chp = ExtConstant(
+_ext_data_share_pes_waste_for_chp = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
+    "year_waste_biogas",
     "share_pes_waste_for_chp",
+    "interpolate",
     {},
     _root,
     {},
-    "_ext_constant_share_pes_waste_for_chp",
+    "_ext_data_share_pes_waste_for_chp",
 )
 
 
 @component.add(
     name="share PES waste for elec plants",
     units="Dmnl",
-    comp_type="Constant",
+    comp_type="Data",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_share_pes_waste_for_elec_plants"},
+    depends_on={
+        "__external__": "_ext_data_share_pes_waste_for_elec_plants",
+        "__data__": "_ext_data_share_pes_waste_for_elec_plants",
+        "time": 1,
+    },
 )
 def share_pes_waste_for_elec_plants():
     """
     Share of PES waste for elec plants.
     """
-    return _ext_constant_share_pes_waste_for_elec_plants()
+    return _ext_data_share_pes_waste_for_elec_plants(time())
 
 
-_ext_constant_share_pes_waste_for_elec_plants = ExtConstant(
+_ext_data_share_pes_waste_for_elec_plants = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
+    "year_waste_biogas",
     "share_pes_waste_for_elec_plants",
+    "interpolate",
     {},
     _root,
     {},
-    "_ext_constant_share_pes_waste_for_elec_plants",
+    "_ext_data_share_pes_waste_for_elec_plants",
 )
 
 
 @component.add(
     name='"share PES waste for heat-com plants"',
     units="Dmnl",
-    comp_type="Constant",
+    comp_type="Data",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_share_pes_waste_for_heatcom_plants"},
+    depends_on={
+        "__external__": "_ext_data_share_pes_waste_for_heatcom_plants",
+        "__data__": "_ext_data_share_pes_waste_for_heatcom_plants",
+        "time": 1,
+    },
 )
 def share_pes_waste_for_heatcom_plants():
     """
     Share of PES waste for commercial heat plants.
     """
-    return _ext_constant_share_pes_waste_for_heatcom_plants()
+    return _ext_data_share_pes_waste_for_heatcom_plants(time())
 
 
-_ext_constant_share_pes_waste_for_heatcom_plants = ExtConstant(
+_ext_data_share_pes_waste_for_heatcom_plants = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
+    "year_waste_biogas",
     "share_pes_waste_for_heat_plants",
+    "interpolate",
     {},
     _root,
     {},
-    "_ext_constant_share_pes_waste_for_heatcom_plants",
+    "_ext_data_share_pes_waste_for_heatcom_plants",
 )
 
 
 @component.add(
     name="share PES waste TFC",
     units="Dmnl",
-    comp_type="Constant",
+    comp_type="Data",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_share_pes_waste_tfc"},
+    depends_on={
+        "__external__": "_ext_data_share_pes_waste_tfc",
+        "__data__": "_ext_data_share_pes_waste_tfc",
+        "time": 1,
+    },
 )
 def share_pes_waste_tfc():
     """
     Share of PES waste for total final consumption.
     """
-    return _ext_constant_share_pes_waste_tfc()
+    return _ext_data_share_pes_waste_tfc(time())
 
 
-_ext_constant_share_pes_waste_tfc = ExtConstant(
+_ext_data_share_pes_waste_tfc = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
+    "year_waste_biogas",
     "share_pes_waste_tfc",
+    "interpolate",
     {},
     _root,
     {},
-    "_ext_constant_share_pes_waste_tfc",
+    "_ext_data_share_pes_waste_tfc",
 )
 
 
 @component.add(
     name="waste change",
-    units="1/Year",
+    units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"annual_gdp_growth_rate_aut": 2, "p_waste_change": 1},
+    depends_on={"annual_gdp_growth_rate_cat": 2, "p_waste_change": 1},
 )
 def waste_change():
     """
     If GDP becomes negative, annual PES change follows it decreasing trends.
     """
     return if_then_else(
-        annual_gdp_growth_rate_aut() < 0,
-        lambda: annual_gdp_growth_rate_aut(),
+        annual_gdp_growth_rate_cat() < 0,
+        lambda: annual_gdp_growth_rate_cat(),
         lambda: p_waste_change(),
     )

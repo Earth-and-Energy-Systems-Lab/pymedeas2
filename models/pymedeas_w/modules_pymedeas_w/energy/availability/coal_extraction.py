@@ -202,10 +202,10 @@ _delayfixed_evol_coal_extraction_rate_delayed = DelayFixed(
     depends_on={
         "time": 1,
         "ped_coal_ej": 3,
-        "activate_force_leaving_underground": 1,
         "nvs_1_year": 1,
-        "max_extraction_coal": 2,
         "remaining_extractable_coal_with_left_underground": 1,
+        "activate_force_leaving_underground": 1,
+        "max_extraction_coal": 2,
     },
 )
 def extraction_coal_ej():

@@ -1,49 +1,48 @@
 """
-Module social_and_environmental_impacts
-Translated using PySD version 3.2.0
+Module society.social_and_environmental_impacts
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name='"Carbon footprint tCO2/person"',
-    units="tCO2/person",
+    units="tCO2/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_co2_emissions_gtco2": 1, "t_per_gt": 1, "population": 1},
+    depends_on={"total_co2_emissions_gtco2": 1, "tco2_per_gtco2": 1, "population": 1},
 )
 def carbon_footprint_tco2person():
     """
     CO2 emissions per capita.
     """
-    return total_co2_emissions_gtco2() * t_per_gt() / population()
+    return total_co2_emissions_gtco2() * tco2_per_gtco2() / population()
 
 
 @component.add(
     name='"Carbon footprint tonnesC/person"',
-    units="tonnesC/person",
+    units="tonnesC/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"carbon_footprint_tco2person": 1, "c_per_co2": 1},
+    depends_on={"carbon_footprint_tco2person": 1, "tc_per_tco2": 1},
 )
 def carbon_footprint_tonnescperson():
     """
     Carbon footprint.
     """
-    return carbon_footprint_tco2person() * c_per_co2()
+    return carbon_footprint_tco2person() * tc_per_tco2()
 
 
 @component.add(
     name="CO2 emissions per value added",
-    units="GtCO2/(Year*T$)",
+    units="GtCO2/(year*T$)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_co2_emissions_gtco2": 1, "gdp_aut": 1},
+    depends_on={"total_co2_emissions_gtco2": 1, "gdp_cat": 1},
 )
 def co2_emissions_per_value_added():
     """
     CO2 emissions per value added (GDP).
     """
-    return zidz(total_co2_emissions_gtco2(), gdp_aut())
+    return zidz(total_co2_emissions_gtco2(), gdp_cat())
 
 
 @component.add(
@@ -51,7 +50,7 @@ def co2_emissions_per_value_added():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"net_tfec_per_capita": 2},
+    depends_on={"net_tfec_per_capita": 2, "unit_corr_hdi": 1},
 )
 def potential_max_hdi():
     """
@@ -60,14 +59,26 @@ def potential_max_hdi():
     return if_then_else(
         net_tfec_per_capita() <= 0,
         lambda: 0,
-        lambda: np.minimum(1, 0.1395 * np.log(net_tfec_per_capita()) + 0.1508),
+        lambda: np.minimum(
+            1, 0.1395 * np.log(net_tfec_per_capita() * unit_corr_hdi()) + 0.1508
+        ),
     )
 
 
 @component.add(
-    name="t per Gt", units="TonC/GtC", comp_type="Constant", comp_subtype="Normal"
+    name="tC per tCO2", units="tC/tCO2", comp_type="Constant", comp_subtype="Normal"
 )
-def t_per_gt():
+def tc_per_tco2():
+    return 3 / 11
+
+
+@component.add(
+    name="tCO2 per GtCO2",
+    units="tCO2/GtCO2",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def tco2_per_gtco2():
     """
     Conversion from tones to Gigatonnes of carbon.
     """
@@ -76,7 +87,7 @@ def t_per_gt():
 
 @component.add(
     name="Total water use per capita",
-    units="dam3/person",
+    units="dam3/(person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_water_use": 1, "population": 1},
@@ -89,9 +100,19 @@ def total_water_use_per_capita():
 
 
 @component.add(
+    name="unit corr HDI",
+    units="(year*person)/GJ",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def unit_corr_hdi():
+    return 1
+
+
+@component.add(
     name="Water use per type per capita",
-    units="dam3/person",
-    subscripts=["water"],
+    units="dam3/(person)",
+    subscripts=[np.str_("water")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_water_use_by_type": 1, "population": 1},

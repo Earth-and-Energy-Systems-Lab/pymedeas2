@@ -1,26 +1,27 @@
 """
-Module losses_in_transformation_and_distri
-Translated using PySD version 3.2.0
+Module energy.supply.losses_in_transformation_and_distri
+Translated using PySD version 3.14.0
 """
 
-
 @component.add(
-    name="Energy distr losses FF EJ",
-    units="EJ",
-    subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    name="Energy distr losses FF",
+    units="EJ/year",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "pes_fossil_fuel_extraction_delayed": 3,
         "historic_share_of_losses_vs_extraction": 3,
     },
 )
-def energy_distr_losses_ff_ej():
+def energy_distr_losses_ff():
     """
     Energy distribution losses of fossil fuels.
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     value.loc[["liquids"]] = float(
         pes_fossil_fuel_extraction_delayed().loc["liquids"]
@@ -38,7 +39,7 @@ def energy_distr_losses_ff_ej():
 
 @component.add(
     name='"FEC gases+liquids"',
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_fe_consumption_by_fuel": 2},
@@ -51,7 +52,7 @@ def fec_gasesliquids():
 
 @component.add(
     name="Historic pipeline transport",
-    units="EJ",
+    units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -68,7 +69,7 @@ def historic_pipeline_transport(x, final_subs=None):
 
 _ext_lookup_historic_pipeline_transport = ExtLookup(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_pipeline_transport",
     {},
@@ -81,7 +82,7 @@ _ext_lookup_historic_pipeline_transport = ExtLookup(
 @component.add(
     name="Historic share of losses vs extraction",
     units="Dmnl",
-    subscripts=["final sources"],
+    subscripts=["matter final sources"],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -99,32 +100,32 @@ def historic_share_of_losses_vs_extraction():
 
 _ext_data_historic_share_of_losses_vs_extraction = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_share_losses_over_total_extraction_liquids",
     None,
-    {"final sources": ["liquids"]},
+    {"matter final sources": ["liquids"]},
     _root,
-    {"final sources": ["liquids", "solids", "gases"]},
+    {"matter final sources": _subscript_dict["matter final sources"]},
     "_ext_data_historic_share_of_losses_vs_extraction",
 )
 
 _ext_data_historic_share_of_losses_vs_extraction.add(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_share_losses_over_total_extraction_solids",
     None,
-    {"final sources": ["solids"]},
+    {"matter final sources": ["solids"]},
 )
 
 _ext_data_historic_share_of_losses_vs_extraction.add(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_share_losses_over_total_extraction_gases",
     None,
-    {"final sources": ["gases"]},
+    {"matter final sources": ["gases"]},
 )
 
 
@@ -149,19 +150,19 @@ def historic_share_of_transformation_losses_vs_extraction():
 
 _ext_data_historic_share_of_transformation_losses_vs_extraction = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_share_of_transformation_losses_over_total_extraction_liquids",
     None,
     {"final sources": ["liquids"]},
     _root,
-    {"final sources": ["liquids", "solids"]},
+    {"final sources": _subscript_dict["final sources"]},
     "_ext_data_historic_share_of_transformation_losses_vs_extraction",
 )
 
 _ext_data_historic_share_of_transformation_losses_vs_extraction.add(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "historic_share_of_transformation_losses_over_total_extraction_solids",
     None,
@@ -188,18 +189,57 @@ def historic_share_pipeline_transport():
 
 
 @component.add(
+    name="oil refinery consumption",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"oil_refinery_share": 1, "required_fed_by_liquids": 1},
+)
+def oil_refinery_consumption():
+    return oil_refinery_share() * required_fed_by_liquids()
+
+
+@component.add(
+    name="oil refinery share",
+    units="Dmnl",
+    comp_type="Data",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_data_oil_refinery_share",
+        "__data__": "_ext_data_oil_refinery_share",
+        "time": 1,
+    },
+)
+def oil_refinery_share():
+    return _ext_data_oil_refinery_share(time())
+
+
+_ext_data_oil_refinery_share = ExtData(
+    "../energy.xlsx",
+    "Catalonia",
+    "time_historic_imports",
+    "Oil_refinery_transformation_loses_share",
+    "interpolate",
+    {},
+    _root,
+    {},
+    "_ext_data_oil_refinery_share",
+)
+
+
+@component.add(
     name="PES fossil fuel extraction",
-    units="EJ/Year",
-    subscripts=["final sources"],
+    units="EJ/year",
+    subscripts=["matter final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "pes_total_oil_ej_aut": 1,
-        "imports_aut_total_oil_from_row_ej": 1,
-        "imports_aut_coal_from_row_ej": 1,
-        "extraction_coal_aut": 1,
-        "imports_aut_nat_gas_from_row_ej": 1,
-        "pes_nat_gas_aut_1": 1,
+        "pes_total_oil_ej_cat": 1,
+        "imports_cat_total_oil_from_row_ej": 1,
+        "extraction_coal_cat": 1,
+        "imports_cat_coal_from_row_ej": 1,
+        "pes_nat_gas_cat_": 1,
+        "imports_cat_nat_gas_from_row_ej": 1,
     },
 )
 def pes_fossil_fuel_extraction():
@@ -207,20 +247,22 @@ def pes_fossil_fuel_extraction():
     Annual extraction of fossil fuels
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"matter final sources": _subscript_dict["matter final sources"]},
+        ["matter final sources"],
     )
     value.loc[["liquids"]] = (
-        pes_total_oil_ej_aut() + imports_aut_total_oil_from_row_ej()
+        pes_total_oil_ej_cat() + imports_cat_total_oil_from_row_ej()
     )
-    value.loc[["solids"]] = extraction_coal_aut() + imports_aut_coal_from_row_ej()
-    value.loc[["gases"]] = pes_nat_gas_aut_1() + imports_aut_nat_gas_from_row_ej()
+    value.loc[["solids"]] = extraction_coal_cat() + imports_cat_coal_from_row_ej()
+    value.loc[["gases"]] = pes_nat_gas_cat_() + imports_cat_nat_gas_from_row_ej()
     return value
 
 
 @component.add(
     name="PES fossil fuel extraction delayed",
-    units="EJ/Year",
-    subscripts=["final sources"],
+    units="EJ/year",
+    subscripts=["matter final sources"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={
@@ -248,7 +290,9 @@ def pes_fossil_fuel_extraction_delayed():
     Annual extraction of fossil fuels delayed
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"matter final sources": _subscript_dict["matter final sources"]},
+        ["matter final sources"],
     )
     value.loc[["liquids"]] = _delayfixed_pes_fossil_fuel_extraction_delayed().values
     value.loc[["solids"]] = _delayfixed_pes_fossil_fuel_extraction_delayed_1().values
@@ -263,7 +307,7 @@ _delayfixed_pes_fossil_fuel_extraction_delayed = DelayFixed(
         ["final sources"],
     ),
     lambda: time_step(),
-    lambda: xr.DataArray(0.5, {"final sources": ["liquids"]}, ["final sources"]),
+    lambda: xr.DataArray(0, {"final sources": ["liquids"]}, ["final sources"]),
     time_step,
     "_delayfixed_pes_fossil_fuel_extraction_delayed",
 )
@@ -275,7 +319,7 @@ _delayfixed_pes_fossil_fuel_extraction_delayed_1 = DelayFixed(
         ["final sources"],
     ),
     lambda: time_step(),
-    lambda: xr.DataArray(0.12, {"final sources": ["solids"]}, ["final sources"]),
+    lambda: xr.DataArray(0, {"final sources": ["solids"]}, ["final sources"]),
     time_step,
     "_delayfixed_pes_fossil_fuel_extraction_delayed_1",
 )
@@ -287,7 +331,7 @@ _delayfixed_pes_fossil_fuel_extraction_delayed_2 = DelayFixed(
         ["final sources"],
     ),
     lambda: time_step(),
-    lambda: xr.DataArray(0.3, {"final sources": ["gases"]}, ["final sources"]),
+    lambda: xr.DataArray(0, {"final sources": ["gases"]}, ["final sources"]),
     time_step,
     "_delayfixed_pes_fossil_fuel_extraction_delayed_2",
 )
@@ -295,7 +339,7 @@ _delayfixed_pes_fossil_fuel_extraction_delayed_2 = DelayFixed(
 
 @component.add(
     name="Pipeline transport",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"share_pipeline_transport_fecgl_in_2015": 1, "fec_gasesliquids": 1},
@@ -327,7 +371,7 @@ def ratio_gain_gas_vs_lose_solids_in_tranf_processes():
 
 _ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes = ExtData(
     "../energy.xlsx",
-    "Austria",
+    "Catalonia",
     "time_historic_data",
     "ratio_gain_gas_vs_losses_solids_in_tranformation_processes",
     None,
@@ -368,7 +412,7 @@ _sampleiftrue_share_pipeline_transport_fecgl_in_2015 = SampleIfTrue(
 
 @component.add(
     name="Total distribution losses",
-    units="EJ/Year",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -376,7 +420,7 @@ _sampleiftrue_share_pipeline_transport_fecgl_in_2015 = SampleIfTrue(
         "heatcom_distribution_losses": 1,
         "heatnc_distribution_losses": 1,
         "pipeline_transport": 1,
-        "energy_distr_losses_ff_ej": 1,
+        "energy_distr_losses_ff": 1,
     },
 )
 def total_distribution_losses():
@@ -389,7 +433,9 @@ def total_distribution_losses():
         + heatnc_distribution_losses()
         + pipeline_transport()
         + sum(
-            energy_distr_losses_ff_ej().rename({"final sources": "final sources!"}),
+            energy_distr_losses_ff().rename(
+                {np.str_("final sources"): "final sources!"}
+            ),
             dim=["final sources!"],
         )
     )
@@ -397,13 +443,14 @@ def total_distribution_losses():
 
 @component.add(
     name="Transformation FF losses EJ",
-    units="EJ",
-    subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    units="EJ/year",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "pes_fossil_fuel_extraction_delayed": 3,
         "historic_share_of_transformation_losses_vs_extraction": 3,
+        "oil_refinery_consumption": 1,
         "ratio_gain_gas_vs_lose_solids_in_tranf_processes": 1,
     },
 )
@@ -412,11 +459,15 @@ def transformation_ff_losses_ej():
     Losses in transformation processes of each fossil fuel
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
-    value.loc[["liquids"]] = float(
-        pes_fossil_fuel_extraction_delayed().loc["liquids"]
-    ) * float(historic_share_of_transformation_losses_vs_extraction().loc["liquids"])
+    value.loc[["liquids"]] = (
+        float(pes_fossil_fuel_extraction_delayed().loc["liquids"])
+        * float(historic_share_of_transformation_losses_vs_extraction().loc["liquids"])
+        + oil_refinery_consumption()
+    )
     value.loc[["solids"]] = float(
         pes_fossil_fuel_extraction_delayed().loc["solids"]
     ) * float(historic_share_of_transformation_losses_vs_extraction().loc["solids"])

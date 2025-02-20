@@ -1,13 +1,12 @@
 """
-Module demand_for_ev_batteries
-Translated using PySD version 3.2.0
+Module materials.demand_for_ev_batteries
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name="cum materials requirements for EV batteries",
     units="Mt",
-    subscripts=["materials"],
+    subscripts=[np.str_("materials")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_cum_materials_requirements_for_ev_batteries": 1},
@@ -41,7 +40,7 @@ _integ_cum_materials_requirements_for_ev_batteries = Integ(
 @component.add(
     name="cum materials to extract for EV batteries",
     units="Mt",
-    subscripts=["materials"],
+    subscripts=[np.str_("materials")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_cum_materials_to_extract_for_ev_batteries": 1},
@@ -75,7 +74,7 @@ _integ_cum_materials_to_extract_for_ev_batteries = Integ(
 @component.add(
     name="cum materials to extract for EV batteries from 2015",
     units="Mt",
-    subscripts=["materials"],
+    subscripts=[np.str_("materials")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_cum_materials_to_extract_for_ev_batteries_from_2015": 1},
@@ -119,7 +118,7 @@ def initial_cumulated_material_requirements_for_ev_batteries_1995():
 @component.add(
     name="materials per new capacity installed EV batteries",
     units="kg/MW",
-    subscripts=["materials"],
+    subscripts=[np.str_("materials")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
@@ -146,14 +145,14 @@ _ext_constant_materials_per_new_capacity_installed_ev_batteries = ExtConstant(
 
 @component.add(
     name="materials required for EV batteries Mt",
-    units="Mt",
-    subscripts=["materials"],
+    units="Mt/year",
+    subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "newreplaced_batteries_tw": 1,
         "materials_per_new_capacity_installed_ev_batteries": 1,
-        "m_per_t": 1,
+        "mw_per_tw": 1,
         "kg_per_mt": 1,
     },
 )
@@ -164,15 +163,15 @@ def materials_required_for_ev_batteries_mt():
     return (
         newreplaced_batteries_tw()
         * materials_per_new_capacity_installed_ev_batteries()
-        * m_per_t()
+        * mw_per_tw()
         / kg_per_mt()
     )
 
 
 @component.add(
     name="Total materials required for EV batteries",
-    units="Mt/Year",
-    subscripts=["materials"],
+    units="Mt/year",
+    subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"materials_required_for_ev_batteries_mt": 1},
@@ -186,8 +185,8 @@ def total_materials_required_for_ev_batteries():
 
 @component.add(
     name="Total materials to extract for EV batteries from 2015 Mt",
-    units="Mt/Year",
-    subscripts=["materials"],
+    units="Mt/year",
+    subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 1, "total_materials_to_extract_for_ev_batteries_mt": 1},
@@ -207,8 +206,8 @@ def total_materials_to_extract_for_ev_batteries_from_2015_mt():
 
 @component.add(
     name="Total materials to extract for EV batteries Mt",
-    units="Mt/Year",
-    subscripts=["materials"],
+    units="Mt/year",
+    subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -227,8 +226,8 @@ def total_materials_to_extract_for_ev_batteries_mt():
 
 @component.add(
     name="Total recycled materials for EV batteries Mt",
-    units="Mt",
-    subscripts=["materials"],
+    units="Mt/year",
+    subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={

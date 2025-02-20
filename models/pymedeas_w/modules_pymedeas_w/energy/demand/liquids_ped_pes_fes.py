@@ -248,8 +248,8 @@ def share_liquids_dem_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_liquids_ej": 1,
-        "ped_liquids_ej": 1,
         "other_liquids_required_ej": 1,
+        "ped_liquids_ej": 1,
     },
 )
 def share_liquids_for_final_energy():

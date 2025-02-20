@@ -1,8 +1,7 @@
 """
-Module res_elec_overcap_due_to_res_variabi
-Translated using PySD version 3.2.0
+Module energy.supply.res_elec_overcap_due_to_res_variabi
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name="Cp exogenous RES elec dispatch reduction",
@@ -26,7 +25,7 @@ def cp_exogenous_res_elec_dispatch_reduction():
 @component.add(
     name="Cp exogenous RES elec reduction",
     units="Dmnl",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -39,7 +38,7 @@ def cp_exogenous_res_elec_reduction():
     Reduction of Cp of RES elec due to the penetration of RES elec variables (modelling of overcapacities due to the intermittence of RES elec variables).
     """
     value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, [np.str_("RES elec")]
     )
     value.loc[["hydro"]] = cp_exogenous_res_elec_dispatch_reduction()
     value.loc[["geot elec"]] = cp_exogenous_res_elec_dispatch_reduction()
@@ -70,7 +69,7 @@ def cp_exogenous_res_elec_var_reduction():
 
 @component.add(
     name="Elec generation dispatch from RES TWh",
-    units="TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_generation_res_elec_twh": 1, "fes_elec_from_biogas_twh": 1},
@@ -83,7 +82,7 @@ def elec_generation_dispatch_from_res_twh():
         sum(
             real_generation_res_elec_twh()
             .loc[_subscript_dict["RES ELEC DISPATCHABLE"]]
-            .rename({"RES elec": "RES ELEC DISPATCHABLE!"}),
+            .rename({np.str_("RES elec"): "RES ELEC DISPATCHABLE!"}),
             dim=["RES ELEC DISPATCHABLE!"],
         )
         + fes_elec_from_biogas_twh()
@@ -92,7 +91,7 @@ def elec_generation_dispatch_from_res_twh():
 
 @component.add(
     name="Elec generation variable from RES TWh",
-    units="TWh/Year",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_generation_res_elec_twh": 1},
@@ -104,26 +103,27 @@ def elec_generation_variable_from_res_twh():
     return sum(
         real_generation_res_elec_twh()
         .loc[_subscript_dict["RES ELEC VARIABLE"]]
-        .rename({"RES elec": "RES ELEC VARIABLE!"}),
+        .rename({np.str_("RES elec"): "RES ELEC VARIABLE!"}),
         dim=["RES ELEC VARIABLE!"],
     )
 
 
 @component.add(
     name="increase variable RES share elec vs total generation",
-    units="Dmnl",
+    units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_variable_res_elec_generation_vs_total": 1,
-        "share_variable_res_elec_vs_total_generation_delayed_1yr": 1,
+        "share_variable_res_elec_vs_total_generation_delayed_ts": 1,
+        "time_step": 1,
     },
 )
 def increase_variable_res_share_elec_vs_total_generation():
     return (
         share_variable_res_elec_generation_vs_total()
-        - share_variable_res_elec_vs_total_generation_delayed_1yr()
-    )
+        - share_variable_res_elec_vs_total_generation_delayed_ts()
+    ) / time_step()
 
 
 @component.add(
@@ -197,31 +197,31 @@ _integ_share_variable_res_elec_generation_vs_total_gen = Integ(
 
 
 @component.add(
-    name="Share variable RES elec vs total generation delayed 1yr",
+    name="Share variable RES elec vs total generation delayed TS",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={
-        "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr": 1
+        "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_ts": 1
     },
     other_deps={
-        "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr": {
-            "initial": {},
+        "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_ts": {
+            "initial": {"time_step": 1},
             "step": {"share_variable_res_elec_generation_vs_total": 1},
         }
     },
 )
-def share_variable_res_elec_vs_total_generation_delayed_1yr():
+def share_variable_res_elec_vs_total_generation_delayed_ts():
     """
     "Share variable RES elec generation vs total" delayed 1 year.
     """
-    return _delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr()
+    return _delayfixed_share_variable_res_elec_vs_total_generation_delayed_ts()
 
 
-_delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr = DelayFixed(
+_delayfixed_share_variable_res_elec_vs_total_generation_delayed_ts = DelayFixed(
     lambda: share_variable_res_elec_generation_vs_total(),
-    lambda: 1,
+    lambda: time_step(),
     lambda: 0.0071,
     time_step,
-    "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_1yr",
+    "_delayfixed_share_variable_res_elec_vs_total_generation_delayed_ts",
 )

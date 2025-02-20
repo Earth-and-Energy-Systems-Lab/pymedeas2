@@ -1,11 +1,11 @@
 """
-Module medeas_eu
-Translated using PySD version 3.2.0
+Module boundary_variables.medeas_eu
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name="Annual GDP growth rate EU",
+    units="Dmnl",
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_annual_gdp_growth_rate_eu"},
@@ -32,7 +32,7 @@ def annual_gdp_growth_rate_eu28():
 
 @component.add(
     name="GDP EU",
-    units="Tdollar",
+    units="T$",
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_gdp_eu"},
@@ -57,7 +57,8 @@ def gdp_eu28():
 
 @component.add(
     name="Real demand by sector EU28",
-    subscripts=["sectors"],
+    units="Mdollars",
+    subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_final_demand_by_sector_eu": 1},
@@ -67,20 +68,9 @@ def real_demand_by_sector_eu28():
 
 
 @component.add(
-    name="Real demand EU28",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"real_demand_by_sector_eu28": 1},
-)
-def real_demand_eu28():
-    return sum(
-        real_demand_by_sector_eu28().rename({"sectors": "sectors!"}), dim=["sectors!"]
-    )
-
-
-@component.add(
     name="Real final demand by sector EU",
-    subscripts=["sectors"],
+    units="Mdollars",
+    subscripts=[np.str_("sectors")],
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_real_final_demand_by_sector_eu"},
@@ -99,8 +89,8 @@ _data_real_final_demand_by_sector_eu = TabData(
 
 @component.add(
     name="Real final energy by sector and fuel EU",
-    units="EJ",
-    subscripts=["final sources", "sectors"],
+    units="EJ/year",
+    subscripts=[np.str_("final sources"), np.str_("sectors")],
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_real_final_energy_by_sector_and_fuel_eu"},
@@ -122,7 +112,8 @@ _data_real_final_energy_by_sector_and_fuel_eu = TabData(
 
 @component.add(
     name="Real final energy by sector and fuel EU28",
-    subscripts=["final sources", "sectors"],
+    units="EJ/year",
+    subscripts=[np.str_("final sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_final_energy_by_sector_and_fuel_eu": 1},
@@ -136,7 +127,8 @@ def real_final_energy_by_sector_and_fuel_eu28():
 
 @component.add(
     name="Real total output by sector EU",
-    subscripts=["sectors"],
+    units="M$",
+    subscripts=[np.str_("sectors")],
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_real_total_output_by_sector_eu"},
@@ -155,7 +147,8 @@ _data_real_total_output_by_sector_eu = TabData(
 
 @component.add(
     name="Real total output by sector EU28",
-    subscripts=["sectors"],
+    units="M$",
+    subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_total_output_by_sector_eu": 1},
@@ -169,6 +162,7 @@ def real_total_output_by_sector_eu28():
 
 @component.add(
     name="Total FE Elec generation TWh EU",
+    units="TWh/year",
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_total_fe_elec_generation_twh_eu"},
@@ -187,6 +181,7 @@ _data_total_fe_elec_generation_twh_eu = TabData(
 
 @component.add(
     name="Total FE Elec generation TWh EU28",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_fe_elec_generation_twh_eu": 1},

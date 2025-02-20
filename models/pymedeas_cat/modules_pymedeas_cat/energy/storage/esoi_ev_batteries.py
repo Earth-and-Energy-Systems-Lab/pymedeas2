@@ -1,8 +1,7 @@
 """
-Module esoi_ev_batteries
-Translated using PySD version 3.2.0
+Module energy.storage.esoi_ev_batteries
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name="Cp EV batteries for Transp",
@@ -22,8 +21,8 @@ def cp_ev_batteries_for_transp():
     depends_on={
         "total_energy_required_for_total_material_consumption_for_ev_batteries": 1,
         "mj_per_ej": 1,
+        "mw_per_tw": 1,
         "newreplaced_batteries_tw": 1,
-        "m_per_t": 1,
     },
 )
 def energy_intensity_construction_ev_batteries_mjmw():
@@ -33,7 +32,7 @@ def energy_intensity_construction_ev_batteries_mjmw():
     return zidz(
         total_energy_required_for_total_material_consumption_for_ev_batteries()
         * mj_per_ej(),
-        newreplaced_batteries_tw() * m_per_t(),
+        newreplaced_batteries_tw() * mw_per_tw(),
     )
 
 
@@ -46,8 +45,8 @@ def energy_intensity_construction_ev_batteries_mjmw():
         "lifetime_ev_batteries": 1,
         "cp_ev_batteries_for_elec_storage": 1,
         "mw_in_1_year_to_mj": 1,
-        "gquality_of_electricity": 1,
         "grid_correction_factor_ev_batteries": 1,
+        "gquality_of_electricity": 1,
         "energy_intensity_construction_ev_batteries_mjmw": 1,
         "share_energy_requirements_for_decom_ev_batteries": 1,
     },
@@ -74,7 +73,7 @@ def esoi_ev_batteries():
 
 @component.add(
     name="FEI EV batteries",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -112,7 +111,7 @@ _ext_constant_grid_correction_factor_ev_batteries = ExtConstant(
 
 
 @component.add(
-    name="kW per MW", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+    name="kW per MW", units="kW/MW", comp_type="Constant", comp_subtype="Normal"
 )
 def kw_per_mw():
     """
@@ -128,11 +127,11 @@ def kw_per_mw():
     comp_subtype="Normal",
     depends_on={
         "net_stored_energy_ev_battery_over_lifetime": 1,
-        "cp_ev_batteries_for_transp": 1,
-        "cp_ev_batteries_for_elec_storage": 1,
-        "kw_per_battery_ev": 1,
-        "mw_in_1_year_to_mj": 1,
         "kw_per_mw": 1,
+        "cp_ev_batteries_for_transp": 1,
+        "kw_per_battery_ev": 1,
+        "cp_ev_batteries_for_elec_storage": 1,
+        "mw_in_1_year_to_mj": 1,
     },
 )
 def lifetime_ev_batteries():
@@ -154,10 +153,10 @@ def lifetime_ev_batteries():
     comp_subtype="Normal",
     depends_on={
         "net_stored_energy_ev_battery_over_lifetime": 1,
+        "kw_per_mw": 1,
         "mw_in_1_year_to_mj": 1,
         "kw_per_battery_ev": 1,
         "min_lifetime_ev_batteries": 1,
-        "kw_per_mw": 1,
     },
 )
 def max_cp_ev_batteries():
@@ -211,7 +210,10 @@ _ext_constant_min_lifetime_ev_batteries = ExtConstant(
 
 
 @component.add(
-    name="MW in 1 year to MJ", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+    name="MW in 1 year to MJ",
+    units="MJ/(year*MW)",
+    comp_type="Constant",
+    comp_subtype="Normal",
 )
 def mw_in_1_year_to_mj():
     """
@@ -222,7 +224,7 @@ def mw_in_1_year_to_mj():
 
 @component.add(
     name="Net stored energy EV battery over lifetime",
-    units="MJ",
+    units="MJ/battery",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
@@ -249,7 +251,7 @@ _ext_constant_net_stored_energy_ev_battery_over_lifetime = ExtConstant(
 
 @component.add(
     name="output EV bateries for storage over lifetime",
-    units="EJ",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={

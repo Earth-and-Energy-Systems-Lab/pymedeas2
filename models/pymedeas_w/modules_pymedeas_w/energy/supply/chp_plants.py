@@ -734,9 +734,9 @@ _delayfixed_total_elec_generation_ff_chp_plants_delayed = DelayFixed(
         "efficiency_heat_oil_chp_plants": 1,
         "efficiency_elec_oil_chp_plants": 1,
         "ped_oil_for_chp_plants_ej": 1,
+        "efficiency_elec_coal_chp_plants": 1,
         "ped_coal_for_chp_plants_ej": 1,
         "efficiency_heat_coal_chp_plants": 1,
-        "efficiency_elec_coal_chp_plants": 1,
     },
 )
 def total_gen_losses_demand_for_chp_plants_ej():

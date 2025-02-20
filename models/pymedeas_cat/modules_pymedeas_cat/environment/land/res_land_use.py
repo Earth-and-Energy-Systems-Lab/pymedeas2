@@ -1,8 +1,7 @@
 """
-Module res_land_use
-Translated using PySD version 3.2.0
+Module environment.land.res_land_use
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name="Agricultural land 2015",
@@ -17,7 +16,7 @@ def agricultural_land_2015():
 
 _ext_constant_agricultural_land_2015 = ExtConstant(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "agricultural_land_2015",
     {},
     _root,
@@ -35,18 +34,24 @@ _ext_constant_agricultural_land_2015 = ExtConstant(
         "surface_hydro_mha": 1,
         "surface_csp_mha": 1,
         "surface_solar_pv_on_land_mha": 1,
+        "surface_onshore_wind_mha": 1,
     },
 )
 def land_requirements_res_elec_compet_uses():
     """
     Land requirements for renewable technologies to generate electricity (PV on land, CSP and hydro) requiring land and not easily compatible with double uses.
     """
-    return surface_hydro_mha() + surface_csp_mha() + surface_solar_pv_on_land_mha()
+    return (
+        surface_hydro_mha()
+        + surface_csp_mha()
+        + surface_solar_pv_on_land_mha()
+        + surface_onshore_wind_mha()
+    )
 
 
 @component.add(
     name="Land saved by urban PV",
-    units="MHa*Year",
+    units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -68,7 +73,34 @@ def land_saved_by_urban_pv():
 
 
 @component.add(
+    name="real share PV urban vs total PV delayed",
+    units="percent",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_real_share_pv_urban_vs_total_pv_delayed": 1},
+    other_deps={
+        "_delayfixed_real_share_pv_urban_vs_total_pv_delayed": {
+            "initial": {"time_step": 1},
+            "step": {"real_share_pv_urban_vs_total_pv": 1},
+        }
+    },
+)
+def real_share_pv_urban_vs_total_pv_delayed():
+    return _delayfixed_real_share_pv_urban_vs_total_pv_delayed()
+
+
+_delayfixed_real_share_pv_urban_vs_total_pv_delayed = DelayFixed(
+    lambda: real_share_pv_urban_vs_total_pv(),
+    lambda: time_step(),
+    lambda: 0.5,
+    time_step,
+    "_delayfixed_real_share_pv_urban_vs_total_pv_delayed",
+)
+
+
+@component.add(
     name="Share land compet biofuels",
+    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -112,7 +144,7 @@ def share_land_res_land_compet_vs_arable():
 
 @component.add(
     name="share land total RES vs arable",
-    units="MHa",
+    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_land_requirements_renew_mha": 1, "agricultural_land_2015": 1},
@@ -126,6 +158,7 @@ def share_land_total_res_vs_arable():
 
 @component.add(
     name="share land total RES vs urban surface",
+    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_land_requirements_renew_mha": 1, "urban_surface_2015": 1},
@@ -182,25 +215,38 @@ def surface_onshore_wind_mha():
 @component.add(
     name="surface RES elec",
     units="MHa",
-    subscripts=["RES elec"],
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "power_density_res_elec_twemha": 2,
-        "installed_capacity_res_elec_delayed": 1,
+        "power_density_res_elec_twemha": 4,
+        "installed_capacity_res_elec_delayed": 2,
+        "real_share_pv_urban_vs_total_pv_delayed": 1,
     },
 )
 def surface_res_elec():
     """
     Land requirements by renewable technologies for electricity generation.
     """
-    return if_then_else(
+    value = xr.DataArray(
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, [np.str_("RES elec")]
+    )
+    except_subs = xr.ones_like(value, dtype=bool)
+    except_subs.loc[["solar PV"]] = False
+    value.values[except_subs.values] = if_then_else(
         power_density_res_elec_twemha() == 0,
         lambda: xr.DataArray(
             0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
         ),
         lambda: installed_capacity_res_elec_delayed() / power_density_res_elec_twemha(),
-    )
+    ).values[except_subs.values]
+    value.loc[["solar PV"]] = if_then_else(
+        float(power_density_res_elec_twemha().loc["solar PV"]) == 0,
+        lambda: 0,
+        lambda: float(installed_capacity_res_elec_delayed().loc["solar PV"])
+        / float(power_density_res_elec_twemha().loc["solar PV"]),
+    ) * (1 - real_share_pv_urban_vs_total_pv_delayed())
+    return value
 
 
 @component.add(
@@ -225,6 +271,7 @@ def surface_solar_pv_on_land_mha():
     depends_on={
         "land_requirements_res_elec_compet_uses": 1,
         "land_compet_required_dedicated_crops_for_biofuels": 1,
+        "nvs_1_year": 1,
         "land_required_biofuels_land_marg": 1,
         "surface_onshore_wind_mha": 1,
     },
@@ -236,7 +283,7 @@ def total_land_requirements_renew_mha():
     return (
         land_requirements_res_elec_compet_uses()
         + land_compet_required_dedicated_crops_for_biofuels()
-        + land_required_biofuels_land_marg()
+        + land_required_biofuels_land_marg() * nvs_1_year()
         + surface_onshore_wind_mha()
     )
 
@@ -257,7 +304,7 @@ def urban_surface_2015():
 
 _ext_constant_urban_surface_2015 = ExtConstant(
     "../land.xlsx",
-    "Austria",
+    "Catalonia",
     "urban_surface_2015",
     {},
     _root,

@@ -156,8 +156,8 @@ _ext_constant_buffer_c_coeff = ExtConstant(
             "initial": {"ref_buffer_factor": 1},
             "step": {
                 "ref_buffer_factor": 1,
-                "c_in_mixed_layer": 1,
                 "buffer_c_coeff": 1,
+                "c_in_mixed_layer": 1,
                 "preindustrial_c_in_mixed_layer": 1,
             },
         }
@@ -707,8 +707,8 @@ def effect_of_warming_on_ch4_release_from_biological_activity():
         "preindustrial_c_in_mixed_layer": 1,
         "effect_of_temp_on_dic_pco2": 1,
         "buffer_factor": 1,
-        "preindustrial_c": 1,
         "c_in_atmosphere": 1,
+        "preindustrial_c": 1,
     },
 )
 def equil_c_in_mixed_layer():
@@ -744,8 +744,8 @@ def equilibrium_c_per_meter_in_mixed_layer():
     depends_on={
         "init_npp": 1,
         "biostim_coeff": 1,
-        "preindustrial_c": 1,
         "c_in_atmosphere": 1,
+        "preindustrial_c": 1,
         "effect_of_warming_on_c_flux_to_biomass": 1,
     },
 )
@@ -1110,8 +1110,8 @@ _ext_constant_layer_depth = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "layer_depth": 2,
-        "mean_depth_of_adjacent_layers": 2,
         "eddy_diffusion_coef": 2,
+        "mean_depth_of_adjacent_layers": 2,
     },
 )
 def layer_time_constant():

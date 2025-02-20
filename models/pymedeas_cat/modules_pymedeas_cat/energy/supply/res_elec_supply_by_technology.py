@@ -1,18 +1,17 @@
 """
-Module res_elec_supply_by_technology
-Translated using PySD version 3.2.0
+Module energy.supply.res_elec_supply_by_technology
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name="Demand Elec NRE TWh",
-    units="TWh/Year",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "total_fe_elec_demand_twh": 1,
         "fe_tot_generation_all_res_elec_twh": 1,
-        "fes_elec_from_waste_twh": 1,
+        "fes_elec_from_waste": 1,
     },
 )
 def demand_elec_nre_twh():
@@ -23,7 +22,7 @@ def demand_elec_nre_twh():
         0,
         total_fe_elec_demand_twh()
         - fe_tot_generation_all_res_elec_twh()
-        - fes_elec_from_waste_twh(),
+        - fes_elec_from_waste(),
     )
 
 
@@ -54,34 +53,35 @@ _ext_constant_efficiency_conversion_bioe_to_elec = ExtConstant(
 
 @component.add(
     name="FE tot generation all RES elec TWh",
-    units="TWh",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "fe_real_tot_generation_res_elec_twh": 1,
-        "fes_elec_from_res_with_priority_twh": 1,
+        "fe_real_tot_generation_res_elec": 1,
+        "fes_elec_from_res_with_priority": 1,
     },
 )
 def fe_tot_generation_all_res_elec_twh():
     """
     Electricity generation from all RES technologies.
     """
-    return fe_real_tot_generation_res_elec_twh() + fes_elec_from_res_with_priority_twh()
+    return fe_real_tot_generation_res_elec() + fes_elec_from_res_with_priority()
 
 
 @component.add(
-    name="FES elec from RES with priority TWh",
-    units="TWh",
+    name="FES elec from RES with priority",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"fes_elec_from_biogas_twh": 1},
 )
-def fes_elec_from_res_with_priority_twh():
+def fes_elec_from_res_with_priority():
     return fes_elec_from_biogas_twh()
 
 
 @component.add(
     name='"imports/exports electricity"',
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -118,7 +118,7 @@ def mtoe_per_ej():
 
 @component.add(
     name="PE BioW for Elec generation Mtoe",
-    units="MToe/Year",
+    units="MToe/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pe_real_generation_res_elec": 1, "mtoe_per_ej": 1},
@@ -132,7 +132,7 @@ def pe_biow_for_elec_generation_mtoe():
 
 @component.add(
     name="PE Elec generation from RES EJ",
-    units="EJ/Year",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pe_real_generation_res_elec": 1, "pes_tot_biogas_for_elec": 1},
@@ -143,7 +143,7 @@ def pe_elec_generation_from_res_ej():
     """
     return (
         sum(
-            pe_real_generation_res_elec().rename({"RES elec": "RES elec!"}),
+            pe_real_generation_res_elec().rename({np.str_("RES elec"): "RES elec!"}),
             dim=["RES elec!"],
         )
         + pes_tot_biogas_for_elec()
@@ -152,7 +152,7 @@ def pe_elec_generation_from_res_ej():
 
 @component.add(
     name="PE losses BioE for Elec EJ",
-    units="EJ/Year",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -173,8 +173,8 @@ def pe_losses_bioe_for_elec_ej():
 
 @component.add(
     name="PE real generation RES elec",
-    units="EJ",
-    subscripts=["RES elec"],
+    units="EJ/year",
+    subscripts=[np.str_("RES elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -189,7 +189,7 @@ def pe_real_generation_res_elec():
     Primary energy supply of electricity production of RES.
     """
     value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, [np.str_("RES elec")]
     )
     value.loc[["hydro"]] = (
         float(real_generation_res_elec_twh().loc["hydro"])
@@ -235,7 +235,7 @@ def pe_real_generation_res_elec():
 
 @component.add(
     name="Real FE demand NRE",
-    units="TWh/Year",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -243,8 +243,8 @@ def pe_real_generation_res_elec():
         "fe_demand_gas_elec_plants_twh": 1,
         "fe_demand_oil_elec_plants_twh": 1,
         "fe_nuclear_elec_generation_twh": 1,
-        "fes_elec_fossil_fuel_chp_plants_ej": 1,
         "ej_per_twh": 1,
+        "fes_elec_fossil_fuel_chp_plants_ej": 1,
     },
 )
 def real_fe_demand_nre():
@@ -253,7 +253,13 @@ def real_fe_demand_nre():
         + fe_demand_gas_elec_plants_twh()
         + fe_demand_oil_elec_plants_twh()
         + fe_nuclear_elec_generation_twh()
-        + fes_elec_fossil_fuel_chp_plants_ej() / ej_per_twh()
+        + sum(
+            fes_elec_fossil_fuel_chp_plants_ej().rename(
+                {np.str_("fossil fuels"): "fossil fuels!"}
+            ),
+            dim=["fossil fuels!"],
+        )
+        / ej_per_twh()
     )
 
 
@@ -291,20 +297,20 @@ def share_elec_demand_covered_by_res():
 
 
 @component.add(
-    name="Total FE Elec demand after priorities TWh",
-    units="TWh",
+    name="Total FE Elec demand after priorities",
+    units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "total_fe_elec_demand_twh": 1,
-        "fes_elec_from_res_with_priority_twh": 1,
-        "fes_elec_from_waste_twh": 1,
+        "fes_elec_from_res_with_priority": 1,
+        "fes_elec_from_waste": 1,
     },
 )
-def total_fe_elec_demand_after_priorities_twh():
+def total_fe_elec_demand_after_priorities():
     return np.maximum(
         total_fe_elec_demand_twh()
-        - fes_elec_from_res_with_priority_twh()
-        - fes_elec_from_waste_twh(),
+        - fes_elec_from_res_with_priority()
+        - fes_elec_from_waste(),
         0,
     )

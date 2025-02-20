@@ -1,12 +1,12 @@
 """
-Module final_energy_abundances
-Translated using PySD version 3.2.0
+Module energy.availability.final_energy_abundances
+Translated using PySD version 3.14.0
 """
-
 
 @component.add(
     name="Abundance final fuels",
-    subscripts=["final sources"],
+    units="Dmnl",
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -19,7 +19,9 @@ Translated using PySD version 3.2.0
 )
 def abundance_final_fuels():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan,
+        {"final sources": _subscript_dict["final sources"]},
+        [np.str_("final sources")],
     )
     value.loc[["liquids"]] = abundance_liquids()
     value.loc[["gases"]] = abundance_gases()
@@ -31,7 +33,7 @@ def abundance_final_fuels():
 
 @component.add(
     name="energy scarcity forgetting time",
-    units="Year",
+    units="year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_energy_scarcity_forgetting_time"},
@@ -45,7 +47,7 @@ def energy_scarcity_forgetting_time():
 
 _ext_constant_energy_scarcity_forgetting_time = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "energy_scarcity_forgetting_time",
     {},
     _root,
@@ -56,7 +58,7 @@ _ext_constant_energy_scarcity_forgetting_time = ExtConstant(
 
 @component.add(
     name="energy scarcity forgetting time H",
-    units="Year",
+    units="year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_energy_scarcity_forgetting_time_h"},
@@ -70,7 +72,7 @@ def energy_scarcity_forgetting_time_h():
 
 _ext_constant_energy_scarcity_forgetting_time_h = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "energy_scarcity_forgetting_time_H",
     {},
     _root,
@@ -81,14 +83,15 @@ _ext_constant_energy_scarcity_forgetting_time_h = ExtConstant(
 
 @component.add(
     name="increase in perception FE scarcity",
-    units="Dmnl",
-    subscripts=["final sources"],
+    units="Dmnl/year",
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "scarcity_final_fuels": 1,
         "sensitivity_to_scarcity": 1,
         "perception_of_final_energy_scarcity": 1,
+        "nvs_1_year": 1,
     },
 )
 def increase_in_perception_fe_scarcity():
@@ -99,19 +102,21 @@ def increase_in_perception_fe_scarcity():
         scarcity_final_fuels()
         * sensitivity_to_scarcity()
         * (1 - perception_of_final_energy_scarcity())
+        / nvs_1_year()
     )
 
 
 @component.add(
     name="increase in perception FE scarcity H",
-    units="Dmnl",
-    subscripts=["final sources"],
+    units="1/year",
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "scarcity_final_fuels_h": 1,
         "sensitivity_to_scarcity_h": 1,
         "perception_of_final_energy_scarcity_h": 1,
+        "nvs_1_year": 1,
     },
 )
 def increase_in_perception_fe_scarcity_h():
@@ -122,13 +127,14 @@ def increase_in_perception_fe_scarcity_h():
         scarcity_final_fuels_h()
         * sensitivity_to_scarcity_h()
         * (1 - perception_of_final_energy_scarcity_h())
+        / nvs_1_year()
     )
 
 
 @component.add(
     name="perception of final energy scarcity",
     units="Dmnl",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_perception_of_final_energy_scarcity": 1},
@@ -162,7 +168,7 @@ _integ_perception_of_final_energy_scarcity = Integ(
 @component.add(
     name="perception of final energy scarcity H",
     units="Dmnl",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_perception_of_final_energy_scarcity_h": 1},
@@ -194,9 +200,38 @@ _integ_perception_of_final_energy_scarcity_h = Integ(
 
 
 @component.add(
+    name='"perception of inter-fuel final energy scarcities"',
+    units="Dmnl",
+    subscripts=[np.str_("final sources"), np.str_("final sources1")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"sensitivity_to_scarcity": 1, "perception_of_final_energy_scarcity": 2},
+)
+def perception_of_interfuel_final_energy_scarcities():
+    """
+    Perception of economic sectors of final energy scarcity between fuels. Matrix 5x5. This perception drives the fuel replacement and efficiency improvement.
+    """
+    return if_then_else(
+        sensitivity_to_scarcity() == 0,
+        lambda: xr.DataArray(
+            0,
+            {
+                "final sources1": _subscript_dict["final sources1"],
+                "final sources": _subscript_dict["final sources"],
+            },
+            ["final sources1", "final sources"],
+        ),
+        lambda: perception_of_final_energy_scarcity().rename(
+            {np.str_("final sources"): "final sources1"}
+        )
+        - perception_of_final_energy_scarcity(),
+    ).transpose("final sources", "final sources1")
+
+
+@component.add(
     name='"perception of inter-fuel final energy scarcities H"',
     units="Dmnl",
-    subscripts=["final sources", "final sources1"],
+    subscripts=[np.str_("final sources"), np.str_("final sources1")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -219,45 +254,16 @@ def perception_of_interfuel_final_energy_scarcities_h():
             ["final sources1", "final sources"],
         ),
         lambda: perception_of_final_energy_scarcity_h().rename(
-            {"final sources": "final sources1"}
+            {np.str_("final sources"): "final sources1"}
         )
         - perception_of_final_energy_scarcity_h(),
     ).transpose("final sources", "final sources1")
 
 
 @component.add(
-    name='"perception of inter-fuel final energy scarcities"',
-    units="Dmnl",
-    subscripts=["final sources", "final sources1"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"sensitivity_to_scarcity": 1, "perception_of_final_energy_scarcity": 2},
-)
-def perception_of_interfuel_final_energy_scarcities():
-    """
-    Perception of economic sectors of final energy scarcity between fuels. Matrix 5x5. This perception drives the fuel replacement and efficiency improvement.
-    """
-    return if_then_else(
-        sensitivity_to_scarcity() == 0,
-        lambda: xr.DataArray(
-            0,
-            {
-                "final sources1": _subscript_dict["final sources1"],
-                "final sources": _subscript_dict["final sources"],
-            },
-            ["final sources1", "final sources"],
-        ),
-        lambda: perception_of_final_energy_scarcity().rename(
-            {"final sources": "final sources1"}
-        )
-        - perception_of_final_energy_scarcity(),
-    ).transpose("final sources", "final sources1")
-
-
-@component.add(
     name="reduction in perception FE scarcity",
-    units="Dmnl",
-    subscripts=["final sources"],
+    units="Dmnl/year",
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -274,8 +280,8 @@ def reduction_in_perception_fe_scarcity():
 
 @component.add(
     name="reduction in perception FE scarcity H",
-    units="Dmnl",
-    subscripts=["final sources"],
+    units="1/year",
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -293,7 +299,7 @@ def reduction_in_perception_fe_scarcity_h():
 @component.add(
     name="scarcity final fuels",
     units="Dmnl",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"abundance_final_fuels": 1},
@@ -307,7 +313,8 @@ def scarcity_final_fuels():
 
 @component.add(
     name="scarcity final fuels counter",
-    subscripts=["final sources"],
+    units="year",
+    subscripts=[np.str_("final sources")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_scarcity_final_fuels_counter": 1},
@@ -341,7 +348,8 @@ _integ_scarcity_final_fuels_counter = Integ(
 
 @component.add(
     name="scarcity final fuels flags",
-    subscripts=["final sources"],
+    units="Dmnl",
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"abundance_final_fuels": 1},
@@ -361,7 +369,7 @@ def scarcity_final_fuels_flags():
 @component.add(
     name="scarcity final fuels H",
     units="Dmnl",
-    subscripts=["final sources"],
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"abundance_final_fuels": 1},
@@ -375,7 +383,8 @@ def scarcity_final_fuels_h():
 
 @component.add(
     name="Scarcity fuels flag",
-    subscripts=["final sources"],
+    units="Dmnl",
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"scarcity_final_fuels_counter": 1},
@@ -397,7 +406,8 @@ def scarcity_fuels_flag():
 
 @component.add(
     name="scarcity reserves counter",
-    subscripts=["materials"],
+    units="year",
+    subscripts=[np.str_("materials")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_scarcity_reserves_counter": 1},
@@ -429,7 +439,8 @@ _integ_scarcity_reserves_counter = Integ(
 
 @component.add(
     name="Scarcity reserves flag",
-    subscripts=["materials"],
+    units="Dmnl",
+    subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"scarcity_reserves_counter": 1},
@@ -451,7 +462,8 @@ def scarcity_reserves_flag():
 
 @component.add(
     name="scarcity resources counter",
-    subscripts=["materials"],
+    units="year",
+    subscripts=[np.str_("materials")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_scarcity_resources_counter": 1},
@@ -483,7 +495,8 @@ _integ_scarcity_resources_counter = Integ(
 
 @component.add(
     name="Scarcity resources flag",
-    subscripts=["materials"],
+    units="Dmnl",
+    subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"scarcity_resources_counter": 1},
@@ -648,7 +661,7 @@ def sensitivity_to_scarcity_option():
 
 _ext_constant_sensitivity_to_scarcity_option = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "sensitivity_to_scarcity_option",
     {},
     _root,
@@ -673,7 +686,7 @@ def sensitivity_to_scarcity_option_h():
 
 _ext_constant_sensitivity_to_scarcity_option_h = ExtConstant(
     "../../scenarios/scen_cat.xlsx",
-    "BAU",
+    "NZP",
     "sensitivity_to_scarcity_option_H",
     {},
     _root,
@@ -684,7 +697,8 @@ _ext_constant_sensitivity_to_scarcity_option_h = ExtConstant(
 
 @component.add(
     name="Year final scarcity final fuels",
-    subscripts=["final sources"],
+    units="year",
+    subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"scarcity_final_fuels_counter": 2, "year_init_scarcity_final_fuels": 1},
@@ -704,7 +718,8 @@ def year_final_scarcity_final_fuels():
 
 @component.add(
     name="Year final scarcity reserves",
-    subscripts=["materials"],
+    units="year",
+    subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"scarcity_reserves_counter": 2, "year_init_scarcity_reserves": 1},
@@ -724,7 +739,8 @@ def year_final_scarcity_reserves():
 
 @component.add(
     name="Year final scarcity resources",
-    subscripts=["materials"],
+    units="year",
+    subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"scarcity_resources_counter": 2, "year_init_scarcity_resources": 1},
@@ -744,14 +760,15 @@ def year_final_scarcity_resources():
 
 @component.add(
     name="Year init scarcity final fuels",
-    subscripts=["final sources"],
+    units="year",
+    subscripts=[np.str_("final sources")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_year_init_scarcity_final_fuels": 1},
     other_deps={
         "_integ_year_init_scarcity_final_fuels": {
             "initial": {},
-            "step": {"scarcity_final_fuels_flags": 1, "time": 1, "time_step": 1},
+            "step": {"scarcity_final_fuels_flags": 1, "time_step": 1, "time": 1},
         }
     },
 )
@@ -783,14 +800,15 @@ _integ_year_init_scarcity_final_fuels = Integ(
 
 @component.add(
     name="Year init scarcity reserves",
-    subscripts=["materials"],
+    units="year",
+    subscripts=[np.str_("materials")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_year_init_scarcity_reserves": 1},
     other_deps={
         "_integ_year_init_scarcity_reserves": {
             "initial": {},
-            "step": {"materials_availability_reserves": 1, "time": 1, "time_step": 1},
+            "step": {"materials_availability_reserves": 1, "time_step": 1, "time": 1},
         }
     },
 )
@@ -820,14 +838,15 @@ _integ_year_init_scarcity_reserves = Integ(
 
 @component.add(
     name="Year init scarcity resources",
-    subscripts=["materials"],
+    units="year",
+    subscripts=[np.str_("materials")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_year_init_scarcity_resources": 1},
     other_deps={
         "_integ_year_init_scarcity_resources": {
             "initial": {},
-            "step": {"materials_availability_resources": 1, "time": 1, "time_step": 1},
+            "step": {"materials_availability_resources": 1, "time_step": 1, "time": 1},
         }
     },
 )

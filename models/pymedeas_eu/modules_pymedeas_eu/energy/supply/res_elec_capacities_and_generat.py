@@ -51,8 +51,8 @@ def cp_baseload_reduction():
     comp_subtype="Normal",
     depends_on={
         "min_cp_baseload_res": 1,
-        "cpini_res_elec": 1,
         "shortage_bioe_for_elec": 1,
+        "cpini_res_elec": 1,
     },
 )
 def cp_res_elec():
@@ -123,7 +123,7 @@ _ext_lookup_curtailment_and_storage_share_variable_res = ExtLookup(
     name="curtailment RES",
     units="Dmnl",
     subscripts=[np.str_("RES elec")],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 4, "curtailment_and_storage_share_variable_res": 4},
 )
@@ -266,8 +266,8 @@ _delayfixed_installed_capacity_res_elec_delayed = DelayFixed(
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
-        "p_power": 2,
         "start_year_p_growth_res_elec": 3,
+        "p_power": 2,
     },
 )
 def installed_capacity_res_elec_policies():
@@ -461,8 +461,8 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "twe_per_twh": 1,
         "installed_capacity_res_elec": 2,
+        "twe_per_twh": 1,
         "real_generation_res_elec_twh": 1,
     },
 )
@@ -500,7 +500,7 @@ def real_generation_res_elec_twh():
     """
     return (
         potential_generation_res_elec_twh()
-        * (1 / (1 + res_elec_tot_overcapacity()))
+        * zidz(1, 1 + res_elec_tot_overcapacity())
         * shortage_bioe_for_elec()
     )
 
@@ -538,8 +538,8 @@ def remaining_potential_res_elec_after_intermitt():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "wear_res_elec": 1,
         "res_elec_tot_overcapacity": 1,
+        "wear_res_elec": 1,
         "shortage_bioe_for_elec": 1,
     },
 )
@@ -619,8 +619,9 @@ def res_elec_tot_overcapacity():
     """
     Overcapacity for each technology RES for electricity taking into account the installed capacity and the real generation.
     """
-    return zidz(
-        potential_tot_generation_res_elec_twh(), fe_real_tot_generation_res_elec()
+    return (
+        zidz(potential_tot_generation_res_elec_twh(), fe_real_tot_generation_res_elec())
+        - 1
     )
 
 
@@ -781,8 +782,8 @@ def total_time_planconstr_res_elec():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "constructed_capacity_res_elec_tw": 1,
         "lifetime_res_elec": 1,
+        "constructed_capacity_res_elec_tw": 1,
     },
 )
 def wear_res_elec():

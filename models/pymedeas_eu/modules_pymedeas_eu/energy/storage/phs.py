@@ -1,10 +1,10 @@
 """
 Module energy.storage.phs
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="Cp PHS",
+    name="Cp_PHS",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -23,7 +23,7 @@ _ext_constant_cp_phs = ExtConstant(
 
 
 @component.add(
-    name="initial instal cap PHS",
+    name="initial_instal_cap_PHS",
     units="TW",
     comp_type="Constant",
     comp_subtype="External",
@@ -48,7 +48,7 @@ _ext_constant_initial_instal_cap_phs = ExtConstant(
 
 
 @component.add(
-    name="Installed capacity PHS",
+    name="Installed_capacity_PHS",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -66,7 +66,7 @@ def installed_capacity_phs():
 
 
 @component.add(
-    name="installed capacity PHS policies",
+    name="installed_capacity_PHS_policies",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -74,8 +74,8 @@ def installed_capacity_phs():
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_phs": 3,
-        "start_year_p_growth_res_elec": 3,
         "p_phs_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def installed_capacity_phs_policies():
@@ -99,7 +99,7 @@ def installed_capacity_phs_policies():
 
 
 @component.add(
-    name="Installed capacity PHS year delayed",
+    name="Installed_capacity_PHS_year_delayed",
     units="TW",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -125,7 +125,7 @@ _delayfixed_installed_capacity_phs_year_delayed = DelayFixed(
 
 
 @component.add(
-    name="max capacity potential PHS",
+    name="max_capacity_potential_PHS",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -139,7 +139,7 @@ def max_capacity_potential_phs():
 
 
 @component.add(
-    name="max potential PHS TWe",
+    name="max_potential_PHS_TWe",
     units="TWe",
     comp_type="Constant",
     comp_subtype="External",
@@ -164,7 +164,7 @@ _ext_constant_max_potential_phs_twe = ExtConstant(
 
 
 @component.add(
-    name="max potential PHS TWh",
+    name="max_potential_PHS_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -175,14 +175,14 @@ def max_potential_phs_twh():
 
 
 @component.add(
-    name="new PHS installed",
+    name="new_PHS_installed",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "installed_capacity_phs": 1,
         "installed_capacity_phs_year_delayed": 1,
+        "installed_capacity_phs": 1,
     },
 )
 def new_phs_installed():
@@ -194,7 +194,7 @@ def new_phs_installed():
 
 
 @component.add(
-    name="output PHS over lifetime",
+    name="output_PHS_over_lifetime",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -220,7 +220,7 @@ def output_phs_over_lifetime():
 
 
 @component.add(
-    name="P PHS power",
+    name="P_PHS_power",
     units="TW",
     comp_type="Lookup",
     comp_subtype="External",
@@ -246,7 +246,7 @@ _ext_lookup_p_phs_power = ExtLookup(
 
 
 @component.add(
-    name="PHS capacity under construction",
+    name="PHS_capacity_under_construction",
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -263,24 +263,26 @@ def phs_capacity_under_construction():
 
 
 @component.add(
-    name="PHS overcapacity",
+    name="PHS_overcapacity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"potential_fe_elec_stored_phs": 2, "real_fe_elec_stored_phs_twh": 1},
 )
 def phs_overcapacity():
-    return np.maximum(
-        0,
-        zidz(
-            potential_fe_elec_stored_phs() - real_fe_elec_stored_phs_twh(),
-            potential_fe_elec_stored_phs(),
-        ),
+    return float(
+        np.maximum(
+            0,
+            zidz(
+                potential_fe_elec_stored_phs() - real_fe_elec_stored_phs_twh(),
+                potential_fe_elec_stored_phs(),
+            ),
+        )
     )
 
 
 @component.add(
-    name="PHS planned capacity",
+    name="PHS_planned_capacity",
     units="TW",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -307,7 +309,7 @@ _integ_phs_planned_capacity = Integ(
 
 
 @component.add(
-    name="potential FE elec stored PHS",
+    name="potential_FE_elec_stored_PHS",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -318,7 +320,7 @@ def potential_fe_elec_stored_phs():
 
 
 @component.add(
-    name="real FE elec stored PHS TWh",
+    name="real_FE_elec_stored_PHS_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -328,11 +330,11 @@ def real_fe_elec_stored_phs_twh():
     """
     Electricity stored in pumped hydro storage plants. It does not add up to the electricity generation of other sources since this electricity has already been accounted for! (stored).
     """
-    return np.minimum(max_potential_phs_twh(), potential_fe_elec_stored_phs())
+    return float(np.minimum(max_potential_phs_twh(), potential_fe_elec_stored_phs()))
 
 
 @component.add(
-    name="renewed capacity PHS TW",
+    name="renewed_capacity_PHS_TW",
     units="TW",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -356,7 +358,7 @@ _integ_renewed_capacity_phs_tw = Integ(
 
 
 @component.add(
-    name="replacement capacity PHS",
+    name="replacement_capacity_PHS",
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -372,7 +374,7 @@ def replacement_capacity_phs():
 
 
 @component.add(
-    name="table hist capacity PHS",
+    name="table_hist_capacity_PHS",
     units="TW",
     comp_type="Lookup",
     comp_subtype="External",
@@ -398,7 +400,7 @@ _ext_lookup_table_hist_capacity_phs = ExtLookup(
 
 
 @component.add(
-    name="wear PHS",
+    name="wear_PHS",
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

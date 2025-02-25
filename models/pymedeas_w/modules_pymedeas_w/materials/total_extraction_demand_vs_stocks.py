@@ -1,12 +1,12 @@
 """
 Module materials.total_extraction_demand_vs_stocks
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="cum materials to extract for alt techn from 2015",
+    name="cum_materials_to_extract_for_alt_techn_from_2015",
     units="Mt",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -25,9 +25,9 @@ def cum_materials_to_extract_for_alt_techn_from_2015():
 
 
 @component.add(
-    name="current mineral reserves Mt",
+    name="current_mineral_reserves_Mt",
     units="Mt",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_current_mineral_reserves_mt"},
@@ -40,7 +40,7 @@ def current_mineral_reserves_mt():
 
 
 _ext_constant_current_mineral_reserves_mt = ExtConstant(
-    "../materials.xlsx",
+    r"../materials.xlsx",
     "Global",
     "current_mineral_reserves_mt*",
     {"materials": _subscript_dict["materials"]},
@@ -51,9 +51,9 @@ _ext_constant_current_mineral_reserves_mt = ExtConstant(
 
 
 @component.add(
-    name="current mineral resources Mt",
+    name="current_mineral_resources_Mt",
     units="Mt",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_current_mineral_resources_mt"},
@@ -66,7 +66,7 @@ def current_mineral_resources_mt():
 
 
 _ext_constant_current_mineral_resources_mt = ExtConstant(
-    "../materials.xlsx",
+    r"../materials.xlsx",
     "Global",
     "current_mineral_resources_mt*",
     {"materials": _subscript_dict["materials"]},
@@ -77,9 +77,9 @@ _ext_constant_current_mineral_resources_mt = ExtConstant(
 
 
 @component.add(
-    name='"materials availability (reserves)"',
+    name='"materials_availability_(reserves)"',
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"share_tot_cum_dem_vs_reserves_materials": 1},
@@ -100,9 +100,9 @@ def materials_availability_reserves():
 
 
 @component.add(
-    name='"materials availability (resources)"',
+    name='"materials_availability_(resources)"',
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"share_tot_cum_dem_vs_resources_materials": 1},
@@ -123,9 +123,9 @@ def materials_availability_resources():
 
 
 @component.add(
-    name="share cum dem materials to extract alt techn vs total",
+    name="share_cum_dem_materials_to_extract_alt_techn_vs_total",
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -148,9 +148,9 @@ def share_cum_dem_materials_to_extract_alt_techn_vs_total():
 
 
 @component.add(
-    name="share materials cum demand to extract vs reserves for RES elec",
+    name="share_materials_cum_demand_to_extract_vs_reserves_for_RES_elec",
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -173,9 +173,9 @@ def share_materials_cum_demand_to_extract_vs_reserves_for_res_elec():
 
 
 @component.add(
-    name="share materials cum demand to extract vs resources for RES elec",
+    name="share_materials_cum_demand_to_extract_vs_resources_for_RES_elec",
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -198,9 +198,9 @@ def share_materials_cum_demand_to_extract_vs_resources_for_res_elec():
 
 
 @component.add(
-    name="share other cumulative demand to extract vs reserves materials",
+    name="share_other_cumulative_demand_to_extract_vs_reserves_materials",
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -223,9 +223,9 @@ def share_other_cumulative_demand_to_extract_vs_reserves_materials():
 
 
 @component.add(
-    name="share other cumulative demand to extract vs resources materials",
+    name="share_other_cumulative_demand_to_extract_vs_resources_materials",
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -248,9 +248,9 @@ def share_other_cumulative_demand_to_extract_vs_resources_materials():
 
 
 @component.add(
-    name="share tot cum dem vs reserves materials",
+    name="share_tot_cum_dem_vs_reserves_materials",
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -273,9 +273,9 @@ def share_tot_cum_dem_vs_reserves_materials():
 
 
 @component.add(
-    name="share tot cum dem vs resources materials",
+    name="share_tot_cum_dem_vs_resources_materials",
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -298,9 +298,9 @@ def share_tot_cum_dem_vs_resources_materials():
 
 
 @component.add(
-    name="total cumulative demand materials to extract from 2015",
+    name="total_cumulative_demand_materials_to_extract_from_2015",
     units="Mt",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -319,9 +319,9 @@ def total_cumulative_demand_materials_to_extract_from_2015():
 
 
 @component.add(
-    name="Total materials to extract Mt",
+    name="Total_materials_to_extract_Mt",
     units="Mt/year",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={

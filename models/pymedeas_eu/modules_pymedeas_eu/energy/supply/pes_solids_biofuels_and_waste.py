@@ -1,10 +1,10 @@
 """
 Module energy.supply.pes_solids_biofuels_and_waste
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="Losses in charcoal plants",
+    name="Losses_in_charcoal_plants",
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
@@ -35,7 +35,20 @@ _ext_data_losses_in_charcoal_plants = ExtData(
 
 
 @component.add(
-    name="PES solids bioE EJ",
+    name="PE_solidbioE_for_heat_and_electricity",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pe_real_generation_res_elec": 1, "pes_res_for_heat_by_techn": 1},
+)
+def pe_solidbioe_for_heat_and_electricity():
+    return float(pe_real_generation_res_elec().loc["solid_bioE_elec"]) + float(
+        pes_res_for_heat_by_techn().loc["solid_bioE_heat"]
+    )
+
+
+@component.add(
+    name="PES_solids_bioE_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -53,15 +66,15 @@ def pes_solids_bioe_ej():
     """
     return (
         losses_in_charcoal_plants()
-        + float(pe_real_generation_res_elec().loc["solid bioE elec"])
+        + float(pe_real_generation_res_elec().loc["solid_bioE_elec"])
         + pe_traditional_biomass_ej_delayed_1yr()
         + modern_solids_bioe_demand_households()
-        + float(pes_res_for_heat_by_techn().loc["solid bioE heat"])
+        + float(pes_res_for_heat_by_techn().loc["solid_bioE_heat"])
     )
 
 
 @component.add(
-    name='"PES solids bioE & waste"',
+    name='"PES_solids_bioE_&_waste"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -75,7 +88,7 @@ def pes_solids_bioe_waste():
 
 
 @component.add(
-    name="solid bioE emissions relevant EJ",
+    name="solid_bioE_emissions_relevant_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -90,7 +103,7 @@ def solid_bioe_emissions_relevant_ej():
     Solids bioenergy primary energy supply for estimating the CO2 emissions (we assume the CO2 emissions from traditional biomass are already included in land-use change emissions).
     """
     return (
-        float(pe_real_generation_res_elec().loc["solid bioE elec"])
-        + float(pes_res_for_heat_by_techn().loc["solid bioE heat"])
+        float(pe_real_generation_res_elec().loc["solid_bioE_elec"])
+        + float(pes_res_for_heat_by_techn().loc["solid_bioE_heat"])
         + modern_solids_bioe_demand_households()
     )

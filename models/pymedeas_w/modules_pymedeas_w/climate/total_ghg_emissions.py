@@ -1,10 +1,10 @@
 """
 Module climate.total_ghg_emissions
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="correction factor all GHGs",
+    name="correction_factor_all_GHGs",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -17,7 +17,7 @@ def correction_factor_all_ghgs():
 
 
 @component.add(
-    name="Cumulative Ce GHG emissions",
+    name="Cumulative_Ce_GHG_emissions",
     units="GtC",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -39,7 +39,7 @@ _integ_cumulative_ce_ghg_emissions = Integ(
 
 
 @component.add(
-    name="GWP 100 years CH4",
+    name="GWP_100_years_CH4",
     units="GTCO2e/MtCH4",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -49,7 +49,7 @@ def gwp_100_years_ch4():
 
 
 @component.add(
-    name="Total Ce all GHG",
+    name="Total_Ce_all_GHG",
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -64,7 +64,7 @@ def total_ce_all_ghg():
 
 
 @component.add(
-    name="Total CO2e all GHG",
+    name="Total_CO2e_all_GHG",
     units="GTCO2e/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -75,17 +75,18 @@ def total_co2e_all_ghg():
 
 
 @component.add(
-    name='"Total CO2e [GWP=100 years]"',
+    name='"Total_CO2e_[GWP=100_years]"',
     units="GTCO2e/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "total_ch4_emissions_mtch4": 1,
         "gwp_100_years_ch4": 1,
-        "total_co2_emissions_gtco2": 1,
+        "total_co2_emissions_gtco2_after_capture": 1,
     },
 )
 def total_co2e_gwp100_years():
     return (
-        total_ch4_emissions_mtch4() * gwp_100_years_ch4() + total_co2_emissions_gtco2()
+        total_ch4_emissions_mtch4() * gwp_100_years_ch4()
+        + total_co2_emissions_gtco2_after_capture()
     )

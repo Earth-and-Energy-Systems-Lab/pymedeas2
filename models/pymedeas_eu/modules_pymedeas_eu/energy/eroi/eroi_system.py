@@ -1,10 +1,10 @@
 """
 Module energy.eroi.eroi_system
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="EROIst system",
+    name="EROIst_system",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -14,18 +14,18 @@ def eroist_system():
     """
     EROI standard of the system.
     """
-    return np.maximum(0, real_tfec() / feist_system())
+    return float(np.maximum(0, real_tfec() / feist_system()))
 
 
 @component.add(
-    name="FE tot generation all RES elec EJ",
+    name="FE_tot_generation_all_RES_elec_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "fe_tot_generation_all_res_elec_twh": 1,
         "ej_per_twh": 1,
-        "share_transmdistr_elec_losses": 1,
+        "share_trans_and_dist_losses": 1,
     },
 )
 def fe_tot_generation_all_res_elec_ej():
@@ -35,19 +35,19 @@ def fe_tot_generation_all_res_elec_ej():
     return (
         fe_tot_generation_all_res_elec_twh()
         * ej_per_twh()
-        * (1 - share_transmdistr_elec_losses())
+        * (1 - share_trans_and_dist_losses())
     )
 
 
 @component.add(
-    name="FEIst system",
+    name="FEIst_system",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_e_industry_ownuse_vs_tfec_in_2015": 1,
-        "fe_tot_generation_all_res_elec_ej": 1,
         "real_tfec": 1,
+        "fe_tot_generation_all_res_elec_ej": 1,
         "total_dyn_fei_res": 1,
     },
 )
@@ -63,7 +63,7 @@ def feist_system():
 
 
 @component.add(
-    name='"Historic energy industry own-use"',
+    name='"Historic_energy_industry_own-use"',
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -92,14 +92,14 @@ _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
 
 
 @component.add(
-    name='"Historic share E industry own-use vs TFEC"',
+    name='"Historic_share_E_industry_own-use_vs_TFEC"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "fe_tot_generation_all_res_elec_ej": 1,
         "real_tfec": 1,
+        "fe_tot_generation_all_res_elec_ej": 1,
         "historic_energy_industry_ownuse": 1,
     },
 )
@@ -116,7 +116,7 @@ def historic_share_e_industry_ownuse_vs_tfec():
 
 
 @component.add(
-    name='"Share E industry own-use vs TFEC in 2015"',
+    name='"Share_E_industry_own-use_vs_TFEC_in_2015"',
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -141,7 +141,7 @@ _sampleiftrue_share_e_industry_ownuse_vs_tfec_in_2015 = SampleIfTrue(
 
 
 @component.add(
-    name="Total dyn FEI RES",
+    name="Total_dyn_FEI_RES",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -157,10 +157,10 @@ def total_dyn_fei_res():
     Total (dynamic) final energy investment for RES.
     """
     return (
-        sum(fei_res_elec_var().rename({"RES elec": "RES elec!"}), dim=["RES elec!"])
+        sum(fei_res_elec_var().rename({"RES_elec": "RES_elec!"}), dim=["RES_elec!"])
         + sum(
-            fei_over_lifetime_res_elec_dispatch().rename({"RES elec": "RES elec!"}),
-            dim=["RES elec!"],
+            fei_over_lifetime_res_elec_dispatch().rename({"RES_elec": "RES_elec!"}),
+            dim=["RES_elec!"],
         )
         + fei_ev_batteries()
         + final_energy_invested_phs()

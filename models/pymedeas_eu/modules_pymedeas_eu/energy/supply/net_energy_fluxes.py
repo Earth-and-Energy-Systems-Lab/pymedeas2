@@ -1,10 +1,10 @@
 """
 Module energy.supply.net_energy_fluxes
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="historic coal imports",
+    name="historic_coal_imports",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -30,7 +30,7 @@ _ext_lookup_historic_coal_imports = ExtLookup(
 
 
 @component.add(
-    name="historic gas imports",
+    name="historic_gas_imports",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -56,7 +56,7 @@ _ext_lookup_historic_gas_imports = ExtLookup(
 
 
 @component.add(
-    name="historic oil imports",
+    name="historic_oil_imports",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -82,7 +82,7 @@ _ext_lookup_historic_oil_imports = ExtLookup(
 
 
 @component.add(
-    name="last historical year",
+    name="last_historical_year",
     units="year",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -92,7 +92,7 @@ def last_historical_year():
 
 
 @component.add(
-    name="maximum coal available in EU",
+    name="maximum_coal_available_in_EU",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -106,7 +106,7 @@ def maximum_coal_available_in_eu():
 
 
 @component.add(
-    name="maximum gas available in EU",
+    name="maximum_gas_available_in_EU",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -117,7 +117,7 @@ def maximum_gas_available_in_eu():
 
 
 @component.add(
-    name="maximum oil available in EU",
+    name="maximum_oil_available_in_EU",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -128,34 +128,39 @@ def maximum_oil_available_in_eu():
 
 
 @component.add(
-    name="net coal flux EU",
+    name="net_coal_flux_EU",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ped_nre_fs": 1,
         "projected_net_coal_flux_eu": 1,
-        "historic_coal_imports": 1,
-        "maximum_coal_available_in_eu": 1,
         "last_historical_year": 1,
         "time": 3,
+        "historic_coal_imports": 1,
+        "maximum_coal_available_in_eu": 1,
     },
 )
 def net_coal_flux_eu():
-    return np.minimum(
-        float(ped_nre_fs().loc["solids"]),
-        if_then_else(
-            time() <= last_historical_year(),
-            lambda: historic_coal_imports(time()),
-            lambda: np.minimum(
-                projected_net_coal_flux_eu(time()), maximum_coal_available_in_eu()
+    return float(
+        np.minimum(
+            float(ped_nre_fs().loc["solids"]),
+            if_then_else(
+                time() <= last_historical_year(),
+                lambda: historic_coal_imports(time()),
+                lambda: float(
+                    np.minimum(
+                        projected_net_coal_flux_eu(time()),
+                        maximum_coal_available_in_eu(),
+                    )
+                ),
             ),
-        ),
+        )
     )
 
 
 @component.add(
-    name="net gas flux EU",
+    name="net_gas_flux_EU",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -164,52 +169,60 @@ def net_coal_flux_eu():
         "maximum_gas_available_in_eu": 1,
         "last_historical_year": 1,
         "time": 3,
-        "historic_gas_imports": 1,
         "projected_net_gas_flux_eu": 1,
+        "historic_gas_imports": 1,
     },
 )
 def net_gas_flux_eu():
-    return np.minimum(
-        float(ped_nre_fs().loc["gases"]),
-        if_then_else(
-            time() <= last_historical_year(),
-            lambda: historic_gas_imports(time()),
-            lambda: np.minimum(
-                projected_net_gas_flux_eu(time()), maximum_gas_available_in_eu()
+    return float(
+        np.minimum(
+            float(ped_nre_fs().loc["gases"]),
+            if_then_else(
+                time() <= last_historical_year(),
+                lambda: historic_gas_imports(time()),
+                lambda: float(
+                    np.minimum(
+                        projected_net_gas_flux_eu(time()), maximum_gas_available_in_eu()
+                    )
+                ),
             ),
-        ),
+        )
     )
 
 
 @component.add(
-    name="net oil flux EU",
+    name="net_oil_flux_EU",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ped_nre_fs": 1,
-        "projected_net_oil_flux_eu": 1,
-        "maximum_oil_available_in_eu": 1,
+        "historic_oil_imports": 1,
         "last_historical_year": 1,
         "time": 3,
-        "historic_oil_imports": 1,
+        "maximum_oil_available_in_eu": 1,
+        "projected_net_oil_flux_eu": 1,
     },
 )
 def net_oil_flux_eu():
-    return np.minimum(
-        float(ped_nre_fs().loc["liquids"]),
-        if_then_else(
-            time() <= last_historical_year(),
-            lambda: historic_oil_imports(time()),
-            lambda: np.minimum(
-                projected_net_oil_flux_eu(time()), maximum_oil_available_in_eu()
+    return float(
+        np.minimum(
+            float(ped_nre_fs().loc["liquids"]),
+            if_then_else(
+                time() <= last_historical_year(),
+                lambda: historic_oil_imports(time()),
+                lambda: float(
+                    np.minimum(
+                        projected_net_oil_flux_eu(time()), maximum_oil_available_in_eu()
+                    )
+                ),
             ),
-        ),
+        )
     )
 
 
 @component.add(
-    name="projected net coal flux EU",
+    name="projected_net_coal_flux_EU",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -235,7 +248,7 @@ _ext_lookup_projected_net_coal_flux_eu = ExtLookup(
 
 
 @component.add(
-    name="projected net gas flux EU",
+    name="projected_net_gas_flux_EU",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -261,7 +274,7 @@ _ext_lookup_projected_net_gas_flux_eu = ExtLookup(
 
 
 @component.add(
-    name="projected net oil flux EU",
+    name="projected_net_oil_flux_EU",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",

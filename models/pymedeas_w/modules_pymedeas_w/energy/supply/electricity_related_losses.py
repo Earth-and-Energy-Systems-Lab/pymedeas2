@@ -1,10 +1,10 @@
 """
 Module energy.supply.electricity_related_losses
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="Elec gen related losses EJ",
+    name="Elec_gen_related_losses_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -18,7 +18,7 @@ def elec_gen_related_losses_ej():
 
 
 @component.add(
-    name="Gen losses vs PE for elec",
+    name="Gen_losses_vs_PE_for_elec",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -35,7 +35,7 @@ def gen_losses_vs_pe_for_elec():
 
 
 @component.add(
-    name="PE losses biogas for elec",
+    name="PE_losses_biogas_for_elec",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -46,7 +46,7 @@ def pe_losses_biogas_for_elec():
 
 
 @component.add(
-    name="PE losses coal for Elec EJ",
+    name="PE_losses_coal_for_Elec_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -68,7 +68,7 @@ def pe_losses_coal_for_elec_ej():
 
 
 @component.add(
-    name="PE losses conv gas for Elec EJ",
+    name="PE_losses_conv_gas_for_Elec_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -90,7 +90,7 @@ def pe_losses_conv_gas_for_elec_ej():
 
 
 @component.add(
-    name="PE losses NRE elec generation",
+    name="PE_losses_NRE_elec_generation",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -116,7 +116,7 @@ def pe_losses_nre_elec_generation():
 
 
 @component.add(
-    name="PE losses oil for Elec EJ",
+    name="PE_losses_oil_for_Elec_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -138,7 +138,7 @@ def pe_losses_oil_for_elec_ej():
 
 
 @component.add(
-    name="PE losses RES for elec",
+    name="PE_losses_RES_for_elec",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -157,7 +157,7 @@ def pe_losses_res_for_elec():
 
 
 @component.add(
-    name="PE losses uncon gas for Elec EJ",
+    name="PE_losses_uncon_gas_for_Elec_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -179,7 +179,7 @@ def pe_losses_uncon_gas_for_elec_ej():
 
 
 @component.add(
-    name="PE losses uranium for Elec EJ",
+    name="PE_losses_uranium_for_Elec_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -193,7 +193,7 @@ def pe_losses_uranium_for_elec_ej():
 
 
 @component.add(
-    name="PE losses waste for elec",
+    name="PE_losses_waste_for_elec",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -204,7 +204,7 @@ def pe_losses_waste_for_elec():
 
 
 @component.add(
-    name="real PED intensity of Electricity",
+    name="real_PED_intensity_of_Electricity",
     units="EJ/Tdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -225,7 +225,7 @@ def real_ped_intensity_of_electricity():
 
 
 @component.add(
-    name="Total electrical losses EJ",
+    name="Total_electrical_losses_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -242,7 +242,7 @@ def total_electrical_losses_ej():
 
 
 @component.add(
-    name="Total PE for electricity consumption EJ",
+    name="Total_PE_for_electricity_consumption_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

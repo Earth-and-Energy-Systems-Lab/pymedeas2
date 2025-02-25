@@ -1,12 +1,12 @@
 """
 Module climate.emissions_per_sector
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="CH4 emissions households and sectors",
+    name="CH4_emissions_households_and_sectors",
     units="MtCH4/year",
-    subscripts=["final sources", "SECTORS and HOUSEHOLDS"],
+    subscripts=["final_sources", "SECTORS_and_HOUSEHOLDS"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -22,9 +22,9 @@ def ch4_emissions_households_and_sectors():
 
 
 @component.add(
-    name="CO2 emissions from year",
+    name="CO2_emissions_from_year",
     units="GtCO2/year",
-    subscripts=["SECTORS and HOUSEHOLDS"],
+    subscripts=["SECTORS_and_HOUSEHOLDS"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 1, "year_co2": 1, "co2_emissions_households_and_sectors": 1},
@@ -34,17 +34,17 @@ def co2_emissions_from_year():
         time() < year_co2(),
         lambda: xr.DataArray(
             0,
-            {"SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"]},
-            ["SECTORS and HOUSEHOLDS"],
+            {"SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"]},
+            ["SECTORS_and_HOUSEHOLDS"],
         ),
         lambda: co2_emissions_households_and_sectors(),
     )
 
 
 @component.add(
-    name="CO2 emissions households and sectors",
+    name="CO2_emissions_households_and_sectors",
     units="GtCO2/year",
-    subscripts=["SECTORS and HOUSEHOLDS"],
+    subscripts=["SECTORS_and_HOUSEHOLDS"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -60,9 +60,9 @@ def co2_emissions_households_and_sectors():
     return (
         sum(
             co2_emissions_households_and_sectors_before_ccs().rename(
-                {"final sources": "final sources!"}
+                {"final_sources": "final_sources!"}
             ),
-            dim=["final sources!"],
+            dim=["final_sources!"],
         )
         - co2_captured_by_sector_energy_related()
         - dac_co2_captured_energy_per_sector()
@@ -70,9 +70,9 @@ def co2_emissions_households_and_sectors():
 
 
 @component.add(
-    name="CO2 emissions households and sectors before ccs",
+    name="CO2_emissions_households_and_sectors_before_ccs",
     units="GtCO2/year",
-    subscripts=["final sources", "SECTORS and HOUSEHOLDS"],
+    subscripts=["final_sources", "SECTORS_and_HOUSEHOLDS"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -91,9 +91,9 @@ def co2_emissions_households_and_sectors_before_ccs():
 
 
 @component.add(
-    name="cumulated CO2 emissions",
+    name="cumulated_CO2_emissions",
     units="GtCO2",
-    subscripts=["SECTORS and HOUSEHOLDS"],
+    subscripts=["SECTORS_and_HOUSEHOLDS"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_cumulated_co2_emissions": 1},
@@ -112,17 +112,17 @@ _integ_cumulated_co2_emissions = Integ(
     lambda: co2_emissions_from_year(),
     lambda: xr.DataArray(
         0,
-        {"SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"]},
-        ["SECTORS and HOUSEHOLDS"],
+        {"SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"]},
+        ["SECTORS_and_HOUSEHOLDS"],
     ),
     "_integ_cumulated_co2_emissions",
 )
 
 
 @component.add(
-    name="energy consumption from households and sectors",
+    name="energy_consumption_from_households_and_sectors",
     units="EJ/year",
-    subscripts=["final sources", "SECTORS and HOUSEHOLDS"],
+    subscripts=["final_sources", "SECTORS_and_HOUSEHOLDS"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -134,14 +134,14 @@ def energy_consumption_from_households_and_sectors():
     value = xr.DataArray(
         np.nan,
         {
-            "final sources": _subscript_dict["final sources"],
-            "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+            "final_sources": _subscript_dict["final_sources"],
+            "SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"],
         },
-        ["final sources", "SECTORS and HOUSEHOLDS"],
+        ["final_sources", "SECTORS_and_HOUSEHOLDS"],
     )
     value.loc[:, ["Households"]] = (
         households_final_energy_demand()
-        .expand_dims({"SECTORS and HOUSEHOLDS": ["Households"]}, 1)
+        .expand_dims({"SECTORS_and_HOUSEHOLDS": ["Households"]}, 1)
         .values
     )
     value.loc[:, _subscript_dict["sectors"]] = (
@@ -151,9 +151,9 @@ def energy_consumption_from_households_and_sectors():
 
 
 @component.add(
-    name="share energy consumption from households and sectors",
+    name="share_energy_consumption_from_households_and_sectors",
     units="Dmnl",
-    subscripts=["final sources", "SECTORS and HOUSEHOLDS"],
+    subscripts=["final_sources", "SECTORS_and_HOUSEHOLDS"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_consumption_from_households_and_sectors": 2},
@@ -163,17 +163,17 @@ def share_energy_consumption_from_households_and_sectors():
         energy_consumption_from_households_and_sectors(),
         sum(
             energy_consumption_from_households_and_sectors().rename(
-                {"SECTORS and HOUSEHOLDS": "SECTORS and HOUSEHOLDS!"}
+                {"SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!"}
             ),
-            dim=["SECTORS and HOUSEHOLDS!"],
+            dim=["SECTORS_and_HOUSEHOLDS!"],
         ).expand_dims(
-            {"SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"]}, 1
+            {"SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"]}, 1
         ),
     )
 
 
 @component.add(
-    name="Total CO2 emissions after LULUCF",
+    name="Total_CO2_emissions_after_LULUCF",
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -192,7 +192,7 @@ def total_co2_emissions_after_lulucf():
 
 
 @component.add(
-    name="Total CO2 emissions GTCO2",
+    name="Total_CO2_emissions_GTCO2",
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -204,14 +204,14 @@ def total_co2_emissions_gtco2():
     """
     return sum(
         co2_emissions_households_and_sectors().rename(
-            {"SECTORS and HOUSEHOLDS": "SECTORS and HOUSEHOLDS!"}
+            {"SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!"}
         ),
-        dim=["SECTORS and HOUSEHOLDS!"],
+        dim=["SECTORS_and_HOUSEHOLDS!"],
     )
 
 
 @component.add(
-    name="Total cumulated CO2 emissions",
+    name="Total_cumulated_CO2_emissions",
     units="GtCO2",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -220,14 +220,14 @@ def total_co2_emissions_gtco2():
 def total_cumulated_co2_emissions():
     return sum(
         cumulated_co2_emissions().rename(
-            {"SECTORS and HOUSEHOLDS": "SECTORS and HOUSEHOLDS!"}
+            {"SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!"}
         ),
-        dim=["SECTORS and HOUSEHOLDS!"],
+        dim=["SECTORS_and_HOUSEHOLDS!"],
     )
 
 
 @component.add(
-    name="year co2", units="year", comp_type="Constant", comp_subtype="Normal"
+    name="year_co2", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def year_co2():
     return 1995

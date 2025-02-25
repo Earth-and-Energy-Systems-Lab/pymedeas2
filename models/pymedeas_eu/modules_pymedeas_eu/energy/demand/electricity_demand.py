@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="EJ per TWh", units="EJ/TWh", comp_type="Constant", comp_subtype="Normal"
+    name="EJ_per_TWh", units="EJ/TWh", comp_type="Constant", comp_subtype="Normal"
 )
 def ej_per_twh():
     """
@@ -14,7 +14,7 @@ def ej_per_twh():
 
 
 @component.add(
-    name="Elec exports share",
+    name="Elec_exports_share",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -30,7 +30,7 @@ def elec_exports_share():
 
 
 @component.add(
-    name="Electrical distribution losses EJ",
+    name="Electrical_distribution_losses_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -44,7 +44,7 @@ def electrical_distribution_losses_ej():
 
 
 @component.add(
-    name="Electrical distribution losses TWh",
+    name="Electrical_distribution_losses_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -58,7 +58,7 @@ def electrical_distribution_losses_twh():
 
 
 @component.add(
-    name="FE demand Elec consum TWh",
+    name="FE_demand_Elec_consum_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -72,7 +72,7 @@ def fe_demand_elec_consum_twh():
 
 
 @component.add(
-    name="FE Elec demand exports TWh",
+    name="FE_Elec_demand_exports_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -83,7 +83,7 @@ def fe_elec_demand_exports_twh():
 
 
 @component.add(
-    name="Hist Elec exports share",
+    name="Hist_Elec_exports_share",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -111,7 +111,7 @@ _ext_data_hist_elec_exports_share = ExtData(
 
 
 @component.add(
-    name="P export share",
+    name="P_export_share",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -139,7 +139,7 @@ _ext_data_p_export_share = ExtData(
 
 
 @component.add(
-    name="policy share trans and dist losses",
+    name="policy_share_trans_and_dist_losses",
     units="Dmnl",
     comp_type="Lookup",
     comp_subtype="External",
@@ -165,7 +165,7 @@ _ext_lookup_policy_share_trans_and_dist_losses = ExtLookup(
 
 
 @component.add(
-    name="share trans and dist losses",
+    name="share_trans_and_dist_losses",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -194,7 +194,7 @@ def share_trans_and_dist_losses():
 
 
 @component.add(
-    name='"share transm&distr elec losses initial"',
+    name='"share_transm&distr_elec_losses_initial"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -219,7 +219,7 @@ _ext_constant_share_transmdistr_elec_losses_initial = ExtConstant(
 
 
 @component.add(
-    name="Total FE Elec demand EJ",
+    name="Total_FE_Elec_demand_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -233,7 +233,7 @@ def total_fe_elec_demand_ej():
 
 
 @component.add(
-    name="Total FE Elec demand TWh",
+    name="Total_FE_Elec_demand_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

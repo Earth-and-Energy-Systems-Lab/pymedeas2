@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="Average elec consumption per capita",
+    name="Average_elec_consumption_per_capita",
     units="kWh/(year*people)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -18,7 +18,7 @@ def average_elec_consumption_per_capita():
 
 
 @component.add(
-    name="Average TPES per capita",
+    name="Average_TPES_per_capita",
     units="GJ/(year*people)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -32,7 +32,7 @@ def average_tpes_per_capita():
 
 
 @component.add(
-    name='"Average TPESpc (without trad biomass)"',
+    name='"Average_TPESpc_(without_trad_biomass)"',
     units="GJ/(year*people)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -52,7 +52,7 @@ def average_tpespc_without_trad_biomass():
 
 
 @component.add(
-    name="GJ per EJ", units="GJ/EJ", comp_type="Constant", comp_subtype="Normal"
+    name="GJ_per_EJ", units="GJ/EJ", comp_type="Constant", comp_subtype="Normal"
 )
 def gj_per_ej():
     """
@@ -62,7 +62,7 @@ def gj_per_ej():
 
 
 @component.add(
-    name="kWh per TWh", units="kWh/TWh", comp_type="Constant", comp_subtype="Normal"
+    name="kWh_per_TWh", units="kWh/TWh", comp_type="Constant", comp_subtype="Normal"
 )
 def kwh_per_twh():
     """
@@ -72,7 +72,7 @@ def kwh_per_twh():
 
 
 @component.add(
-    name="Net TFEC",
+    name="Net_TFEC",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -86,7 +86,7 @@ def net_tfec():
 
 
 @component.add(
-    name="Net TFEC per capita",
+    name="Net_TFEC_per_capita",
     units="GJ/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -100,7 +100,7 @@ def net_tfec_per_capita():
 
 
 @component.add(
-    name="Physical energy intensity TPES vs final",
+    name="Physical_energy_intensity_TPES_vs_final",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -114,7 +114,7 @@ def physical_energy_intensity_tpes_vs_final():
 
 
 @component.add(
-    name="Physical energy intensity TPES vs net",
+    name="Physical_energy_intensity_TPES_vs_net",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -128,7 +128,7 @@ def physical_energy_intensity_tpes_vs_net():
 
 
 @component.add(
-    name="Pop not dependent on trad biomass",
+    name="Pop_not_dependent_on_trad_biomass",
     units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -142,14 +142,14 @@ def pop_not_dependent_on_trad_biomass():
 
 
 @component.add(
-    name="share total net energy vs TPES",
+    name="share_total_net_energy_vs_TPES",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "net_tfec": 1,
-        "total_real_nonenergy_use_consumption_ej": 1,
         "tpes_ej": 1,
+        "total_real_nonenergy_use_consumption_ej": 1,
     },
 )
 def share_total_net_energy_vs_tpes():
@@ -160,7 +160,7 @@ def share_total_net_energy_vs_tpes():
 
 
 @component.add(
-    name="TFEC from RES per capita",
+    name="TFEC_from_RES_per_capita",
     units="GJ/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -171,7 +171,7 @@ def tfec_from_res_per_capita():
 
 
 @component.add(
-    name="TFEC per capita",
+    name="TFEC_per_capita",
     units="GJ/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -182,7 +182,7 @@ def tfec_per_capita():
 
 
 @component.add(
-    name="TFEC per capita before heat dem corr",
+    name="TFEC_per_capita_before_heat_dem_corr",
     units="GJ/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -193,7 +193,7 @@ def tfec_per_capita_before_heat_dem_corr():
 
 
 @component.add(
-    name="TFEC RES EJ",
+    name="TFEC_RES_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -219,7 +219,7 @@ def tfec_res_ej():
 
 
 @component.add(
-    name='"TPES (without trad biomass)"',
+    name='"TPES_(without_trad_biomass)"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

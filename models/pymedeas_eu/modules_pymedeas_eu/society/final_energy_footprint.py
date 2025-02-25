@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="Coverage energy rate",
+    name="Coverage_energy_rate",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -18,9 +18,9 @@ def coverage_energy_rate():
 
 
 @component.add(
-    name="Energy embedded in EU exports by sector and fuel",
+    name="Energy_embedded_in_EU_exports_by_sector_and_fuel",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=[np.str_("final_sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -43,9 +43,9 @@ def energy_embedded_in_eu_exports_by_sector_and_fuel():
 
 
 @component.add(
-    name="Energy embedded in EU imports by sector and fuel",
+    name="Energy_embedded_in_EU_imports_by_sector_and_fuel",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=[np.str_("final_sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -68,9 +68,9 @@ def energy_embedded_in_eu_imports_by_sector_and_fuel():
 
 
 @component.add(
-    name="Final energy footprint by fuel",
+    name="Final_energy_footprint_by_fuel",
     units="EJ/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=[np.str_("final_sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -93,9 +93,9 @@ def final_energy_footprint_by_fuel():
 
 
 @component.add(
-    name="Final energy intensity by sector and fuel RoW",
+    name="Final_energy_intensity_by_sector_and_fuel_RoW",
     units="EJ/T$",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=[np.str_("final_sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -118,9 +118,9 @@ def final_energy_intensity_by_sector_and_fuel_row():
 
 
 @component.add(
-    name="Real final energy by sector and fuel RoW",
+    name="Real_final_energy_by_sector_and_fuel_RoW",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=[np.str_("final_sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -139,7 +139,7 @@ def real_final_energy_by_sector_and_fuel_row():
 
 
 @component.add(
-    name="RoW output required for EU28 imports by sector",
+    name="RoW_output_required_for_EU28_imports_by_sector",
     units="Mdollars",
     subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
@@ -158,9 +158,9 @@ def row_output_required_for_eu28_imports_by_sector():
 
 
 @component.add(
-    name="Total energy embedded in EU28 exports",
+    name="Total_energy_embedded_in_EU28_exports",
     units="EJ/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=[np.str_("final_sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_embedded_in_eu_exports_by_sector_and_fuel": 1},
@@ -178,9 +178,9 @@ def total_energy_embedded_in_eu28_exports():
 
 
 @component.add(
-    name="Total energy embedded in EU28 imports",
+    name="Total_energy_embedded_in_EU28_imports",
     units="EJ/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=[np.str_("final_sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_embedded_in_eu_imports_by_sector_and_fuel": 1},
@@ -198,7 +198,7 @@ def total_energy_embedded_in_eu28_imports():
 
 
 @component.add(
-    name="Total final energy footprint",
+    name="Total_final_energy_footprint",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -210,7 +210,7 @@ def total_final_energy_footprint():
     """
     return sum(
         final_energy_footprint_by_fuel().rename(
-            {np.str_("final sources"): "final sources!"}
+            {np.str_("final_sources"): "final_sources!"}
         ),
-        dim=["final sources!"],
+        dim=["final_sources!"],
     )

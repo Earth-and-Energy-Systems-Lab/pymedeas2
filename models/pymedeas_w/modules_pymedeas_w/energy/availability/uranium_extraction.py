@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="abundance uranium",
+    name="abundance_uranium",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -27,7 +27,7 @@ def abundance_uranium():
 
 
 @component.add(
-    name="Cumulated uranium extraction",
+    name="Cumulated_uranium_extraction",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -54,7 +54,7 @@ _integ_cumulated_uranium_extraction = Integ(
 
 
 @component.add(
-    name="cumulated uranium extraction to 1995",
+    name="cumulated_uranium_extraction_to_1995",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -79,7 +79,7 @@ _ext_constant_cumulated_uranium_extraction_to_1995 = ExtConstant(
 
 
 @component.add(
-    name="extraction uranium EJ",
+    name="extraction_uranium_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -93,7 +93,7 @@ def extraction_uranium_ej():
 
 
 @component.add(
-    name="max extraction uranium",
+    name="max_extraction_uranium",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -107,7 +107,7 @@ def max_extraction_uranium():
 
 
 @component.add(
-    name="RURR uranium",
+    name="RURR_uranium",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -134,7 +134,7 @@ _integ_rurr_uranium = Integ(
 
 
 @component.add(
-    name="table max extraction uranium",
+    name="table_max_extraction_uranium",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -160,7 +160,7 @@ _ext_lookup_table_max_extraction_uranium = ExtLookup(
 
 
 @component.add(
-    name="URR uranium",
+    name="URR_uranium",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -174,7 +174,7 @@ def urr_uranium():
 
 
 @component.add(
-    name="URR uranium input",
+    name="URR_uranium_input",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -196,7 +196,7 @@ _ext_constant_urr_uranium_input = ExtConstant(
 
 
 @component.add(
-    name="Year scarcity uranium",
+    name="Year_scarcity_uranium",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

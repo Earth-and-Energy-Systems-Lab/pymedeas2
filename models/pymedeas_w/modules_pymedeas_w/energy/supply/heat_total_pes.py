@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="PES heat RES",
+    name="PES_heat_RES",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -21,18 +21,18 @@ def pes_heat_res():
     return (
         pes_tot_biogas_for_heatcom()
         + sum(
-            pes_res_for_heatcom_by_techn().rename({np.str_("RES heat"): "RES heat!"}),
-            dim=["RES heat!"],
+            pes_res_for_heatcom_by_techn().rename({np.str_("RES_heat"): "RES_heat!"}),
+            dim=["RES_heat!"],
         )
         + sum(
-            pes_res_for_heatnc_by_techn().rename({np.str_("RES heat"): "RES heat!"}),
-            dim=["RES heat!"],
+            pes_res_for_heatnc_by_techn().rename({np.str_("RES_heat"): "RES_heat!"}),
+            dim=["RES_heat!"],
         )
     )
 
 
 @component.add(
-    name="PES NRE heat",
+    name="PES_NRE_heat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -43,7 +43,7 @@ def pes_nre_heat():
 
 
 @component.add(
-    name='"PES NRE Heat-com"',
+    name='"PES_NRE_Heat-com"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -62,7 +62,7 @@ def pes_nre_heatcom():
 
 
 @component.add(
-    name='"PES NRE Heat-nc"',
+    name='"PES_NRE_Heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -81,7 +81,7 @@ def pes_nre_heatnc():
 
 
 @component.add(
-    name="TPES heat",
+    name="TPES_heat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

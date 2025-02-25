@@ -4,12 +4,12 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="historic A Matrix",
+    name="historic_A_Matrix",
     units="Dmnl",
     subscripts=[
-        np.str_("economic years"),
-        np.str_("sectors A matrix"),
-        np.str_("sectors A matrix1"),
+        np.str_("economic_years"),
+        np.str_("sectors_A_matrix"),
+        np.str_("sectors_A_matrix1"),
     ],
     comp_type="Constant",
     comp_subtype="External",
@@ -27,15 +27,15 @@ _ext_constant_historic_a_matrix = ExtConstant(
     "World",
     "historic_A_Matrix_year1995",
     {
-        "economic years": ["year1995"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year1995"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
     _root,
     {
-        "economic years": _subscript_dict["economic years"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": _subscript_dict["economic_years"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
     "_ext_constant_historic_a_matrix",
 )
@@ -45,9 +45,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year1996",
     {
-        "economic years": ["year1996"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year1996"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -56,9 +56,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year1997",
     {
-        "economic years": ["year1997"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year1997"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -67,9 +67,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year1998",
     {
-        "economic years": ["year1998"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year1998"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -78,9 +78,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year1999",
     {
-        "economic years": ["year1999"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year1999"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -89,9 +89,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2000",
     {
-        "economic years": ["year2000"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2000"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -100,9 +100,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2001",
     {
-        "economic years": ["year2001"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2001"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -111,9 +111,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2002",
     {
-        "economic years": ["year2002"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2002"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -122,9 +122,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2003",
     {
-        "economic years": ["year2003"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2003"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -133,9 +133,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2004",
     {
-        "economic years": ["year2004"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2004"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -144,9 +144,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2005",
     {
-        "economic years": ["year2005"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2005"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -155,9 +155,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2006",
     {
-        "economic years": ["year2006"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2006"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -166,9 +166,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2007",
     {
-        "economic years": ["year2007"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2007"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -177,9 +177,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2008",
     {
-        "economic years": ["year2008"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2008"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -188,9 +188,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2009",
     {
-        "economic years": ["year2009"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2009"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -199,9 +199,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2010",
     {
-        "economic years": ["year2010"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2010"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -210,9 +210,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2011",
     {
-        "economic years": ["year2011"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2011"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -221,9 +221,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2012",
     {
-        "economic years": ["year2012"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2012"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -232,9 +232,9 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2013",
     {
-        "economic years": ["year2013"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2013"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
@@ -243,20 +243,20 @@ _ext_constant_historic_a_matrix.add(
     "World",
     "historic_A_Matrix_year2014",
     {
-        "economic years": ["year2014"],
-        "sectors A matrix": _subscript_dict["sectors A matrix"],
-        "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+        "economic_years": ["year2014"],
+        "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+        "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
     },
 )
 
 
 @component.add(
-    name="historic IA Matrix",
+    name="historic_IA_Matrix",
     units="Dmnl",
     subscripts=[
-        np.str_("economic years"),
-        np.str_("sectors A matrix"),
-        np.str_("sectors A matrix1"),
+        np.str_("economic_years"),
+        np.str_("sectors_A_matrix"),
+        np.str_("sectors_A_matrix1"),
     ],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -269,18 +269,18 @@ def historic_ia_matrix():
     return (
         i_matrix()
         - historic_a_matrix().transpose(
-            "sectors A matrix", "sectors A matrix1", "economic years"
+            "sectors_A_matrix", "sectors_A_matrix1", "economic_years"
         )
-    ).transpose("economic years", "sectors A matrix", "sectors A matrix1")
+    ).transpose("economic_years", "sectors_A_matrix", "sectors_A_matrix1")
 
 
 @component.add(
-    name="historic Leontief Matrix",
+    name="historic_Leontief_Matrix",
     units="Dmnl",
     subscripts=[
-        np.str_("economic years"),
-        np.str_("sectors A matrix"),
-        np.str_("sectors A matrix1"),
+        np.str_("economic_years"),
+        np.str_("sectors_A_matrix"),
+        np.str_("sectors_A_matrix1"),
     ],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -291,9 +291,9 @@ def historic_leontief_matrix():
 
 
 @component.add(
-    name="I Matrix",
+    name="I_Matrix",
     units="Dmnl",
-    subscripts=[np.str_("sectors A matrix"), np.str_("sectors A matrix1")],
+    subscripts=[np.str_("sectors_A_matrix"), np.str_("sectors_A_matrix1")],
     comp_type="Constant",
     comp_subtype="Normal",
 )
@@ -303,36 +303,36 @@ def i_matrix():
     """
     return if_then_else(
         xr.DataArray(
-            np.arange(1, len(_subscript_dict["sectors A matrix"]) + 1),
-            {"sectors A matrix": _subscript_dict["sectors A matrix"]},
-            ["sectors A matrix"],
+            np.arange(1, len(_subscript_dict["sectors_A_matrix"]) + 1),
+            {"sectors_A_matrix": _subscript_dict["sectors_A_matrix"]},
+            ["sectors_A_matrix"],
         )
         == xr.DataArray(
-            np.arange(1, len(_subscript_dict["sectors A matrix1"]) + 1),
-            {"sectors A matrix1": _subscript_dict["sectors A matrix1"]},
-            ["sectors A matrix1"],
+            np.arange(1, len(_subscript_dict["sectors_A_matrix1"]) + 1),
+            {"sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"]},
+            ["sectors_A_matrix1"],
         ),
         lambda: xr.DataArray(
             1,
             {
-                "sectors A matrix": _subscript_dict["sectors A matrix"],
-                "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+                "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+                "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
             },
-            ["sectors A matrix", "sectors A matrix1"],
+            ["sectors_A_matrix", "sectors_A_matrix1"],
         ),
         lambda: xr.DataArray(
             0,
             {
-                "sectors A matrix": _subscript_dict["sectors A matrix"],
-                "sectors A matrix1": _subscript_dict["sectors A matrix1"],
+                "sectors_A_matrix": _subscript_dict["sectors_A_matrix"],
+                "sectors_A_matrix1": _subscript_dict["sectors_A_matrix1"],
             },
-            ["sectors A matrix", "sectors A matrix1"],
+            ["sectors_A_matrix", "sectors_A_matrix1"],
         ),
     )
 
 
 @component.add(
-    name="IA matrix",
+    name="IA_matrix",
     units="Dmnl",
     subscripts=[np.str_("sectors"), np.str_("sectors1")],
     comp_type="Auxiliary",
@@ -574,7 +574,7 @@ def ia_matrix():
 
 
 @component.add(
-    name="Leontief Matrix",
+    name="Leontief_Matrix",
     units="Dmnl",
     subscripts=[np.str_("sectors"), np.str_("sectors1")],
     comp_type="Auxiliary",

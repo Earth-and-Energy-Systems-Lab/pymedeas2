@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="a lineal regr rr alt techn",
+    name="a_lineal_regr_rr_alt_techn",
     units="1/year",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -12,8 +12,8 @@ Translated using PySD version 3.14.0
     depends_on={
         "p_rr_minerals_alt_techn": 1,
         "current_recycling_rates_minerals_alt_techn": 1,
-        "target_year_p_rr_minerals": 1,
         "start_year_p_rr_minerals": 1,
+        "target_year_p_rr_minerals": 1,
     },
 )
 def a_lineal_regr_rr_alt_techn():
@@ -26,7 +26,7 @@ def a_lineal_regr_rr_alt_techn():
 
 
 @component.add(
-    name="a lineal regr rr Rest",
+    name="a_lineal_regr_rr_Rest",
     units="1/year",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -34,8 +34,8 @@ def a_lineal_regr_rr_alt_techn():
     depends_on={
         "p_rr_minerals_rest": 1,
         "current_recycling_rates_minerals": 1,
-        "target_year_p_rr_minerals": 1,
         "start_year_p_rr_minerals": 1,
+        "target_year_p_rr_minerals": 1,
     },
 )
 def a_lineal_regr_rr_rest():
@@ -48,7 +48,7 @@ def a_lineal_regr_rr_rest():
 
 
 @component.add(
-    name='"All minerals virgin?"',
+    name='"All_minerals_virgin?"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -61,15 +61,15 @@ def all_minerals_virgin():
 
 
 @component.add(
-    name="b lineal regr rr alt techn",
+    name="b_lineal_regr_rr_alt_techn",
     units="Dmnl",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "p_rr_minerals_alt_techn": 1,
-        "target_year_p_rr_minerals": 1,
         "a_lineal_regr_rr_alt_techn": 1,
+        "target_year_p_rr_minerals": 1,
     },
 )
 def b_lineal_regr_rr_alt_techn():
@@ -83,7 +83,7 @@ def b_lineal_regr_rr_alt_techn():
 
 
 @component.add(
-    name="b lineal regr rr Rest",
+    name="b_lineal_regr_rr_Rest",
     units="Dmnl",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -102,7 +102,7 @@ def b_lineal_regr_rr_rest():
 
 
 @component.add(
-    name="by mineral rr alt techn",
+    name="by_mineral_rr_alt_techn",
     units="Dmnl",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -121,7 +121,7 @@ def by_mineral_rr_alt_techn():
 
 
 @component.add(
-    name="by mineral rr alt techn 1yr",
+    name="by_mineral_rr_alt_techn_1yr",
     units="Dmnl",
     subscripts=[np.str_("materials")],
     comp_type="Stateful",
@@ -151,7 +151,7 @@ _delayfixed_by_mineral_rr_alt_techn_1yr = DelayFixed(
 
 
 @component.add(
-    name="by mineral rr Rest",
+    name="by_mineral_rr_Rest",
     units="Dmnl",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -166,7 +166,7 @@ def by_mineral_rr_rest():
 
 
 @component.add(
-    name="by mineral rr Rest 1yr",
+    name="by_mineral_rr_Rest_1yr",
     units="Dmnl",
     subscripts=[np.str_("materials")],
     comp_type="Stateful",
@@ -196,7 +196,7 @@ _delayfixed_by_mineral_rr_rest_1yr = DelayFixed(
 
 
 @component.add(
-    name="by mineral rr variation alt techn",
+    name="by_mineral_rr_variation_alt_techn",
     units="Dmnl/year",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -204,10 +204,10 @@ _delayfixed_by_mineral_rr_rest_1yr = DelayFixed(
     depends_on={
         "time": 2,
         "historic_improvement_recycling_rates_minerals": 2,
-        "start_year_p_rr_minerals": 1,
-        "by_mineral_rr_alt_techn": 1,
         "nvs_1_year": 1,
+        "start_year_p_rr_minerals": 1,
         "by_mineral_rr_alt_techn_1yr": 1,
+        "by_mineral_rr_alt_techn": 1,
     },
 )
 def by_mineral_rr_variation_alt_techn():
@@ -227,7 +227,7 @@ def by_mineral_rr_variation_alt_techn():
 
 
 @component.add(
-    name="by mineral rr variation Rest",
+    name="by_mineral_rr_variation_Rest",
     units="Dmnl/year",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -235,10 +235,10 @@ def by_mineral_rr_variation_alt_techn():
     depends_on={
         "time": 2,
         "historic_improvement_recycling_rates_minerals": 2,
-        "by_mineral_rr_rest_1yr": 1,
+        "nvs_1_year": 1,
         "start_year_p_rr_minerals": 1,
         "by_mineral_rr_rest": 1,
-        "nvs_1_year": 1,
+        "by_mineral_rr_rest_1yr": 1,
     },
 )
 def by_mineral_rr_variation_rest():
@@ -257,7 +257,7 @@ def by_mineral_rr_variation_rest():
 
 
 @component.add(
-    name="choose targets mineral recycling rates",
+    name="choose_targets_mineral_recycling_rates",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -282,7 +282,7 @@ _ext_constant_choose_targets_mineral_recycling_rates = ExtConstant(
 
 
 @component.add(
-    name="common rr minerals variation alt techn",
+    name="common_rr_minerals_variation_alt_techn",
     units="Dmnl/year",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -310,7 +310,7 @@ def common_rr_minerals_variation_alt_techn():
 
 
 @component.add(
-    name="common rr minerals variation Rest",
+    name="common_rr_minerals_variation_Rest",
     units="Dmnl/year",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -338,7 +338,7 @@ def common_rr_minerals_variation_rest():
 
 
 @component.add(
-    name="constrain rr improv for alt techn per mineral",
+    name="constrain_rr_improv_for_alt_techn_per_mineral",
     units="Dmnl",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -364,7 +364,7 @@ def constrain_rr_improv_for_alt_techn_per_mineral():
 
 
 @component.add(
-    name="constrain rr improv for Rest per mineral",
+    name="constrain_rr_improv_for_Rest_per_mineral",
     units="Dmnl",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -387,7 +387,7 @@ def constrain_rr_improv_for_rest_per_mineral():
 
 
 @component.add(
-    name="current recycling rates minerals",
+    name="current_recycling_rates_minerals",
     units="Dmnl",
     subscripts=[np.str_("materials")],
     comp_type="Constant",
@@ -413,7 +413,7 @@ _ext_constant_current_recycling_rates_minerals = ExtConstant(
 
 
 @component.add(
-    name="current recycling rates minerals alt techn",
+    name="current_recycling_rates_minerals_alt_techn",
     units="Dmnl",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -434,7 +434,7 @@ def current_recycling_rates_minerals_alt_techn():
 
 
 @component.add(
-    name='"EOL-RR minerals alt techn RES vs. total economy"',
+    name='"EOL-RR_minerals_alt_techn_RES_vs._total_economy"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -461,7 +461,7 @@ _ext_constant_eolrr_minerals_alt_techn_res_vs_total_economy = ExtConstant(
 
 
 @component.add(
-    name="Historic improvement recycling rates minerals",
+    name="Historic_improvement_recycling_rates_minerals",
     units="Dmnl/year",
     subscripts=[np.str_("materials")],
     comp_type="Constant",
@@ -477,7 +477,7 @@ def historic_improvement_recycling_rates_minerals():
 
 
 @component.add(
-    name="improvement recycling rates minerals alt techn",
+    name="improvement_recycling_rates_minerals_alt_techn",
     units="Dmnl/year",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -485,10 +485,10 @@ def historic_improvement_recycling_rates_minerals():
     depends_on={
         "time": 1,
         "historic_improvement_recycling_rates_minerals": 1,
-        "by_mineral_rr_variation_alt_techn": 1,
-        "common_rr_minerals_variation_alt_techn": 1,
         "choose_targets_mineral_recycling_rates": 1,
         "recycling_rates_minerals_alt_techn": 1,
+        "common_rr_minerals_variation_alt_techn": 1,
+        "by_mineral_rr_variation_alt_techn": 1,
         "constrain_rr_improv_for_alt_techn_per_mineral": 1,
     },
 )
@@ -512,7 +512,7 @@ def improvement_recycling_rates_minerals_alt_techn():
 
 
 @component.add(
-    name="improvement recycling rates minerals Rest",
+    name="improvement_recycling_rates_minerals_Rest",
     units="Dmnl/year",
     subscripts=[np.str_("materials")],
     comp_type="Auxiliary",
@@ -520,10 +520,10 @@ def improvement_recycling_rates_minerals_alt_techn():
     depends_on={
         "time": 1,
         "historic_improvement_recycling_rates_minerals": 1,
-        "common_rr_minerals_variation_rest": 1,
         "choose_targets_mineral_recycling_rates": 1,
-        "recycling_rates_minerals_rest": 1,
         "by_mineral_rr_variation_rest": 1,
+        "recycling_rates_minerals_rest": 1,
+        "common_rr_minerals_variation_rest": 1,
         "constrain_rr_improv_for_rest_per_mineral": 1,
     },
 )
@@ -547,7 +547,7 @@ def improvement_recycling_rates_minerals_rest():
 
 
 @component.add(
-    name="Max recycling rates minerals",
+    name="Max_recycling_rates_minerals",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -572,7 +572,7 @@ _ext_constant_max_recycling_rates_minerals = ExtConstant(
 
 
 @component.add(
-    name="P common rr minerals variation alt techn",
+    name="P_common_rr_minerals_variation_alt_techn",
     units="Dmnl/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -599,7 +599,7 @@ _ext_constant_p_common_rr_minerals_variation_alt_techn = ExtConstant(
 
 
 @component.add(
-    name="P common rr minerals variation Rest",
+    name="P_common_rr_minerals_variation_Rest",
     units="Dmnl/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -624,7 +624,7 @@ _ext_constant_p_common_rr_minerals_variation_rest = ExtConstant(
 
 
 @component.add(
-    name="P rr minerals alt techn",
+    name="P_rr_minerals_alt_techn",
     units="Dmnl",
     subscripts=["materials"],
     comp_type="Constant",
@@ -638,7 +638,7 @@ def p_rr_minerals_alt_techn():
     value = xr.DataArray(
         np.nan, {"materials": _subscript_dict["materials"]}, ["materials"]
     )
-    value.loc[_subscript_dict["MATERIALS NO RECYCABLE"]] = 0
+    value.loc[_subscript_dict["MATERIALS_NO_RECYCABLE"]] = 0
     def_subs = xr.zeros_like(value, dtype=bool)
     def_subs.loc[
         [
@@ -673,7 +673,7 @@ _ext_constant_p_rr_minerals_alt_techn = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "NZP",
     "P_rr_minerals_alt_techn*",
-    {"materials": _subscript_dict["MATERIALS RECYCABLE"]},
+    {"materials": _subscript_dict["MATERIALS_RECYCABLE"]},
     _root,
     {"materials": _subscript_dict["materials"]},
     "_ext_constant_p_rr_minerals_alt_techn",
@@ -681,7 +681,7 @@ _ext_constant_p_rr_minerals_alt_techn = ExtConstant(
 
 
 @component.add(
-    name="P rr minerals Rest",
+    name="P_rr_minerals_Rest",
     units="Dmnl",
     subscripts=["materials"],
     comp_type="Constant",
@@ -695,7 +695,7 @@ def p_rr_minerals_rest():
     value = xr.DataArray(
         np.nan, {"materials": _subscript_dict["materials"]}, ["materials"]
     )
-    value.loc[_subscript_dict["MATERIALS NO RECYCABLE"]] = 0
+    value.loc[_subscript_dict["MATERIALS_NO_RECYCABLE"]] = 0
     def_subs = xr.zeros_like(value, dtype=bool)
     def_subs.loc[
         [
@@ -730,7 +730,7 @@ _ext_constant_p_rr_minerals_rest = ExtConstant(
     "../../scenarios/scen_w.xlsx",
     "NZP",
     "P_rr_minerals_Rest*",
-    {"materials": _subscript_dict["MATERIALS RECYCABLE"]},
+    {"materials": _subscript_dict["MATERIALS_RECYCABLE"]},
     _root,
     {"materials": _subscript_dict["materials"]},
     "_ext_constant_p_rr_minerals_rest",
@@ -738,7 +738,7 @@ _ext_constant_p_rr_minerals_rest = ExtConstant(
 
 
 @component.add(
-    name="recycling rates minerals alt techn",
+    name="recycling_rates_minerals_alt_techn",
     units="Dmnl",
     subscripts=[np.str_("materials")],
     comp_type="Stateful",
@@ -769,7 +769,7 @@ _integ_recycling_rates_minerals_alt_techn = Integ(
 
 
 @component.add(
-    name="recycling rates minerals Rest",
+    name="recycling_rates_minerals_Rest",
     units="Dmnl",
     subscripts=[np.str_("materials")],
     comp_type="Stateful",
@@ -800,7 +800,7 @@ _integ_recycling_rates_minerals_rest = Integ(
 
 
 @component.add(
-    name="start year P common rr minerals alt techn",
+    name="start_year_P_common_rr_minerals_alt_techn",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -827,7 +827,7 @@ _ext_constant_start_year_p_common_rr_minerals_alt_techn = ExtConstant(
 
 
 @component.add(
-    name="start year P common rr minerals Rest",
+    name="start_year_P_common_rr_minerals_Rest",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -852,7 +852,7 @@ _ext_constant_start_year_p_common_rr_minerals_rest = ExtConstant(
 
 
 @component.add(
-    name="start year P rr minerals",
+    name="start_year_P_rr_minerals",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -877,7 +877,7 @@ _ext_constant_start_year_p_rr_minerals = ExtConstant(
 
 
 @component.add(
-    name="target year P rr minerals",
+    name="target_year_P_rr_minerals",
     units="year",
     comp_type="Constant",
     comp_subtype="External",

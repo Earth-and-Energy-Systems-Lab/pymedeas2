@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name='"BioE residues for heat+elec available"',
+    name='"BioE_residues_for_heat+elec_available"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -24,7 +24,7 @@ def bioe_residues_for_heatelec_available():
 
 
 @component.add(
-    name="Cellulosic biofuels available",
+    name="Cellulosic_biofuels_available",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -45,7 +45,7 @@ def cellulosic_biofuels_available():
 
 
 @component.add(
-    name="Efficiency bioE residues to cellulosic liquids",
+    name="Efficiency_bioE_residues_to_cellulosic_liquids",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -59,7 +59,7 @@ def efficiency_bioe_residues_to_cellulosic_liquids():
 
 
 @component.add(
-    name="Max NPP potential bioE residues",
+    name="Max_NPP_potential_bioE_residues",
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -84,7 +84,7 @@ _ext_constant_max_npp_potential_bioe_residues = ExtConstant(
 
 
 @component.add(
-    name="Max NPP potential BioE residues for cellulosic biofuels",
+    name="Max_NPP_potential_BioE_residues_for_cellulosic_biofuels",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -103,7 +103,7 @@ def max_npp_potential_bioe_residues_for_cellulosic_biofuels():
 
 
 @component.add(
-    name="Max NPP potential BioE residues for heat and elec",
+    name="Max_NPP_potential_BioE_residues_for_heat_and_elec",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -122,7 +122,7 @@ def max_npp_potential_bioe_residues_for_heat_and_elec():
 
 
 @component.add(
-    name="Max PEavail potential bioE residues for cellulosic biofuels",
+    name="Max_PEavail_potential_bioE_residues_for_cellulosic_biofuels",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -139,19 +139,19 @@ def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
 
 
 @component.add(
-    name='"new BioE residues for heat+elec"',
+    name='"new_BioE_residues_for_heat+elec"',
     units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
         "start_year_bioe_residues_for_heatelec": 3,
-        "ej_per_ktoe": 1,
         "p_bioe_residues_for_heatelec": 1,
-        "nvs_1_year": 1,
-        "start_production_biofuels": 1,
-        "pe_bioe_residues_for_heatelec_ej": 1,
         "bioe_residues_for_heatelec_available": 1,
+        "start_production_biofuels": 1,
+        "nvs_1_year": 1,
+        "ej_per_ktoe": 1,
+        "pe_bioe_residues_for_heatelec_ej": 1,
     },
 )
 def new_bioe_residues_for_heatelec():
@@ -176,20 +176,20 @@ def new_bioe_residues_for_heatelec():
 
 
 @component.add(
-    name="new cellulosic biofuels",
+    name="new_cellulosic_biofuels",
     units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
         "start_year_cellulosic_biofuels": 3,
-        "cellulosic_biofuels_available": 1,
-        "potential_pe_cellulosic_biofuel_ej": 2,
         "constrain_liquids_exogenous_growth": 1,
-        "ej_per_ktoe": 1,
-        "nvs_1_year": 2,
-        "start_production_biofuels": 1,
         "check_liquids": 1,
+        "start_production_biofuels": 1,
+        "potential_pe_cellulosic_biofuel_ej": 2,
+        "cellulosic_biofuels_available": 1,
+        "nvs_1_year": 2,
+        "ej_per_ktoe": 1,
         "p_cellulosic_biofuels": 1,
     },
 )
@@ -219,7 +219,7 @@ def new_cellulosic_biofuels():
 
 
 @component.add(
-    name='"P bioE residues for heat+elec"',
+    name='"P_bioE_residues_for_heat+elec"',
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -244,7 +244,7 @@ _ext_constant_p_bioe_residues_for_heatelec = ExtConstant(
 
 
 @component.add(
-    name="P cellulosic biofuels",
+    name="P_cellulosic_biofuels",
     units="1/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -269,7 +269,7 @@ _ext_constant_p_cellulosic_biofuels = ExtConstant(
 
 
 @component.add(
-    name='"PE bioE residues for heat+elec EJ"',
+    name='"PE_bioE_residues_for_heat+elec_EJ"',
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -296,7 +296,7 @@ _integ_pe_bioe_residues_for_heatelec_ej = Integ(
 
 
 @component.add(
-    name="PE cellulosic biofuel",
+    name="PE_cellulosic_biofuel",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -313,7 +313,7 @@ def pe_cellulosic_biofuel():
 
 
 @component.add(
-    name="PEavail cellulosic biofuel EJ",
+    name="PEavail_cellulosic_biofuel_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -330,7 +330,7 @@ def peavail_cellulosic_biofuel_ej():
 
 
 @component.add(
-    name="Potential PE cellulosic biofuel EJ",
+    name="Potential_PE_cellulosic_biofuel_EJ",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -357,7 +357,7 @@ _integ_potential_pe_cellulosic_biofuel_ej = Integ(
 
 
 @component.add(
-    name="Potential PEavail cellulosic biofuel EJ",
+    name="Potential_PEavail_cellulosic_biofuel_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -371,7 +371,7 @@ def potential_peavail_cellulosic_biofuel_ej():
 
 
 @component.add(
-    name="share cellulosic biofuels vs BioE residues",
+    name="share_cellulosic_biofuels_vs_BioE_residues",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -398,7 +398,7 @@ _ext_constant_share_cellulosic_biofuels_vs_bioe_residues = ExtConstant(
 
 
 @component.add(
-    name='"start year BioE residues for heat+elec"',
+    name='"start_year_BioE_residues_for_heat+elec"',
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -423,7 +423,7 @@ _ext_constant_start_year_bioe_residues_for_heatelec = ExtConstant(
 
 
 @component.add(
-    name="start year cellulosic biofuels",
+    name="start_year_cellulosic_biofuels",
     units="year",
     comp_type="Constant",
     comp_subtype="External",

@@ -4,15 +4,15 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name='"a lineal regr phase-out oil for elec"',
+    name='"a_lineal_regr_phase-out_oil_for_elec"',
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_in_target_year_oil_for_elec": 1,
         "hist_share_oilff_elec": 1,
-        "start_year_policy_phaseout_oil_for_elec": 1,
         "target_year_policy_phaseout_oil_for_elec": 1,
+        "start_year_policy_phaseout_oil_for_elec": 1,
     },
 )
 def a_lineal_regr_phaseout_oil_for_elec():
@@ -26,10 +26,10 @@ def a_lineal_regr_phaseout_oil_for_elec():
 
 
 @component.add(
-    name="Abundance primary sources",
+    name="Abundance_primary_sources",
     units="Dmnl",
-    subscripts=[np.str_("primary sources")],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("primary_sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "abundance_coal": 1,
@@ -43,25 +43,25 @@ def abundance_primary_sources():
     """
     value = xr.DataArray(
         np.nan,
-        {"primary sources": _subscript_dict["primary sources"]},
-        [np.str_("primary sources")],
+        {"primary_sources": _subscript_dict["primary_sources"]},
+        [np.str_("primary_sources")],
     )
     value.loc[["coal"]] = abundance_coal()
     value.loc[["oil"]] = abundance_total_oil()
-    value.loc[["natural gas"]] = abundance_total_nat_gas()
+    value.loc[["natural_gas"]] = abundance_total_nat_gas()
     value.loc[["others"]] = 1
     return value
 
 
 @component.add(
-    name='"b lineal regr phase-out oil for elec"',
+    name='"b_lineal_regr_phase-out_oil_for_elec"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_in_target_year_oil_for_elec": 1,
-        "a_lineal_regr_phaseout_oil_for_elec": 1,
         "target_year_policy_phaseout_oil_for_elec": 1,
+        "a_lineal_regr_phaseout_oil_for_elec": 1,
     },
 )
 def b_lineal_regr_phaseout_oil_for_elec():
@@ -76,7 +76,7 @@ def b_lineal_regr_phaseout_oil_for_elec():
 
 
 @component.add(
-    name="decrease share gas for Elec",
+    name="decrease_share_gas_for_Elec",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -98,7 +98,7 @@ def decrease_share_gas_for_elec():
 
 
 @component.add(
-    name="decrease share oil for Elec",
+    name="decrease_share_oil_for_Elec",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -120,7 +120,7 @@ def decrease_share_oil_for_elec():
 
 
 @component.add(
-    name="demand Elec gas and coal TWh",
+    name="demand_Elec_gas_and_coal_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -128,8 +128,8 @@ def decrease_share_oil_for_elec():
         "switch_scarcityps_elec_substit": 1,
         "hist_share_oilff_elec": 2,
         "demand_elec_plants_fossil_fuels_twh": 3,
-        "future_share_gascoalff_for_elec": 1,
         "time": 1,
+        "future_share_gascoalff_for_elec": 1,
     },
 )
 def demand_elec_gas_and_coal_twh():
@@ -147,7 +147,7 @@ def demand_elec_gas_and_coal_twh():
 
 
 @component.add(
-    name="demand Elec plants fossil fuels TWh",
+    name="demand_Elec_plants_fossil_fuels_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -170,7 +170,7 @@ def demand_elec_plants_fossil_fuels_twh():
 
 
 @component.add(
-    name='"Desired share gas/(coal+gas) Elec"',
+    name='"Desired_share_gas/(coal+gas)_Elec"',
     units="1",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -178,8 +178,8 @@ def demand_elec_plants_fossil_fuels_twh():
         "time": 3,
         "end_hist_data": 3,
         "hist_share_gascoal_gas_elec": 3,
-        "policy_share_gascoalgas_elec": 2,
         "target_year_policy_gas_electricity": 2,
+        "policy_share_gascoalgas_elec": 2,
     },
 )
 def desired_share_gascoalgas_elec():
@@ -200,7 +200,7 @@ def desired_share_gascoalgas_elec():
 
 
 @component.add(
-    name="efficiency coal for electricity",
+    name="efficiency_coal_for_electricity",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -225,7 +225,7 @@ _ext_constant_efficiency_coal_for_electricity = ExtConstant(
 
 
 @component.add(
-    name="efficiency gas for electricity",
+    name="efficiency_gas_for_electricity",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -255,7 +255,7 @@ _integ_efficiency_gas_for_electricity = Integ(
 
 
 @component.add(
-    name="Efficiency improv gas for electricity",
+    name="Efficiency_improv_gas_for_electricity",
     units="Dmnl/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -280,7 +280,7 @@ _ext_constant_efficiency_improv_gas_for_electricity = ExtConstant(
 
 
 @component.add(
-    name="efficiency liquids for electricity",
+    name="efficiency_liquids_for_electricity",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -305,7 +305,7 @@ _ext_constant_efficiency_liquids_for_electricity = ExtConstant(
 
 
 @component.add(
-    name="FE demand coal Elec plants TWh",
+    name="FE_demand_coal_Elec_plants_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -319,7 +319,7 @@ def fe_demand_coal_elec_plants_twh():
 
 
 @component.add(
-    name="FE demand gas Elec plants TWh",
+    name="FE_demand_gas_Elec_plants_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -333,7 +333,7 @@ def fe_demand_gas_elec_plants_twh():
 
 
 @component.add(
-    name="FE demand oil Elec plants TWh",
+    name="FE_demand_oil_Elec_plants_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -347,7 +347,7 @@ def fe_demand_oil_elec_plants_twh():
 
 
 @component.add(
-    name="FES Elec fossil fuel CHP plants TWh",
+    name="FES_Elec_fossil_fuel_CHP_plants_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -361,7 +361,7 @@ def fes_elec_fossil_fuel_chp_plants_twh():
 
 
 @component.add(
-    name='"Future share gas+coal/FF for elec"',
+    name='"Future_share_gas+coal/FF_for_elec"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -372,7 +372,7 @@ def future_share_gascoalff_for_elec():
 
 
 @component.add(
-    name='"Future share gas/(coal+gas) for Elec"',
+    name='"Future_share_gas/(coal+gas)_for_Elec"',
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -402,7 +402,7 @@ _integ_future_share_gascoalgas_for_elec = Integ(
 
 
 @component.add(
-    name='"Future share oil/FF for Elec"',
+    name='"Future_share_oil/FF_for_Elec"',
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -432,7 +432,7 @@ _integ_future_share_oilff_for_elec = Integ(
 
 
 @component.add(
-    name='"Hist share gas/(coal +gas) Elec"',
+    name='"Hist_share_gas/(coal_+gas)_Elec"',
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -463,7 +463,7 @@ _ext_data_hist_share_gascoal_gas_elec = ExtData(
 
 
 @component.add(
-    name='"Hist share oil/FF Elec"',
+    name='"Hist_share_oil/FF_Elec"',
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -494,7 +494,7 @@ _ext_data_hist_share_oilff_elec = ExtData(
 
 
 @component.add(
-    name="Historic efficiency gas for electricity",
+    name="Historic_efficiency_gas_for_electricity",
     units="percent",
     comp_type="Lookup",
     comp_subtype="External",
@@ -523,18 +523,18 @@ _ext_lookup_historic_efficiency_gas_for_electricity = ExtLookup(
 
 
 @component.add(
-    name="improvement efficiency gas for electricity",
+    name="improvement_efficiency_gas_for_electricity",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "time_step": 2,
         "historic_efficiency_gas_for_electricity": 2,
+        "time_step": 2,
         "percent_to_share": 1,
+        "efficiency_improv_gas_for_electricity": 1,
         "remaining_efficiency_improv_gas_for_electricity": 1,
         "efficiency_gas_for_electricity": 1,
-        "efficiency_improv_gas_for_electricity": 1,
     },
 )
 def improvement_efficiency_gas_for_electricity():
@@ -556,9 +556,9 @@ def improvement_efficiency_gas_for_electricity():
 
 
 @component.add(
-    name="increase in perception PS scarcity",
+    name="increase_in_perception_PS_scarcity",
     units="Dmnl/year",
-    subscripts=[np.str_("primary sources")],
+    subscripts=[np.str_("primary_sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -581,7 +581,7 @@ def increase_in_perception_ps_scarcity():
 
 
 @component.add(
-    name="increase share gas for Elec",
+    name="increase_share_gas_for_Elec",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -603,7 +603,7 @@ def increase_share_gas_for_elec():
 
 
 @component.add(
-    name="increase share oil for Elec",
+    name="increase_share_oil_for_Elec",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -625,7 +625,7 @@ def increase_share_oil_for_elec():
 
 
 @component.add(
-    name="initial efficiency gas for electricity",
+    name="initial_efficiency_gas_for_electricity",
     units="percent",
     comp_type="Constant",
     comp_subtype="External",
@@ -650,7 +650,7 @@ _ext_constant_initial_efficiency_gas_for_electricity = ExtConstant(
 
 
 @component.add(
-    name="max auxiliar Elec",
+    name="max_auxiliar_Elec",
     units="Dmnl/year",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -663,7 +663,7 @@ def max_auxiliar_elec():
 
 
 @component.add(
-    name="Max efficiency gas power plants",
+    name="Max_efficiency_gas_power_plants",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -688,7 +688,7 @@ _ext_constant_max_efficiency_gas_power_plants = ExtConstant(
 
 
 @component.add(
-    name="P share oil for Elec",
+    name="P_share_oil_for_Elec",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -710,7 +710,7 @@ def p_share_oil_for_elec():
 
 
 @component.add(
-    name="PE demand coal Elec plants EJ",
+    name="PE_demand_coal_Elec_plants_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -730,7 +730,7 @@ def pe_demand_coal_elec_plants_ej():
 
 
 @component.add(
-    name="PE demand gas Elec plants EJ",
+    name="PE_demand_gas_Elec_plants_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -750,7 +750,7 @@ def pe_demand_gas_elec_plants_ej():
 
 
 @component.add(
-    name="PE demand oil Elec plants EJ",
+    name="PE_demand_oil_Elec_plants_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -770,7 +770,7 @@ def pe_demand_oil_elec_plants_ej():
 
 
 @component.add(
-    name="percent to share", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
+    name="percent_to_share", units="Dmnl", comp_type="Constant", comp_subtype="Normal"
 )
 def percent_to_share():
     """
@@ -780,9 +780,9 @@ def percent_to_share():
 
 
 @component.add(
-    name="perception in primary sources scarcity",
+    name="perception_in_primary_sources_scarcity",
     units="Dmnl",
-    subscripts=[np.str_("primary sources")],
+    subscripts=[np.str_("primary_sources")],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_perception_in_primary_sources_scarcity": 1},
@@ -807,16 +807,16 @@ _integ_perception_in_primary_sources_scarcity = Integ(
     lambda: increase_in_perception_ps_scarcity()
     - reduction_in_perception_ps_scarcity(),
     lambda: xr.DataArray(
-        0, {"primary sources": _subscript_dict["primary sources"]}, ["primary sources"]
+        0, {"primary_sources": _subscript_dict["primary_sources"]}, ["primary_sources"]
     ),
     "_integ_perception_in_primary_sources_scarcity",
 )
 
 
 @component.add(
-    name='"perception of inter-fuel primary sources scarcity"',
+    name='"perception_of_inter-fuel_primary_sources_scarcity"',
     units="Dmnl",
-    subscripts=["primary sources1", "primary sources"],
+    subscripts=["primary_sources1", "primary_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -831,18 +831,18 @@ def perception_of_interfuel_primary_sources_scarcity():
     value = xr.DataArray(
         np.nan,
         {
-            "primary sources1": _subscript_dict["primary sources1"],
-            "primary sources": _subscript_dict["primary sources"],
+            "primary_sources1": _subscript_dict["primary_sources1"],
+            "primary_sources": _subscript_dict["primary_sources"],
         },
-        ["primary sources1", "primary sources"],
+        ["primary_sources1", "primary_sources"],
     )
     value.loc[["coal"], :] = (
         if_then_else(
             sensitivity_to_scarcity() == 0,
             lambda: xr.DataArray(
                 0,
-                {"primary sources": _subscript_dict["primary sources"]},
-                ["primary sources"],
+                {"primary_sources": _subscript_dict["primary_sources"]},
+                ["primary_sources"],
             ),
             lambda: zidz(
                 perception_in_primary_sources_scarcity()
@@ -850,7 +850,7 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["coal"]}, 0)
+        .expand_dims({"primary_sources1": ["coal"]}, 0)
         .values
     )
     value.loc[["oil"], :] = (
@@ -858,8 +858,8 @@ def perception_of_interfuel_primary_sources_scarcity():
             sensitivity_to_scarcity() == 0,
             lambda: xr.DataArray(
                 0,
-                {"primary sources": _subscript_dict["primary sources"]},
-                ["primary sources"],
+                {"primary_sources": _subscript_dict["primary_sources"]},
+                ["primary_sources"],
             ),
             lambda: zidz(
                 perception_in_primary_sources_scarcity()
@@ -867,24 +867,24 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["oil"]}, 0)
+        .expand_dims({"primary_sources1": ["oil"]}, 0)
         .values
     )
-    value.loc[["natural gas"], :] = (
+    value.loc[["natural_gas"], :] = (
         if_then_else(
             sensitivity_to_scarcity() == 0,
             lambda: xr.DataArray(
                 0,
-                {"primary sources": _subscript_dict["primary sources"]},
-                ["primary sources"],
+                {"primary_sources": _subscript_dict["primary_sources"]},
+                ["primary_sources"],
             ),
             lambda: zidz(
                 perception_in_primary_sources_scarcity()
-                - float(perception_in_primary_sources_scarcity().loc["natural gas"]),
+                - float(perception_in_primary_sources_scarcity().loc["natural_gas"]),
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["natural gas"]}, 0)
+        .expand_dims({"primary_sources1": ["natural_gas"]}, 0)
         .values
     )
     value.loc[["others"], :] = (
@@ -892,8 +892,8 @@ def perception_of_interfuel_primary_sources_scarcity():
             sensitivity_to_scarcity() == 0,
             lambda: xr.DataArray(
                 0,
-                {"primary sources": _subscript_dict["primary sources"]},
-                ["primary sources"],
+                {"primary_sources": _subscript_dict["primary_sources"]},
+                ["primary_sources"],
             ),
             lambda: zidz(
                 perception_in_primary_sources_scarcity()
@@ -901,14 +901,14 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["others"]}, 0)
+        .expand_dims({"primary_sources1": ["others"]}, 0)
         .values
     )
     return value
 
 
 @component.add(
-    name='"perception of inter-fuel PS scarcity coal-gas"',
+    name='"perception_of_inter-fuel_PS_scarcity_coal-gas"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -922,14 +922,14 @@ def perception_of_interfuel_ps_scarcity_coalgas():
         0,
         float(
             perception_of_interfuel_primary_sources_scarcity().loc[
-                "coal", "natural gas"
+                "coal", "natural_gas"
             ]
         ),
     )
 
 
 @component.add(
-    name='"perception of inter-fuel PS scarcity coal-oil"',
+    name='"perception_of_inter-fuel_PS_scarcity_coal-oil"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -945,7 +945,7 @@ def perception_of_interfuel_ps_scarcity_coaloil():
 
 
 @component.add(
-    name='"perception of inter-fuel PS scarcity FF-oil"',
+    name='"perception_of_inter-fuel_PS_scarcity_FF-oil"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -965,7 +965,7 @@ def perception_of_interfuel_ps_scarcity_ffoil():
 
 
 @component.add(
-    name='"perception of inter-fuel PS scarcity gas-coal"',
+    name='"perception_of_inter-fuel_PS_scarcity_gas-coal"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -979,14 +979,14 @@ def perception_of_interfuel_ps_scarcity_gascoal():
         0,
         float(
             perception_of_interfuel_primary_sources_scarcity().loc[
-                "natural gas", "coal"
+                "natural_gas", "coal"
             ]
         ),
     )
 
 
 @component.add(
-    name='"perception of inter-fuel PS scarcity nat. gas-oil"',
+    name='"perception_of_inter-fuel_PS_scarcity_nat._gas-oil"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -999,13 +999,13 @@ def perception_of_interfuel_ps_scarcity_nat_gasoil():
     return np.maximum(
         0,
         float(
-            perception_of_interfuel_primary_sources_scarcity().loc["natural gas", "oil"]
+            perception_of_interfuel_primary_sources_scarcity().loc["natural_gas", "oil"]
         ),
     )
 
 
 @component.add(
-    name='"perception of inter-fuel PS scarcity oil-coal"',
+    name='"perception_of_inter-fuel_PS_scarcity_oil-coal"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1021,7 +1021,7 @@ def perception_of_interfuel_ps_scarcity_oilcoal():
 
 
 @component.add(
-    name='"perception of inter-fuel PS scarcity oil-FF"',
+    name='"perception_of_inter-fuel_PS_scarcity_oil-FF"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1041,7 +1041,7 @@ def perception_of_interfuel_ps_scarcity_oilff():
 
 
 @component.add(
-    name='"perception of inter-fuel PS scarcity oil-nat.gas"',
+    name='"perception_of_inter-fuel_PS_scarcity_oil-nat.gas"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1054,13 +1054,13 @@ def perception_of_interfuel_ps_scarcity_oilnatgas():
     return np.maximum(
         0,
         float(
-            perception_of_interfuel_primary_sources_scarcity().loc["oil", "natural gas"]
+            perception_of_interfuel_primary_sources_scarcity().loc["oil", "natural_gas"]
         ),
     )
 
 
 @component.add(
-    name='"phase-out oil for electricity?"',
+    name='"phase-out_oil_for_electricity?"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1085,7 +1085,7 @@ _ext_constant_phaseout_oil_for_electricity = ExtConstant(
 
 
 @component.add(
-    name='"policy share gas/(coal+gas) Elec"',
+    name='"policy_share_gas/(coal+gas)_Elec"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1107,9 +1107,9 @@ _ext_constant_policy_share_gascoalgas_elec = ExtConstant(
 
 
 @component.add(
-    name="reduction in perception PS scarcity",
+    name="reduction_in_perception_PS_scarcity",
     units="Dmnl/year",
-    subscripts=[np.str_("primary sources")],
+    subscripts=[np.str_("primary_sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -1125,7 +1125,7 @@ def reduction_in_perception_ps_scarcity():
 
 
 @component.add(
-    name="remaining efficiency improv gas for electricity",
+    name="remaining_efficiency_improv_gas_for_electricity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1144,9 +1144,9 @@ def remaining_efficiency_improv_gas_for_electricity():
 
 
 @component.add(
-    name="scarcity primary sources",
+    name="scarcity_primary_sources",
     units="Dmnl",
-    subscripts=[np.str_("primary sources")],
+    subscripts=[np.str_("primary_sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"abundance_primary_sources": 1},
@@ -1159,7 +1159,7 @@ def scarcity_primary_sources():
 
 
 @component.add(
-    name='"share gas/(coal +gas) for Elec"',
+    name='"share_gas/(coal_+gas)_for_Elec"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1186,7 +1186,7 @@ def share_gascoal_gas_for_elec():
 
 
 @component.add(
-    name='"share gas/(coal+gas) for Elec in 2014"',
+    name='"share_gas/(coal+gas)_for_Elec_in_2014"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1211,7 +1211,7 @@ _ext_constant_share_gascoalgas_for_elec_in_2014 = ExtConstant(
 
 
 @component.add(
-    name="share in target year oil for elec",
+    name="share_in_target_year_oil_for_elec",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1236,18 +1236,18 @@ _ext_constant_share_in_target_year_oil_for_elec = ExtConstant(
 
 
 @component.add(
-    name="share oil for Elec",
+    name="share_oil_for_Elec",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "switch_scarcityps_elec_substit": 1,
         "hist_share_oilff_elec": 3,
-        "p_share_oil_for_elec": 1,
-        "time": 2,
-        "start_year_policy_phaseout_oil_for_elec": 1,
         "phaseout_oil_for_electricity": 1,
+        "p_share_oil_for_elec": 1,
         "future_share_oilff_for_elec": 1,
+        "start_year_policy_phaseout_oil_for_elec": 1,
+        "time": 2,
     },
 )
 def share_oil_for_elec():
@@ -1274,7 +1274,7 @@ def share_oil_for_elec():
 
 
 @component.add(
-    name='"share oil/FF for Elec in 2015"',
+    name='"share_oil/FF_for_Elec_in_2015"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1299,7 +1299,7 @@ _ext_constant_share_oilff_for_elec_in_2015 = ExtConstant(
 
 
 @component.add(
-    name='"start year policy phase-out oil for elec"',
+    name='"start_year_policy_phase-out_oil_for_elec"',
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1326,7 +1326,7 @@ _ext_constant_start_year_policy_phaseout_oil_for_elec = ExtConstant(
 
 
 @component.add(
-    name='"switch scarcity-PS elec substit"',
+    name='"switch_scarcity-PS_elec_substit"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -1339,7 +1339,7 @@ def switch_scarcityps_elec_substit():
 
 
 @component.add(
-    name="target year policy gas electricity",
+    name="target_year_policy_gas_electricity",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1361,7 +1361,7 @@ _ext_constant_target_year_policy_gas_electricity = ExtConstant(
 
 
 @component.add(
-    name='"target year policy phase-out oil for elec"',
+    name='"target_year_policy_phase-out_oil_for_elec"',
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1388,7 +1388,7 @@ _ext_constant_target_year_policy_phaseout_oil_for_elec = ExtConstant(
 
 
 @component.add(
-    name="Total gen losses demand for Elec plants EJ",
+    name="Total_gen_losses_demand_for_Elec_plants_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1397,8 +1397,8 @@ _ext_constant_target_year_policy_phaseout_oil_for_elec = ExtConstant(
         "efficiency_gas_for_electricity": 1,
         "pe_demand_coal_elec_plants_ej": 1,
         "efficiency_coal_for_electricity": 1,
-        "efficiency_liquids_for_electricity": 1,
         "pe_demand_oil_elec_plants_ej": 1,
+        "efficiency_liquids_for_electricity": 1,
         "pe_losses_uranium_for_elec_ej": 1,
         "pe_losses_bioe_for_elec_ej": 1,
     },

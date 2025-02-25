@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="end year policy share FEH over FED",
+    name="end_year_policy_share_FEH_over_FED",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -29,16 +29,16 @@ _ext_constant_end_year_policy_share_feh_over_fed = ExtConstant(
 
 
 @component.add(
-    name='"FED by fuel for heat-nc"',
+    name='"FED_by_fuel_for_heat-nc"',
     units="EJ/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=[np.str_("final_sources")],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "fed_oil_for_heatnc": 1,
         "fed_nat_gas_for_heatnc": 1,
-        "fed_coal_for_heatnc": 1,
         "fed_solid_bioe_for_heatnc": 1,
+        "fed_coal_for_heatnc": 1,
     },
 )
 def fed_by_fuel_for_heatnc():
@@ -47,8 +47,8 @@ def fed_by_fuel_for_heatnc():
     """
     value = xr.DataArray(
         np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        {"final_sources": _subscript_dict["final_sources"]},
+        [np.str_("final_sources")],
     )
     value.loc[["electricity"]] = 0
     value.loc[["heat"]] = 0
@@ -59,7 +59,7 @@ def fed_by_fuel_for_heatnc():
 
 
 @component.add(
-    name='"FED coal for heat-nc"',
+    name='"FED_coal_for_heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -87,7 +87,7 @@ def fed_coal_for_heatnc():
 
 
 @component.add(
-    name='"FED nat. gas for heat-nc"',
+    name='"FED_nat._gas_for_heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -111,7 +111,7 @@ def fed_nat_gas_for_heatnc():
 
 
 @component.add(
-    name='"FED NRE for heat-nc"',
+    name='"FED_NRE_for_heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -126,7 +126,7 @@ def fed_nre_for_heatnc():
 
 
 @component.add(
-    name='"FED oil for heat-nc"',
+    name='"FED_oil_for_heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -150,7 +150,7 @@ def fed_oil_for_heatnc():
 
 
 @component.add(
-    name='"FED solid bioE for heat-nc"',
+    name='"FED_solid_bioE_for_heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -174,9 +174,9 @@ def fed_solid_bioe_for_heatnc():
 
 
 @component.add(
-    name="hist share FEH over FED by final fuel",
+    name="hist_share_FEH_over_FED_by_final_fuel",
     units="Dmnl",
-    subscripts=[np.str_("final sources")],
+    subscripts=[np.str_("final_sources")],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -192,8 +192,8 @@ def hist_share_feh_over_fed_by_final_fuel():
     """
     value = xr.DataArray(
         np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        {"final_sources": _subscript_dict["final_sources"]},
+        [np.str_("final_sources")],
     )
     value.loc[["electricity"]] = 0
     value.loc[["heat"]] = 0
@@ -206,7 +206,7 @@ def hist_share_feh_over_fed_by_final_fuel():
 
 
 @component.add(
-    name="hist share FEH over FED coal",
+    name="hist_share_FEH_over_FED_coal",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -231,7 +231,7 @@ _ext_constant_hist_share_feh_over_fed_coal = ExtConstant(
 
 
 @component.add(
-    name='"hist share FEH over FED nat. gas"',
+    name='"hist_share_FEH_over_FED_nat._gas"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -256,7 +256,7 @@ _ext_constant_hist_share_feh_over_fed_nat_gas = ExtConstant(
 
 
 @component.add(
-    name="hist share FEH over FED oil",
+    name="hist_share_FEH_over_FED_oil",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -281,7 +281,7 @@ _ext_constant_hist_share_feh_over_fed_oil = ExtConstant(
 
 
 @component.add(
-    name="hist share FEH over FED solid bioE",
+    name="hist_share_FEH_over_FED_solid_bioE",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -306,11 +306,11 @@ _ext_constant_hist_share_feh_over_fed_solid_bioe = ExtConstant(
 
 
 @component.add(
-    name="policy share FEH over FED",
+    name="policy_share_FEH_over_FED",
     units="Dmnl",
-    subscripts=[np.str_("final sources")],
+    subscripts=[np.str_("final_sources")],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={"__external__": "_ext_constant_policy_share_feh_over_fed"},
 )
 def policy_share_feh_over_fed():
@@ -319,8 +319,8 @@ def policy_share_feh_over_fed():
     """
     value = xr.DataArray(
         np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        {"final_sources": _subscript_dict["final_sources"]},
+        [np.str_("final_sources")],
     )
     def_subs = xr.zeros_like(value, dtype=bool)
     def_subs.loc[["liquids", "gases", "solids"]] = True
@@ -336,15 +336,15 @@ _ext_constant_policy_share_feh_over_fed = ExtConstant(
     "../../scenarios/scen_eu.xlsx",
     "NZP",
     "p_share_FEH_vs_FED*",
-    {"final sources": _subscript_dict["matter final sources"]},
+    {"final_sources": _subscript_dict["matter_final_sources"]},
     _root,
-    {"final sources": _subscript_dict["final sources"]},
+    {"final_sources": _subscript_dict["final_sources"]},
     "_ext_constant_policy_share_feh_over_fed",
 )
 
 
 @component.add(
-    name="policy share FEH over FED bioE",
+    name="policy_share_FEH_over_FED_bioE",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -366,7 +366,7 @@ _ext_constant_policy_share_feh_over_fed_bioe = ExtConstant(
 
 
 @component.add(
-    name='"ratio FED for heat-nc vs FED for heat-com"',
+    name='"ratio_FED_for_heat-nc_vs_FED_for_heat-com"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -380,13 +380,13 @@ def ratio_fed_for_heatnc_vs_fed_for_heatcom():
     Ratio FED for non-commercial heat vs FED for commercial heat (before climate change impacts).
     """
     return sum(
-        fed_by_fuel_for_heatnc().rename({np.str_("final sources"): "final sources!"}),
-        dim=["final sources!"],
+        fed_by_fuel_for_heatnc().rename({np.str_("final_sources"): "final_sources!"}),
+        dim=["final_sources!"],
     ) * zidz(1, float(required_fed_by_fuel_before_heat_correction().loc["heat"]))
 
 
 @component.add(
-    name='"share FED coal vs NRE heat-nc"',
+    name='"share_FED_coal_vs_NRE_heat-nc"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -400,7 +400,7 @@ def share_fed_coal_vs_nre_heatnc():
 
 
 @component.add(
-    name='"share FED gas vs NRE heat-nc"',
+    name='"share_FED_gas_vs_NRE_heat-nc"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -414,7 +414,7 @@ def share_fed_gas_vs_nre_heatnc():
 
 
 @component.add(
-    name='"share FED liquids vs NRE heat-nc"',
+    name='"share_FED_liquids_vs_NRE_heat-nc"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -428,23 +428,23 @@ def share_fed_liquids_vs_nre_heatnc():
 
 
 @component.add(
-    name="share FEH over FED by final fuel",
-    subscripts=[np.str_("final sources")],
+    name="share_FEH_over_FED_by_final_fuel",
+    subscripts=[np.str_("final_sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 4,
         "hist_share_feh_over_fed_by_final_fuel": 6,
-        "policy_share_feh_over_fed": 2,
         "end_year_policy_share_feh_over_fed": 2,
+        "policy_share_feh_over_fed": 2,
         "policy_share_feh_over_fed_bioe": 1,
     },
 )
 def share_feh_over_fed_by_final_fuel():
     value = xr.DataArray(
         np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        {"final_sources": _subscript_dict["final_sources"]},
+        [np.str_("final_sources")],
     )
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["solids"]] = False

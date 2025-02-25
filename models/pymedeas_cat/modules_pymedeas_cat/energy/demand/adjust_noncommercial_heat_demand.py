@@ -62,8 +62,8 @@ _ext_constant_debug_share_feh_oil_over_fed_solids = ExtConstant(
     depends_on={
         "fed_oil_for_heatnc": 1,
         "fed_nat_gas_for_heatnc": 1,
-        "fed_coal_for_heatnc": 1,
         "fed_solid_bioe_for_heatnc": 1,
+        "fed_coal_for_heatnc": 1,
     },
 )
 def fed_by_fuel_for_heatnc():

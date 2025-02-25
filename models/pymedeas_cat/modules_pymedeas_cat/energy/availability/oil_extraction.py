@@ -443,8 +443,8 @@ _delayfixed_evol_fossil_oil_extraction_rate_delayed = DelayFixed(
     comp_subtype="Normal",
     depends_on={
         "share_unconv_oil_vs_tot_agg_in_2050": 3,
-        "year_2012": 2,
         "year_2050": 3,
+        "year_2012": 2,
         "time": 1,
     },
 )
@@ -484,9 +484,9 @@ def exponent_availability_conv_oil():
     comp_subtype="Normal",
     depends_on={
         "rurr_conv_oil": 1,
+        "ped_domestic_cat_conv_oil_ej": 2,
         "max_extraction_conv_oil_ej": 1,
         "time": 1,
-        "ped_domestic_cat_conv_oil_ej": 2,
     },
 )
 def extraction_conv_oil_ej():
@@ -554,10 +554,10 @@ _delayfixed_extraction_fossil_oil_agg_delayed = DelayFixed(
     depends_on={
         "time": 1,
         "ped_domestic_cat_total_oil_ej": 3,
+        "remaining_extractable_fossil_oil_with_left_underground": 1,
         "max_extraction_total_agg_oil": 2,
         "nvs_1_year": 1,
         "activate_force_leaving_underground": 1,
-        "remaining_extractable_fossil_oil_with_left_underground": 1,
     },
 )
 def extraction_tot_agg_oil():
@@ -620,9 +620,9 @@ _delayfixed_extraction_unconv_oil_delayed = DelayFixed(
         "rurr_unconv_oil_ej": 1,
         "separate_conv_and_unconv_oil": 1,
         "max_extraction_unconv_oil": 1,
-        "max_unconv_oil_growth_extraction_ej": 1,
-        "historic_unconv_oil": 1,
         "time": 1,
+        "historic_unconv_oil": 1,
+        "max_unconv_oil_growth_extraction_ej": 1,
         "ped_total_oil_ej": 1,
     },
 )
@@ -814,8 +814,8 @@ def max_extraction_conv_oil_ej():
         "activate_force_leaving_underground": 1,
         "max_extraction_total_agg_oil_technical": 3,
         "max_extraction_total_agg_oil_policy": 1,
-        "time": 1,
         "start_year_policy_leave_in_ground_fossil_oil": 1,
+        "time": 1,
     },
 )
 def max_extraction_total_agg_oil():
@@ -864,8 +864,8 @@ def max_extraction_total_agg_oil_policy():
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_oil": 1,
-        "rurr_tot_agg_oil": 1,
         "table_max_extraction_agg_oil": 1,
+        "rurr_tot_agg_oil": 1,
     },
 )
 def max_extraction_total_agg_oil_technical():
@@ -926,8 +926,8 @@ def max_unconv_oil_growth_extraction():
     comp_subtype="Normal",
     depends_on={
         "check_liquids_delayed_1yr": 1,
-        "extraction_unconv_oil_delayed": 2,
         "constrain_liquids_exogenous_growth_delayed_1yr": 1,
+        "extraction_unconv_oil_delayed": 2,
         "max_unconv_oil_growth_extraction": 1,
     },
 )
@@ -1279,8 +1279,8 @@ def remaining_extractable_fossil_oil_with_left_underground():
         "_integ_rurr_conv_oil": {
             "initial": {
                 "urr_conv_oil": 1,
-                "separate_conv_and_unconv_oil": 1,
                 "cumulated_conv_oil_extraction_to_1995": 1,
+                "separate_conv_and_unconv_oil": 1,
             },
             "step": {"extraction_conv_oil_ej": 1, "flow_conv_oil_left_in_ground": 1},
         }
@@ -1406,8 +1406,8 @@ _sampleiftrue_rurr_total_agg_fossil_oil_in_reference_year = SampleIfTrue(
         "_integ_rurr_unconv_oil_ej": {
             "initial": {
                 "urr_unconv_oil": 1,
-                "separate_conv_and_unconv_oil": 1,
                 "cumulated_unconv_oil_extraction_to_1995": 1,
+                "separate_conv_and_unconv_oil": 1,
             },
             "step": {
                 "extraction_unconv_oil_ej": 1,

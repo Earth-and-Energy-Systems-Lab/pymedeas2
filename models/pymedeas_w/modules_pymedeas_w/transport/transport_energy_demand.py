@@ -4,9 +4,9 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="Share demand by fuel in transport",
+    name="Share_demand_by_fuel_in_transport",
     units="Dmnl",
-    subscripts=[np.str_("final sources")],
+    subscripts=[np.str_("final_sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_transport_fed_by_fuel": 1, "transport_tfed": 1},
@@ -19,9 +19,9 @@ def share_demand_by_fuel_in_transport():
 
 
 @component.add(
-    name="Total transport FED by fuel",
+    name="Total_transport_FED_by_fuel",
     units="EJ/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=[np.str_("final_sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -47,7 +47,7 @@ def total_transport_fed_by_fuel():
 
 
 @component.add(
-    name="transport fraction",
+    name="transport_fraction",
     units="Dmnl",
     subscripts=[np.str_("sectors")],
     comp_type="Constant",
@@ -73,7 +73,7 @@ _ext_constant_transport_fraction = ExtConstant(
 
 
 @component.add(
-    name="Transport TFED",
+    name="Transport_TFED",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -85,7 +85,7 @@ def transport_tfed():
     """
     return sum(
         total_transport_fed_by_fuel().rename(
-            {np.str_("final sources"): "final sources!"}
+            {np.str_("final_sources"): "final_sources!"}
         ),
-        dim=["final sources!"],
+        dim=["final_sources!"],
     )

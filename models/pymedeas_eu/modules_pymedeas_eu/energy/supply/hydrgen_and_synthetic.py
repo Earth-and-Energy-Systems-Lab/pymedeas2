@@ -4,9 +4,9 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="efficiency electricity to synthetic",
+    name="efficiency_electricity_to_synthetic",
     units="Dmnl",
-    subscripts=[np.str_("E to synthetic")],
+    subscripts=[np.str_("E_to_synthetic")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_efficiency_electricity_to_synthetic"},
@@ -19,17 +19,17 @@ _ext_constant_efficiency_electricity_to_synthetic = ExtConstant(
     "../energy.xlsx",
     "Europe",
     "ETS*",
-    {"E to synthetic": _subscript_dict["E to synthetic"]},
+    {"E_to_synthetic": _subscript_dict["E_to_synthetic"]},
     _root,
-    {"E to synthetic": _subscript_dict["E to synthetic"]},
+    {"E_to_synthetic": _subscript_dict["E_to_synthetic"]},
     "_ext_constant_efficiency_electricity_to_synthetic",
 )
 
 
 @component.add(
-    name="Electricity consumption for synthetic fuels",
+    name="Electricity_consumption_for_synthetic_fuels",
     units="EJ/year",
-    subscripts=[np.str_("E to synthetic")],
+    subscripts=[np.str_("E_to_synthetic")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -45,9 +45,9 @@ def electricity_consumption_for_synthetic_fuels():
 
 
 @component.add(
-    name="Electricity demand for synthetic fuels",
+    name="Electricity_demand_for_synthetic_fuels",
     units="EJ/year",
-    subscripts=[np.str_("E to synthetic")],
+    subscripts=[np.str_("E_to_synthetic")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 1, "policy_ets": 1, "efficiency_electricity_to_synthetic": 1},
@@ -60,9 +60,9 @@ def electricity_demand_for_synthetic_fuels():
 
 
 @component.add(
-    name="policy ETS",
+    name="policy_ETS",
     units="EJ/year",
-    subscripts=[np.str_("E to synthetic")],
+    subscripts=[np.str_("E_to_synthetic")],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -79,16 +79,16 @@ _ext_lookup_policy_ets = ExtLookup(
     "NZP",
     "year_synthetic",
     "p_ETS",
-    {"E to synthetic": _subscript_dict["E to synthetic"]},
+    {"E_to_synthetic": _subscript_dict["E_to_synthetic"]},
     _root,
-    {"E to synthetic": _subscript_dict["E to synthetic"]},
+    {"E_to_synthetic": _subscript_dict["E_to_synthetic"]},
     "_ext_lookup_policy_ets",
 )
 
 
 @component.add(
-    name="Synthethic fuel generation",
-    subscripts=[np.str_("E to synthetic")],
+    name="Synthethic_fuel_generation",
+    subscripts=[np.str_("E_to_synthetic")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -104,9 +104,9 @@ def synthethic_fuel_generation():
 
 
 @component.add(
-    name="Synthethic fuel generation delayed",
+    name="Synthethic_fuel_generation_delayed",
     units="EJ/year",
-    subscripts=[np.str_("E to synthetic")],
+    subscripts=[np.str_("E_to_synthetic")],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_synthethic_fuel_generation_delayed": 1},
@@ -125,7 +125,7 @@ _delayfixed_synthethic_fuel_generation_delayed = DelayFixed(
     lambda: synthethic_fuel_generation(),
     lambda: time_step(),
     lambda: xr.DataArray(
-        0, {"E to synthetic": _subscript_dict["E to synthetic"]}, ["E to synthetic"]
+        0, {"E_to_synthetic": _subscript_dict["E_to_synthetic"]}, ["E_to_synthetic"]
     ),
     time_step,
     "_delayfixed_synthethic_fuel_generation_delayed",
@@ -133,7 +133,7 @@ _delayfixed_synthethic_fuel_generation_delayed = DelayFixed(
 
 
 @component.add(
-    name="Total electricity demand for synthetic",
+    name="Total_electricity_demand_for_synthetic",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -142,7 +142,7 @@ _delayfixed_synthethic_fuel_generation_delayed = DelayFixed(
 def total_electricity_demand_for_synthetic():
     return sum(
         electricity_demand_for_synthetic_fuels().rename(
-            {np.str_("E to synthetic"): "E to synthetic!"}
+            {np.str_("E_to_synthetic"): "E_to_synthetic!"}
         ),
-        dim=["E to synthetic!"],
+        dim=["E_to_synthetic!"],
     )

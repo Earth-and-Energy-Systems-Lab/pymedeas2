@@ -4,15 +4,15 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="Adjusted other forcings",
+    name="Adjusted_other_forcings",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "other_forcings": 1,
+        "time": 1,
         "mineral_aerosols_and_land_rf": 1,
         "last_historical_rf_year": 1,
-        "time": 1,
     },
 )
 def adjusted_other_forcings():
@@ -27,19 +27,19 @@ def adjusted_other_forcings():
 
 
 @component.add(
-    name="Adjustment for CH4 and N2Oref",
+    name="Adjustment_for_CH4_and_N2Oref",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ch4_n2o_interaction_coef_1": 1,
-        "ch4_n2o_interaction_coef_3": 1,
-        "ch4_atm_conc": 3,
         "ch4_n2o_interaction_coef_2": 1,
         "ch4_n2o_interaction_exp_1": 1,
         "n2o_reference_conc": 2,
+        "ch4_n2o_interaction_coef_3": 1,
         "ch4_n2o_unit_adj": 5,
         "ch4_n2o_interaction_exp_2": 1,
+        "ch4_atm_conc": 3,
     },
 )
 def adjustment_for_ch4_and_n2oref():
@@ -70,19 +70,19 @@ def adjustment_for_ch4_and_n2oref():
 
 
 @component.add(
-    name="Adjustment for CH4ref and N2O",
+    name="Adjustment_for_CH4ref_and_N2O",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ch4_n2o_interaction_coef_1": 1,
-        "ch4_n2o_interaction_coef_3": 1,
         "ch4_n2o_interaction_coef_2": 1,
         "ch4_n2o_interaction_exp_1": 1,
-        "ch4_n2o_unit_adj": 5,
-        "ch4_reference_conc": 3,
         "ch4_n2o_interaction_exp_2": 1,
         "n2o_atm_conc": 2,
+        "ch4_n2o_interaction_coef_3": 1,
+        "ch4_n2o_unit_adj": 5,
+        "ch4_reference_conc": 3,
     },
 )
 def adjustment_for_ch4ref_and_n2o():
@@ -113,19 +113,19 @@ def adjustment_for_ch4ref_and_n2o():
 
 
 @component.add(
-    name="Adjustment for CH4ref and N2Oref",
+    name="Adjustment_for_CH4ref_and_N2Oref",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ch4_n2o_interaction_coef_1": 1,
-        "ch4_n2o_interaction_coef_3": 1,
         "ch4_n2o_interaction_coef_2": 1,
         "ch4_n2o_interaction_exp_1": 1,
+        "ch4_n2o_interaction_exp_2": 1,
         "n2o_reference_conc": 2,
+        "ch4_n2o_interaction_coef_3": 1,
         "ch4_n2o_unit_adj": 5,
         "ch4_reference_conc": 3,
-        "ch4_n2o_interaction_exp_2": 1,
     },
 )
 def adjustment_for_ch4ref_and_n2oref():
@@ -156,7 +156,7 @@ def adjustment_for_ch4ref_and_n2oref():
 
 
 @component.add(
-    name="CH4 and N2O Radiative Forcing",
+    name="CH4_and_N2O_Radiative_Forcing",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -170,7 +170,7 @@ def ch4_and_n2o_radiative_forcing():
 
 
 @component.add(
-    name="CH4 N2O interaction coef 1",
+    name="CH4_N2O_interaction_coef_1",
     units="W/(m*m)",
     comp_type="Constant",
     comp_subtype="External",
@@ -195,7 +195,7 @@ _ext_constant_ch4_n2o_interaction_coef_1 = ExtConstant(
 
 
 @component.add(
-    name="CH4 N2O interaction coef 2",
+    name="CH4_N2O_interaction_coef_2",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -220,7 +220,7 @@ _ext_constant_ch4_n2o_interaction_coef_2 = ExtConstant(
 
 
 @component.add(
-    name="CH4 N2O interaction coef 3",
+    name="CH4_N2O_interaction_coef_3",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -245,7 +245,7 @@ _ext_constant_ch4_n2o_interaction_coef_3 = ExtConstant(
 
 
 @component.add(
-    name="CH4 N2O interaction exp 1",
+    name="CH4_N2O_interaction_exp_1",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -270,7 +270,7 @@ _ext_constant_ch4_n2o_interaction_exp_1 = ExtConstant(
 
 
 @component.add(
-    name="CH4 N2O interaction exp 2",
+    name="CH4_N2O_interaction_exp_2",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -295,7 +295,7 @@ _ext_constant_ch4_n2o_interaction_exp_2 = ExtConstant(
 
 
 @component.add(
-    name="CH4 N2O unit adj",
+    name="CH4_N2O_unit_adj",
     units="1/ppb",
     comp_type="Constant",
     comp_subtype="External",
@@ -320,7 +320,7 @@ _ext_constant_ch4_n2o_unit_adj = ExtConstant(
 
 
 @component.add(
-    name="CH4 radiative efficiency coef",
+    name="CH4_radiative_efficiency_coef",
     units="W/(m*m)",
     comp_type="Constant",
     comp_subtype="External",
@@ -345,15 +345,15 @@ _ext_constant_ch4_radiative_efficiency_coef = ExtConstant(
 
 
 @component.add(
-    name="CH4 Radiative Forcing",
+    name="CH4_Radiative_Forcing",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ch4_radiative_efficiency_coef": 1,
+        "ch4_n2o_unit_adj": 2,
         "ch4_reference_conc": 1,
         "ch4_atm_conc": 1,
-        "ch4_n2o_unit_adj": 2,
         "adjustment_for_ch4ref_and_n2oref": 1,
         "adjustment_for_ch4_and_n2oref": 1,
     },
@@ -369,7 +369,7 @@ def ch4_radiative_forcing():
 
 
 @component.add(
-    name="CH4 reference conc",
+    name="CH4_reference_conc",
     units="ppb",
     comp_type="Constant",
     comp_subtype="External",
@@ -394,7 +394,7 @@ _ext_constant_ch4_reference_conc = ExtConstant(
 
 
 @component.add(
-    name="CO2 radiative forcing",
+    name="CO2_radiative_forcing",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -414,7 +414,7 @@ def co2_radiative_forcing():
 
 
 @component.add(
-    name="Effective Radiative Forcing",
+    name="Effective_Radiative_Forcing",
     units="W/(m*m)",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -442,7 +442,7 @@ _sampleiftrue_effective_radiative_forcing = SampleIfTrue(
 
 
 @component.add(
-    name="Halocarbon RF",
+    name="Halocarbon_RF",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -456,7 +456,7 @@ def halocarbon_rf():
 
 
 @component.add(
-    name="HFC RF total",
+    name="HFC_RF_total",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -466,11 +466,11 @@ def hfc_rf_total():
     """
     The sum of the RFs of the individual HFC types.
     """
-    return sum(hfc_rf().rename({np.str_("HFC type"): "HFC type!"}), dim=["HFC type!"])
+    return sum(hfc_rf().rename({np.str_("HFC_type"): "HFC_type!"}), dim=["HFC_type!"])
 
 
 @component.add(
-    name="last historical RF year",
+    name="last_historical_RF_year",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -495,7 +495,7 @@ _ext_constant_last_historical_rf_year = ExtConstant(
 
 
 @component.add(
-    name="mineral aerosols and land RF",
+    name="mineral_aerosols_and_land_RF",
     units="W/(m*m)",
     limits=(-1.0, 1.0, 0.01),
     comp_type="Constant",
@@ -521,7 +521,7 @@ _ext_constant_mineral_aerosols_and_land_rf = ExtConstant(
 
 
 @component.add(
-    name="MP RF total",
+    name="MP_RF_total",
     units="W/(m*m)",
     comp_type="Data",
     comp_subtype="External",
@@ -552,7 +552,7 @@ _ext_data_mp_rf_total = ExtData(
 
 
 @component.add(
-    name="N2O radiative efficiency coeff",
+    name="N2O_radiative_efficiency_coeff",
     units="W/(m*m)",
     comp_type="Constant",
     comp_subtype="External",
@@ -577,15 +577,15 @@ _ext_constant_n2o_radiative_efficiency_coeff = ExtConstant(
 
 
 @component.add(
-    name="N2O Radiative Forcing",
+    name="N2O_Radiative_Forcing",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "n2o_radiative_efficiency_coeff": 1,
-        "n2o_reference_conc": 1,
-        "n2o_atm_conc": 1,
         "ch4_n2o_unit_adj": 2,
+        "n2o_atm_conc": 1,
+        "n2o_reference_conc": 1,
         "adjustment_for_ch4ref_and_n2oref": 1,
         "adjustment_for_ch4ref_and_n2o": 1,
     },
@@ -601,7 +601,7 @@ def n2o_radiative_forcing():
 
 
 @component.add(
-    name="N2O reference conc",
+    name="N2O_reference_conc",
     units="ppb",
     comp_type="Constant",
     comp_subtype="External",
@@ -626,7 +626,7 @@ _ext_constant_n2o_reference_conc = ExtConstant(
 
 
 @component.add(
-    name="other forcings",
+    name="other_forcings",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -649,7 +649,7 @@ def other_forcings():
 
 
 @component.add(
-    name="other forcings history",
+    name="other_forcings_history",
     units="W/(m*m)",
     comp_type="Data",
     comp_subtype="External",
@@ -680,7 +680,7 @@ _ext_data_other_forcings_history = ExtData(
 
 
 @component.add(
-    name="other forcings RCP",
+    name="other_forcings_RCP",
     units="W/(m*m)",
     comp_type="Data",
     comp_subtype="Normal",
@@ -706,9 +706,9 @@ def other_forcings_rcp():
 
 
 @component.add(
-    name="other forcings RCP Scenario",
+    name="other_forcings_RCP_Scenario",
     units="W/(m*m)",
-    subscripts=[np.str_("RCP Scenario")],
+    subscripts=[np.str_("RCP_Scenario")],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -730,15 +730,15 @@ _ext_data_other_forcings_rcp_scenario = ExtData(
     "other_forcings_RCP_time",
     "other_forcings_RCP",
     "interpolate",
-    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
+    {"RCP_Scenario": _subscript_dict["RCP_Scenario"]},
     _root,
-    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
+    {"RCP_Scenario": _subscript_dict["RCP_Scenario"]},
     "_ext_data_other_forcings_rcp_scenario",
 )
 
 
 @component.add(
-    name='"Other GHG Rad Forcing (non CO2)"',
+    name='"Other_GHG_Rad_Forcing_(non_CO2)"',
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -749,7 +749,7 @@ def other_ghg_rad_forcing_non_co2():
 
 
 @component.add(
-    name="RF from F gases",
+    name="RF_from_F_gases",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -763,7 +763,7 @@ def rf_from_f_gases():
 
 
 @component.add(
-    name="time to commit RF",
+    name="time_to_commit_RF",
     units="year",
     limits=(1900.0, 2200.0),
     comp_type="Constant",
@@ -789,7 +789,7 @@ _ext_constant_time_to_commit_rf = ExtConstant(
 
 
 @component.add(
-    name="Total Radiative Forcing",
+    name="Total_Radiative_Forcing",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -800,7 +800,7 @@ def total_radiative_forcing():
 
 
 @component.add(
-    name='"Well-Mixed GHG Forcing"',
+    name='"Well-Mixed_GHG_Forcing"',
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",

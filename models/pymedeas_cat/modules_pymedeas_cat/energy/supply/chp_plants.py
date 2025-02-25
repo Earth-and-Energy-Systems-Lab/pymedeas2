@@ -359,13 +359,13 @@ def fes_heatcom_nuclear_chp_plants_ej():
     comp_subtype="Normal",
     depends_on={
         "ped_gas_for_chp_plants_ej": 1,
-        "efficiency_elec_gas_chp_plants": 1,
         "efficiency_heat_gas_chp_plants": 1,
+        "efficiency_elec_gas_chp_plants": 1,
+        "ped_oil_for_chp_plants_ej": 1,
         "efficiency_elec_oil_chp_plants": 1,
         "efficiency_heat_oil_chp_plants": 1,
-        "ped_oil_for_chp_plants_ej": 1,
-        "ped_coal_for_chp_plants_ej": 1,
         "efficiency_heat_coal_chp_plants": 1,
+        "ped_coal_for_chp_plants_ej": 1,
         "efficiency_elec_coal_chp_plants": 1,
     },
 )
@@ -517,8 +517,8 @@ def ped_oil_for_chp_plants_ej():
     depends_on={
         "ped_coal_for_chp_plants_ej": 1,
         "efficiency_elec_coal_chp_plants": 1,
-        "efficiency_elec_gas_chp_plants": 1,
         "ped_gas_for_chp_plants_ej": 1,
+        "efficiency_elec_gas_chp_plants": 1,
         "efficiency_elec_oil_chp_plants": 1,
         "ped_oil_for_chp_plants_ej": 1,
     },
@@ -600,8 +600,8 @@ _delayfixed_scarcity_final_fuels_delayed = DelayFixed(
     comp_subtype="Normal",
     depends_on={
         "historic_share_chp_plants_coal": 1,
-        "share_chp_plants_gas": 1,
         "share_chp_plants_oil": 1,
+        "share_chp_plants_gas": 1,
     },
 )
 def share_chp_plants_coal():
@@ -632,8 +632,8 @@ def share_chp_plants_gas():
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "a_reg_share_oil": 1,
         "historic_share_chp_plants_gas": 1,
+        "a_reg_share_oil": 1,
         "historic_share_chp_plants_oil": 1,
     },
 )
@@ -665,8 +665,8 @@ def share_chp_plants_oil():
         "efficiency_heat_oil_chp_plants": 1,
         "efficiency_heat_coal_chp_plants": 1,
         "efficiency_elec_coal_chp_plants": 2,
-        "efficiency_elec_gas_chp_plants": 2,
         "efficiency_heat_gas_chp_plants": 1,
+        "efficiency_elec_gas_chp_plants": 2,
     },
 )
 def share_efficiency_ff_for_elec_in_chp_plants():

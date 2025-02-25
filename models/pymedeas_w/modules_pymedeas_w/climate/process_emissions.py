@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="historic process emissions intensity",
+    name="historic_process_emissions_intensity",
     units="GtCO2/T$/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -30,7 +30,7 @@ _ext_lookup_historic_process_emissions_intensity = ExtLookup(
 
 
 @component.add(
-    name="last year historic process emissions",
+    name="last_year_historic_process_emissions",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -52,7 +52,7 @@ _ext_constant_last_year_historic_process_emissions = ExtConstant(
 
 
 @component.add(
-    name="process emissions intensity",
+    name="process_emissions_intensity",
     units="GTCO2e/T$/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -96,7 +96,7 @@ def process_emissions_intensity():
 
 
 @component.add(
-    name="process emissions reduction policy",
+    name="process_emissions_reduction_policy",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -118,7 +118,7 @@ _ext_constant_process_emissions_reduction_policy = ExtConstant(
 
 
 @component.add(
-    name="target year process emissions improvement",
+    name="target_year_process_emissions_improvement",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -142,7 +142,7 @@ _ext_constant_target_year_process_emissions_improvement = ExtConstant(
 
 
 @component.add(
-    name="Total process emissions",
+    name="Total_process_emissions",
     units="GTCO2e/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -159,7 +159,7 @@ def total_process_emissions():
     return (
         float(
             required_total_output_by_sector().loc[
-                "Coke refined petroleum nuclear fuel and chemicals etc"
+                "Coke_refined_petroleum_nuclear_fuel_and_chemicals_etc"
             ]
         )
         * m_to_t()

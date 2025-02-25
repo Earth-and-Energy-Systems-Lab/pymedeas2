@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name='"commercial pkm vehicles/pkm"',
+    name='"commercial_pkm_vehicles/pkm"',
     units="year*vehicles/(person*km)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -15,9 +15,9 @@ def commercial_pkm_vehiclespkm():
 
 
 @component.add(
-    name="desired pkm by mode and fuel",
+    name="desired_pkm_by_mode_and_fuel",
     units="person*km/year",
-    subscripts=[np.str_("fuels"), np.str_("Transport Modes pkm")],
+    subscripts=[np.str_("fuels"), np.str_("Transport_Modes_pkm")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pkm": 1, "pkm_fuel_share": 1},
@@ -27,9 +27,9 @@ def desired_pkm_by_mode_and_fuel():
 
 
 @component.add(
-    name="eficiency liquids pkm",
+    name="eficiency_liquids_pkm",
     units="EJ/(person*km)",
-    subscripts=[np.str_("Transport Modes pkm")],
+    subscripts=[np.str_("Transport_Modes_pkm")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_eficiency_liquids_pkm"},
@@ -42,18 +42,18 @@ _ext_constant_eficiency_liquids_pkm = ExtConstant(
     "../transport.xlsx",
     "Global",
     "EJ_pkm_liquids",
-    {"Transport Modes pkm": _subscript_dict["Transport Modes pkm"]},
+    {"Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"]},
     _root,
-    {"Transport Modes pkm": _subscript_dict["Transport Modes pkm"]},
+    {"Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"]},
     "_ext_constant_eficiency_liquids_pkm",
 )
 
 
 @component.add(
-    name="EI households transport",
+    name="EI_households_transport",
     units="EJ/T$",
-    subscripts=[np.str_("final sources")],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("final_sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "energy_pkm": 4,
@@ -65,8 +65,8 @@ _ext_constant_eficiency_liquids_pkm = ExtConstant(
 def ei_households_transport():
     value = xr.DataArray(
         np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        {"final_sources": _subscript_dict["final_sources"]},
+        [np.str_("final_sources")],
     )
     value.loc[["electricity"]] = (
         float(energy_pkm().loc["elect", "Househ"])
@@ -92,45 +92,45 @@ def ei_households_transport():
 
 
 @component.add(
-    name="energy commercial by fuel pkm",
+    name="energy_commercial_by_fuel_pkm",
     units="EJ/year",
-    subscripts=[np.str_("final sources")],
-    comp_type="Constant, Auxiliary",
+    subscripts=[np.str_("final_sources")],
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"energy_pkm": 4},
 )
 def energy_commercial_by_fuel_pkm():
     value = xr.DataArray(
         np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        {"final_sources": _subscript_dict["final_sources"]},
+        [np.str_("final_sources")],
     )
     value.loc[["liquids"]] = sum(
         energy_pkm()
-        .loc["liq", _subscript_dict["Transport Modes pkm Commercial"]]
+        .loc["liq", _subscript_dict["Transport_Modes_pkm_Commercial"]]
         .reset_coords(drop=True)
-        .rename({np.str_("Transport Modes pkm"): "Transport Modes pkm Commercial!"}),
-        dim=["Transport Modes pkm Commercial!"],
+        .rename({np.str_("Transport_Modes_pkm"): "Transport_Modes_pkm_Commercial!"}),
+        dim=["Transport_Modes_pkm_Commercial!"],
     ) + sum(
         energy_pkm()
-        .loc["hybrid", _subscript_dict["Transport Modes pkm Commercial"]]
+        .loc["hybrid", _subscript_dict["Transport_Modes_pkm_Commercial"]]
         .reset_coords(drop=True)
-        .rename({np.str_("Transport Modes pkm"): "Transport Modes pkm Commercial!"}),
-        dim=["Transport Modes pkm Commercial!"],
+        .rename({np.str_("Transport_Modes_pkm"): "Transport_Modes_pkm_Commercial!"}),
+        dim=["Transport_Modes_pkm_Commercial!"],
     )
     value.loc[["gases"]] = sum(
         energy_pkm()
-        .loc["gas", _subscript_dict["Transport Modes pkm Commercial"]]
+        .loc["gas", _subscript_dict["Transport_Modes_pkm_Commercial"]]
         .reset_coords(drop=True)
-        .rename({np.str_("Transport Modes pkm"): "Transport Modes pkm Commercial!"}),
-        dim=["Transport Modes pkm Commercial!"],
+        .rename({np.str_("Transport_Modes_pkm"): "Transport_Modes_pkm_Commercial!"}),
+        dim=["Transport_Modes_pkm_Commercial!"],
     )
     value.loc[["electricity"]] = sum(
         energy_pkm()
-        .loc["elect", _subscript_dict["Transport Modes pkm Commercial"]]
+        .loc["elect", _subscript_dict["Transport_Modes_pkm_Commercial"]]
         .reset_coords(drop=True)
-        .rename({np.str_("Transport Modes pkm"): "Transport Modes pkm Commercial!"}),
-        dim=["Transport Modes pkm Commercial!"],
+        .rename({np.str_("Transport_Modes_pkm"): "Transport_Modes_pkm_Commercial!"}),
+        dim=["Transport_Modes_pkm_Commercial!"],
     )
     value.loc[["heat"]] = 0
     value.loc[["solids"]] = 0
@@ -138,9 +138,9 @@ def energy_commercial_by_fuel_pkm():
 
 
 @component.add(
-    name="energy pkm",
+    name="energy_pkm",
     units="EJ/year",
-    subscripts=[np.str_("fuels"), np.str_("Transport Modes pkm")],
+    subscripts=[np.str_("fuels"), np.str_("Transport_Modes_pkm")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -161,7 +161,7 @@ def energy_pkm():
 
 
 @component.add(
-    name="Energy scarcity shortage by fuel",
+    name="Energy_scarcity_shortage_by_fuel",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Auxiliary",
@@ -184,7 +184,7 @@ def energy_scarcity_shortage_by_fuel():
 
 
 @component.add(
-    name="fuel share 1995",
+    name="fuel_share_1995",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Constant",
@@ -202,7 +202,7 @@ def fuel_share_1995():
 
 
 @component.add(
-    name="fuel share air pkm",
+    name="fuel_share_air_pkm",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Lookup",
@@ -229,7 +229,7 @@ _ext_lookup_fuel_share_air_pkm = ExtLookup(
 
 
 @component.add(
-    name="fuel share households pkm",
+    name="fuel_share_households_pkm",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Lookup",
@@ -256,7 +256,7 @@ _ext_lookup_fuel_share_households_pkm = ExtLookup(
 
 
 @component.add(
-    name="fuel share inland pkm",
+    name="fuel_share_inland_pkm",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Lookup",
@@ -283,7 +283,7 @@ _ext_lookup_fuel_share_inland_pkm = ExtLookup(
 
 
 @component.add(
-    name="fuel share maritime pkm",
+    name="fuel_share_maritime_pkm",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Lookup",
@@ -310,7 +310,7 @@ _ext_lookup_fuel_share_maritime_pkm = ExtLookup(
 
 
 @component.add(
-    name="hist pkm gdp",
+    name="hist_pkm_gdp",
     units="person*km/(year*T$)",
     comp_type="Lookup",
     comp_subtype="External",
@@ -336,9 +336,9 @@ _ext_lookup_hist_pkm_gdp = ExtLookup(
 
 
 @component.add(
-    name="hist transport share pkm",
+    name="hist_transport_share_pkm",
     units="Dmnl",
-    subscripts=[np.str_("Transport Modes pkm")],
+    subscripts=[np.str_("Transport_Modes_pkm")],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -355,15 +355,15 @@ _ext_lookup_hist_transport_share_pkm = ExtLookup(
     "World",
     "time_index_2015",
     "share_transport_mode_hist_pkm",
-    {"Transport Modes pkm": _subscript_dict["Transport Modes pkm"]},
+    {"Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"]},
     _root,
-    {"Transport Modes pkm": _subscript_dict["Transport Modes pkm"]},
+    {"Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"]},
     "_ext_lookup_hist_transport_share_pkm",
 )
 
 
 @component.add(
-    name='"households vehicles/pkm"',
+    name='"households_vehicles/pkm"',
     units="year*vehicles/(person*km)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -377,7 +377,7 @@ def households_vehiclespkm():
 
 
 @component.add(
-    name="initial commercial vehicles",
+    name="initial_commercial_vehicles",
     units="vehicles",
     comp_type="Constant",
     comp_subtype="External",
@@ -399,7 +399,7 @@ _ext_constant_initial_commercial_vehicles = ExtConstant(
 
 
 @component.add(
-    name="initial fuel share air pkm",
+    name="initial_fuel_share_air_pkm",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Constant",
@@ -422,7 +422,7 @@ _ext_constant_initial_fuel_share_air_pkm = ExtConstant(
 
 
 @component.add(
-    name="initial fuel share households pkm",
+    name="initial_fuel_share_households_pkm",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Constant",
@@ -445,7 +445,7 @@ _ext_constant_initial_fuel_share_households_pkm = ExtConstant(
 
 
 @component.add(
-    name="initial fuel share inland pkm",
+    name="initial_fuel_share_inland_pkm",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Constant",
@@ -468,7 +468,7 @@ _ext_constant_initial_fuel_share_inland_pkm = ExtConstant(
 
 
 @component.add(
-    name="initial fuel share maritime pkm",
+    name="initial_fuel_share_maritime_pkm",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Constant",
@@ -491,9 +491,9 @@ _ext_constant_initial_fuel_share_maritime_pkm = ExtConstant(
 
 
 @component.add(
-    name="initial households energy intensity",
+    name="initial_households_energy_intensity",
     units="EJ/T$",
-    subscripts=[np.str_("final sources")],
+    subscripts=[np.str_("final_sources")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_initial_households_energy_intensity"},
@@ -506,15 +506,15 @@ _ext_constant_initial_households_energy_intensity = ExtConstant(
     "../transport.xlsx",
     "World",
     "initial_ei_households_transport*",
-    {"final sources": _subscript_dict["final sources"]},
+    {"final_sources": _subscript_dict["final_sources"]},
     _root,
-    {"final sources": _subscript_dict["final sources"]},
+    {"final_sources": _subscript_dict["final_sources"]},
     "_ext_constant_initial_households_energy_intensity",
 )
 
 
 @component.add(
-    name="initial households vehicles",
+    name="initial_households_vehicles",
     units="vehicles",
     comp_type="Constant",
     comp_subtype="External",
@@ -539,7 +539,7 @@ _ext_constant_initial_households_vehicles = ExtConstant(
 
 
 @component.add(
-    name="initial pkm commercial",
+    name="initial_pkm_commercial",
     units="person*km/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -561,7 +561,7 @@ _ext_constant_initial_pkm_commercial = ExtConstant(
 
 
 @component.add(
-    name="initial pkm households",
+    name="initial_pkm_households",
     units="person*km/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -586,7 +586,7 @@ _ext_constant_initial_pkm_households = ExtConstant(
 
 
 @component.add(
-    name='"initial pkm/gdp"',
+    name='"initial_pkm/gdp"',
     units="person*km/(year*T$)",
     comp_type="Constant",
     comp_subtype="External",
@@ -608,9 +608,9 @@ _ext_constant_initial_pkmgdp = ExtConstant(
 
 
 @component.add(
-    name="mode share pkm",
+    name="mode_share_pkm",
     units="Dmnl",
-    subscripts=[np.str_("Transport Modes pkm")],
+    subscripts=[np.str_("Transport_Modes_pkm")],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -627,9 +627,9 @@ _ext_lookup_mode_share_pkm = ExtLookup(
     "NZP",
     "Year_transport_share",
     "pkm_share",
-    {"Transport Modes pkm": _subscript_dict["Transport Modes pkm"]},
+    {"Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"]},
     _root,
-    {"Transport Modes pkm": _subscript_dict["Transport Modes pkm"]},
+    {"Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"]},
     "_ext_lookup_mode_share_pkm",
 )
 
@@ -642,8 +642,8 @@ _ext_lookup_mode_share_pkm = ExtLookup(
     depends_on={
         "time": 3,
         "end_historical_data": 1,
-        "initial_pkmgdp": 1,
         "pkmgdp_slope": 1,
+        "initial_pkmgdp": 1,
         "hist_pkm_gdp": 1,
         "gdp": 1,
     },
@@ -663,9 +663,9 @@ def pkm():
 
 
 @component.add(
-    name="pkm fuel share",
+    name="pkm_fuel_share",
     units="Dmnl",
-    subscripts=[np.str_("fuels"), np.str_("Transport Modes pkm")],
+    subscripts=[np.str_("fuels"), np.str_("Transport_Modes_pkm")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -681,9 +681,9 @@ def pkm_fuel_share():
         np.nan,
         {
             "fuels": _subscript_dict["fuels"],
-            "Transport Modes pkm": _subscript_dict["Transport Modes pkm"],
+            "Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"],
         },
-        [np.str_("fuels"), np.str_("Transport Modes pkm")],
+        [np.str_("fuels"), np.str_("Transport_Modes_pkm")],
     )
     value.loc[:, ["Inland"]] = (
         (
@@ -691,17 +691,17 @@ def pkm_fuel_share():
             * float(pkm_mode_share().loc["Inland"])
             * (1 - float(pkm_mode_share().loc["Househ"]))
         )
-        .expand_dims({"Transport Modes pkm": ["Inland"]}, 1)
+        .expand_dims({"Transport_Modes_pkm": ["Inland"]}, 1)
         .values
     )
     value.loc[:, ["Maritime"]] = (
         (pkm_fuel_share_maritime() * float(pkm_mode_share().loc["Maritime"]))
-        .expand_dims({"Transport Modes pkm": ["Maritime"]}, 1)
+        .expand_dims({"Transport_Modes_pkm": ["Maritime"]}, 1)
         .values
     )
     value.loc[:, ["Air"]] = (
         (pkm_fuel_share_air() * float(pkm_mode_share().loc["Air"]))
-        .expand_dims({"Transport Modes pkm": ["Air"]}, 1)
+        .expand_dims({"Transport_Modes_pkm": ["Air"]}, 1)
         .values
     )
     value.loc[:, ["Househ"]] = (
@@ -710,14 +710,14 @@ def pkm_fuel_share():
             * float(pkm_mode_share().loc["Househ"])
             * float(pkm_mode_share().loc["Inland"])
         )
-        .expand_dims({"Transport Modes pkm": ["Househ"]}, 1)
+        .expand_dims({"Transport_Modes_pkm": ["Househ"]}, 1)
         .values
     )
     return value
 
 
 @component.add(
-    name="pkm fuel share air",
+    name="pkm_fuel_share_air",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Auxiliary",
@@ -727,8 +727,8 @@ def pkm_fuel_share():
         "end_historical_data": 4,
         "initial_fuel_share_air_pkm": 3,
         "fuel_share_1995": 2,
-        "start_year_policies_transport": 3,
         "fuel_share_air_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_air():
@@ -757,7 +757,7 @@ def pkm_fuel_share_air():
 
 
 @component.add(
-    name="pkm fuel share households",
+    name="pkm_fuel_share_households",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Auxiliary",
@@ -765,8 +765,8 @@ def pkm_fuel_share_air():
     depends_on={
         "time": 5,
         "end_historical_data": 4,
-        "fuel_share_1995": 2,
         "initial_fuel_share_households_pkm": 3,
+        "fuel_share_1995": 2,
         "start_year_policies_transport": 3,
         "fuel_share_households_pkm": 2,
     },
@@ -797,7 +797,7 @@ def pkm_fuel_share_households():
 
 
 @component.add(
-    name="pkm fuel share inland",
+    name="pkm_fuel_share_inland",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Auxiliary",
@@ -805,10 +805,10 @@ def pkm_fuel_share_households():
     depends_on={
         "time": 5,
         "end_historical_data": 4,
-        "fuel_share_1995": 2,
         "initial_fuel_share_inland_pkm": 3,
-        "start_year_policies_transport": 3,
+        "fuel_share_1995": 2,
         "fuel_share_inland_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_inland():
@@ -837,7 +837,7 @@ def pkm_fuel_share_inland():
 
 
 @component.add(
-    name="pkm fuel share maritime",
+    name="pkm_fuel_share_maritime",
     units="Dmnl",
     subscripts=[np.str_("fuels")],
     comp_type="Auxiliary",
@@ -847,8 +847,8 @@ def pkm_fuel_share_inland():
         "end_historical_data": 4,
         "fuel_share_1995": 2,
         "initial_fuel_share_maritime_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_maritime_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_maritime():
@@ -877,17 +877,17 @@ def pkm_fuel_share_maritime():
 
 
 @component.add(
-    name="pkm mode share",
+    name="pkm_mode_share",
     units="Dmnl",
-    subscripts=[np.str_("Transport Modes pkm")],
+    subscripts=[np.str_("Transport_Modes_pkm")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 5,
         "end_historical_data": 5,
         "hist_transport_share_pkm": 3,
-        "start_year_policies_transport": 3,
         "mode_share_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_mode_share():
@@ -911,7 +911,7 @@ def pkm_mode_share():
 
 
 @component.add(
-    name='"pkm/gdp slope"',
+    name='"pkm/gdp_slope"',
     units="person*km/(year*year*T$)",
     comp_type="Constant",
     comp_subtype="External",
@@ -933,9 +933,9 @@ _ext_constant_pkmgdp_slope = ExtConstant(
 
 
 @component.add(
-    name="real pkm by mode and fuel",
+    name="real_pkm_by_mode_and_fuel",
     units="person*km/year",
-    subscripts=[np.str_("fuels"), np.str_("Transport Modes pkm")],
+    subscripts=[np.str_("fuels"), np.str_("Transport_Modes_pkm")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -951,9 +951,9 @@ def real_pkm_by_mode_and_fuel():
 
 
 @component.add(
-    name="saving ratios vehicles pkm",
+    name="saving_ratios_vehicles_pkm",
     units="Dmnl",
-    subscripts=[np.str_("fuels"), np.str_("Transport Modes pkm")],
+    subscripts=[np.str_("fuels"), np.str_("Transport_Modes_pkm")],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_saving_ratios_vehicles_pkm"},
@@ -968,19 +968,19 @@ _ext_constant_saving_ratios_vehicles_pkm = ExtConstant(
     "saving_ratios_vehicles_pkm*",
     {
         "fuels": _subscript_dict["fuels"],
-        "Transport Modes pkm": _subscript_dict["Transport Modes pkm"],
+        "Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"],
     },
     _root,
     {
         "fuels": _subscript_dict["fuels"],
-        "Transport Modes pkm": _subscript_dict["Transport Modes pkm"],
+        "Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"],
     },
     "_ext_constant_saving_ratios_vehicles_pkm",
 )
 
 
 @component.add(
-    name="start year policies transport",
+    name="start_year_policies_transport",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1002,7 +1002,7 @@ _ext_constant_start_year_policies_transport = ExtConstant(
 
 
 @component.add(
-    name="vehicles commercial pkm",
+    name="vehicles_commercial_pkm",
     units="vehicles",
     subscripts=[np.str_("fuels")],
     comp_type="Auxiliary",
@@ -1017,7 +1017,7 @@ def vehicles_commercial_pkm():
 
 
 @component.add(
-    name="vehicles Households",
+    name="vehicles_Households",
     units="vehicles",
     subscripts=[np.str_("fuels")],
     comp_type="Auxiliary",

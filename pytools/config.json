@@ -6,12 +6,12 @@
         "return_timestamp": 1.0,
         "update_initials": {}
     },
-    "aggregation": "27sectors_exiobase",
+    "aggregation": "14sectors_cat",
     "region": "pymedeas_w",
     "silent": false,
     "headless": false,
     "missing_values": "warning",
-    "scenario_sheet": "BAU",
+    "scenario_sheet": "NZP",
     "plot": false,
     "progress": true
 }

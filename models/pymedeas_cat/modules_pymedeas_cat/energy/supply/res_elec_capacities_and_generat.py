@@ -52,8 +52,8 @@ def cp_baseload_reduction():
     comp_subtype="Normal",
     depends_on={
         "min_cp_baseload_res": 1,
-        "shortage_bioe_for_elec": 1,
         "cpini_res_elec": 1,
+        "shortage_bioe_for_elec": 1,
     },
 )
 def cp_res_elec():
@@ -261,8 +261,8 @@ _delayfixed_installed_capacity_res_elec_delayed = DelayFixed(
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
-        "start_year_p_growth_res_elec": 3,
         "p_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def installed_capacity_res_elec_policies():
@@ -792,7 +792,7 @@ def total_time_planconstr_res_elec():
     subscripts=[np.str_("RES_elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "lifetime_res_elec": 1, "replaced_capacity_res_elec_tw": 1},
+    depends_on={"time": 1, "replaced_capacity_res_elec_tw": 1, "lifetime_res_elec": 1},
 )
 def wear_res_elec():
     """

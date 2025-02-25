@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="modern BioE in households",
+    name="modern_BioE_in_households",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -21,7 +21,7 @@ def modern_bioe_in_households():
 
 
 @component.add(
-    name="modern solids BioE demand households",
+    name="modern_solids_BioE_demand_households",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -41,7 +41,7 @@ def modern_solids_bioe_demand_households():
 
 
 @component.add(
-    name="PE consumption trad biomass ref",
+    name="PE_consumption_trad_biomass_ref",
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -66,7 +66,7 @@ _ext_constant_pe_consumption_trad_biomass_ref = ExtConstant(
 
 
 @component.add(
-    name="PE traditional biomass consum EJ",
+    name="PE_traditional_biomass_consum_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -80,7 +80,7 @@ def pe_traditional_biomass_consum_ej():
 
 
 @component.add(
-    name="PE traditional biomass demand EJ",
+    name="PE_traditional_biomass_demand_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -100,7 +100,7 @@ def pe_traditional_biomass_demand_ej():
 
 
 @component.add(
-    name="PE traditional biomass EJ delayed 1yr",
+    name="PE_traditional_biomass_EJ_delayed_1yr",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -129,7 +129,7 @@ _delayfixed_pe_traditional_biomass_ej_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="People relying trad biomass ref",
+    name="People_relying_trad_biomass_ref",
     units="people",
     comp_type="Constant",
     comp_subtype="External",
@@ -154,7 +154,7 @@ _ext_constant_people_relying_trad_biomass_ref = ExtConstant(
 
 
 @component.add(
-    name="PEpc consumption people depending on trad biomass",
+    name="PEpc_consumption_people_depending_on_trad_biomass",
     units="EJ/(year*people)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -171,7 +171,7 @@ def pepc_consumption_people_depending_on_trad_biomass():
 
 
 @component.add(
-    name="Population dependent on trad biomass",
+    name="Population_dependent_on_trad_biomass",
     units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -191,7 +191,7 @@ def population_dependent_on_trad_biomass():
 
 
 @component.add(
-    name="share global pop dependent on trad biomass",
+    name="share_global_pop_dependent_on_trad_biomass",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -202,7 +202,7 @@ def share_global_pop_dependent_on_trad_biomass():
 
 
 @component.add(
-    name="share trad biomass vs solids in households",
+    name="share_trad_biomass_vs_solids_in_households",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",

@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="abundance total oil CAT",
+    name="abundance_total_oil_CAT",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -23,7 +23,7 @@ def abundance_total_oil_cat():
 
 
 @component.add(
-    name="abundance unconv oil",
+    name="abundance_unconv_oil",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -46,7 +46,7 @@ def abundance_unconv_oil():
 
 
 @component.add(
-    name="abundance unconv oil2",
+    name="abundance_unconv_oil2",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -60,7 +60,7 @@ def abundance_unconv_oil2():
 
 
 @component.add(
-    name="abundance unconv oil delayed 1yr",
+    name="abundance_unconv_oil_delayed_1yr",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -86,7 +86,7 @@ _delayfixed_abundance_unconv_oil_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="abundance unconv oil stock",
+    name="abundance_unconv_oil_stock",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -110,7 +110,7 @@ _integ_abundance_unconv_oil_stock = Integ(
 
 
 @component.add(
-    name="check liquids delayed 1yr",
+    name="check_liquids_delayed_1yr",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -139,7 +139,7 @@ _delayfixed_check_liquids_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name='"constrain liquids exogenous growth? delayed 1yr"',
+    name='"constrain_liquids_exogenous_growth?_delayed_1yr"',
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -165,7 +165,7 @@ _delayfixed_constrain_liquids_exogenous_growth_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="conv oil to leave underground",
+    name="conv_oil_to_leave_underground",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -189,7 +189,7 @@ def conv_oil_to_leave_underground():
 
 
 @component.add(
-    name="cumulated conv oil extraction",
+    name="cumulated_conv_oil_extraction",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -216,7 +216,7 @@ _integ_cumulated_conv_oil_extraction = Integ(
 
 
 @component.add(
-    name="cumulated conv oil extraction to 1995",
+    name="cumulated_conv_oil_extraction_to_1995",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -238,7 +238,7 @@ _ext_constant_cumulated_conv_oil_extraction_to_1995 = ExtConstant(
 
 
 @component.add(
-    name="cumulated tot agg extraction to 1995",
+    name="cumulated_tot_agg_extraction_to_1995",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -258,7 +258,7 @@ def cumulated_tot_agg_extraction_to_1995():
 
 
 @component.add(
-    name="cumulated tot agg oil extraction",
+    name="cumulated_tot_agg_oil_extraction",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -285,7 +285,7 @@ _integ_cumulated_tot_agg_oil_extraction = Integ(
 
 
 @component.add(
-    name="cumulated unconv oil extraction",
+    name="cumulated_unconv_oil_extraction",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -312,7 +312,7 @@ _integ_cumulated_unconv_oil_extraction = Integ(
 
 
 @component.add(
-    name="cumulated unconv oil extraction to 1995",
+    name="cumulated_unconv_oil_extraction_to_1995",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -339,7 +339,7 @@ _ext_constant_cumulated_unconv_oil_extraction_to_1995 = ExtConstant(
 
 
 @component.add(
-    name="delay oil to leave underground",
+    name="delay_oil_to_leave_underground",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -371,7 +371,7 @@ _sampleiftrue_delay_oil_to_leave_underground = SampleIfTrue(
 
 
 @component.add(
-    name="Demand conv oil EJ",
+    name="Demand_conv_oil_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -385,7 +385,7 @@ def demand_conv_oil_ej():
 
 
 @component.add(
-    name="evol fossil oil extraction rate constraint",
+    name="evol_fossil_oil_extraction_rate_constraint",
     units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -408,7 +408,7 @@ def evol_fossil_oil_extraction_rate_constraint():
 
 
 @component.add(
-    name="evol fossil oil extraction rate delayed",
+    name="evol_fossil_oil_extraction_rate_delayed",
     units="EJ/(year*year)",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -437,14 +437,14 @@ _delayfixed_evol_fossil_oil_extraction_rate_delayed = DelayFixed(
 
 
 @component.add(
-    name="evolution share unconv oil vs tot agg",
+    name="evolution_share_unconv_oil_vs_tot_agg",
     units="1",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_unconv_oil_vs_tot_agg_in_2050": 3,
-        "year_2050": 3,
         "year_2012": 2,
+        "year_2050": 3,
         "time": 1,
     },
 )
@@ -465,7 +465,7 @@ def evolution_share_unconv_oil_vs_tot_agg():
 
 
 @component.add(
-    name="exponent availability conv oil",
+    name="exponent_availability_conv_oil",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -478,15 +478,15 @@ def exponent_availability_conv_oil():
 
 
 @component.add(
-    name="extraction conv oil EJ",
+    name="extraction_conv_oil_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "rurr_conv_oil": 1,
+        "max_extraction_conv_oil_ej": 1,
         "time": 1,
         "ped_domestic_cat_conv_oil_ej": 2,
-        "max_extraction_conv_oil_ej": 1,
     },
 )
 def extraction_conv_oil_ej():
@@ -507,7 +507,7 @@ def extraction_conv_oil_ej():
 
 
 @component.add(
-    name='"extraction conv oil - tot agg"',
+    name='"extraction_conv_oil_-_tot_agg"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -518,7 +518,7 @@ def extraction_conv_oil_tot_agg():
 
 
 @component.add(
-    name="extraction fossil oil agg delayed",
+    name="extraction_fossil_oil_agg_delayed",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -547,17 +547,17 @@ _delayfixed_extraction_fossil_oil_agg_delayed = DelayFixed(
 
 
 @component.add(
-    name="extraction tot agg oil",
+    name="extraction_tot_agg_oil",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "ped_domestic_cat_total_oil_ej": 3,
-        "remaining_extractable_fossil_oil_with_left_underground": 1,
         "max_extraction_total_agg_oil": 2,
-        "activate_force_leaving_underground": 1,
         "nvs_1_year": 1,
+        "activate_force_leaving_underground": 1,
+        "remaining_extractable_fossil_oil_with_left_underground": 1,
     },
 )
 def extraction_tot_agg_oil():
@@ -583,7 +583,7 @@ def extraction_tot_agg_oil():
 
 
 @component.add(
-    name="extraction unconv oil delayed",
+    name="extraction_unconv_oil_delayed",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -612,17 +612,17 @@ _delayfixed_extraction_unconv_oil_delayed = DelayFixed(
 
 
 @component.add(
-    name="extraction unconv oil EJ",
+    name="extraction_unconv_oil_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "rurr_unconv_oil_ej": 1,
-        "time": 1,
+        "separate_conv_and_unconv_oil": 1,
+        "max_extraction_unconv_oil": 1,
         "max_unconv_oil_growth_extraction_ej": 1,
         "historic_unconv_oil": 1,
-        "max_extraction_unconv_oil": 1,
-        "separate_conv_and_unconv_oil": 1,
+        "time": 1,
         "ped_total_oil_ej": 1,
     },
 )
@@ -652,7 +652,7 @@ def extraction_unconv_oil_ej():
 
 
 @component.add(
-    name='"extraction unconv oil - tot agg"',
+    name='"extraction_unconv_oil_-_tot_agg"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -663,7 +663,7 @@ def extraction_unconv_oil_tot_agg():
 
 
 @component.add(
-    name="Flow conv oil left in ground",
+    name="Flow_conv_oil_left_in_ground",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -693,7 +693,7 @@ def flow_conv_oil_left_in_ground():
 
 
 @component.add(
-    name="Flow unconv oil left in ground",
+    name="Flow_unconv_oil_left_in_ground",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -723,7 +723,7 @@ def flow_unconv_oil_left_in_ground():
 
 
 @component.add(
-    name="Historic unconv oil",
+    name="Historic_unconv_oil",
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
@@ -754,7 +754,7 @@ _ext_data_historic_unconv_oil = ExtData(
 
 
 @component.add(
-    name="increase abundance unconv oil",
+    name="increase_abundance_unconv_oil",
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -769,7 +769,7 @@ def increase_abundance_unconv_oil():
 
 
 @component.add(
-    name="increase scarcity conv oil",
+    name="increase_scarcity_conv_oil",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -784,7 +784,7 @@ def increase_scarcity_conv_oil():
 
 
 @component.add(
-    name="max extraction conv oil EJ",
+    name="max_extraction_conv_oil_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -806,16 +806,16 @@ def max_extraction_conv_oil_ej():
 
 
 @component.add(
-    name="max extraction total agg oil",
+    name="max_extraction_total_agg_oil",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "activate_force_leaving_underground": 1,
         "max_extraction_total_agg_oil_technical": 3,
-        "start_year_policy_leave_in_ground_fossil_oil": 1,
-        "time": 1,
         "max_extraction_total_agg_oil_policy": 1,
+        "time": 1,
+        "start_year_policy_leave_in_ground_fossil_oil": 1,
     },
 )
 def max_extraction_total_agg_oil():
@@ -837,7 +837,7 @@ def max_extraction_total_agg_oil():
 
 
 @component.add(
-    name="max extraction total agg oil policy",
+    name="max_extraction_total_agg_oil_policy",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -858,7 +858,7 @@ def max_extraction_total_agg_oil_policy():
 
 
 @component.add(
-    name="max extraction total agg oil technical",
+    name="max_extraction_total_agg_oil_technical",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -880,7 +880,7 @@ def max_extraction_total_agg_oil_technical():
 
 
 @component.add(
-    name="max extraction unconv oil",
+    name="max_extraction_unconv_oil",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -894,7 +894,7 @@ def max_extraction_unconv_oil():
 
 
 @component.add(
-    name="max unconv oil growth extraction",
+    name="max_unconv_oil_growth_extraction",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -920,14 +920,14 @@ def max_unconv_oil_growth_extraction():
 
 
 @component.add(
-    name="max unconv oil growth extraction EJ",
+    name="max_unconv_oil_growth_extraction_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "check_liquids_delayed_1yr": 1,
-        "constrain_liquids_exogenous_growth_delayed_1yr": 1,
         "extraction_unconv_oil_delayed": 2,
+        "constrain_liquids_exogenous_growth_delayed_1yr": 1,
         "max_unconv_oil_growth_extraction": 1,
     },
 )
@@ -944,7 +944,7 @@ def max_unconv_oil_growth_extraction_ej():
 
 
 @component.add(
-    name='"Mb/d per EJ/year"',
+    name='"Mb/d_per_EJ/year"',
     units="Mb*year/(EJ*d)",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -957,14 +957,14 @@ def mbd_per_ejyear():
 
 
 @component.add(
-    name='"1 year"', units="year", comp_type="Constant", comp_subtype="Normal"
+    name='"1_year"', units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def nvs_1_year():
     return 1
 
 
 @component.add(
-    name="Oil refinery gains EJ",
+    name="Oil_refinery_gains_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -978,7 +978,7 @@ def oil_refinery_gains_ej():
 
 
 @component.add(
-    name="Oil refinery gains share",
+    name="Oil_refinery_gains_share",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1003,7 +1003,7 @@ _ext_constant_oil_refinery_gains_share = ExtConstant(
 
 
 @component.add(
-    name="P constraint growth extraction unconv oil",
+    name="P_constraint_growth_extraction_unconv_oil",
     units="Dmnl/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1030,7 +1030,7 @@ _ext_constant_p_constraint_growth_extraction_unconv_oil = ExtConstant(
 
 
 @component.add(
-    name="PEC conv oil",
+    name="PEC_conv_oil",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1044,7 +1044,7 @@ def pec_conv_oil():
 
 
 @component.add(
-    name="PEC unconv oil",
+    name="PEC_unconv_oil",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1058,7 +1058,7 @@ def pec_unconv_oil():
 
 
 @component.add(
-    name="PES oil EJ delayed",
+    name="PES_oil_EJ_delayed",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -1087,7 +1087,7 @@ _delayfixed_pes_oil_ej_delayed = DelayFixed(
 
 
 @component.add(
-    name='"PES oil Mb/d"',
+    name='"PES_oil_Mb/d"',
     units="Mb/d",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1101,7 +1101,7 @@ def pes_oil_mbd():
 
 
 @component.add(
-    name="PES total oil EJ CAT",
+    name="PES_total_oil_EJ_CAT",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1115,7 +1115,7 @@ def pes_total_oil_ej_cat():
 
 
 @component.add(
-    name="real consumption UE conv oil emissions relevant EJ",
+    name="real_consumption_UE_conv_oil_emissions_relevant_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1138,7 +1138,7 @@ def real_consumption_ue_conv_oil_emissions_relevant_ej():
 
 
 @component.add(
-    name="real consumption unconv oil emissions relevant EJ",
+    name="real_consumption_unconv_oil_emissions_relevant_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1161,7 +1161,7 @@ def real_consumption_unconv_oil_emissions_relevant_ej():
 
 
 @component.add(
-    name="real extraction conv oil EJ",
+    name="real_extraction_conv_oil_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1180,7 +1180,7 @@ def real_extraction_conv_oil_ej():
 
 
 @component.add(
-    name="real extraction conv oil emissions relevant EJ",
+    name="real_extraction_conv_oil_emissions_relevant_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1203,7 +1203,7 @@ def real_extraction_conv_oil_emissions_relevant_ej():
 
 
 @component.add(
-    name='"real extraction conv oil Mb/d"',
+    name='"real_extraction_conv_oil_Mb/d"',
     units="Mb/d",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1214,7 +1214,7 @@ def real_extraction_conv_oil_mbd():
 
 
 @component.add(
-    name="real extraction unconv oil EJ",
+    name="real_extraction_unconv_oil_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1233,7 +1233,7 @@ def real_extraction_unconv_oil_ej():
 
 
 @component.add(
-    name="real extraction unconv oil emissions relevant EJ",
+    name="real_extraction_unconv_oil_emissions_relevant_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1256,7 +1256,7 @@ def real_extraction_unconv_oil_emissions_relevant_ej():
 
 
 @component.add(
-    name="remaining extractable fossil oil with left underground",
+    name="remaining_extractable_fossil_oil_with_left_underground",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1270,7 +1270,7 @@ def remaining_extractable_fossil_oil_with_left_underground():
 
 
 @component.add(
-    name="RURR conv oil",
+    name="RURR_conv_oil",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1279,8 +1279,8 @@ def remaining_extractable_fossil_oil_with_left_underground():
         "_integ_rurr_conv_oil": {
             "initial": {
                 "urr_conv_oil": 1,
-                "cumulated_conv_oil_extraction_to_1995": 1,
                 "separate_conv_and_unconv_oil": 1,
+                "cumulated_conv_oil_extraction_to_1995": 1,
             },
             "step": {"extraction_conv_oil_ej": 1, "flow_conv_oil_left_in_ground": 1},
         }
@@ -1302,7 +1302,7 @@ _integ_rurr_conv_oil = Integ(
 
 
 @component.add(
-    name="RURR conv oil until start year PLG",
+    name="RURR_conv_oil_until_start_year_PLG",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -1334,7 +1334,7 @@ _sampleiftrue_rurr_conv_oil_until_start_year_plg = SampleIfTrue(
 
 
 @component.add(
-    name="RURR tot agg oil",
+    name="RURR_tot_agg_oil",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1343,8 +1343,8 @@ _sampleiftrue_rurr_conv_oil_until_start_year_plg = SampleIfTrue(
         "_integ_rurr_tot_agg_oil": {
             "initial": {
                 "separate_conv_and_unconv_oil": 1,
-                "cumulated_tot_agg_extraction_to_1995": 1,
                 "urr_tot_agg_oil": 1,
+                "cumulated_tot_agg_extraction_to_1995": 1,
             },
             "step": {"extraction_tot_agg_oil": 1},
         }
@@ -1369,7 +1369,7 @@ _integ_rurr_tot_agg_oil = Integ(
 
 
 @component.add(
-    name="RURR total agg fossil oil in reference year",
+    name="RURR_total_agg_fossil_oil_in_reference_year",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -1397,7 +1397,7 @@ _sampleiftrue_rurr_total_agg_fossil_oil_in_reference_year = SampleIfTrue(
 
 
 @component.add(
-    name="RURR unconv oil EJ",
+    name="RURR_unconv_oil_EJ",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1406,8 +1406,8 @@ _sampleiftrue_rurr_total_agg_fossil_oil_in_reference_year = SampleIfTrue(
         "_integ_rurr_unconv_oil_ej": {
             "initial": {
                 "urr_unconv_oil": 1,
-                "cumulated_unconv_oil_extraction_to_1995": 1,
                 "separate_conv_and_unconv_oil": 1,
+                "cumulated_unconv_oil_extraction_to_1995": 1,
             },
             "step": {
                 "extraction_unconv_oil_ej": 1,
@@ -1432,7 +1432,7 @@ _integ_rurr_unconv_oil_ej = Integ(
 
 
 @component.add(
-    name="RURR unconv oil until start year PLG",
+    name="RURR_unconv_oil_until_start_year_PLG",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -1464,14 +1464,14 @@ _sampleiftrue_rurr_unconv_oil_until_start_year_plg = SampleIfTrue(
 
 
 @component.add(
-    name="scarcity conv oil",
+    name="scarcity_conv_oil",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "max_extraction_conv_oil_ej": 4,
-        "exponent_availability_conv_oil": 1,
         "extraction_conv_oil_ej": 2,
+        "exponent_availability_conv_oil": 1,
     },
 )
 def scarcity_conv_oil():
@@ -1495,7 +1495,7 @@ def scarcity_conv_oil():
 
 
 @component.add(
-    name="scarcity conv oil delayed 1yr",
+    name="scarcity_conv_oil_delayed_1yr",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -1524,7 +1524,7 @@ _delayfixed_scarcity_conv_oil_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="scarcity conv oil stock",
+    name="scarcity_conv_oil_stock",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1549,7 +1549,7 @@ _integ_scarcity_conv_oil_stock = Integ(
 
 
 @component.add(
-    name='"separate conv and unconv oil?"',
+    name='"separate_conv_and_unconv_oil?"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1574,7 +1574,7 @@ _ext_constant_separate_conv_and_unconv_oil = ExtConstant(
 
 
 @component.add(
-    name="share conv oil vs tot agg",
+    name="share_conv_oil_vs_tot_agg",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1585,7 +1585,7 @@ def share_conv_oil_vs_tot_agg():
 
 
 @component.add(
-    name="share conv vs total oil extraction EU",
+    name="share_conv_vs_total_oil_extraction_EU",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1602,7 +1602,7 @@ def share_conv_vs_total_oil_extraction_eu():
 
 
 @component.add(
-    name="share RURR conv oil to leave underground",
+    name="share_RURR_conv_oil_to_leave_underground",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1629,7 +1629,7 @@ _ext_constant_share_rurr_conv_oil_to_leave_underground = ExtConstant(
 
 
 @component.add(
-    name="share RURR tot agg fossil oil to leave underground",
+    name="share_RURR_tot_agg_fossil_oil_to_leave_underground",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1656,7 +1656,7 @@ _ext_constant_share_rurr_tot_agg_fossil_oil_to_leave_underground = ExtConstant(
 
 
 @component.add(
-    name="share RURR unconv oil to leave underground",
+    name="share_RURR_unconv_oil_to_leave_underground",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1683,15 +1683,15 @@ _ext_constant_share_rurr_unconv_oil_to_leave_underground = ExtConstant(
 
 
 @component.add(
-    name="share unconv oil vs tot agg",
+    name="share_unconv_oil_vs_tot_agg",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "evolution_share_unconv_oil_vs_tot_agg": 1,
-        "ped_total_oil_ej": 1,
         "historic_unconv_oil": 1,
+        "ped_total_oil_ej": 1,
     },
 )
 def share_unconv_oil_vs_tot_agg():
@@ -1706,7 +1706,7 @@ def share_unconv_oil_vs_tot_agg():
 
 
 @component.add(
-    name="share unconv oil vs tot agg in 2050",
+    name="share_unconv_oil_vs_tot_agg_in_2050",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1731,7 +1731,7 @@ _ext_constant_share_unconv_oil_vs_tot_agg_in_2050 = ExtConstant(
 
 
 @component.add(
-    name="Start policy leave in ground conv oil",
+    name="Start_policy_leave_in_ground_conv_oil",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1756,7 +1756,7 @@ _ext_constant_start_policy_leave_in_ground_conv_oil = ExtConstant(
 
 
 @component.add(
-    name="Start policy leave in ground unconv oil",
+    name="Start_policy_leave_in_ground_unconv_oil",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1783,7 +1783,7 @@ _ext_constant_start_policy_leave_in_ground_unconv_oil = ExtConstant(
 
 
 @component.add(
-    name="Start year policy leave in ground fossil oil",
+    name="Start_year_policy_leave_in_ground_fossil_oil",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1810,7 +1810,7 @@ _ext_constant_start_year_policy_leave_in_ground_fossil_oil = ExtConstant(
 
 
 @component.add(
-    name="table max extraction agg oil",
+    name="table_max_extraction_agg_oil",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -1836,7 +1836,7 @@ _ext_lookup_table_max_extraction_agg_oil = ExtLookup(
 
 
 @component.add(
-    name="table max extraction conv oil",
+    name="table_max_extraction_conv_oil",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -1862,7 +1862,7 @@ _ext_lookup_table_max_extraction_conv_oil = ExtLookup(
 
 
 @component.add(
-    name="table max extraction unconv oil",
+    name="table_max_extraction_unconv_oil",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -1888,7 +1888,7 @@ _ext_lookup_table_max_extraction_unconv_oil = ExtLookup(
 
 
 @component.add(
-    name="Tot RURR conv oil",
+    name="Tot_RURR_conv_oil",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1902,7 +1902,7 @@ def tot_rurr_conv_oil():
 
 
 @component.add(
-    name="Tot RURR unconv oil",
+    name="Tot_RURR_unconv_oil",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1916,7 +1916,7 @@ def tot_rurr_unconv_oil():
 
 
 @component.add(
-    name="total agg fossil oil to leave underground",
+    name="total_agg_fossil_oil_to_leave_underground",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1936,7 +1936,7 @@ def total_agg_fossil_oil_to_leave_underground():
 
 
 @component.add(
-    name="Total conv oil left in ground",
+    name="Total_conv_oil_left_in_ground",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1963,7 +1963,7 @@ _integ_total_conv_oil_left_in_ground = Integ(
 
 
 @component.add(
-    name="Total unconv oil left in ground",
+    name="Total_unconv_oil_left_in_ground",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1990,15 +1990,15 @@ _integ_total_unconv_oil_left_in_ground = Integ(
 
 
 @component.add(
-    name="unconv oil to leave underground",
+    name="unconv_oil_to_leave_underground",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "start_policy_leave_in_ground_unconv_oil": 1,
-        "share_rurr_unconv_oil_to_leave_underground": 1,
         "rurr_unconv_oil_until_start_year_plg": 1,
+        "share_rurr_unconv_oil_to_leave_underground": 1,
     },
 )
 def unconv_oil_to_leave_underground():
@@ -2014,7 +2014,7 @@ def unconv_oil_to_leave_underground():
 
 
 @component.add(
-    name="URR conv oil",
+    name="URR_conv_oil",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -2030,7 +2030,7 @@ def urr_conv_oil():
 
 
 @component.add(
-    name="URR conv oil input",
+    name="URR_conv_oil_input",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -2052,7 +2052,7 @@ _ext_constant_urr_conv_oil_input = ExtConstant(
 
 
 @component.add(
-    name="URR tot agg oil",
+    name="URR_tot_agg_oil",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -2068,7 +2068,7 @@ def urr_tot_agg_oil():
 
 
 @component.add(
-    name="URR tot agg oil input",
+    name="URR_tot_agg_oil_input",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -2090,7 +2090,7 @@ _ext_constant_urr_tot_agg_oil_input = ExtConstant(
 
 
 @component.add(
-    name="URR unconv oil",
+    name="URR_unconv_oil",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -2106,7 +2106,7 @@ def urr_unconv_oil():
 
 
 @component.add(
-    name="URR unconv oil input",
+    name="URR_unconv_oil_input",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -2128,21 +2128,21 @@ _ext_constant_urr_unconv_oil_input = ExtConstant(
 
 
 @component.add(
-    name="year 2012", units="year", comp_type="Constant", comp_subtype="Normal"
+    name="year_2012", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def year_2012():
     return 2012
 
 
 @component.add(
-    name="year 2050", units="year", comp_type="Constant", comp_subtype="Normal"
+    name="year_2050", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def year_2050():
     return 2050
 
 
 @component.add(
-    name="Year scarcity oil",
+    name="Year_scarcity_oil",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -2156,7 +2156,7 @@ def year_scarcity_oil():
 
 
 @component.add(
-    name="year to end fossil oil extraction",
+    name="year_to_end_fossil_oil_extraction",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

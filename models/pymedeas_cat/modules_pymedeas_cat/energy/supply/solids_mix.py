@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="Coal in FEC CAT",
+    name="Coal_in_FEC_CAT",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -15,7 +15,7 @@ def coal_in_fec_cat():
 
 
 @component.add(
-    name="PED totat solids",
+    name="PED_totat_solids",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -42,7 +42,7 @@ def ped_totat_solids():
 
 
 @component.add(
-    name="share coal total FED",
+    name="share_coal_total_FED",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -53,7 +53,7 @@ def share_coal_total_fed():
 
 
 @component.add(
-    name="share modern solids BioE demand households",
+    name="share_modern_solids_BioE_demand_households",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -64,7 +64,7 @@ def share_modern_solids_bioe_demand_households():
 
 
 @component.add(
-    name="share traditional biomass",
+    name="share_traditional_biomass",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -75,7 +75,7 @@ def share_traditional_biomass():
 
 
 @component.add(
-    name="Total coal consumption",
+    name="Total_coal_consumption",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -100,7 +100,7 @@ def total_coal_consumption():
 
 
 @component.add(
-    name="Total solids EJ",
+    name="Total_solids_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -125,7 +125,7 @@ def total_solids_ej():
 
 
 @component.add(
-    name="Total solids FEC",
+    name="Total_solids_FEC",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

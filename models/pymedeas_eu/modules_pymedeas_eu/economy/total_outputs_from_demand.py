@@ -105,8 +105,8 @@ def domestic_demand_by_sector():
     comp_subtype="Normal",
     depends_on={
         "activate_energy_scarcity_feedback": 1,
-        "required_fed_by_fuel_before_heat_correction": 1,
         "real_fe_consumption_by_fuel_before_heat_correction": 1,
+        "required_fed_by_fuel_before_heat_correction": 1,
     },
 )
 def energy_scarcity_feedback_shortage_coeff_eu():
@@ -270,28 +270,25 @@ _delayfixed_real_demand_by_sector_delayed_eu = DelayFixed(
     name="Real demand delayed 1yr",
     units="T$",
     comp_type="Stateful",
-    comp_subtype="DelayFixed",
-    depends_on={"_delayfixed_real_demand_delayed_1yr": 1},
+    comp_subtype="Smooth",
+    depends_on={"_smooth_real_demand_delayed_1yr": 1},
     other_deps={
-        "_delayfixed_real_demand_delayed_1yr": {
+        "_smooth_real_demand_delayed_1yr": {
             "initial": {},
             "step": {"real_demand_tdollars": 1},
         }
     },
 )
 def real_demand_delayed_1yr():
-    """
-    SMOOTH N(Real demand Tdollars, 1, 8.6, 12)
-    """
-    return _delayfixed_real_demand_delayed_1yr()
+    return _smooth_real_demand_delayed_1yr()
 
 
-_delayfixed_real_demand_delayed_1yr = DelayFixed(
+_smooth_real_demand_delayed_1yr = Smooth(
     lambda: real_demand_tdollars(),
     lambda: 1,
-    lambda: 0,
-    time_step,
-    "_delayfixed_real_demand_delayed_1yr",
+    lambda: 8.6,
+    lambda: 12,
+    "_smooth_real_demand_delayed_1yr",
 )
 
 
@@ -402,7 +399,8 @@ def real_fe_consumption_by_fuel_before_heat_correction():
     depends_on={
         "real_fe_consumption_by_fuel": 5,
         "ratio_fed_for_heatnc_vs_fed_for_heatcom": 1,
-        "share_feh_over_fed_by_final_fuel": 3,
+        "share_feh_over_fed_by_final_fuel": 1,
+        "hist_share_feh_over_fed_by_final_fuel": 2,
     },
 )
 def real_fec_before_heat_dem_corr():
@@ -422,10 +420,10 @@ def real_fec_before_heat_dem_corr():
         1 - float(share_feh_over_fed_by_final_fuel().loc["liquids"])
     )
     value.loc[["gases"]] = float(real_fe_consumption_by_fuel().loc["gases"]) / (
-        1 - float(share_feh_over_fed_by_final_fuel().loc["gases"])
+        1 - float(hist_share_feh_over_fed_by_final_fuel().loc["gases"])
     )
     value.loc[["solids"]] = float(real_fe_consumption_by_fuel().loc["solids"]) / (
-        1 - float(share_feh_over_fed_by_final_fuel().loc["solids"])
+        1 - float(hist_share_feh_over_fed_by_final_fuel().loc["solids"])
     )
     return value
 
@@ -461,8 +459,8 @@ def real_final_demand_by_sector_eu():
         "energy_scarcity_feedback_shortage_coeff_eu": 3,
         "cc_impacts_feedback_shortage_coeff": 1,
         "dac_energy_consumption_by_sector_and_fuel": 1,
-        "ej_per_twh": 2,
         "ccs_energy_consumption_sector": 1,
+        "ej_per_twh": 2,
     },
 )
 def real_final_energy_by_sector_and_fuel_eu():
@@ -531,22 +529,6 @@ def real_tfec():
     """
     return sum(
         real_fe_consumption_by_fuel().rename(
-            {np.str_("final sources"): "final sources!"}
-        ),
-        dim=["final sources!"],
-    )
-
-
-@component.add(
-    name="real TFEC before heat corr",
-    units="EJ/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"real_fe_consumption_by_fuel_before_heat_correction": 1},
-)
-def real_tfec_before_heat_corr():
-    return sum(
-        real_fe_consumption_by_fuel_before_heat_correction().rename(
             {np.str_("final sources"): "final sources!"}
         ),
         dim=["final sources!"],
@@ -771,8 +753,8 @@ def required_fed_sectors_by_fuel():
         "m_to_t": 3,
         "nvs_1_year": 3,
         "ccs_energy_demand_sect": 1,
-        "ej_per_twh": 2,
         "dac_energy_demand_per_sector_and_fuel": 1,
+        "ej_per_twh": 2,
     },
 )
 def required_final_energy_by_sector_and_fuel_eu():
@@ -855,16 +837,13 @@ def share_e_losses_cc_world():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"real_fe_consumption_by_fuel": 1, "real_tfec_before_heat_corr": 1},
+    depends_on={"real_fe_consumption_by_fuel": 1, "real_tfec": 1},
 )
 def share_electricity_tfec():
     """
     Share of electricity in total final energy consumption
     """
-    return (
-        float(real_fe_consumption_by_fuel().loc["electricity"])
-        / real_tfec_before_heat_corr()
-    )
+    return float(real_fe_consumption_by_fuel().loc["electricity"]) / real_tfec()
 
 
 @component.add(

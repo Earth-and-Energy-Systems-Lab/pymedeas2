@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="Agricultural land 2015",
+    name="Agricultural_land_2015",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",
@@ -26,7 +26,7 @@ _ext_constant_agricultural_land_2015 = ExtConstant(
 
 
 @component.add(
-    name="Land requirements RES elec compet uses",
+    name="Land_requirements_RES_elec_compet_uses",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -50,7 +50,7 @@ def land_requirements_res_elec_compet_uses():
 
 
 @component.add(
-    name="Land saved by urban PV",
+    name="Land_saved_by_urban_PV",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -66,14 +66,14 @@ def land_saved_by_urban_pv():
     Land saved by urban PV.
     """
     return zidz(
-        float(potential_generation_res_elec_twh().loc["solar PV"])
+        float(potential_generation_res_elec_twh().loc["solar_PV"])
         * real_share_pv_urban_vs_total_pv(),
-        float(power_density_res_elec_twemha().loc["solar PV"]) / twe_per_twh(),
+        float(power_density_res_elec_twemha().loc["solar_PV"]) / twe_per_twh(),
     )
 
 
 @component.add(
-    name="real share PV urban vs total PV delayed",
+    name="real_share_PV_urban_vs_total_PV_delayed",
     units="percent",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -99,7 +99,7 @@ _delayfixed_real_share_pv_urban_vs_total_pv_delayed = DelayFixed(
 
 
 @component.add(
-    name="Share land compet biofuels",
+    name="Share_land_compet_biofuels",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -118,7 +118,7 @@ def share_land_compet_biofuels():
 
 
 @component.add(
-    name="share land RES land compet vs arable",
+    name="share_land_RES_land_compet_vs_arable",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -143,7 +143,7 @@ def share_land_res_land_compet_vs_arable():
 
 
 @component.add(
-    name="share land total RES vs arable",
+    name="share_land_total_RES_vs_arable",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -157,7 +157,7 @@ def share_land_total_res_vs_arable():
 
 
 @component.add(
-    name="share land total RES vs urban surface",
+    name="share_land_total_RES_vs_urban_surface",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -171,7 +171,7 @@ def share_land_total_res_vs_urban_surface():
 
 
 @component.add(
-    name="surface CSP Mha",
+    name="surface_CSP_Mha",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -185,7 +185,7 @@ def surface_csp_mha():
 
 
 @component.add(
-    name="surface hydro Mha",
+    name="surface_hydro_Mha",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -199,7 +199,7 @@ def surface_hydro_mha():
 
 
 @component.add(
-    name="surface onshore wind Mha",
+    name="surface_onshore_wind_Mha",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -209,13 +209,13 @@ def surface_onshore_wind_mha():
     """
     Surface required to produce "onshore wind TWe".
     """
-    return float(surface_res_elec().loc["wind onshore"])
+    return float(surface_res_elec().loc["wind_onshore"])
 
 
 @component.add(
-    name="surface RES elec",
+    name="surface_RES_elec",
     units="MHa",
-    subscripts=[np.str_("RES elec")],
+    subscripts=[np.str_("RES_elec")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -229,28 +229,28 @@ def surface_res_elec():
     Land requirements by renewable technologies for electricity generation.
     """
     value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, [np.str_("RES elec")]
+        np.nan, {"RES_elec": _subscript_dict["RES_elec"]}, [np.str_("RES_elec")]
     )
     except_subs = xr.ones_like(value, dtype=bool)
-    except_subs.loc[["solar PV"]] = False
+    except_subs.loc[["solar_PV"]] = False
     value.values[except_subs.values] = if_then_else(
         power_density_res_elec_twemha() == 0,
         lambda: xr.DataArray(
-            0, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+            0, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
         ),
         lambda: installed_capacity_res_elec_delayed() / power_density_res_elec_twemha(),
     ).values[except_subs.values]
-    value.loc[["solar PV"]] = if_then_else(
-        float(power_density_res_elec_twemha().loc["solar PV"]) == 0,
+    value.loc[["solar_PV"]] = if_then_else(
+        float(power_density_res_elec_twemha().loc["solar_PV"]) == 0,
         lambda: 0,
-        lambda: float(installed_capacity_res_elec_delayed().loc["solar PV"])
-        / float(power_density_res_elec_twemha().loc["solar PV"]),
+        lambda: float(installed_capacity_res_elec_delayed().loc["solar_PV"])
+        / float(power_density_res_elec_twemha().loc["solar_PV"]),
     ) * (1 - real_share_pv_urban_vs_total_pv_delayed())
     return value
 
 
 @component.add(
-    name="surface solar PV on land Mha",
+    name="surface_solar_PV_on_land_Mha",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -260,11 +260,11 @@ def surface_solar_pv_on_land_mha():
     """
     Area required for solar PV plants on land.
     """
-    return float(surface_res_elec().loc["solar PV"])
+    return float(surface_res_elec().loc["solar_PV"])
 
 
 @component.add(
-    name="Total land requirements renew Mha",
+    name="Total_land_requirements_renew_Mha",
     units="MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -289,7 +289,7 @@ def total_land_requirements_renew_mha():
 
 
 @component.add(
-    name="urban surface 2015",
+    name="urban_surface_2015",
     units="MHa",
     comp_type="Constant",
     comp_subtype="External",

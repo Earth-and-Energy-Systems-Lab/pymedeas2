@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="Heat gen related losses EJ",
+    name="Heat_gen_related_losses_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -15,7 +15,7 @@ def heat_gen_related_losses_ej():
 
 
 @component.add(
-    name="PE losses biogas for heat",
+    name="PE_losses_biogas_for_heat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -26,9 +26,9 @@ def pe_losses_biogas_for_heat():
 
 
 @component.add(
-    name="PE losses FF for Heat",
+    name="PE_losses_FF_for_Heat",
     units="EJ/year",
-    subscripts=[np.str_("fossil fuels")],
+    subscripts=[np.str_("fossil_fuels")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -46,7 +46,7 @@ def pe_losses_ff_for_heat():
 
 
 @component.add(
-    name="PE losses NRE heat",
+    name="PE_losses_NRE_heat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -55,15 +55,15 @@ def pe_losses_ff_for_heat():
 def pe_losses_nre_heat():
     return (
         sum(
-            pe_losses_ff_for_heat().rename({np.str_("fossil fuels"): "fossil fuels!"}),
-            dim=["fossil fuels!"],
+            pe_losses_ff_for_heat().rename({np.str_("fossil_fuels"): "fossil_fuels!"}),
+            dim=["fossil_fuels!"],
         )
         + pe_losses_uranium_for_heat()
     )
 
 
 @component.add(
-    name="PE losses RES for heat",
+    name="PE_losses_RES_for_heat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -74,7 +74,7 @@ def pe_losses_res_for_heat():
 
 
 @component.add(
-    name="PE losses uranium for Heat",
+    name="PE_losses_uranium_for_Heat",
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -84,7 +84,7 @@ def pe_losses_uranium_for_heat():
 
 
 @component.add(
-    name="PE losses waste for heat",
+    name="PE_losses_waste_for_heat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

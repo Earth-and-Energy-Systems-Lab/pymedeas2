@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name='"FED Heat-com after priorities"',
+    name='"FED_Heat-com_after_priorities"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -27,7 +27,7 @@ def fed_heatcom_after_priorities():
 
 
 @component.add(
-    name='"FED Heat-com EJ"',
+    name='"FED_Heat-com_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -41,7 +41,7 @@ def fed_heatcom_ej():
 
 
 @component.add(
-    name='"FED Heat-com NRE EJ"',
+    name='"FED_Heat-com_NRE_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -60,7 +60,7 @@ def fed_heatcom_nre_ej():
 
 
 @component.add(
-    name='"FED Heat-com plants fossil fuels EJ"',
+    name='"FED_Heat-com_plants_fossil_fuels_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -78,9 +78,9 @@ def fed_heatcom_plants_fossil_fuels_ej():
         fed_heatcom_nre_ej()
         - sum(
             fes_heatcom_fossil_fuels_chp_plants_ej().rename(
-                {np.str_("fossil fuels"): "fossil fuels!"}
+                {np.str_("fossil_fuels"): "fossil_fuels!"}
             ),
-            dim=["fossil fuels!"],
+            dim=["fossil_fuels!"],
         )
         - fes_heatcom_nuclear_chp_plants_ej(),
         0,
@@ -88,7 +88,7 @@ def fed_heatcom_plants_fossil_fuels_ej():
 
 
 @component.add(
-    name='"FED Heat-nc EJ"',
+    name='"FED_Heat-nc_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -107,7 +107,7 @@ def fed_heatnc_ej():
 
 
 @component.add(
-    name='"Heat-com distribution losses"',
+    name='"Heat-com_distribution_losses"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -121,7 +121,7 @@ def heatcom_distribution_losses():
 
 
 @component.add(
-    name='"Heat-nc distribution losses"',
+    name='"Heat-nc_distribution_losses"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -135,7 +135,7 @@ def heatnc_distribution_losses():
 
 
 @component.add(
-    name='"PED coal Heat-nc"',
+    name='"PED_coal_Heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -156,9 +156,9 @@ def ped_coal_heatnc():
 
 
 @component.add(
-    name='"PED FF Heat-nc"',
+    name='"PED_FF_Heat-nc"',
     units="EJ/year",
-    subscripts=["matter final sources"],
+    subscripts=["matter_final_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -174,8 +174,8 @@ def ped_coal_heatnc():
 def ped_ff_heatnc():
     value = xr.DataArray(
         np.nan,
-        {"matter final sources": _subscript_dict["matter final sources"]},
-        ["matter final sources"],
+        {"matter_final_sources": _subscript_dict["matter_final_sources"]},
+        ["matter_final_sources"],
     )
     value.loc[["liquids"]] = zidz(
         total_fed_nre_heatnc() * share_fed_liquids_vs_nre_heatnc(),
@@ -193,7 +193,7 @@ def ped_ff_heatnc():
 
 
 @component.add(
-    name='"PED gas Heat-nc"',
+    name='"PED_gas_Heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -214,7 +214,7 @@ def ped_gas_heatnc():
 
 
 @component.add(
-    name='"PED liquids Heat-nc"',
+    name='"PED_liquids_Heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -235,7 +235,7 @@ def ped_liquids_heatnc():
 
 
 @component.add(
-    name='"Share FED heat-com vs total heat"',
+    name='"Share_FED_heat-com_vs_total_heat"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -249,7 +249,7 @@ def share_fed_heatcom_vs_total_heat():
 
 
 @component.add(
-    name="Share heat distribution losses",
+    name="Share_heat_distribution_losses",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -274,7 +274,7 @@ _ext_constant_share_heat_distribution_losses = ExtConstant(
 
 
 @component.add(
-    name='"Total FE real supply RES for heat-com EJ"',
+    name='"Total_FE_real_supply_RES_for_heat-com_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -285,13 +285,13 @@ def total_fe_real_supply_res_for_heatcom_ej():
     Total final energy supply delivered by RES for commercial heat.
     """
     return sum(
-        fe_real_generation_res_heatcom().rename({np.str_("RES heat"): "RES heat!"}),
-        dim=["RES heat!"],
+        fe_real_generation_res_heatcom().rename({np.str_("RES_heat"): "RES_heat!"}),
+        dim=["RES_heat!"],
     )
 
 
 @component.add(
-    name='"Total FE real supply RES for heat-nc"',
+    name='"Total_FE_real_supply_RES_for_heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -302,13 +302,13 @@ def total_fe_real_supply_res_for_heatnc():
     Total final energy supply delivered by RES for non-commercial heat.
     """
     return sum(
-        fe_real_generation_res_heatnc().rename({np.str_("RES heat"): "RES heat!"}),
-        dim=["RES heat!"],
+        fe_real_generation_res_heatnc().rename({np.str_("RES_heat"): "RES_heat!"}),
+        dim=["RES_heat!"],
     )
 
 
 @component.add(
-    name="Total FED Heat EJ",
+    name="Total_FED_Heat_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -322,7 +322,7 @@ def total_fed_heat_ej():
 
 
 @component.add(
-    name='"Total FED Heat-com EJ"',
+    name='"Total_FED_Heat-com_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -336,7 +336,7 @@ def total_fed_heatcom_ej():
 
 
 @component.add(
-    name='"Total FED Heat-nc EJ"',
+    name='"Total_FED_Heat-nc_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -350,7 +350,7 @@ def total_fed_heatnc_ej():
 
 
 @component.add(
-    name='"Total FED NRE Heat-nc"',
+    name='"Total_FED_NRE_Heat-nc"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

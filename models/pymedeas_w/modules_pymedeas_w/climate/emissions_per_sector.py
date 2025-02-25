@@ -104,7 +104,7 @@ def co2_emissions_households_and_sectors_before_ccs():
 def co2_emissions_sectors_and_households_including_process():
     return if_then_else(
         total_process_emissions()
-        < sum(
+        > sum(
             process_co2_captured_ccs().rename(
                 {np.str_("SECTORS and HOUSEHOLDS"): "SECTORS and HOUSEHOLDS!"}
             ),
@@ -259,25 +259,6 @@ def total_co2_emissions_gtco2_after_capture():
     return (
         co2_emissions_sectors_and_households_including_process()
         - total_dac_co2_captured()
-    )
-
-
-@component.add(
-    name="Total CO2 emissions GTCO2 before CCS",
-    units="GTCO2e/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"co2_emissions_households_and_sectors_before_ccs": 1},
-)
-def total_co2_emissions_gtco2_before_ccs():
-    return sum(
-        co2_emissions_households_and_sectors_before_ccs().rename(
-            {
-                np.str_("final sources"): "final sources!",
-                np.str_("SECTORS and HOUSEHOLDS"): "SECTORS and HOUSEHOLDS!",
-            }
-        ),
-        dim=["final sources!", "SECTORS and HOUSEHOLDS!"],
     )
 
 

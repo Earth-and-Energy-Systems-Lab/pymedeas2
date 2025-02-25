@@ -216,7 +216,6 @@
             "initial_exports_demand",
             "initial_gfcf",
             "real_demand_world_next_step",
-            "share_exports_gdp",
             "total_exports",
             "total_gfcf",
             "variation_exports_demand",
@@ -327,7 +326,6 @@
             "real_final_demand_by_sector_eu",
             "real_final_energy_by_sector_and_fuel_eu",
             "real_tfec",
-            "real_tfec_before_heat_corr",
             "real_tfec_before_heat_dem_corr",
             "real_total_output",
             "real_total_output_by_fuel_and_sector",
@@ -543,7 +541,6 @@
                 "extraction_unconv_oil_delayed",
                 "extraction_unconv_oil_delayed_2",
                 "extraction_unconv_oil_tot_agg",
-                "historic_total_oil_domestic_eu_extracted",
                 "increase_abundance_unconv_oil",
                 "increase_scarcity_conv_oil",
                 "max_extraction_conv_oil",
@@ -888,7 +885,6 @@
                 "share_ff_for_heat_emissions_relevant",
                 "share_ff_for_heatnc",
                 "share_ff_for_nonenergy_use",
-                "share_ff_fs",
                 "share_nat_gas_for_gtl_emissions_relevant"
             ],
             "heat_demand": [
@@ -1142,8 +1138,6 @@
                 "share_elec_gen_in_chp_plants",
                 "share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation",
                 "share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation",
-                "total_elec_generation_ff_chp_plants",
-                "total_elec_generation_ff_chp_plants_delayed",
                 "var_chp_plants_oil"
             ],
             "crop_and_forest_residues": [
@@ -1295,6 +1289,7 @@
                 "historic_share_pipeline_transport",
                 "pes_fossil_fuel_extraction",
                 "pes_fossil_fuel_extraction_delayed",
+                "pipeline_transport",
                 "ratio_gain_gas_vs_lose_solids_in_tranf_processes",
                 "share_pipeline_transport_fecgl_in_2015",
                 "total_distribution_losses",
@@ -1367,7 +1362,6 @@
             ],
             "pes_solids_biofuels_and_waste": [
                 "losses_in_charcoal_plants",
-                "pe_solidbioe_for_heat_and_electricity",
                 "pes_solids_bioe_ej",
                 "pes_solids_bioe_waste",
                 "solid_bioe_emissions_relevant_ej"
@@ -1599,7 +1593,7 @@
                 "share_res_electricity_generation",
                 "total_fe_elec_consumption_ej",
                 "total_fe_elec_consumption_twh",
-                "total_fe_elec_generation_twh",
+                "total_fe_elec_generation_twh_eu",
                 "year_scarcity_elec"
             ],
             "total_fe_heat_generation": [
@@ -1637,7 +1631,6 @@
                 "tpe_from_res_ej",
                 "tped_by_fuel",
                 "tpes_ej",
-                "tpes_intensity_ej_tdollar",
                 "year_scarcity_tpe"
             ],
             "traditional_biomass": [

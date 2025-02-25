@@ -363,9 +363,9 @@ def imports_eu_unconv_oil_from_row_ej():
     comp_subtype="Normal",
     depends_on={
         "share_ff_for_nonenergy_use": 1,
-        "transformation_ff_losses": 1,
         "pes_fs": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses": 1,
     },
 )
 def nonenergy_use_consumption():
@@ -436,13 +436,7 @@ def other_ff_required_liquids():
     subscripts=["matter final sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "pes_biogas_ej": 1,
-        "pes_biogas_for_tfc": 1,
-        "pes_waste_for_tfc": 1,
-        "pes_waste_ej": 1,
-        "pe_solidbioe_for_heat_and_electricity": 1,
-    },
+    depends_on={"pes_biogas_ej": 1, "pes_biogas_for_tfc": 1},
 )
 def other_fs_demands():
     value = xr.DataArray(
@@ -452,9 +446,7 @@ def other_fs_demands():
     )
     value.loc[["gases"]] = pes_biogas_ej() - pes_biogas_for_tfc()
     value.loc[["liquids"]] = 0
-    value.loc[["solids"]] = (
-        pes_waste_ej() - pes_waste_for_tfc() + pe_solidbioe_for_heat_and_electricity()
-    )
+    value.loc[["solids"]] = 0
     return value
 
 
@@ -496,8 +488,8 @@ def other_liquids_supply_ej():
     depends_on={
         "extraction_coal_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
-        "imports_eu_nat_gas_from_row_ej": 1,
         "pes_nat_gas_eu": 1,
+        "imports_eu_nat_gas_from_row_ej": 1,
         "imports_eu_total_oil_from_row_ej": 1,
         "fes_ctlgtl_ej": 1,
         "pes_total_oil_ej_eu": 1,
@@ -554,8 +546,8 @@ def ped_domestic_eu_conv_ff():
         "ped_nre_fs": 2,
         "imports_eu_coal_from_row_ej": 1,
         "imports_eu_nat_gas_from_row_ej": 1,
-        "ped_total_oil_ej": 1,
         "imports_eu_total_oil_from_row_ej": 1,
+        "ped_total_oil_ej": 1,
     },
 )
 def ped_domestic_ff():
@@ -665,14 +657,13 @@ def ped_nat_gas_ej():
     depends_on={
         "ped_nre_fs_liquids": 1,
         "synthethic_fuel_generation_delayed": 2,
-        "ped_fs": 2,
         "pes_biogas_ej": 1,
-        "losses_in_charcoal_plants": 1,
-        "pe_solidbioe_for_heat_and_electricity": 1,
+        "ped_fs": 2,
         "pe_traditional_biomass_ej_delayed_1yr": 1,
-        "pes_peat": 1,
         "modern_solids_bioe_demand_households": 1,
         "pes_waste_for_tfc": 1,
+        "pes_peat": 1,
+        "losses_in_charcoal_plants": 1,
     },
 )
 def ped_nre_fs():
@@ -711,7 +702,6 @@ def ped_nre_fs():
         - modern_solids_bioe_demand_households()
         - pes_peat()
         - losses_in_charcoal_plants()
-        - pe_solidbioe_for_heat_and_electricity()
     )
     return value
 
@@ -755,12 +745,11 @@ def ped_total_oil_ej():
     comp_subtype="Normal",
     depends_on={
         "pec_ff": 3,
-        "pes_waste_ej": 1,
+        "pes_waste_for_tfc": 1,
         "pes_peat": 1,
         "pe_traditional_biomass_ej_delayed_1yr": 1,
         "modern_solids_bioe_demand_households": 1,
         "losses_in_charcoal_plants": 1,
-        "pe_solidbioe_for_heat_and_electricity": 1,
         "other_liquids_supply_ej": 1,
         "pes_biogas_for_tfc": 1,
         "synthethic_fuel_generation_delayed": 1,
@@ -775,12 +764,11 @@ def pes_fs():
     )
     value.loc[["solids"]] = (
         float(pec_ff().loc["solids"])
-        + pes_waste_ej()
+        + pes_waste_for_tfc()
         + pes_peat()
         + pe_traditional_biomass_ej_delayed_1yr()
         + modern_solids_bioe_demand_households()
         + losses_in_charcoal_plants()
-        + pe_solidbioe_for_heat_and_electricity()
     )
     value.loc[["liquids"]] = float(pec_ff().loc["liquids"]) + other_liquids_supply_ej()
     value.loc[["gases"]] = (
@@ -804,8 +792,8 @@ def pes_fs():
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "a_lin_reg_peat": 1,
         "b_lin_reg_peat": 1,
+        "a_lin_reg_peat": 1,
         "historic_pes_peat_ej": 1,
     },
 )
@@ -908,11 +896,11 @@ def share_ff_for_electricity():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 3,
-        "ped_fs": 3,
-        "share_ff_fs": 3,
+        "ped_nre_fs": 2,
         "share_ff_for_elec_emissions_relevant": 3,
         "share_ff_for_heat_emissions_relevant": 3,
         "share_coal_for_ctl_emissions_relevant": 1,
+        "ped_fs": 1,
     },
 )
 def share_ff_for_fc_emission_relevant():
@@ -925,9 +913,8 @@ def share_ff_for_fc_emission_relevant():
         1
         - zidz(
             float(nonenergy_use_demand_by_final_fuel().loc["solids"]),
-            float(ped_fs().loc["solids"]),
+            float(ped_nre_fs().loc["solids"]),
         )
-        * float(share_ff_fs().loc["solids"])
         - float(share_ff_for_elec_emissions_relevant().loc["solids"])
         - float(share_ff_for_heat_emissions_relevant().loc["solids"])
         - share_coal_for_ctl_emissions_relevant()
@@ -936,9 +923,8 @@ def share_ff_for_fc_emission_relevant():
         1
         - zidz(
             float(nonenergy_use_demand_by_final_fuel().loc["liquids"]),
-            float(ped_fs().loc["liquids"]),
+            float(ped_nre_fs().loc["liquids"]),
         )
-        * float(share_ff_fs().loc["liquids"])
         - float(share_ff_for_elec_emissions_relevant().loc["liquids"])
         - float(share_ff_for_heat_emissions_relevant().loc["liquids"])
     )
@@ -948,7 +934,6 @@ def share_ff_for_fc_emission_relevant():
             float(nonenergy_use_demand_by_final_fuel().loc["gases"]),
             float(ped_fs().loc["gases"]),
         )
-        * float(share_ff_fs().loc["gases"])
         - float(share_ff_for_elec_emissions_relevant().loc["gases"])
         - float(share_ff_for_heat_emissions_relevant().loc["gases"])
     )
@@ -963,8 +948,8 @@ def share_ff_for_fc_emission_relevant():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_fuel": 1,
-        "transformation_ff_losses": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses": 1,
         "ped_fs": 1,
     },
 )
@@ -1026,8 +1011,8 @@ def share_ff_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
-        "transformation_ff_losses": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses": 1,
         "ped_fs": 1,
     },
 )
@@ -1044,18 +1029,6 @@ def share_ff_for_nonenergy_use():
         .loc[_subscript_dict["matter final sources"]]
         .rename({np.str_("final sources"): "matter final sources"}),
     )
-
-
-@component.add(
-    name="share FF FS",
-    units="1",
-    subscripts=[np.str_("matter final sources")],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"ped_nre_fs": 1, "ped_fs": 1},
-)
-def share_ff_fs():
-    return ped_nre_fs() / ped_fs()
 
 
 @component.add(

@@ -35,19 +35,6 @@ _ext_data_losses_in_charcoal_plants = ExtData(
 
 
 @component.add(
-    name="PE solidbioE for heat and electricity",
-    units="EJ/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"pe_real_generation_res_elec": 1, "pes_res_for_heat_by_techn": 1},
-)
-def pe_solidbioe_for_heat_and_electricity():
-    return float(pe_real_generation_res_elec().loc["solid bioE elec"]) + float(
-        pes_res_for_heat_by_techn().loc["solid bioE heat"]
-    )
-
-
-@component.add(
     name="PES solids bioE EJ",
     units="EJ/year",
     comp_type="Auxiliary",

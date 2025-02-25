@@ -82,7 +82,7 @@ def co2_emissions_households_and_sectors_before_ccs():
 def co2_emissions_sectors_and_households_including_process():
     return if_then_else(
         total_process_emissions()
-        < sum(
+        > sum(
             process_co2_captured_ccs().rename(
                 {np.str_("SECTORS and HOUSEHOLDS"): "SECTORS and HOUSEHOLDS!"}
             ),
@@ -168,18 +168,10 @@ def share_energy_consumption_from_households_and_sectors():
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "total_co2_emissions_gtco2": 1,
-        "co2_soillucf_emissions": 1,
-        "afforestation_program_2020_gtco2": 1,
-    },
+    depends_on={"total_co2_emissions_gtco2": 1, "co2_soillucf_emissions": 1},
 )
 def total_co2_emissions_after_lulucf():
-    return (
-        total_co2_emissions_gtco2()
-        + co2_soillucf_emissions()
-        - afforestation_program_2020_gtco2()
-    )
+    return total_co2_emissions_gtco2() + co2_soillucf_emissions()
 
 
 @component.add(

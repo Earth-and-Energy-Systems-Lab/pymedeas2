@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name='"Carbon footprint tCO2/person"',
+    name='"Carbon_footprint_tCO2/person"',
     units="tCO2/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -18,7 +18,7 @@ def carbon_footprint_tco2person():
 
 
 @component.add(
-    name='"Carbon footprint tonnesC/person"',
+    name='"Carbon_footprint_tonnesC/person"',
     units="tonnesC/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -32,7 +32,7 @@ def carbon_footprint_tonnescperson():
 
 
 @component.add(
-    name="CO2 emissions per value added",
+    name="CO2_emissions_per_value_added",
     units="GtCO2/(year*T$)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -46,7 +46,7 @@ def co2_emissions_per_value_added():
 
 
 @component.add(
-    name="Potential max HDI",
+    name="Potential_max_HDI",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -66,14 +66,14 @@ def potential_max_hdi():
 
 
 @component.add(
-    name="tC per tCO2", units="tC/tCO2", comp_type="Constant", comp_subtype="Normal"
+    name="tC_per_tCO2", units="tC/tCO2", comp_type="Constant", comp_subtype="Normal"
 )
 def tc_per_tco2():
     return 3 / 11
 
 
 @component.add(
-    name="tCO2 per GtCO2",
+    name="tCO2_per_GtCO2",
     units="tCO2/GtCO2",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -86,7 +86,7 @@ def tco2_per_gtco2():
 
 
 @component.add(
-    name="Total water use per capita",
+    name="Total_water_use_per_capita",
     units="dam3/(person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -100,7 +100,7 @@ def total_water_use_per_capita():
 
 
 @component.add(
-    name="unit corr HDI",
+    name="unit_corr_HDI",
     units="(year*person)/GJ",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -110,7 +110,7 @@ def unit_corr_hdi():
 
 
 @component.add(
-    name="Water use per type per capita",
+    name="Water_use_per_type_per_capita",
     units="dam3/(person)",
     subscripts=[np.str_("water")],
     comp_type="Auxiliary",

@@ -13,7 +13,7 @@ Translated using PySD version 3.14.0
 )
 def demand_by_sector_row():
     return if_then_else(
-        time() < 2019,
+        time() < 2009,
         lambda: historic_demand_row(),
         lambda: real_demand_by_sector_row(),
     )
@@ -60,9 +60,9 @@ def historic_demand_row():
 _ext_data_historic_demand_row = ExtData(
     "../economy.xlsx",
     "Europe",
-    "time_index2019",
+    "time_index_2009",
     "historic_demand_RoW",
-    "interpolate",
+    None,
     {"sectors": _subscript_dict["sectors"]},
     _root,
     {"sectors": _subscript_dict["sectors"]},

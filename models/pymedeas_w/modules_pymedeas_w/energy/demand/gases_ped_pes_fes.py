@@ -69,16 +69,21 @@ def fes_total_biogas():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "transformation_ff_losses_ej": 1,
-        "energy_distr_losses_ff_ej": 1,
-        "nonenergy_use_demand_by_final_fuel_ej": 1,
+        "transformation_ff_losses_ej": 2,
+        "energy_distr_losses_ff_ej": 2,
+        "nonenergy_use_demand_by_final_fuel_ej": 2,
     },
 )
 def other_gases_required():
-    return (
+    return if_then_else(
         float(transformation_ff_losses_ej().loc["gases"])
         + float(energy_distr_losses_ff_ej().loc["gases"])
         + float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"])
+        < 0,
+        lambda: 0,
+        lambda: float(transformation_ff_losses_ej().loc["gases"])
+        + float(energy_distr_losses_ff_ej().loc["gases"])
+        + float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"]),
     )
 
 
@@ -221,9 +226,9 @@ def share_gases_dem_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_gas": 1,
-        "ped_gases": 1,
         "ped_nat_gas_for_gtl_ej": 1,
         "other_gases_required": 1,
+        "ped_gases": 1,
     },
 )
 def share_gases_for_final_energy():
@@ -279,8 +284,8 @@ def share_nat_gas_dem_for_heatcom():
     comp_subtype="Normal",
     depends_on={
         "pe_demand_gas_elec_plants_ej": 1,
-        "ped_gas_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp_nat_gas": 1,
+        "ped_gas_for_chp_plants_ej": 1,
         "ped_nat_gas_ej": 1,
     },
 )
@@ -299,7 +304,6 @@ def share_nat_gas_for_elec_emissions_relevant():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel_ej": 1,
-        "ped_gases": 2,
         "ped_nat_gas_ej": 1,
         "share_nat_gas_for_elec_emissions_relevant": 1,
         "share_nat_gas_for_gtl_emissions_relevant": 1,
@@ -312,9 +316,10 @@ def share_nat_gas_for_fc_emissions_relevant():
     """
     return (
         1
-        - zidz(float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"]), ped_gases())
-        * ped_nat_gas_ej()
-        / ped_gases()
+        - zidz(
+            float(nonenergy_use_demand_by_final_fuel_ej().loc["gases"]),
+            ped_nat_gas_ej(),
+        )
         - share_nat_gas_for_elec_emissions_relevant()
         - share_nat_gas_for_gtl_emissions_relevant()
         - share_nat_gas_for_heat_emissions_relevant()
@@ -340,8 +345,8 @@ def share_nat_gas_for_gtl_emissions_relevant():
     depends_on={
         "ped_gases_for_heat_plants_ej": 1,
         "ped_gas_heatnc": 1,
-        "ped_gas_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp_nat_gas": 1,
+        "ped_gas_for_chp_plants_ej": 1,
         "ped_nat_gas_ej": 1,
     },
 )

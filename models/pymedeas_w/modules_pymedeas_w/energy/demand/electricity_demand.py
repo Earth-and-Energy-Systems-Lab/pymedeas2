@@ -60,13 +60,16 @@ def fe_demand_elec_consum_twh():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"required_fed_by_fuel": 1},
+    depends_on={"required_fed_by_fuel": 1, "total_electricity_demand_for_synthetic": 1},
 )
 def fe_elec_demand_consum_ej():
     """
     Electricity consumption (EJ) including the electricity for synthetic fuels and hydrogen
     """
-    return float(required_fed_by_fuel().loc["electricity"])
+    return (
+        float(required_fed_by_fuel().loc["electricity"])
+        + total_electricity_demand_for_synthetic()
+    )
 
 
 @component.add(
@@ -97,7 +100,6 @@ _ext_lookup_policy_share_trans_and_dist_losses = ExtLookup(
 
 @component.add(
     name="share trans and dist losses",
-    units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -164,18 +166,10 @@ def total_fe_elec_demand_ej():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "fe_demand_elec_consum_twh": 1,
-        "share_trans_and_dist_losses": 1,
-        "ej_per_twh": 1,
-        "total_electricity_demand_for_synthetic": 1,
-    },
+    depends_on={"fe_demand_elec_consum_twh": 1, "share_trans_and_dist_losses": 1},
 )
 def total_fe_elec_demand_twh():
     """
     Total final energy electricity demand (TWh). It includes new electric uses (e.g. EV & HEV) and electrical transmission and distribution losses. (FE demand Elec consum TWh)*(1+"share transm&distr elec losses")
     """
-    return (
-        fe_demand_elec_consum_twh() * (1 + share_trans_and_dist_losses())
-        + total_electricity_demand_for_synthetic() / ej_per_twh()
-    )
+    return fe_demand_elec_consum_twh() * (1 + share_trans_and_dist_losses())

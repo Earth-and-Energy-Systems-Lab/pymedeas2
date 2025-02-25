@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="Coverage energy rate",
+    name="Coverage_energy_rate",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -18,9 +18,9 @@ def coverage_energy_rate():
 
 
 @component.add(
-    name="Energy embedded in CAT imports by sector and fuel",
+    name="Energy_embedded_in_CAT_imports_by_sector_and_fuel",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=[np.str_("final_sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -39,9 +39,9 @@ def energy_embedded_in_cat_imports_by_sector_and_fuel():
 
 
 @component.add(
-    name="Energy embedded in CAT imports from RoEU by sector and fuel",
+    name="Energy_embedded_in_CAT_imports_from_RoEU_by_sector_and_fuel",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=[np.str_("final_sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -59,9 +59,9 @@ def energy_embedded_in_cat_imports_from_roeu_by_sector_and_fuel():
 
 
 @component.add(
-    name="Energy embedded in EU exports by sector and fuel",
+    name="Energy_embedded_in_EU_exports_by_sector_and_fuel",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=[np.str_("final_sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -84,9 +84,9 @@ def energy_embedded_in_eu_exports_by_sector_and_fuel():
 
 
 @component.add(
-    name="Enery embedded in CAT imports from RoW by sector and fuel",
+    name="Enery_embedded_in_CAT_imports_from_RoW_by_sector_and_fuel",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=[np.str_("final_sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -104,9 +104,9 @@ def enery_embedded_in_cat_imports_from_row_by_sector_and_fuel():
 
 
 @component.add(
-    name="Final energy footprint by fuel",
+    name="Final_energy_footprint_by_fuel",
     units="EJ/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=[np.str_("final_sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -129,9 +129,9 @@ def final_energy_footprint_by_fuel():
 
 
 @component.add(
-    name="Final energy intensity by sector and fuel RoW",
+    name="Final_energy_intensity_by_sector_and_fuel_RoW",
     units="EJ/(year*T$)",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=[np.str_("final_sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -152,9 +152,9 @@ def final_energy_intensity_by_sector_and_fuel_row():
 
 
 @component.add(
-    name="Final energy intensity by sector and fuel RoW 0",
+    name="Final_energy_intensity_by_sector_and_fuel_RoW_0",
     units="EJ/(year*T$)",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=[np.str_("final_sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -175,9 +175,9 @@ def final_energy_intensity_by_sector_and_fuel_row_0():
 
 
 @component.add(
-    name="Real final energy by sector and fuel RoEU",
+    name="Real_final_energy_by_sector_and_fuel_RoEU",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=[np.str_("final_sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -196,9 +196,9 @@ def real_final_energy_by_sector_and_fuel_roeu():
 
 
 @component.add(
-    name="Real final energy by sector and fuel RoW",
+    name="Real_final_energy_by_sector_and_fuel_RoW",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=[np.str_("final_sources"), np.str_("sectors")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -217,7 +217,7 @@ def real_final_energy_by_sector_and_fuel_row():
 
 
 @component.add(
-    name="RoEU output required for CAT imports by sector",
+    name="RoEU_output_required_for_CAT_imports_by_sector",
     units="Mdollars",
     subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
@@ -236,7 +236,7 @@ def roeu_output_required_for_cat_imports_by_sector():
 
 
 @component.add(
-    name="RoW output required for CAT imports by sector",
+    name="RoW_output_required_for_CAT_imports_by_sector",
     units="Mdollars",
     subscripts=[np.str_("sectors")],
     comp_type="Auxiliary",
@@ -255,9 +255,9 @@ def row_output_required_for_cat_imports_by_sector():
 
 
 @component.add(
-    name="Total energy embedded in EU28 exports",
+    name="Total_energy_embedded_in_EU28_exports",
     units="EJ/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=[np.str_("final_sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_embedded_in_eu_exports_by_sector_and_fuel": 1},
@@ -275,9 +275,9 @@ def total_energy_embedded_in_eu28_exports():
 
 
 @component.add(
-    name="Total energy embedded in EU28 imports",
+    name="Total_energy_embedded_in_EU28_imports",
     units="EJ/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=[np.str_("final_sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_embedded_in_cat_imports_by_sector_and_fuel": 1},
@@ -295,7 +295,7 @@ def total_energy_embedded_in_eu28_imports():
 
 
 @component.add(
-    name="Total final energy footprint",
+    name="Total_final_energy_footprint",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -307,7 +307,7 @@ def total_final_energy_footprint():
     """
     return sum(
         final_energy_footprint_by_fuel().rename(
-            {np.str_("final sources"): "final sources!"}
+            {np.str_("final_sources"): "final_sources!"}
         ),
-        dim=["final sources!"],
+        dim=["final_sources!"],
     )

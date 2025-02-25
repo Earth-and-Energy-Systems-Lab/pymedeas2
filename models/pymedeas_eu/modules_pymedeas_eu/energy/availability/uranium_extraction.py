@@ -10,8 +10,8 @@ Translated using PySD version 3.14.0
     comp_subtype="Normal",
     depends_on={
         "pe_demand_uranium_eu_ej": 4,
-        "extraction_uranium_row": 2,
         "extraction_uranium": 2,
+        "extraction_uranium_row": 2,
     },
 )
 def abundance_uranium():
@@ -115,10 +115,10 @@ _ext_constant_cumulated_uranium_extraction_to_1995 = ExtConstant(
     depends_on={
         "rurr_uranium": 1,
         "time": 1,
+        "historic_uranium_domestic_extracted": 1,
         "kt_uranium_per_ej": 1,
         "max_extraction_uranium": 1,
         "tonnes_per_kt": 1,
-        "historic_uranium_domestic_extracted": 1,
         "pe_demand_uranium_eu_ej": 1,
     },
 )

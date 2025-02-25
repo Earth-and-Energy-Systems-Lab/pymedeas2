@@ -115,7 +115,6 @@
             "share_energy_consumption_from_households_and_sectors",
             "total_co2_emissions_after_lulucf",
             "total_co2_emissions_gtco2_after_capture",
-            "total_co2_emissions_gtco2_before_ccs",
             "total_cumulated_co2_emissions",
             "year_co2"
         ],
@@ -469,10 +468,9 @@
             "real_demand_by_sector",
             "real_demand_by_sector_delayed",
             "real_fe_consumption_by_fuel",
-            "real_fe_consumption_by_fuel_before_heat_correction",
+            "real_fec_before_heat_dem_corr",
             "real_final_energy_by_sector_and_fuel",
             "real_tfec",
-            "real_tfec_before_heat_corr",
             "real_total_output",
             "real_total_output_by_fuel_and_sector",
             "real_total_output_by_sector",
@@ -482,11 +480,9 @@
             "required_fed_sectors_by_fuel",
             "required_final_energy_by_sector_and_fuel",
             "required_total_output_by_sector",
-            "share_electricity_tfec",
             "share_fed_by_sector",
             "tfei_sectors",
-            "total_fed",
-            "total_fed_before_heat_corr"
+            "total_fed"
         ]
     },
     "energy": {
@@ -909,7 +905,6 @@
                 "final_energy_intensity_2020",
                 "final_year_energy_intensity_target",
                 "fuel_scarcity_pressure",
-                "global_energy_intensity_by_fuel",
                 "global_energy_intensity_by_sector",
                 "historic_final_energy_intensity",
                 "historic_mean_rate_energy_intensity",
@@ -921,7 +916,7 @@
                 "increase_of_intensity_due_to_energy_a_technology_net",
                 "inertial_rate_energy_intensity_top_down",
                 "initial_energy_intensity_1995",
-                "initial_global_energy_intensity_2019",
+                "initial_global_energy_intensity_2009",
                 "interfuel_scarcity_pressure",
                 "max_yearly_change_between_sources",
                 "maximum_yearly_acceleration_of_intensity_improvement",
@@ -984,7 +979,6 @@
                 "total_fed_heat_ej",
                 "total_fed_heatcom_ej",
                 "total_fed_heatnc",
-                "total_fed_nre_heat",
                 "total_fed_nre_heatnc"
             ],
             "liquids_ped_pes_fes": [
@@ -997,7 +991,7 @@
                 "ped_liquids_ej",
                 "ped_nre_liquids",
                 "ped_total_oil_ej",
-                "pes_liquids",
+                "pes_liquids_ej",
                 "required_fed_by_liquids_ej",
                 "share_biofuel_in_pes",
                 "share_liquids_dem_for_heatnc",
@@ -1010,6 +1004,7 @@
                 "share_oil_for_heat_emissions_relevant",
                 "share_oil_pes",
                 "total_demand_liquids_mbd",
+                "total_share_liquids",
                 "year_scarcity_liquids"
             ],
             "solids_ped_pes_fes": [
@@ -1034,7 +1029,8 @@
                 "share_coal_for_fc_emissions_relevant",
                 "share_coal_for_heat_emissions_relevant",
                 "share_solids_for_final_energy",
-                "solid_bioe_supply"
+                "solid_bioe_supply",
+                "total_share"
             ]
         },
         "eroi": {
@@ -1258,8 +1254,6 @@
                 "share_elec_gen_in_chp_oil",
                 "share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation",
                 "share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation",
-                "total_elec_generation_ff_chp_plants",
-                "total_elec_generation_ff_chp_plants_delayed",
                 "total_gen_losses_demand_for_chp_plants_ej",
                 "var_chp_plants_oil"
             ],
@@ -1627,7 +1621,6 @@
                 "abundance_electricity",
                 "abundance_nre_elec",
                 "annual_growth_rate_electricity_generation_res_elec_tot",
-                "chp_and_nuc",
                 "fe_elec_generation_from_fossil_fuels",
                 "fe_elec_generation_from_fossil_fuels_twh",
                 "fe_elec_generation_from_nre_twh",
@@ -1656,7 +1649,6 @@
                 "pes_oil_for_heatcom_plants",
                 "pes_oil_for_heatnc_plants",
                 "share_res_heat_generation",
-                "total_fe_heat_consumption",
                 "total_fe_heat_generation",
                 "year_scarcity_heat"
             ],
@@ -1670,7 +1662,6 @@
                 "tpe_from_res_ej",
                 "tped_by_fuel",
                 "tpes_ej",
-                "tpes_intensity_ej_tdollar",
                 "year_scarcity_tpe"
             ],
             "traditional_biomass": [

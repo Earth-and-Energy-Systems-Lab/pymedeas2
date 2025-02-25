@@ -135,8 +135,8 @@ _integ_exports_demand = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "real_exports_demand_by_sector": 1,
         "exports_demand": 1,
+        "real_exports_demand_by_sector": 1,
         "nvs_1_year": 1,
     },
 )
@@ -146,7 +146,7 @@ def exports_demand_not_covered():
     """
     return (
         if_then_else(
-            time() < 2019,
+            time() < 2009,
             lambda: xr.DataArray(
                 0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
             ),
@@ -164,8 +164,8 @@ def exports_demand_not_covered():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "gross_fixed_capital_formation": 1,
         "real_gfcf_by_sector": 1,
+        "gross_fixed_capital_formation": 1,
         "nvs_1_year": 1,
     },
 )
@@ -175,7 +175,7 @@ def gfcf_not_covered():
     """
     return (
         if_then_else(
-            time() < 2019,
+            time() < 2009,
             lambda: xr.DataArray(
                 0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
             ),
@@ -234,7 +234,7 @@ def historic_exports_demand(x, final_subs=None):
 _ext_lookup_historic_exports_demand = ExtLookup(
     "../economy.xlsx",
     "Europe",
-    "time_index2019",
+    "time_index_2009",
     "historic_exports_demand",
     {"sectors": _subscript_dict["sectors"]},
     _root,
@@ -264,7 +264,7 @@ def historic_gfcf(x, final_subs=None):
 _ext_lookup_historic_gfcf = ExtLookup(
     "../economy.xlsx",
     "Europe",
-    "time_index2019",
+    "time_index2009",
     "historic_GFCF",
     {"sectors": _subscript_dict["sectors"]},
     _root,
@@ -315,17 +315,6 @@ def real_demand_world_next_step():
 
 
 @component.add(
-    name="share exports gdp",
-    units="Mdollars/T$",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"total_exports": 1, "gdp_eu": 1},
-)
-def share_exports_gdp():
-    return (total_exports() / 1000000.0) / gdp_eu()
-
-
-@component.add(
     name="Total exports",
     units="Mdollars",
     comp_type="Auxiliary",
@@ -366,13 +355,13 @@ def total_gfcf():
     comp_subtype="Normal",
     depends_on={
         "exports_demand": 1,
-        "beta_1_exp": 2,
         "time": 1,
-        "real_demand_world": 1,
-        "variation_historic_exports_demand": 1,
         "beta_0_exp": 1,
-        "real_demand_world_next_step": 1,
+        "real_demand_world": 1,
         "unit_correction_economic": 2,
+        "beta_1_exp": 2,
+        "real_demand_world_next_step": 1,
+        "variation_historic_exports_demand": 1,
     },
 )
 def variation_exports_demand():
@@ -383,7 +372,7 @@ def variation_exports_demand():
         exports_demand() < 0,
         lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
         lambda: if_then_else(
-            time() < 2019,
+            time() < 2009,
             lambda: variation_historic_exports_demand(),
             lambda: np.exp(beta_0_exp())
             * (
@@ -403,14 +392,14 @@ def variation_exports_demand():
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 1,
-        "variation_cc": 1,
         "time": 1,
         "cc_total": 2,
         "beta_1_gfcf": 2,
-        "beta_0_gfcf": 1,
         "nvs_1_year": 1,
-        "variation_historic_gfcf": 1,
         "unit_correction_economic": 2,
+        "beta_0_gfcf": 1,
+        "variation_historic_gfcf": 1,
+        "variation_cc": 1,
     },
 )
 def variation_gfcf():
@@ -421,7 +410,7 @@ def variation_gfcf():
         gross_fixed_capital_formation() <= 0,
         lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
         lambda: if_then_else(
-            time() < 2019,
+            time() < 2009,
             lambda: variation_historic_gfcf(),
             lambda: np.exp(beta_0_gfcf())
             * (

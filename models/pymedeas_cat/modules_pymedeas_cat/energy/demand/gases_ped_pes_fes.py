@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="abundance gases",
+    name="abundance_gases",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -22,7 +22,7 @@ def abundance_gases():
 
 
 @component.add(
-    name="check gases",
+    name="check_gases",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -36,7 +36,7 @@ def check_gases():
 
 
 @component.add(
-    name='"constrain gas exogenous growth?"',
+    name='"constrain_gas_exogenous_growth?"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -50,7 +50,7 @@ def constrain_gas_exogenous_growth():
 
 
 @component.add(
-    name="FES total biogas",
+    name="FES_total_biogas",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -61,7 +61,7 @@ def fes_total_biogas():
 
 
 @component.add(
-    name='"Historic conv nat. gas domestic CAT extracted EJ"',
+    name='"Historic_conv_nat._gas_domestic_CAT_extracted_EJ"',
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
@@ -89,7 +89,7 @@ _ext_data_historic_conv_nat_gas_domestic_cat_extracted_ej = ExtData(
 
 
 @component.add(
-    name='"Historic net imports nat. gas CAT "',
+    name='"Historic_net_imports_nat._gas_CAT_"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -108,7 +108,7 @@ def historic_net_imports_nat_gas_cat_():
 
 
 @component.add(
-    name='"Historic share conv. nat gas domestic CAT extraction"',
+    name='"Historic_share_conv._nat_gas_domestic_CAT_extraction"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -122,7 +122,7 @@ def historic_share_conv_nat_gas_domestic_cat_extraction():
 
 
 @component.add(
-    name='"Historic share conv. nat gas domestic CAT extraction\\" until 2016"',
+    name='"Historic_share_conv._nat_gas_domestic_CAT_extraction\\"_until_2016"',
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -156,7 +156,7 @@ _sampleiftrue_historic_share_conv_nat_gas_domestic_cat_extraction_until_2016 = (
 
 
 @component.add(
-    name='"Historic share net imports nat. gas until 2016"',
+    name='"Historic_share_net_imports_nat._gas_until_2016"',
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -169,8 +169,8 @@ _sampleiftrue_historic_share_conv_nat_gas_domestic_cat_extraction_until_2016 = (
             },
             "step": {
                 "time": 1,
-                "historic_net_imports_nat_gas_cat_": 1,
                 "extraction_nat_gas_ej_world": 1,
+                "historic_net_imports_nat_gas_cat_": 1,
             },
         }
     },
@@ -188,7 +188,7 @@ _sampleiftrue_historic_share_net_imports_nat_gas_until_2016 = SampleIfTrue(
 
 
 @component.add(
-    name='"Historic share unconv. nat. gas domestric CAT extraction"',
+    name='"Historic_share_unconv._nat._gas_domestric_CAT_extraction"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -202,7 +202,7 @@ def historic_share_unconv_nat_gas_domestric_cat_extraction():
 
 
 @component.add(
-    name='"Historic share unconv. nat. gas domestric CAT extraction until 2016"',
+    name='"Historic_share_unconv._nat._gas_domestric_CAT_extraction_until_2016"',
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -234,7 +234,7 @@ _sampleiftrue_historic_share_unconv_nat_gas_domestric_cat_extraction_until_2016 
 
 
 @component.add(
-    name='"Historic unconv nat. gas domestic CAT extracted EJ"',
+    name='"Historic_unconv_nat._gas_domestic_CAT_extracted_EJ"',
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
@@ -262,7 +262,7 @@ _ext_data_historic_unconv_nat_gas_domestic_cat_extracted_ej = ExtData(
 
 
 @component.add(
-    name="imports CAT conv gas from RoW",
+    name="imports_CAT_conv_gas_from_RoW",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -278,7 +278,7 @@ def imports_cat_conv_gas_from_row():
 
 
 @component.add(
-    name='"imports CAT nat. gas from RoW EJ"',
+    name='"imports_CAT_nat._gas_from_RoW_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -289,7 +289,7 @@ def imports_cat_nat_gas_from_row_ej():
 
 
 @component.add(
-    name="imports CAT unconv gas from RoW",
+    name="imports_CAT_unconv_gas_from_RoW",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -305,7 +305,7 @@ def imports_cat_unconv_gas_from_row():
 
 
 @component.add(
-    name="Other gases required",
+    name="Other_gases_required",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -329,7 +329,7 @@ def other_gases_required():
 
 
 @component.add(
-    name='"PEC nat. gas"',
+    name='"PEC_nat._gas"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -340,7 +340,7 @@ def pec_nat_gas():
 
 
 @component.add(
-    name='"PED CAT nat. gas from RoW"',
+    name='"PED_CAT_nat._gas_from_RoW"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -351,7 +351,7 @@ def ped_cat_nat_gas_from_row():
 
 
 @component.add(
-    name='"PED domestic CAT conv. nat. gas EJ"',
+    name='"PED_domestic_CAT_conv._nat._gas_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -368,7 +368,7 @@ def ped_domestic_cat_conv_nat_gas_ej():
 
 
 @component.add(
-    name='"PED domestic CAT total nat.gas EJ"',
+    name='"PED_domestic_CAT_total_nat.gas_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -383,7 +383,7 @@ def ped_domestic_cat_total_natgas_ej():
 
 
 @component.add(
-    name="PED gases",
+    name="PED_gases",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -422,7 +422,7 @@ def ped_gases():
 
 
 @component.add(
-    name='"PED nat. gas EJ"',
+    name='"PED_nat._gas_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -436,7 +436,7 @@ def ped_nat_gas_ej():
 
 
 @component.add(
-    name="PES gases",
+    name="PES_gases",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -450,7 +450,7 @@ def pes_gases():
 
 
 @component.add(
-    name="real FE consumption gases EJ",
+    name="real_FE_consumption_gases_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -471,7 +471,7 @@ def real_fe_consumption_gases_ej():
 
 
 @component.add(
-    name="Required FED by gases",
+    name="Required_FED_by_gases",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -485,7 +485,7 @@ def required_fed_by_gases():
 
 
 @component.add(
-    name="Share biogas in PES",
+    name="Share_biogas_in_PES",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -496,7 +496,7 @@ def share_biogas_in_pes():
 
 
 @component.add(
-    name="share gas elec plants",
+    name="share_gas_elec_plants",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -507,7 +507,7 @@ def share_gas_elec_plants():
 
 
 @component.add(
-    name='"share gases dem for Heat-nc"',
+    name='"share_gases_dem_for_Heat-nc"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -521,15 +521,15 @@ def share_gases_dem_for_heatnc():
 
 
 @component.add(
-    name="share gases for final energy",
+    name="share_gases_for_final_energy",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_gases": 1,
-        "other_gases_required": 1,
-        "ped_gases": 1,
         "ped_nat_gas_for_gtl_ej": 1,
+        "ped_gases": 1,
+        "other_gases_required": 1,
     },
 )
 def share_gases_for_final_energy():
@@ -543,7 +543,7 @@ def share_gases_for_final_energy():
 
 
 @component.add(
-    name='"share nat. gas dem for Elec"',
+    name='"share_nat._gas_dem_for_Elec"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -561,7 +561,7 @@ def share_nat_gas_dem_for_elec():
 
 
 @component.add(
-    name='"share nat. gas dem for Heat-com"',
+    name='"share_nat._gas_dem_for_Heat-com"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -579,29 +579,29 @@ def share_nat_gas_dem_for_heatcom():
 
 
 @component.add(
-    name="share nat gas for Elec emissions relevant",
+    name="share_nat_gas_for_Elec_emissions_relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ped_gas_elec_plants_ej": 1,
-        "ped_gas_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp": 1,
-        "self_consuption_energy_sector": 1,
+        "ped_gas_for_chp_plants_ej": 1,
         "ped_nat_gas_ej": 1,
+        "self_consuption_energy_sector": 1,
     },
 )
 def share_nat_gas_for_elec_emissions_relevant():
     return zidz(
         ped_gas_elec_plants_ej()
         + ped_gas_for_chp_plants_ej()
-        * float(share_elec_gen_in_chp().loc["natural gas"]),
+        * float(share_elec_gen_in_chp().loc["natural_gas"]),
         ped_nat_gas_ej() - float(self_consuption_energy_sector().loc["gases"]),
     )
 
 
 @component.add(
-    name="share nat gas for FC emissions relevant",
+    name="share_nat_gas_for_FC_emissions_relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -624,7 +624,7 @@ def share_nat_gas_for_fc_emissions_relevant():
 
 
 @component.add(
-    name="share nat gas for GTL emissions relevant",
+    name="share_nat_gas_for_GTL_emissions_relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -635,17 +635,17 @@ def share_nat_gas_for_gtl_emissions_relevant():
 
 
 @component.add(
-    name="share nat gas for Heat emissions relevant",
+    name="share_nat_gas_for_Heat_emissions_relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ped_gases_for_heat_plants_ej": 1,
         "ped_gas_heatnc": 1,
-        "ped_gas_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp": 1,
-        "self_consuption_energy_sector": 1,
+        "ped_gas_for_chp_plants_ej": 1,
         "ped_nat_gas_ej": 1,
+        "self_consuption_energy_sector": 1,
     },
 )
 def share_nat_gas_for_heat_emissions_relevant():
@@ -653,13 +653,13 @@ def share_nat_gas_for_heat_emissions_relevant():
         ped_gases_for_heat_plants_ej()
         + ped_gas_heatnc()
         + ped_gas_for_chp_plants_ej()
-        * (1 - float(share_elec_gen_in_chp().loc["natural gas"])),
+        * (1 - float(share_elec_gen_in_chp().loc["natural_gas"])),
         ped_nat_gas_ej() - -float(self_consuption_energy_sector().loc["gases"]),
     )
 
 
 @component.add(
-    name="Year scarcity gases",
+    name="Year_scarcity_gases",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

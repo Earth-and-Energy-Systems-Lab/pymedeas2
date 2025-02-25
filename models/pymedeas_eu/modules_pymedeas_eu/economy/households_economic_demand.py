@@ -69,7 +69,7 @@ def historic_hd(x, final_subs=None):
 _ext_lookup_historic_hd = ExtLookup(
     "../economy.xlsx",
     "Europe",
-    "time_index2019",
+    "time_index2009",
     "historic_HD",
     {"sectors": _subscript_dict["sectors"]},
     _root,
@@ -128,7 +128,7 @@ def household_demand_not_covered():
     """
     return (
         if_then_else(
-            time() < 2019,
+            time() < 2009,
             lambda: xr.DataArray(
                 0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
             ),
@@ -203,12 +203,12 @@ def variation_historic_demand():
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "lc": 2,
         "variation_lc": 1,
-        "nvs_1_year": 1,
         "beta_0_hd": 1,
         "beta_1_hd": 2,
+        "nvs_1_year": 1,
         "unit_correction_economic": 2,
+        "lc": 2,
     },
 )
 def variation_household_demand():
@@ -216,7 +216,7 @@ def variation_household_demand():
     Variation of final demand by households by industrial sectors
     """
     return if_then_else(
-        time() < 2019,
+        time() < 2009,
         lambda: variation_historic_demand(),
         lambda: np.exp(beta_0_hd())
         * (

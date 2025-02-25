@@ -157,11 +157,10 @@ def total_process_emissions():
     Total emissions comming from industrial processes
     """
     return (
-        sum(
-            required_total_output_by_sector()
-            .loc[_subscript_dict["sector process emissions"]]
-            .rename({np.str_("sectors"): "sector process emissions!"}),
-            dim=["sector process emissions!"],
+        float(
+            required_total_output_by_sector().loc[
+                "Coke refined petroleum nuclear fuel and chemicals etc"
+            ]
         )
         * m_to_t()
         * process_emissions_intensity()

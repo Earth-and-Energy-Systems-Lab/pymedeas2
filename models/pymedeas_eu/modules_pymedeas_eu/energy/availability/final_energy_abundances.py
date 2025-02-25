@@ -9,7 +9,7 @@ Translated using PySD version 3.14.0
     subscripts=[np.str_("final sources")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"abundance_fs": 3, "abundance_electricity": 2, "abundance_heat": 2},
+    depends_on={"abundance_fs": 3, "abundance_electricity": 1, "abundance_heat": 1},
 )
 def abundance_final_fuels():
     value = xr.DataArray(
@@ -20,12 +20,8 @@ def abundance_final_fuels():
     value.loc[["liquids"]] = float(abundance_fs().loc["liquids"])
     value.loc[["gases"]] = float(abundance_fs().loc["gases"])
     value.loc[["solids"]] = float(abundance_fs().loc["solids"])
-    value.loc[["electricity"]] = if_then_else(
-        abundance_electricity() > 0.999, lambda: 1, lambda: abundance_electricity()
-    )
-    value.loc[["heat"]] = if_then_else(
-        abundance_heat() > 0.999, lambda: 1, lambda: abundance_heat()
-    )
+    value.loc[["electricity"]] = abundance_electricity()
+    value.loc[["heat"]] = abundance_heat()
     return value
 
 
@@ -603,8 +599,8 @@ _ext_constant_sensitivity_to_energy_scarcity_medium = ExtConstant(
     depends_on={
         "sensitivity_to_scarcity_option": 2,
         "sensitivity_to_energy_scarcity_low": 1,
-        "sensitivity_to_energy_scarcity_medium": 1,
         "sensitivity_to_energy_scarcity_high": 1,
+        "sensitivity_to_energy_scarcity_medium": 1,
     },
 )
 def sensitivity_to_scarcity():
@@ -630,8 +626,8 @@ def sensitivity_to_scarcity():
     depends_on={
         "sensitivity_to_scarcity_option_h": 2,
         "sensitivity_to_energy_scarcity_low": 1,
-        "sensitivity_to_energy_scarcity_medium": 1,
         "sensitivity_to_energy_scarcity_high": 1,
+        "sensitivity_to_energy_scarcity_medium": 1,
     },
 )
 def sensitivity_to_scarcity_h():

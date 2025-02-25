@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="Abundance electricity",
+    name="Abundance_electricity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -26,7 +26,7 @@ def abundance_electricity():
 
 
 @component.add(
-    name="abundance NRE elec",
+    name="abundance_NRE_elec",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -45,7 +45,7 @@ def abundance_nre_elec():
 
 
 @component.add(
-    name="Annual growth rate electricity generation RES elec tot",
+    name="Annual_growth_rate_electricity_generation_RES_elec_tot",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -66,7 +66,7 @@ def annual_growth_rate_electricity_generation_res_elec_tot():
 
 
 @component.add(
-    name="FE Elec generation FF TWh",
+    name="FE_Elec_generation_FF_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -76,31 +76,31 @@ def fe_elec_generation_ff_twh():
     return (
         sum(
             fe_elec_generation_from_fossil_fuels().rename(
-                {np.str_("fossil fuels"): "fossil fuels!"}
+                {np.str_("fossil_fuels"): "fossil_fuels!"}
             ),
-            dim=["fossil fuels!"],
+            dim=["fossil_fuels!"],
         )
         / ej_per_twh()
     )
 
 
 @component.add(
-    name="FE Elec generation from fossil fuels",
+    name="FE_Elec_generation_from_fossil_fuels",
     units="EJ/year",
-    subscripts=[np.str_("fossil fuels")],
+    subscripts=[np.str_("fossil_fuels")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "fes_elec_fossil_fuel_chp_plants_ej": 3,
         "pec_nat_gas": 1,
-        "share_gas_elec_plants": 1,
         "efficiency_gas_for_electricity": 1,
+        "share_gas_elec_plants": 1,
         "share_coal_elec_plants": 1,
-        "efficiency_coal_for_electricity": 1,
         "pec_coal": 1,
-        "efficiency_liquids_for_electricity": 1,
+        "efficiency_coal_for_electricity": 1,
         "pec_total_oil": 1,
         "share_oil_elec_plants": 1,
+        "efficiency_liquids_for_electricity": 1,
     },
 )
 def fe_elec_generation_from_fossil_fuels():
@@ -109,11 +109,11 @@ def fe_elec_generation_from_fossil_fuels():
     """
     value = xr.DataArray(
         np.nan,
-        {"fossil fuels": _subscript_dict["fossil fuels"]},
-        [np.str_("fossil fuels")],
+        {"fossil_fuels": _subscript_dict["fossil_fuels"]},
+        [np.str_("fossil_fuels")],
     )
-    value.loc[["natural gas"]] = (
-        float(fes_elec_fossil_fuel_chp_plants_ej().loc["natural gas"])
+    value.loc[["natural_gas"]] = (
+        float(fes_elec_fossil_fuel_chp_plants_ej().loc["natural_gas"])
         + share_gas_elec_plants() * pec_nat_gas() * efficiency_gas_for_electricity()
     )
     value.loc[["coal"]] = (
@@ -130,7 +130,7 @@ def fe_elec_generation_from_fossil_fuels():
 
 
 @component.add(
-    name="FE Elec generation from NRE TWh",
+    name="FE_Elec_generation_from_NRE_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -147,9 +147,9 @@ def fe_elec_generation_from_nre_twh():
     return (
         sum(
             fe_elec_generation_from_fossil_fuels().rename(
-                {np.str_("fossil fuels"): "fossil fuels!"}
+                {np.str_("fossil_fuels"): "fossil_fuels!"}
             ),
-            dim=["fossil fuels!"],
+            dim=["fossil_fuels!"],
         )
         / ej_per_twh()
         + fe_nuclear_elec_generation_twh()
@@ -157,7 +157,7 @@ def fe_elec_generation_from_nre_twh():
 
 
 @component.add(
-    name="FE nuclear Elec generation TWh",
+    name="FE_nuclear_Elec_generation_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -180,7 +180,7 @@ def fe_nuclear_elec_generation_twh():
 
 
 @component.add(
-    name="FE tot generation all RES elec TWh delayed 1yr",
+    name="FE_tot_generation_all_RES_elec_TWh_delayed_1yr",
     units="TWh/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -209,7 +209,7 @@ _delayfixed_fe_tot_generation_all_res_elec_twh_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="FES elec from BioW",
+    name="FES_elec_from_BioW",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -224,14 +224,14 @@ def fes_elec_from_biow():
     Electricity generation of total bioenergy and waste (to compare with more common statistics).
     """
     return (
-        float(real_generation_res_elec_twh().loc["solid bioE elec"])
+        float(real_generation_res_elec_twh().loc["solid_bioE_elec"])
         + fes_elec_from_biogas_twh()
         + fes_elec_from_waste()
     )
 
 
 @component.add(
-    name="share RES electricity generation",
+    name="share_RES_electricity_generation",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -248,7 +248,7 @@ def share_res_electricity_generation():
 
 
 @component.add(
-    name="Total FE Elec consumption EJ",
+    name="Total_FE_Elec_consumption_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -262,14 +262,14 @@ def total_fe_elec_consumption_ej():
 
 
 @component.add(
-    name="Total FE Elec consumption TWh",
+    name="Total_FE_Elec_consumption_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "fe_demand_elec_consum_twh": 1,
-        "total_fe_elec_generation_twh_cat": 1,
         "share_transmdistr_elec_losses": 1,
+        "total_fe_elec_generation_twh_cat": 1,
         "elec_exports_share": 1,
     },
 )
@@ -285,7 +285,7 @@ def total_fe_elec_consumption_twh():
 
 
 @component.add(
-    name="Total FE Elec generation TWh CAT",
+    name="Total_FE_Elec_generation_TWh_CAT",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -307,7 +307,7 @@ def total_fe_elec_generation_twh_cat():
 
 
 @component.add(
-    name="Year scarcity Elec",
+    name="Year_scarcity_Elec",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

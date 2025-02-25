@@ -533,8 +533,8 @@ _ext_constant_mtch4_per_ej_gtl = ExtConstant(
     depends_on={
         "share_conv_vs_total_oil_extraction": 2,
         "mtch4_per_ej_conv_oil": 1,
-        "adapt_emissions_shale_oil": 1,
         "mtch4_per_ej_unconv_oil": 2,
+        "adapt_emissions_shale_oil": 1,
         "mtch4_per_ej_shale_oil": 1,
     },
 )

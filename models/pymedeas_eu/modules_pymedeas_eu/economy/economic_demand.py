@@ -57,9 +57,9 @@ _integ_demand_by_sector_fd_eu = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "real_final_demand_by_sector_eu": 1,
         "demand_by_sector_fd_eu": 1,
         "nvs_1_year": 1,
+        "real_final_demand_by_sector_eu": 1,
     },
 )
 def demand_not_covered_by_sector_fd_eu():
@@ -67,7 +67,7 @@ def demand_not_covered_by_sector_fd_eu():
     Gap between final demand required and real final demand (after energy-economy feedback)
     """
     return if_then_else(
-        time() < 2019,
+        time() < 2009,
         lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
         lambda: (demand_by_sector_fd_eu() - real_final_demand_by_sector_eu())
         / nvs_1_year(),
@@ -95,8 +95,8 @@ def demand_not_covered_total_fd():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "total_demand": 1,
         "real_demand_delayed_1yr": 1,
+        "total_demand": 1,
         "desired_annual_total_demand_growth_rate": 1,
         "nvs_1_year": 1,
     },
@@ -107,7 +107,7 @@ def diff_demand_eu():
     """
     return (
         if_then_else(
-            time() < 2019,
+            time() < 2009,
             lambda: 1,
             lambda: (
                 real_demand_delayed_1yr()
@@ -140,7 +140,7 @@ def historic_change_in_inventories(x, final_subs=None):
 _ext_lookup_historic_change_in_inventories = ExtLookup(
     "../economy.xlsx",
     "Europe",
-    "time_index2019",
+    "time_index2009",
     "historic_change_in_inventories",
     {"sectors": _subscript_dict["sectors"]},
     _root,
@@ -226,7 +226,7 @@ def historic_goverment_expenditures(x, final_subs=None):
 _ext_lookup_historic_goverment_expenditures = ExtLookup(
     "../economy.xlsx",
     "Europe",
-    "time_index2019",
+    "time_index2009",
     "historic_goverment_expenditures",
     {"sectors": _subscript_dict["sectors"]},
     _root,
@@ -368,8 +368,8 @@ def share_consum_goverment_and_inventories():
     comp_subtype="Normal",
     depends_on={
         "exports_demand": 2,
-        "household_demand": 1,
         "gross_fixed_capital_formation": 1,
+        "household_demand": 1,
     },
 )
 def share_exp_vs_gfcfhdexp():
@@ -389,8 +389,8 @@ def share_exp_vs_gfcfhdexp():
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 2,
-        "household_demand": 1,
         "exports_demand": 1,
+        "household_demand": 1,
     },
 )
 def share_gfcf_vs_gfcfhdexp():
@@ -451,10 +451,10 @@ def total_demand_adjusted():
     depends_on={
         "time": 1,
         "historic_variation_demand": 1,
-        "variation_exports_demand": 1,
-        "variation_gfcf": 1,
         "variation_household_demand": 1,
+        "variation_exports_demand": 1,
         "share_consum_goverment_and_inventories": 1,
+        "variation_gfcf": 1,
     },
 )
 def variation_demand_flow_fd_eu():
@@ -462,7 +462,7 @@ def variation_demand_flow_fd_eu():
     variation of final demand by EU28 industrial sectors
     """
     return if_then_else(
-        time() < 2019,
+        time() < 2009,
         lambda: historic_variation_demand(),
         lambda: (
             variation_gfcf() + variation_household_demand() + variation_exports_demand()

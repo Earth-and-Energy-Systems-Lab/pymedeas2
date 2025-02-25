@@ -25,8 +25,8 @@ def eroist_system():
     depends_on={
         "fe_tot_generation_all_res_elec_twh": 1,
         "ej_per_twh": 1,
-        "time": 1,
         "policy_share_trans_and_dist_losses": 1,
+        "time": 1,
     },
 )
 def fe_tot_generation_all_res_elec_ej():
@@ -47,8 +47,8 @@ def fe_tot_generation_all_res_elec_ej():
     comp_subtype="Normal",
     depends_on={
         "share_e_industry_ownuse_vs_tfec_in_2015": 1,
-        "real_tfec": 1,
         "fe_tot_generation_all_res_elec_ej": 1,
+        "real_tfec": 1,
         "total_dyn_fei_res": 1,
     },
 )
@@ -99,9 +99,9 @@ _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "time": 2,
+        "fe_tot_generation_all_res_elec_ej": 1,
         "real_tfec": 1,
         "historic_energy_industry_ownuse": 1,
-        "fe_tot_generation_all_res_elec_ej": 1,
     },
 )
 def historic_share_e_industry_ownuse_vs_tfec():

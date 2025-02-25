@@ -10,9 +10,9 @@ Translated using PySD version 3.14.0
     comp_subtype="Normal",
     depends_on={
         "time": 1,
+        "global_energy_intensity_h": 1,
         "initial_global_energy_intensity_2009": 2,
         "min_energy_intensity_vs_intial_h": 2,
-        "global_energy_intensity_h": 1,
     },
 )
 def available_improvement_efficiency_h():
@@ -92,8 +92,8 @@ _ext_constant_choose_energy_intensity_target_method = ExtConstant(
         "global_energy_intensity_h": 1,
         "minimum_fraction_source": 1,
         "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
-        "max_yearly_change_between_sources": 1,
         "pressure_to_change_energy_technology_h": 1,
+        "max_yearly_change_between_sources": 1,
     },
 )
 def decrease_of_intensity_due_to_change_energy_technology_h_top_down():
@@ -156,8 +156,8 @@ _delayfixed_ei_households_transport_delayed = DelayFixed(
     depends_on={
         "time": 1,
         "energy_intensity_of_households_rest": 3,
-        "ei_households_transport_delayed": 1,
         "activate_bottom_up_method": 1,
+        "ei_households_transport_delayed": 1,
     },
 )
 def energy_intensity_of_households():
@@ -165,7 +165,7 @@ def energy_intensity_of_households():
     Energy intensity of households by final source
     """
     return if_then_else(
-        time() < 2019,
+        time() < 2009,
         lambda: energy_intensity_of_households_rest(),
         lambda: if_then_else(
             float(activate_bottom_up_method().loc["Households"]) == 0,
@@ -471,13 +471,13 @@ def increase_of_intensity_due_to_change_energy_technology_net_h():
     depends_on={
         "time": 2,
         "historic_rate_final_energy_intensity": 1,
-        "year_energy_intensity_target": 1,
-        "variation_energy_intensity_target_h": 1,
-        "evol_final_energy_intensity_h": 4,
         "efficiency_energy_acceleration": 12,
-        "available_improvement_efficiency_h": 4,
-        "initial_energy_intensity_1995": 4,
         "choose_final_sectoral_energy_intensities_evolution_method": 2,
+        "evol_final_energy_intensity_h": 4,
+        "initial_energy_intensity_1995": 4,
+        "available_improvement_efficiency_h": 4,
+        "variation_energy_intensity_target_h": 1,
+        "year_energy_intensity_target": 1,
         "historic_mean_rate_energy_intensity": 6,
     },
 )
@@ -486,7 +486,7 @@ def inertial_rate_energy_intensity_h_top_down():
     This variable models the variation of the energy intensity according to the historical trend and represents the variation of the technological energy efficiency in households for each type of energy. By default it will follow the historical trend but can be modified by policies or market conditions that accelerate change.
     """
     return if_then_else(
-        time() < 2019,
+        time() < 2009,
         lambda: historic_rate_final_energy_intensity()
         .loc["Households", :]
         .reset_coords(drop=True),
@@ -914,13 +914,13 @@ def transport_households_final_energy_demand():
     comp_subtype="Normal",
     depends_on={
         "choose_energy_intensity_target_method": 1,
-        "year_energy_intensity_target": 2,
         "time": 6,
-        "evol_final_energy_intensity_h": 2,
-        "energy_intensity_target": 1,
         "final_year_energy_intensity_target": 4,
-        "final_energy_intensity_2020_h": 1,
+        "evol_final_energy_intensity_h": 2,
+        "year_energy_intensity_target": 2,
+        "energy_intensity_target": 1,
         "pct_change_energy_intensity_target": 1,
+        "final_energy_intensity_2020_h": 1,
     },
 )
 def variation_energy_intensity_target_h():

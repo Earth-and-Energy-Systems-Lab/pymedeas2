@@ -175,7 +175,7 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction.add(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "fec_gasesliquids": 1, "historic_pipeline_transport": 1},
+    depends_on={"time": 2, "historic_pipeline_transport": 1, "fec_gasesliquids": 1},
 )
 def historic_share_pipeline_transport():
     """
@@ -197,10 +197,10 @@ def historic_share_pipeline_transport():
     depends_on={
         "pes_total_oil_ej_eu": 1,
         "imports_eu_total_oil_from_row_ej": 1,
-        "imports_eu_coal_from_row_ej": 1,
         "extraction_coal_eu": 1,
-        "imports_eu_nat_gas_from_row_ej": 1,
+        "imports_eu_coal_from_row_ej": 1,
         "pes_nat_gas_eu": 1,
+        "imports_eu_nat_gas_from_row_ej": 1,
     },
 )
 def pes_fossil_fuel_extraction():
@@ -266,7 +266,7 @@ _delayfixed_pes_fossil_fuel_extraction_delayed = DelayFixed(
         ["final sources"],
     ),
     lambda: time_step(),
-    lambda: xr.DataArray(22.71, {"final sources": ["liquids"]}, ["final sources"]),
+    lambda: xr.DataArray(25.9, {"final sources": ["liquids"]}, ["final sources"]),
     time_step,
     "_delayfixed_pes_fossil_fuel_extraction_delayed",
 )
@@ -294,6 +294,20 @@ _delayfixed_pes_fossil_fuel_extraction_delayed_2 = DelayFixed(
     time_step,
     "_delayfixed_pes_fossil_fuel_extraction_delayed_2",
 )
+
+
+@component.add(
+    name="Pipeline transport",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"share_pipeline_transport_fecgl_in_2015": 1, "fec_gasesliquids": 1},
+)
+def pipeline_transport():
+    """
+    Pipeline transport. IEA definition: Pipeline transport includes energy used in the support and operation of pipelines transporting gases, liquids, slurries and other commodities, including the energy used for pump stations and maintenance of the pipeline.
+    """
+    return share_pipeline_transport_fecgl_in_2015() * fec_gasesliquids()
 
 
 @component.add(
@@ -364,6 +378,7 @@ _sampleiftrue_share_pipeline_transport_fecgl_in_2015 = SampleIfTrue(
         "electrical_distribution_losses_ej": 1,
         "heatcom_distribution_losses": 1,
         "heatnc_distribution_losses": 1,
+        "pipeline_transport": 1,
         "energy_distr_losses_ff": 1,
     },
 )
@@ -375,7 +390,7 @@ def total_distribution_losses():
         electrical_distribution_losses_ej()
         + heatcom_distribution_losses()
         + heatnc_distribution_losses()
-        + 24
+        + pipeline_transport()
         + sum(
             energy_distr_losses_ff().rename(
                 {np.str_("final sources"): "final sources!"}

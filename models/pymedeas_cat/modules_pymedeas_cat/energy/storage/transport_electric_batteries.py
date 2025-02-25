@@ -4,7 +4,7 @@ Translated using PySD version 3.14.0
 """
 
 @component.add(
-    name="bat number EV",
+    name="bat_number_EV",
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -18,7 +18,7 @@ def bat_number_ev():
 
 
 @component.add(
-    name="bat number hyb",
+    name="bat_number_hyb",
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -32,7 +32,7 @@ def bat_number_hyb():
 
 
 @component.add(
-    name="bateries ratio hib HV",
+    name="bateries_ratio_hib_HV",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -57,7 +57,7 @@ _ext_constant_bateries_ratio_hib_hv = ExtConstant(
 
 
 @component.add(
-    name='"batteries EV+hib+2wE"',
+    name='"batteries_EV+hib+2wE"',
     units="batteries",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -88,7 +88,7 @@ _integ_batteries_evhib2we = Integ(
 
 
 @component.add(
-    name="discarded batteries",
+    name="discarded_batteries",
     units="batteries/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -102,7 +102,7 @@ def discarded_batteries():
 
 
 @component.add(
-    name="EV batteries TW",
+    name="EV_batteries_TW",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -116,7 +116,7 @@ def ev_batteries_tw():
 
 
 @component.add(
-    name="kW per battery EV",
+    name="kW_per_battery_EV",
     units="kW/battery",
     comp_type="Constant",
     comp_subtype="External",
@@ -141,14 +141,14 @@ _ext_constant_kw_per_battery_ev = ExtConstant(
 
 
 @component.add(
-    name="kW per TW", units="kW/TW", comp_type="Constant", comp_subtype="Normal"
+    name="kW_per_TW", units="kW/TW", comp_type="Constant", comp_subtype="Normal"
 )
 def kw_per_tw():
     return 1000000000.0
 
 
 @component.add(
-    name="new batteries",
+    name="new_batteries",
     units="batteries/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -166,7 +166,7 @@ def new_batteries():
 
 
 @component.add(
-    name='"new+replaced batteries TW"',
+    name='"new+replaced_batteries_TW"',
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -187,7 +187,7 @@ def newreplaced_batteries_tw():
 
 
 @component.add(
-    name="replacement batteries",
+    name="replacement_batteries",
     units="batteries/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -201,7 +201,7 @@ def replacement_batteries():
 
 
 @component.add(
-    name="required number standard batteries",
+    name="required_number_standard_batteries",
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",

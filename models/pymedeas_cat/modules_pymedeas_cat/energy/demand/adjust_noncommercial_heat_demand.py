@@ -1,6 +1,6 @@
 """
 Module energy.demand.adjust_noncommercial_heat_demand
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -18,7 +18,7 @@ def debug_share_coal_feh_over_fed_solids():
 
 
 _ext_constant_debug_share_coal_feh_over_fed_solids = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "share_feh_over_fed_coal",
     {},
@@ -43,7 +43,7 @@ def debug_share_feh_oil_over_fed_solids():
 
 
 _ext_constant_debug_share_feh_oil_over_fed_solids = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "share_feh_over_fed_oil",
     {},
@@ -56,8 +56,8 @@ _ext_constant_debug_share_feh_oil_over_fed_solids = ExtConstant(
 @component.add(
     name='"FED by fuel for heat-nc"',
     units="EJ/year",
-    subscripts=[np.str_("final sources")],
-    comp_type="Auxiliary, Constant",
+    subscripts=["final sources"],
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "fed_oil_for_heatnc": 1,
@@ -71,9 +71,7 @@ def fed_by_fuel_for_heatnc():
     Final energy demand (excluding distribution and generation losses) of non-commercial heat by final fuel.
     """
     value = xr.DataArray(
-        np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     value.loc[["electricity"]] = 0
     value.loc[["heat"]] = 0
@@ -213,7 +211,7 @@ def ratio_fed_for_heatnc_vs_fed_for_heatcom():
     Ratio FED for non-commercial heat vs FED for commercial heat (before climate change impacts).
     """
     return sum(
-        fed_by_fuel_for_heatnc().rename({np.str_("final sources"): "final sources!"}),
+        fed_by_fuel_for_heatnc().rename({"final sources": "final sources!"}),
         dim=["final sources!"],
     ) * zidz(1, float(required_fed_by_fuel_before_heat_correction().loc["heat"]))
 
@@ -263,8 +261,8 @@ def share_fed_liquids_vs_nre_heatnc():
 @component.add(
     name="share FEH over FED by final fuel",
     units="Dmnl",
-    subscripts=[np.str_("final sources")],
-    comp_type="Auxiliary, Constant",
+    subscripts=["final sources"],
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "debug_share_feh_oil_over_fed_solids": 1,
@@ -278,9 +276,7 @@ def share_feh_over_fed_by_final_fuel():
     Share FEH over FED by final fuel.
     """
     value = xr.DataArray(
-        np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     value.loc[["electricity"]] = 0
     value.loc[["heat"]] = 0
@@ -307,7 +303,7 @@ def share_feh_over_fed_nat_gas():
 
 
 _ext_constant_share_feh_over_fed_nat_gas = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "share_feh_over_fed_nat_gas",
     {},
@@ -332,7 +328,7 @@ def share_feh_over_fed_solid_bioe():
 
 
 _ext_constant_share_feh_over_fed_solid_bioe = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "share_feh_over_fed_solids_bioe",
     {},

@@ -1,6 +1,6 @@
 """
 Module energy.supply.net_energy_fluxes
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -18,7 +18,7 @@ def historic_coal_imports(x, final_subs=None):
 
 
 _ext_lookup_historic_coal_imports = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_historic_imports",
     "coal_historic_imports",
@@ -44,7 +44,7 @@ def historic_gas_imports(x, final_subs=None):
 
 
 _ext_lookup_historic_gas_imports = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_historic_imports",
     "gas_historic_imports",
@@ -70,7 +70,7 @@ def historic_oil_imports(x, final_subs=None):
 
 
 _ext_lookup_historic_oil_imports = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_historic_imports",
     "oil_historic_imports",
@@ -135,10 +135,10 @@ def maximum_oil_available_in_eu():
     depends_on={
         "ped_nre_fs": 1,
         "projected_net_coal_flux_eu": 1,
-        "time": 3,
-        "maximum_coal_available_in_eu": 1,
         "historic_coal_imports": 1,
+        "maximum_coal_available_in_eu": 1,
         "last_historical_year": 1,
+        "time": 3,
     },
 )
 def net_coal_flux_eu():
@@ -161,10 +161,10 @@ def net_coal_flux_eu():
     comp_subtype="Normal",
     depends_on={
         "ped_nre_fs": 1,
-        "time": 3,
         "maximum_gas_available_in_eu": 1,
-        "historic_gas_imports": 1,
         "last_historical_year": 1,
+        "time": 3,
+        "historic_gas_imports": 1,
         "projected_net_gas_flux_eu": 1,
     },
 )
@@ -188,11 +188,11 @@ def net_gas_flux_eu():
     comp_subtype="Normal",
     depends_on={
         "ped_nre_fs": 1,
-        "maximum_oil_available_in_eu": 1,
-        "time": 3,
         "projected_net_oil_flux_eu": 1,
-        "historic_oil_imports": 1,
+        "maximum_oil_available_in_eu": 1,
         "last_historical_year": 1,
+        "time": 3,
+        "historic_oil_imports": 1,
     },
 )
 def net_oil_flux_eu():
@@ -223,7 +223,7 @@ def projected_net_coal_flux_eu(x, final_subs=None):
 
 
 _ext_lookup_projected_net_coal_flux_eu = ExtLookup(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "year_net_energy_flux",
     "coal_net_flux_timeseries",
@@ -249,7 +249,7 @@ def projected_net_gas_flux_eu(x, final_subs=None):
 
 
 _ext_lookup_projected_net_gas_flux_eu = ExtLookup(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "year_net_energy_flux",
     "gas_net_flux_timeseries",
@@ -275,7 +275,7 @@ def projected_net_oil_flux_eu(x, final_subs=None):
 
 
 _ext_lookup_projected_net_oil_flux_eu = ExtLookup(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "year_net_energy_flux",
     "oil_net_flux_timeseries",

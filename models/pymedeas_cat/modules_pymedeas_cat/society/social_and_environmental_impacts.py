@@ -1,6 +1,6 @@
 """
 Module society.social_and_environmental_impacts
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -112,7 +112,7 @@ def unit_corr_hdi():
 @component.add(
     name="Water use per type per capita",
     units="dam3/(person)",
-    subscripts=[np.str_("water")],
+    subscripts=["water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_water_use_by_type": 1, "population": 1},

@@ -53,11 +53,12 @@ def co2_emissions_from_year():
     depends_on={
         "co2_emissions_households_and_sectors_before_ccs": 1,
         "co2_captured_by_sector_energy_related": 1,
+        "dac_co2_captured_energy_per_sector": 1,
     },
 )
 def co2_emissions_households_and_sectors():
     """
-    CO2 energy emissions after substracting the CCS absorbed emissions
+    CO2 emissions after substracting the CCS and DACC absorbed emissions
     """
     return (
         sum(
@@ -67,6 +68,7 @@ def co2_emissions_households_and_sectors():
             dim=["final sources!"],
         )
         - co2_captured_by_sector_energy_related()
+        - dac_co2_captured_energy_per_sector()
     )
 
 
@@ -88,47 +90,6 @@ def co2_emissions_households_and_sectors_before_ccs():
     return (
         co2_emissions_per_fuel()
         * share_energy_consumption_from_households_and_sectors()
-    )
-
-
-@component.add(
-    name="CO2 emissions sectors and households including process",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "total_process_emissions": 2,
-        "process_co2_captured_ccs": 2,
-        "co2_emissions_households_and_sectors": 2,
-    },
-)
-def co2_emissions_sectors_and_households_including_process():
-    return if_then_else(
-        total_process_emissions()
-        < sum(
-            process_co2_captured_ccs().rename(
-                {np.str_("SECTORS and HOUSEHOLDS"): "SECTORS and HOUSEHOLDS!"}
-            ),
-            dim=["SECTORS and HOUSEHOLDS!"],
-        ),
-        lambda: sum(
-            co2_emissions_households_and_sectors().rename(
-                {np.str_("SECTORS and HOUSEHOLDS"): "SECTORS and HOUSEHOLDS!"}
-            ),
-            dim=["SECTORS and HOUSEHOLDS!"],
-        )
-        + total_process_emissions()
-        - sum(
-            process_co2_captured_ccs().rename(
-                {np.str_("SECTORS and HOUSEHOLDS"): "SECTORS and HOUSEHOLDS!"}
-            ),
-            dim=["SECTORS and HOUSEHOLDS!"],
-        ),
-        lambda: sum(
-            co2_emissions_households_and_sectors().rename(
-                {np.str_("SECTORS and HOUSEHOLDS"): "SECTORS and HOUSEHOLDS!"}
-            ),
-            dim=["SECTORS and HOUSEHOLDS!"],
-        ),
     )
 
 
@@ -226,7 +187,7 @@ def share_energy_consumption_from_households_and_sectors():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "total_co2_emissions_gtco2_after_capture": 1,
+        "total_co2_emissions_gtco2": 1,
         "co2_soilluc_emissions": 1,
         "afforestation_program_2020_gtco2": 1,
     },
@@ -236,48 +197,28 @@ def total_co2_emissions_after_lulucf():
     Total emissions taking into account the carbon capture technologies and the LULUCF
     """
     return (
-        total_co2_emissions_gtco2_after_capture()
+        total_co2_emissions_gtco2()
         + co2_soilluc_emissions()
         - afforestation_program_2020_gtco2()
     )
 
 
 @component.add(
-    name="Total CO2 emissions GTCO2 after capture",
+    name="Total CO2 emissions GTCO2",
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "co2_emissions_sectors_and_households_including_process": 1,
-        "total_dac_co2_captured": 1,
-    },
+    depends_on={"co2_emissions_households_and_sectors": 1},
 )
-def total_co2_emissions_gtco2_after_capture():
+def total_co2_emissions_gtco2():
     """
     Total emissions taking into account the carbon capture technologies
     """
-    return (
-        co2_emissions_sectors_and_households_including_process()
-        - total_dac_co2_captured()
-    )
-
-
-@component.add(
-    name="Total CO2 emissions GTCO2 before CCS",
-    units="GTCO2e/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"co2_emissions_households_and_sectors_before_ccs": 1},
-)
-def total_co2_emissions_gtco2_before_ccs():
     return sum(
-        co2_emissions_households_and_sectors_before_ccs().rename(
-            {
-                np.str_("final sources"): "final sources!",
-                np.str_("SECTORS and HOUSEHOLDS"): "SECTORS and HOUSEHOLDS!",
-            }
+        co2_emissions_households_and_sectors().rename(
+            {np.str_("SECTORS and HOUSEHOLDS"): "SECTORS and HOUSEHOLDS!"}
         ),
-        dim=["final sources!", "SECTORS and HOUSEHOLDS!"],
+        dim=["SECTORS and HOUSEHOLDS!"],
     )
 
 

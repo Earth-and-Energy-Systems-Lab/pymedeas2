@@ -1,6 +1,6 @@
 """
 Module energy.supply.total_fe_elec_generation
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -74,8 +74,8 @@ def annual_growth_rate_electricity_generation_res_elec_tot():
     depends_on={
         "potential_fe_gen_elec_fossil_fuel_chp_plants": 3,
         "share_ff_for_electricity": 3,
-        "efficiency_liquids_for_electricity": 1,
         "pec_ff": 3,
+        "efficiency_liquids_for_electricity": 1,
         "efficiency_gas_for_electricity": 1,
         "efficiency_coal_for_electricity": 1,
     },
@@ -215,14 +215,14 @@ def fes_elec_from_biow():
     comp_subtype="Normal",
     depends_on={
         "fe_tot_generation_all_res_elec_twh": 1,
-        "total_fe_elec_generation_twh": 1,
+        "total_fe_elec_generation_twh_eu": 1,
     },
 )
 def share_res_electricity_generation():
     """
     Share of RES in the electricity generation.
     """
-    return fe_tot_generation_all_res_elec_twh() / total_fe_elec_generation_twh()
+    return fe_tot_generation_all_res_elec_twh() / total_fe_elec_generation_twh_eu()
 
 
 @component.add(
@@ -245,29 +245,25 @@ def total_fe_elec_consumption_ej():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "total_fe_elec_generation_twh": 1,
-        "total_electricity_demand_for_synthetic": 1,
-        "ej_per_twh": 1,
+        "fe_demand_elec_consum_twh": 1,
+        "share_transmdistr_elec_losses": 1,
         "elec_exports_share": 1,
-        "share_trans_and_dist_losses": 1,
+        "total_fe_elec_generation_twh_eu": 1,
     },
 )
 def total_fe_elec_consumption_twh():
     """
     Total final energy electricity consumption (fossil fuels, nuclear, waste & renewables) (TWh) excluding distribution losses.
     """
-    return (
-        (
-            total_fe_elec_generation_twh()
-            - total_electricity_demand_for_synthetic() / ej_per_twh()
-        )
-        * (1 - elec_exports_share())
-        / (1 + share_trans_and_dist_losses())
+    return np.minimum(
+        fe_demand_elec_consum_twh(),
+        total_fe_elec_generation_twh_eu()
+        / (1 + share_transmdistr_elec_losses() + elec_exports_share()),
     )
 
 
 @component.add(
-    name="Total FE Elec generation TWh",
+    name="Total FE Elec generation TWh EU",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -277,7 +273,7 @@ def total_fe_elec_consumption_twh():
         "fes_elec_from_waste": 1,
     },
 )
-def total_fe_elec_generation_twh():
+def total_fe_elec_generation_twh_eu():
     """
     Total final energy electricity generation (fossil fuels, nuclear, waste & renewables) (TWh).
     """

@@ -1,6 +1,6 @@
 """
 Module energy.supply.total_biofuels_liquids
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -55,7 +55,7 @@ def exports_biofuels_policy():
 
 
 _ext_data_exports_biofuels_policy = ExtData(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "year_RES_power",
     "biofuels_exports",
@@ -138,7 +138,7 @@ def historic_exports_biofuels():
 
 
 _ext_data_historic_exports_biofuels = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "biofuels_hist_exports",

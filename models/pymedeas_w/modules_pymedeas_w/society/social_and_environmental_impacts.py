@@ -8,17 +8,13 @@ Translated using PySD version 3.14.0
     units="tCO2/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "total_co2_emissions_gtco2_after_capture": 1,
-        "tco2_per_gtco2": 1,
-        "population": 1,
-    },
+    depends_on={"total_co2_emissions_gtco2": 1, "tco2_per_gtco2": 1, "population": 1},
 )
 def carbon_footprint_tco2person():
     """
     CO2 emissions per capita.
     """
-    return total_co2_emissions_gtco2_after_capture() * tco2_per_gtco2() / population()
+    return total_co2_emissions_gtco2() * tco2_per_gtco2() / population()
 
 
 @component.add(
@@ -40,13 +36,13 @@ def carbon_footprint_tcperson():
     units="GtCO2/(year*T$)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_co2_emissions_gtco2_after_capture": 1, "gdp": 1},
+    depends_on={"total_co2_emissions_gtco2": 1, "gdp": 1},
 )
 def co2_emissions_per_value_added():
     """
     CO2 emissions per value added (GDP).
     """
-    return zidz(total_co2_emissions_gtco2_after_capture(), gdp())
+    return zidz(total_co2_emissions_gtco2(), gdp())
 
 
 @component.add(

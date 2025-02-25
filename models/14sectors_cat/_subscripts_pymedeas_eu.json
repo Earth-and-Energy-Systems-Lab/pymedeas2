@@ -4,20 +4,6 @@
         "pre",
         "oxyfuel"
     ],
-    "E to synthetic": [
-        "amonia",
-        "synthetic liq",
-        "hydrogen",
-        "synthetic gas"
-    ],
-    "ETG": [
-        "hydrogen",
-        "synthetic gas"
-    ],
-    "ETL": [
-        "amonia",
-        "synthetic liq"
-    ],
     "GHGs": [
         "CO2",
         "CH4",

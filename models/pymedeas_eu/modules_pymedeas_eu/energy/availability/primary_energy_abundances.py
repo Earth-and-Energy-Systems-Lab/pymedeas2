@@ -1,12 +1,12 @@
 """
 Module energy.availability.primary_energy_abundances
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
     name="Abundance primary sources",
     units="Dmnl",
-    subscripts=[np.str_("primary sources")],
+    subscripts=["primary sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -22,7 +22,7 @@ def abundance_primary_sources():
     value = xr.DataArray(
         np.nan,
         {"primary sources": _subscript_dict["primary sources"]},
-        [np.str_("primary sources")],
+        ["primary sources"],
     )
     value.loc[["coal"]] = abundance_coal_world()
     value.loc[["oil"]] = abundance_total_oil_world()
@@ -34,7 +34,7 @@ def abundance_primary_sources():
 @component.add(
     name="increase in perception PS scarcity",
     units="Dmnl/year",
-    subscripts=[np.str_("primary sources")],
+    subscripts=["primary sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -59,7 +59,7 @@ def increase_in_perception_ps_scarcity():
 @component.add(
     name="perception in primary sources scarcity",
     units="Dmnl",
-    subscripts=[np.str_("primary sources")],
+    subscripts=["primary sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_perception_in_primary_sources_scarcity": 1},
@@ -187,7 +187,7 @@ def perception_of_interfuel_primary_sources_scarcity():
 @component.add(
     name="reduction in perception PS scarcity",
     units="Dmnl/year",
-    subscripts=[np.str_("primary sources")],
+    subscripts=["primary sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -205,7 +205,7 @@ def reduction_in_perception_ps_scarcity():
 @component.add(
     name="scarcity primary sources",
     units="Dmnl",
-    subscripts=[np.str_("primary sources")],
+    subscripts=["primary sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"abundance_primary_sources": 1},

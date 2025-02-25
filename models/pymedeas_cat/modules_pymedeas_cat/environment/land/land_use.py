@@ -1,6 +1,6 @@
 """
 Module environment.land.land_use
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -238,9 +238,9 @@ _integ_available_land = Integ(
     depends_on={
         "time": 2,
         "hist_variation_primary_forest": 1,
-        "p_variation_primary_forest": 1,
-        "primary_forests_area": 1,
         "start_year_p_variation_primary_forest": 1,
+        "primary_forests_area": 1,
+        "p_variation_primary_forest": 1,
         "historic_av_variation_primary_forests_area": 1,
         "aux_reach_available_forest": 1,
     },
@@ -311,9 +311,9 @@ def compet_land_for_biofuels_rate():
     comp_subtype="Normal",
     depends_on={
         "demand_forest_energy_non_tradition_ej": 1,
-        "consum_forest_energy_traditional_ej": 1,
-        "forest_consumption_ej": 1,
         "consum_wood_products_ej": 1,
+        "forest_consumption_ej": 1,
+        "consum_forest_energy_traditional_ej": 1,
     },
 )
 def consum_forest_energy_non_traditional_ej():
@@ -349,8 +349,8 @@ def consum_forest_energy_traditional_ej():
     comp_subtype="Normal",
     depends_on={
         "demand_wood_products_ej": 1,
-        "consum_forest_energy_traditional_ej": 1,
         "forest_consumption_ej": 1,
+        "consum_forest_energy_traditional_ej": 1,
     },
 )
 def consum_wood_products_ej():
@@ -477,7 +477,7 @@ def demand_forest_wood_products_pc():
 
 
 _ext_constant_demand_forest_wood_products_pc = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Global",
     "demand_forest_wood_products",
     {},
@@ -551,9 +551,9 @@ def forest_consumption_ej():
     depends_on={
         "available_forest_area": 1,
         "p_minimum_forest": 1,
-        "max_sustainable_forest_extraction_ej": 1,
         "total_demand_forest_biomass_ej": 1,
         "p_forest_overexplotation": 1,
+        "max_sustainable_forest_extraction_ej": 1,
     },
 )
 def forest_extraction_ej():
@@ -585,7 +585,7 @@ def forest_extraction_per_ha():
 
 
 _ext_constant_forest_extraction_per_ha = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Global",
     "forest_extraction",
     {},
@@ -656,7 +656,7 @@ def growing_stock_forest_per_ha():
 
 
 _ext_constant_growing_stock_forest_per_ha = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Global",
     "growing_stock_forest",
     {},
@@ -671,7 +671,7 @@ _ext_constant_growing_stock_forest_per_ha = ExtConstant(
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "time_step": 2, "historic_primary_forest": 2},
+    depends_on={"time": 3, "historic_primary_forest": 2, "time_step": 2},
 )
 def hist_variation_primary_forest():
     """
@@ -693,7 +693,7 @@ def hist_variation_primary_forest():
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "historic_urban_land": 2, "time_step": 2},
+    depends_on={"time": 3, "time_step": 2, "historic_urban_land": 2},
 )
 def hist_variation_urban_land():
     """
@@ -726,7 +726,7 @@ def historic_av_variation_primary_forests_area():
 
 
 _ext_constant_historic_av_variation_primary_forests_area = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Catalonia",
     "variation_primary_forests_area",
     {},
@@ -754,7 +754,7 @@ def historic_primary_forest(x, final_subs=None):
 
 
 _ext_lookup_historic_primary_forest = ExtLookup(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Catalonia",
     "time",
     "primary_forest",
@@ -783,7 +783,7 @@ def historic_urban_land(x, final_subs=None):
 
 
 _ext_lookup_historic_urban_land = ExtLookup(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Catalonia",
     "time",
     "urban_land",
@@ -845,7 +845,7 @@ def initial_agricultural_area():
 
 
 _ext_constant_initial_agricultural_area = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Catalonia",
     "initial_agricultural_area",
     {},
@@ -887,7 +887,7 @@ def initial_available_land():
 
 
 _ext_constant_initial_available_land = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Catalonia",
     "initial_available_land",
     {},
@@ -925,7 +925,7 @@ def initial_other_naturally_regen_forest():
 
 
 _ext_constant_initial_other_naturally_regen_forest = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Catalonia",
     "initial_other_naturally_regen_forest",
     {},
@@ -950,7 +950,7 @@ def initial_permanent_snowsglaciers_area():
 
 
 _ext_constant_initial_permanent_snowsglaciers_area = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Catalonia",
     "initial_permanent_snow_glaciers_area",
     {},
@@ -975,7 +975,7 @@ def initial_planted_forests():
 
 
 _ext_constant_initial_planted_forests = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Catalonia",
     "initial_planted_forests",
     {},
@@ -1000,7 +1000,7 @@ def initial_primary_forest_area():
 
 
 _ext_constant_initial_primary_forest_area = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Catalonia",
     "initial_primary_forest",
     {},
@@ -1025,7 +1025,7 @@ def initial_urban_land():
 
 
 _ext_constant_initial_urban_land = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Catalonia",
     "initial_urban",
     {},
@@ -1242,7 +1242,7 @@ def max_solar_on_land_mha():
 
 
 _ext_constant_max_solar_on_land_mha = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "max_solar_on_land_potential",
     {},
@@ -1298,7 +1298,7 @@ def p_forest_overexplotation():
 
 
 _ext_constant_p_forest_overexplotation = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "forest_overexplotation",
     {},
@@ -1323,7 +1323,7 @@ def p_minimum_forest():
 
 
 _ext_constant_p_minimum_forest = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "minimum_forest",
     {},
@@ -1348,7 +1348,7 @@ def p_urban_land_density():
 
 
 _ext_constant_p_urban_land_density = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "urban_land_density",
     {},
@@ -1384,7 +1384,7 @@ def p_variation_primary_forest():
 
 
 _ext_constant_p_variation_primary_forest = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "variation_primary_forest",
     {},
@@ -1452,8 +1452,8 @@ def scarcity_agricultural_land():
 @component.add(
     name="shortage BioE for elec",
     units="Dmnl",
-    subscripts=[np.str_("RES elec")],
-    comp_type="Auxiliary, Constant",
+    subscripts=["RES elec"],
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"shortage_bioe_non_trad_delayed_1yr": 1},
 )
@@ -1462,7 +1462,7 @@ def shortage_bioe_for_elec():
     Shortage of bioenergy for supplying RES power plants for electricity generation.
     """
     value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, [np.str_("RES elec")]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[["hydro"]] = 1
     value.loc[["geot elec"]] = 1
@@ -1478,8 +1478,8 @@ def shortage_bioe_for_elec():
 @component.add(
     name="shortage BioE for heat",
     units="Dmnl",
-    subscripts=[np.str_("RES heat")],
-    comp_type="Auxiliary, Constant",
+    subscripts=["RES heat"],
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"shortage_bioe_non_trad_delayed_1yr": 1},
 )
@@ -1488,7 +1488,7 @@ def shortage_bioe_for_heat():
     Shortage of bioenergy for supplying RES power plants for heat generation.
     """
     value = xr.DataArray(
-        np.nan, {"RES heat": _subscript_dict["RES heat"]}, [np.str_("RES heat")]
+        np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
     value.loc[["solar heat"]] = 1
     value.loc[["geot heat"]] = 1
@@ -1560,7 +1560,7 @@ def start_year_p_urban_land_density():
 
 
 _ext_constant_start_year_p_urban_land_density = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "start_year_P_urban_land_density",
     {},
@@ -1585,7 +1585,7 @@ def start_year_p_variation_primary_forest():
 
 
 _ext_constant_start_year_p_variation_primary_forest = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "start_year_variation_primary_forest",
     {},
@@ -1610,7 +1610,7 @@ def target_year_p_urban_land_density():
 
 
 _ext_constant_target_year_p_urban_land_density = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "target_year_P_urban_land_density",
     {},
@@ -1782,9 +1782,9 @@ _integ_urban_land = Integ(
     depends_on={
         "time": 4,
         "historic_urban_land_density": 4,
-        "start_year_p_urban_land_density": 3,
         "target_year_p_urban_land_density": 2,
         "p_urban_land_density_mha": 2,
+        "start_year_p_urban_land_density": 3,
     },
 )
 def urban_land_density():
@@ -1854,7 +1854,7 @@ def wood_energy_density():
 
 
 _ext_constant_wood_energy_density = ExtConstant(
-    "../land.xlsx",
+    r"../land.xlsx",
     "Global",
     "wood_energy_density",
     {},

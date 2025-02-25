@@ -1,6 +1,6 @@
 """
 Module energy.demand.heat_demand
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -139,8 +139,8 @@ def heatnc_distribution_losses():
         "total_fed_nre_heatnc": 3,
         "share_fed_coal_vs_nre_heatnc": 1,
         "efficiency_coal_for_heat_plants": 1,
-        "share_fed_gas_vs_nre_heatnc": 1,
         "efficiency_gases_for_heat_plants": 1,
+        "share_fed_gas_vs_nre_heatnc": 1,
         "share_fed_liquids_vs_nre_heatnc": 1,
         "efficiency_liquids_for_heat_plants": 1,
     },
@@ -198,7 +198,7 @@ def share_heat_distribution_losses():
 
 
 _ext_constant_share_heat_distribution_losses = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "share_heat_distribution_losses",
     {},
@@ -220,7 +220,7 @@ def total_fe_real_supply_res_for_heatcom():
     Total final energy supply delivered by RES for commercial heat.
     """
     return sum(
-        fe_real_generation_res_heatcom_ej().rename({np.str_("RES heat"): "RES heat!"}),
+        fe_real_generation_res_heatcom_ej().rename({"RES heat": "RES heat!"}),
         dim=["RES heat!"],
     )
 
@@ -237,7 +237,7 @@ def total_fe_real_supply_res_for_heatnc_ej():
     Total final energy supply delivered by RES for non-commercial heat.
     """
     return sum(
-        fe_real_generation_res_heatnc().rename({np.str_("RES heat"): "RES heat!"}),
+        fe_real_generation_res_heatnc().rename({"RES heat": "RES heat!"}),
         dim=["RES heat!"],
     )
 

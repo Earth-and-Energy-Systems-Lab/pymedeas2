@@ -1,6 +1,6 @@
 """
 Module energy.supply.total_fe_heat_generation
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(

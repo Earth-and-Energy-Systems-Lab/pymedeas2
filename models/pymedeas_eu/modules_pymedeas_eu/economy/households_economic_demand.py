@@ -1,12 +1,12 @@
 """
 Module economy.households_economic_demand
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
     name="beta 0 HD",
     units="Dmnl",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_beta_0_hd"},
@@ -19,7 +19,7 @@ def beta_0_hd():
 
 
 _ext_constant_beta_0_hd = ExtConstant(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Europe",
     "beta_0_HD*",
     {"sectors": _subscript_dict["sectors"]},
@@ -44,14 +44,14 @@ def beta_1_hd():
 
 
 _ext_constant_beta_1_hd = ExtConstant(
-    "../economy.xlsx", "Europe", "beta_1_HD", {}, _root, {}, "_ext_constant_beta_1_hd"
+    r"../economy.xlsx", "Europe", "beta_1_HD", {}, _root, {}, "_ext_constant_beta_1_hd"
 )
 
 
 @component.add(
     name="historic HD",
     units="Mdollars",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -67,9 +67,9 @@ def historic_hd(x, final_subs=None):
 
 
 _ext_lookup_historic_hd = ExtLookup(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Europe",
-    "time_index2019",
+    "time_index2009",
     "historic_HD",
     {"sectors": _subscript_dict["sectors"]},
     _root,
@@ -81,7 +81,7 @@ _ext_lookup_historic_hd = ExtLookup(
 @component.add(
     name="Household demand",
     units="Mdollars",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_household_demand": 1},
@@ -112,13 +112,13 @@ _integ_household_demand = Integ(
 @component.add(
     name="Household demand not covered",
     units="Mdollars/year",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "household_demand": 1,
         "real_household_demand_by_sector": 1,
+        "household_demand": 1,
         "nvs_1_year": 1,
     },
 )
@@ -128,7 +128,7 @@ def household_demand_not_covered():
     """
     return (
         if_then_else(
-            time() < 2019,
+            time() < 2009,
             lambda: xr.DataArray(
                 0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
             ),
@@ -149,15 +149,13 @@ def household_demand_total():
     """
     Whole economy domestic households demand
     """
-    return sum(
-        household_demand().rename({np.str_("sectors"): "sectors!"}), dim=["sectors!"]
-    )
+    return sum(household_demand().rename({"sectors": "sectors!"}), dim=["sectors!"])
 
 
 @component.add(
     name="initial household demand",
     units="M$",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"historic_hd": 1},
@@ -182,7 +180,7 @@ def unit_correction_economic():
 @component.add(
     name="variation historic demand",
     units="Mdollars/year",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 2, "time_step": 2, "historic_hd": 2},
@@ -197,17 +195,17 @@ def variation_historic_demand():
 @component.add(
     name="variation household demand",
     units="Mdollars/year",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "lc": 2,
-        "variation_lc": 1,
-        "nvs_1_year": 1,
         "beta_0_hd": 1,
+        "lc": 2,
+        "nvs_1_year": 1,
         "beta_1_hd": 2,
+        "variation_lc": 1,
         "unit_correction_economic": 2,
     },
 )
@@ -216,7 +214,7 @@ def variation_household_demand():
     Variation of final demand by households by industrial sectors
     """
     return if_then_else(
-        time() < 2019,
+        time() < 2009,
         lambda: variation_historic_demand(),
         lambda: np.exp(beta_0_hd())
         * (

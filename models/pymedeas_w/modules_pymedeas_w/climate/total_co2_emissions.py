@@ -69,8 +69,8 @@ def afforestation_program_2020():
 
 
 _ext_data_afforestation_program_2020 = ExtData(
-    "../../scenarios/scen_w.xlsx",
-    "NZP",
+    "../parameters.xlsx",
+    "World",
     "time_afforestation",
     "afforestation",
     "interpolate",
@@ -89,8 +89,8 @@ _ext_data_afforestation_program_2020 = ExtData(
     depends_on={
         "afforestation_program_2020": 1,
         "activate_afforestation_program": 1,
-        "gtc_per_gtco2": 1,
         "mtc_per_gtc": 1,
+        "gtc_per_gtco2": 1,
     },
 )
 def afforestation_program_2020_gtco2():
@@ -159,7 +159,7 @@ def co2_emissions_bioe_and_waste():
     name="CO2 emissions biofuels",
     units="GtCO2/year",
     subscripts=[np.str_("final sources")],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"gtco2_per_ej_biofuels": 1, "oil_liquids_saved_by_biofuels_ej": 1},
 )
@@ -182,7 +182,7 @@ def co2_emissions_biofuels():
     name="CO2 emissions biogas",
     units="GtCO2/year",
     subscripts=[np.str_("final sources")],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_biogas": 3,
@@ -235,15 +235,15 @@ def co2_emissions_biomass():
     name="CO2 emissions coal",
     units="GtCO2/year",
     subscripts=[np.str_("final sources")],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_coal": 3,
         "extraction_coal_ej": 4,
         "share_coal_for_elec_emissions_relevant": 1,
         "share_coal_for_heat_emissions_relevant": 1,
-        "share_coal_for_ctl_emissions_relevant": 1,
         "gtco2_per_ej_ctl": 1,
+        "share_coal_for_ctl_emissions_relevant": 1,
         "share_coal_for_fc_emissions_relevant": 1,
     },
 )
@@ -303,15 +303,15 @@ def co2_emissions_fossil_fuels():
     name="CO2 emissions gas",
     units="GtCO2/year",
     subscripts=[np.str_("final sources")],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_gas": 3,
         "pes_nat_gas": 4,
         "share_nat_gas_for_elec_emissions_relevant": 1,
         "share_nat_gas_for_heat_emissions_relevant": 1,
-        "share_nat_gas_for_gtl_emissions_relevant": 1,
         "gtco2_per_ej_gtl": 1,
+        "share_nat_gas_for_gtl_emissions_relevant": 1,
         "share_nat_gas_for_fc_emissions_relevant": 1,
     },
 )
@@ -341,7 +341,7 @@ def co2_emissions_gas():
     name="CO2 emissions oil",
     units="GtCO2/year",
     subscripts=[np.str_("final sources")],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_oil": 3,
@@ -411,13 +411,13 @@ def co2_emissions_per_fuel():
     name="CO2 emissions solid bioE",
     units="GtCO2/year",
     subscripts=[np.str_("final sources")],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_solid_bioe": 3,
         "pe_real_generation_res_elec": 1,
-        "pes_res_for_heatcom_by_techn": 1,
         "pes_res_for_heatnc_by_techn": 1,
+        "pes_res_for_heatcom_by_techn": 1,
         "modern_bioe_in_households": 1,
     },
 )
@@ -444,7 +444,7 @@ def co2_emissions_solid_bioe():
     name="CO2 emissions waste",
     units="GtCO2/year",
     subscripts=[np.str_("final sources")],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_waste": 3,
@@ -485,8 +485,8 @@ def co2_landuse_change_emissions_exogenous(x, final_subs=None):
 
 
 _ext_lookup_co2_landuse_change_emissions_exogenous = ExtLookup(
-    "../../scenarios/scen_w.xlsx",
-    "NZP",
+    "../parameters.xlsx",
+    "World",
     "years_co2_luc",
     "co2_luc",
     {},

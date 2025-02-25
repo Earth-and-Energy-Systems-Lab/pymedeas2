@@ -1,6 +1,6 @@
 """
 Module energy.supply.tpes
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -129,7 +129,7 @@ def staticdynamic_quality_of_electricity():
         "extraction_uranium": 1,
         "imports_eu_nat_gas_from_row_ej": 1,
         "imports_eu_total_oil_from_row_ej": 1,
-        "pec_uranium": 1,
+        "extraction_uranium_row": 1,
     },
 )
 def total_consumption_nre_ej():
@@ -146,7 +146,7 @@ def total_consumption_nre_ej():
         + extraction_uranium()
         + imports_eu_nat_gas_from_row_ej()
         + imports_eu_total_oil_from_row_ej()
-        + pec_uranium()
+        + extraction_uranium_row()
     )
 
 
@@ -172,23 +172,6 @@ def total_imports_eu_nre_from_row():
 
 
 @component.add(
-    name="Total PED NRE FS",
-    units="EJ/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"ped_nre_fs": 1, "pe_demand_uranium_eu_ej": 1},
-)
-def total_ped_nre_fs():
-    return (
-        sum(
-            ped_nre_fs().rename({"matter final sources": "matter final sources!"}),
-            dim=["matter final sources!"],
-        )
-        + pe_demand_uranium_eu_ej()
-    )
-
-
-@component.add(
     name="TPE from RES EJ",
     units="EJ/year",
     comp_type="Auxiliary",
@@ -208,7 +191,7 @@ def tpe_from_res_ej():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "pe_demand_uranium_eu_ej": 1,
+        "extraction_uranium": 1,
         "pe_supply_res_nonelec_ej": 1,
         "pe_elec_generation_from_res_ej": 1,
         "ped_nre_fs": 3,
@@ -220,7 +203,7 @@ def tped_by_fuel():
     Total primary energy demand by fuel.
     """
     return (
-        pe_demand_uranium_eu_ej()
+        extraction_uranium()
         + pe_supply_res_nonelec_ej()
         + pe_elec_generation_from_res_ej()
         + float(ped_nre_fs().loc["liquids"])
@@ -242,17 +225,6 @@ def tpes_ej():
     Total Primary Energy Supply.
     """
     return total_consumption_nre_ej() + tpe_from_res_ej() + pes_waste_ej()
-
-
-@component.add(
-    name="tpes intensity ej tdollar",
-    units="EJ/(year*Mdollars)",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"tpes_ej": 1, "gdp_eu": 1},
-)
-def tpes_intensity_ej_tdollar():
-    return tpes_ej() / gdp_eu()
 
 
 @component.add(

@@ -1,18 +1,18 @@
 """
 Module energy.storage.storage_demand_and_supply
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
     name="constraint elec storage availability",
     units="Dmnl",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "res_elec_variables": 1,
-        "demand_storage_capacity": 2,
         "total_capacity_elec_storage_tw": 3,
+        "demand_storage_capacity": 2,
     },
 )
 def constraint_elec_storage_availability():
@@ -161,7 +161,7 @@ def real_fe_elec_stored_ev_batteries_twh():
 @component.add(
     name="remaining potential elec storage by RES techn",
     units="Dmnl",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"max_capacity_elec_storage": 3, "demand_storage_capacity": 2},
@@ -178,7 +178,7 @@ def remaining_potential_elec_storage_by_res_techn():
             lambda: 0,
         ),
         {"RES elec": _subscript_dict["RES elec"]},
-        [np.str_("RES elec")],
+        ["RES elec"],
     )
 
 
@@ -220,7 +220,7 @@ def rt_storage_efficiency_ev_batteries():
 
 
 _ext_constant_rt_storage_efficiency_ev_batteries = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "round_trip_storage_efficiency_ev_batteries",
     {},
@@ -245,7 +245,7 @@ def rt_storage_efficiency_phs():
 
 
 _ext_constant_rt_storage_efficiency_phs = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "round_trip_storage_efficiency_phs",
     {},
@@ -300,7 +300,7 @@ def total_installed_capacity_res_elec_var():
     return sum(
         installed_capacity_res_elec()
         .loc[_subscript_dict["RES ELEC VARIABLE"]]
-        .rename({np.str_("RES elec"): "RES ELEC VARIABLE!"}),
+        .rename({"RES elec": "RES ELEC VARIABLE!"}),
         dim=["RES ELEC VARIABLE!"],
     )
 

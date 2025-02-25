@@ -72,7 +72,7 @@ _ext_constant_max_pe_geotelec_twth = ExtConstant(
     units="TW",
     subscripts=[np.str_("RES elec")],
     comp_type="Constant, Auxiliary",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
     depends_on={
         "__external__": "_ext_constant_max_potential_res_elec_twe",
         "max_pe_geotelec_twth": 1,
@@ -166,11 +166,11 @@ def max_potential_res_elec_twh():
     comp_subtype="Normal",
     depends_on={
         "max_potential_res_elec_twh": 1,
-        "twe_per_twh": 1,
         "max_potential_phs_twe": 1,
+        "twe_per_twh": 1,
         "share_pes_biogas_for_elec": 1,
-        "ej_per_twh": 1,
         "max_biogas_ej": 1,
+        "ej_per_twh": 1,
     },
 )
 def max_potential_tot_res_elec_twh():

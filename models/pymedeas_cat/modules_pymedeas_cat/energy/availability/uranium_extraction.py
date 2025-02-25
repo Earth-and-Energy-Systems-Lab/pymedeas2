@@ -1,6 +1,6 @@
 """
 Module energy.availability.uranium_extraction
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -52,7 +52,7 @@ def av_past_cat_domestic_uranium_extraction():
 
 
 _ext_constant_av_past_cat_domestic_uranium_extraction = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "historic_average_domestic_uranium_extraction",
     {},
@@ -104,7 +104,7 @@ def cumulated_uranium_extraction_to_1995():
 
 
 _ext_constant_cumulated_uranium_extraction_to_1995 = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "cumulative_uranium_extraction_until_1995",
     {},
@@ -121,11 +121,11 @@ _ext_constant_cumulated_uranium_extraction_to_1995 = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "rurr_uranium": 1,
+        "pe_demand_uranium_cat_ej": 1,
         "max_extraction_uranium_ej": 1,
         "tonnes_per_kt": 1,
         "time": 1,
         "historic_uranium_domestic_extracted": 1,
-        "pe_demand_uranium_cat_ej": 1,
         "kt_uranium_per_ej": 1,
     },
 )
@@ -179,7 +179,7 @@ def historic_uranium_domestic_extracted():
 
 
 _ext_data_historic_uranium_domestic_extracted = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_domestic_uranium_extraction",
@@ -219,10 +219,10 @@ def kt_uranium_per_ej():
     comp_subtype="Normal",
     depends_on={
         "av_past_cat_domestic_uranium_extraction": 1,
-        "kt_uranium_per_ej": 1,
         "tonnes_per_kt": 1,
-        "rurr_uranium": 1,
+        "kt_uranium_per_ej": 1,
         "table_max_extraction_uranium": 1,
+        "rurr_uranium": 1,
     },
 )
 def max_extraction_uranium_ej():
@@ -304,7 +304,7 @@ def table_max_extraction_uranium(x, final_subs=None):
 
 
 _ext_lookup_table_max_extraction_uranium = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "RURR_uranium",
     "max_extraction_uranium",
@@ -348,7 +348,7 @@ def urr_uranium_input():
 
 
 _ext_constant_urr_uranium_input = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "URR_uranium",
     {},

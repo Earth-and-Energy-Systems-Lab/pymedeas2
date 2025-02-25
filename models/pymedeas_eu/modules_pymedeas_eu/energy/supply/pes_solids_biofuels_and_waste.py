@@ -1,6 +1,6 @@
 """
 Module energy.supply.pes_solids_biofuels_and_waste
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -22,7 +22,7 @@ def losses_in_charcoal_plants():
 
 
 _ext_data_losses_in_charcoal_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_efficiencies",
     "historic_losses_charcoal_plants",
@@ -32,19 +32,6 @@ _ext_data_losses_in_charcoal_plants = ExtData(
     {},
     "_ext_data_losses_in_charcoal_plants",
 )
-
-
-@component.add(
-    name="PE solidbioE for heat and electricity",
-    units="EJ/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"pe_real_generation_res_elec": 1, "pes_res_for_heat_by_techn": 1},
-)
-def pe_solidbioe_for_heat_and_electricity():
-    return float(pe_real_generation_res_elec().loc["solid bioE elec"]) + float(
-        pes_res_for_heat_by_techn().loc["solid bioE heat"]
-    )
 
 
 @component.add(

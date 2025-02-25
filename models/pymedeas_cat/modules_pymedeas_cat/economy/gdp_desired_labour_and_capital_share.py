@@ -1,6 +1,6 @@
 """
 Module economy.gdp_desired_labour_and_capital_share
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -49,8 +49,8 @@ _integ_capital_share = Integ(
     depends_on={
         "p_capital_share": 1,
         "initial_capital_share": 2,
-        "time_step": 1,
         "year_final_capial_share": 1,
+        "time_step": 1,
         "year_initial_capital_share": 1,
     },
 )
@@ -152,12 +152,12 @@ def desired_gdp():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "historic_gdp_growth_rate": 1,
         "desired_gdp": 1,
-        "annual_gdppc_growth_rate": 1,
-        "desired_gdppc": 1,
+        "historic_gdp_growth_rate": 1,
         "population": 1,
+        "desired_gdppc": 1,
         "dollars_per_tdollars": 1,
+        "annual_gdppc_growth_rate": 1,
     },
 )
 def desired_gdp_next_year():
@@ -202,11 +202,11 @@ _integ_desired_gdppc = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "time_step": 2,
-        "historic_gdppc_delayed": 1,
         "historic_gdppc": 1,
-        "ts_growth_rate": 1,
+        "historic_gdppc_delayed": 1,
+        "time_step": 2,
         "desired_gdppc": 1,
+        "ts_growth_rate": 1,
     },
 )
 def desired_variation_gdppc():
@@ -252,9 +252,9 @@ def gdppc_initial_year():
     depends_on={
         "time": 2,
         "year_initial_capital_share": 1,
+        "year_final_capial_share": 1,
         "capital_share_growth": 1,
         "laborcapital_share_cte": 1,
-        "year_final_capial_share": 1,
         "historic_capital_share_growth": 1,
     },
 )
@@ -301,7 +301,7 @@ def growth_labour_share():
 @component.add(
     name="historic capital compensation",
     units="Mdollars",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -317,7 +317,7 @@ def historic_capital_compensation(x, final_subs=None):
 
 
 _ext_lookup_historic_capital_compensation = ExtLookup(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "time_index2009",
     "historic_capital_compensation",
@@ -340,7 +340,7 @@ def historic_capital_share():
     Historic variation of capital share.
     """
     return sum(
-        historic_capital_compensation(time()).rename({np.str_("sectors"): "sectors!"}),
+        historic_capital_compensation(time()).rename({"sectors": "sectors!"}),
         dim=["sectors!"],
     ) / historic_gdp(time())
 
@@ -379,7 +379,7 @@ def historic_capital_share_next_step():
     """
     return sum(
         historic_capital_compensation(time() + time_step()).rename(
-            {np.str_("sectors"): "sectors!"}
+            {"sectors": "sectors!"}
         ),
         dim=["sectors!"],
     ) / historic_gdp(time() + time_step())
@@ -403,7 +403,7 @@ def historic_gdp(x, final_subs=None):
 
 
 _ext_lookup_historic_gdp = ExtLookup(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "time_index2014",
     "historic_GDP",
@@ -465,7 +465,7 @@ _delayfixed_historic_gdppc_delayed = DelayFixed(
 @component.add(
     name="historic labour compensation",
     units="Mdollars",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -481,7 +481,7 @@ def historic_labour_compensation(x, final_subs=None):
 
 
 _ext_lookup_historic_labour_compensation = ExtLookup(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "time_index2014",
     "historic_labour_compensation",
@@ -504,7 +504,7 @@ def historic_labour_share():
     Historic variation of labour share.
     """
     return sum(
-        historic_labour_compensation(time()).rename({np.str_("sectors"): "sectors!"}),
+        historic_labour_compensation(time()).rename({"sectors": "sectors!"}),
         dim=["sectors!"],
     ) / historic_gdp(time())
 
@@ -543,7 +543,7 @@ def historic_labour_share_next_step():
     """
     return sum(
         historic_labour_compensation(time() + time_step()).rename(
-            {np.str_("sectors"): "sectors!"}
+            {"sectors": "sectors!"}
         ),
         dim=["sectors!"],
     ) / historic_gdp(time() + time_step())
@@ -566,7 +566,7 @@ def initial_capital_share():
     """
     return sum(
         historic_capital_compensation(year_initial_capital_share()).rename(
-            {np.str_("sectors"): "sectors!"}
+            {"sectors": "sectors!"}
         ),
         dim=["sectors!"],
     ) / historic_gdp(year_initial_capital_share())
@@ -589,7 +589,7 @@ def initial_labour_share():
     """
     return sum(
         historic_labour_compensation(year_initial_labour_share()).rename(
-            {np.str_("sectors"): "sectors!"}
+            {"sectors": "sectors!"}
         ),
         dim=["sectors!"],
     ) / historic_gdp(year_initial_labour_share())
@@ -690,7 +690,7 @@ def p_capital_share():
 
 
 _ext_constant_p_capital_share = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "p_capital_share",
     {},
@@ -715,7 +715,7 @@ def p_labour_share():
 
 
 _ext_constant_p_labour_share = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "p_labour_share",
     {},
@@ -743,7 +743,7 @@ def p_timeseries_gdppc_growth_rate(x, final_subs=None):
 
 
 _ext_lookup_p_timeseries_gdppc_growth_rate = ExtLookup(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "year_gdp_timeseries",
     "p_timeseries_gdp_growth",
@@ -766,7 +766,7 @@ def t_to_m():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"annual_gdppc_growth_rate": 1, "nvs_1_year": 1, "time_step": 1},
+    depends_on={"annual_gdppc_growth_rate": 1, "time_step": 1, "nvs_1_year": 1},
 )
 def ts_growth_rate():
     """
@@ -797,9 +797,9 @@ def variation_capital_share():
     depends_on={
         "gdp_cat": 1,
         "capital_share": 1,
-        "nvs_1_year": 1,
         "desired_annual_total_demand_growth_rate": 2,
         "growth_capital_share": 2,
+        "nvs_1_year": 1,
         "t_to_m": 1,
     },
 )
@@ -838,9 +838,9 @@ def variation_labour_share():
     depends_on={
         "gdp_cat": 1,
         "labour_share": 1,
-        "nvs_1_year": 1,
-        "growth_labour_share": 2,
         "desired_annual_total_demand_growth_rate": 2,
+        "growth_labour_share": 2,
+        "nvs_1_year": 1,
         "t_to_m": 1,
     },
 )

@@ -1,6 +1,6 @@
 """
 Module energy.supply.traditional_biomass
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -55,7 +55,7 @@ def pe_consumption_trad_biomass_ref():
 
 
 _ext_constant_pe_consumption_trad_biomass_ref = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "pe_consumption_trad_biomass_ref",
     {},
@@ -143,7 +143,7 @@ def people_relying_trad_biomass_ref():
 
 
 _ext_constant_people_relying_trad_biomass_ref = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Catalonia",
     "people_relying_on_traditional_biomass",
     {},
@@ -215,7 +215,7 @@ def share_trad_biomass_vs_solids_in_households():
 
 
 _ext_constant_share_trad_biomass_vs_solids_in_households = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "share_trad_biomass_vs_solids_in_households",
     {},

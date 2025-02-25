@@ -1,6 +1,6 @@
 """
 Module environment.water.water_use_and_resources_indica
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -18,7 +18,7 @@ def ar_water():
 
 
 _ext_constant_ar_water = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Catalonia",
     "accessible_runnoff_water",
     {},
@@ -38,13 +38,13 @@ def dam3_per_km3():
 @component.add(
     name="Historic water by type intensities by sector",
     units="dam3/Mdollars",
-    subscripts=[np.str_("sectors"), np.str_("water")],
+    subscripts=["sectors", "water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "real_total_output_by_sector_cat": 1,
         "historic_water_use": 1,
+        "real_total_output_by_sector_cat": 1,
     },
 )
 def historic_water_by_type_intensities_by_sector():
@@ -52,7 +52,7 @@ def historic_water_by_type_intensities_by_sector():
         time() < 2009,
         lambda: historic_water_use(time())
         .loc[_subscript_dict["sectors"], :]
-        .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+        .rename({"SECTORS and HOUSEHOLDS": "sectors"})
         / real_total_output_by_sector_cat(),
         lambda: xr.DataArray(
             0,
@@ -65,7 +65,7 @@ def historic_water_by_type_intensities_by_sector():
 @component.add(
     name="Historic water by type intensities for households",
     units="dam3/Mdollars",
-    subscripts=[np.str_("water")],
+    subscripts=["water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 2, "household_demand_total": 1, "historic_water_use": 1},
@@ -82,7 +82,7 @@ def historic_water_by_type_intensities_for_households():
 @component.add(
     name="Historic water intensities by sector delayed 1yr",
     units="dam3/Mdollars",
-    subscripts=[np.str_("sectors"), np.str_("water")],
+    subscripts=["sectors", "water"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_historic_water_intensities_by_sector_delayed_1yr": 1},
@@ -109,7 +109,7 @@ _delayfixed_historic_water_intensities_by_sector_delayed_1yr = DelayFixed(
 @component.add(
     name="Historic water intensities for households delayed 1yr",
     units="dam3/Mdollars",
-    subscripts=[np.str_("water")],
+    subscripts=["water"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_historic_water_intensities_for_households_delayed_1yr": 1},
@@ -136,7 +136,7 @@ _delayfixed_historic_water_intensities_for_households_delayed_1yr = DelayFixed(
 @component.add(
     name="Historic water use",
     units="dam3",
-    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("water")],
+    subscripts=["SECTORS and HOUSEHOLDS", "water"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -152,7 +152,7 @@ def historic_water_use(x, final_subs=None):
 
 
 _ext_lookup_historic_water_use = ExtLookup(
-    "../water.xlsx",
+    r"../water.xlsx",
     "Catalonia",
     "year",
     "historic_water_use_blue_water",
@@ -169,7 +169,7 @@ _ext_lookup_historic_water_use = ExtLookup(
 )
 
 _ext_lookup_historic_water_use.add(
-    "../water.xlsx",
+    r"../water.xlsx",
     "Catalonia",
     "year",
     "historic_water_use_green_water",
@@ -180,7 +180,7 @@ _ext_lookup_historic_water_use.add(
 )
 
 _ext_lookup_historic_water_use.add(
-    "../water.xlsx",
+    r"../water.xlsx",
     "Catalonia",
     "year",
     "historic_water_use_gray_water",
@@ -194,7 +194,7 @@ _ext_lookup_historic_water_use.add(
 @component.add(
     name="Initial water intensity by sector",
     units="dam3/Mdollars",
-    subscripts=[np.str_("sectors"), np.str_("water")],
+    subscripts=["sectors", "water"],
     comp_type="Stateful",
     comp_subtype="Initial",
     depends_on={"_initial_initial_water_intensity_by_sector": 1},
@@ -218,7 +218,7 @@ _initial_initial_water_intensity_by_sector = Initial(
 @component.add(
     name="Initial water intensity for households",
     units="dam3/(Mdollars)",
-    subscripts=[np.str_("water")],
+    subscripts=["water"],
     comp_type="Stateful",
     comp_subtype="Initial",
     depends_on={"_initial_initial_water_intensity_for_households": 1},
@@ -272,7 +272,7 @@ def renewable_water_resources():
 
 
 _ext_constant_renewable_water_resources = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Catalonia",
     "renewable_water_resources",
     {},
@@ -287,7 +287,7 @@ _ext_constant_renewable_water_resources = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_water_use_by_type": 1, "ar_water": 1, "dam3_per_km3": 1},
+    depends_on={"total_water_use_by_type": 1, "dam3_per_km3": 1, "ar_water": 1},
 )
 def share_blue_water_use_vs_ar():
     """
@@ -305,8 +305,8 @@ def share_blue_water_use_vs_ar():
     comp_subtype="Normal",
     depends_on={
         "total_water_use_by_type": 1,
-        "renewable_water_resources": 1,
         "dam3_per_km3": 1,
+        "renewable_water_resources": 1,
     },
 )
 def share_blue_water_use_vs_renewable_water_resources():
@@ -323,7 +323,7 @@ def share_blue_water_use_vs_renewable_water_resources():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_water_use": 1, "ar_water": 1, "dam3_per_km3": 1},
+    depends_on={"total_water_use": 1, "dam3_per_km3": 1, "ar_water": 1},
 )
 def share_total_water_use_vs_ar():
     """
@@ -339,8 +339,8 @@ def share_total_water_use_vs_ar():
     comp_subtype="Normal",
     depends_on={
         "total_water_use": 1,
-        "renewable_water_resources": 1,
         "dam3_per_km3": 1,
+        "renewable_water_resources": 1,
     },
 )
 def share_total_water_use_vs_renewable_water_resources():
@@ -353,7 +353,7 @@ def share_total_water_use_vs_renewable_water_resources():
 @component.add(
     name='"Total water for O&M required by RES elec dam3"',
     units="dam3",
-    subscripts=[np.str_("water")],
+    subscripts=["water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_water_for_om_required_by_res_elec": 1, "mt_to_dam3": 1},
@@ -373,15 +373,13 @@ def total_water_use():
     """
     Total water use (all types aggregated).
     """
-    return sum(
-        total_water_use_by_type().rename({np.str_("water"): "water!"}), dim=["water!"]
-    )
+    return sum(total_water_use_by_type().rename({"water": "water!"}), dim=["water!"])
 
 
 @component.add(
     name="Total water use by type",
     units="dam3",
-    subscripts=[np.str_("water")],
+    subscripts=["water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -395,10 +393,7 @@ def total_water_use_by_type():
     Total water consumption by type (green, blue, grey).
     """
     return (
-        sum(
-            water_use_by_sector().rename({np.str_("sectors"): "sectors!"}),
-            dim=["sectors!"],
-        )
+        sum(water_use_by_sector().rename({"sectors": "sectors!"}), dim=["sectors!"])
         + water_use_by_households()
         + total_water_for_om_required_by_res_elec_dam3()
     )
@@ -407,14 +402,14 @@ def total_water_use_by_type():
 @component.add(
     name="Variation water intensity by sector",
     units="dam3/(M$*year)",
-    subscripts=[np.str_("sectors"), np.str_("water")],
+    subscripts=["sectors", "water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "nvs_1_year": 1,
-        "historic_water_by_type_intensities_by_sector": 1,
         "historic_water_intensities_by_sector_delayed_1yr": 1,
+        "historic_water_by_type_intensities_by_sector": 1,
+        "nvs_1_year": 1,
     },
 )
 def variation_water_intensity_by_sector():
@@ -439,7 +434,7 @@ def variation_water_intensity_by_sector():
 @component.add(
     name="Variation water intensity households",
     units="dam3/(Mdollars*year)",
-    subscripts=[np.str_("water")],
+    subscripts=["water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -467,7 +462,7 @@ def variation_water_intensity_households():
 @component.add(
     name="Water intensity by sector",
     units="dam3/M$",
-    subscripts=[np.str_("sectors"), np.str_("water")],
+    subscripts=["sectors", "water"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_water_intensity_by_sector": 1},
@@ -492,7 +487,7 @@ _integ_water_intensity_by_sector = Integ(
 @component.add(
     name="Water intensity for households",
     units="dam3/(Mdollars)",
-    subscripts=[np.str_("water")],
+    subscripts=["water"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_water_intensity_for_households": 1},
@@ -517,7 +512,7 @@ _integ_water_intensity_for_households = Integ(
 @component.add(
     name="Water use by households",
     units="dam3",
-    subscripts=[np.str_("water")],
+    subscripts=["water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"water_intensity_for_households": 1, "household_demand_total": 1},
@@ -532,7 +527,7 @@ def water_use_by_households():
 @component.add(
     name="Water use by sector",
     units="dam3",
-    subscripts=[np.str_("sectors"), np.str_("water")],
+    subscripts=["sectors", "water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"water_intensity_by_sector": 1, "real_total_output_by_sector_cat": 1},

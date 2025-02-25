@@ -1,6 +1,6 @@
 """
 Module energy.demand.electricity_demand_ff
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -11,8 +11,8 @@ Translated using PySD version 3.14.0
     depends_on={
         "share_in_target_year_ff_for_elec": 1,
         "hist_share_oilff_elec": 1,
-        "target_year_policy_phaseout_ff_for_elec": 1,
         "start_year_policy_phaseout_oil_for_elec": 1,
+        "target_year_policy_phaseout_ff_for_elec": 1,
     },
 )
 def a_lineal_regr_phaseout_oil_for_elec():
@@ -155,7 +155,7 @@ def efficiency_coal_for_electricity():
 
 
 _ext_constant_efficiency_coal_for_electricity = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "efficiency_coal_for_electricity",
     {},
@@ -210,7 +210,7 @@ def efficiency_improv_gas_for_electricity():
 
 
 _ext_constant_efficiency_improv_gas_for_electricity = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "efficiency_improv_gas_for_electricity",
     {},
@@ -235,7 +235,7 @@ def efficiency_liquids_for_electricity():
 
 
 _ext_constant_efficiency_liquids_for_electricity = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "efficiency_liquids_for_electricity",
     {},
@@ -301,7 +301,7 @@ def fes_elec_fossil_fuel_chp_plants_twh():
     return (
         sum(
             fes_elec_fossil_fuel_chp_plants_ej().rename(
-                {np.str_("fossil fuels"): "fossil fuels!"}
+                {"fossil fuels": "fossil fuels!"}
             ),
             dim=["fossil fuels!"],
         )
@@ -383,7 +383,7 @@ _integ_future_share_oilff_for_elec = Integ(
 @component.add(
     name="Gen losses demand for FF Elec plants EJ",
     units="EJ/year",
-    subscripts=[np.str_("fossil fuels")],
+    subscripts=["fossil fuels"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -400,9 +400,7 @@ def gen_losses_demand_for_ff_elec_plants_ej():
     Total generation losses associated to electricity demand.
     """
     value = xr.DataArray(
-        np.nan,
-        {"fossil fuels": _subscript_dict["fossil fuels"]},
-        [np.str_("fossil fuels")],
+        np.nan, {"fossil fuels": _subscript_dict["fossil fuels"]}, ["fossil fuels"]
     )
     value.loc[["natural gas"]] = ped_gas_elec_plants_ej() * (
         1 - efficiency_gas_for_electricity()
@@ -435,7 +433,7 @@ def hist_share_gascoal_gas_elec():
 
 
 _ext_data_hist_share_gascoal_gas_elec = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_share_of_electricity_produced_from_gas_over_electricity_produced_coal_and_gas",
@@ -466,7 +464,7 @@ def hist_share_oilff_elec():
 
 
 _ext_data_hist_share_oilff_elec = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_share_of_electricity_produced_from_oil_over_total_fossil_electricity",
@@ -496,7 +494,7 @@ def historic_efficiency_gas_for_electricity(x, final_subs=None):
 
 
 _ext_lookup_historic_efficiency_gas_for_electricity = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_efficiencies",
     "historic_efficiency_gas_for_electricity",
@@ -514,9 +512,9 @@ _ext_lookup_historic_efficiency_gas_for_electricity = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
+        "percent_to_share": 1,
         "historic_efficiency_gas_for_electricity": 2,
         "time_step": 2,
-        "percent_to_share": 1,
         "remaining_efficiency_improv_gas_for_electricity": 1,
         "efficiency_improv_gas_for_electricity": 1,
         "efficiency_gas_for_electricity": 1,
@@ -599,7 +597,7 @@ def initial_efficiency_gas_for_electricity():
 
 
 _ext_constant_initial_efficiency_gas_for_electricity = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "initial_efficiency_gas_for_electricity",
     {},
@@ -637,7 +635,7 @@ def max_efficiency_gas_power_plants():
 
 
 _ext_constant_max_efficiency_gas_power_plants = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "maximum_efficiency_gas_power_plant",
     {},
@@ -906,7 +904,7 @@ def phaseout_oil_for_electricity():
 
 
 _ext_constant_phaseout_oil_for_electricity = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "phase_out_oil_electr",
     {},
@@ -991,7 +989,7 @@ def share_gascoalgas_for_elec_in_2014():
 
 
 _ext_constant_share_gascoalgas_for_elec_in_2014 = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "share_of_electricity_produced_from_gas_over_electricity_produced_coal_and_gas_2014",
     {},
@@ -1016,7 +1014,7 @@ def share_in_target_year_ff_for_elec():
 
 
 _ext_constant_share_in_target_year_ff_for_elec = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "share_target_year_oil_for_elec",
     {},
@@ -1034,11 +1032,11 @@ _ext_constant_share_in_target_year_ff_for_elec = ExtConstant(
     depends_on={
         "switch_scarcityps_elec_substit": 1,
         "hist_share_oilff_elec": 3,
+        "p_share_oil_oil_elec": 1,
         "time": 2,
         "future_share_oilff_for_elec": 1,
-        "p_share_oil_oil_elec": 1,
-        "phaseout_oil_for_electricity": 1,
         "start_year_policy_phaseout_oil_for_elec": 1,
+        "phaseout_oil_for_electricity": 1,
     },
 )
 def share_oil_for_elec():
@@ -1079,7 +1077,7 @@ def share_oilff_for_elec_in_2015():
 
 
 _ext_constant_share_oilff_for_elec_in_2015 = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "share_of_electricity_produced_from_oil_over_total_fossil_electricity_2015",
     {},
@@ -1106,7 +1104,7 @@ def start_year_policy_phaseout_oil_for_elec():
 
 
 _ext_constant_start_year_policy_phaseout_oil_for_elec = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "start_year_policy_phase_out_oil_for_electricity",
     {},
@@ -1146,7 +1144,7 @@ def target_year_policy_phaseout_ff_for_elec():
 
 
 _ext_constant_target_year_policy_phaseout_ff_for_elec = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "target_year_policy_phase_out_oil_electricity",
     {},

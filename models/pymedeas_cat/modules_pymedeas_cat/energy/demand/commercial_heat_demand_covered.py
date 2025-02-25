@@ -1,6 +1,6 @@
 """
 Module energy.demand.commercial_heat_demand_covered
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -68,7 +68,7 @@ def efficiency_coal_for_heat_plants():
 
 
 _ext_data_efficiency_coal_for_heat_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_efficiencies",
     "historic_efficiency_coal_heat_plants",
@@ -99,7 +99,7 @@ def efficiency_gases_for_heat_plants():
 
 
 _ext_data_efficiency_gases_for_heat_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_efficiencies",
     "historic_efficiency_gases_for_heat_plants",
@@ -130,7 +130,7 @@ def efficiency_liquids_for_heat_plants():
 
 
 _ext_data_efficiency_liquids_for_heat_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_efficiencies",
     "historic_efficiency_liquids_heat_plants",
@@ -204,7 +204,7 @@ def fed_heat_liquids_plants_ej():
 @component.add(
     name="Gen losses demand for FF Heat plants",
     units="EJ/year",
-    subscripts=[np.str_("fossil fuels")],
+    subscripts=["fossil fuels"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -221,9 +221,7 @@ def gen_losses_demand_for_ff_heat_plants():
     Total generation losses associated to heat plants.
     """
     value = xr.DataArray(
-        np.nan,
-        {"fossil fuels": _subscript_dict["fossil fuels"]},
-        [np.str_("fossil fuels")],
+        np.nan, {"fossil fuels": _subscript_dict["fossil fuels"]}, ["fossil fuels"]
     )
     value.loc[["natural gas"]] = ped_gases_for_heat_plants_ej() * (
         1 - efficiency_gases_for_heat_plants()
@@ -256,7 +254,7 @@ def historic_share_liquids_for_heat_plants():
 
 
 _ext_data_historic_share_liquids_for_heat_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_share_of_liquids_in_heat_plants",
@@ -313,8 +311,8 @@ def ped_coal_for_heat_plants_ej():
     depends_on={
         "fed_heat_liquids_plants_ej": 1,
         "efficiency_liquids_for_heat_plants": 1,
-        "fed_heat_gas_plants": 1,
         "efficiency_gases_for_heat_plants": 1,
+        "fed_heat_gas_plants": 1,
         "fed_heat_coal_plants": 1,
         "efficiency_coal_for_heat_plants": 1,
     },
@@ -383,7 +381,7 @@ def phaseout_oil_for_heat():
 
 
 _ext_constant_phaseout_oil_for_heat = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "phase_out_oil_heat",
     {},
@@ -426,7 +424,7 @@ def share_gascoalgas_for_heat_plants():
 
 
 _ext_data_share_gascoalgas_for_heat_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_share_of_heat_produced_from_gas_over_electricity_produced_coal_and_gas",
@@ -453,7 +451,7 @@ def share_in_target_year_oil_for_heat():
 
 
 _ext_constant_share_in_target_year_oil_for_heat = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "share_target_year_oil_for_heat",
     {},
@@ -471,8 +469,8 @@ _ext_constant_share_in_target_year_oil_for_heat = ExtConstant(
     depends_on={
         "time": 2,
         "historic_share_liquids_for_heat_plants": 3,
-        "p_share_oil_for_heat": 1,
         "phaseout_oil_for_heat": 1,
+        "p_share_oil_for_heat": 1,
         "start_year_policy_phaseout_oil_for_heat": 1,
     },
 )
@@ -512,7 +510,7 @@ def start_year_policy_phaseout_oil_for_heat():
 
 
 _ext_constant_start_year_policy_phaseout_oil_for_heat = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "start_year_policy_phase_out_oil_for_heat",
     {},
@@ -539,7 +537,7 @@ def target_year_policy_phaseout_oil_for_heat():
 
 
 _ext_constant_target_year_policy_phaseout_oil_for_heat = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "target_year_policy_phase_out_oil_heat",
     {},

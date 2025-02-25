@@ -1,6 +1,6 @@
 """
 Module energy.supply.heat_total_pes
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -55,7 +55,7 @@ def pes_nre_heatnc():
 @component.add(
     name="PES RES for heat by techn",
     units="EJ/year",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -82,8 +82,7 @@ def pes_tot_res_for_heat():
     Total primary energy of RES for heat (all technologies: biogas, solids bioenergy, solar and geothermal).
     """
     return pes_tot_biogas_for_heatcom() + sum(
-        pes_res_for_heat_by_techn().rename({np.str_("RES heat"): "RES heat!"}),
-        dim=["RES heat!"],
+        pes_res_for_heat_by_techn().rename({"RES heat": "RES heat!"}), dim=["RES heat!"]
     )
 
 

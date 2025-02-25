@@ -1,6 +1,6 @@
 """
 Module energy.storage.phs
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -18,7 +18,7 @@ def cp_phs():
 
 
 _ext_constant_cp_phs = ExtConstant(
-    "../energy.xlsx", "Catalonia", "cp_phs", {}, _root, {}, "_ext_constant_cp_phs"
+    r"../energy.xlsx", "Catalonia", "cp_phs", {}, _root, {}, "_ext_constant_cp_phs"
 )
 
 
@@ -37,7 +37,7 @@ def initial_instal_cap_phs():
 
 
 _ext_constant_initial_instal_cap_phs = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "initial_installed_capacity_phs",
     {},
@@ -71,8 +71,8 @@ def installed_capacity_phs():
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_phs": 3,
-        "p_phs_power": 2,
         "start_year_p_growth_res_elec": 3,
+        "p_phs_power": 2,
     },
 )
 def installed_capacity_phs_policies():
@@ -174,7 +174,7 @@ def max_potential_phs_twe():
 
 
 _ext_constant_max_potential_phs_twe = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "max_PHS_potential",
     {},
@@ -202,8 +202,8 @@ def max_potential_phs_twh():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "installed_capacity_phs_year_delayed": 1,
         "installed_capacity_phs": 1,
+        "installed_capacity_phs_year_delayed": 1,
     },
 )
 def new_phs_installed():
@@ -258,7 +258,7 @@ def p_phs_power(x, final_subs=None):
 
 
 _ext_lookup_p_phs_power = ExtLookup(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "year_RES_power",
     "p_PHS_power",
@@ -389,7 +389,7 @@ def table_hist_capacity_phs(x, final_subs=None):
 
 
 _ext_lookup_table_hist_capacity_phs = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_installed_capacity_phs",

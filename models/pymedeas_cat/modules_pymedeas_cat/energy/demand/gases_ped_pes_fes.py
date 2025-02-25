@@ -1,6 +1,6 @@
 """
 Module energy.demand.gases_ped_pes_fes
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -76,7 +76,7 @@ def historic_conv_nat_gas_domestic_cat_extracted_ej():
 
 
 _ext_data_historic_conv_nat_gas_domestic_cat_extracted_ej = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_domestic_natural_gas_extraction",
@@ -169,8 +169,8 @@ _sampleiftrue_historic_share_conv_nat_gas_domestic_cat_extraction_until_2016 = (
             },
             "step": {
                 "time": 1,
-                "historic_net_imports_nat_gas_cat_": 1,
                 "extraction_nat_gas_ej_world": 1,
+                "historic_net_imports_nat_gas_cat_": 1,
             },
         }
     },
@@ -249,7 +249,7 @@ def historic_unconv_nat_gas_domestic_cat_extracted_ej():
 
 
 _ext_data_historic_unconv_nat_gas_domestic_cat_extracted_ej = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_domestic_unconventional_natural_gas_extraction",
@@ -528,8 +528,8 @@ def share_gases_dem_for_heatnc():
     depends_on={
         "required_fed_by_gases": 1,
         "other_gases_required": 1,
-        "ped_gases": 1,
         "ped_nat_gas_for_gtl_ej": 1,
+        "ped_gases": 1,
     },
 )
 def share_gases_for_final_energy():
@@ -587,8 +587,8 @@ def share_nat_gas_dem_for_heatcom():
         "ped_gas_elec_plants_ej": 1,
         "ped_gas_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp": 1,
-        "self_consuption_energy_sector": 1,
         "ped_nat_gas_ej": 1,
+        "self_consuption_energy_sector": 1,
     },
 )
 def share_nat_gas_for_elec_emissions_relevant():
@@ -644,8 +644,8 @@ def share_nat_gas_for_gtl_emissions_relevant():
         "ped_gas_heatnc": 1,
         "ped_gas_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp": 1,
-        "self_consuption_energy_sector": 1,
         "ped_nat_gas_ej": 1,
+        "self_consuption_energy_sector": 1,
     },
 )
 def share_nat_gas_for_heat_emissions_relevant():

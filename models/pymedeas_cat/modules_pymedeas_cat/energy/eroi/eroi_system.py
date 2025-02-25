@@ -1,6 +1,6 @@
 """
 Module energy.eroi.eroi_system
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -46,8 +46,8 @@ def fe_tot_generation_all_res_elec_ej():
     comp_subtype="Normal",
     depends_on={
         "share_e_industry_ownuse_vs_tfec_in_2015": 1,
-        "real_tfec": 1,
         "fe_tot_generation_all_res_elec_ej": 1,
+        "real_tfec": 1,
         "total_dyn_fei_res": 1,
     },
 )
@@ -80,7 +80,7 @@ def historic_energy_industry_ownuse(x, final_subs=None):
 
 
 _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_energy_industry_own_use",
@@ -98,8 +98,8 @@ _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "real_tfec": 1,
         "fe_tot_generation_all_res_elec_ej": 1,
+        "real_tfec": 1,
         "historic_energy_industry_ownuse": 1,
     },
 )
@@ -157,14 +157,9 @@ def total_dyn_fei_res():
     Total (dynamic) final energy investment for RES.
     """
     return (
-        sum(
-            fei_res_elec_var().rename({np.str_("RES elec"): "RES elec!"}),
-            dim=["RES elec!"],
-        )
+        sum(fei_res_elec_var().rename({"RES elec": "RES elec!"}), dim=["RES elec!"])
         + sum(
-            fei_over_lifetime_res_elec_dispatch().rename(
-                {np.str_("RES elec"): "RES elec!"}
-            ),
+            fei_over_lifetime_res_elec_dispatch().rename({"RES elec": "RES elec!"}),
             dim=["RES elec!"],
         )
         + fei_ev_batteries()

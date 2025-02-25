@@ -1,6 +1,6 @@
 """
 Module energy.storage.esoi_phs
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -111,7 +111,7 @@ def esoi_phs_depleted_potential():
 
 
 _ext_constant_esoi_phs_depleted_potential = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "esoi_phs_depleted_potential",
     {},
@@ -126,7 +126,7 @@ _ext_constant_esoi_phs_depleted_potential = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"eroiini_res_elec_dispatch": 1, "cp_phs": 1, "cpini_res_elec": 1},
+    depends_on={"eroiini_res_elec_dispatch": 1, "cpini_res_elec": 1, "cp_phs": 1},
 )
 def esoi_phs_full_potential():
     """

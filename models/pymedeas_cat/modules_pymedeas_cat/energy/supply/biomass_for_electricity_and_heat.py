@@ -1,6 +1,6 @@
 """
 Module energy.supply.biomass_for_electricity_and_heat
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -94,7 +94,7 @@ def historic_biomass_fec(x, final_subs=None):
 
 
 _ext_lookup_historic_biomass_fec = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_efficiencies",
     "historic_final_energy_consumption_biomass",
@@ -157,7 +157,7 @@ def max_potential_npp_bioe_conventional_for_heatelec():
 
 
 _ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "max_pot_NPP_bioe_conv",
     {},
@@ -183,7 +183,7 @@ def policy_solid_bioe():
 
 
 _ext_data_policy_solid_bioe = ExtData(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "year_RES_power",
     "p_solid_bioE",

@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_noncommercial_heat_capacities
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -41,15 +41,15 @@ def abundance_res_heatnc2():
 @component.add(
     name='"adapt growth RES for heat-nc"',
     units="1/year",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 4,
         "past_res_growth_for_heatnc": 4,
-        "target_year_p_growth_res_heat": 2,
         "p_res_for_heat": 2,
         "start_year_p_growth_res_heat": 3,
+        "target_year_p_growth_res_heat": 2,
     },
 )
 def adapt_growth_res_for_heatnc():
@@ -77,7 +77,7 @@ def adapt_growth_res_for_heatnc():
 @component.add(
     name="Cp RES for heat",
     units="Dmnl",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"cpini_res_for_heat": 1, "shortage_bioe_for_heat": 1},
@@ -89,7 +89,7 @@ def cp_res_for_heat():
 @component.add(
     name='"Cp-ini RES for heat"',
     units="Dmnl",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_cpini_res_for_heat"},
@@ -99,7 +99,7 @@ def cpini_res_for_heat():
 
 
 _ext_constant_cpini_res_for_heat = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "cp_initial_res_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
@@ -112,7 +112,7 @@ _ext_constant_cpini_res_for_heat = ExtConstant(
 @component.add(
     name='"FE real generation RES heat-nc"',
     units="EJ/year",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"potential_fes_res_for_heatnc_ej": 1, "res_heatnc_tot_overcapacity": 1},
@@ -143,7 +143,7 @@ def fe_real_supply_res_for_heatnc_tot_ej():
 @component.add(
     name='"Historic RES capacity for heat-nc"',
     units="TW",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -159,7 +159,7 @@ def historic_res_capacity_for_heatnc(x, final_subs=None):
 
 
 _ext_lookup_historic_res_capacity_for_heatnc = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_res_capacity_for_heat_non_commercial",
@@ -173,7 +173,7 @@ _ext_lookup_historic_res_capacity_for_heatnc = ExtLookup(
 @component.add(
     name='"initial value RES for heat-nc"',
     units="TW",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_initial_value_res_for_heatnc"},
@@ -186,7 +186,7 @@ def initial_value_res_for_heatnc():
 
 
 _ext_constant_initial_value_res_for_heatnc = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "initial_res_capacity_for_heat_non_commercial*",
     {"RES heat": _subscript_dict["RES heat"]},
@@ -199,7 +199,7 @@ _ext_constant_initial_value_res_for_heatnc = ExtConstant(
 @component.add(
     name='"installed capacity RES heat-nc TW"',
     units="TW",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_installed_capacity_res_heatnc_tw": 1},
@@ -233,7 +233,7 @@ _integ_installed_capacity_res_heatnc_tw = Integ(
 @component.add(
     name='"new RES capacity for heat-nc TW"',
     units="TW/year",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -269,7 +269,7 @@ def new_res_capacity_for_heatnc_tw():
 @component.add(
     name='"past RES growth for heat-nc"',
     units="1/year",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_past_res_growth_for_heatnc"},
@@ -282,7 +282,7 @@ def past_res_growth_for_heatnc():
 
 
 _ext_constant_past_res_growth_for_heatnc = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "historic_growth_res_for_heat_nc*",
     {"RES heat": _subscript_dict["RES heat"]},
@@ -295,7 +295,7 @@ _ext_constant_past_res_growth_for_heatnc = ExtConstant(
 @component.add(
     name='"PES DEM RES for heat-nc by techn"',
     units="EJ/year",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"fe_real_generation_res_heatnc": 3, "efficiency_res_heat": 1},
@@ -305,7 +305,7 @@ def pes_dem_res_for_heatnc_by_techn():
     Primary energy supply of RES technologies for non-commercial heat (Direct Energy Method convention of accounting for primary energy).
     """
     value = xr.DataArray(
-        np.nan, {"RES heat": _subscript_dict["RES heat"]}, [np.str_("RES heat")]
+        np.nan, {"RES heat": _subscript_dict["RES heat"]}, ["RES heat"]
     )
     value.loc[["geot heat"]] = float(fe_real_generation_res_heatnc().loc["geot heat"])
     value.loc[["solar heat"]] = float(fe_real_generation_res_heatnc().loc["solar heat"])
@@ -318,7 +318,7 @@ def pes_dem_res_for_heatnc_by_techn():
 @component.add(
     name='"PES RES for heat-nc by techn"',
     units="EJ/year",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"fe_real_generation_res_heatnc": 1, "efficiency_res_heat": 1},
@@ -333,7 +333,7 @@ def pes_res_for_heatnc_by_techn():
 @component.add(
     name='"potential FES RES for heat-nc EJ"',
     units="EJ/year",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"potential_fes_res_for_heatnc_twh": 1, "ej_per_twh": 1},
@@ -348,7 +348,7 @@ def potential_fes_res_for_heatnc_ej():
 @component.add(
     name='"potential FES RES for heat-nc TWh"',
     units="TWh/year",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -382,7 +382,7 @@ def potential_fes_tot_res_for_heatnc_ej():
     Potential total final energy supply renewables for non-commercial heat given the installed capacity.
     """
     return sum(
-        potential_fes_res_for_heatnc_ej().rename({np.str_("RES heat"): "RES heat!"}),
+        potential_fes_res_for_heatnc_ej().rename({"RES heat": "RES heat!"}),
         dim=["RES heat!"],
     )
 
@@ -390,7 +390,7 @@ def potential_fes_tot_res_for_heatnc_ej():
 @component.add(
     name='"replacement RES for heat-nc"',
     units="Dmnl",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_replacement_res_for_heatnc"},
@@ -403,7 +403,7 @@ def replacement_res_for_heatnc():
 
 
 _ext_constant_replacement_res_for_heatnc = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "replacement_rate_res_for_heat*",
     {"RES heat": _subscript_dict["RES heat"]},
@@ -416,7 +416,7 @@ _ext_constant_replacement_res_for_heatnc = ExtConstant(
 @component.add(
     name='"replacement RES for heat-nc TW"',
     units="TW/year",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -466,7 +466,7 @@ def res_heatnc_tot_overcapacity():
 @component.add(
     name='"wear RES capacity for heat-nc TW"',
     units="TW/year",
-    subscripts=[np.str_("RES heat")],
+    subscripts=["RES heat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"installed_capacity_res_heatnc_tw": 1, "life_time_res_for_heat": 1},

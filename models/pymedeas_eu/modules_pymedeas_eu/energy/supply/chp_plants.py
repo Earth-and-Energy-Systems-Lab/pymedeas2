@@ -1,6 +1,6 @@
 """
 Module energy.supply.chp_plants
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -22,7 +22,7 @@ def efficiency_elec_coal_chp_plants():
 
 
 _ext_data_efficiency_elec_coal_chp_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_efficiencies",
     "historic_efficiency_electricity_coal_chp_plants",
@@ -53,7 +53,7 @@ def efficiency_elec_gas_chp_plants():
 
 
 _ext_data_efficiency_elec_gas_chp_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_efficiencies",
     "historic_efficiency_electricity_gas_chp_plants",
@@ -84,7 +84,7 @@ def efficiency_elec_oil_chp_plants():
 
 
 _ext_data_efficiency_elec_oil_chp_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_efficiencies",
     "historic_efficiency_electricity_liquids_chp_plants",
@@ -115,7 +115,7 @@ def efficiency_heat_coal_chp_plants():
 
 
 _ext_data_efficiency_heat_coal_chp_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_efficiencies",
     "historic_efficiency_heat_coal_chp_plants",
@@ -146,7 +146,7 @@ def efficiency_heat_gas_chp_plants():
 
 
 _ext_data_efficiency_heat_gas_chp_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_efficiencies",
     "historic_efficiency_heat_gas_chp_plants",
@@ -177,7 +177,7 @@ def efficiency_heat_oil_chp_plants():
 
 
 _ext_data_efficiency_heat_oil_chp_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_efficiencies",
     "historic_efficiency_heat_liquids_chp_plants",
@@ -279,8 +279,8 @@ def fed_heatcom_by_nre_chp_plants_ej():
     comp_subtype="Normal",
     depends_on={
         "potential_fe_gen_elec_fossil_fuel_chp_plants": 1,
-        "demand_elec_nre_twh": 1,
         "ej_per_twh": 1,
+        "demand_elec_nre_twh": 1,
     },
 )
 def fes_elec_fossil_fuel_chp_plants_ej():
@@ -334,10 +334,10 @@ def fes_heatcom_nuclear_chp_plants():
     comp_subtype="Normal",
     depends_on={
         "ped_gas_for_chp_plants_ej": 1,
-        "efficiency_elec_gas_chp_plants": 1,
         "efficiency_heat_gas_chp_plants": 1,
-        "ped_oil_for_chp_plants_ej": 1,
+        "efficiency_elec_gas_chp_plants": 1,
         "efficiency_heat_oil_chp_plants": 1,
+        "ped_oil_for_chp_plants_ej": 1,
         "efficiency_elec_oil_chp_plants": 1,
         "ped_coal_for_chp_plants_ej": 1,
         "efficiency_heat_coal_chp_plants": 1,
@@ -381,7 +381,7 @@ def historic_share_chp_plants_gas():
 
 
 _ext_data_historic_share_chp_plants_gas = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_share_chp_plants_gas",
@@ -412,7 +412,7 @@ def historic_share_chp_plants_oil():
 
 
 _ext_data_historic_share_chp_plants_oil = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_share_chp_plants_oil",
@@ -447,10 +447,10 @@ def ped_coal_for_chp_plants_ej():
     depends_on={
         "fed_heat_gas_chp_plants_ej": 1,
         "efficiency_heat_gas_chp_plants": 1,
-        "fed_heat_liquids_chp_plants_ej": 1,
         "efficiency_heat_oil_chp_plants": 1,
-        "efficiency_heat_coal_chp_plants": 1,
+        "fed_heat_liquids_chp_plants_ej": 1,
         "fed_heat_coal_chp_plants_ej": 1,
+        "efficiency_heat_coal_chp_plants": 1,
     },
 )
 def ped_ff_for_chp_plants():
@@ -643,10 +643,10 @@ def share_chp_plants_oil():
     depends_on={
         "efficiency_elec_oil_chp_plants": 2,
         "efficiency_heat_oil_chp_plants": 1,
-        "efficiency_elec_coal_chp_plants": 2,
         "efficiency_heat_coal_chp_plants": 1,
-        "efficiency_elec_gas_chp_plants": 2,
+        "efficiency_elec_coal_chp_plants": 2,
         "efficiency_heat_gas_chp_plants": 1,
+        "efficiency_elec_gas_chp_plants": 2,
     },
 )
 def share_efficiency_ff_for_elec_in_chp_plants():
@@ -815,7 +815,7 @@ def share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation():
 
 
 _ext_data_share_heatcom_chp_plants_nre_vs_nre_tot_heatcom_generation = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_share_commercial_heat_in_chp_on_total_commercial_heat_generation",
@@ -846,58 +846,13 @@ def share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation():
 
 
 _ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "share_heat_output_vs_electricity_in_nuclear",
     {},
     _root,
     {},
     "_ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_generation",
-)
-
-
-@component.add(
-    name="Total elec generation FF CHP plants",
-    units="TWh/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"potential_fe_gen_elec_fossil_fuel_chp_plants": 1, "ej_per_twh": 1},
-)
-def total_elec_generation_ff_chp_plants():
-    return (
-        sum(
-            potential_fe_gen_elec_fossil_fuel_chp_plants().rename(
-                {"matter final sources": "matter final sources!"}
-            ),
-            dim=["matter final sources!"],
-        )
-        / ej_per_twh()
-    )
-
-
-@component.add(
-    name="Total elec generation FF CHP plants delayed",
-    units="TWh/year",
-    comp_type="Stateful",
-    comp_subtype="DelayFixed",
-    depends_on={"_delayfixed_total_elec_generation_ff_chp_plants_delayed": 1},
-    other_deps={
-        "_delayfixed_total_elec_generation_ff_chp_plants_delayed": {
-            "initial": {"time_step": 1},
-            "step": {"total_elec_generation_ff_chp_plants": 1},
-        }
-    },
-)
-def total_elec_generation_ff_chp_plants_delayed():
-    return _delayfixed_total_elec_generation_ff_chp_plants_delayed()
-
-
-_delayfixed_total_elec_generation_ff_chp_plants_delayed = DelayFixed(
-    lambda: total_elec_generation_ff_chp_plants(),
-    lambda: time_step(),
-    lambda: 0,
-    time_step,
-    "_delayfixed_total_elec_generation_ff_chp_plants_delayed",
 )
 
 

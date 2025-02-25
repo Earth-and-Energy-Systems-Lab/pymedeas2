@@ -1,6 +1,6 @@
 """
 Module society.population
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -32,7 +32,7 @@ def historic_population(x, final_subs=None):
 
 
 _ext_lookup_historic_population = ExtLookup(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Europe",
     "time_historic_population",
     "historic_population",
@@ -58,7 +58,7 @@ def initial_population():
 
 
 _ext_constant_initial_population = ExtConstant(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Europe",
     "initial_population",
     {},
@@ -86,7 +86,7 @@ def input_population(x, final_subs=None):
 
 
 _ext_lookup_input_population = ExtLookup(
-    "../parameters.xlsx",
+    r"../parameters.xlsx",
     "Europe",
     "time_index_projection",
     "input_population",
@@ -116,7 +116,7 @@ def p_timeseries_pop_growth_rate():
 
 
 _ext_data_p_timeseries_pop_growth_rate = ExtData(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "years_pop_growth",
     "pop_growth_timeseries",
@@ -136,8 +136,8 @@ _ext_data_p_timeseries_pop_growth_rate = ExtData(
     depends_on={
         "time": 1,
         "variation_historic_pop": 1,
-        "annual_population_growth_rate": 1,
         "population": 1,
+        "annual_population_growth_rate": 1,
     },
 )
 def pop_variation():

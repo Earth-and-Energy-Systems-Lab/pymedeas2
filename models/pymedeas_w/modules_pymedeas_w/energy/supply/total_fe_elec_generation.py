@@ -8,19 +8,19 @@ Translated using PySD version 3.14.0
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_fe_elec_consumption_twh": 2, "fe_demand_elec_consum_twh": 3},
+    depends_on={"total_fe_elec_generation_twh": 2, "total_fe_elec_demand_twh": 3},
 )
 def abundance_electricity():
     """
     The parameter abundance varies between (1;0). Abundance=1 while the supply covers the demand; the closest to 0 indicates a higher divergence between supply and demand.
     """
     return if_then_else(
-        total_fe_elec_consumption_twh() > fe_demand_elec_consum_twh(),
+        total_fe_elec_generation_twh() > total_fe_elec_demand_twh(),
         lambda: 1,
         lambda: 1
         - zidz(
-            fe_demand_elec_consum_twh() - total_fe_elec_consumption_twh(),
-            fe_demand_elec_consum_twh(),
+            total_fe_elec_demand_twh() - total_fe_elec_generation_twh(),
+            total_fe_elec_demand_twh(),
         ),
     )
 
@@ -66,22 +66,6 @@ def annual_growth_rate_electricity_generation_res_elec_tot():
 
 
 @component.add(
-    name="chp and nuc",
-    units="TWh/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "total_elec_generation_ff_chp_plants_delayed": 1,
-        "fe_nuclear_elec_generation_twh": 1,
-    },
-)
-def chp_and_nuc():
-    return (
-        total_elec_generation_ff_chp_plants_delayed() + fe_nuclear_elec_generation_twh()
-    )
-
-
-@component.add(
     name="FE Elec generation from fossil fuels",
     units="EJ/year",
     subscripts=["matter final sources"],
@@ -89,15 +73,15 @@ def chp_and_nuc():
     comp_subtype="Normal",
     depends_on={
         "potential_fe_gen_elec_fossil_fuel_chp_plants_ej": 3,
-        "pes_oil_ej": 1,
-        "efficiency_liquids_for_electricity": 1,
         "share_oil_dem_for_elec": 1,
+        "efficiency_liquids_for_electricity": 1,
+        "pes_oil_ej": 1,
         "share_coal_dem_for_elec": 1,
         "extraction_coal_ej": 1,
         "efficiency_coal_for_electricity": 1,
         "share_nat_gas_dem_for_elec": 1,
-        "efficiency_gas_for_electricity": 1,
         "pes_nat_gas": 1,
+        "efficiency_gas_for_electricity": 1,
     },
 )
 def fe_elec_generation_from_fossil_fuels():
@@ -257,19 +241,15 @@ def share_res_electricity_generation():
     comp_subtype="Normal",
     depends_on={
         "total_fe_elec_generation_twh": 1,
-        "ej_per_twh": 1,
-        "total_electricity_demand_for_synthetic": 1,
         "share_trans_and_dist_losses": 1,
+        "time": 1,
     },
 )
 def total_fe_elec_consumption_twh():
     """
     Total final energy electricity consumption (fossil fuels, nuclear, waste & renewables) (TWh) excluding distribution losses.
     """
-    return (
-        total_fe_elec_generation_twh()
-        - total_electricity_demand_for_synthetic() / ej_per_twh()
-    ) / (1 + share_trans_and_dist_losses())
+    return total_fe_elec_generation_twh() / (1 + share_trans_and_dist_losses(time()))
 
 
 @component.add(

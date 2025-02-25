@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_elec_potentials
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -28,8 +28,8 @@ def available_max_fe_solid_bioe_for_elec_ej():
     depends_on={
         "time": 2,
         "historic_share_installed_pv_urban_vs_tot_pv": 2,
-        "p_share_installed_pv_urban_vs_tot_pv": 1,
         "start_year_p_growth_res_elec": 1,
+        "p_share_installed_pv_urban_vs_tot_pv": 1,
     },
 )
 def desired_share_installed_pv_urban_vs_tot_pv():
@@ -62,7 +62,7 @@ def efficiency_conversion_geot_pe_to_elec():
 
 
 _ext_constant_efficiency_conversion_geot_pe_to_elec = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "efficiency_conversion_geot_pe_to_elec",
     {},
@@ -107,7 +107,7 @@ def historic_share_installed_pv_urban_vs_tot_pv():
 
 
 _ext_data_historic_share_installed_pv_urban_vs_tot_pv = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_share_of_urban_pv_over_total",
@@ -218,7 +218,7 @@ def max_hydro_twe():
 
 
 _ext_constant_max_hydro_twe = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "max_hydro_potential",
     {},
@@ -243,7 +243,7 @@ def max_oceanic_twe():
 
 
 _ext_constant_max_oceanic_twe = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "max_oceanic_potential",
     {},
@@ -268,7 +268,7 @@ def max_offshore_wind_twe():
 
 
 _ext_constant_max_offshore_wind_twe = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "max_offshore_wind_potential",
     {},
@@ -293,7 +293,7 @@ def max_onshore_wind_twe():
 
 
 _ext_constant_max_onshore_wind_twe = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "max_onshore_wind_potential",
     {},
@@ -318,7 +318,7 @@ def max_pe_geotelec_twth():
 
 
 _ext_constant_max_pe_geotelec_twth = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "max_PE_geot_elec_potential",
     {},
@@ -367,7 +367,7 @@ def max_potential_csp_twe():
 @component.add(
     name="max potential RES elec TWh",
     units="TWh/year",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -383,7 +383,7 @@ def max_potential_res_elec_twh():
     Maximum potential of RES for electricity per technology considering an optimal Cp.
     """
     value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, [np.str_("RES elec")]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[["hydro"]] = float(max_res_elec_twe().loc["hydro"]) / twe_per_twh()
     value.loc[["geot elec"]] = (
@@ -445,7 +445,7 @@ def max_potential_tot_res_elec_twh():
     """
     return (
         sum(
-            max_potential_res_elec_twh().rename({np.str_("RES elec"): "RES elec!"}),
+            max_potential_res_elec_twh().rename({"RES elec": "RES elec!"}),
             dim=["RES elec!"],
         )
         + max_potential_phs_twe() / twe_per_twh()
@@ -456,7 +456,7 @@ def max_potential_tot_res_elec_twh():
 @component.add(
     name="max RES elec TWe",
     units="TW",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -475,7 +475,7 @@ def max_res_elec_twe():
     Maximum level of RES for electricity per technology considering an optimal Cp. For most technologies this variable corresponds with the maximum potential, excepting for solids bioenergy and solar, where given to the competing uses (solids bioenergy for heat and electricity) and competing technologies (solar PV and CSP) this variable corresponds to the maximum level from each use and technology.
     """
     value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, [np.str_("RES elec")]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[["hydro"]] = max_hydro_twe()
     value.loc[["geot elec"]] = max_geotelec_twe()
@@ -548,7 +548,7 @@ def p_share_installed_pv_urban_vs_tot_pv():
 
 
 _ext_constant_p_share_installed_pv_urban_vs_tot_pv = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "share_PV_urban_tot_PV",
     {},
@@ -765,7 +765,7 @@ def start_year_p_growth_res_elec():
 
 
 _ext_constant_start_year_p_growth_res_elec = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "start_year_p_growth_RES_elec",
     {},

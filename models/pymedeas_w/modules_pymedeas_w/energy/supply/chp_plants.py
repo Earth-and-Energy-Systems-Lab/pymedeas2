@@ -678,51 +678,6 @@ _ext_constant_share_of_heat_production_in_chp_plants_vs_total_nucelar_elec_gener
 
 
 @component.add(
-    name="Total elec generation FF CHP plants",
-    units="TWh/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"potential_fe_gen_elec_fossil_fuel_chp_plants_ej": 1, "ej_per_twh": 1},
-)
-def total_elec_generation_ff_chp_plants():
-    return (
-        sum(
-            potential_fe_gen_elec_fossil_fuel_chp_plants_ej().rename(
-                {"matter final sources": "matter final sources!"}
-            ),
-            dim=["matter final sources!"],
-        )
-        / ej_per_twh()
-    )
-
-
-@component.add(
-    name="Total elec generation FF CHP plants delayed",
-    units="TWh/year",
-    comp_type="Stateful",
-    comp_subtype="DelayFixed",
-    depends_on={"_delayfixed_total_elec_generation_ff_chp_plants_delayed": 1},
-    other_deps={
-        "_delayfixed_total_elec_generation_ff_chp_plants_delayed": {
-            "initial": {"time_step": 1},
-            "step": {"total_elec_generation_ff_chp_plants": 1},
-        }
-    },
-)
-def total_elec_generation_ff_chp_plants_delayed():
-    return _delayfixed_total_elec_generation_ff_chp_plants_delayed()
-
-
-_delayfixed_total_elec_generation_ff_chp_plants_delayed = DelayFixed(
-    lambda: total_elec_generation_ff_chp_plants(),
-    lambda: time_step(),
-    lambda: 0,
-    time_step,
-    "_delayfixed_total_elec_generation_ff_chp_plants_delayed",
-)
-
-
-@component.add(
     name="Total gen losses demand for CHP plants EJ",
     units="EJ/year",
     comp_type="Auxiliary",
@@ -731,12 +686,12 @@ _delayfixed_total_elec_generation_ff_chp_plants_delayed = DelayFixed(
         "ped_gas_for_chp_plants_ej": 1,
         "efficiency_heat_gas_chp_plants": 1,
         "efficiency_elec_gas_chp_plants": 1,
-        "efficiency_heat_oil_chp_plants": 1,
         "efficiency_elec_oil_chp_plants": 1,
+        "efficiency_heat_oil_chp_plants": 1,
         "ped_oil_for_chp_plants_ej": 1,
         "efficiency_elec_coal_chp_plants": 1,
-        "ped_coal_for_chp_plants_ej": 1,
         "efficiency_heat_coal_chp_plants": 1,
+        "ped_coal_for_chp_plants_ej": 1,
     },
 )
 def total_gen_losses_demand_for_chp_plants_ej():

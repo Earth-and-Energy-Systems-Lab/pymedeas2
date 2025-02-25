@@ -145,7 +145,7 @@ def pop_variation():
     Population growth. (Historic data from 1990-2010; projection 2011-2100) 2011 UST$
     """
     return if_then_else(
-        time() < 2016,
+        time() < 2014,
         lambda: variation_historic_pop(),
         lambda: population() * annual_population_growth_rate(),
     )
@@ -189,7 +189,7 @@ def variation_historic_pop():
     """
     return (
         if_then_else(
-            time() < 2016,
+            time() < 2014,
             lambda: historic_population(time() + 1) - historic_population(time()),
             lambda: 0,
         )

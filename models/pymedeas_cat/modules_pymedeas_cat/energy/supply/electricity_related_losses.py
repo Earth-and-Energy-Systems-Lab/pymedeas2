@@ -1,6 +1,6 @@
 """
 Module energy.supply.electricity_related_losses
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -48,7 +48,7 @@ def pe_losses_biogas_for_elec():
 @component.add(
     name="PE losses FF for Elec EJ",
     units="EJ/year",
-    subscripts=[np.str_("fossil fuels")],
+    subscripts=["fossil fuels"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -81,9 +81,7 @@ def pe_losses_nre_elec_generation():
     """
     return (
         sum(
-            pe_losses_ff_for_elec_ej().rename(
-                {np.str_("fossil fuels"): "fossil fuels!"}
-            ),
+            pe_losses_ff_for_elec_ej().rename({"fossil fuels": "fossil fuels!"}),
             dim=["fossil fuels!"],
         )
         + pe_losses_uranium_for_elec_ej()

@@ -1,34 +1,30 @@
-FROM python:3.9-bullseye
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
+# Set the working directory in the container
+WORKDIR /app
 
-RUN apt-get update && apt-get install gcc gfortran musl -y
+# to avoid ImportError: libtk8.6.so: cannot open shared object file
+RUN apt-get update && apt-get install -y \
+    python3-tk \
+    tk \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade pip
-RUN pip install dacite
-RUN pip install matplotlib
-
-# create workdir
-WORKDIR /opt/apps/pymedeas
-
-# copy requirements to the workdir
+# Copy the requirements file into the container
 COPY requirements.txt .
 
-# Install all requrements for our app
-RUN pip install -r requirements.txt
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# copy source files to the workdir
-ADD scenarios ./scenarios
-ADD pytools ./pytools
-ADD outputs ./outputs
-ADD models ./models
-ADD plot_tool.py .
-ADD run.py .
+# Copy the rest of the application code into the container
+COPY . .
 
-# to build the image run
-# docker build --network host -t pymedeas .
+# Set up the volume
+VOLUME /app/outputs
 
-# To get to a cmd prompt run
-# docker exec -it --net=host pymedeas bash
+#RUN mkdir -p /app/outputs && chmod -R 777 /app/outputs
 
-# To run the app
-# python run.py -h
+# Ensure the directory has write permissions
+RUN chmod -R 777 /app/models/pymedeas_w/
+
+ENTRYPOINT [ "python", "/app/run.py" ]

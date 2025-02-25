@@ -1,6 +1,6 @@
 """
 Module energy.demand.electricity_demand
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -104,7 +104,7 @@ def hist_elec_exports_share():
 
 
 _ext_data_hist_elec_exports_share = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_share_of_electricty_exports_of_total_electricity_production",
@@ -151,7 +151,7 @@ def p_export_share():
 
 
 _ext_data_p_export_share = ExtData(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "year_RES_power",
     "share_exports_electricity",
@@ -224,7 +224,7 @@ def share_transmdistr_elec_losses_initial():
 
 
 _ext_constant_share_transmdistr_elec_losses_initial = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "share_transm_and_distribution_elec_losses_initial",
     {},
@@ -275,8 +275,8 @@ def total_fe_elec_demand_twh():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "variation_share_transmdistr_losses_elec": 1,
         "remaining_share_transmdistr_elec_losses": 1,
+        "variation_share_transmdistr_losses_elec": 1,
     },
 )
 def variation_share_transmdistr_elec_losses():

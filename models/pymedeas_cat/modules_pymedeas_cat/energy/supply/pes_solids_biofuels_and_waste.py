@@ -1,6 +1,6 @@
 """
 Module energy.supply.pes_solids_biofuels_and_waste
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -22,7 +22,7 @@ def losses_in_charcoal_plants_ej():
 
 
 _ext_data_losses_in_charcoal_plants_ej = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_efficiencies",
     "historic_losses_charcoal_plants",

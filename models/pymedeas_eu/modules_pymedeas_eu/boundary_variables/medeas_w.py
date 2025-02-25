@@ -1,6 +1,6 @@
 """
 Module boundary_variables.medeas_w
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -246,7 +246,7 @@ _data_pes_oil_ej = TabData("PES oil EJ", "pes_oil_ej", {}, "interpolate")
 @component.add(
     name="Real demand by sector",
     units="Mdollars",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_real_demand_by_sector"},
@@ -269,7 +269,7 @@ _data_real_demand_by_sector = TabData(
 @component.add(
     name="Real demand by sector World",
     units="Mdollars",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_demand_by_sector": 1},
@@ -293,15 +293,14 @@ def real_demand_world():
     Total World final demand (MEDEAS-World).
     """
     return sum(
-        real_demand_by_sector_world().rename({np.str_("sectors"): "sectors!"}),
-        dim=["sectors!"],
+        real_demand_by_sector_world().rename({"sectors": "sectors!"}), dim=["sectors!"]
     )
 
 
 @component.add(
     name="Real final energy by sector and fuel",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=["final sources", "sectors"],
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_real_final_energy_by_sector_and_fuel"},
@@ -327,7 +326,7 @@ _data_real_final_energy_by_sector_and_fuel = TabData(
 @component.add(
     name="Real final energy by sector and fuel World",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_final_energy_by_sector_and_fuel": 1},
@@ -342,7 +341,7 @@ def real_final_energy_by_sector_and_fuel_world():
 @component.add(
     name="Real total output by sector",
     units="Mdollars",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_real_total_output_by_sector"},
@@ -365,7 +364,7 @@ _data_real_total_output_by_sector = TabData(
 @component.add(
     name="Real total output by sector World",
     units="Mdollars",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_total_output_by_sector": 1},

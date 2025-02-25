@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_elec_overcap_due_to_res_variabi
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -25,7 +25,7 @@ def cp_exogenous_res_elec_dispatch_reduction():
 @component.add(
     name="Cp exogenous RES elec reduction",
     units="Dmnl",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -38,7 +38,7 @@ def cp_exogenous_res_elec_reduction():
     Reduction of Cp of RES elec due to the penetration of RES elec variables (modelling of overcapacities due to the intermittence of RES elec variables).
     """
     value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, [np.str_("RES elec")]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[["hydro"]] = cp_exogenous_res_elec_dispatch_reduction()
     value.loc[["geot elec"]] = cp_exogenous_res_elec_dispatch_reduction()
@@ -82,7 +82,7 @@ def elec_generation_dispatch_from_res_twh():
         sum(
             real_generation_res_elec_twh()
             .loc[_subscript_dict["RES ELEC DISPATCHABLE"]]
-            .rename({np.str_("RES elec"): "RES ELEC DISPATCHABLE!"}),
+            .rename({"RES elec": "RES ELEC DISPATCHABLE!"}),
             dim=["RES ELEC DISPATCHABLE!"],
         )
         + fes_elec_from_biogas_twh()
@@ -103,7 +103,7 @@ def elec_generation_variable_from_res_twh():
     return sum(
         real_generation_res_elec_twh()
         .loc[_subscript_dict["RES ELEC VARIABLE"]]
-        .rename({np.str_("RES elec"): "RES ELEC VARIABLE!"}),
+        .rename({"RES elec": "RES ELEC VARIABLE!"}),
         dim=["RES ELEC VARIABLE!"],
     )
 

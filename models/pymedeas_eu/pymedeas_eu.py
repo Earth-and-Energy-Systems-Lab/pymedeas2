@@ -8,21 +8,21 @@ import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
-    step,
     zidz,
+    step,
     sum,
-    integer,
     if_then_else,
     invert_matrix,
+    integer,
     xidz,
 )
-from pysd.py_backend.statefuls import Initial, SampleIfTrue, DelayFixed, Integ
-from pysd.py_backend.external import ExtConstant, ExtData, ExtLookup
+from pysd.py_backend.statefuls import Integ, Initial, SampleIfTrue, DelayFixed, Smooth
+from pysd.py_backend.external import ExtLookup, ExtData, ExtConstant
 from pysd.py_backend.data import TabData
-from pysd.py_backend.utils import load_model_data, load_modules
+from pysd.py_backend.utils import load_modules, load_model_data
 from pysd import Component
 
-__pysd_version__ = "3.14.0"
+__pysd_version__ = "3.14.1"
 
 __data = {"scope": None, "time": lambda: 0}
 
@@ -111,17 +111,3 @@ def time_step():
 
 # load modules from modules_pymedeas_eu directory
 exec(load_modules("modules_pymedeas_eu", _modules, _root, []))
-
-
-@component.add(
-    name="Pipeline transport evolution",
-    units="EJ/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"share_pipeline_transport_fecgl_in_2015": 1, "fec_gasesliquids": 1},
-)
-def pipeline_transport_evolution():
-    """
-    Pipeline transport. IEA definition: Pipeline transport includes energy used in the support and operation of pipelines transporting gases, liquids, slurries and other commodities, including the energy used for pump stations and maintenance of the pipeline.
-    """
-    return share_pipeline_transport_fecgl_in_2015() * fec_gasesliquids()

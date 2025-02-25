@@ -1,6 +1,6 @@
 """
 Module energy.supply.total_fe_heat_generation
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -123,7 +123,7 @@ def fes_heat_from_oil():
 @component.add(
     name="FES NRE for heat",
     units="EJ/year",
-    subscripts=[np.str_("primary sources")],
+    subscripts=["primary sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -141,7 +141,7 @@ def fes_nre_for_heat():
     value = xr.DataArray(
         np.nan,
         {"primary sources": _subscript_dict["primary sources"]},
-        [np.str_("primary sources")],
+        ["primary sources"],
     )
     value.loc[["coal"]] = (
         float(fes_heatcom_fossil_fuels_chp_plants_ej().loc["coal"])
@@ -384,7 +384,7 @@ def total_fe_heat_generation():
         fes_res_for_heat_ej()
         + fes_heatcom_from_waste_ej()
         + sum(
-            fes_nre_for_heat().rename({np.str_("primary sources"): "primary sources!"}),
+            fes_nre_for_heat().rename({"primary sources": "primary sources!"}),
             dim=["primary sources!"],
         )
     )

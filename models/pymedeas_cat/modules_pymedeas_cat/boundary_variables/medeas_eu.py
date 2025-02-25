@@ -1,6 +1,6 @@
 """
 Module boundary_variables.medeas_eu
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -58,7 +58,7 @@ def gdp_eu28():
 @component.add(
     name="Real demand by sector EU28",
     units="Mdollars",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_final_demand_by_sector_eu": 1},
@@ -70,7 +70,7 @@ def real_demand_by_sector_eu28():
 @component.add(
     name="Real final demand by sector EU",
     units="Mdollars",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_real_final_demand_by_sector_eu"},
@@ -90,7 +90,7 @@ _data_real_final_demand_by_sector_eu = TabData(
 @component.add(
     name="Real final energy by sector and fuel EU",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=["final sources", "sectors"],
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_real_final_energy_by_sector_and_fuel_eu"},
@@ -113,7 +113,7 @@ _data_real_final_energy_by_sector_and_fuel_eu = TabData(
 @component.add(
     name="Real final energy by sector and fuel EU28",
     units="EJ/year",
-    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    subscripts=["final sources", "sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_final_energy_by_sector_and_fuel_eu": 1},
@@ -128,7 +128,7 @@ def real_final_energy_by_sector_and_fuel_eu28():
 @component.add(
     name="Real total output by sector EU",
     units="M$",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Data",
     comp_subtype="Normal",
     depends_on={"time": 1, "__data__": "_data_real_total_output_by_sector_eu"},
@@ -148,7 +148,7 @@ _data_real_total_output_by_sector_eu = TabData(
 @component.add(
     name="Real total output by sector EU28",
     units="M$",
-    subscripts=[np.str_("sectors")],
+    subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_total_output_by_sector_eu": 1},

@@ -39,32 +39,6 @@ def b_lin_reg_peat():
 
 
 @component.add(
-    name="historic bioe for electricity and heat",
-    units="EJ/year",
-    comp_type="Lookup",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_lookup_historic_bioe_for_electricity_and_heat",
-        "__lookup__": "_ext_lookup_historic_bioe_for_electricity_and_heat",
-    },
-)
-def historic_bioe_for_electricity_and_heat(x, final_subs=None):
-    return _ext_lookup_historic_bioe_for_electricity_and_heat(x, final_subs)
-
-
-_ext_lookup_historic_bioe_for_electricity_and_heat = ExtLookup(
-    "../energy.xlsx",
-    "World",
-    "time_historic_data",
-    "Historic_bioe_heat_elec",
-    {},
-    _root,
-    {},
-    "_ext_lookup_historic_bioe_for_electricity_and_heat",
-)
-
-
-@component.add(
     name="Historic PES peat EJ",
     units="EJ/year",
     comp_type="Data",
@@ -97,7 +71,6 @@ _ext_data_historic_pes_peat_ej = ExtData(
 
 @component.add(
     name="modern solid bioenergy",
-    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 4, "policy_modern_solid_bioe": 3},
@@ -144,11 +117,11 @@ def other_solids_required():
     comp_subtype="Normal",
     depends_on={
         "ped_solids": 1,
-        "pes_peat": 1,
-        "pe_traditional_biomass_ej_delayed": 1,
-        "solid_bioe_supply": 1,
-        "pes_waste": 1,
         "losses_in_charcoal_plants_historic": 1,
+        "pe_traditional_biomass_ej_delayed": 1,
+        "pes_peat": 1,
+        "pes_waste": 1,
+        "modern_solid_bioenergy": 1,
     },
 )
 def ped_coal_ej():
@@ -163,7 +136,7 @@ def ped_coal_ej():
             + pes_peat()
             - losses_in_charcoal_plants_historic()
             + pes_waste()
-            + solid_bioe_supply()
+            + modern_solid_bioenergy()
         ),
     )
 
@@ -182,10 +155,10 @@ def ped_coal_ej():
         "ped_coal_heatnc": 1,
         "other_solids_required": 1,
         "pes_waste": 1,
-        "pes_waste_for_tfc": 1,
-        "pe_real_generation_res_elec": 1,
-        "pes_res_for_heatcom_by_techn": 1,
         "pes_res_for_heatnc_by_techn": 1,
+        "pes_res_for_heatcom_by_techn": 1,
+        "pe_real_generation_res_elec": 1,
+        "pes_waste_for_tfc": 1,
     },
 )
 def ped_solids():
@@ -202,11 +175,11 @@ def ped_solids():
         + ped_coal_heatnc()
         + other_solids_required()
         + pes_waste()
-        + ped_coal_for_ctl_ej()
-        - pes_waste_for_tfc()
-        + float(pe_real_generation_res_elec().loc["solid bioE elec"])
+        + float(pes_res_for_heatnc_by_techn().loc["solid bioE heat"])
         + float(pes_res_for_heatcom_by_techn().loc["solid bioE heat"])
-        + float(pes_res_for_heatnc_by_techn().loc["solid bioE heat"]),
+        + ped_coal_for_ctl_ej()
+        + float(pe_real_generation_res_elec().loc["solid bioE elec"])
+        - pes_waste_for_tfc(),
     )
 
 
@@ -218,8 +191,8 @@ def ped_solids():
     depends_on={
         "time": 2,
         "historic_pes_peat_ej": 1,
-        "b_lin_reg_peat": 1,
         "a_lin_reg_peat": 1,
+        "b_lin_reg_peat": 1,
     },
 )
 def pes_peat():
@@ -247,7 +220,7 @@ def pes_peat():
         "pes_peat": 1,
         "losses_in_charcoal_plants_historic": 1,
         "pes_waste": 1,
-        "solid_bioe_supply": 1,
+        "modern_solid_bioenergy": 1,
     },
 )
 def pes_solids():
@@ -260,7 +233,7 @@ def pes_solids():
         + pes_peat()
         - losses_in_charcoal_plants_historic()
         + pes_waste()
-        + solid_bioe_supply()
+        + modern_solid_bioenergy()
     )
 
 
@@ -392,7 +365,6 @@ def share_coal_for_elec_emissions_relevant():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel_ej": 1,
-        "ped_solids": 2,
         "ped_coal_ej": 1,
         "share_coal_for_ctl_emissions_relevant": 1,
         "share_coal_for_elec_emissions_relevant": 1,
@@ -403,10 +375,8 @@ def share_coal_for_fc_emissions_relevant():
     return (
         1
         - zidz(
-            float(nonenergy_use_demand_by_final_fuel_ej().loc["solids"]), ped_solids()
+            float(nonenergy_use_demand_by_final_fuel_ej().loc["solids"]), ped_coal_ej()
         )
-        * ped_solids()
-        / ped_coal_ej()
         - share_coal_for_ctl_emissions_relevant()
         - share_coal_for_elec_emissions_relevant()
         - share_coal_for_heat_emissions_relevant()
@@ -442,9 +412,9 @@ def share_coal_for_heat_emissions_relevant():
     comp_subtype="Normal",
     depends_on={
         "required_fed_solids": 1,
-        "other_solids_required": 1,
-        "ped_coal_for_ctl_ej": 1,
         "ped_solids": 1,
+        "ped_coal_for_ctl_ej": 1,
+        "other_solids_required": 1,
     },
 )
 def share_solids_for_final_energy():
@@ -454,32 +424,4 @@ def share_solids_for_final_energy():
     return zidz(
         required_fed_solids(),
         ped_solids() - ped_coal_for_ctl_ej() - other_solids_required(),
-    )
-
-
-@component.add(
-    name="solid bioE supply",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 5,
-        "historic_bioe_for_electricity_and_heat": 3,
-        "policy_modern_solid_bioe": 2,
-    },
-)
-def solid_bioe_supply():
-    return if_then_else(
-        time() < 2015,
-        lambda: historic_bioe_for_electricity_and_heat(time()),
-        lambda: if_then_else(
-            time() < 2020,
-            lambda: historic_bioe_for_electricity_and_heat(2015)
-            + (
-                policy_modern_solid_bioe(2020)
-                - historic_bioe_for_electricity_and_heat(2015)
-            )
-            / 5
-            * (time() - 2015),
-            lambda: policy_modern_solid_bioe(time()),
-        ),
     )

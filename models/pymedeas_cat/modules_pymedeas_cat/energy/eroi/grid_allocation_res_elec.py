@@ -1,12 +1,12 @@
 """
 Module energy.eroi.grid_allocation_res_elec
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
     name="EROI allocation rule per RES elec",
     units="Dmnl",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 1, "ratio_eroi_per_techn_vs_eroitot_static": 3},
@@ -39,7 +39,7 @@ def eroi_allocation_rule_per_res_elec():
 @component.add(
     name="FEI over lifetime RES elec for allocation",
     units="EJ/year",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -57,7 +57,7 @@ def fei_over_lifetime_res_elec_for_allocation():
 @component.add(
     name="output elec over lifetime RES elec for allocation",
     units="EJ/year",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -72,7 +72,7 @@ def output_elec_over_lifetime_res_elec_for_allocation():
 @component.add(
     name="output elec over lifetime RES elec for allocation2",
     units="EJ/year",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -92,7 +92,7 @@ def output_elec_over_lifetime_res_elec_for_allocation2():
 @component.add(
     name='"ratio EROI per techn vs EROItot (static)"',
     units="Dmnl",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -115,7 +115,7 @@ def ratio_eroi_per_techn_vs_eroitot_static():
 @component.add(
     name='"ratio EROIgrid vs EROI (static)"',
     units="Dmnl",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"static_eroi_res_elec": 2, "static_eroigrid_res_elec": 1},
@@ -133,7 +133,7 @@ def ratio_eroigrid_vs_eroi_static():
 @component.add(
     name="remaining potential RES elec switch",
     units="Dmnl",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"remaining_potential_res_elec_after_intermitt": 1},
@@ -156,7 +156,7 @@ def remaining_potential_res_elec_switch():
 @component.add(
     name='"share RES elec generation curtailed&stored"',
     units="Dmnl",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Constant",
     comp_subtype="Normal",
 )
@@ -165,7 +165,7 @@ def share_res_elec_generation_curtailedstored():
     Share of the generation of electricity from RES technologies curtailed or stored.
     """
     value = xr.DataArray(
-        np.nan, {"RES elec": _subscript_dict["RES elec"]}, [np.str_("RES elec")]
+        np.nan, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
     )
     value.loc[["hydro"]] = 0
     value.loc[["geot elec"]] = 0
@@ -181,14 +181,14 @@ def share_res_elec_generation_curtailedstored():
 @component.add(
     name="\"'static' EROIgrid RES elec\"",
     units="Dmnl",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "static_eroi_res_elec": 2,
         "rt_elec_storage_efficiency": 2,
-        "esoi_elec_storage": 1,
         "share_res_elec_generation_curtailedstored": 3,
+        "esoi_elec_storage": 1,
     },
 )
 def static_eroigrid_res_elec():
@@ -230,13 +230,13 @@ def static_eroigrid_toteffective_for_allocation_res_elec():
     return zidz(
         sum(
             output_elec_over_lifetime_res_elec_for_allocation2().rename(
-                {np.str_("RES elec"): "RES elec!"}
+                {"RES elec": "RES elec!"}
             ),
             dim=["RES elec!"],
         ),
         sum(
             fei_over_lifetime_res_elec_for_allocation().rename(
-                {np.str_("RES elec"): "RES elec!"}
+                {"RES elec": "RES elec!"}
             ),
             dim=["RES elec!"],
         ),
@@ -260,13 +260,13 @@ def static_eroitoteffective_for_allocation_res_elec():
     return zidz(
         sum(
             output_elec_over_lifetime_res_elec_for_allocation().rename(
-                {np.str_("RES elec"): "RES elec!"}
+                {"RES elec": "RES elec!"}
             ),
             dim=["RES elec!"],
         ),
         sum(
             fei_over_lifetime_res_elec_for_allocation().rename(
-                {np.str_("RES elec"): "RES elec!"}
+                {"RES elec": "RES elec!"}
             ),
             dim=["RES elec!"],
         ),

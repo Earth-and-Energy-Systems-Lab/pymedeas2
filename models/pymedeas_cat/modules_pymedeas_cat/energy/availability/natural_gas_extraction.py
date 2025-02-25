@@ -1,6 +1,6 @@
 """
 Module energy.availability.natural_gas_extraction
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -81,8 +81,8 @@ _delayfixed_constrain_gas_exogenous_growth_delayed_1yr = DelayFixed(
     depends_on={
         "time": 1,
         "start_policy_leave_in_ground_conv_gas": 1,
-        "rurr_conv_gas_until_start_year_plg": 1,
         "share_rurr_conv_gas_to_leave_underground": 1,
+        "rurr_conv_gas_until_start_year_plg": 1,
     },
 )
 def conv_gas_to_leave_underground():
@@ -139,7 +139,7 @@ def cumulated_conv_gas_extraction_to_1995():
 
 
 _ext_constant_cumulated_conv_gas_extraction_to_1995 = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "cumulative_conventional_gas_extraction_until_1995",
     {},
@@ -240,7 +240,7 @@ def cumulated_unconv_gas_extraction_to_1995():
 
 
 _ext_constant_cumulated_unconv_gas_extraction_to_1995 = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "cumulative_unconventional_gas_extraction_until_1995",
     {},
@@ -322,7 +322,7 @@ def efficiency_gas_for_oil_refinery_gains():
 
 
 _ext_constant_efficiency_gas_for_oil_refinery_gains = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "efficiency_gas_for_oil_refinery_gains",
     {},
@@ -391,8 +391,8 @@ _delayfixed_evol_fossil_gas_extraction_rate_delayed = DelayFixed(
     comp_subtype="Normal",
     depends_on={
         "share_unconv_gas_vs_tot_agg_in_2050": 3,
-        "year_2050": 3,
         "year_2012": 2,
+        "year_2050": 3,
         "time": 1,
     },
 )
@@ -502,10 +502,10 @@ _delayfixed_extraction_fossil_gas_agg_ej_delayed = DelayFixed(
     depends_on={
         "time": 1,
         "ped_domestic_cat_total_natgas_ej": 3,
-        "nvs_1_year": 1,
-        "remaining_extractable_fossil_gas_with_left_underground": 1,
         "max_extraction_tot_agg_gas": 2,
         "activate_force_leaving_underground": 1,
+        "remaining_extractable_fossil_gas_with_left_underground": 1,
+        "nvs_1_year": 1,
     },
 )
 def extraction_tot_agg_gas_ej():
@@ -564,10 +564,10 @@ _delayfixed_extraction_unconv_gas_delayed = DelayFixed(
     depends_on={
         "rurr_unconv_gas": 1,
         "max_extraction_unconv_gas": 1,
-        "time": 1,
-        "separate_conv_and_unconv_gas": 1,
         "historic_unconv_gas": 1,
         "max_unconv_gas_growth_extraction_ej": 1,
+        "separate_conv_and_unconv_gas": 1,
+        "time": 1,
     },
 )
 def extraction_unconv_gas_ej():
@@ -610,8 +610,8 @@ def extraction_unconv_gas_tot_agg():
     depends_on={
         "time": 2,
         "start_policy_leave_in_ground_conv_gas": 2,
-        "nvs_1_year": 1,
         "conv_gas_to_leave_underground": 1,
+        "nvs_1_year": 1,
     },
 )
 def flow_conv_gas_left_in_ground():
@@ -637,8 +637,8 @@ def flow_conv_gas_left_in_ground():
     depends_on={
         "time": 2,
         "start_policy_leave_in_ground_unconv_gas": 2,
-        "nvs_1_year": 1,
         "unconv_gas_to_leave_underground": 1,
+        "nvs_1_year": 1,
     },
 )
 def flow_unconv_gas_left_in_ground():
@@ -675,7 +675,7 @@ def historic_unconv_gas():
 
 
 _ext_data_historic_unconv_gas = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_unconventional_gas_extraction",
@@ -709,8 +709,8 @@ def increase_scarcity_conv_gas():
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_gas": 1,
-        "tot_rurr_conv_gas": 1,
         "table_max_extraction_conv_gas": 1,
+        "tot_rurr_conv_gas": 1,
     },
 )
 def max_extraction_conv_gas_ej():
@@ -732,8 +732,8 @@ def max_extraction_conv_gas_ej():
     depends_on={
         "activate_force_leaving_underground": 1,
         "max_extraction_total_agg_gas_technical_ej": 3,
-        "start_year_policy_leave_in_ground_fossil_gas": 1,
         "max_extraction_total_agg_gas_policy": 1,
+        "start_year_policy_leave_in_ground_fossil_gas": 1,
         "time": 1,
     },
 )
@@ -877,7 +877,7 @@ def p_constraint_growth_extraction_unconv_gas():
 
 
 _ext_constant_p_constraint_growth_extraction_unconv_gas = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "p_constraint_growth_extraction_unconv_gas",
     {},
@@ -955,8 +955,8 @@ def pes_nat_gas_without_gtl():
     comp_subtype="Normal",
     depends_on={
         "pec_conv_gas": 1,
-        "share_conv_vs_total_gas_extraction_eu": 1,
         "nonenergy_use_demand_by_final_fuel": 1,
+        "share_conv_vs_total_gas_extraction_eu": 1,
     },
 )
 def real_consumption_ue_conv_gas_emissions_relevant_ej():
@@ -978,8 +978,8 @@ def real_consumption_ue_conv_gas_emissions_relevant_ej():
     comp_subtype="Normal",
     depends_on={
         "pec_unconv_gas": 1,
-        "share_conv_vs_total_gas_extraction_eu": 1,
         "nonenergy_use_demand_by_final_fuel": 1,
+        "share_conv_vs_total_gas_extraction_eu": 1,
     },
 )
 def real_consumption_unconv_gas_emissions_relevant_ej():
@@ -1020,9 +1020,9 @@ def real_extraction_conv_gas():
     comp_subtype="Normal",
     depends_on={
         "real_extraction_conv_gas": 1,
-        "share_conv_vs_total_gas_extraction_eu": 1,
         "ped_nat_gas_for_gtl_ej": 1,
         "nonenergy_use_demand_by_final_fuel": 1,
+        "share_conv_vs_total_gas_extraction_eu": 1,
     },
 )
 def real_extraction_conv_gas_emissions_relevant_ej():
@@ -1066,9 +1066,9 @@ def real_extraction_unconv_gas():
     comp_subtype="Normal",
     depends_on={
         "real_extraction_unconv_gas": 1,
-        "share_conv_vs_total_gas_extraction_eu": 1,
         "ped_nat_gas_for_gtl_ej": 1,
         "nonenergy_use_demand_by_final_fuel": 1,
+        "share_conv_vs_total_gas_extraction_eu": 1,
     },
 )
 def real_extraction_unconv_gas_emissions_relevant_ej():
@@ -1174,8 +1174,8 @@ _sampleiftrue_rurr_conv_gas_until_start_year_plg = SampleIfTrue(
         "_integ_rurr_tot_agg_gas": {
             "initial": {
                 "separate_conv_and_unconv_gas": 1,
-                "cumulated_tot_agg_gas_extraction_to_1995": 1,
                 "urr_tot_agg_gas": 1,
+                "cumulated_tot_agg_gas_extraction_to_1995": 1,
             },
             "step": {"extraction_tot_agg_gas_ej": 1},
         }
@@ -1301,8 +1301,8 @@ _sampleiftrue_rurr_unconv_gas_until_start_year_plg = SampleIfTrue(
     comp_subtype="Normal",
     depends_on={
         "max_extraction_conv_gas_ej": 4,
-        "exponent_availability_conv_gas": 1,
         "extraction_conv_gas_ej": 2,
+        "exponent_availability_conv_gas": 1,
     },
 )
 def scarcity_conv_gas():
@@ -1394,7 +1394,7 @@ def separate_conv_and_unconv_gas():
 
 
 _ext_constant_separate_conv_and_unconv_gas = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "separate_conv_and_unconv_gas",
     {},
@@ -1467,7 +1467,7 @@ def share_rurr_conv_gas_to_leave_underground():
 
 
 _ext_constant_share_rurr_conv_gas_to_leave_underground = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "share_RURR_conv_gas_underground",
     {},
@@ -1494,7 +1494,7 @@ def share_rurr_tot_agg_fossil_gas_to_leave_underground():
 
 
 _ext_constant_share_rurr_tot_agg_fossil_gas_to_leave_underground = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "share_RURR_agg_gas_underground",
     {},
@@ -1521,7 +1521,7 @@ def share_rurr_unconv_gas_to_leave_underground():
 
 
 _ext_constant_share_rurr_unconv_gas_to_leave_underground = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "share_RURR_unconv_gas_underground",
     {},
@@ -1539,8 +1539,8 @@ _ext_constant_share_rurr_unconv_gas_to_leave_underground = ExtConstant(
     depends_on={
         "time": 1,
         "evolution_share_unconv_gas_vs_tot_agg": 1,
-        "historic_unconv_gas": 1,
         "ped_nat_gas_ej": 1,
+        "historic_unconv_gas": 1,
     },
 )
 def share_unconv_gas_vs_tot_agg():
@@ -1569,7 +1569,7 @@ def share_unconv_gas_vs_tot_agg_in_2050():
 
 
 _ext_constant_share_unconv_gas_vs_tot_agg_in_2050 = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "share_unconv_vs_agg_gas_in_2050",
     {},
@@ -1594,7 +1594,7 @@ def start_policy_leave_in_ground_conv_gas():
 
 
 _ext_constant_start_policy_leave_in_ground_conv_gas = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "start_policy_year_conv_gas_underground",
     {},
@@ -1621,7 +1621,7 @@ def start_policy_leave_in_ground_unconv_gas():
 
 
 _ext_constant_start_policy_leave_in_ground_unconv_gas = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "start_policy_year_unconv_gas_underground",
     {},
@@ -1648,7 +1648,7 @@ def start_year_policy_leave_in_ground_fossil_gas():
 
 
 _ext_constant_start_year_policy_leave_in_ground_fossil_gas = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "start_policy_year_agg_oil_underground",
     {},
@@ -1673,7 +1673,7 @@ def table_max_extraction_agg_gas(x, final_subs=None):
 
 
 _ext_lookup_table_max_extraction_agg_gas = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "RURR_agg_gas",
     "max_extraction_agg_gas",
@@ -1699,7 +1699,7 @@ def table_max_extraction_conv_gas(x, final_subs=None):
 
 
 _ext_lookup_table_max_extraction_conv_gas = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "RURR_conv_gas",
     "max_extraction_conv_gas",
@@ -1725,7 +1725,7 @@ def table_max_extraction_unconv_gas(x, final_subs=None):
 
 
 _ext_lookup_table_max_extraction_unconv_gas = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "RURR_unconv_gas",
     "max_extraction_unconv_gas",
@@ -1890,7 +1890,7 @@ def urr_conv_gas_input():
 
 
 _ext_constant_urr_conv_gas_input = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "URR_conv_gas",
     {},
@@ -1931,7 +1931,7 @@ def urr_total_gas_input():
 
 
 _ext_constant_urr_total_gas_input = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "URR_agg_gas",
     {},
@@ -1969,7 +1969,7 @@ def urr_unconv_gas_input():
 
 
 _ext_constant_urr_unconv_gas_input = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "URR_unconv_gas",
     {},

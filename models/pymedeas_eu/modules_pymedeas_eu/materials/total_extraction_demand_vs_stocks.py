@@ -1,12 +1,12 @@
 """
 Module materials.total_extraction_demand_vs_stocks
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
     name="cum materials to extract for alt techn from 2015 EU",
     units="Mt",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -27,7 +27,7 @@ def cum_materials_to_extract_for_alt_techn_from_2015_eu():
 @component.add(
     name="current mineral reserves Mt",
     units="Mt",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_current_mineral_reserves_mt"},
@@ -40,7 +40,7 @@ def current_mineral_reserves_mt():
 
 
 _ext_constant_current_mineral_reserves_mt = ExtConstant(
-    "../materials.xlsx",
+    r"../materials.xlsx",
     "Global",
     "current_mineral_reserves_mt*",
     {"materials": _subscript_dict["materials"]},
@@ -53,7 +53,7 @@ _ext_constant_current_mineral_reserves_mt = ExtConstant(
 @component.add(
     name="current mineral resources Mt",
     units="Mt",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_current_mineral_resources_mt"},
@@ -66,7 +66,7 @@ def current_mineral_resources_mt():
 
 
 _ext_constant_current_mineral_resources_mt = ExtConstant(
-    "../materials.xlsx",
+    r"../materials.xlsx",
     "Global",
     "current_mineral_resources_mt*",
     {"materials": _subscript_dict["materials"]},
@@ -79,7 +79,7 @@ _ext_constant_current_mineral_resources_mt = ExtConstant(
 @component.add(
     name='"materials availability (reserves)"',
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"share_cum_materials_to_extract_alt_techn_eu_vs_reserves_world": 1},
@@ -102,7 +102,7 @@ def materials_availability_reserves():
 @component.add(
     name='"materials availability (resources)"',
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"share_cum_materials_to_extract_alt_techn_eu_vs_resources_world": 1},
@@ -125,7 +125,7 @@ def materials_availability_resources():
 @component.add(
     name="share cum materials to extract alt techn EU vs reserves World",
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -146,7 +146,7 @@ def share_cum_materials_to_extract_alt_techn_eu_vs_reserves_world():
 @component.add(
     name="share cum materials to extract alt techn EU vs resources World",
     units="Dmnl",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -167,7 +167,7 @@ def share_cum_materials_to_extract_alt_techn_eu_vs_resources_world():
 @component.add(
     name='"Total materials to extract alt techn Mt/yr"',
     units="Mt/year",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={

@@ -1,12 +1,12 @@
 """
 Module climate.total_ch4_emissions
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
     name="CH4 emissions BioE and Waste",
     units="MtCH4/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -30,16 +30,14 @@ def ch4_emissions_bioe_and_waste():
 @component.add(
     name="CH4 emissions biofuels",
     units="MtCH4/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"mtch4_per_ej_biofuels": 1, "oil_liquids_saved_by_biofuels_ej": 1},
 )
 def ch4_emissions_biofuels():
     value = xr.DataArray(
-        np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["liquids"]] = False
@@ -53,7 +51,7 @@ def ch4_emissions_biofuels():
 @component.add(
     name="CH4 emissions biogas",
     units="MtCH4/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -65,9 +63,7 @@ def ch4_emissions_biofuels():
 )
 def ch4_emissions_biogas():
     value = xr.DataArray(
-        np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     value.loc[["electricity"]] = mtch4_per_ej_biogas() * pes_tot_biogas_for_elec()
     value.loc[["heat"]] = mtch4_per_ej_biogas() * pes_tot_biogas_for_heatcom()
@@ -80,7 +76,7 @@ def ch4_emissions_biogas():
 @component.add(
     name="CH4 emissions biomass",
     units="MtCH4/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -90,9 +86,7 @@ def ch4_emissions_biogas():
 )
 def ch4_emissions_biomass():
     value = xr.DataArray(
-        np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["solids"]] = False
@@ -106,7 +100,7 @@ def ch4_emissions_biomass():
 @component.add(
     name="CH4 emissions coal",
     units="MtCH4/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -121,9 +115,7 @@ def ch4_emissions_biomass():
 )
 def ch4_emissions_coal():
     value = xr.DataArray(
-        np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     value.loc[["electricity"]] = (
         mtch4_per_ej_coal()
@@ -152,7 +144,7 @@ def ch4_emissions_coal():
 @component.add(
     name="CH4 emissions fossil fuels",
     units="MtCH4/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -174,7 +166,7 @@ def ch4_emissions_fossil_fuels():
 @component.add(
     name="CH4 emissions gas",
     units="MtCH4/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -182,16 +174,14 @@ def ch4_emissions_fossil_fuels():
         "pec_ff": 4,
         "share_ff_for_elec_emissions_relevant": 1,
         "share_ff_for_heat_emissions_relevant": 1,
-        "share_nat_gas_for_gtl_emissions_relevant": 1,
         "mtch4_per_ej_gtl": 1,
+        "share_nat_gas_for_gtl_emissions_relevant": 1,
         "share_ff_for_fc_emission_relevant": 1,
     },
 )
 def ch4_emissions_gas():
     value = xr.DataArray(
-        np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     value.loc[["electricity"]] = (
         mtch4_per_ej_gas()
@@ -220,7 +210,7 @@ def ch4_emissions_gas():
 @component.add(
     name="CH4 emissions oil",
     units="MtCH4/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -236,9 +226,7 @@ def ch4_emissions_oil():
     CH4 emissions oil.
     """
     value = xr.DataArray(
-        np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     value.loc[["electricity"]] = (
         mtch4_per_ej_oil()
@@ -263,16 +251,14 @@ def ch4_emissions_oil():
 @component.add(
     name="CH4 emissions peat",
     units="MtCH4/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"pes_peat": 1, "mtch4_per_ej_peat": 1},
 )
 def ch4_emissions_peat():
     value = xr.DataArray(
-        np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["solids"]] = False
@@ -284,7 +270,7 @@ def ch4_emissions_peat():
 @component.add(
     name="CH4 emissions per fuel",
     units="MtCH4/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ch4_emissions_fossil_fuels": 1, "ch4_emissions_bioe_and_waste": 1},
@@ -296,7 +282,7 @@ def ch4_emissions_per_fuel():
 @component.add(
     name="CH4 emissions solid bioE",
     units="MtCH4/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -309,9 +295,7 @@ def ch4_emissions_per_fuel():
 )
 def ch4_emissions_solid_bioe():
     value = xr.DataArray(
-        np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     value.loc[["electricity"]] = mtch4_per_ej_solid_bioe() * float(
         pe_real_generation_res_elec().loc["solid bioE elec"]
@@ -329,7 +313,7 @@ def ch4_emissions_solid_bioe():
 @component.add(
     name="CH4 emissions waste",
     units="MtCH4/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -341,9 +325,7 @@ def ch4_emissions_solid_bioe():
 )
 def ch4_emissions_waste():
     value = xr.DataArray(
-        np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
     )
     value.loc[["electricity"]] = mtch4_per_ej_waste() * pes_tot_waste_for_elec()
     value.loc[["heat"]] = mtch4_per_ej_waste() * pes_tot_waste_for_heatcom()
@@ -365,7 +347,7 @@ def mtch4_per_ej_biofuels():
 
 
 _ext_constant_mtch4_per_ej_biofuels = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_biofuels",
     {},
@@ -387,7 +369,7 @@ def mtch4_per_ej_biogas():
 
 
 _ext_constant_mtch4_per_ej_biogas = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_waste",
     {},
@@ -409,7 +391,7 @@ def mtch4_per_ej_coal():
 
 
 _ext_constant_mtch4_per_ej_coal = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_coal",
     {},
@@ -431,7 +413,7 @@ def mtch4_per_ej_conv_gas():
 
 
 _ext_constant_mtch4_per_ej_conv_gas = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_conv_gas",
     {},
@@ -453,7 +435,7 @@ def mtch4_per_ej_conv_oil():
 
 
 _ext_constant_mtch4_per_ej_conv_oil = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_conv_oil",
     {},
@@ -475,7 +457,7 @@ def mtch4_per_ej_ctl():
 
 
 _ext_constant_mtch4_per_ej_ctl = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_ctl",
     {},
@@ -515,7 +497,7 @@ def mtch4_per_ej_gtl():
 
 
 _ext_constant_mtch4_per_ej_gtl = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_gtl",
     {},
@@ -533,9 +515,9 @@ _ext_constant_mtch4_per_ej_gtl = ExtConstant(
     depends_on={
         "share_conv_vs_total_oil_extraction": 2,
         "mtch4_per_ej_conv_oil": 1,
+        "mtch4_per_ej_shale_oil": 1,
         "adapt_emissions_shale_oil": 1,
         "mtch4_per_ej_unconv_oil": 2,
-        "mtch4_per_ej_shale_oil": 1,
     },
 )
 def mtch4_per_ej_oil():
@@ -560,7 +542,7 @@ def mtch4_per_ej_peat():
 
 
 _ext_constant_mtch4_per_ej_peat = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_peat",
     {},
@@ -582,7 +564,7 @@ def mtch4_per_ej_shale_oil():
 
 
 _ext_constant_mtch4_per_ej_shale_oil = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_shale_oil",
     {},
@@ -604,7 +586,7 @@ def mtch4_per_ej_solid_bioe():
 
 
 _ext_constant_mtch4_per_ej_solid_bioe = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_solid_bioe",
     {},
@@ -626,7 +608,7 @@ def mtch4_per_ej_traditional_biomass():
 
 
 _ext_constant_mtch4_per_ej_traditional_biomass = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_traditional_biomass",
     {},
@@ -648,7 +630,7 @@ def mtch4_per_ej_unconv_gas():
 
 
 _ext_constant_mtch4_per_ej_unconv_gas = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_unconv_gas",
     {},
@@ -670,7 +652,7 @@ def mtch4_per_ej_unconv_oil():
 
 
 _ext_constant_mtch4_per_ej_unconv_oil = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_unconv_oil",
     {},
@@ -692,7 +674,7 @@ def mtch4_per_ej_waste():
 
 
 _ext_constant_mtch4_per_ej_waste = ExtConstant(
-    "../climate.xlsx",
+    r"../climate.xlsx",
     "Global",
     "ch4_waste",
     {},

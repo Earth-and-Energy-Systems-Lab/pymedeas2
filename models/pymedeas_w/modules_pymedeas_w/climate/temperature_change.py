@@ -285,9 +285,9 @@ def heat_transfer():
     depends_on={
         "heat_transfer_rate": 1,
         "mean_depth_of_adjacent_layers": 1,
-        "eddy_diffusion_mean": 1,
-        "heat_diffusion_covar": 2,
         "eddy_diffusion_coef": 1,
+        "heat_diffusion_covar": 2,
+        "eddy_diffusion_mean": 1,
     },
 )
 def heat_transfer_coeff():

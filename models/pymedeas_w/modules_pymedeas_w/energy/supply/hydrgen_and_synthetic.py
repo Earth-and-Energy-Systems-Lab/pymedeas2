@@ -53,9 +53,6 @@ def electricity_consumption_for_synthetic_fuels():
     depends_on={"time": 1, "policy_ets": 1, "efficiency_electricity_to_synthetic": 1},
 )
 def electricity_demand_for_synthetic_fuels():
-    """
-    Demand of electricity for hydrogen and synthetic fuels production
-    """
     return policy_ets(time()) / efficiency_electricity_to_synthetic()
 
 

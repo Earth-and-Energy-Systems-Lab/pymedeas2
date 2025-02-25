@@ -10,9 +10,9 @@ Translated using PySD version 3.14.0
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "p_biofuels_2gen": 2,
-        "past_biofuels_2gen": 2,
         "nvs_5_years_ts": 1,
+        "past_biofuels_2gen": 2,
+        "p_biofuels_2gen": 2,
     },
 )
 def adapt_growth_biofuels_2gen():
@@ -434,8 +434,8 @@ _ext_constant_land_productivity_biofuels_2gen_ej_mha = ExtConstant(
         "land_compet_2gen_vs_total_land_compet": 2,
         "land_compet_biofuels_3gen_mha": 1,
         "land_compet_biofuels_2gen_mha": 1,
-        "biofuels_3gen_land_compet_available": 2,
         "annual_shift_from_2gen_to_3gen": 1,
+        "biofuels_3gen_land_compet_available": 2,
         "p_biofuels_3gen": 1,
     },
 )
@@ -517,9 +517,9 @@ def max_peavail_potential_biofuels_23gen():
         "constrain_liquids_exogenous_growth": 1,
         "nvs_1_year": 1,
         "land_compet_biofuels_2gen_mha": 2,
-        "biofuels_land_compet_available": 1,
-        "adapt_growth_biofuels_2gen": 1,
         "annual_additional_historic_land_use_biofuels_2gen": 1,
+        "adapt_growth_biofuels_2gen": 1,
+        "biofuels_land_compet_available": 1,
     },
 )
 def new_biofuels_2gen_land_compet():

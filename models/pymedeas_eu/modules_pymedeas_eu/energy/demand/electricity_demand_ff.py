@@ -1,6 +1,6 @@
 """
 Module energy.demand.electricity_demand_ff
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -11,8 +11,8 @@ Translated using PySD version 3.14.0
     depends_on={
         "share_in_target_year_oil_for_elec": 1,
         "hist_share_oilff_elec": 1,
-        "target_year_policy_phaseout_oil_for_elec": 1,
         "start_year_policy_phaseout_oil_for_elec": 1,
+        "target_year_policy_phaseout_oil_for_elec": 1,
     },
 )
 def a_lineal_regr_phaseout_oil_for_elec():
@@ -98,8 +98,8 @@ def decrease_share_oil_for_elec():
     comp_subtype="Normal",
     depends_on={
         "switch_scarcityps_elec_substit": 1,
-        "share_oil_for_elec": 2,
         "demand_elec_plants_fossil_fuels_twh": 3,
+        "share_oil_for_elec": 2,
         "time": 1,
         "future_share_gascoalff_for_elec": 1,
     },
@@ -141,36 +141,6 @@ def demand_elec_plants_fossil_fuels_twh():
 
 
 @component.add(
-    name='"Desired share gas/(coal+gas) Elec"',
-    units="Dmnl",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 3,
-        "end_hist_data": 3,
-        "hist_share_gascoal_gas_elec": 3,
-        "target_year_policy_gas_electricity": 2,
-        "policy_share_gascoalgas_elec": 2,
-    },
-)
-def desired_share_gascoalgas_elec():
-    return if_then_else(
-        time() < end_hist_data(),
-        lambda: hist_share_gascoal_gas_elec(),
-        lambda: if_then_else(
-            time() < target_year_policy_gas_electricity(),
-            lambda: hist_share_gascoal_gas_elec()
-            + (
-                (policy_share_gascoalgas_elec() - hist_share_gascoal_gas_elec())
-                / (target_year_policy_gas_electricity() - end_hist_data())
-            )
-            * (time() - end_hist_data()),
-            lambda: policy_share_gascoalgas_elec(),
-        ),
-    )
-
-
-@component.add(
     name="efficiency coal for electricity",
     units="Dmnl",
     comp_type="Constant",
@@ -185,7 +155,7 @@ def efficiency_coal_for_electricity():
 
 
 _ext_constant_efficiency_coal_for_electricity = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "efficiency_coal_for_electricity",
     {},
@@ -240,7 +210,7 @@ def efficiency_improv_gas_for_electricity():
 
 
 _ext_constant_efficiency_improv_gas_for_electricity = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "efficiency_improv_gas_for_electricity",
     {},
@@ -265,7 +235,7 @@ def efficiency_liquids_for_electricity():
 
 
 _ext_constant_efficiency_liquids_for_electricity = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "efficiency_liquids_for_electricity",
     {},
@@ -280,13 +250,13 @@ _ext_constant_efficiency_liquids_for_electricity = ExtConstant(
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"share_gascoal_gas_for_elec": 1, "demand_elec_gas_and_coal_twh": 1},
+    depends_on={"share_coal_for_elec": 1, "demand_elec_gas_and_coal_twh": 1},
 )
 def fe_demand_coal_elec_plants_twh():
     """
     Final energy demand of coal for electricity consumption (TWh).
     """
-    return (1 - share_gascoal_gas_for_elec()) * demand_elec_gas_and_coal_twh()
+    return share_coal_for_elec() * demand_elec_gas_and_coal_twh()
 
 
 @component.add(
@@ -411,10 +381,10 @@ _integ_future_share_oilff_for_elec = Integ(
     depends_on={
         "ped_gas_elec_plants_ej": 1,
         "efficiency_gas_for_electricity": 1,
-        "efficiency_coal_for_electricity": 1,
         "ped_coal_elec_plants_ej": 1,
-        "ped_oil_elec_plants_ej": 1,
+        "efficiency_coal_for_electricity": 1,
         "efficiency_liquids_for_electricity": 1,
+        "ped_oil_elec_plants_ej": 1,
     },
 )
 def gen_losses_demand_for_elec_plants_ej():
@@ -457,7 +427,7 @@ def hist_share_gascoal_gas_elec():
 
 
 _ext_data_hist_share_gascoal_gas_elec = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_share_of_electricity_produced_from_gas_over_electricity_produced_coal_and_gas",
@@ -488,7 +458,7 @@ def hist_share_oilff_elec():
 
 
 _ext_data_hist_share_oilff_elec = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_historic_data",
     "historic_share_of_electricity_produced_from_oil_over_total_fossil_electricity",
@@ -518,7 +488,7 @@ def historic_efficiency_gas_for_electricity(x, final_subs=None):
 
 
 _ext_lookup_historic_efficiency_gas_for_electricity = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "time_efficiencies",
     "historic_efficiency_gas_for_electricity",
@@ -537,11 +507,11 @@ _ext_lookup_historic_efficiency_gas_for_electricity = ExtLookup(
     depends_on={
         "time": 3,
         "percent_to_share": 1,
-        "time_step": 2,
         "historic_efficiency_gas_for_electricity": 2,
+        "time_step": 2,
+        "remaining_efficiency_improv_gas_for_electricity": 1,
         "efficiency_improv_gas_for_electricity": 1,
         "efficiency_gas_for_electricity": 1,
-        "remaining_efficiency_improv_gas_for_electricity": 1,
     },
 )
 def improvement_efficiency_gas_for_electricity():
@@ -621,7 +591,7 @@ def initial_efficiency_gas_for_electricity():
 
 
 _ext_constant_initial_efficiency_gas_for_electricity = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "initial_efficiency_gas_for_electricity",
     {},
@@ -659,7 +629,7 @@ def max_efficiency_gas_power_plants():
 
 
 _ext_constant_max_efficiency_gas_power_plants = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "maximum_efficiency_gas_power_plant",
     {},
@@ -952,35 +922,13 @@ def phaseout_oil_for_electricity():
 
 
 _ext_constant_phaseout_oil_for_electricity = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "phase_out_oil_electr",
     {},
     _root,
     {},
     "_ext_constant_phaseout_oil_for_electricity",
-)
-
-
-@component.add(
-    name='"policy share gas/(coal+gas) Elec"',
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_policy_share_gascoalgas_elec"},
-)
-def policy_share_gascoalgas_elec():
-    return _ext_constant_policy_share_gascoalgas_elec()
-
-
-_ext_constant_policy_share_gascoalgas_elec = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "NZP",
-    "p_share_gas_elec",
-    {},
-    _root,
-    {},
-    "_ext_constant_policy_share_gascoalgas_elec",
 )
 
 
@@ -1004,15 +952,29 @@ def remaining_efficiency_improv_gas_for_electricity():
 
 
 @component.add(
+    name="share coal for Elec",
+    units="Dmnl",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"share_gascoal_gas_for_elec": 1},
+)
+def share_coal_for_elec():
+    """
+    Coal is assumed to cover the rest of the electricity demand after RES, nuclear, oil and gas.
+    """
+    return 1 - share_gascoal_gas_for_elec()
+
+
+@component.add(
     name='"share gas/(coal +gas) for Elec"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "switch_scarcityps_elec_substit": 1,
-        "desired_share_gascoalgas_elec": 2,
-        "time": 1,
+        "hist_share_gascoal_gas_elec": 2,
         "future_share_gascoalgas_for_elec": 1,
+        "time": 1,
     },
 )
 def share_gascoal_gas_for_elec():
@@ -1021,11 +983,11 @@ def share_gascoal_gas_for_elec():
     """
     return if_then_else(
         switch_scarcityps_elec_substit() == 0,
-        lambda: desired_share_gascoalgas_elec(),
+        lambda: hist_share_gascoal_gas_elec(),
         lambda: if_then_else(
             time() > 2014,
             lambda: future_share_gascoalgas_for_elec(),
-            lambda: desired_share_gascoalgas_elec(),
+            lambda: hist_share_gascoal_gas_elec(),
         ),
     )
 
@@ -1045,7 +1007,7 @@ def share_gascoalgas_for_elec_in_2014():
 
 
 _ext_constant_share_gascoalgas_for_elec_in_2014 = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "share_of_electricity_produced_from_gas_over_electricity_produced_coal_and_gas_2014",
     {},
@@ -1070,7 +1032,7 @@ def share_in_target_year_oil_for_elec():
 
 
 _ext_constant_share_in_target_year_oil_for_elec = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "share_target_year_oil_for_elec",
     {},
@@ -1088,11 +1050,11 @@ _ext_constant_share_in_target_year_oil_for_elec = ExtConstant(
     depends_on={
         "switch_scarcityps_elec_substit": 1,
         "hist_share_oilff_elec": 3,
+        "p_share_oil_for_elec": 1,
         "time": 2,
         "future_share_oilff_for_elec": 1,
-        "phaseout_oil_for_electricity": 1,
         "start_year_policy_phaseout_oil_for_elec": 1,
-        "p_share_oil_for_elec": 1,
+        "phaseout_oil_for_electricity": 1,
     },
 )
 def share_oil_for_elec():
@@ -1133,7 +1095,7 @@ def share_oilff_for_elec_in_2015():
 
 
 _ext_constant_share_oilff_for_elec_in_2015 = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "share_of_electricity_produced_from_oil_over_total_fossil_electricity_2015",
     {},
@@ -1160,7 +1122,7 @@ def start_year_policy_phaseout_oil_for_elec():
 
 
 _ext_constant_start_year_policy_phaseout_oil_for_elec = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "start_year_policy_phase_out_oil_for_electricity",
     {},
@@ -1184,28 +1146,6 @@ def switch_scarcityps_elec_substit():
 
 
 @component.add(
-    name="target year policy gas electricity",
-    units="year",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_target_year_policy_gas_electricity"},
-)
-def target_year_policy_gas_electricity():
-    return _ext_constant_target_year_policy_gas_electricity()
-
-
-_ext_constant_target_year_policy_gas_electricity = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
-    "NZP",
-    "target_year_policy_gas_electricity",
-    {},
-    _root,
-    {},
-    "_ext_constant_target_year_policy_gas_electricity",
-)
-
-
-@component.add(
     name='"target year policy phase-out oil for elec"',
     units="year",
     comp_type="Constant",
@@ -1222,7 +1162,7 @@ def target_year_policy_phaseout_oil_for_elec():
 
 
 _ext_constant_target_year_policy_phaseout_oil_for_elec = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "target_year_policy_phase_out_oil_electricity",
     {},

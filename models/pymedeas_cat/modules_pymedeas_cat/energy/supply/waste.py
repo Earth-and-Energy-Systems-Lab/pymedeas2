@@ -1,6 +1,6 @@
 """
 Module energy.supply.waste
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -11,8 +11,8 @@ Translated using PySD version 3.14.0
     depends_on={
         "time": 3,
         "past_waste_growth": 3,
-        "waste_change": 2,
         "nvs_5_years_ts": 1,
+        "waste_change": 2,
     },
 )
 def adapt_growth_waste():
@@ -52,7 +52,7 @@ def efficiency_waste_for_elec_chp_plants():
 
 
 _ext_data_efficiency_waste_for_elec_chp_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "year_waste_biogas",
     "efficiency_waste_for_elec_chp_plants",
@@ -83,7 +83,7 @@ def efficiency_waste_for_elec_plants():
 
 
 _ext_data_efficiency_waste_for_elec_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "year_waste_biogas",
     "efficiency_waste_for_elec_plants",
@@ -114,7 +114,7 @@ def efficiency_waste_for_heat_chp_plants():
 
 
 _ext_data_efficiency_waste_for_heat_chp_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "year_waste_biogas",
     "efficiency_waste_for_heat_CHP_plants",
@@ -145,7 +145,7 @@ def efficiency_waste_for_heat_plants():
 
 
 _ext_data_efficiency_waste_for_heat_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "year_waste_biogas",
     "efficiency_waste_for_heat_plants",
@@ -288,7 +288,7 @@ def historic_pes_waste_ej(x, final_subs=None):
 
 
 _ext_lookup_historic_pes_waste_ej = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "time_historic_data",
     "historic_primary_energy_supply_of_waste",
@@ -314,7 +314,7 @@ def initial_pes_waste():
 
 
 _ext_constant_initial_pes_waste = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "initial_primary_energy_supply_from_waste",
     {},
@@ -361,7 +361,7 @@ def max_pe_waste():
 
 
 _ext_constant_max_pe_waste = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "max_PE_waste",
     {},
@@ -378,12 +378,12 @@ _ext_constant_max_pe_waste = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "time_step": 2,
         "historic_pes_waste_ej": 2,
+        "time_step": 2,
         "max_pe_waste": 3,
         "adapt_growth_waste": 1,
-        "pes_waste": 3,
         "p_waste_change": 1,
+        "pes_waste": 3,
     },
 )
 def new_waste_supply_ej():
@@ -421,7 +421,7 @@ def p_waste_change():
 
 
 _ext_constant_p_waste_change = ExtConstant(
-    "../../scenarios/scen_cat.xlsx",
+    r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "p_waste_growth",
     {},
@@ -446,7 +446,7 @@ def past_waste_growth():
 
 
 _ext_constant_past_waste_growth = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "historic_average_pes_from_waste_growth",
     {},
@@ -619,7 +619,7 @@ def share_pes_waste_for_chp():
 
 
 _ext_data_share_pes_waste_for_chp = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "year_waste_biogas",
     "share_pes_waste_for_chp",
@@ -650,7 +650,7 @@ def share_pes_waste_for_elec_plants():
 
 
 _ext_data_share_pes_waste_for_elec_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "year_waste_biogas",
     "share_pes_waste_for_elec_plants",
@@ -681,7 +681,7 @@ def share_pes_waste_for_heatcom_plants():
 
 
 _ext_data_share_pes_waste_for_heatcom_plants = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "year_waste_biogas",
     "share_pes_waste_for_heat_plants",
@@ -712,7 +712,7 @@ def share_pes_waste_tfc():
 
 
 _ext_data_share_pes_waste_tfc = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Catalonia",
     "year_waste_biogas",
     "share_pes_waste_tfc",

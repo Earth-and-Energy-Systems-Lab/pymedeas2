@@ -1,16 +1,12 @@
 """
 Module economy.coefficient_matrices
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
     name="historic A Matrix",
     units="Dmnl",
-    subscripts=[
-        np.str_("economic years"),
-        np.str_("sectors A matrix"),
-        np.str_("sectors A matrix1"),
-    ],
+    subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_historic_a_matrix"},
@@ -23,7 +19,7 @@ def historic_a_matrix():
 
 
 _ext_constant_historic_a_matrix = ExtConstant(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year1995",
     {
@@ -41,7 +37,7 @@ _ext_constant_historic_a_matrix = ExtConstant(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year1996",
     {
@@ -52,7 +48,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year1997",
     {
@@ -63,7 +59,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year1998",
     {
@@ -74,7 +70,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year1999",
     {
@@ -85,7 +81,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2000",
     {
@@ -96,7 +92,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2001",
     {
@@ -107,7 +103,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2002",
     {
@@ -118,7 +114,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2003",
     {
@@ -129,7 +125,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2004",
     {
@@ -140,7 +136,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2005",
     {
@@ -151,7 +147,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2006",
     {
@@ -162,7 +158,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2007",
     {
@@ -173,7 +169,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2008",
     {
@@ -184,7 +180,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2009",
     {
@@ -195,7 +191,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2010",
     {
@@ -206,7 +202,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2011",
     {
@@ -217,7 +213,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2012",
     {
@@ -228,7 +224,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2013",
     {
@@ -239,7 +235,7 @@ _ext_constant_historic_a_matrix.add(
 )
 
 _ext_constant_historic_a_matrix.add(
-    "../economy.xlsx",
+    r"../economy.xlsx",
     "Catalonia",
     "historic_A_Matrix_year2014",
     {
@@ -253,11 +249,7 @@ _ext_constant_historic_a_matrix.add(
 @component.add(
     name="historic IA Matrix",
     units="Dmnl",
-    subscripts=[
-        np.str_("economic years"),
-        np.str_("sectors A matrix"),
-        np.str_("sectors A matrix1"),
-    ],
+    subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"i_matrix": 1, "historic_a_matrix": 1},
@@ -274,11 +266,7 @@ def historic_ia_matrix():
 @component.add(
     name="historic Leontief Matrix",
     units="Dmnl",
-    subscripts=[
-        np.str_("economic years"),
-        np.str_("sectors A matrix"),
-        np.str_("sectors A matrix1"),
-    ],
+    subscripts=["economic years", "sectors A matrix", "sectors A matrix1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"historic_ia_matrix": 1},
@@ -290,7 +278,7 @@ def historic_leontief_matrix():
 @component.add(
     name="I Matrix",
     units="Dmnl",
-    subscripts=[np.str_("sectors A matrix"), np.str_("sectors A matrix1")],
+    subscripts=["sectors A matrix", "sectors A matrix1"],
     comp_type="Constant",
     comp_subtype="Normal",
 )
@@ -328,7 +316,7 @@ def i_matrix():
 @component.add(
     name="IA Matrix",
     units="Dmnl",
-    subscripts=[np.str_("sectors A matrix"), np.str_("sectors A matrix1")],
+    subscripts=["sectors A matrix", "sectors A matrix1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 14, "historic_ia_matrix": 15},
@@ -422,7 +410,7 @@ def ia_matrix():
 @component.add(
     name="IA Matrix Domestic",
     units="Dmnl",
-    subscripts=[np.str_("sectors"), np.str_("sectors1")],
+    subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ia_matrix": 1},
@@ -431,12 +419,7 @@ def ia_matrix_domestic():
     return xr.DataArray(
         ia_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 2"]]
-        .rename(
-            {
-                np.str_("sectors A matrix"): "sec map 2",
-                np.str_("sectors A matrix1"): "secb map 2",
-            }
-        )
+        .rename({"sectors A matrix": "sec map 2", "sectors A matrix1": "secb map 2"})
         .values,
         {
             "sectors": _subscript_dict["sectors"],
@@ -449,7 +432,7 @@ def ia_matrix_domestic():
 @component.add(
     name="IA Matrix Exports 0",
     units="Dmnl",
-    subscripts=[np.str_("sectors"), np.str_("sectors1")],
+    subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ia_matrix": 1},
@@ -458,12 +441,7 @@ def ia_matrix_exports_0():
     return xr.DataArray(
         ia_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 0"]]
-        .rename(
-            {
-                np.str_("sectors A matrix"): "sec map 2",
-                np.str_("sectors A matrix1"): "secb map 0",
-            }
-        )
+        .rename({"sectors A matrix": "sec map 2", "sectors A matrix1": "secb map 0"})
         .values,
         {
             "sectors": _subscript_dict["sectors"],
@@ -476,7 +454,7 @@ def ia_matrix_exports_0():
 @component.add(
     name="IA Matrix Exports 1",
     units="Dmnl",
-    subscripts=[np.str_("sectors"), np.str_("sectors1")],
+    subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ia_matrix": 1},
@@ -485,12 +463,7 @@ def ia_matrix_exports_1():
     return xr.DataArray(
         ia_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 1"]]
-        .rename(
-            {
-                np.str_("sectors A matrix"): "sec map 2",
-                np.str_("sectors A matrix1"): "secb map 1",
-            }
-        )
+        .rename({"sectors A matrix": "sec map 2", "sectors A matrix1": "secb map 1"})
         .values,
         {
             "sectors": _subscript_dict["sectors"],
@@ -503,7 +476,7 @@ def ia_matrix_exports_1():
 @component.add(
     name="IA Matrix Imports 0",
     units="Dmnl",
-    subscripts=[np.str_("sectors"), np.str_("sectors1")],
+    subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ia_matrix": 1},
@@ -512,12 +485,7 @@ def ia_matrix_imports_0():
     return xr.DataArray(
         ia_matrix()
         .loc[_subscript_dict["sec map 0"], _subscript_dict["secb map 2"]]
-        .rename(
-            {
-                np.str_("sectors A matrix"): "sec map 0",
-                np.str_("sectors A matrix1"): "secb map 2",
-            }
-        )
+        .rename({"sectors A matrix": "sec map 0", "sectors A matrix1": "secb map 2"})
         .values,
         {
             "sectors": _subscript_dict["sectors"],
@@ -530,7 +498,7 @@ def ia_matrix_imports_0():
 @component.add(
     name="IA Matrix Imports 1",
     units="Dmnl",
-    subscripts=[np.str_("sectors"), np.str_("sectors1")],
+    subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ia_matrix": 1},
@@ -539,12 +507,7 @@ def ia_matrix_imports_1():
     return xr.DataArray(
         ia_matrix()
         .loc[_subscript_dict["sec map 1"], _subscript_dict["secb map 2"]]
-        .rename(
-            {
-                np.str_("sectors A matrix"): "sec map 1",
-                np.str_("sectors A matrix1"): "secb map 2",
-            }
-        )
+        .rename({"sectors A matrix": "sec map 1", "sectors A matrix1": "secb map 2"})
         .values,
         {
             "sectors": _subscript_dict["sectors"],
@@ -557,7 +520,7 @@ def ia_matrix_imports_1():
 @component.add(
     name="Leontief Matrix",
     units="Dmnl",
-    subscripts=[np.str_("sectors A matrix"), np.str_("sectors A matrix1")],
+    subscripts=["sectors A matrix", "sectors A matrix1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 14, "historic_leontief_matrix": 15},
@@ -655,7 +618,7 @@ def leontief_matrix():
 @component.add(
     name="Leontief Matrix Domestic",
     units="Dmnl",
-    subscripts=[np.str_("sectors"), np.str_("sectors1")],
+    subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"leontief_matrix": 1},
@@ -664,12 +627,7 @@ def leontief_matrix_domestic():
     return xr.DataArray(
         leontief_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 2"]]
-        .rename(
-            {
-                np.str_("sectors A matrix"): "sec map 2",
-                np.str_("sectors A matrix1"): "secb map 2",
-            }
-        )
+        .rename({"sectors A matrix": "sec map 2", "sectors A matrix1": "secb map 2"})
         .values,
         {
             "sectors": _subscript_dict["sectors"],
@@ -682,7 +640,7 @@ def leontief_matrix_domestic():
 @component.add(
     name="Leontief Matrix Exports 0",
     units="Dmnl",
-    subscripts=[np.str_("sectors"), np.str_("sectors1")],
+    subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"leontief_matrix": 1},
@@ -691,12 +649,7 @@ def leontief_matrix_exports_0():
     return xr.DataArray(
         leontief_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 0"]]
-        .rename(
-            {
-                np.str_("sectors A matrix"): "sec map 2",
-                np.str_("sectors A matrix1"): "secb map 0",
-            }
-        )
+        .rename({"sectors A matrix": "sec map 2", "sectors A matrix1": "secb map 0"})
         .values,
         {
             "sectors": _subscript_dict["sectors"],
@@ -709,7 +662,7 @@ def leontief_matrix_exports_0():
 @component.add(
     name="Leontief Matrix Exports 1",
     units="Dmnl",
-    subscripts=[np.str_("sectors"), np.str_("sectors1")],
+    subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"leontief_matrix": 1},
@@ -718,12 +671,7 @@ def leontief_matrix_exports_1():
     return xr.DataArray(
         leontief_matrix()
         .loc[_subscript_dict["sec map 2"], _subscript_dict["secb map 1"]]
-        .rename(
-            {
-                np.str_("sectors A matrix"): "sec map 2",
-                np.str_("sectors A matrix1"): "secb map 1",
-            }
-        )
+        .rename({"sectors A matrix": "sec map 2", "sectors A matrix1": "secb map 1"})
         .values,
         {
             "sectors": _subscript_dict["sectors"],
@@ -736,7 +684,7 @@ def leontief_matrix_exports_1():
 @component.add(
     name="Leontief Matrix Imports 0",
     units="Dmnl",
-    subscripts=[np.str_("sectors"), np.str_("sectors1")],
+    subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"leontief_matrix": 1},
@@ -745,12 +693,7 @@ def leontief_matrix_imports_0():
     return xr.DataArray(
         leontief_matrix()
         .loc[_subscript_dict["sec map 0"], _subscript_dict["secb map 2"]]
-        .rename(
-            {
-                np.str_("sectors A matrix"): "sec map 0",
-                np.str_("sectors A matrix1"): "secb map 2",
-            }
-        )
+        .rename({"sectors A matrix": "sec map 0", "sectors A matrix1": "secb map 2"})
         .values,
         {
             "sectors": _subscript_dict["sectors"],
@@ -763,7 +706,7 @@ def leontief_matrix_imports_0():
 @component.add(
     name="Leontief Matrix Imports 1",
     units="Dmnl",
-    subscripts=[np.str_("sectors"), np.str_("sectors1")],
+    subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"leontief_matrix": 1},
@@ -772,12 +715,7 @@ def leontief_matrix_imports_1():
     return xr.DataArray(
         leontief_matrix()
         .loc[_subscript_dict["sec map 1"], _subscript_dict["secb map 2"]]
-        .rename(
-            {
-                np.str_("sectors A matrix"): "sec map 1",
-                np.str_("sectors A matrix1"): "secb map 2",
-            }
-        )
+        .rename({"sectors A matrix": "sec map 1", "sectors A matrix1": "secb map 2"})
         .values,
         {
             "sectors": _subscript_dict["sectors"],

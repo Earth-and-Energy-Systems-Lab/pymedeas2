@@ -1,6 +1,6 @@
 """
 Module energy.availability.oil_extraction
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.1
 """
 
 @component.add(
@@ -225,7 +225,7 @@ def cumulated_conv_oil_extraction_to_1995():
 
 
 _ext_constant_cumulated_conv_oil_extraction_to_1995 = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "cumulative_conventional_oil_extraction_until_1995",
     {},
@@ -326,7 +326,7 @@ def cumulated_unconv_oil_extraction_to_1995():
 
 
 _ext_constant_cumulated_unconv_oil_extraction_to_1995 = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "cumulative_unconventional_oil_extraction_until_1995",
     {},
@@ -608,8 +608,8 @@ _delayfixed_evol_unconv_oil_extraction_rate_delayed = DelayFixed(
     comp_subtype="Normal",
     depends_on={
         "share_unconv_oil_vs_tot_agg_in_2050": 3,
-        "year_2050": 3,
         "year_2012": 2,
+        "year_2050": 3,
         "time": 1,
     },
 )
@@ -729,10 +729,10 @@ _delayfixed_extraction_fossil_oil_agg_delayed = DelayFixed(
     depends_on={
         "time": 1,
         "ped_domestic_ff": 3,
-        "remaining_extractable_fossil_oil_with_left_underground": 1,
-        "max_extraction_total_agg_oil": 2,
-        "nvs_1_year": 1,
         "activate_force_leaving_underground": 1,
+        "nvs_1_year": 1,
+        "max_extraction_total_agg_oil": 2,
+        "remaining_extractable_fossil_oil_with_left_underground": 1,
     },
 )
 def extraction_tot_agg_oil():
@@ -825,23 +825,6 @@ def extraction_unconv_oil_tot_agg():
 
 
 @component.add(
-    name="Historic total oil domestic EU extracted",
-    units="EJ/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "historic_conv_oil_domestic_eu_extracted": 1,
-        "historic_unconv_oil_domestic_eu_extracted": 1,
-    },
-)
-def historic_total_oil_domestic_eu_extracted():
-    return (
-        historic_conv_oil_domestic_eu_extracted()
-        + historic_unconv_oil_domestic_eu_extracted()
-    )
-
-
-@component.add(
     name="increase abundance unconv oil",
     units="1/year",
     comp_type="Auxiliary",
@@ -879,8 +862,8 @@ def increase_scarcity_conv_oil():
     depends_on={
         "activate_force_leaving_underground": 1,
         "max_extraction_conv_oil_technical": 3,
-        "start_year_policy_leave_in_ground_conv_oil": 1,
         "time": 1,
+        "start_year_policy_leave_in_ground_conv_oil": 1,
         "max_extraction_conv_oil_policy": 1,
     },
 )
@@ -950,8 +933,8 @@ def max_extraction_conv_oil_technical():
         "activate_force_leaving_underground": 1,
         "max_extraction_total_agg_oil_technical": 3,
         "time": 1,
-        "start_year_policy_leave_in_ground_fossil_oil": 1,
         "max_extraction_total_agg_oil_policy": 1,
+        "start_year_policy_leave_in_ground_fossil_oil": 1,
     },
 )
 def max_extraction_total_agg_oil():
@@ -1000,8 +983,8 @@ def max_extraction_total_agg_oil_policy():
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_oil": 1,
-        "table_max_extraction_agg_oil": 1,
         "rurr_tot_agg_oil": 1,
+        "table_max_extraction_agg_oil": 1,
     },
 )
 def max_extraction_total_agg_oil_technical():
@@ -1023,9 +1006,9 @@ def max_extraction_total_agg_oil_technical():
     depends_on={
         "activate_force_leaving_underground": 1,
         "max_extraction_unconv_oil_technical": 3,
-        "time": 1,
         "start_year_policy_leave_in_ground_unconv_oil": 1,
         "max_extraction_unconv_oil_policy": 1,
+        "time": 1,
     },
 )
 def max_extraction_unconv_oil():
@@ -1110,8 +1093,8 @@ def max_unconv_oil_growth_extraction():
     comp_subtype="Normal",
     depends_on={
         "check_liquids_delayed_1yr": 1,
-        "extraction_unconv_oil_delayed": 2,
         "constrain_liquids_exogenous_growth_delayed_1yr": 1,
+        "extraction_unconv_oil_delayed": 2,
         "max_unconv_oil_growth_extraction": 1,
     },
 )
@@ -1176,7 +1159,7 @@ def oil_refinery_gains_share():
 
 
 _ext_constant_oil_refinery_gains_share = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "oil_refinery_gains_share",
     {},
@@ -1203,7 +1186,7 @@ def p_constraint_growth_extraction_unconv_oil():
 
 
 _ext_constant_p_constraint_growth_extraction_unconv_oil = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "p_constraint_growth_unconv_oil",
     {},
@@ -1611,8 +1594,8 @@ _sampleiftrue_rurr_total_agg_fossil_oil_in_reference_year = SampleIfTrue(
         "_integ_rurr_unconv_oil": {
             "initial": {
                 "urr_unconv_oil": 1,
-                "cumulated_unconv_oil_extraction_to_1995": 1,
                 "separate_conv_and_unconv_oil": 1,
+                "cumulated_unconv_oil_extraction_to_1995": 1,
             },
             "step": {"extraction_unconv_oil": 1},
         }
@@ -1668,8 +1651,8 @@ _sampleiftrue_rurr_unconv_oil_in_reference_year = SampleIfTrue(
     comp_subtype="Normal",
     depends_on={
         "max_extraction_conv_oil_technical": 4,
-        "extraction_conv_oil": 2,
         "exponent_availability_conv_oil": 1,
+        "extraction_conv_oil": 2,
     },
 )
 def scarcity_conv_oil():
@@ -1761,7 +1744,7 @@ def separate_conv_and_unconv_oil():
 
 
 _ext_constant_separate_conv_and_unconv_oil = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "separate_conv_and_unconv_oil",
     {},
@@ -1816,7 +1799,7 @@ def share_rurr_conv_oil_to_leave_underground():
 
 
 _ext_constant_share_rurr_conv_oil_to_leave_underground = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "share_RURR_conv_oil_underground",
     {},
@@ -1843,7 +1826,7 @@ def share_rurr_tot_agg_fossil_oil_to_leave_underground():
 
 
 _ext_constant_share_rurr_tot_agg_fossil_oil_to_leave_underground = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "share_RURR_agg_oil_underground",
     {},
@@ -1870,7 +1853,7 @@ def share_rurr_unconv_oil_to_leave_underground():
 
 
 _ext_constant_share_rurr_unconv_oil_to_leave_underground = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "share_RURR_unconv_oil_underground",
     {},
@@ -1888,8 +1871,8 @@ _ext_constant_share_rurr_unconv_oil_to_leave_underground = ExtConstant(
     depends_on={
         "time": 1,
         "evolution_share_unconv_oil_vs_tot_agg": 1,
-        "ped_total_oil_ej": 1,
         "historic_unconv_oil_domestic_eu_extracted": 1,
+        "ped_total_oil_ej": 1,
     },
 )
 def share_unconv_oil_vs_tot_agg():
@@ -1918,7 +1901,7 @@ def share_unconv_oil_vs_tot_agg_in_2050():
 
 
 _ext_constant_share_unconv_oil_vs_tot_agg_in_2050 = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "share_unconv_vs_agg_oil_in_2050",
     {},
@@ -1945,7 +1928,7 @@ def start_year_policy_leave_in_ground_conv_oil():
 
 
 _ext_constant_start_year_policy_leave_in_ground_conv_oil = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "start_policy_year_conv_oil_underground",
     {},
@@ -1972,7 +1955,7 @@ def start_year_policy_leave_in_ground_fossil_oil():
 
 
 _ext_constant_start_year_policy_leave_in_ground_fossil_oil = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "start_policy_year_agg_oil_underground",
     {},
@@ -1999,7 +1982,7 @@ def start_year_policy_leave_in_ground_unconv_oil():
 
 
 _ext_constant_start_year_policy_leave_in_ground_unconv_oil = ExtConstant(
-    "../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "start_policy_year_unconv_oil_underground",
     {},
@@ -2024,7 +2007,7 @@ def table_max_extraction_agg_oil(x, final_subs=None):
 
 
 _ext_lookup_table_max_extraction_agg_oil = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "RURR_agg_oil",
     "max_extraction_agg_oil",
@@ -2050,7 +2033,7 @@ def table_max_extraction_conv_oil(x, final_subs=None):
 
 
 _ext_lookup_table_max_extraction_conv_oil = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "RURR_conv_oil",
     "max_extraction_conv_oil",
@@ -2076,7 +2059,7 @@ def table_max_extraction_unconv_oil(x, final_subs=None):
 
 
 _ext_lookup_table_max_extraction_unconv_oil = ExtLookup(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "RURR_unconv_oil",
     "max_extraction_unconv_oil",
@@ -2155,7 +2138,7 @@ def urr_conv_oil_input():
 
 
 _ext_constant_urr_conv_oil_input = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "URR_conv_oil",
     {},
@@ -2193,7 +2176,7 @@ def urr_tot_agg_oil_input():
 
 
 _ext_constant_urr_tot_agg_oil_input = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "URR_agg_oil",
     {},
@@ -2231,7 +2214,7 @@ def urr_unconv_oil_input():
 
 
 _ext_constant_urr_unconv_oil_input = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Europe",
     "URR_unconv_oil",
     {},

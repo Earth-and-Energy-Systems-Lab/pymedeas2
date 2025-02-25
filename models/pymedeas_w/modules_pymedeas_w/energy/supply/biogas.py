@@ -11,8 +11,8 @@ Translated using PySD version 3.14.0
     depends_on={
         "time": 3,
         "past_biogas_growth": 3,
-        "growth_biogas": 2,
         "nvs_5_years_ts": 1,
+        "growth_biogas": 2,
     },
 )
 def adapt_growth_biogas():
@@ -365,8 +365,8 @@ _ext_constant_max_biogas_ej = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "historic_biogas_pes": 2,
         "time_step": 2,
+        "historic_biogas_pes": 2,
         "adapt_growth_biogas": 1,
         "max_biogas_ej": 2,
         "pes_biogas_ej": 2,

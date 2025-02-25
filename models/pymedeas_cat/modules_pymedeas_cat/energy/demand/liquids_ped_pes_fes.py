@@ -214,8 +214,8 @@ def imports_cat_unconv_oil_from_row_ej():
     depends_on={
         "share_liquids_for_nonenergy_use": 1,
         "pes_liquids": 1,
-        "energy_distr_losses_ff": 1,
         "transformation_ff_losses_ej": 1,
+        "energy_distr_losses_ff": 1,
     },
 )
 def nonenergy_use_consumption():
@@ -507,9 +507,9 @@ def share_liquids_dem_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_liquids": 1,
-        "ped_liquids": 1,
         "transformation_ff_losses_ej": 1,
         "energy_distr_losses_ff": 1,
+        "ped_liquids": 1,
     },
 )
 def share_liquids_for_final_energy():
@@ -531,9 +531,9 @@ def share_liquids_for_final_energy():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
-        "ped_liquids": 1,
         "transformation_ff_losses_ej": 1,
         "energy_distr_losses_ff": 1,
+        "ped_liquids": 1,
     },
 )
 def share_liquids_for_nonenergy_use():

@@ -125,7 +125,7 @@ _ext_lookup_ccs_policy = ExtLookup(
     subscripts=[np.str_("SECTORS_and_HOUSEHOLDS"), np.str_("CCS_tech")],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "ccs_tech_share": 1, "ccs_policy": 1},
+    depends_on={"time": 3, "ccs_policy": 1, "ccs_tech_share": 1},
 )
 def ccs_sector_tech():
     return if_then_else(

@@ -386,13 +386,13 @@ def total_exports_to_row():
     comp_subtype="Normal",
     depends_on={
         "exports_demand_to_roeu": 1,
-        "gdp_eu28": 1,
-        "variation_historic_exports_demand_to_roeu": 1,
         "unit_correction_economic": 2,
-        "beta_0_exp_1": 1,
-        "beta_1_exp_1": 2,
-        "time": 1,
+        "variation_historic_exports_demand_to_roeu": 1,
         "gdp_eu28_next_step": 1,
+        "beta_1_exp_1": 2,
+        "gdp_eu28": 1,
+        "beta_0_exp_1": 1,
+        "time": 1,
     },
 )
 def variation_exports_demand_to_roeu():
@@ -422,13 +422,13 @@ def variation_exports_demand_to_roeu():
     comp_subtype="Normal",
     depends_on={
         "exports_demand_to_row": 1,
-        "beta_0_exp_0": 1,
         "unit_correction_economic": 2,
-        "variation_historic_exports_demand_row": 1,
-        "time": 1,
-        "real_demand_world_next_step": 1,
-        "real_demand_world": 1,
         "beta_1_exp_0": 2,
+        "real_demand_world": 1,
+        "real_demand_world_next_step": 1,
+        "time": 1,
+        "variation_historic_exports_demand_row": 1,
+        "beta_0_exp_0": 1,
     },
 )
 def variation_exports_demand_to_row():

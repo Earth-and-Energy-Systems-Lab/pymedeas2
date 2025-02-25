@@ -204,10 +204,10 @@ _delayfixed_by_mineral_rr_rest_1yr = DelayFixed(
     depends_on={
         "time": 2,
         "historic_improvement_recycling_rates_minerals": 2,
-        "by_mineral_rr_alt_techn": 1,
         "by_mineral_rr_alt_techn_1yr": 1,
-        "nvs_1_year": 1,
+        "by_mineral_rr_alt_techn": 1,
         "start_year_p_rr_minerals": 1,
+        "nvs_1_year": 1,
     },
 )
 def by_mineral_rr_variation_alt_techn():
@@ -236,9 +236,9 @@ def by_mineral_rr_variation_alt_techn():
         "time": 2,
         "historic_improvement_recycling_rates_minerals": 2,
         "by_mineral_rr_rest": 1,
-        "nvs_1_year": 1,
-        "start_year_p_rr_minerals": 1,
         "by_mineral_rr_rest_1yr": 1,
+        "start_year_p_rr_minerals": 1,
+        "nvs_1_year": 1,
     },
 )
 def by_mineral_rr_variation_rest():
@@ -485,10 +485,10 @@ def historic_improvement_recycling_rates_minerals():
     depends_on={
         "time": 1,
         "historic_improvement_recycling_rates_minerals": 1,
-        "common_rr_minerals_variation_alt_techn": 1,
+        "by_mineral_rr_variation_alt_techn": 1,
         "recycling_rates_minerals_alt_techn": 1,
         "choose_targets_mineral_recycling_rates": 1,
-        "by_mineral_rr_variation_alt_techn": 1,
+        "common_rr_minerals_variation_alt_techn": 1,
         "constrain_rr_improv_for_alt_techn_per_mineral": 1,
     },
 )
@@ -520,10 +520,10 @@ def improvement_recycling_rates_minerals_alt_techn():
     depends_on={
         "time": 1,
         "historic_improvement_recycling_rates_minerals": 1,
-        "by_mineral_rr_variation_rest": 1,
         "common_rr_minerals_variation_rest": 1,
-        "choose_targets_mineral_recycling_rates": 1,
         "recycling_rates_minerals_rest": 1,
+        "by_mineral_rr_variation_rest": 1,
+        "choose_targets_mineral_recycling_rates": 1,
         "constrain_rr_improv_for_rest_per_mineral": 1,
     },
 )
@@ -628,7 +628,7 @@ _ext_constant_p_common_rr_minerals_variation_rest = ExtConstant(
     units="Dmnl",
     subscripts=["materials"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={"__external__": "_ext_constant_p_rr_minerals_alt_techn"},
 )
 def p_rr_minerals_alt_techn():
@@ -685,7 +685,7 @@ _ext_constant_p_rr_minerals_alt_techn = ExtConstant(
     units="Dmnl",
     subscripts=["materials"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={"__external__": "_ext_constant_p_rr_minerals_rest"},
 )
 def p_rr_minerals_rest():

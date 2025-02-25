@@ -49,8 +49,8 @@ _ext_constant_eficiency_liquids_pkm = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "energy_pkm": 4,
-        "household_demand_total": 3,
         "m_to_t": 3,
+        "household_demand_total": 3,
         "nvs_1_year": 3,
     },
 )
@@ -527,9 +527,9 @@ _ext_lookup_mode_share_pkm = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "pkmgdp_slope": 1,
-        "pkmgdp_initial": 1,
         "gdp_cat": 1,
+        "pkmgdp_initial": 1,
+        "pkmgdp_slope": 1,
         "hist_pkm": 1,
     },
 )
@@ -605,8 +605,8 @@ def pkm_fuel_share():
         "time": 4,
         "end_historical_data": 3,
         "initial_fuel_share_air_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_air_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_air():
@@ -639,8 +639,8 @@ def pkm_fuel_share_air():
         "time": 4,
         "end_historical_data": 3,
         "initial_fuel_share_households_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_households_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_households():
@@ -707,8 +707,8 @@ def pkm_fuel_share_inland():
         "time": 4,
         "end_historical_data": 3,
         "initial_fuel_share_maritime_pkm": 3,
-        "fuel_share_maritime_pkm": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_maritime_pkm": 2,
     },
 )
 def pkm_fuel_share_maritime():
@@ -741,8 +741,8 @@ def pkm_fuel_share_maritime():
         "time": 5,
         "end_historical_data": 5,
         "hist_transport_share_pkm": 3,
-        "mode_share_pkm": 2,
         "start_year_policies_transport": 3,
+        "mode_share_pkm": 2,
     },
 )
 def pkm_mode_share():

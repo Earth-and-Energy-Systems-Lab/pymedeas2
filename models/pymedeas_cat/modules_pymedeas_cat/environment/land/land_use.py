@@ -238,10 +238,10 @@ _integ_available_land = Integ(
     depends_on={
         "time": 2,
         "hist_variation_primary_forest": 1,
-        "historic_av_variation_primary_forests_area": 1,
-        "primary_forests_area": 1,
-        "start_year_p_variation_primary_forest": 1,
         "p_variation_primary_forest": 1,
+        "historic_av_variation_primary_forests_area": 1,
+        "start_year_p_variation_primary_forest": 1,
+        "primary_forests_area": 1,
         "aux_reach_available_forest": 1,
     },
 )
@@ -312,8 +312,8 @@ def compet_land_for_biofuels_rate():
     depends_on={
         "demand_forest_energy_non_tradition_ej": 1,
         "consum_forest_energy_traditional_ej": 1,
-        "forest_consumption_ej": 1,
         "consum_wood_products_ej": 1,
+        "forest_consumption_ej": 1,
     },
 )
 def consum_forest_energy_non_traditional_ej():
@@ -551,9 +551,9 @@ def forest_consumption_ej():
     depends_on={
         "available_forest_area": 1,
         "p_minimum_forest": 1,
-        "total_demand_forest_biomass_ej": 1,
-        "p_forest_overexplotation": 1,
         "max_sustainable_forest_extraction_ej": 1,
+        "p_forest_overexplotation": 1,
+        "total_demand_forest_biomass_ej": 1,
     },
 )
 def forest_extraction_ej():
@@ -1428,9 +1428,9 @@ _integ_primary_forests_area = Integ(
     comp_subtype="Normal",
     depends_on={
         "aux_reach_ag_land": 1,
-        "agricultural_land_pc": 1,
         "agricultural_land_pc_until_2015": 1,
         "threshold_scarcity_ag_land": 1,
+        "agricultural_land_pc": 1,
     },
 )
 def scarcity_agricultural_land():
@@ -1453,7 +1453,7 @@ def scarcity_agricultural_land():
     name="shortage_BioE_for_elec",
     units="Dmnl",
     subscripts=[np.str_("RES_elec")],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"shortage_bioe_non_trad_delayed_1yr": 1},
 )
@@ -1479,7 +1479,7 @@ def shortage_bioe_for_elec():
     name="shortage_BioE_for_heat",
     units="Dmnl",
     subscripts=[np.str_("RES_heat")],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"shortage_bioe_non_trad_delayed_1yr": 1},
 )
@@ -1782,9 +1782,9 @@ _integ_urban_land = Integ(
     depends_on={
         "time": 4,
         "historic_urban_land_density": 4,
-        "target_year_p_urban_land_density": 2,
         "start_year_p_urban_land_density": 3,
         "p_urban_land_density_mha": 2,
+        "target_year_p_urban_land_density": 2,
     },
 )
 def urban_land_density():
@@ -1820,8 +1820,8 @@ def urban_land_density():
     depends_on={
         "time": 1,
         "hist_variation_urban_land": 1,
-        "pop_variation": 1,
         "urban_land_density": 1,
+        "pop_variation": 1,
         "aux_reach_ag_land": 1,
     },
 )

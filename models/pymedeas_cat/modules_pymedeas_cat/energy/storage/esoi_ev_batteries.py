@@ -21,8 +21,8 @@ def cp_ev_batteries_for_transp():
     depends_on={
         "total_energy_required_for_total_material_consumption_for_ev_batteries": 1,
         "mj_per_ej": 1,
-        "newreplaced_batteries_tw": 1,
         "mw_per_tw": 1,
+        "newreplaced_batteries_tw": 1,
     },
 )
 def energy_intensity_construction_ev_batteries_mjmw():
@@ -127,11 +127,11 @@ def kw_per_mw():
     comp_subtype="Normal",
     depends_on={
         "net_stored_energy_ev_battery_over_lifetime": 1,
+        "kw_per_battery_ev": 1,
         "mw_in_1_year_to_mj": 1,
         "cp_ev_batteries_for_elec_storage": 1,
-        "cp_ev_batteries_for_transp": 1,
-        "kw_per_battery_ev": 1,
         "kw_per_mw": 1,
+        "cp_ev_batteries_for_transp": 1,
     },
 )
 def lifetime_ev_batteries():
@@ -153,8 +153,8 @@ def lifetime_ev_batteries():
     comp_subtype="Normal",
     depends_on={
         "net_stored_energy_ev_battery_over_lifetime": 1,
-        "min_lifetime_ev_batteries": 1,
         "kw_per_battery_ev": 1,
+        "min_lifetime_ev_batteries": 1,
         "mw_in_1_year_to_mj": 1,
         "kw_per_mw": 1,
     },

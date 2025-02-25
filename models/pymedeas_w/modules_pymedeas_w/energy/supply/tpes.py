@@ -1,10 +1,10 @@
 """
 Module energy.supply.tpes
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="abundance TPE",
+    name="abundance_TPE",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -22,7 +22,7 @@ def abundance_tpe():
 
 
 @component.add(
-    name="Dynamic quality of electricity",
+    name="Dynamic_quality_of_electricity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -40,7 +40,7 @@ def dynamic_quality_of_electricity():
 
 
 @component.add(
-    name="quality of electricity",
+    name="quality_of_electricity",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -62,7 +62,7 @@ def quality_of_electricity():
 
 
 @component.add(
-    name="quality of electricity 2015",
+    name="quality_of_electricity_2015",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -90,7 +90,7 @@ _sampleiftrue_quality_of_electricity_2015 = SampleIfTrue(
 
 
 @component.add(
-    name='"static/dynamic quality of electricity?"',
+    name='"static/dynamic_quality_of_electricity?"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -103,7 +103,7 @@ def staticdynamic_quality_of_electricity():
 
 
 @component.add(
-    name="Total extraction NRE EJ",
+    name="Total_extraction_NRE_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -131,7 +131,7 @@ def total_extraction_nre_ej():
 
 
 @component.add(
-    name="TPE from RES EJ",
+    name="TPE_from_RES_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -145,7 +145,7 @@ def tpe_from_res_ej():
 
 
 @component.add(
-    name="TPED by fuel",
+    name="TPED_by_fuel",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -175,7 +175,7 @@ def tped_by_fuel():
 
 
 @component.add(
-    name="TPES EJ",
+    name="TPES_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -189,7 +189,7 @@ def tpes_ej():
 
 
 @component.add(
-    name="Year scarcity TPE",
+    name="Year_scarcity_TPE",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

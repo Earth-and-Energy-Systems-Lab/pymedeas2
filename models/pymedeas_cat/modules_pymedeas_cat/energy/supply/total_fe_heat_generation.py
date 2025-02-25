@@ -1,10 +1,10 @@
 """
 Module energy.supply.total_fe_heat_generation
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="Abundance heat",
+    name="Abundance_heat",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -23,7 +23,7 @@ def abundance_heat():
 
 
 @component.add(
-    name="Annual growth rate RES for heat",
+    name="Annual_growth_rate_RES_for_heat",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -37,7 +37,7 @@ def annual_growth_rate_res_for_heat():
 
 
 @component.add(
-    name="FES heat from BioW",
+    name="FES_heat_from_BioW",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -61,7 +61,7 @@ def fes_heat_from_biow():
 
 
 @component.add(
-    name="FES Heat from coal",
+    name="FES_Heat_from_coal",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -81,7 +81,7 @@ def fes_heat_from_coal():
 
 
 @component.add(
-    name='"FES Heat from nat. gas"',
+    name='"FES_Heat_from_nat._gas"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -101,7 +101,7 @@ def fes_heat_from_nat_gas():
 
 
 @component.add(
-    name="FES Heat from oil",
+    name="FES_Heat_from_oil",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -121,9 +121,9 @@ def fes_heat_from_oil():
 
 
 @component.add(
-    name="FES NRE for heat",
+    name="FES_NRE_for_heat",
     units="EJ/year",
-    subscripts=["primary sources"],
+    subscripts=["primary_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -140,15 +140,15 @@ def fes_nre_for_heat():
     """
     value = xr.DataArray(
         np.nan,
-        {"primary sources": _subscript_dict["primary sources"]},
-        ["primary sources"],
+        {"primary_sources": _subscript_dict["primary_sources"]},
+        ["primary_sources"],
     )
     value.loc[["coal"]] = (
         float(fes_heatcom_fossil_fuels_chp_plants_ej().loc["coal"])
         + fes_heat_from_coal()
     )
-    value.loc[["natural gas"]] = (
-        float(fes_heatcom_fossil_fuels_chp_plants_ej().loc["natural gas"])
+    value.loc[["natural_gas"]] = (
+        float(fes_heatcom_fossil_fuels_chp_plants_ej().loc["natural_gas"])
         + fes_heat_from_nat_gas()
     )
     value.loc[["oil"]] = (
@@ -159,7 +159,7 @@ def fes_nre_for_heat():
 
 
 @component.add(
-    name="FES RES for heat delayed 1yr",
+    name="FES_RES_for_heat_delayed_1yr",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -188,7 +188,7 @@ _delayfixed_fes_res_for_heat_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="FES RES for heat EJ",
+    name="FES_RES_for_heat_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -210,7 +210,7 @@ def fes_res_for_heat_ej():
 
 
 @component.add(
-    name='"PES coal for Heat-com plants"',
+    name='"PES_coal_for_Heat-com_plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -230,7 +230,7 @@ def pes_coal_for_heatcom_plants():
 
 
 @component.add(
-    name='"PES coal for Heat-nc plants"',
+    name='"PES_coal_for_Heat-nc_plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -250,7 +250,7 @@ def pes_coal_for_heatnc_plants():
 
 
 @component.add(
-    name='"PES nat. gas for Heat-com plants"',
+    name='"PES_nat._gas_for_Heat-com_plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -270,7 +270,7 @@ def pes_nat_gas_for_heatcom_plants():
 
 
 @component.add(
-    name='"PES nat. gas for Heat-nc plants"',
+    name='"PES_nat._gas_for_Heat-nc_plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -291,7 +291,7 @@ def pes_nat_gas_for_heatnc_plants():
 
 
 @component.add(
-    name='"PES oil for Heat-com plants"',
+    name='"PES_oil_for_Heat-com_plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -311,7 +311,7 @@ def pes_oil_for_heatcom_plants():
 
 
 @component.add(
-    name='"PES oil for Heat-nc plants"',
+    name='"PES_oil_for_Heat-nc_plants"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -331,7 +331,7 @@ def pes_oil_for_heatnc_plants():
 
 
 @component.add(
-    name="share RES heat generation",
+    name="share_RES_heat_generation",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -341,11 +341,11 @@ def share_res_heat_generation():
     """
     Share of RES in the total heat generation.
     """
-    return fes_res_for_heat_ej() / total_fe_heat_generation()
+    return zidz(fes_res_for_heat_ej(), total_fe_heat_generation())
 
 
 @component.add(
-    name="Total FE Heat consumption EJ",
+    name="Total_FE_Heat_consumption_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -359,14 +359,16 @@ def total_fe_heat_consumption_ej():
     """
     Total final heat consumption (fossil fuels, nuclear, waste & renewables) (EJ).
     """
-    return np.minimum(
-        total_fe_heat_generation() / (1 + share_heat_distribution_losses()),
-        total_fed_heat_ej(),
+    return float(
+        np.minimum(
+            total_fe_heat_generation() / (1 + share_heat_distribution_losses()),
+            total_fed_heat_ej(),
+        )
     )
 
 
 @component.add(
-    name="Total FE Heat generation",
+    name="Total_FE_Heat_generation",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -384,14 +386,14 @@ def total_fe_heat_generation():
         fes_res_for_heat_ej()
         + fes_heatcom_from_waste_ej()
         + sum(
-            fes_nre_for_heat().rename({"primary sources": "primary sources!"}),
-            dim=["primary sources!"],
+            fes_nre_for_heat().rename({"primary_sources": "primary_sources!"}),
+            dim=["primary_sources!"],
         )
     )
 
 
 @component.add(
-    name="Year scarcity Heat",
+    name="Year_scarcity_Heat",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

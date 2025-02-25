@@ -1,10 +1,10 @@
 """
 Module economy.imports_and_exports
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="Demand by sector RoW",
+    name="Demand_by_sector_RoW",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -20,7 +20,7 @@ def demand_by_sector_row():
 
 
 @component.add(
-    name="Domestic output required for exports by sector",
+    name="Domestic_output_required_for_exports_by_sector",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -39,7 +39,7 @@ def domestic_output_required_for_exports_by_sector():
 
 
 @component.add(
-    name="historic demand RoW",
+    name="historic_demand_RoW",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Data",
@@ -71,7 +71,7 @@ _ext_data_historic_demand_row = ExtData(
 
 
 @component.add(
-    name="IC exports EU",
+    name="IC_exports_EU",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -88,7 +88,7 @@ def ic_exports_eu():
 
 
 @component.add(
-    name="IC exports EU matrix",
+    name="IC_exports_EU_matrix",
     units="Mdollars",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
@@ -105,7 +105,7 @@ def ic_exports_eu_matrix():
 
 
 @component.add(
-    name="IC imports EU",
+    name="IC_imports_EU",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -123,7 +123,7 @@ def ic_imports_eu():
 
 
 @component.add(
-    name="IC imports EU matrix",
+    name="IC_imports_EU_matrix",
     units="Mdollars",
     subscripts=["sectors", "sectors1"],
     comp_type="Auxiliary",
@@ -140,7 +140,7 @@ def ic_imports_eu_matrix():
 
 
 @component.add(
-    name="Real demand by sector RoW",
+    name="Real_demand_by_sector_RoW",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -155,7 +155,7 @@ def real_demand_by_sector_row():
 
 
 @component.add(
-    name="Real Final Demand of exports",
+    name="Real_Final_Demand_of_exports",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -174,7 +174,7 @@ def real_final_demand_of_exports():
 
 
 @component.add(
-    name="Real total output by sector RoW",
+    name="Real_total_output_by_sector_RoW",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -192,7 +192,7 @@ def real_total_output_by_sector_row():
 
 
 @component.add(
-    name="Total domestic output required for exports by sector",
+    name="Total_domestic_output_required_for_exports_by_sector",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",

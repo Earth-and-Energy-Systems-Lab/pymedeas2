@@ -1,10 +1,10 @@
 """
 Module energy.demand.solids_ped_pes_fes
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="a lin reg peat",
+    name="a_lin_reg_peat",
     units="EJ/(year*year)",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -14,7 +14,7 @@ def a_lin_reg_peat():
 
 
 @component.add(
-    name="abundance solids",
+    name="abundance_solids",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -32,14 +32,40 @@ def abundance_solids():
 
 
 @component.add(
-    name="b lin reg peat", units="EJ/year", comp_type="Constant", comp_subtype="Normal"
+    name="b_lin_reg_peat", units="EJ/year", comp_type="Constant", comp_subtype="Normal"
 )
 def b_lin_reg_peat():
     return 7.83322
 
 
 @component.add(
-    name="Historic PES peat EJ",
+    name="historic_bioe_for_electricity_and_heat",
+    units="EJ/year",
+    comp_type="Lookup",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_bioe_for_electricity_and_heat",
+        "__lookup__": "_ext_lookup_historic_bioe_for_electricity_and_heat",
+    },
+)
+def historic_bioe_for_electricity_and_heat(x, final_subs=None):
+    return _ext_lookup_historic_bioe_for_electricity_and_heat(x, final_subs)
+
+
+_ext_lookup_historic_bioe_for_electricity_and_heat = ExtLookup(
+    r"../energy.xlsx",
+    "World",
+    "time_historic_data",
+    "Historic_bioe_heat_elec",
+    {},
+    _root,
+    {},
+    "_ext_lookup_historic_bioe_for_electricity_and_heat",
+)
+
+
+@component.add(
+    name="Historic_PES_peat_EJ",
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
@@ -57,7 +83,7 @@ def historic_pes_peat_ej():
 
 
 _ext_data_historic_pes_peat_ej = ExtData(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "World",
     "time_efficiencies",
     "historic_primary_energy_supply_peat",
@@ -70,7 +96,8 @@ _ext_data_historic_pes_peat_ej = ExtData(
 
 
 @component.add(
-    name="modern solid bioenergy",
+    name="modern_solid_bioenergy",
+    units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 4, "policy_modern_solid_bioe": 3},
@@ -92,7 +119,7 @@ def modern_solid_bioenergy():
 
 
 @component.add(
-    name="Other solids required",
+    name="Other_solids_required",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -111,38 +138,40 @@ def other_solids_required():
 
 
 @component.add(
-    name="PED coal EJ",
+    name="PED_coal_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ped_solids": 1,
-        "losses_in_charcoal_plants_historic": 1,
-        "pe_traditional_biomass_ej_delayed": 1,
         "pes_peat": 1,
+        "losses_in_charcoal_plants_historic": 1,
+        "solid_bioe_supply": 1,
         "pes_waste": 1,
-        "modern_solid_bioenergy": 1,
+        "pe_traditional_biomass_ej_delayed": 1,
     },
 )
 def ped_coal_ej():
     """
     Primary energy demand of coal.
     """
-    return np.maximum(
-        0,
-        ped_solids()
-        - (
-            pe_traditional_biomass_ej_delayed()
-            + pes_peat()
-            - losses_in_charcoal_plants_historic()
-            + pes_waste()
-            + modern_solid_bioenergy()
-        ),
+    return float(
+        np.maximum(
+            0,
+            ped_solids()
+            - (
+                pe_traditional_biomass_ej_delayed()
+                + pes_peat()
+                - losses_in_charcoal_plants_historic()
+                + pes_waste()
+                + solid_bioe_supply()
+            ),
+        )
     )
 
 
 @component.add(
-    name="PED solids",
+    name="PED_solids",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -155,36 +184,38 @@ def ped_coal_ej():
         "ped_coal_heatnc": 1,
         "other_solids_required": 1,
         "pes_waste": 1,
-        "pes_res_for_heatnc_by_techn": 1,
-        "pes_res_for_heatcom_by_techn": 1,
-        "pe_real_generation_res_elec": 1,
         "pes_waste_for_tfc": 1,
+        "pe_real_generation_res_elec": 1,
+        "pes_res_for_heatcom_by_techn": 1,
+        "pes_res_for_heatnc_by_techn": 1,
     },
 )
 def ped_solids():
     """
     Primary energy demand of solids.
     """
-    return np.maximum(
-        0,
-        required_fed_solids()
-        + ped_coal_for_ctl_ej()
-        + pe_demand_coal_elec_plants_ej()
-        + ped_coal_for_heat_plants_ej()
-        + ped_coal_for_chp_plants_ej()
-        + ped_coal_heatnc()
-        + other_solids_required()
-        + pes_waste()
-        + float(pes_res_for_heatnc_by_techn().loc["solid bioE heat"])
-        + float(pes_res_for_heatcom_by_techn().loc["solid bioE heat"])
-        + ped_coal_for_ctl_ej()
-        + float(pe_real_generation_res_elec().loc["solid bioE elec"])
-        - pes_waste_for_tfc(),
+    return float(
+        np.maximum(
+            0,
+            required_fed_solids()
+            + ped_coal_for_ctl_ej()
+            + pe_demand_coal_elec_plants_ej()
+            + ped_coal_for_heat_plants_ej()
+            + ped_coal_for_chp_plants_ej()
+            + ped_coal_heatnc()
+            + other_solids_required()
+            + pes_waste()
+            + ped_coal_for_ctl_ej()
+            - pes_waste_for_tfc()
+            + float(pe_real_generation_res_elec().loc["solid_bioE_elec"])
+            + float(pes_res_for_heatcom_by_techn().loc["solid_bioE_heat"])
+            + float(pes_res_for_heatnc_by_techn().loc["solid_bioE_heat"]),
+        )
     )
 
 
 @component.add(
-    name="PES peat",
+    name="PES_peat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -199,18 +230,20 @@ def pes_peat():
     """
     MAX(IF THEN ELSE(Time<2014, Historic PES peat EJ, a lin reg peat*(Time)+b lin reg peat),0)
     """
-    return np.maximum(
-        if_then_else(
-            time() < 2014,
-            lambda: historic_pes_peat_ej(),
-            lambda: a_lin_reg_peat() * time() + b_lin_reg_peat(),
-        ),
-        0,
+    return float(
+        np.maximum(
+            if_then_else(
+                time() < 2014,
+                lambda: historic_pes_peat_ej(),
+                lambda: a_lin_reg_peat() * time() + b_lin_reg_peat(),
+            ),
+            0,
+        )
     )
 
 
 @component.add(
-    name="PES solids",
+    name="PES_solids",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -220,7 +253,7 @@ def pes_peat():
         "pes_peat": 1,
         "losses_in_charcoal_plants_historic": 1,
         "pes_waste": 1,
-        "modern_solid_bioenergy": 1,
+        "solid_bioe_supply": 1,
     },
 )
 def pes_solids():
@@ -233,12 +266,12 @@ def pes_solids():
         + pes_peat()
         - losses_in_charcoal_plants_historic()
         + pes_waste()
-        + modern_solid_bioenergy()
+        + solid_bioe_supply()
     )
 
 
 @component.add(
-    name="policy modern solid bioE",
+    name="policy_modern_solid_bioE",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -252,7 +285,7 @@ def policy_modern_solid_bioe(x, final_subs=None):
 
 
 _ext_lookup_policy_modern_solid_bioe = ExtLookup(
-    "../../scenarios/scen_w.xlsx",
+    r"../../scenarios/scen_w.xlsx",
     "NZP",
     "year_RES_power",
     "p_solid_bioe",
@@ -264,7 +297,7 @@ _ext_lookup_policy_modern_solid_bioe = ExtLookup(
 
 
 @component.add(
-    name="Required FED solids",
+    name="Required_FED_solids",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -278,7 +311,7 @@ def required_fed_solids():
 
 
 @component.add(
-    name="share coal dem for Elec",
+    name="share_coal_dem_for_Elec",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -296,7 +329,7 @@ def share_coal_dem_for_elec():
 
 
 @component.add(
-    name='"share coal dem for Heat-com"',
+    name='"share_coal_dem_for_Heat-com"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -314,7 +347,7 @@ def share_coal_dem_for_heatcom():
 
 
 @component.add(
-    name='"share coal dem for Heat-nc"',
+    name='"share_coal_dem_for_Heat-nc"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -328,7 +361,7 @@ def share_coal_dem_for_heatnc():
 
 
 @component.add(
-    name="share coal for CTL emissions relevant",
+    name="share_coal_for_CTL_emissions_relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -339,7 +372,7 @@ def share_coal_for_ctl_emissions_relevant():
 
 
 @component.add(
-    name="share coal for Elec emissions relevant",
+    name="share_coal_for_Elec_emissions_relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -359,7 +392,7 @@ def share_coal_for_elec_emissions_relevant():
 
 
 @component.add(
-    name="share coal for FC emissions relevant",
+    name="share_coal_for_FC_emissions_relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -384,7 +417,7 @@ def share_coal_for_fc_emissions_relevant():
 
 
 @component.add(
-    name="share coal for Heat emissions relevant",
+    name="share_coal_for_Heat_emissions_relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -406,14 +439,14 @@ def share_coal_for_heat_emissions_relevant():
 
 
 @component.add(
-    name="share solids for final energy",
+    name="share_solids_for_final_energy",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "required_fed_solids": 1,
-        "ped_solids": 1,
         "ped_coal_for_ctl_ej": 1,
+        "ped_solids": 1,
         "other_solids_required": 1,
     },
 )
@@ -424,4 +457,57 @@ def share_solids_for_final_energy():
     return zidz(
         required_fed_solids(),
         ped_solids() - ped_coal_for_ctl_ej() - other_solids_required(),
+    )
+
+
+@component.add(
+    name="solid_bioE_supply",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 5,
+        "historic_bioe_for_electricity_and_heat": 3,
+        "policy_modern_solid_bioe": 2,
+    },
+)
+def solid_bioe_supply():
+    return if_then_else(
+        time() < 2015,
+        lambda: historic_bioe_for_electricity_and_heat(time()),
+        lambda: if_then_else(
+            time() < 2020,
+            lambda: historic_bioe_for_electricity_and_heat(2015)
+            + (
+                policy_modern_solid_bioe(2020)
+                - historic_bioe_for_electricity_and_heat(2015)
+            )
+            / 5
+            * (time() - 2015),
+            lambda: policy_modern_solid_bioe(time()),
+        ),
+    )
+
+
+@component.add(
+    name="total_share",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "nonenergy_use_demand_by_final_fuel_ej": 1,
+        "ped_coal_ej": 1,
+        "share_coal_for_ctl_emissions_relevant": 1,
+        "share_coal_for_elec_emissions_relevant": 1,
+        "share_coal_for_fc_emissions_relevant": 1,
+        "share_coal_for_heat_emissions_relevant": 1,
+    },
+)
+def total_share():
+    return (
+        zidz(
+            float(nonenergy_use_demand_by_final_fuel_ej().loc["solids"]), ped_coal_ej()
+        )
+        + share_coal_for_ctl_emissions_relevant()
+        + share_coal_for_elec_emissions_relevant()
+        + share_coal_for_fc_emissions_relevant()
+        + share_coal_for_heat_emissions_relevant()
     )

@@ -1,12 +1,12 @@
 """
 Module materials.energy_consumption
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="Energy cons per unit of material cons for RES elec",
+    name="Energy_cons_per_unit_of_material_cons_for_RES_elec",
     units="MJ/kg",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -28,9 +28,9 @@ def energy_cons_per_unit_of_material_cons_for_res_elec():
 
 
 @component.add(
-    name="Energy required for material consumption for EV batteries",
+    name="Energy_required_for_material_consumption_for_EV_batteries",
     units="EJ/year",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -53,9 +53,9 @@ def energy_required_for_material_consumption_for_ev_batteries():
 
 
 @component.add(
-    name="Energy required for material consumption for new RES elec",
+    name="Energy_required_for_material_consumption_for_new_RES_elec",
     units="EJ/year",
-    subscripts=[np.str_("RES elec"), np.str_("materials")],
+    subscripts=["RES_elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -78,9 +78,9 @@ def energy_required_for_material_consumption_for_new_res_elec():
 
 
 @component.add(
-    name='"Energy required for material consumption for O&M RES elec"',
+    name='"Energy_required_for_material_consumption_for_O&M_RES_elec"',
     units="EJ/year",
-    subscripts=[np.str_("RES elec"), np.str_("materials")],
+    subscripts=["RES_elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -100,9 +100,9 @@ def energy_required_for_material_consumption_for_om_res_elec():
 
 
 @component.add(
-    name="Energy required for material consumption per RES elec",
+    name="Energy_required_for_material_consumption_per_RES_elec",
     units="EJ/year",
-    subscripts=[np.str_("RES elec"), np.str_("materials")],
+    subscripts=["RES_elec", "materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -121,9 +121,9 @@ def energy_required_for_material_consumption_per_res_elec():
 
 
 @component.add(
-    name='"Initial energy cons per unit of material cons (recycled)"',
+    name='"Initial_energy_cons_per_unit_of_material_cons_(recycled)"',
     units="MJ/kg",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -143,9 +143,9 @@ def initial_energy_cons_per_unit_of_material_cons_recycled():
 
 
 @component.add(
-    name='"Initial energy cons per unit of material cons (recycled) - data"',
+    name='"Initial_energy_cons_per_unit_of_material_cons_(recycled)_-_data"',
     units="MJ/kg",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
@@ -160,7 +160,7 @@ def initial_energy_cons_per_unit_of_material_cons_recycled_data():
 
 
 _ext_constant_initial_energy_cons_per_unit_of_material_cons_recycled_data = ExtConstant(
-    "../materials.xlsx",
+    r"../materials.xlsx",
     "Global",
     "initial_energy_cons_per_material_recycled*",
     {"materials": _subscript_dict["materials"]},
@@ -171,9 +171,9 @@ _ext_constant_initial_energy_cons_per_unit_of_material_cons_recycled_data = ExtC
 
 
 @component.add(
-    name='"Initial energy cons per unit of material cons (virgin)"',
+    name='"Initial_energy_cons_per_unit_of_material_cons_(virgin)"',
     units="MJ/kg",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
@@ -188,7 +188,7 @@ def initial_energy_cons_per_unit_of_material_cons_virgin():
 
 
 _ext_constant_initial_energy_cons_per_unit_of_material_cons_virgin = ExtConstant(
-    "../materials.xlsx",
+    r"../materials.xlsx",
     "Global",
     "initial_energy_cons_per_material_virgin*",
     {"materials": _subscript_dict["materials"]},
@@ -199,14 +199,14 @@ _ext_constant_initial_energy_cons_per_unit_of_material_cons_virgin = ExtConstant
 
 
 @component.add(
-    name="MJ per EJ", units="MJ/EJ", comp_type="Constant", comp_subtype="Normal"
+    name="MJ_per_EJ", units="MJ/EJ", comp_type="Constant", comp_subtype="Normal"
 )
 def mj_per_ej():
     return 1000000000000.0
 
 
 @component.add(
-    name="share energy for material consumption for alt techn vs TFEC",
+    name="share_energy_for_material_consumption_for_alt_techn_vs_TFEC",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -223,7 +223,7 @@ def share_energy_for_material_consumption_for_alt_techn_vs_tfec():
 
 
 @component.add(
-    name="TFE required for total material consumption for alt techn",
+    name="TFE_required_for_total_material_consumption_for_alt_techn",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -243,7 +243,7 @@ def tfe_required_for_total_material_consumption_for_alt_techn():
 
 
 @component.add(
-    name="Total energy required for material consumption for RES elec",
+    name="Total_energy_required_for_material_consumption_for_RES_elec",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -255,16 +255,16 @@ def total_energy_required_for_material_consumption_for_res_elec():
     """
     return sum(
         energy_required_for_material_consumption_per_res_elec().rename(
-            {np.str_("RES elec"): "RES elec!", np.str_("materials"): "materials!"}
+            {"RES_elec": "RES_elec!", "materials": "materials!"}
         ),
-        dim=["RES elec!", "materials!"],
+        dim=["RES_elec!", "materials!"],
     )
 
 
 @component.add(
-    name="Total energy required for material consumption per RES elec",
+    name="Total_energy_required_for_material_consumption_per_RES_elec",
     units="EJ/year",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES_elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_required_for_material_consumption_per_res_elec": 1},
@@ -275,14 +275,14 @@ def total_energy_required_for_material_consumption_per_res_elec():
     """
     return sum(
         energy_required_for_material_consumption_per_res_elec().rename(
-            {np.str_("materials"): "materials!"}
+            {"materials": "materials!"}
         ),
         dim=["materials!"],
     )
 
 
 @component.add(
-    name="Total energy required for total material consumption for EV batteries",
+    name="Total_energy_required_for_total_material_consumption_for_EV_batteries",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -294,16 +294,16 @@ def total_energy_required_for_total_material_consumption_for_ev_batteries():
     """
     return sum(
         energy_required_for_material_consumption_for_ev_batteries().rename(
-            {np.str_("materials"): "materials!"}
+            {"materials": "materials!"}
         ),
         dim=["materials!"],
     )
 
 
 @component.add(
-    name="Total energy required per material for alt techn",
+    name="Total_energy_required_per_material_for_alt_techn",
     units="EJ/year",
-    subscripts=[np.str_("materials")],
+    subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -318,9 +318,9 @@ def total_energy_required_per_material_for_alt_techn():
     return (
         sum(
             energy_required_for_material_consumption_per_res_elec().rename(
-                {np.str_("RES elec"): "RES elec!"}
+                {"RES_elec": "RES_elec!"}
             ),
-            dim=["RES elec!"],
+            dim=["RES_elec!"],
         )
         + energy_required_for_material_consumption_for_ev_batteries()
     )

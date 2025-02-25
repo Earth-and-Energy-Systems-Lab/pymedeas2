@@ -1,12 +1,12 @@
 """
 Module energy.storage.storage_demand_and_supply
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="constraint elec storage availability",
+    name="constraint_elec_storage_availability",
     units="Dmnl",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES_elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -22,27 +22,29 @@ def constraint_elec_storage_availability():
     return if_then_else(
         res_elec_variables() == 0,
         lambda: xr.DataArray(
-            1, {"RES elec": _subscript_dict["RES elec"]}, ["RES elec"]
+            1, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
         ),
         lambda: xr.DataArray(
             if_then_else(
                 demand_storage_capacity() <= total_capacity_elec_storage_tw(),
                 lambda: 1,
-                lambda: np.maximum(
-                    0,
-                    1
-                    - (demand_storage_capacity() - total_capacity_elec_storage_tw())
-                    / total_capacity_elec_storage_tw(),
+                lambda: float(
+                    np.maximum(
+                        0,
+                        1
+                        - (demand_storage_capacity() - total_capacity_elec_storage_tw())
+                        / total_capacity_elec_storage_tw(),
+                    )
                 ),
             ),
-            {"RES elec": _subscript_dict["RES elec"]},
-            ["RES elec"],
+            {"RES_elec": _subscript_dict["RES_elec"]},
+            ["RES_elec"],
         ),
     )
 
 
 @component.add(
-    name="Cp EV batteries for elec storage",
+    name="Cp_EV_batteries_for_elec_storage",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -55,24 +57,26 @@ def cp_ev_batteries_for_elec_storage():
     """
     Dynamic evolution of the Cp of EV batteries for electricity storage.
     """
-    return np.minimum(
-        cp_ev_batteries_required(), max_cp_ev_batteries_for_elec_storage()
+    return float(
+        np.minimum(cp_ev_batteries_required(), max_cp_ev_batteries_for_elec_storage())
     )
 
 
 @component.add(
-    name="Cp EV batteries required",
+    name="Cp_EV_batteries_required",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"demand_ev_batteries_for_elec_storage": 1, "ev_batteries_tw": 1},
 )
 def cp_ev_batteries_required():
-    return np.maximum(0, demand_ev_batteries_for_elec_storage() / ev_batteries_tw())
+    return float(
+        np.maximum(0, demand_ev_batteries_for_elec_storage() / ev_batteries_tw())
+    )
 
 
 @component.add(
-    name="demand EV batteries for elec storage",
+    name="demand_EV_batteries_for_elec_storage",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -82,11 +86,11 @@ def demand_ev_batteries_for_elec_storage():
     """
     Demand of EV batteries for storage of electricity.
     """
-    return np.maximum(0, demand_storage_capacity() - installed_capacity_phs())
+    return float(np.maximum(0, demand_storage_capacity() - installed_capacity_phs()))
 
 
 @component.add(
-    name="demand storage capacity",
+    name="demand_storage_capacity",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -105,7 +109,7 @@ def demand_storage_capacity():
 
 
 @component.add(
-    name="ESOI elec storage",
+    name="ESOI_elec_storage",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -128,7 +132,7 @@ def esoi_elec_storage():
 
 
 @component.add(
-    name="max capacity elec storage",
+    name="max_capacity_elec_storage",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -145,7 +149,7 @@ def max_capacity_elec_storage():
 
 
 @component.add(
-    name="real FE elec stored EV batteries TWh",
+    name="real_FE_elec_stored_EV_batteries_TWh",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -159,9 +163,9 @@ def real_fe_elec_stored_ev_batteries_twh():
 
 
 @component.add(
-    name="remaining potential elec storage by RES techn",
+    name="remaining_potential_elec_storage_by_RES_techn",
     units="Dmnl",
-    subscripts=[np.str_("RES elec")],
+    subscripts=["RES_elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"max_capacity_elec_storage": 3, "demand_storage_capacity": 2},
@@ -177,13 +181,13 @@ def remaining_potential_elec_storage_by_res_techn():
             / max_capacity_elec_storage(),
             lambda: 0,
         ),
-        {"RES elec": _subscript_dict["RES elec"]},
-        [np.str_("RES elec")],
+        {"RES_elec": _subscript_dict["RES_elec"]},
+        ["RES_elec"],
     )
 
 
 @component.add(
-    name="rt elec storage efficiency",
+    name="rt_elec_storage_efficiency",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -206,7 +210,7 @@ def rt_elec_storage_efficiency():
 
 
 @component.add(
-    name="rt storage efficiency EV batteries",
+    name="rt_storage_efficiency_EV_batteries",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -220,7 +224,7 @@ def rt_storage_efficiency_ev_batteries():
 
 
 _ext_constant_rt_storage_efficiency_ev_batteries = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "round_trip_storage_efficiency_ev_batteries",
     {},
@@ -231,7 +235,7 @@ _ext_constant_rt_storage_efficiency_ev_batteries = ExtConstant(
 
 
 @component.add(
-    name="rt storage efficiency PHS",
+    name="rt_storage_efficiency_PHS",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -245,7 +249,7 @@ def rt_storage_efficiency_phs():
 
 
 _ext_constant_rt_storage_efficiency_phs = ExtConstant(
-    "../energy.xlsx",
+    r"../energy.xlsx",
     "Global",
     "round_trip_storage_efficiency_phs",
     {},
@@ -256,7 +260,7 @@ _ext_constant_rt_storage_efficiency_phs = ExtConstant(
 
 
 @component.add(
-    name='"share capacity storage/RES elec var"',
+    name='"share_capacity_storage/RES_elec_var"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -270,7 +274,7 @@ def share_capacity_storageres_elec_var():
 
 
 @component.add(
-    name="Total capacity elec storage TW",
+    name="Total_capacity_elec_storage_TW",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -284,7 +288,7 @@ def total_capacity_elec_storage_tw():
 
 
 @component.add(
-    name="Total installed capacity RES elec var",
+    name="Total_installed_capacity_RES_elec_var",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -296,14 +300,14 @@ def total_installed_capacity_res_elec_var():
     """
     return sum(
         installed_capacity_res_elec()
-        .loc[_subscript_dict["RES ELEC VARIABLE"]]
-        .rename({np.str_("RES elec"): "RES ELEC VARIABLE!"}),
-        dim=["RES ELEC VARIABLE!"],
+        .loc[_subscript_dict["RES_ELEC_VARIABLE"]]
+        .rename({"RES_elec": "RES_ELEC_VARIABLE!"}),
+        dim=["RES_ELEC_VARIABLE!"],
     )
 
 
 @component.add(
-    name="Used EV batteries for elec storage",
+    name="Used_EV_batteries_for_elec_storage",
     units="TW",
     comp_type="Auxiliary",
     comp_subtype="Normal",

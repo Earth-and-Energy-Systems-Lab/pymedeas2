@@ -1,5 +1,5 @@
 {
-    "CCS tech": [
+    "CCS_tech": [
         "post",
         "pre",
         "oxyfuel"
@@ -20,7 +20,7 @@
         "HFC245ca",
         "HFC4310mee"
     ],
-    "GHGs non CO2": [
+    "GHGs_non_CO2": [
         "CH4",
         "N2O",
         "PFCs",
@@ -35,7 +35,7 @@
         "HFC245ca",
         "HFC4310mee"
     ],
-    "HFC type": [
+    "HFC_type": [
         "HFC134a",
         "HFC23",
         "HFC32",
@@ -46,56 +46,56 @@
         "HFC245ca",
         "HFC4310mee"
     ],
-    "Households vehicles": [
-        "liq 4wheels",
-        "elec 4wheels",
-        "hib 4wheels",
-        "gas 4wheels",
-        "liq 2wheels",
-        "elec 2wheels"
+    "Households_vehicles": [
+        "liq_4wheels",
+        "elec_4wheels",
+        "hib_4wheels",
+        "gas_4wheels",
+        "liq_2wheels",
+        "elec_2wheels"
     ],
-    "MATERIALS NO RECYCABLE": [
+    "MATERIALS_NO_RECYCABLE": [
         "Adhesive",
-        "Aluminium mirrors",
-        "Carbon fiber",
+        "Aluminium_mirrors",
+        "Carbon_fiber",
         "Cement",
         "diesel",
         "Dy",
-        "electronic components",
-        "Evacuation lines",
+        "electronic_components",
+        "Evacuation_lines",
         "Fiberglass",
-        "Foam glass",
+        "Foam_glass",
         "Glass",
-        "Glass reinforcing plastic",
+        "Glass_reinforcing_plastic",
         "gravel",
-        "KNO3 mined",
+        "KNO3_mined",
         "Asphalt",
         "Lime",
         "Limestone",
         "Lubricant",
-        "Heavy equipment",
+        "Heavy_equipment",
         "Concrete",
-        "NaNO3 mined",
-        "NaNO3 synthetic",
+        "NaNO3_mined",
+        "NaNO3_synthetic",
         "Neodymium",
-        "over grid 15perc",
-        "over grid 5perc",
+        "over_grid_15perc",
+        "over_grid_5perc",
         "Paint",
         "Plastics",
         "Polypropylene",
         "Rock",
-        "Rock wool",
+        "Rock_wool",
         "Sand",
-        "Silicon sand",
-        "Silicon wafer modules",
-        "Site preparation",
-        "soda ash",
+        "Silicon_sand",
+        "Silicon_wafer_modules",
+        "Site_preparation",
+        "soda_ash",
         "steel",
-        "synthetic oil",
-        "titanium dioxide",
+        "synthetic_oil",
+        "titanium_dioxide",
         "wires"
     ],
-    "MATERIALS RECYCABLE": [
+    "MATERIALS_RECYCABLE": [
         "Aluminium",
         "Cadmium",
         "Chromium",
@@ -116,89 +116,89 @@
         "vanadium",
         "zinc"
     ],
-    "RCP Scenario": [
+    "RCP_Scenario": [
         "RCP26",
         "RCP45",
         "RCP60",
         "RCP85"
     ],
-    "RES ELEC DISPATCHABLE": [
+    "RES_ELEC_DISPATCHABLE": [
         "hydro",
-        "geot elec",
-        "solid bioE elec",
+        "geot_elec",
+        "solid_bioE_elec",
         "oceanic"
     ],
-    "RES ELEC VARIABLE": [
-        "wind onshore",
-        "wind offshore",
-        "solar PV",
+    "RES_ELEC_VARIABLE": [
+        "wind_onshore",
+        "wind_offshore",
+        "solar_PV",
         "CSP"
     ],
-    "RES elec": [
+    "RES_elec": [
         "hydro",
-        "geot elec",
-        "solid bioE elec",
+        "geot_elec",
+        "solid_bioE_elec",
         "oceanic",
-        "wind onshore",
-        "wind offshore",
-        "solar PV",
+        "wind_onshore",
+        "wind_offshore",
+        "solar_PV",
         "CSP"
     ],
-    "RES heat": [
-        "solar heat",
-        "geot heat",
-        "solid bioE heat"
+    "RES_heat": [
+        "solar_heat",
+        "geot_heat",
+        "solid_bioE_heat"
     ],
-    "SECTORS CCS": [
-        "Mining quarrying and energy supply",
-        "Food Beverages and Tobacco",
-        "Textiles and leather etc",
-        "Coke refined petroleum nuclear fuel and chemicals etc",
-        "Electrical and optical equipment and Transport equipment",
-        "Other manufacturing"
+    "SECTORS_CCS": [
+        "Mining_quarrying_and_energy_supply",
+        "Food_Beverages_and_Tobacco",
+        "Textiles_and_leather_etc",
+        "Coke_refined_petroleum_nuclear_fuel_and_chemicals_etc",
+        "Electrical_and_optical_equipment_and_Transport_equipment",
+        "Other_manufacturing"
     ],
-    "SECTORS and HOUSEHOLDS": [
+    "SECTORS_and_HOUSEHOLDS": [
         "Households",
         "Agriculture",
-        "Mining quarrying and energy supply",
-        "Food Beverages and Tobacco",
-        "Textiles and leather etc",
-        "Coke refined petroleum nuclear fuel and chemicals etc",
-        "Electrical and optical equipment and Transport equipment",
-        "Other manufacturing",
+        "Mining_quarrying_and_energy_supply",
+        "Food_Beverages_and_Tobacco",
+        "Textiles_and_leather_etc",
+        "Coke_refined_petroleum_nuclear_fuel_and_chemicals_etc",
+        "Electrical_and_optical_equipment_and_Transport_equipment",
+        "Other_manufacturing",
         "Construction",
         "Distribution",
-        "Hotels and restaurant",
-        "Transport storage and communication",
-        "Financial Intermediation",
-        "Real estate renting and busine activitie",
-        "Non Market Service"
+        "Hotels_and_restaurant",
+        "Transport_storage_and_communication",
+        "Financial_Intermediation",
+        "Real_estate_renting_and_busine_activitie",
+        "Non_Market_Service"
     ],
-    "Transport Modes": [
+    "Transport_Modes": [
         "Inland",
         "Maritime",
         "Air"
     ],
-    "Transport Modes pkm": [
+    "Transport_Modes_pkm": [
         "Inland",
         "Maritime",
         "Air",
         "Househ"
     ],
-    "Transport Modes pkm Commercial": [
+    "Transport_Modes_pkm_Commercial": [
         "Inland",
         "Maritime",
         "Air"
     ],
-    "dac final sources": [
+    "dac_final_sources": [
         "heat",
         "electricity"
     ],
-    "dac tech": [
-        "liquids sorb",
-        "solid sorb"
+    "dac_tech": [
+        "liquids_sorb",
+        "solid_sorb"
     ],
-    "economic years": [
+    "economic_years": [
         "year1995",
         "year1996",
         "year1997",
@@ -220,24 +220,24 @@
         "year2013",
         "year2014"
     ],
-    "final sources": [
+    "final_sources": [
         "electricity",
         "heat",
         "liquids",
         "gases",
         "solids"
     ],
-    "final sources1": [
+    "final_sources1": [
         "electricity",
         "heat",
         "liquids",
         "gases",
         "solids"
     ],
-    "fossil fuels": [
+    "fossil_fuels": [
         "coal",
         "oil",
-        "natural gas"
+        "natural_gas"
     ],
     "fuel": [
         "liq",
@@ -258,25 +258,25 @@
     "materials": [
         "Adhesive",
         "Aluminium",
-        "Aluminium mirrors",
+        "Aluminium_mirrors",
         "Cadmium",
-        "Carbon fiber",
+        "Carbon_fiber",
         "Cement",
         "Chromium",
         "Copper",
         "diesel",
         "Dy",
-        "electronic components",
-        "Evacuation lines",
+        "electronic_components",
+        "Evacuation_lines",
         "Fiberglass",
-        "Foam glass",
+        "Foam_glass",
         "Galium",
         "Glass",
-        "Glass reinforcing plastic",
+        "Glass_reinforcing_plastic",
         "gravel",
         "Indium",
         "Iron",
-        "KNO3 mined",
+        "KNO3_mined",
         "Asphalt",
         "Lime",
         "Limestone",
@@ -284,55 +284,55 @@
         "Lubricant",
         "Magnesium",
         "Manganese",
-        "Heavy equipment",
+        "Heavy_equipment",
         "Concrete",
         "Molybdenum",
-        "NaNO3 mined",
-        "NaNO3 synthetic",
+        "NaNO3_mined",
+        "NaNO3_synthetic",
         "Neodymium",
         "Nickel",
-        "over grid 15perc",
-        "over grid 5perc",
+        "over_grid_15perc",
+        "over_grid_5perc",
         "Paint",
         "Lead",
         "Plastics",
         "Polypropylene",
         "Rock",
-        "Rock wool",
+        "Rock_wool",
         "Sand",
-        "Silicon sand",
-        "Silicon wafer modules",
+        "Silicon_sand",
+        "Silicon_wafer_modules",
         "Silver",
-        "Site preparation",
+        "Site_preparation",
         "Tin",
-        "soda ash",
+        "soda_ash",
         "steel",
-        "synthetic oil",
+        "synthetic_oil",
         "tellurium",
         "titanium",
-        "titanium dioxide",
+        "titanium_dioxide",
         "vanadium",
         "wires",
         "zinc"
     ],
-    "matter final sources": [
+    "matter_final_sources": [
         "liquids",
         "gases",
         "solids"
     ],
-    "primary sources": [
+    "primary_sources": [
         "coal",
         "oil",
-        "natural gas",
+        "natural_gas",
         "others"
     ],
-    "primary sources1": [
+    "primary_sources1": [
         "coal",
         "oil",
-        "natural gas",
+        "natural_gas",
         "others"
     ],
-    "sec map 0": [
+    "sec_map_0": [
         "sec29",
         "sec30",
         "sec31",
@@ -348,7 +348,7 @@
         "sec41",
         "sec42"
     ],
-    "sec map 1": [
+    "sec_map_1": [
         "sec15",
         "sec16",
         "sec17",
@@ -364,7 +364,7 @@
         "sec27",
         "sec28"
     ],
-    "sec map 2": [
+    "sec_map_2": [
         "sec1",
         "sec2",
         "sec3",
@@ -380,7 +380,7 @@
         "sec13",
         "sec14"
     ],
-    "secb map 0": [
+    "secb_map_0": [
         "secb29",
         "secb30",
         "secb31",
@@ -396,7 +396,7 @@
         "secb41",
         "secb42"
     ],
-    "secb map 1": [
+    "secb_map_1": [
         "secb15",
         "secb16",
         "secb17",
@@ -412,7 +412,7 @@
         "secb27",
         "secb28"
     ],
-    "secb map 2": [
+    "secb_map_2": [
         "secb1",
         "secb2",
         "secb3",
@@ -430,21 +430,37 @@
     ],
     "sectors": [
         "Agriculture",
-        "Mining quarrying and energy supply",
-        "Food Beverages and Tobacco",
-        "Textiles and leather etc",
-        "Coke refined petroleum nuclear fuel and chemicals etc",
-        "Electrical and optical equipment and Transport equipment",
-        "Other manufacturing",
+        "Mining_quarrying_and_energy_supply",
+        "Food_Beverages_and_Tobacco",
+        "Textiles_and_leather_etc",
+        "Coke_refined_petroleum_nuclear_fuel_and_chemicals_etc",
+        "Electrical_and_optical_equipment_and_Transport_equipment",
+        "Other_manufacturing",
         "Construction",
         "Distribution",
-        "Hotels and restaurant",
-        "Transport storage and communication",
-        "Financial Intermediation",
-        "Real estate renting and busine activitie",
-        "Non Market Service"
+        "Hotels_and_restaurant",
+        "Transport_storage_and_communication",
+        "Financial_Intermediation",
+        "Real_estate_renting_and_busine_activitie",
+        "Non_Market_Service"
     ],
-    "sectors A matrix": [
+    "sectors1": [
+        "Agriculture",
+        "Mining_quarrying_and_energy_supply",
+        "Food_Beverages_and_Tobacco",
+        "Textiles_and_leather_etc",
+        "Coke_refined_petroleum_nuclear_fuel_and_chemicals_etc",
+        "Electrical_and_optical_equipment_and_Transport_equipment",
+        "Other_manufacturing",
+        "Construction",
+        "Distribution",
+        "Hotels_and_restaurant",
+        "Transport_storage_and_communication",
+        "Financial_Intermediation",
+        "Real_estate_renting_and_busine_activitie",
+        "Non_Market_Service"
+    ],
+    "sectors_A_matrix": [
         "sec1",
         "sec2",
         "sec3",
@@ -488,7 +504,7 @@
         "sec41",
         "sec42"
     ],
-    "sectors A matrix1": [
+    "sectors_A_matrix1": [
         "secb1",
         "secb2",
         "secb3",
@@ -532,48 +548,32 @@
         "secb41",
         "secb42"
     ],
-    "sectors1": [
-        "Agriculture",
-        "Mining quarrying and energy supply",
-        "Food Beverages and Tobacco",
-        "Textiles and leather etc",
-        "Coke refined petroleum nuclear fuel and chemicals etc",
-        "Electrical and optical equipment and Transport equipment",
-        "Other manufacturing",
-        "Construction",
-        "Distribution",
-        "Hotels and restaurant",
-        "Transport storage and communication",
-        "Financial Intermediation",
-        "Real estate renting and busine activitie",
-        "Non Market Service"
-    ],
     "vehicleT": [
-        "HV liq",
-        "HV hib",
-        "HV gas",
-        "LV liq",
-        "LV elec",
-        "LV hib",
-        "LV gas",
-        "bus liq",
-        "bus elec",
-        "bus hib",
-        "bus gas",
-        "train liq",
-        "train elec"
+        "HV_liq",
+        "HV_hib",
+        "HV_gas",
+        "LV_liq",
+        "LV_elec",
+        "LV_hib",
+        "LV_gas",
+        "bus_liq",
+        "bus_elec",
+        "bus_hib",
+        "bus_gas",
+        "train_liq",
+        "train_elec"
     ],
-    "vehicles bat": [
-        "electric vehicles",
-        "hybrid vehicles"
+    "vehicles_bat": [
+        "electric_vehicles",
+        "hybrid_vehicles"
     ],
     "water": [
-        "blue water",
-        "green water",
-        "gray water"
+        "blue_water",
+        "green_water",
+        "gray_water"
     ],
     "water0": [
-        "clean water",
-        "distilled water"
+        "clean_water",
+        "distilled_water"
     ]
 }

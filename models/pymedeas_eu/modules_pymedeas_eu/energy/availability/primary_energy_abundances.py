@@ -1,12 +1,12 @@
 """
 Module energy.availability.primary_energy_abundances
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="Abundance primary sources",
+    name="Abundance_primary_sources",
     units="Dmnl",
-    subscripts=["primary sources"],
+    subscripts=["primary_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -21,20 +21,20 @@ def abundance_primary_sources():
     """
     value = xr.DataArray(
         np.nan,
-        {"primary sources": _subscript_dict["primary sources"]},
-        ["primary sources"],
+        {"primary_sources": _subscript_dict["primary_sources"]},
+        ["primary_sources"],
     )
     value.loc[["coal"]] = abundance_coal_world()
     value.loc[["oil"]] = abundance_total_oil_world()
-    value.loc[["natural gas"]] = abundance_total_nat_gas_world()
+    value.loc[["natural_gas"]] = abundance_total_nat_gas_world()
     value.loc[["others"]] = 1
     return value
 
 
 @component.add(
-    name="increase in perception PS scarcity",
+    name="increase_in_perception_PS_scarcity",
     units="Dmnl/year",
-    subscripts=["primary sources"],
+    subscripts=["primary_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -57,9 +57,9 @@ def increase_in_perception_ps_scarcity():
 
 
 @component.add(
-    name="perception in primary sources scarcity",
+    name="perception_in_primary_sources_scarcity",
     units="Dmnl",
-    subscripts=["primary sources"],
+    subscripts=["primary_sources"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_perception_in_primary_sources_scarcity": 1},
@@ -84,16 +84,16 @@ _integ_perception_in_primary_sources_scarcity = Integ(
     lambda: increase_in_perception_ps_scarcity()
     - reduction_in_perception_ps_scarcity(),
     lambda: xr.DataArray(
-        0, {"primary sources": _subscript_dict["primary sources"]}, ["primary sources"]
+        0, {"primary_sources": _subscript_dict["primary_sources"]}, ["primary_sources"]
     ),
     "_integ_perception_in_primary_sources_scarcity",
 )
 
 
 @component.add(
-    name='"perception of inter-fuel primary sources scarcity"',
+    name='"perception_of_inter-fuel_primary_sources_scarcity"',
     units="Dmnl",
-    subscripts=["primary sources1", "primary sources"],
+    subscripts=["primary_sources1", "primary_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -108,18 +108,18 @@ def perception_of_interfuel_primary_sources_scarcity():
     value = xr.DataArray(
         np.nan,
         {
-            "primary sources1": _subscript_dict["primary sources1"],
-            "primary sources": _subscript_dict["primary sources"],
+            "primary_sources1": _subscript_dict["primary_sources1"],
+            "primary_sources": _subscript_dict["primary_sources"],
         },
-        ["primary sources1", "primary sources"],
+        ["primary_sources1", "primary_sources"],
     )
     value.loc[["coal"], :] = (
         if_then_else(
             sensitivity_to_scarcity() == 0,
             lambda: xr.DataArray(
                 0,
-                {"primary sources": _subscript_dict["primary sources"]},
-                ["primary sources"],
+                {"primary_sources": _subscript_dict["primary_sources"]},
+                ["primary_sources"],
             ),
             lambda: zidz(
                 perception_in_primary_sources_scarcity()
@@ -127,7 +127,7 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["coal"]}, 0)
+        .expand_dims({"primary_sources1": ["coal"]}, 0)
         .values
     )
     value.loc[["oil"], :] = (
@@ -135,8 +135,8 @@ def perception_of_interfuel_primary_sources_scarcity():
             sensitivity_to_scarcity() == 0,
             lambda: xr.DataArray(
                 0,
-                {"primary sources": _subscript_dict["primary sources"]},
-                ["primary sources"],
+                {"primary_sources": _subscript_dict["primary_sources"]},
+                ["primary_sources"],
             ),
             lambda: zidz(
                 perception_in_primary_sources_scarcity()
@@ -144,24 +144,24 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["oil"]}, 0)
+        .expand_dims({"primary_sources1": ["oil"]}, 0)
         .values
     )
-    value.loc[["natural gas"], :] = (
+    value.loc[["natural_gas"], :] = (
         if_then_else(
             sensitivity_to_scarcity() == 0,
             lambda: xr.DataArray(
                 0,
-                {"primary sources": _subscript_dict["primary sources"]},
-                ["primary sources"],
+                {"primary_sources": _subscript_dict["primary_sources"]},
+                ["primary_sources"],
             ),
             lambda: zidz(
                 perception_in_primary_sources_scarcity()
-                - float(perception_in_primary_sources_scarcity().loc["natural gas"]),
+                - float(perception_in_primary_sources_scarcity().loc["natural_gas"]),
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["natural gas"]}, 0)
+        .expand_dims({"primary_sources1": ["natural_gas"]}, 0)
         .values
     )
     value.loc[["others"], :] = (
@@ -169,8 +169,8 @@ def perception_of_interfuel_primary_sources_scarcity():
             sensitivity_to_scarcity() == 0,
             lambda: xr.DataArray(
                 0,
-                {"primary sources": _subscript_dict["primary sources"]},
-                ["primary sources"],
+                {"primary_sources": _subscript_dict["primary_sources"]},
+                ["primary_sources"],
             ),
             lambda: zidz(
                 perception_in_primary_sources_scarcity()
@@ -178,16 +178,16 @@ def perception_of_interfuel_primary_sources_scarcity():
                 1,
             ),
         )
-        .expand_dims({"primary sources1": ["others"]}, 0)
+        .expand_dims({"primary_sources1": ["others"]}, 0)
         .values
     )
     return value
 
 
 @component.add(
-    name="reduction in perception PS scarcity",
+    name="reduction_in_perception_PS_scarcity",
     units="Dmnl/year",
-    subscripts=["primary sources"],
+    subscripts=["primary_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -203,9 +203,9 @@ def reduction_in_perception_ps_scarcity():
 
 
 @component.add(
-    name="scarcity primary sources",
+    name="scarcity_primary_sources",
     units="Dmnl",
-    subscripts=["primary sources"],
+    subscripts=["primary_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"abundance_primary_sources": 1},

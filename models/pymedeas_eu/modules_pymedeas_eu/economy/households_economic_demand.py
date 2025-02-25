@@ -1,10 +1,10 @@
 """
 Module economy.households_economic_demand
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="beta 0 HD",
+    name="beta_0_HD",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -30,7 +30,7 @@ _ext_constant_beta_0_hd = ExtConstant(
 
 
 @component.add(
-    name="beta 1 HD",
+    name="beta_1_HD",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -49,7 +49,7 @@ _ext_constant_beta_1_hd = ExtConstant(
 
 
 @component.add(
-    name="historic HD",
+    name="historic_HD",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -79,7 +79,7 @@ _ext_lookup_historic_hd = ExtLookup(
 
 
 @component.add(
-    name="Household demand",
+    name="Household_demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -110,7 +110,7 @@ _integ_household_demand = Integ(
 
 
 @component.add(
-    name="Household demand not covered",
+    name="Household_demand_not_covered",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -139,7 +139,7 @@ def household_demand_not_covered():
 
 
 @component.add(
-    name="Household demand total",
+    name="Household_demand_total",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -153,7 +153,7 @@ def household_demand_total():
 
 
 @component.add(
-    name="initial household demand",
+    name="initial_household_demand",
     units="M$",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -168,7 +168,7 @@ def initial_household_demand():
 
 
 @component.add(
-    name="unit correction economic",
+    name="unit_correction_economic",
     units="1/Mdollars",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -178,7 +178,7 @@ def unit_correction_economic():
 
 
 @component.add(
-    name="variation historic demand",
+    name="variation_historic_demand",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -193,7 +193,7 @@ def variation_historic_demand():
 
 
 @component.add(
-    name="variation household demand",
+    name="variation_household_demand",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -201,11 +201,11 @@ def variation_historic_demand():
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "beta_0_hd": 1,
         "lc": 2,
-        "nvs_1_year": 1,
+        "beta_0_hd": 1,
         "beta_1_hd": 2,
         "variation_lc": 1,
+        "nvs_1_year": 1,
         "unit_correction_economic": 2,
     },
 )

@@ -1,26 +1,26 @@
 """
 Module transport.tkm
-Translated using PySD version 3.14.0
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="Desired tkm by mode and fuel",
+    name="Desired_tkm_by_mode_and_fuel",
     units="ton*km/year",
-    subscripts=[np.str_("fuels"), np.str_("Transport Modes")],
+    subscripts=["fuels", "Transport_Modes"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"tkm": 1, "tkm_fuel_share": 1},
 )
 def desired_tkm_by_mode_and_fuel():
     return tkm() * tkm_fuel_share().rename(
-        {"Transport Modes pkm Commercial": "Transport Modes"}
+        {"Transport_Modes_pkm_Commercial": "Transport_Modes"}
     )
 
 
 @component.add(
-    name="eficiency liquids tkm",
+    name="eficiency_liquids_tkm",
     units="EJ/(ton*km)",
-    subscripts=[np.str_("Transport Modes")],
+    subscripts=["Transport_Modes"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_eficiency_liquids_tkm"},
@@ -33,18 +33,18 @@ def eficiency_liquids_tkm():
 
 
 _ext_constant_eficiency_liquids_tkm = ExtConstant(
-    "../transport.xlsx",
+    r"../transport.xlsx",
     "Global",
     "EJ_tkm_liquids",
-    {"Transport Modes": _subscript_dict["Transport Modes"]},
+    {"Transport_Modes": _subscript_dict["Transport_Modes"]},
     _root,
-    {"Transport Modes": _subscript_dict["Transport Modes"]},
+    {"Transport_Modes": _subscript_dict["Transport_Modes"]},
     "_ext_constant_eficiency_liquids_tkm",
 )
 
 
 @component.add(
-    name="end historical data",
+    name="end_historical_data",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -55,7 +55,7 @@ def end_historical_data():
 
 
 _ext_constant_end_historical_data = ExtConstant(
-    "../transport.xlsx",
+    r"../transport.xlsx",
     "World",
     "end_historical_data",
     {},
@@ -66,45 +66,43 @@ _ext_constant_end_historical_data = ExtConstant(
 
 
 @component.add(
-    name="energy by fuel tkm",
+    name="energy_by_fuel_tkm",
     units="EJ/year",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_tkm": 4},
 )
 def energy_by_fuel_tkm():
     value = xr.DataArray(
-        np.nan,
-        {"final sources": _subscript_dict["final sources"]},
-        [np.str_("final sources")],
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     value.loc[["liquids"]] = sum(
         energy_tkm()
         .loc["liq", :]
         .reset_coords(drop=True)
-        .rename({np.str_("Transport Modes"): "Transport Modes!"}),
-        dim=["Transport Modes!"],
+        .rename({"Transport_Modes": "Transport_Modes!"}),
+        dim=["Transport_Modes!"],
     ) + sum(
         energy_tkm()
         .loc["hybrid", :]
         .reset_coords(drop=True)
-        .rename({np.str_("Transport Modes"): "Transport Modes!"}),
-        dim=["Transport Modes!"],
+        .rename({"Transport_Modes": "Transport_Modes!"}),
+        dim=["Transport_Modes!"],
     )
     value.loc[["gases"]] = sum(
         energy_tkm()
         .loc["gas", :]
         .reset_coords(drop=True)
-        .rename({np.str_("Transport Modes"): "Transport Modes!"}),
-        dim=["Transport Modes!"],
+        .rename({"Transport_Modes": "Transport_Modes!"}),
+        dim=["Transport_Modes!"],
     )
     value.loc[["electricity"]] = sum(
         energy_tkm()
         .loc["elect", :]
         .reset_coords(drop=True)
-        .rename({np.str_("Transport Modes"): "Transport Modes!"}),
-        dim=["Transport Modes!"],
+        .rename({"Transport_Modes": "Transport_Modes!"}),
+        dim=["Transport_Modes!"],
     )
     value.loc[["heat"]] = 0
     value.loc[["solids"]] = 0
@@ -112,9 +110,9 @@ def energy_by_fuel_tkm():
 
 
 @component.add(
-    name="Energy intensity commercial transport",
+    name="Energy_intensity_commercial_transport",
     units="EJ/T$",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -134,9 +132,9 @@ def energy_intensity_commercial_transport():
 
 
 @component.add(
-    name="Energy intensity commercial transport delayed",
+    name="Energy_intensity_commercial_transport_delayed",
     units="EJ/T$",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final_sources"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_energy_intensity_commercial_transport_delayed": 1},
@@ -161,9 +159,9 @@ _delayfixed_energy_intensity_commercial_transport_delayed = DelayFixed(
 
 
 @component.add(
-    name="energy tkm",
+    name="energy_tkm",
     units="EJ/year",
-    subscripts=[np.str_("fuels"), np.str_("Transport Modes")],
+    subscripts=["fuels", "Transport_Modes"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -182,9 +180,9 @@ def energy_tkm():
 
 
 @component.add(
-    name="fuel share air",
+    name="fuel_share_air",
     units="Dmnl",
-    subscripts=[np.str_("fuels")],
+    subscripts=["fuels"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -197,7 +195,7 @@ def fuel_share_air(x, final_subs=None):
 
 
 _ext_lookup_fuel_share_air = ExtLookup(
-    "../../scenarios/scen_w.xlsx",
+    r"../../scenarios/scen_w.xlsx",
     "NZP",
     "year_transport_fuel_share_tkm",
     "fuel_share_air_tkm",
@@ -209,9 +207,9 @@ _ext_lookup_fuel_share_air = ExtLookup(
 
 
 @component.add(
-    name="fuel share inland",
+    name="fuel_share_inland",
     units="Dmnl",
-    subscripts=[np.str_("fuels")],
+    subscripts=["fuels"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -224,7 +222,7 @@ def fuel_share_inland(x, final_subs=None):
 
 
 _ext_lookup_fuel_share_inland = ExtLookup(
-    "../../scenarios/scen_w.xlsx",
+    r"../../scenarios/scen_w.xlsx",
     "NZP",
     "year_transport_fuel_share_tkm",
     "fuel_share_inland_tkm",
@@ -236,9 +234,9 @@ _ext_lookup_fuel_share_inland = ExtLookup(
 
 
 @component.add(
-    name="fuel share maritime",
+    name="fuel_share_maritime",
     units="Dmnl",
-    subscripts=[np.str_("fuels")],
+    subscripts=["fuels"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -251,7 +249,7 @@ def fuel_share_maritime(x, final_subs=None):
 
 
 _ext_lookup_fuel_share_maritime = ExtLookup(
-    "../../scenarios/scen_w.xlsx",
+    r"../../scenarios/scen_w.xlsx",
     "NZP",
     "year_transport_fuel_share_tkm",
     "fuel_share_maritime_tkm",
@@ -263,7 +261,7 @@ _ext_lookup_fuel_share_maritime = ExtLookup(
 
 
 @component.add(
-    name="GDP delayed TIME STEP",
+    name="GDP_delayed_TIME_STEP",
     units="T$",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -289,7 +287,7 @@ _delayfixed_gdp_delayed_time_step = DelayFixed(
 
 
 @component.add(
-    name="GDP growth",
+    name="GDP_growth",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -303,7 +301,7 @@ def gdp_growth():
 
 
 @component.add(
-    name="GDP trans",
+    name="GDP_trans",
     units="T$",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -325,7 +323,7 @@ _integ_gdp_trans = Integ(
 
 
 @component.add(
-    name="GDP variation",
+    name="GDP_variation",
     units="T$/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -336,7 +334,7 @@ def gdp_variation():
 
 
 @component.add(
-    name="hist tkm",
+    name="hist_tkm",
     units="ton*km/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -350,7 +348,7 @@ def hist_tkm(x, final_subs=None):
 
 
 _ext_lookup_hist_tkm = ExtLookup(
-    "../transport.xlsx",
+    r"../transport.xlsx",
     "World",
     "time_index_2015",
     "historic_tkm_GDP",
@@ -362,9 +360,9 @@ _ext_lookup_hist_tkm = ExtLookup(
 
 
 @component.add(
-    name="hist transport share tkm",
+    name="hist_transport_share_tkm",
     units="Dmnl",
-    subscripts=[np.str_("Transport Modes")],
+    subscripts=["Transport_Modes"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -377,21 +375,21 @@ def hist_transport_share_tkm(x, final_subs=None):
 
 
 _ext_lookup_hist_transport_share_tkm = ExtLookup(
-    "../transport.xlsx",
+    r"../transport.xlsx",
     "World",
     "time_index_2015",
     "share_transport_mode_hist_tkm",
-    {"Transport Modes": _subscript_dict["Transport Modes"]},
+    {"Transport_Modes": _subscript_dict["Transport_Modes"]},
     _root,
-    {"Transport Modes": _subscript_dict["Transport Modes"]},
+    {"Transport_Modes": _subscript_dict["Transport_Modes"]},
     "_ext_lookup_hist_transport_share_tkm",
 )
 
 
 @component.add(
-    name="initial fuel share air tkm",
+    name="initial_fuel_share_air_tkm",
     units="Dmnl",
-    subscripts=[np.str_("fuels")],
+    subscripts=["fuels"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_initial_fuel_share_air_tkm"},
@@ -401,7 +399,7 @@ def initial_fuel_share_air_tkm():
 
 
 _ext_constant_initial_fuel_share_air_tkm = ExtConstant(
-    "../transport.xlsx",
+    r"../transport.xlsx",
     "World",
     "initial_fuel_share_air_tkm*",
     {"fuels": _subscript_dict["fuels"]},
@@ -412,9 +410,9 @@ _ext_constant_initial_fuel_share_air_tkm = ExtConstant(
 
 
 @component.add(
-    name="initial fuel share inland tkm",
+    name="initial_fuel_share_inland_tkm",
     units="Dmnl",
-    subscripts=[np.str_("fuels")],
+    subscripts=["fuels"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_initial_fuel_share_inland_tkm"},
@@ -424,7 +422,7 @@ def initial_fuel_share_inland_tkm():
 
 
 _ext_constant_initial_fuel_share_inland_tkm = ExtConstant(
-    "../transport.xlsx",
+    r"../transport.xlsx",
     "World",
     "initial_fuel_share_inland_tkm*",
     {"fuels": _subscript_dict["fuels"]},
@@ -435,9 +433,9 @@ _ext_constant_initial_fuel_share_inland_tkm = ExtConstant(
 
 
 @component.add(
-    name="initial fuel share maritime tkm",
+    name="initial_fuel_share_maritime_tkm",
     units="Dmnl",
-    subscripts=[np.str_("fuels")],
+    subscripts=["fuels"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_initial_fuel_share_maritime_tkm"},
@@ -447,7 +445,7 @@ def initial_fuel_share_maritime_tkm():
 
 
 _ext_constant_initial_fuel_share_maritime_tkm = ExtConstant(
-    "../transport.xlsx",
+    r"../transport.xlsx",
     "World",
     "initial_fuel_share_maritime_tkm*",
     {"fuels": _subscript_dict["fuels"]},
@@ -458,7 +456,7 @@ _ext_constant_initial_fuel_share_maritime_tkm = ExtConstant(
 
 
 @component.add(
-    name="Initial GDP transport",
+    name="Initial_GDP_transport",
     units="T$",
     comp_type="Constant",
     comp_subtype="External",
@@ -469,7 +467,7 @@ def initial_gdp_transport():
 
 
 _ext_constant_initial_gdp_transport = ExtConstant(
-    "../transport.xlsx",
+    r"../transport.xlsx",
     "World",
     "initial_economy_transport_tkm",
     {},
@@ -480,9 +478,9 @@ _ext_constant_initial_gdp_transport = ExtConstant(
 
 
 @component.add(
-    name="mode share tkm",
+    name="mode_share_tkm",
     units="Dmnl",
-    subscripts=[np.str_("Transport Modes")],
+    subscripts=["Transport_Modes"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -495,21 +493,21 @@ def mode_share_tkm(x, final_subs=None):
 
 
 _ext_lookup_mode_share_tkm = ExtLookup(
-    "../../scenarios/scen_w.xlsx",
+    r"../../scenarios/scen_w.xlsx",
     "NZP",
     "Year_transport_share",
     "tkm_share",
-    {"Transport Modes": _subscript_dict["Transport Modes"]},
+    {"Transport_Modes": _subscript_dict["Transport_Modes"]},
     _root,
-    {"Transport Modes": _subscript_dict["Transport Modes"]},
+    {"Transport_Modes": _subscript_dict["Transport_Modes"]},
     "_ext_lookup_mode_share_tkm",
 )
 
 
 @component.add(
-    name="percentage variation EI commercial transport",
+    name="percentage_variation_EI_commercial_transport",
     units="Dmnl",
-    subscripts=[np.str_("final sources")],
+    subscripts=["final_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -526,9 +524,9 @@ def percentage_variation_ei_commercial_transport():
 
 
 @component.add(
-    name="Real tkm by mode and fuel delayed",
+    name="Real_tkm_by_mode_and_fuel_delayed",
     units="ton*km/year",
-    subscripts=[np.str_("fuels"), np.str_("Transport Modes")],
+    subscripts=["fuels", "Transport_Modes"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_real_tkm_by_mode_and_fuel_delayed": 1},
@@ -553,9 +551,9 @@ _delayfixed_real_tkm_by_mode_and_fuel_delayed = DelayFixed(
 
 
 @component.add(
-    name="saving ratios vehicles tkm",
+    name="saving_ratios_vehicles_tkm",
     units="Dmnl",
-    subscripts=[np.str_("fuels"), np.str_("Transport Modes")],
+    subscripts=["fuels", "Transport_Modes"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_saving_ratios_vehicles_tkm"},
@@ -565,17 +563,17 @@ def saving_ratios_vehicles_tkm():
 
 
 _ext_constant_saving_ratios_vehicles_tkm = ExtConstant(
-    "../transport.xlsx",
+    r"../transport.xlsx",
     "Global",
     "saving_ratios_vehicles_tkm*",
     {
         "fuels": _subscript_dict["fuels"],
-        "Transport Modes": _subscript_dict["Transport Modes"],
+        "Transport_Modes": _subscript_dict["Transport_Modes"],
     },
     _root,
     {
         "fuels": _subscript_dict["fuels"],
-        "Transport Modes": _subscript_dict["Transport Modes"],
+        "Transport_Modes": _subscript_dict["Transport_Modes"],
     },
     "_ext_constant_saving_ratios_vehicles_tkm",
 )
@@ -588,9 +586,9 @@ _ext_constant_saving_ratios_vehicles_tkm = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 2,
+        "tkm_initial": 1,
         "tkmgdp_slope": 1,
         "gdp": 1,
-        "tkm_initial": 1,
         "hist_tkm": 1,
     },
 )
@@ -606,9 +604,9 @@ def tkm():
 
 
 @component.add(
-    name="tkm by mode and fuel",
+    name="tkm_by_mode_and_fuel",
     units="ton*km/year",
-    subscripts=[np.str_("fuels"), np.str_("Transport Modes")],
+    subscripts=["fuels", "Transport_Modes"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -621,9 +619,9 @@ def tkm_by_mode_and_fuel():
 
 
 @component.add(
-    name="tkm fuel share",
+    name="tkm_fuel_share",
     units="Dmnl",
-    subscripts=[np.str_("fuels"), "Transport Modes pkm Commercial"],
+    subscripts=["fuels", "Transport_Modes_pkm_Commercial"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -641,34 +639,34 @@ def tkm_fuel_share():
         np.nan,
         {
             "fuels": _subscript_dict["fuels"],
-            "Transport Modes pkm Commercial": _subscript_dict[
-                "Transport Modes pkm Commercial"
+            "Transport_Modes_pkm_Commercial": _subscript_dict[
+                "Transport_Modes_pkm_Commercial"
             ],
         },
-        [np.str_("fuels"), "Transport Modes pkm Commercial"],
+        ["fuels", "Transport_Modes_pkm_Commercial"],
     )
     value.loc[:, ["Inland"]] = (
         (tkm_fuel_share_inland() * float(tkm_mode_share().loc["Inland"]))
-        .expand_dims({"Transport Modes pkm": ["Inland"]}, 1)
+        .expand_dims({"Transport_Modes_pkm": ["Inland"]}, 1)
         .values
     )
     value.loc[:, ["Maritime"]] = (
         (tkm_fuel_share_maritime() * float(tkm_mode_share().loc["Maritime"]))
-        .expand_dims({"Transport Modes pkm": ["Maritime"]}, 1)
+        .expand_dims({"Transport_Modes_pkm": ["Maritime"]}, 1)
         .values
     )
     value.loc[:, ["Air"]] = (
         (tkm_fuel_share_air() * float(tkm_mode_share().loc["Air"]))
-        .expand_dims({"Transport Modes pkm": ["Air"]}, 1)
+        .expand_dims({"Transport_Modes_pkm": ["Air"]}, 1)
         .values
     )
     return value
 
 
 @component.add(
-    name="tkm fuel share air",
+    name="tkm_fuel_share_air",
     units="Dmnl",
-    subscripts=[np.str_("fuels")],
+    subscripts=["fuels"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -706,16 +704,16 @@ def tkm_fuel_share_air():
 
 
 @component.add(
-    name="tkm fuel share inland",
+    name="tkm_fuel_share_inland",
     units="Dmnl",
-    subscripts=[np.str_("fuels")],
+    subscripts=["fuels"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 5,
         "end_historical_data": 4,
-        "fuel_share_1995": 2,
         "initial_fuel_share_inland_tkm": 3,
+        "fuel_share_1995": 2,
         "start_year_policies_transport": 3,
         "fuel_share_inland": 2,
     },
@@ -746,18 +744,18 @@ def tkm_fuel_share_inland():
 
 
 @component.add(
-    name="tkm fuel share maritime",
+    name="tkm_fuel_share_maritime",
     units="Dmnl",
-    subscripts=[np.str_("fuels")],
+    subscripts=["fuels"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 5,
         "end_historical_data": 4,
-        "initial_fuel_share_maritime_tkm": 3,
         "fuel_share_1995": 2,
-        "fuel_share_maritime": 2,
+        "initial_fuel_share_maritime_tkm": 3,
         "start_year_policies_transport": 3,
+        "fuel_share_maritime": 2,
     },
 )
 def tkm_fuel_share_maritime():
@@ -786,7 +784,7 @@ def tkm_fuel_share_maritime():
 
 
 @component.add(
-    name="tkm initial",
+    name="tkm_initial",
     units="ton*km/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -797,7 +795,7 @@ def tkm_initial():
 
 
 _ext_constant_tkm_initial = ExtConstant(
-    "../transport.xlsx",
+    r"../transport.xlsx",
     "World",
     "tkm_gdp_2015",
     {},
@@ -808,17 +806,17 @@ _ext_constant_tkm_initial = ExtConstant(
 
 
 @component.add(
-    name="tkm mode share",
+    name="tkm_mode_share",
     units="Dmnl",
-    subscripts=[np.str_("Transport Modes")],
+    subscripts=["Transport_Modes"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 5,
         "end_historical_data": 5,
         "hist_transport_share_tkm": 3,
-        "mode_share_tkm": 2,
         "start_year_policies_transport": 3,
+        "mode_share_tkm": 2,
     },
 )
 def tkm_mode_share():
@@ -842,7 +840,7 @@ def tkm_mode_share():
 
 
 @component.add(
-    name='"tkm/gdp slope"',
+    name='"tkm/gdp_slope"',
     units="ton*km/(year*T$)",
     comp_type="Constant",
     comp_subtype="External",
@@ -853,7 +851,7 @@ def tkmgdp_slope():
 
 
 _ext_constant_tkmgdp_slope = ExtConstant(
-    "../transport.xlsx",
+    r"../transport.xlsx",
     "World",
     "tkm_gdp_slope",
     {},

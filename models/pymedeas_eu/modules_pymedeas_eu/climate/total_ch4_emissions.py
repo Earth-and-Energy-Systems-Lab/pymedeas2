@@ -1,12 +1,12 @@
 """
 Module climate.total_ch4_emissions
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="CH4 emissions BioE and Waste",
+    name="CH4_emissions_BioE_and_Waste",
     units="MtCH4/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -28,16 +28,16 @@ def ch4_emissions_bioe_and_waste():
 
 
 @component.add(
-    name="CH4 emissions biofuels",
+    name="CH4_emissions_biofuels",
     units="MtCH4/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"mtch4_per_ej_biofuels": 1, "oil_liquids_saved_by_biofuels_ej": 1},
 )
 def ch4_emissions_biofuels():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["liquids"]] = False
@@ -49,9 +49,9 @@ def ch4_emissions_biofuels():
 
 
 @component.add(
-    name="CH4 emissions biogas",
+    name="CH4_emissions_biogas",
     units="MtCH4/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -63,7 +63,7 @@ def ch4_emissions_biofuels():
 )
 def ch4_emissions_biogas():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     value.loc[["electricity"]] = mtch4_per_ej_biogas() * pes_tot_biogas_for_elec()
     value.loc[["heat"]] = mtch4_per_ej_biogas() * pes_tot_biogas_for_heatcom()
@@ -74,9 +74,9 @@ def ch4_emissions_biogas():
 
 
 @component.add(
-    name="CH4 emissions biomass",
+    name="CH4_emissions_biomass",
     units="MtCH4/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -86,7 +86,7 @@ def ch4_emissions_biogas():
 )
 def ch4_emissions_biomass():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["solids"]] = False
@@ -98,9 +98,9 @@ def ch4_emissions_biomass():
 
 
 @component.add(
-    name="CH4 emissions coal",
+    name="CH4_emissions_coal",
     units="MtCH4/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -108,14 +108,14 @@ def ch4_emissions_biomass():
         "pec_ff": 4,
         "share_ff_for_elec_emissions_relevant": 1,
         "share_ff_for_heat_emissions_relevant": 1,
-        "mtch4_per_ej_ctl": 1,
         "share_coal_for_ctl_emissions_relevant": 1,
+        "mtch4_per_ej_ctl": 1,
         "share_ff_for_fc_emission_relevant": 1,
     },
 )
 def ch4_emissions_coal():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     value.loc[["electricity"]] = (
         mtch4_per_ej_coal()
@@ -142,9 +142,9 @@ def ch4_emissions_coal():
 
 
 @component.add(
-    name="CH4 emissions fossil fuels",
+    name="CH4_emissions_fossil_fuels",
     units="MtCH4/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -164,9 +164,9 @@ def ch4_emissions_fossil_fuels():
 
 
 @component.add(
-    name="CH4 emissions gas",
+    name="CH4_emissions_gas",
     units="MtCH4/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -181,7 +181,7 @@ def ch4_emissions_fossil_fuels():
 )
 def ch4_emissions_gas():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     value.loc[["electricity"]] = (
         mtch4_per_ej_gas()
@@ -208,9 +208,9 @@ def ch4_emissions_gas():
 
 
 @component.add(
-    name="CH4 emissions oil",
+    name="CH4_emissions_oil",
     units="MtCH4/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -226,7 +226,7 @@ def ch4_emissions_oil():
     CH4 emissions oil.
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     value.loc[["electricity"]] = (
         mtch4_per_ej_oil()
@@ -249,16 +249,16 @@ def ch4_emissions_oil():
 
 
 @component.add(
-    name="CH4 emissions peat",
+    name="CH4_emissions_peat",
     units="MtCH4/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"pes_peat": 1, "mtch4_per_ej_peat": 1},
 )
 def ch4_emissions_peat():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     except_subs = xr.ones_like(value, dtype=bool)
     except_subs.loc[["solids"]] = False
@@ -268,9 +268,9 @@ def ch4_emissions_peat():
 
 
 @component.add(
-    name="CH4 emissions per fuel",
+    name="CH4_emissions_per_fuel",
     units="MtCH4/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ch4_emissions_fossil_fuels": 1, "ch4_emissions_bioe_and_waste": 1},
@@ -280,9 +280,9 @@ def ch4_emissions_per_fuel():
 
 
 @component.add(
-    name="CH4 emissions solid bioE",
+    name="CH4_emissions_solid_bioE",
     units="MtCH4/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -295,14 +295,14 @@ def ch4_emissions_per_fuel():
 )
 def ch4_emissions_solid_bioe():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     value.loc[["electricity"]] = mtch4_per_ej_solid_bioe() * float(
-        pe_real_generation_res_elec().loc["solid bioE elec"]
+        pe_real_generation_res_elec().loc["solid_bioE_elec"]
     )
     value.loc[["heat"]] = mtch4_per_ej_solid_bioe() * (
-        float(pes_res_for_heatcom_by_techn().loc["solid bioE heat"])
-        + float(pes_res_for_heatnc_by_techn().loc["solid bioE heat"])
+        float(pes_res_for_heatcom_by_techn().loc["solid_bioE_heat"])
+        + float(pes_res_for_heatnc_by_techn().loc["solid_bioE_heat"])
     )
     value.loc[["liquids"]] = 0
     value.loc[["gases"]] = 0
@@ -311,9 +311,9 @@ def ch4_emissions_solid_bioe():
 
 
 @component.add(
-    name="CH4 emissions waste",
+    name="CH4_emissions_waste",
     units="MtCH4/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -325,7 +325,7 @@ def ch4_emissions_solid_bioe():
 )
 def ch4_emissions_waste():
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     value.loc[["electricity"]] = mtch4_per_ej_waste() * pes_tot_waste_for_elec()
     value.loc[["heat"]] = mtch4_per_ej_waste() * pes_tot_waste_for_heatcom()
@@ -336,7 +336,7 @@ def ch4_emissions_waste():
 
 
 @component.add(
-    name="MtCH4 per EJ biofuels",
+    name="MtCH4_per_EJ_biofuels",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -358,7 +358,7 @@ _ext_constant_mtch4_per_ej_biofuels = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ biogas",
+    name="MtCH4_per_EJ_biogas",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -380,7 +380,7 @@ _ext_constant_mtch4_per_ej_biogas = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ coal",
+    name="MtCH4_per_EJ_coal",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -402,7 +402,7 @@ _ext_constant_mtch4_per_ej_coal = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ conv gas",
+    name="MtCH4_per_EJ_conv_gas",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -424,7 +424,7 @@ _ext_constant_mtch4_per_ej_conv_gas = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ conv oil",
+    name="MtCH4_per_EJ_conv_oil",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -446,7 +446,7 @@ _ext_constant_mtch4_per_ej_conv_oil = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ CTL",
+    name="MtCH4_per_EJ_CTL",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -468,7 +468,7 @@ _ext_constant_mtch4_per_ej_ctl = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ gas",
+    name="MtCH4_per_EJ_gas",
     units="MtCH4/EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -486,7 +486,7 @@ def mtch4_per_ej_gas():
 
 
 @component.add(
-    name="MtCH4 per EJ GTL",
+    name="MtCH4_per_EJ_GTL",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -508,16 +508,16 @@ _ext_constant_mtch4_per_ej_gtl = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ oil",
+    name="MtCH4_per_EJ_oil",
     units="MtCH4/EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_conv_vs_total_oil_extraction": 2,
         "mtch4_per_ej_conv_oil": 1,
-        "mtch4_per_ej_shale_oil": 1,
         "adapt_emissions_shale_oil": 1,
         "mtch4_per_ej_unconv_oil": 2,
+        "mtch4_per_ej_shale_oil": 1,
     },
 )
 def mtch4_per_ej_oil():
@@ -531,7 +531,7 @@ def mtch4_per_ej_oil():
 
 
 @component.add(
-    name="MtCH4 per EJ peat",
+    name="MtCH4_per_EJ_peat",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -553,7 +553,7 @@ _ext_constant_mtch4_per_ej_peat = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ shale oil",
+    name="MtCH4_per_EJ_shale_oil",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -575,7 +575,7 @@ _ext_constant_mtch4_per_ej_shale_oil = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ solid BioE",
+    name="MtCH4_per_EJ_solid_BioE",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -597,7 +597,7 @@ _ext_constant_mtch4_per_ej_solid_bioe = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ traditional biomass",
+    name="MtCH4_per_EJ_traditional_biomass",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -619,7 +619,7 @@ _ext_constant_mtch4_per_ej_traditional_biomass = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ unconv gas",
+    name="MtCH4_per_EJ_unconv_gas",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -641,7 +641,7 @@ _ext_constant_mtch4_per_ej_unconv_gas = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ unconv oil",
+    name="MtCH4_per_EJ_unconv_oil",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -663,7 +663,7 @@ _ext_constant_mtch4_per_ej_unconv_oil = ExtConstant(
 
 
 @component.add(
-    name="MtCH4 per EJ waste",
+    name="MtCH4_per_EJ_waste",
     units="MtCH4/EJ",
     comp_type="Constant",
     comp_subtype="External",

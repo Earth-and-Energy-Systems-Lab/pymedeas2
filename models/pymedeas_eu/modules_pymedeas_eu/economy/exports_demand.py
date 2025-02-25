@@ -1,10 +1,10 @@
 """
 Module economy.exports_demand
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="beta 0 EXP",
+    name="beta_0_EXP",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -30,7 +30,7 @@ _ext_constant_beta_0_exp = ExtConstant(
 
 
 @component.add(
-    name="beta 0 GFCF",
+    name="beta_0_GFCF",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -56,7 +56,7 @@ _ext_constant_beta_0_gfcf = ExtConstant(
 
 
 @component.add(
-    name="beta 1 EXP",
+    name="beta_1_EXP",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -81,7 +81,7 @@ _ext_constant_beta_1_exp = ExtConstant(
 
 
 @component.add(
-    name="beta 1 GFCF",
+    name="beta_1_GFCF",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -106,7 +106,7 @@ _ext_constant_beta_1_gfcf = ExtConstant(
 
 
 @component.add(
-    name="Exports demand",
+    name="Exports_demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -134,7 +134,7 @@ _integ_exports_demand = Integ(
 
 
 @component.add(
-    name="Exports demand not covered",
+    name="Exports_demand_not_covered",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -163,7 +163,7 @@ def exports_demand_not_covered():
 
 
 @component.add(
-    name="GFCF not covered",
+    name="GFCF_not_covered",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -192,7 +192,7 @@ def gfcf_not_covered():
 
 
 @component.add(
-    name="Gross fixed capital formation",
+    name="Gross_fixed_capital_formation",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -220,7 +220,7 @@ _integ_gross_fixed_capital_formation = Integ(
 
 
 @component.add(
-    name="historic exports demand",
+    name="historic_exports_demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -250,7 +250,7 @@ _ext_lookup_historic_exports_demand = ExtLookup(
 
 
 @component.add(
-    name="historic GFCF",
+    name="historic_GFCF",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -280,7 +280,7 @@ _ext_lookup_historic_gfcf = ExtLookup(
 
 
 @component.add(
-    name="Initial exports demand",
+    name="Initial_exports_demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -295,7 +295,7 @@ def initial_exports_demand():
 
 
 @component.add(
-    name="initial GFCF",
+    name="initial_GFCF",
     units="M$",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -310,7 +310,7 @@ def initial_gfcf():
 
 
 @component.add(
-    name="real demand world next step",
+    name="real_demand_world_next_step",
     units="M$",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -321,7 +321,7 @@ def real_demand_world_next_step():
 
 
 @component.add(
-    name="Total exports",
+    name="Total_exports",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -335,7 +335,7 @@ def total_exports():
 
 
 @component.add(
-    name="Total GFCF",
+    name="Total_GFCF",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -352,19 +352,19 @@ def total_gfcf():
 
 
 @component.add(
-    name="variation exports demand",
+    name="variation_exports_demand",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "exports_demand": 1,
-        "real_demand_world": 1,
-        "beta_0_exp": 1,
-        "beta_1_exp": 2,
-        "time": 1,
-        "variation_historic_exports_demand": 1,
         "real_demand_world_next_step": 1,
+        "time": 1,
+        "beta_0_exp": 1,
+        "real_demand_world": 1,
+        "variation_historic_exports_demand": 1,
+        "beta_1_exp": 2,
         "unit_correction_economic": 2,
     },
 )
@@ -389,20 +389,20 @@ def variation_exports_demand():
 
 
 @component.add(
-    name="variation GFCF",
+    name="variation_GFCF",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 1,
+        "time": 1,
         "cc_total": 2,
+        "variation_historic_gfcf": 1,
         "variation_cc": 1,
+        "beta_0_gfcf": 1,
         "nvs_1_year": 1,
         "beta_1_gfcf": 2,
-        "variation_historic_gfcf": 1,
-        "time": 1,
-        "beta_0_gfcf": 1,
         "unit_correction_economic": 2,
     },
 )
@@ -430,7 +430,7 @@ def variation_gfcf():
 
 
 @component.add(
-    name="variation historic exports demand",
+    name="variation_historic_exports_demand",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -447,7 +447,7 @@ def variation_historic_exports_demand():
 
 
 @component.add(
-    name="variation historic GFCF",
+    name="variation_historic_GFCF",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",

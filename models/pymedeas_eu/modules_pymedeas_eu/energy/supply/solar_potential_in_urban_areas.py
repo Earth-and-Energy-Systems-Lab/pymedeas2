@@ -1,10 +1,10 @@
 """
 Module energy.supply.solar_potential_in_urban_areas
-Translated using PySD version 3.14.1
+Translated using PySD version 3.14.2
 """
 
 @component.add(
-    name="av solar I",
+    name="av_solar_I",
     units="We/m2",
     comp_type="Constant",
     comp_subtype="External",
@@ -29,7 +29,7 @@ _ext_constant_av_solar_i = ExtConstant(
 
 
 @component.add(
-    name="f1 PV solar in target year",
+    name="f1_PV_solar_in_target_year",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -54,7 +54,7 @@ _ext_constant_f1_pv_solar_in_target_year = ExtConstant(
 
 
 @component.add(
-    name="f1 solar PV",
+    name="f1_solar_PV",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -89,7 +89,7 @@ def f1_solar_pv():
 
 
 @component.add(
-    name='"f1-ini solar PV"',
+    name='"f1-ini_solar_PV"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -114,7 +114,7 @@ _ext_constant_f1ini_solar_pv = ExtConstant(
 
 
 @component.add(
-    name="f2 PF solar PV",
+    name="f2_PF_solar_PV",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -139,7 +139,7 @@ _ext_constant_f2_pf_solar_pv = ExtConstant(
 
 
 @component.add(
-    name="f3 solar PV on land",
+    name="f3_solar_PV_on_land",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -164,7 +164,7 @@ _ext_constant_f3_solar_pv_on_land = ExtConstant(
 
 
 @component.add(
-    name="max FE solar thermal urban TWth",
+    name="max_FE_solar_thermal_urban_TWth",
     units="TWth",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -178,7 +178,7 @@ def max_fe_solar_thermal_urban_twth():
 
 
 @component.add(
-    name="max solar PV urban",
+    name="max_solar_PV_urban",
     units="TWe",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -192,9 +192,9 @@ def max_solar_pv_urban():
 
 
 @component.add(
-    name='"power density initial RES elec TWe/Mha"',
+    name='"power_density_initial_RES_elec_TWe/Mha"',
     units="TWe/MHa",
-    subscripts=["RES elec"],
+    subscripts=["RES_elec"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_power_density_initial_res_elec_twemha"},
@@ -210,17 +210,17 @@ _ext_constant_power_density_initial_res_elec_twemha = ExtConstant(
     r"../energy.xlsx",
     "Global",
     "power_density_res_elec*",
-    {"RES elec": _subscript_dict["RES elec"]},
+    {"RES_elec": _subscript_dict["RES_elec"]},
     _root,
-    {"RES elec": _subscript_dict["RES elec"]},
+    {"RES_elec": _subscript_dict["RES_elec"]},
     "_ext_constant_power_density_initial_res_elec_twemha",
 )
 
 
 @component.add(
-    name='"power density RES elec TWe/Mha"',
+    name='"power_density_RES_elec_TWe/Mha"',
     units="TWe/MHa",
-    subscripts=["RES elec"],
+    subscripts=["RES_elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"power_density_initial_res_elec_twemha": 1, "cpini_res_elec": 1},
@@ -233,7 +233,7 @@ def power_density_res_elec_twemha():
 
 
 @component.add(
-    name='"power density solar PV in urban TWe/Mha"',
+    name='"power_density_solar_PV_in_urban_TWe/Mha"',
     units="TWe/MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -261,7 +261,7 @@ def power_density_solar_pv_in_urban_twemha():
 
 
 @component.add(
-    name='"power density solar PV on land TWe/Mha"',
+    name='"power_density_solar_PV_on_land_TWe/Mha"',
     units="TWe/MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -287,7 +287,7 @@ def power_density_solar_pv_on_land_twemha():
 
 
 @component.add(
-    name='"power density solar thermal in urban TWe/Mha"',
+    name='"power_density_solar_thermal_in_urban_TWe/Mha"',
     units="TWe/MHa",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -315,7 +315,7 @@ def power_density_solar_thermal_in_urban_twemha():
 
 
 @component.add(
-    name="share available roof",
+    name="share_available_roof",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -340,7 +340,7 @@ _ext_constant_share_available_roof = ExtConstant(
 
 
 @component.add(
-    name="share available roof for rooftop PV",
+    name="share_available_roof_for_rooftop_PV",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -365,7 +365,7 @@ _ext_constant_share_available_roof_for_rooftop_pv = ExtConstant(
 
 
 @component.add(
-    name="share available roof for solar thermal",
+    name="share_available_roof_for_solar_thermal",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -390,7 +390,7 @@ _ext_constant_share_available_roof_for_solar_thermal = ExtConstant(
 
 
 @component.add(
-    name="Start year P f1 solar PV",
+    name="Start_year_P_f1_solar_PV",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -415,7 +415,7 @@ _ext_constant_start_year_p_f1_solar_pv = ExtConstant(
 
 
 @component.add(
-    name="Target year f1 solar PV",
+    name="Target_year_f1_solar_PV",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -440,7 +440,7 @@ _ext_constant_target_year_f1_solar_pv = ExtConstant(
 
 
 @component.add(
-    name='"TWh/Mha per We/m2"',
+    name='"TWh/Mha_per_We/m2"',
     units="(TW/MHa)/(We/m2)",
     comp_type="Constant",
     comp_subtype="Normal",

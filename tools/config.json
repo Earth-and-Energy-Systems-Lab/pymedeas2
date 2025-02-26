@@ -6,7 +6,7 @@
         "return_timestamp": 1.0,
         "update_initials": {}
     },
-    "aggregation": "27sectors_exioabase",
+    "aggregation": "27sectors_exiobase",
     "region": "pymedeas_w",
     "silent": false,
     "headless": false,

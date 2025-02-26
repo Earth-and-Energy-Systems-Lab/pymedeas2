@@ -461,9 +461,9 @@ def real_final_demand_by_sector_cat():
         "required_final_energy_by_sector_and_fuel_cat": 3,
         "energy_scarcity_feedback_shortage_coeff_cat": 3,
         "cc_impacts_feedback_shortage_coeff": 3,
-        "dac_energy_consumption_by_sector_and_fuel": 2,
-        "ccs_energy_consumption_sector": 1,
         "ej_per_twh": 3,
+        "ccs_energy_consumption_sector": 1,
+        "dac_energy_consumption_by_sector_and_fuel": 2,
     },
 )
 def real_final_energy_by_sector_and_fuel_cat():
@@ -771,9 +771,9 @@ def required_fed_sectors_by_fuel():
         "final_energy_intensity_by_sector_and_fuel": 3,
         "m_to_t": 3,
         "nvs_1_year": 3,
+        "ej_per_twh": 3,
         "dac_energy_demand_per_sector_and_fuel": 2,
         "ccs_energy_demand_sect": 1,
-        "ej_per_twh": 3,
     },
 )
 def required_final_energy_by_sector_and_fuel_cat():

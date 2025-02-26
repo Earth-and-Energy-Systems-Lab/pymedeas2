@@ -105,8 +105,8 @@ def domestic_demand_by_sector():
     comp_subtype="Normal",
     depends_on={
         "activate_energy_scarcity_feedback": 1,
-        "real_fe_consumption_by_fuel_before_heat_correction": 1,
         "required_fed_by_fuel_before_heat_correction": 1,
+        "real_fe_consumption_by_fuel_before_heat_correction": 1,
     },
 )
 def energy_scarcity_feedback_shortage_coeff_eu():
@@ -450,9 +450,9 @@ def real_final_demand_by_sector_eu():
         "required_final_energy_by_sector_and_fuel_eu": 3,
         "energy_scarcity_feedback_shortage_coeff_eu": 3,
         "cc_impacts_feedback_shortage_coeff": 1,
-        "ej_per_twh": 2,
-        "dac_energy_consumption_by_sector_and_fuel": 1,
         "ccs_energy_consumption_sector": 1,
+        "dac_energy_consumption_by_sector_and_fuel": 1,
+        "ej_per_twh": 2,
     },
 )
 def real_final_energy_by_sector_and_fuel_eu():
@@ -734,9 +734,9 @@ def required_fed_sectors_by_fuel():
         "final_energy_intensity_by_sector_and_fuel_eu": 3,
         "m_to_t": 3,
         "nvs_1_year": 3,
-        "ej_per_twh": 2,
-        "dac_energy_demand_per_sector_and_fuel": 1,
         "ccs_energy_demand_sect": 1,
+        "dac_energy_demand_per_sector_and_fuel": 1,
+        "ej_per_twh": 2,
     },
 )
 def required_final_energy_by_sector_and_fuel_eu():

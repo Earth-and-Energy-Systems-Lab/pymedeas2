@@ -108,8 +108,8 @@ def ch4_emissions_biomass():
         "extraction_coal_ej": 4,
         "share_coal_for_elec_emissions_relevant": 1,
         "share_coal_for_heat_emissions_relevant": 1,
-        "mtch4_per_ej_ctl": 1,
         "share_coal_for_ctl_emissions_relevant": 1,
+        "mtch4_per_ej_ctl": 1,
         "share_coal_for_fc_emissions_relevant": 1,
     },
 )
@@ -174,8 +174,8 @@ def ch4_emissions_fossil_fuels():
         "pes_nat_gas": 4,
         "share_nat_gas_for_elec_emissions_relevant": 1,
         "share_nat_gas_for_heat_emissions_relevant": 1,
-        "share_nat_gas_for_gtl_emissions_relevant": 1,
         "mtch4_per_ej_gtl": 1,
+        "share_nat_gas_for_gtl_emissions_relevant": 1,
         "share_nat_gas_for_fc_emissions_relevant": 1,
     },
 )
@@ -501,8 +501,8 @@ _ext_constant_mtch4_per_ej_gtl = ExtConstant(
     depends_on={
         "share_conv_vs_total_oil_extraction": 2,
         "mtch4_per_ej_conv_oil": 1,
-        "mtch4_per_ej_shale_oil": 1,
         "adapt_emissions_shale_oil": 1,
+        "mtch4_per_ej_shale_oil": 1,
         "mtch4_per_ej_unconv_oil": 2,
     },
 )

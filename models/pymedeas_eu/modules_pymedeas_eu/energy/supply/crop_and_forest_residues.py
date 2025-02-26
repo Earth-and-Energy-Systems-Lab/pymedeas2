@@ -147,13 +147,13 @@ def max_peavail_potential_bioe_residues_for_cellulosic_biofuels():
     depends_on={
         "time": 3,
         "start_year_bioe_residues_for_nonbiofuels": 3,
+        "nvs_1_year": 1,
+        "bioe_residues_for_nonbiofuels_available": 1,
+        "ej_per_ktoe": 1,
         "start_production_biofuels": 1,
         "max_npp_potential_bioe_residues": 1,
         "pe_bioe_residues_nonbiofuels": 1,
         "p_bioe_residues": 1,
-        "nvs_1_year": 1,
-        "bioe_residues_for_nonbiofuels_available": 1,
-        "ej_per_ktoe": 1,
     },
 )
 def new_bioe_residues_for_nonbiofuels():
@@ -189,15 +189,15 @@ def new_bioe_residues_for_nonbiofuels():
     depends_on={
         "time": 3,
         "start_year_3gen_cellulosic_biofuels": 3,
-        "start_production_biofuels": 1,
-        "max_npp_potential_bioe_residues": 1,
-        "check_liquids": 1,
-        "potential_pe_cellulosic_biofuel_ej": 2,
-        "cellulosic_biofuels_available": 1,
-        "p_bioe_residues": 1,
         "nvs_1_year": 2,
+        "potential_pe_cellulosic_biofuel_ej": 2,
         "constrain_liquids_exogenous_growth": 1,
         "ej_per_ktoe": 1,
+        "start_production_biofuels": 1,
+        "check_liquids": 1,
+        "max_npp_potential_bioe_residues": 1,
+        "p_bioe_residues": 1,
+        "cellulosic_biofuels_available": 1,
     },
 )
 def new_cellulosic_biofuels():

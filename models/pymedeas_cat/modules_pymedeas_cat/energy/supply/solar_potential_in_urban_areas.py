@@ -61,9 +61,9 @@ _ext_constant_f1_pv_solar_in_target_year = ExtConstant(
     depends_on={
         "time": 4,
         "f1ini_solar_pv": 4,
+        "start_year_p_f1_solar_pv": 3,
         "target_year_f1_solar_pv": 2,
         "f1_pv_solar_in_target_year": 2,
-        "start_year_p_f1_solar_pv": 3,
     },
 )
 def f1_solar_pv():

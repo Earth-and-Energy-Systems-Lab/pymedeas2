@@ -213,9 +213,9 @@ def imports_cat_unconv_oil_from_row_ej():
     comp_subtype="Normal",
     depends_on={
         "share_liquids_for_nonenergy_use": 1,
+        "energy_distr_losses_ff": 1,
         "pes_liquids": 1,
         "transformation_ff_losses_ej": 1,
-        "energy_distr_losses_ff": 1,
     },
 )
 def nonenergy_use_consumption():
@@ -465,7 +465,7 @@ def required_fed_by_liquids():
     name="self_consuption_energy_sector",
     units="EJ/year",
     subscripts=["matter_final_sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"required_fed_by_liquids": 1, "required_fed_by_gases": 1},
 )
@@ -513,9 +513,9 @@ def share_liquids_dem_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_liquids": 1,
+        "energy_distr_losses_ff": 1,
         "ped_liquids": 1,
         "transformation_ff_losses_ej": 1,
-        "energy_distr_losses_ff": 1,
     },
 )
 def share_liquids_for_final_energy():
@@ -537,9 +537,9 @@ def share_liquids_for_final_energy():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
+        "energy_distr_losses_ff": 1,
         "ped_liquids": 1,
         "transformation_ff_losses_ej": 1,
-        "energy_distr_losses_ff": 1,
     },
 )
 def share_liquids_for_nonenergy_use():
@@ -587,10 +587,10 @@ def share_oil_elec_plants():
     comp_subtype="Normal",
     depends_on={
         "ped_oil_elec_plants_ej": 1,
-        "ped_oil_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp": 1,
-        "ped_total_oil_ej": 1,
+        "ped_oil_for_chp_plants_ej": 1,
         "self_consuption_energy_sector": 1,
+        "ped_total_oil_ej": 1,
     },
 )
 def share_oil_for_elec_emissions_relevant():
@@ -648,10 +648,10 @@ def share_oil_for_heat_chp_plants():
     depends_on={
         "ped_oil_for_heat_plants": 1,
         "ped_ff_heatnc": 1,
-        "ped_oil_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp": 1,
-        "ped_total_oil_ej": 1,
+        "ped_oil_for_chp_plants_ej": 1,
         "self_consuption_energy_sector": 1,
+        "ped_total_oil_ej": 1,
     },
 )
 def share_oil_for_heat_emissions_relevant():

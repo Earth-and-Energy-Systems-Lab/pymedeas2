@@ -63,8 +63,8 @@ _ext_constant_eficiency_liquids_pkm = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "energy_pkm": 4,
-        "household_demand_total": 3,
         "m_to_t": 3,
+        "household_demand_total": 3,
         "nvs_1_year": 3,
     },
 )
@@ -710,8 +710,8 @@ def pkm_fuel_share():
         "end_historical_data": 4,
         "initial_fuel_share_air_pkm": 3,
         "fuel_share_1995": 2,
-        "fuel_share_air_pkm": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_air_pkm": 2,
     },
 )
 def pkm_fuel_share_air():
@@ -748,10 +748,10 @@ def pkm_fuel_share_air():
     depends_on={
         "time": 5,
         "end_historical_data": 4,
-        "initial_fuel_share_households_pkm": 3,
         "fuel_share_1995": 2,
-        "fuel_share_households_pkm": 2,
+        "initial_fuel_share_households_pkm": 3,
         "start_year_policies_transport": 3,
+        "fuel_share_households_pkm": 2,
     },
 )
 def pkm_fuel_share_households():
@@ -789,10 +789,10 @@ def pkm_fuel_share_households():
         "time": 5,
         "end_historical_data": 3,
         "initial_fuel_share_inland_pkm": 3,
-        "end_hist_data": 1,
         "fuel_share_1995": 2,
-        "fuel_share_inland_pkm": 2,
+        "end_hist_data": 1,
         "start_year_policies_transport": 3,
+        "fuel_share_inland_pkm": 2,
     },
 )
 def pkm_fuel_share_inland():
@@ -829,10 +829,10 @@ def pkm_fuel_share_inland():
     depends_on={
         "time": 5,
         "end_historical_data": 4,
-        "initial_fuel_share_maritime_pkm": 3,
         "fuel_share_1995": 2,
-        "fuel_share_maritime_pkm": 2,
+        "initial_fuel_share_maritime_pkm": 3,
         "start_year_policies_transport": 3,
+        "fuel_share_maritime_pkm": 2,
     },
 )
 def pkm_fuel_share_maritime():
@@ -870,8 +870,8 @@ def pkm_fuel_share_maritime():
         "time": 5,
         "end_historical_data": 5,
         "hist_transport_share_pkm": 3,
-        "mode_share_pkm": 2,
         "start_year_policies_transport": 3,
+        "mode_share_pkm": 2,
     },
 )
 def pkm_mode_share():

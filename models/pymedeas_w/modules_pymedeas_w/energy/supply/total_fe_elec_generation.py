@@ -73,15 +73,15 @@ def annual_growth_rate_electricity_generation_res_elec_tot():
     comp_subtype="Normal",
     depends_on={
         "potential_fe_gen_elec_fossil_fuel_chp_plants_ej": 3,
-        "share_oil_dem_for_elec": 1,
         "efficiency_liquids_for_electricity": 1,
+        "share_oil_dem_for_elec": 1,
         "pes_oil_ej": 1,
         "extraction_coal_ej": 1,
         "share_coal_dem_for_elec": 1,
         "efficiency_coal_for_electricity": 1,
+        "efficiency_gas_for_electricity": 1,
         "share_nat_gas_dem_for_elec": 1,
         "pes_nat_gas": 1,
-        "efficiency_gas_for_electricity": 1,
     },
 )
 def fe_elec_generation_from_fossil_fuels():

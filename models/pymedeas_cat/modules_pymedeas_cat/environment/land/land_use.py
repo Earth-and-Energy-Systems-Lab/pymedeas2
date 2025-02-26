@@ -238,9 +238,9 @@ _integ_available_land = Integ(
     depends_on={
         "time": 2,
         "hist_variation_primary_forest": 1,
+        "historic_av_variation_primary_forests_area": 1,
         "start_year_p_variation_primary_forest": 1,
         "primary_forests_area": 1,
-        "historic_av_variation_primary_forests_area": 1,
         "p_variation_primary_forest": 1,
         "aux_reach_available_forest": 1,
     },
@@ -311,8 +311,8 @@ def compet_land_for_biofuels_rate():
     comp_subtype="Normal",
     depends_on={
         "demand_forest_energy_non_tradition_ej": 1,
-        "consum_wood_products_ej": 1,
         "consum_forest_energy_traditional_ej": 1,
+        "consum_wood_products_ej": 1,
         "forest_consumption_ej": 1,
     },
 )
@@ -1443,8 +1443,8 @@ _integ_primary_forests_area = Integ(
     comp_subtype="Normal",
     depends_on={
         "aux_reach_ag_land": 1,
-        "agricultural_land_pc_until_2015": 1,
         "agricultural_land_pc": 1,
+        "agricultural_land_pc_until_2015": 1,
         "threshold_scarcity_ag_land": 1,
     },
 )
@@ -1799,9 +1799,9 @@ _integ_urban_land = Integ(
     depends_on={
         "time": 4,
         "historic_urban_land_density": 4,
+        "target_year_p_urban_land_density": 2,
         "start_year_p_urban_land_density": 3,
         "p_urban_land_density_mha": 2,
-        "target_year_p_urban_land_density": 2,
     },
 )
 def urban_land_density():
@@ -1837,8 +1837,8 @@ def urban_land_density():
     depends_on={
         "time": 1,
         "hist_variation_urban_land": 1,
-        "pop_variation": 1,
         "urban_land_density": 1,
+        "pop_variation": 1,
         "aux_reach_ag_land": 1,
     },
 )

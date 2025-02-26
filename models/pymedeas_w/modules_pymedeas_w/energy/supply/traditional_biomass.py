@@ -202,8 +202,8 @@ def share_global_pop_dependent_on_trad_biomass():
     comp_subtype="Normal",
     depends_on={
         "phase_out_trad_biomass": 1,
-        "share_trad_biomass_vs_solids_in_households": 4,
         "time": 2,
+        "share_trad_biomass_vs_solids_in_households": 4,
     },
 )
 def share_trad_biomass():

@@ -513,7 +513,7 @@ def share_gas_elec_plants():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_gas_heatnc": 1, "ped_nat_gas_for_gtl_ej": 1, "pes_gases": 1},
+    depends_on={"ped_gas_heatnc": 1, "pes_gases": 1, "ped_nat_gas_for_gtl_ej": 1},
 )
 def share_gases_dem_for_heatnc():
     """
@@ -530,8 +530,8 @@ def share_gases_dem_for_heatnc():
     depends_on={
         "required_fed_by_gases": 1,
         "other_gases_required": 1,
-        "ped_nat_gas_for_gtl_ej": 1,
         "ped_gases": 1,
+        "ped_nat_gas_for_gtl_ej": 1,
     },
 )
 def share_gases_for_final_energy():
@@ -587,8 +587,8 @@ def share_nat_gas_dem_for_heatcom():
     comp_subtype="Normal",
     depends_on={
         "ped_gas_elec_plants_ej": 1,
-        "ped_gas_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp": 1,
+        "ped_gas_for_chp_plants_ej": 1,
         "ped_nat_gas_ej": 1,
         "self_consuption_energy_sector": 1,
     },
@@ -644,8 +644,8 @@ def share_nat_gas_for_gtl_emissions_relevant():
     depends_on={
         "ped_gases_for_heat_plants_ej": 1,
         "ped_gas_heatnc": 1,
-        "ped_gas_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp": 1,
+        "ped_gas_for_chp_plants_ej": 1,
         "ped_nat_gas_ej": 1,
         "self_consuption_energy_sector": 1,
     },

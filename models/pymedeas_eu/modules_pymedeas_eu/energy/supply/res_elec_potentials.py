@@ -236,10 +236,10 @@ def max_potential_res_elec_twh():
     comp_subtype="Normal",
     depends_on={
         "max_potential_res_elec_twh": 1,
-        "twe_per_twh": 1,
         "max_potential_phs_twe": 1,
-        "ej_per_twh": 1,
+        "twe_per_twh": 1,
         "max_pe_potential_biogas_for_elec": 1,
+        "ej_per_twh": 1,
     },
 )
 def max_potential_tot_res_elec_twh():
@@ -269,8 +269,8 @@ def max_potential_tot_res_elec_twh():
         "max_bioe_twe": 1,
         "max_solar_pv_on_land_twe": 1,
         "max_solar_pv_urban": 1,
-        "power_density_csp": 1,
         "max_csp_on_land_mha": 1,
+        "power_density_csp": 1,
     },
 )
 def max_res_elec_twe():

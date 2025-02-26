@@ -407,9 +407,9 @@ def total_water_use_by_type():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "historic_water_by_type_intensities_by_sector": 1,
         "nvs_1_year": 1,
         "historic_water_intensities_by_sector_delayed_1yr": 1,
+        "historic_water_by_type_intensities_by_sector": 1,
     },
 )
 def variation_water_intensity_by_sector():

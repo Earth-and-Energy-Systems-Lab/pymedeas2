@@ -9,14 +9,14 @@ import xarray as xr
 
 from pysd.py_backend.functions import (
     invert_matrix,
-    step,
-    sum,
-    zidz,
-    integer,
-    if_then_else,
     xidz,
+    integer,
+    zidz,
+    sum,
+    if_then_else,
+    step,
 )
-from pysd.py_backend.statefuls import DelayFixed, Initial, Smooth, SampleIfTrue, Integ
+from pysd.py_backend.statefuls import Smooth, Initial, SampleIfTrue, Integ, DelayFixed
 from pysd.py_backend.external import ExtConstant, ExtLookup, ExtData
 from pysd.py_backend.data import TabData
 from pysd.py_backend.utils import load_model_data, load_modules

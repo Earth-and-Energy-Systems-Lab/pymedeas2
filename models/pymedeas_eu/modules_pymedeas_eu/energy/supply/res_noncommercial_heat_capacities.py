@@ -243,9 +243,9 @@ _integ_installed_capacity_res_heatnc_tw = Integ(
         "time": 3,
         "historic_res_capacity_for_heatnc": 2,
         "time_step": 2,
-        "remaining_potential_constraint_on_new_res_heat_capacity": 1,
-        "installed_capacity_res_heatnc_tw": 1,
         "adapt_growth_res_for_heatnc": 1,
+        "installed_capacity_res_heatnc_tw": 1,
+        "remaining_potential_constraint_on_new_res_heat_capacity": 1,
         "abundance_res_heatnc2": 1,
     },
 )

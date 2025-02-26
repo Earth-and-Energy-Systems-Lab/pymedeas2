@@ -114,12 +114,12 @@ _ext_constant_cumulated_uranium_extraction_to_1995 = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "rurr_uranium": 1,
+        "kt_uranium_per_ej": 1,
         "time": 1,
-        "historic_uranium_domestic_extracted": 1,
         "pe_demand_uranium_eu_ej": 1,
         "tonnes_per_kt": 1,
+        "historic_uranium_domestic_extracted": 1,
         "max_extraction_uranium": 1,
-        "kt_uranium_per_ej": 1,
     },
 )
 def extraction_uranium():
@@ -219,8 +219,8 @@ def kt_uranium_per_ej():
         "av_past_domestic_uranium_extraction": 1,
         "tonnes_per_kt": 1,
         "kt_uranium_per_ej": 1,
-        "rurr_uranium": 1,
         "table_max_extraction_uranium": 1,
+        "rurr_uranium": 1,
     },
 )
 def max_extraction_uranium():

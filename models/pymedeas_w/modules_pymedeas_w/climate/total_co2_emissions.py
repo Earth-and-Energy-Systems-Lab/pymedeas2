@@ -89,8 +89,8 @@ _ext_data_afforestation_program_2020 = ExtData(
     depends_on={
         "afforestation_program_2020": 1,
         "activate_afforestation_program": 1,
-        "gtc_per_gtco2": 1,
         "mtc_per_gtc": 1,
+        "gtc_per_gtco2": 1,
     },
 )
 def afforestation_program_2020_gtco2():
@@ -234,8 +234,8 @@ def co2_emissions_biomass():
         "extraction_coal_ej": 4,
         "share_coal_for_elec_emissions_relevant": 1,
         "share_coal_for_heat_emissions_relevant": 1,
-        "gtco2_per_ej_ctl": 1,
         "share_coal_for_ctl_emissions_relevant": 1,
+        "gtco2_per_ej_ctl": 1,
         "share_coal_for_fc_emissions_relevant": 1,
     },
 )

@@ -488,11 +488,11 @@ def other_liquids_supply_ej():
     depends_on={
         "extraction_coal_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
-        "imports_eu_nat_gas_from_row_ej": 1,
         "pes_nat_gas_eu": 1,
-        "fes_ctlgtl_ej": 1,
+        "imports_eu_nat_gas_from_row_ej": 1,
         "pes_total_oil_ej_eu": 1,
         "imports_eu_total_oil_from_row_ej": 1,
+        "fes_ctlgtl_ej": 1,
     },
 )
 def pec_ff():
@@ -546,8 +546,8 @@ def ped_domestic_eu_conv_ff():
         "ped_nre_fs": 2,
         "imports_eu_coal_from_row_ej": 1,
         "imports_eu_nat_gas_from_row_ej": 1,
-        "imports_eu_total_oil_from_row_ej": 1,
         "ped_total_oil_ej": 1,
+        "imports_eu_total_oil_from_row_ej": 1,
     },
 )
 def ped_domestic_ff():
@@ -661,13 +661,13 @@ def ped_nat_gas_ej():
     depends_on={
         "ped_nre_fs_liquids": 1,
         "synthethic_fuel_generation_delayed": 2,
-        "pes_biogas_ej": 1,
         "ped_fs": 2,
-        "losses_in_charcoal_plants": 1,
-        "pes_waste_for_tfc": 1,
+        "pes_biogas_ej": 1,
         "modern_solids_bioe_demand_households": 1,
-        "pes_peat": 1,
         "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "pes_waste_for_tfc": 1,
+        "losses_in_charcoal_plants": 1,
+        "pes_peat": 1,
     },
 )
 def ped_nre_fs():
@@ -762,8 +762,8 @@ def ped_total_oil_ej():
         "losses_in_charcoal_plants": 1,
         "other_liquids_supply_ej": 1,
         "pes_biogas_for_tfc": 1,
-        "pes_biogas_ej": 1,
         "synthethic_fuel_generation_delayed": 1,
+        "pes_biogas_ej": 1,
     },
 )
 def pes_fs():
@@ -876,8 +876,8 @@ def share_ff_dem_for_heatcom():
     comp_subtype="Normal",
     depends_on={
         "ped_ff_elec_plants": 1,
-        "share_elec_gen_in_chp": 1,
         "ped_ff_for_chp_plants": 1,
+        "share_elec_gen_in_chp": 1,
         "ped_nre_fs": 1,
     },
 )
@@ -989,8 +989,8 @@ def share_ff_for_final_energy():
     depends_on={
         "ped_ff_for_heat_plants": 1,
         "ped_ff_heatnc": 1,
-        "share_elec_gen_in_chp": 1,
         "ped_ff_for_chp_plants": 1,
+        "share_elec_gen_in_chp": 1,
         "ped_nre_fs": 1,
     },
 )

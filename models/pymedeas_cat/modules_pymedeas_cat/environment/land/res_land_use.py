@@ -57,8 +57,8 @@ def land_requirements_res_elec_compet_uses():
     depends_on={
         "potential_generation_res_elec_twh": 1,
         "real_share_pv_urban_vs_total_pv": 1,
-        "twe_per_twh": 1,
         "power_density_res_elec_twemha": 1,
+        "twe_per_twh": 1,
     },
 )
 def land_saved_by_urban_pv():
@@ -271,8 +271,8 @@ def surface_solar_pv_on_land_mha():
     depends_on={
         "land_requirements_res_elec_compet_uses": 1,
         "land_compet_required_dedicated_crops_for_biofuels": 1,
-        "land_required_biofuels_land_marg": 1,
         "nvs_1_year": 1,
+        "land_required_biofuels_land_marg": 1,
         "surface_onshore_wind_mha": 1,
     },
 )

@@ -43,8 +43,8 @@ def dam3_per_km3():
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "real_total_output_by_sector_cat": 1,
         "historic_water_use": 1,
+        "real_total_output_by_sector_cat": 1,
     },
 )
 def historic_water_by_type_intensities_by_sector():
@@ -68,7 +68,7 @@ def historic_water_by_type_intensities_by_sector():
     subscripts=["water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "historic_water_use": 1, "household_demand_total": 1},
+    depends_on={"time": 2, "household_demand_total": 1, "historic_water_use": 1},
 )
 def historic_water_by_type_intensities_for_households():
     return if_then_else(
@@ -305,8 +305,8 @@ def share_blue_water_use_vs_ar():
     comp_subtype="Normal",
     depends_on={
         "total_water_use_by_type": 1,
-        "dam3_per_km3": 1,
         "renewable_water_resources": 1,
+        "dam3_per_km3": 1,
     },
 )
 def share_blue_water_use_vs_renewable_water_resources():
@@ -339,8 +339,8 @@ def share_total_water_use_vs_ar():
     comp_subtype="Normal",
     depends_on={
         "total_water_use": 1,
-        "dam3_per_km3": 1,
         "renewable_water_resources": 1,
+        "dam3_per_km3": 1,
     },
 )
 def share_total_water_use_vs_renewable_water_resources():
@@ -439,9 +439,9 @@ def variation_water_intensity_by_sector():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
+        "nvs_1_year": 1,
         "historic_water_intensities_for_households_delayed_1yr": 1,
         "historic_water_by_type_intensities_for_households": 1,
-        "nvs_1_year": 1,
     },
 )
 def variation_water_intensity_households():

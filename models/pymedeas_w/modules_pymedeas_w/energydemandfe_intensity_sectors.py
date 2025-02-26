@@ -1,0 +1,1780 @@
+"""
+Module energydemandfe_intensity_sectors
+Translated using PySD version 3.14.0
+"""
+
+@component.add(
+    name="Activate BOTTOM UP method",
+    units="Dmnl",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS")],
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def activate_bottom_up_method():
+    """
+    Activate BOTTOM UP method or maintain TOP DOWN method. Activate for each sector (by default, only inland transport sector) 0. Bottom-up NOT activated 1. Bottom-up activated
+    """
+    value = xr.DataArray(
+        np.nan,
+        {"SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"]},
+        [np.str_("SECTORS and HOUSEHOLDS")],
+    )
+    except_subs = xr.ones_like(value, dtype=bool)
+    except_subs.loc[["Transport storage and communication"]] = False
+    except_subs.loc[["Households"]] = False
+    value.values[except_subs.values] = 0
+    value.loc[["Transport storage and communication"]] = 0
+    value.loc[["Households"]] = 0
+    return value
+
+
+@component.add(
+    name="available improvement efficiency",
+    units="Dmnl",
+    subscripts=[np.str_("sectors")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "min_energy_intensity_vs_intial": 2,
+        "global_energy_intensity_by_sector": 1,
+        "initial_global_energy_intensity_2009": 2,
+    },
+)
+def available_improvement_efficiency():
+    """
+    Remainig improvement of energy intensity respect to the minimum value.
+    """
+    return np.minimum(
+        1,
+        if_then_else(
+            time() > 2009,
+            lambda: zidz(
+                global_energy_intensity_by_sector()
+                - min_energy_intensity_vs_intial()
+                * initial_global_energy_intensity_2009()
+                .loc[_subscript_dict["sectors"]]
+                .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"}),
+                (1 - min_energy_intensity_vs_intial())
+                * initial_global_energy_intensity_2009()
+                .loc[_subscript_dict["sectors"]]
+                .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"}),
+            ),
+            lambda: xr.DataArray(
+                1, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
+            ),
+        ),
+    )
+
+
+@component.add(
+    name="Choose final sectoral energy intensities evolution method",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_choose_final_sectoral_energy_intensities_evolution_method"
+    },
+)
+def choose_final_sectoral_energy_intensities_evolution_method():
+    """
+    0- Dynamic evolution with policies and feedback of final fuel scarcity 1- Constant at 2009 levels 2- Sectoral energy intensity targets defined by user
+    """
+    return _ext_constant_choose_final_sectoral_energy_intensities_evolution_method()
+
+
+_ext_constant_choose_final_sectoral_energy_intensities_evolution_method = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "sectorial_FEI_evolution_method",
+    {},
+    _root,
+    {},
+    "_ext_constant_choose_final_sectoral_energy_intensities_evolution_method",
+)
+
+
+@component.add(
+    name="Decrease of intensity due to energy a technology change TOP DOWN",
+    units="EJ/(year*Tdollars)",
+    subscripts=[np.str_("sectors"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "activate_bottom_up_method": 1,
+        "pressure_to_change_energy_technology": 1,
+        "evol_final_energy_intensity_by_sector_and_fuel": 2,
+        "global_energy_intensity_by_sector": 1,
+        "minimum_fraction_source": 1,
+        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
+        "max_yearly_change_between_sources": 1,
+    },
+)
+def decrease_of_intensity_due_to_energy_a_technology_change_top_down():
+    """
+    When in one economic sector, one type of energy (a) is replaced by another (b), the energy intensity of (b) will increase and the energy intensity of (a) will decrease. This flow represents the decrease of (a).
+    """
+    return if_then_else(
+        (
+            activate_bottom_up_method()
+            .loc[_subscript_dict["sectors"]]
+            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+            == 0
+        ).expand_dims({"final sources": _subscript_dict["final sources"]}, 1),
+        lambda: if_then_else(
+            zidz(
+                evol_final_energy_intensity_by_sector_and_fuel(),
+                global_energy_intensity_by_sector().expand_dims(
+                    {"final sources": _subscript_dict["final sources"]}, 1
+                ),
+            )
+            >= minimum_fraction_source()
+            .loc[_subscript_dict["sectors"], :]
+            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"}),
+            lambda: (
+                max_yearly_change_between_sources()
+                .loc[_subscript_dict["sectors"], :]
+                .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                * (
+                    1
+                    + percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities()
+                )
+            )
+            * evol_final_energy_intensity_by_sector_and_fuel()
+            * pressure_to_change_energy_technology(),
+            lambda: xr.DataArray(
+                0,
+                {
+                    "sectors": _subscript_dict["sectors"],
+                    "final sources": _subscript_dict["final sources"],
+                },
+                ["sectors", "final sources"],
+            ),
+        ),
+        lambda: xr.DataArray(
+            0,
+            {
+                "sectors": _subscript_dict["sectors"],
+                "final sources": _subscript_dict["final sources"],
+            },
+            ["sectors", "final sources"],
+        ),
+    )
+
+
+@component.add(
+    name="Efficiency energy acceleration",
+    units="Dmnl/year",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "maximum_yearly_acceleration_of_intensity_improvement": 1,
+        "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
+        "pressure_to_improve_energy_intensity_efficiency": 1,
+    },
+)
+def efficiency_energy_acceleration():
+    """
+    This variable represents the acceleration of the process of variation of the energy intensity that can be produced by polítcas or scarcity pressures.
+    """
+    return (
+        -maximum_yearly_acceleration_of_intensity_improvement()
+        * (
+            1
+            + percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities()
+        )
+        * pressure_to_improve_energy_intensity_efficiency()
+    )
+
+
+@component.add(
+    name="Energy intensity target",
+    units="EJ/Tdollars",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"energy_intensity_target_mdollar": 1, "mdollar_per_tdollar": 1},
+)
+def energy_intensity_target():
+    """
+    Energy intensity targets by sector and final energy defined by user
+    """
+    return energy_intensity_target_mdollar() * mdollar_per_tdollar()
+
+
+@component.add(
+    name="energy intensity target Mdollar",
+    units="EJ/M$",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_energy_intensity_target_mdollar"},
+)
+def energy_intensity_target_mdollar():
+    """
+    Energy intensity targets by sector and final energy defined by user
+    """
+    return _ext_constant_energy_intensity_target_mdollar()
+
+
+_ext_constant_energy_intensity_target_mdollar = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "energy_intensity_target*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    _root,
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    "_ext_constant_energy_intensity_target_mdollar",
+)
+
+
+@component.add(
+    name="Evol final energy intensity by sector and fuel",
+    units="EJ/Tdollars",
+    subscripts=[np.str_("sectors"), np.str_("final sources")],
+    comp_type="Stateful",
+    comp_subtype="Integ",
+    depends_on={"_integ_evol_final_energy_intensity_by_sector_and_fuel": 1},
+    other_deps={
+        "_integ_evol_final_energy_intensity_by_sector_and_fuel": {
+            "initial": {"initial_energy_intensity_1995": 1},
+            "step": {
+                "increase_of_intensity_due_to_energy_a_technology_change_top_down": 1,
+                "inertial_rate_energy_intensity_top_down": 1,
+                "rate_change_intensity_bottom_up": 1,
+                "decrease_of_intensity_due_to_energy_a_technology_change_top_down": 1,
+            },
+        }
+    },
+)
+def evol_final_energy_intensity_by_sector_and_fuel():
+    """
+    This variable models the dynamic evolution of the matrix of energy intensities of the 35 economic sectors and the 5 types of final energy. It is a 35x5 matrix. The evolution of the intensities is considered to be due to two main effects: (1) the variation of the energy efficiency (flow due to the variable inertial rate energy intensity) and (2) the change of one type of final energy by another, As a consequence of a technological change (flow due to the variables Increase / decrease of intensity due to energy to technology change), as for example the change due to the electrification of the transport.
+    """
+    return _integ_evol_final_energy_intensity_by_sector_and_fuel()
+
+
+_integ_evol_final_energy_intensity_by_sector_and_fuel = Integ(
+    lambda: increase_of_intensity_due_to_energy_a_technology_change_top_down()
+    + inertial_rate_energy_intensity_top_down()
+    + rate_change_intensity_bottom_up()
+    - decrease_of_intensity_due_to_energy_a_technology_change_top_down(),
+    lambda: initial_energy_intensity_1995()
+    .loc[_subscript_dict["sectors"], :]
+    .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"}),
+    "_integ_evol_final_energy_intensity_by_sector_and_fuel",
+)
+
+
+@component.add(
+    name="exp rapid evol change energy",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def exp_rapid_evol_change_energy():
+    """
+    Parameter that define the speed of application of policies in the rapid way.
+    """
+    return 1 / 2
+
+
+@component.add(
+    name="exp rapid evol improve efficiency",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def exp_rapid_evol_improve_efficiency():
+    """
+    Parameter that define the speed of application of policies in the rapid way.
+    """
+    return 1 / 2
+
+
+@component.add(
+    name="exp slow evol change energy",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def exp_slow_evol_change_energy():
+    """
+    Parameter that define the speed of application of policies in the slow way.
+    """
+    return 2
+
+
+@component.add(
+    name="exp slow evol improve efficiency",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def exp_slow_evol_improve_efficiency():
+    """
+    Parameter that define the speed of application of policies in the slow way.
+    """
+    return 2
+
+
+@component.add(
+    name="Final energy intensity 2020",
+    units="EJ/Tdollars",
+    subscripts=[np.str_("final sources"), np.str_("sectors")],
+    comp_type="Stateful",
+    comp_subtype="SampleIfTrue",
+    depends_on={"_sampleiftrue_final_energy_intensity_2020": 1},
+    other_deps={
+        "_sampleiftrue_final_energy_intensity_2020": {
+            "initial": {"evol_final_energy_intensity_by_sector_and_fuel": 1},
+            "step": {
+                "time": 1,
+                "year_energy_intensity_target": 1,
+                "evol_final_energy_intensity_by_sector_and_fuel": 1,
+            },
+        }
+    },
+)
+def final_energy_intensity_2020():
+    """
+    Energy intensity by sector and final source in 2009
+    """
+    return _sampleiftrue_final_energy_intensity_2020()
+
+
+_sampleiftrue_final_energy_intensity_2020 = SampleIfTrue(
+    lambda: xr.DataArray(
+        time() < year_energy_intensity_target(),
+        {
+            "final sources": _subscript_dict["final sources"],
+            "sectors": _subscript_dict["sectors"],
+        },
+        ["final sources", "sectors"],
+    ),
+    lambda: evol_final_energy_intensity_by_sector_and_fuel().transpose(
+        "final sources", "sectors"
+    ),
+    lambda: evol_final_energy_intensity_by_sector_and_fuel().transpose(
+        "final sources", "sectors"
+    ),
+    "_sampleiftrue_final_energy_intensity_2020",
+)
+
+
+@component.add(
+    name="final year energy intensity target",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_final_year_energy_intensity_target"},
+)
+def final_year_energy_intensity_target():
+    """
+    Year defined by user in which the energy intensity targets are set.
+    """
+    return _ext_constant_final_year_energy_intensity_target()
+
+
+_ext_constant_final_year_energy_intensity_target = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "final_year_energy_intensity_target",
+    {},
+    _root,
+    {},
+    "_ext_constant_final_year_energy_intensity_target",
+)
+
+
+@component.add(
+    name="Fuel scarcity pressure",
+    units="Dmnl",
+    subscripts=[np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "scarcity_feedback_final_fuel_replacement_flag": 1,
+        "perception_of_final_energy_scarcity": 1,
+    },
+)
+def fuel_scarcity_pressure():
+    """
+    Pressure due significant variations in the fuel scarcity of each type of final energy.
+    """
+    return if_then_else(
+        scarcity_feedback_final_fuel_replacement_flag() == 1,
+        lambda: perception_of_final_energy_scarcity(),
+        lambda: xr.DataArray(
+            0, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        ),
+    )
+
+
+@component.add(
+    name="Global energy intensity by sector",
+    units="EJ/Tdollars",
+    subscripts=[np.str_("sectors")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"evol_final_energy_intensity_by_sector_and_fuel": 1},
+)
+def global_energy_intensity_by_sector():
+    """
+    Global energy intensity of one sector considering the energy intensity of five final fuels.
+    """
+    return sum(
+        evol_final_energy_intensity_by_sector_and_fuel().rename(
+            {np.str_("final sources"): "final sources!"}
+        ),
+        dim=["final sources!"],
+    )
+
+
+@component.add(
+    name="historic final energy intensity",
+    units="EJ/Mdollars",
+    subscripts=[np.str_("final sources"), np.str_("SECTORS and HOUSEHOLDS")],
+    comp_type="Lookup",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_historic_final_energy_intensity",
+        "__lookup__": "_ext_lookup_historic_final_energy_intensity",
+    },
+)
+def historic_final_energy_intensity(x, final_subs=None):
+    """
+    Historic final energy intensity, households + 14 WIOD sectors & final sources. US$1995
+    """
+    return _ext_lookup_historic_final_energy_intensity(x, final_subs)
+
+
+_ext_lookup_historic_final_energy_intensity = ExtLookup(
+    "../economy.xlsx",
+    "World",
+    "time_index2009",
+    "historic_final_energy_intensity_electricity",
+    {
+        "final sources": ["electricity"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+    },
+    _root,
+    {
+        "final sources": _subscript_dict["final sources"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+    },
+    "_ext_lookup_historic_final_energy_intensity",
+)
+
+_ext_lookup_historic_final_energy_intensity.add(
+    "../economy.xlsx",
+    "World",
+    "time_index2009",
+    "historic_final_energy_intensity_heat",
+    {
+        "final sources": ["heat"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+    },
+)
+
+_ext_lookup_historic_final_energy_intensity.add(
+    "../economy.xlsx",
+    "World",
+    "time_index2009",
+    "historic_final_energy_intensity_liquids",
+    {
+        "final sources": ["liquids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+    },
+)
+
+_ext_lookup_historic_final_energy_intensity.add(
+    "../economy.xlsx",
+    "World",
+    "time_index2009",
+    "historic_final_energy_intensity_gases",
+    {
+        "final sources": ["gases"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+    },
+)
+
+_ext_lookup_historic_final_energy_intensity.add(
+    "../economy.xlsx",
+    "World",
+    "time_index2009",
+    "historic_final_energy_intensity_solids",
+    {
+        "final sources": ["solids"],
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+    },
+)
+
+
+@component.add(
+    name="historic mean rate energy intensity",
+    units="Dmnl/year",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_historic_mean_rate_energy_intensity"},
+)
+def historic_mean_rate_energy_intensity():
+    """
+    Historical trend of sectors energy intensity by final source (OLS method).
+    """
+    return _ext_constant_historic_mean_rate_energy_intensity()
+
+
+_ext_constant_historic_mean_rate_energy_intensity = ExtConstant(
+    "../economy.xlsx",
+    "World",
+    "historic_mean_rate_energy_intensity_electricity*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": ["electricity"],
+    },
+    _root,
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    "_ext_constant_historic_mean_rate_energy_intensity",
+)
+
+_ext_constant_historic_mean_rate_energy_intensity.add(
+    "../economy.xlsx",
+    "World",
+    "historic_mean_rate_energy_intensity_heat*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": ["heat"],
+    },
+)
+
+_ext_constant_historic_mean_rate_energy_intensity.add(
+    "../economy.xlsx",
+    "World",
+    "historic_mean_rate_energy_intensity_liquids*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": ["liquids"],
+    },
+)
+
+_ext_constant_historic_mean_rate_energy_intensity.add(
+    "../economy.xlsx",
+    "World",
+    "historic_mean_rate_energy_intensity_gases*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": ["gases"],
+    },
+)
+
+_ext_constant_historic_mean_rate_energy_intensity.add(
+    "../economy.xlsx",
+    "World",
+    "historic_mean_rate_energy_intensity_solids*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": ["solids"],
+    },
+)
+
+
+@component.add(
+    name="historic rate final energy intensity",
+    units="EJ/(year*T$)",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "time_step": 2,
+        "historic_final_energy_intensity": 2,
+        "mdollar_per_tdollar": 1,
+    },
+)
+def historic_rate_final_energy_intensity():
+    """
+    Historic variation of final energy intensity by final source (WIOD data)
+    """
+    return (
+        (
+            historic_final_energy_intensity(time() + time_step())
+            - historic_final_energy_intensity(time())
+        )
+        * mdollar_per_tdollar()
+        / time_step()
+    ).transpose("SECTORS and HOUSEHOLDS", "final sources")
+
+
+@component.add(
+    name="Implementation policy to change final energy",
+    units="Dmnl",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "choose_final_sectoral_energy_intensities_evolution_method": 1,
+        "year_policy_change_energy": 9,
+        "year_to_finish_energy_intensity_policies": 5,
+        "time": 5,
+        "policy_change_energy_speed": 3,
+        "exp_slow_evol_change_energy": 1,
+        "exp_rapid_evol_change_energy": 1,
+    },
+)
+def implementation_policy_to_change_final_energy():
+    """
+    Pressure due to energy policies, eg incentives for change the final energy
+    """
+    return if_then_else(
+        np.logical_or(
+            choose_final_sectoral_energy_intensities_evolution_method() != 2,
+            np.logical_or(
+                year_policy_change_energy() < 2015,
+                np.logical_or(
+                    year_policy_change_energy()
+                    > year_to_finish_energy_intensity_policies(),
+                    time() < year_policy_change_energy(),
+                ),
+            ),
+        ),
+        lambda: xr.DataArray(
+            0,
+            {
+                "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+                "final sources": _subscript_dict["final sources"],
+            },
+            ["SECTORS and HOUSEHOLDS", "final sources"],
+        ),
+        lambda: if_then_else(
+            time() > year_to_finish_energy_intensity_policies(),
+            lambda: xr.DataArray(
+                1,
+                {
+                    "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+                    "final sources": _subscript_dict["final sources"],
+                },
+                ["SECTORS and HOUSEHOLDS", "final sources"],
+            ),
+            lambda: if_then_else(
+                policy_change_energy_speed() == 1,
+                lambda: (
+                    (time() - year_policy_change_energy())
+                    / (
+                        year_to_finish_energy_intensity_policies()
+                        - year_policy_change_energy()
+                    )
+                )
+                ** exp_rapid_evol_change_energy(),
+                lambda: if_then_else(
+                    policy_change_energy_speed() == 2,
+                    lambda: (time() - year_policy_change_energy())
+                    / (
+                        year_to_finish_energy_intensity_policies()
+                        - year_policy_change_energy()
+                    ),
+                    lambda: if_then_else(
+                        policy_change_energy_speed() == 3,
+                        lambda: (
+                            (time() - year_policy_change_energy())
+                            / (
+                                year_to_finish_energy_intensity_policies()
+                                - year_policy_change_energy()
+                            )
+                        )
+                        ** exp_slow_evol_change_energy(),
+                        lambda: xr.DataArray(
+                            0,
+                            {
+                                "SECTORS and HOUSEHOLDS": _subscript_dict[
+                                    "SECTORS and HOUSEHOLDS"
+                                ],
+                                "final sources": _subscript_dict["final sources"],
+                            },
+                            ["SECTORS and HOUSEHOLDS", "final sources"],
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    )
+
+
+@component.add(
+    name="Implementation policy to improve energy intensity efficiency",
+    units="Dmnl",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "choose_final_sectoral_energy_intensities_evolution_method": 1,
+        "year_policy_to_improve_efficiency": 9,
+        "year_to_finish_energy_intensity_policies": 5,
+        "time": 5,
+        "exp_slow_evol_improve_efficiency": 1,
+        "policy_to_improve_efficiency_speed": 3,
+        "exp_rapid_evol_improve_efficiency": 1,
+    },
+)
+def implementation_policy_to_improve_energy_intensity_efficiency():
+    """
+    Pressure due to energy policies, eg incentives for energy efficiency,
+    """
+    return if_then_else(
+        np.logical_or(
+            choose_final_sectoral_energy_intensities_evolution_method() != 2,
+            np.logical_or(
+                year_policy_to_improve_efficiency() < 2015,
+                np.logical_or(
+                    year_policy_to_improve_efficiency()
+                    > year_to_finish_energy_intensity_policies(),
+                    time() < year_policy_to_improve_efficiency(),
+                ),
+            ),
+        ),
+        lambda: xr.DataArray(
+            0,
+            {
+                "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+                "final sources": _subscript_dict["final sources"],
+            },
+            ["SECTORS and HOUSEHOLDS", "final sources"],
+        ),
+        lambda: if_then_else(
+            time() > year_to_finish_energy_intensity_policies(),
+            lambda: xr.DataArray(
+                1,
+                {
+                    "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+                    "final sources": _subscript_dict["final sources"],
+                },
+                ["SECTORS and HOUSEHOLDS", "final sources"],
+            ),
+            lambda: if_then_else(
+                policy_to_improve_efficiency_speed() == 1,
+                lambda: (
+                    (time() - year_policy_to_improve_efficiency())
+                    / (
+                        year_to_finish_energy_intensity_policies()
+                        - year_policy_to_improve_efficiency()
+                    )
+                )
+                ** exp_rapid_evol_improve_efficiency(),
+                lambda: if_then_else(
+                    policy_to_improve_efficiency_speed() == 2,
+                    lambda: (time() - year_policy_to_improve_efficiency())
+                    / (
+                        year_to_finish_energy_intensity_policies()
+                        - year_policy_to_improve_efficiency()
+                    ),
+                    lambda: if_then_else(
+                        policy_to_improve_efficiency_speed() == 3,
+                        lambda: (
+                            (time() - year_policy_to_improve_efficiency())
+                            / (
+                                year_to_finish_energy_intensity_policies()
+                                - year_policy_to_improve_efficiency()
+                            )
+                        )
+                        ** exp_slow_evol_improve_efficiency(),
+                        lambda: xr.DataArray(
+                            0,
+                            {
+                                "SECTORS and HOUSEHOLDS": _subscript_dict[
+                                    "SECTORS and HOUSEHOLDS"
+                                ],
+                                "final sources": _subscript_dict["final sources"],
+                            },
+                            ["SECTORS and HOUSEHOLDS", "final sources"],
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    )
+
+
+@component.add(
+    name="Increase of intensity due to energy a technology change TOP DOWN",
+    units="EJ/(year*Tdollars)",
+    subscripts=[np.str_("sectors"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"increase_of_intensity_due_to_energy_a_technology_eff": 1},
+)
+def increase_of_intensity_due_to_energy_a_technology_change_top_down():
+    """
+    When in one economic sector, one type of energy (a) is replaced by another (b), the energy intensity of (b) will increase and the energy intensity of (a) will decrease. This flow represents the increase of (b).
+    """
+    return sum(
+        increase_of_intensity_due_to_energy_a_technology_eff().rename(
+            {
+                np.str_("final sources1"): "final sources",
+                np.str_("final sources"): "final sources1!",
+            }
+        ),
+        dim=["final sources1!"],
+    )
+
+
+@component.add(
+    name="Increase of intensity due to energy a technology eff",
+    units="EJ/(year*Tdollars)",
+    subscripts=[
+        np.str_("sectors"),
+        np.str_("final sources1"),
+        np.str_("final sources"),
+    ],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "efficiency_rate_of_substitution": 2,
+        "increase_of_intensity_due_to_energy_a_technology_net": 2,
+    },
+)
+def increase_of_intensity_due_to_energy_a_technology_eff():
+    """
+    Increase of intensity due to change a energy technology by fuel
+    """
+    return if_then_else(
+        efficiency_rate_of_substitution()
+        .loc[_subscript_dict["sectors"], :, :]
+        .rename(
+            {
+                np.str_("SECTORS and HOUSEHOLDS"): "sectors",
+                np.str_("final sources"): "final sources1",
+                np.str_("final sources1"): "final sources",
+            }
+        )
+        == 0,
+        lambda: increase_of_intensity_due_to_energy_a_technology_net(),
+        lambda: increase_of_intensity_due_to_energy_a_technology_net()
+        * efficiency_rate_of_substitution()
+        .loc[_subscript_dict["sectors"], :, :]
+        .rename(
+            {
+                np.str_("SECTORS and HOUSEHOLDS"): "sectors",
+                np.str_("final sources"): "final sources1",
+                np.str_("final sources1"): "final sources",
+            }
+        ),
+    )
+
+
+@component.add(
+    name="Increase of intensity due to energy a technology net",
+    units="EJ/(year*Tdollars)",
+    subscripts=[
+        np.str_("sectors"),
+        np.str_("final sources1"),
+        np.str_("final sources"),
+    ],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "decrease_of_intensity_due_to_energy_a_technology_change_top_down": 1,
+        "share_tech_change_fuel": 1,
+    },
+)
+def increase_of_intensity_due_to_energy_a_technology_net():
+    """
+    Increase of intensity due to change a energy technology without considering efficieny rate of susbsitution by fuel
+    """
+    return (
+        decrease_of_intensity_due_to_energy_a_technology_change_top_down()
+        * share_tech_change_fuel().transpose(
+            "sectors", "final sources", "final sources1"
+        )
+    ).transpose("sectors", "final sources1", "final sources")
+
+
+@component.add(
+    name="inertial rate energy intensity TOP DOWN",
+    units="EJ/(year*Tdollars)",
+    subscripts=[np.str_("sectors"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "historic_rate_final_energy_intensity": 1,
+        "choose_final_sectoral_energy_intensities_evolution_method": 2,
+        "rate_change_intensity_bottom_up": 4,
+        "evol_final_energy_intensity_by_sector_and_fuel": 4,
+        "initial_energy_intensity_1995": 4,
+        "available_improvement_efficiency": 4,
+        "activate_bottom_up_method": 4,
+        "efficiency_energy_acceleration": 12,
+        "year_energy_intensity_target": 1,
+        "variation_energy_intensity_target": 1,
+        "historic_mean_rate_energy_intensity": 6,
+    },
+)
+def inertial_rate_energy_intensity_top_down():
+    """
+    This variable models the variation of the energy intensity according to the historical trend and represents the variation of the technological energy efficiency in each economic sector for each type of energy. By default it will follow the historical trend but can be modified by policies or market conditions that accelerate change. IF THEN ELSE(Choose final sectoral energy intensities evolution method=3,IF THEN ELSE(Time<2009, historic rate final energy intensity[sectors,final sources],IF THEN ELSE(Time<2020,IF THEN ELSE(Activate BOTTOM UP method [sectors]=0:OR:rate change intensity BOTTOM UP[ sectors,final sources]=0, IF THEN ELSE((historical mean rate energy intensity[sectors,final sources]+Efficiency energy acceleration [sectors,final sources])<0,Evol final energy intensity by sector and fuel [sectors,final sources]*(historical mean rate energy intensity[sectors,final sources] +Efficiency energy acceleration[sectors,final sources])*available improvement efficiency[sectors],Initial energy intensity 1995 [sectors,final sources] *(historical mean rate energy intensity[sectors,final sources]+Efficiency energy acceleration[ sectors,final sources])),0), IF THEN ELSE (Activate BOTTOM UP method[sectors]=0:OR:rate change intensity BOTTOM UP[ sectors,final sources]=0, IF THEN ELSE((Efficiency energy acceleration [sectors,final sources])<0,Evol final energy intensity by sector and fuel [sectors,final sources]*(Efficiency energy acceleration[sectors,final sources])*available improvement efficiency [sectors],Initial energy intensity 1995 [sectors,final sources] *(Efficiency energy acceleration[ sectors,final sources])),0)))+variation energy intensity TARGET[sectors,final sources],IF THEN ELSE(Time>2009, IF THEN ELSE(Activate BOTTOM UP method [sectors]=0:OR:rate change intensity BOTTOM UP[ sectors,final sources]=0, IF THEN ELSE((historical mean rate energy intensity[sectors,final sources]+Efficiency energy acceleration [sectors,final sources])<0,Evol final energy intensity by sector and fuel [sectors,final sources]*(historical mean rate energy intensity[sectors,final sources] +Efficiency energy acceleration[sectors,final sources])*available improvement efficiency[sectors],Initial energy intensity 1995 [sectors,final sources] *(historical mean rate energy intensity[sectors,final sources]+Efficiency energy acceleration[ sectors,final sources])),0), historic rate final energy intensity[sectors,final sources]))
+    """
+    return if_then_else(
+        time() < 2009,
+        lambda: historic_rate_final_energy_intensity()
+        .loc[_subscript_dict["sectors"], :]
+        .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"}),
+        lambda: if_then_else(
+            choose_final_sectoral_energy_intensities_evolution_method() == 1,
+            lambda: if_then_else(
+                np.logical_or(
+                    (
+                        activate_bottom_up_method()
+                        .loc[_subscript_dict["sectors"]]
+                        .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                        == 0
+                    ),
+                    rate_change_intensity_bottom_up() == 0,
+                ),
+                lambda: if_then_else(
+                    efficiency_energy_acceleration()
+                    .loc[_subscript_dict["sectors"], :]
+                    .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                    < 0,
+                    lambda: evol_final_energy_intensity_by_sector_and_fuel()
+                    * efficiency_energy_acceleration()
+                    .loc[_subscript_dict["sectors"], :]
+                    .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                    * available_improvement_efficiency(),
+                    lambda: initial_energy_intensity_1995()
+                    .loc[_subscript_dict["sectors"], :]
+                    .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                    * efficiency_energy_acceleration()
+                    .loc[_subscript_dict["sectors"], :]
+                    .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"}),
+                ),
+                lambda: xr.DataArray(
+                    0,
+                    {
+                        "sectors": _subscript_dict["sectors"],
+                        "final sources": _subscript_dict["final sources"],
+                    },
+                    ["sectors", "final sources"],
+                ),
+            ),
+            lambda: if_then_else(
+                time() < year_energy_intensity_target(),
+                lambda: if_then_else(
+                    np.logical_or(
+                        (
+                            activate_bottom_up_method()
+                            .loc[_subscript_dict["sectors"]]
+                            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                            == 0
+                        ),
+                        rate_change_intensity_bottom_up() == 0,
+                    ),
+                    lambda: if_then_else(
+                        historic_mean_rate_energy_intensity()
+                        .loc[_subscript_dict["sectors"], :]
+                        .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                        + efficiency_energy_acceleration()
+                        .loc[_subscript_dict["sectors"], :]
+                        .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                        < 0,
+                        lambda: evol_final_energy_intensity_by_sector_and_fuel()
+                        * (
+                            historic_mean_rate_energy_intensity()
+                            .loc[_subscript_dict["sectors"], :]
+                            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                            + efficiency_energy_acceleration()
+                            .loc[_subscript_dict["sectors"], :]
+                            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                        )
+                        * available_improvement_efficiency(),
+                        lambda: initial_energy_intensity_1995()
+                        .loc[_subscript_dict["sectors"], :]
+                        .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                        * (
+                            historic_mean_rate_energy_intensity()
+                            .loc[_subscript_dict["sectors"], :]
+                            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                            + efficiency_energy_acceleration()
+                            .loc[_subscript_dict["sectors"], :]
+                            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                        ),
+                    ),
+                    lambda: xr.DataArray(
+                        0,
+                        {
+                            "sectors": _subscript_dict["sectors"],
+                            "final sources": _subscript_dict["final sources"],
+                        },
+                        ["sectors", "final sources"],
+                    ),
+                ),
+                lambda: if_then_else(
+                    choose_final_sectoral_energy_intensities_evolution_method() == 2,
+                    lambda: if_then_else(
+                        np.logical_or(
+                            (
+                                activate_bottom_up_method()
+                                .loc[_subscript_dict["sectors"]]
+                                .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                                == 0
+                            ),
+                            rate_change_intensity_bottom_up() == 0,
+                        ),
+                        lambda: if_then_else(
+                            historic_mean_rate_energy_intensity()
+                            .loc[_subscript_dict["sectors"], :]
+                            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                            + efficiency_energy_acceleration()
+                            .loc[_subscript_dict["sectors"], :]
+                            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                            < 0,
+                            lambda: evol_final_energy_intensity_by_sector_and_fuel()
+                            * (
+                                historic_mean_rate_energy_intensity()
+                                .loc[_subscript_dict["sectors"], :]
+                                .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                                + efficiency_energy_acceleration()
+                                .loc[_subscript_dict["sectors"], :]
+                                .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                            )
+                            * available_improvement_efficiency(),
+                            lambda: initial_energy_intensity_1995()
+                            .loc[_subscript_dict["sectors"], :]
+                            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                            * (
+                                historic_mean_rate_energy_intensity()
+                                .loc[_subscript_dict["sectors"], :]
+                                .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                                + efficiency_energy_acceleration()
+                                .loc[_subscript_dict["sectors"], :]
+                                .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                            ),
+                        ),
+                        lambda: xr.DataArray(
+                            0,
+                            {
+                                "sectors": _subscript_dict["sectors"],
+                                "final sources": _subscript_dict["final sources"],
+                            },
+                            ["sectors", "final sources"],
+                        ),
+                    ),
+                    lambda: if_then_else(
+                        np.logical_or(
+                            (
+                                activate_bottom_up_method()
+                                .loc[_subscript_dict["sectors"]]
+                                .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                                == 0
+                            ),
+                            rate_change_intensity_bottom_up() == 0,
+                        ),
+                        lambda: if_then_else(
+                            efficiency_energy_acceleration()
+                            .loc[_subscript_dict["sectors"], :]
+                            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                            < 0,
+                            lambda: evol_final_energy_intensity_by_sector_and_fuel()
+                            * efficiency_energy_acceleration()
+                            .loc[_subscript_dict["sectors"], :]
+                            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                            * available_improvement_efficiency(),
+                            lambda: initial_energy_intensity_1995()
+                            .loc[_subscript_dict["sectors"], :]
+                            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                            * efficiency_energy_acceleration()
+                            .loc[_subscript_dict["sectors"], :]
+                            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"}),
+                        )
+                        + variation_energy_intensity_target(),
+                        lambda: xr.DataArray(
+                            0,
+                            {
+                                "sectors": _subscript_dict["sectors"],
+                                "final sources": _subscript_dict["final sources"],
+                            },
+                            ["sectors", "final sources"],
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    )
+
+
+@component.add(
+    name="Initial energy intensity 1995",
+    units="EJ/Tdollars",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"historic_final_energy_intensity": 1, "mdollar_per_tdollar": 1},
+)
+def initial_energy_intensity_1995():
+    """
+    Initial energy intensity by sector and fuel in 1995
+    """
+    return (historic_final_energy_intensity(1995) * mdollar_per_tdollar()).transpose(
+        "SECTORS and HOUSEHOLDS", "final sources"
+    )
+
+
+@component.add(
+    name="initial global energy intensity 2009",
+    units="EJ/Tdollar",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"historic_final_energy_intensity": 1, "mdollar_per_tdollar": 1},
+)
+def initial_global_energy_intensity_2009():
+    """
+    Initial global energy intensity by sector 2009
+    """
+    return (
+        sum(
+            historic_final_energy_intensity(2009).rename(
+                {np.str_("final sources"): "final sources!"}
+            ),
+            dim=["final sources!"],
+        )
+        * mdollar_per_tdollar()
+    )
+
+
+@component.add(
+    name='"Inter-fuel scarcity pressure"',
+    units="Dmnl",
+    subscripts=[np.str_("final sources"), np.str_("final sources1")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "scarcity_feedback_final_fuel_replacement_flag": 1,
+        "perception_of_interfuel_final_energy_scarcities": 1,
+    },
+)
+def interfuel_scarcity_pressure():
+    """
+    Pressure due to variations in the inter-fuel scarcity of each final energy.
+    """
+    return if_then_else(
+        scarcity_feedback_final_fuel_replacement_flag() == 1,
+        lambda: np.maximum(0, perception_of_interfuel_final_energy_scarcities()),
+        lambda: xr.DataArray(
+            0,
+            {
+                "final sources": _subscript_dict["final sources"],
+                "final sources1": _subscript_dict["final sources1"],
+            },
+            ["final sources", "final sources1"],
+        ),
+    )
+
+
+@component.add(
+    name="max yearly change between sources",
+    units="Dmnl",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_max_yearly_change_between_sources"},
+)
+def max_yearly_change_between_sources():
+    """
+    Maximum annual change for one type of energy in a sector.
+    """
+    return _ext_constant_max_yearly_change_between_sources()
+
+
+_ext_constant_max_yearly_change_between_sources = ExtConstant(
+    "../energy.xlsx",
+    "World",
+    "max_yearly_change_between_sources*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    _root,
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    "_ext_constant_max_yearly_change_between_sources",
+)
+
+
+@component.add(
+    name="Maximum yearly acceleration of intensity improvement",
+    units="Dmnl",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_maximum_yearly_acceleration_of_intensity_improvement"
+    },
+)
+def maximum_yearly_acceleration_of_intensity_improvement():
+    """
+    Maximum feasible annual changes that could be sustained in the future in the energy intensity of each economic sector have been estimated based on the observation of trends and historical changes in the available data.
+    """
+    return _ext_constant_maximum_yearly_acceleration_of_intensity_improvement()
+
+
+_ext_constant_maximum_yearly_acceleration_of_intensity_improvement = ExtConstant(
+    "../energy.xlsx",
+    "World",
+    "maximum_yearly_acceleration_of_intensity_improvement*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    _root,
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    "_ext_constant_maximum_yearly_acceleration_of_intensity_improvement",
+)
+
+
+@component.add(
+    name="Mdollar per Tdollar",
+    units="Mdollar/Tdollar",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def mdollar_per_tdollar():
+    """
+    Million dollars per Tdollar (1 T$ = 1e6 M$).
+    """
+    return 1000000.0
+
+
+@component.add(
+    name="min energy intensity vs intial",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_min_energy_intensity_vs_intial"},
+)
+def min_energy_intensity_vs_intial():
+    """
+    Minimum value that the energy intensity for each economic sector could reach, obviously always above zero. This minimum value is very difficult to estimate, but based on historical values it has been considered that it can reach 30% of the value of 2009. (Capellán-Pérez et al., 2014)
+    """
+    return _ext_constant_min_energy_intensity_vs_intial()
+
+
+_ext_constant_min_energy_intensity_vs_intial = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "min_FEI_vs_initial",
+    {},
+    _root,
+    {},
+    "_ext_constant_min_energy_intensity_vs_intial",
+)
+
+
+@component.add(
+    name="minimum fraction source",
+    units="Dmnl",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_minimum_fraction_source"},
+)
+def minimum_fraction_source():
+    """
+    minimum energy of each type of energy that should be used in each sector because it is irreplaceable.
+    """
+    return _ext_constant_minimum_fraction_source()
+
+
+_ext_constant_minimum_fraction_source = ExtConstant(
+    "../energy.xlsx",
+    "World",
+    "minimum_fraction_source*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    _root,
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    "_ext_constant_minimum_fraction_source",
+)
+
+
+@component.add(
+    name="Policy change energy speed",
+    units="Dmnl",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_policy_change_energy_speed"},
+)
+def policy_change_energy_speed():
+    """
+    Selection of the speed of application of the different policies to change the final energy
+    """
+    return _ext_constant_policy_change_energy_speed()
+
+
+_ext_constant_policy_change_energy_speed = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "policy_change_energy_speed*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    _root,
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    "_ext_constant_policy_change_energy_speed",
+)
+
+
+@component.add(
+    name="Policy to improve efficiency speed",
+    units="Dmnl",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_policy_to_improve_efficiency_speed"},
+)
+def policy_to_improve_efficiency_speed():
+    """
+    Selection of the speed of application of the different policies to improve the efficiency.
+    """
+    return _ext_constant_policy_to_improve_efficiency_speed()
+
+
+_ext_constant_policy_to_improve_efficiency_speed = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "policy_to_improve_efficiency_speed*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    _root,
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    "_ext_constant_policy_to_improve_efficiency_speed",
+)
+
+
+@component.add(
+    name="Pressure to change energy technology",
+    units="Dmnl",
+    subscripts=[np.str_("sectors"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pressure_to_change_energy_technology_by_fuel": 1},
+)
+def pressure_to_change_energy_technology():
+    """
+    This variable represents the pressure in one sector for substituting a final energy source for all the other energies.
+    """
+    return np.minimum(
+        1,
+        sum(
+            pressure_to_change_energy_technology_by_fuel().rename(
+                {
+                    np.str_("final sources"): "final sources1!",
+                    np.str_("final sources1"): "final sources",
+                }
+            ),
+            dim=["final sources1!"],
+        ),
+    )
+
+
+@component.add(
+    name="Pressure to change energy technology by fuel",
+    units="Dmnl",
+    subscripts=[
+        np.str_("sectors"),
+        np.str_("final sources"),
+        np.str_("final sources1"),
+    ],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "efficiency_rate_of_substitution": 1,
+        "interfuel_scarcity_pressure": 2,
+        "implementation_policy_to_change_final_energy": 1,
+    },
+)
+def pressure_to_change_energy_technology_by_fuel():
+    """
+    This variable represents the pressure in each economic sector for substituting a final energy source for another. This change depending on the sectors will have different technological difficulty and different cost. This pressure may be due to (1) energy policies, eg substitution of fossil fuels for electrical energy, or (2) by variations in the scarcity of each type of final energy.
+    """
+    return if_then_else(
+        efficiency_rate_of_substitution()
+        .loc[_subscript_dict["sectors"], :, :]
+        .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+        == 0,
+        lambda: np.minimum(np.maximum(interfuel_scarcity_pressure(), 0), 1).expand_dims(
+            {"sectors": _subscript_dict["sectors"]}, 0
+        ),
+        lambda: np.minimum(
+            np.maximum(
+                interfuel_scarcity_pressure()
+                + implementation_policy_to_change_final_energy()
+                .loc[_subscript_dict["sectors"], :]
+                .rename(
+                    {
+                        np.str_("SECTORS and HOUSEHOLDS"): "sectors",
+                        np.str_("final sources"): "final sources1",
+                    }
+                )
+                .transpose("final sources1", "sectors"),
+                0,
+            ),
+            1,
+        ).transpose("sectors", "final sources", "final sources1"),
+    )
+
+
+@component.add(
+    name="Pressure to improve energy intensity efficiency",
+    units="Dmnl",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "fuel_scarcity_pressure": 1,
+        "implementation_policy_to_improve_energy_intensity_efficiency": 1,
+    },
+)
+def pressure_to_improve_energy_intensity_efficiency():
+    """
+    This variable represents the pressure in each economic sector to improve energy efficiency in the technology used. This change according to the sectors will have different technological difficulty and different cost. This pressure may be due to (1) energy policies, eg incentives for energy efficiency, or (2) significant variations in the scarcity of each type of final energy.
+    """
+    return np.minimum(
+        1,
+        fuel_scarcity_pressure()
+        + implementation_policy_to_improve_energy_intensity_efficiency().transpose(
+            "final sources", "SECTORS and HOUSEHOLDS"
+        ),
+    ).transpose("SECTORS and HOUSEHOLDS", "final sources")
+
+
+@component.add(
+    name="rate change intensity BOTTOM UP",
+    units="EJ/(year*Tdollars)",
+    subscripts=[np.str_("sectors"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "activate_bottom_up_method": 1,
+        "percentage_variation_ei_commercial_transport": 1,
+        "evol_final_energy_intensity_by_sector_and_fuel": 1,
+        "time_step": 1,
+    },
+)
+def rate_change_intensity_bottom_up():
+    """
+    Variation of the energy intensity of inland transport in BOTTOM UP method
+    """
+    return if_then_else(
+        (
+            activate_bottom_up_method()
+            .loc[_subscript_dict["sectors"]]
+            .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+            == 1
+        ).expand_dims({"final sources": _subscript_dict["final sources"]}, 1),
+        lambda: (
+            (
+                percentage_variation_ei_commercial_transport()
+                * evol_final_energy_intensity_by_sector_and_fuel().transpose(
+                    "final sources", "sectors"
+                )
+            )
+            / time_step()
+        ).transpose("sectors", "final sources"),
+        lambda: xr.DataArray(
+            0,
+            {
+                "sectors": _subscript_dict["sectors"],
+                "final sources": _subscript_dict["final sources"],
+            },
+            ["sectors", "final sources"],
+        ),
+    )
+
+
+@component.add(
+    name="scarcity feedback final fuel replacement flag",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_scarcity_feedback_final_fuel_replacement_flag"
+    },
+)
+def scarcity_feedback_final_fuel_replacement_flag():
+    """
+    Switch to (de)activate the scarcity feedback fuel replacement.
+    """
+    return _ext_constant_scarcity_feedback_final_fuel_replacement_flag()
+
+
+_ext_constant_scarcity_feedback_final_fuel_replacement_flag = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "scarcity_feedback_final_fuel_replacement_flag",
+    {},
+    _root,
+    {},
+    "_ext_constant_scarcity_feedback_final_fuel_replacement_flag",
+)
+
+
+@component.add(
+    name="share tech change fuel",
+    units="Dmnl",
+    subscripts=[
+        np.str_("sectors"),
+        np.str_("final sources1"),
+        np.str_("final sources"),
+    ],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"pressure_to_change_energy_technology_by_fuel": 2},
+)
+def share_tech_change_fuel():
+    """
+    Share of the global pressure to change energy technology that corresponds to each fuel.
+    """
+    return zidz(
+        pressure_to_change_energy_technology_by_fuel().rename(
+            {
+                np.str_("final sources"): "final sources1",
+                np.str_("final sources1"): "final sources",
+            }
+        ),
+        sum(
+            pressure_to_change_energy_technology_by_fuel().rename(
+                {
+                    np.str_("final sources"): "final sources1!",
+                    np.str_("final sources1"): "final sources",
+                }
+            ),
+            dim=["final sources1!"],
+        ).expand_dims({"final sources1": _subscript_dict["final sources1"]}, 1),
+    )
+
+
+@component.add(
+    name="variation energy intensity TARGET",
+    units="EJ/(year*Tdollars)",
+    subscripts=[np.str_("sectors"), np.str_("final sources")],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "choose_energy_intensity_target_method": 1,
+        "energy_intensity_target": 1,
+        "time": 6,
+        "evol_final_energy_intensity_by_sector_and_fuel": 2,
+        "final_year_energy_intensity_target": 4,
+        "year_energy_intensity_target": 2,
+        "final_energy_intensity_2020": 1,
+        "pct_change_energy_intensity_target": 1,
+    },
+)
+def variation_energy_intensity_target():
+    """
+    Variation in energy intensity by sector and final energy defined by user targets.
+    """
+    return if_then_else(
+        choose_energy_intensity_target_method() == 1,
+        lambda: if_then_else(
+            time() >= final_year_energy_intensity_target(),
+            lambda: xr.DataArray(
+                0,
+                {
+                    "sectors": _subscript_dict["sectors"],
+                    "final sources": _subscript_dict["final sources"],
+                },
+                ["sectors", "final sources"],
+            ),
+            lambda: if_then_else(
+                time() < year_energy_intensity_target(),
+                lambda: xr.DataArray(
+                    0,
+                    {
+                        "sectors": _subscript_dict["sectors"],
+                        "final sources": _subscript_dict["final sources"],
+                    },
+                    ["sectors", "final sources"],
+                ),
+                lambda: (
+                    energy_intensity_target()
+                    .loc[_subscript_dict["sectors"], :]
+                    .rename({np.str_("SECTORS and HOUSEHOLDS"): "sectors"})
+                    - evol_final_energy_intensity_by_sector_and_fuel()
+                )
+                / (final_year_energy_intensity_target() - time()),
+            ),
+        ),
+        lambda: if_then_else(
+            time() >= final_year_energy_intensity_target(),
+            lambda: xr.DataArray(
+                0,
+                {
+                    "final sources": _subscript_dict["final sources"],
+                    "sectors": _subscript_dict["sectors"],
+                },
+                ["final sources", "sectors"],
+            ),
+            lambda: if_then_else(
+                time() < year_energy_intensity_target(),
+                lambda: xr.DataArray(
+                    0,
+                    {
+                        "final sources": _subscript_dict["final sources"],
+                        "sectors": _subscript_dict["sectors"],
+                    },
+                    ["final sources", "sectors"],
+                ),
+                lambda: (
+                    final_energy_intensity_2020()
+                    * (1 + pct_change_energy_intensity_target())
+                    - evol_final_energy_intensity_by_sector_and_fuel().transpose(
+                        "final sources", "sectors"
+                    )
+                )
+                / (final_year_energy_intensity_target() - time()),
+            ),
+        ).transpose("sectors", "final sources"),
+    )
+
+
+@component.add(
+    name="Year policy change energy",
+    units="year",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_year_policy_change_energy"},
+)
+def year_policy_change_energy():
+    """
+    Year when the policy to change final energy in the sectors start. For each of five final energies.
+    """
+    return _ext_constant_year_policy_change_energy()
+
+
+_ext_constant_year_policy_change_energy = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "year_policy_change_energy*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    _root,
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    "_ext_constant_year_policy_change_energy",
+)
+
+
+@component.add(
+    name="Year policy to improve efficiency",
+    units="year",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_year_policy_to_improve_efficiency"},
+)
+def year_policy_to_improve_efficiency():
+    """
+    Year when the policy to improve efficiency in sectors start. For each of five final energies.
+    """
+    return _ext_constant_year_policy_to_improve_efficiency()
+
+
+_ext_constant_year_policy_to_improve_efficiency = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "year_policy_to_improve_efficiency*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    _root,
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    "_ext_constant_year_policy_to_improve_efficiency",
+)
+
+
+@component.add(
+    name="Year to finish energy intensity policies",
+    units="year",
+    subscripts=[np.str_("SECTORS and HOUSEHOLDS"), np.str_("final sources")],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_constant_year_to_finish_energy_intensity_policies"
+    },
+)
+def year_to_finish_energy_intensity_policies():
+    """
+    Year when the policy to improve efficiency in sectors finish.
+    """
+    return _ext_constant_year_to_finish_energy_intensity_policies()
+
+
+_ext_constant_year_to_finish_energy_intensity_policies = ExtConstant(
+    "../../scenarios/scen_w.xlsx",
+    "NZP",
+    "year_to_finish_energy_intensity_policies*",
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    _root,
+    {
+        "SECTORS and HOUSEHOLDS": _subscript_dict["SECTORS and HOUSEHOLDS"],
+        "final sources": _subscript_dict["final sources"],
+    },
+    "_ext_constant_year_to_finish_energy_intensity_policies",
+)
+
+
+@component.add(
+    name="Year to finish policy change energy",
+    units="year",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def year_to_finish_policy_change_energy():
+    """
+    Year when the policy to change final energy in the sectors finish.
+    """
+    return 2050

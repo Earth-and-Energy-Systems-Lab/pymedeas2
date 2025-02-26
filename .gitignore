@@ -19,3 +19,4 @@ myenv/
 pymedeas_plots/
 outputs/
 multiple_run.py
+logs/

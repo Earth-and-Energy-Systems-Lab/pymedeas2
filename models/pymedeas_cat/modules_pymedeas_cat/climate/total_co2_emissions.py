@@ -89,8 +89,8 @@ _ext_data_afforestation_program_2020 = ExtData(
     depends_on={
         "afforestation_program_2020": 1,
         "activate_affores_program": 1,
-        "gtc_per_gtco2": 1,
         "mtc_per_gtc": 1,
+        "gtc_per_gtco2": 1,
     },
 )
 def afforestation_program_2020_gtco2():
@@ -292,8 +292,8 @@ def co2_emissions_fossil_fuels():
         "pec_nat_gas": 4,
         "share_nat_gas_for_elec_emissions_relevant": 1,
         "share_nat_gas_for_heat_emissions_relevant": 1,
-        "share_nat_gas_for_gtl_emissions_relevant": 1,
         "gtco2_per_ej_gtl": 1,
+        "share_nat_gas_for_gtl_emissions_relevant": 1,
         "share_nat_gas_for_fc_emissions_relevant": 1,
     },
 )
@@ -392,8 +392,8 @@ def co2_emissions_per_fuel():
     depends_on={
         "gtco2_per_ej_solid_bioe": 3,
         "pe_real_generation_res_elec": 1,
-        "pes_res_for_heatcom_by_techn": 1,
         "pes_res_for_heatnc_by_techn": 1,
+        "pes_res_for_heatcom_by_techn": 1,
         "modern_bioe_in_households": 1,
     },
 )
@@ -644,9 +644,9 @@ _ext_constant_gtco2_per_ej_gtl = ExtConstant(
     depends_on={
         "share_conv_vs_total_oil_extraction": 2,
         "gtco2_per_ej_conv_oil": 1,
-        "gtco2_per_ej_unconv_oil": 2,
         "gtco2_per_ej_shale_oil": 1,
         "adapt_emissions_shale_oil": 1,
+        "gtco2_per_ej_unconv_oil": 2,
     },
 )
 def gtco2_per_ej_oil():
@@ -777,25 +777,13 @@ _ext_constant_gtco2_per_ej_unconv_oil = ExtConstant(
     name="GtCO2_per_EJ_waste",
     units="GtCO2/EJ",
     comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_gtco2_per_ej_waste"},
+    comp_subtype="Normal",
 )
 def gtco2_per_ej_waste():
     """
     GET DIRECT CONSTANTS('../climate.xlsx', 'Global', 'co2_waste')
     """
-    return _ext_constant_gtco2_per_ej_waste()
-
-
-_ext_constant_gtco2_per_ej_waste = ExtConstant(
-    r"../climate.xlsx",
-    "Global",
-    "co2_waste",
-    {},
-    _root,
-    {},
-    "_ext_constant_gtco2_per_ej_waste",
-)
+    return 0
 
 
 @component.add(

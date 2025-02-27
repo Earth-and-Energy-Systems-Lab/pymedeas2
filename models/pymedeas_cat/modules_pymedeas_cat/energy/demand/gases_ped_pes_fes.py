@@ -169,8 +169,8 @@ _sampleiftrue_historic_share_conv_nat_gas_domestic_cat_extraction_until_2016 = (
             },
             "step": {
                 "time": 1,
-                "extraction_nat_gas_ej_world": 1,
                 "historic_net_imports_nat_gas_cat_": 1,
+                "extraction_nat_gas_ej_world": 1,
             },
         }
     },
@@ -530,8 +530,8 @@ def share_gases_dem_for_heatnc():
     depends_on={
         "required_fed_by_gases": 1,
         "other_gases_required": 1,
-        "ped_gases": 1,
         "ped_nat_gas_for_gtl_ej": 1,
+        "ped_gases": 1,
     },
 )
 def share_gases_for_final_energy():

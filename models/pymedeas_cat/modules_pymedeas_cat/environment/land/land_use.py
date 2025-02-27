@@ -238,10 +238,10 @@ _integ_available_land = Integ(
     depends_on={
         "time": 2,
         "hist_variation_primary_forest": 1,
-        "historic_av_variation_primary_forests_area": 1,
         "start_year_p_variation_primary_forest": 1,
-        "primary_forests_area": 1,
+        "historic_av_variation_primary_forests_area": 1,
         "p_variation_primary_forest": 1,
+        "primary_forests_area": 1,
         "aux_reach_available_forest": 1,
     },
 )
@@ -311,9 +311,9 @@ def compet_land_for_biofuels_rate():
     comp_subtype="Normal",
     depends_on={
         "demand_forest_energy_non_tradition_ej": 1,
-        "consum_forest_energy_traditional_ej": 1,
         "consum_wood_products_ej": 1,
         "forest_consumption_ej": 1,
+        "consum_forest_energy_traditional_ej": 1,
     },
 )
 def consum_forest_energy_non_traditional_ej():
@@ -353,8 +353,8 @@ def consum_forest_energy_traditional_ej():
     comp_subtype="Normal",
     depends_on={
         "demand_wood_products_ej": 1,
-        "consum_forest_energy_traditional_ej": 1,
         "forest_consumption_ej": 1,
+        "consum_forest_energy_traditional_ej": 1,
     },
 )
 def consum_wood_products_ej():
@@ -559,8 +559,8 @@ def forest_consumption_ej():
     depends_on={
         "available_forest_area": 1,
         "p_minimum_forest": 1,
-        "max_sustainable_forest_extraction_ej": 1,
         "total_demand_forest_biomass_ej": 1,
+        "max_sustainable_forest_extraction_ej": 1,
         "p_forest_overexplotation": 1,
     },
 )
@@ -682,7 +682,7 @@ _ext_constant_growing_stock_forest_per_ha = ExtConstant(
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "time_step": 2, "historic_primary_forest": 2},
+    depends_on={"time": 3, "historic_primary_forest": 2, "time_step": 2},
 )
 def hist_variation_primary_forest():
     """
@@ -1799,9 +1799,9 @@ _integ_urban_land = Integ(
     depends_on={
         "time": 4,
         "historic_urban_land_density": 4,
+        "p_urban_land_density_mha": 2,
         "target_year_p_urban_land_density": 2,
         "start_year_p_urban_land_density": 3,
-        "p_urban_land_density_mha": 2,
     },
 )
 def urban_land_density():

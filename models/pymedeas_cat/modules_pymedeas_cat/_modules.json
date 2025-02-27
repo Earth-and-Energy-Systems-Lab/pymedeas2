@@ -91,23 +91,13 @@
             "co2_emissions_from_year",
             "co2_emissions_households_and_sectors",
             "co2_emissions_households_and_sectors_before_ccs",
-            "co2_emissions_sectors_and_households_including_process",
             "cumulated_co2_emissions",
             "energy_consumption_from_households_and_sectors",
             "share_energy_consumption_from_households_and_sectors",
             "total_co2_emissions_after_lulucf",
             "total_co2_emissions_gtco2",
-            "total_co2_emissions_gtco2_before_ccs",
             "total_cumulated_co2_emissions",
             "year_co2"
-        ],
-        "process_emissions": [
-            "historic_process_emissions_intensity",
-            "last_year_historic_process_emissions",
-            "process_emissions_intensity",
-            "process_emissions_reduction_policy",
-            "target_year_process_emissions_improvement",
-            "total_process_emissions"
         ],
         "total_ch4_emissions": [
             "ch4_emissions_bioe_and_waste",
@@ -372,7 +362,6 @@
             "real_final_demand_by_sector_cat",
             "real_final_energy_by_sector_and_fuel_cat",
             "real_tfec",
-            "real_tfec_before_heat_corr",
             "real_tfec_before_heat_dem_corr",
             "real_total_output",
             "real_total_output_by_fuel_and_sector",
@@ -383,7 +372,7 @@
             "required_fed_sectors_by_fuel",
             "required_final_energy_by_sector_and_fuel_cat",
             "share_e_losses_cc_world",
-            "share_electricity_tfec",
+            "share_elect_fe",
             "share_fed_by_sector",
             "shortage_coef_without_min_without_elosses",
             "total_domestic_output_required_by_sector",
@@ -1738,7 +1727,6 @@
                 "tpe_from_res_ej",
                 "tped_by_fuel",
                 "tpes_ej",
-                "tpes_intensity_ej_tdollar",
                 "year_scarcity_tpe"
             ],
             "traditional_biomass": [

@@ -275,8 +275,8 @@ def total_fe_elec_demand_twh():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "remaining_share_transmdistr_elec_losses": 1,
         "variation_share_transmdistr_losses_elec": 1,
+        "remaining_share_transmdistr_elec_losses": 1,
     },
 )
 def variation_share_transmdistr_elec_losses():

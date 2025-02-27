@@ -235,6 +235,7 @@ _ext_data_oil_refinery_share = ExtData(
         "pes_total_oil_ej_cat": 1,
         "imports_cat_total_oil_from_row_ej": 1,
         "extraction_coal_cat": 1,
+        "imports_cat_coal_from_row_ej": 1,
         "imports_cat_nat_gas_from_row_ej": 1,
         "pes_nat_gas_cat_": 1,
     },
@@ -251,7 +252,7 @@ def pes_fossil_fuel_extraction():
     value.loc[["liquids"]] = (
         pes_total_oil_ej_cat() + imports_cat_total_oil_from_row_ej()
     )
-    value.loc[["solids"]] = extraction_coal_cat()
+    value.loc[["solids"]] = extraction_coal_cat() + imports_cat_coal_from_row_ej()
     value.loc[["gases"]] = pes_nat_gas_cat_() + imports_cat_nat_gas_from_row_ej()
     return value
 

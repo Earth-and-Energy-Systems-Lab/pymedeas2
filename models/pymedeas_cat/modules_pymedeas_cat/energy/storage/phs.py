@@ -202,8 +202,8 @@ def max_potential_phs_twh():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "installed_capacity_phs": 1,
         "installed_capacity_phs_year_delayed": 1,
+        "installed_capacity_phs": 1,
     },
 )
 def new_phs_installed():
@@ -367,7 +367,7 @@ def real_fe_elec_stored_phs_twh():
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "wear_phs": 1, "phs_overcapacity": 1},
+    depends_on={"time": 1, "phs_overcapacity": 1, "wear_phs": 1},
 )
 def replacement_capacity_phs():
     """

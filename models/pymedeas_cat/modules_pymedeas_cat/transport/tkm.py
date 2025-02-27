@@ -118,8 +118,8 @@ def energy_by_fuel_tkm():
     depends_on={
         "energy_by_fuel_tkm": 1,
         "energy_commercial_by_fuel_pkm": 1,
-        "m_to_t": 1,
         "gdp_by_sector": 1,
+        "m_to_t": 1,
         "nvs_1_year": 1,
     },
 )
@@ -583,9 +583,9 @@ _ext_constant_saving_ratios_vehicles_tkm = ExtConstant(
     depends_on={
         "time": 2,
         "end_historical_data": 1,
-        "gdp_cat": 1,
         "tkmgdp_slope": 1,
         "tkm_initial": 1,
+        "gdp_cat": 1,
         "hist_tkm": 1,
     },
 )
@@ -725,8 +725,8 @@ _delayfixed_tkm_fuel_share_delayed = DelayFixed(
         "time": 4,
         "end_historical_data": 3,
         "initial_fuel_share_inland_tkm": 3,
-        "fuel_share_inland_tkm": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_inland_tkm": 2,
     },
 )
 def tkm_fuel_share_inland():
@@ -815,8 +815,8 @@ _ext_constant_tkm_initial = ExtConstant(
         "time": 5,
         "end_historical_data": 5,
         "hist_transport_share_tkm": 3,
-        "mode_share_tkm": 2,
         "start_year_policies_transport": 3,
+        "mode_share_tkm": 2,
     },
 )
 def tkm_mode_share():

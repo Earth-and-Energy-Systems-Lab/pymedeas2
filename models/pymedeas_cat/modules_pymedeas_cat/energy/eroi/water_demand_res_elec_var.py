@@ -179,7 +179,7 @@ def water_for_om_required_for_res_elec():
     units="kg/MW",
     subscripts=["RES_elec", "water0"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
     depends_on={"__external__": "_ext_constant_water_for_om_res_elec"},
 )
 def water_for_om_res_elec():

@@ -341,7 +341,7 @@ def share_res_heat_generation():
     """
     Share of RES in the total heat generation.
     """
-    return zidz(fes_res_for_heat_ej(), total_fe_heat_generation())
+    return fes_res_for_heat_ej() / total_fe_heat_generation()
 
 
 @component.add(

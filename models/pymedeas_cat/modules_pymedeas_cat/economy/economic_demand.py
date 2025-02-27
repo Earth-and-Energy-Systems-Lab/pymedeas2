@@ -95,9 +95,9 @@ def demand_not_covered_total_fd():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "desired_annual_total_demand_growth_rate": 1,
-        "total_demand": 1,
         "real_demand_delayed_1yr": 1,
+        "desired_annual_total_demand_growth_rate_delayed_1_yr": 1,
+        "total_demand": 1,
         "nvs_1_year": 1,
     },
 )
@@ -111,7 +111,7 @@ def diff_demand_cat():
             lambda: 1,
             lambda: (
                 real_demand_delayed_1yr()
-                * (1 + desired_annual_total_demand_growth_rate())
+                * (1 + desired_annual_total_demand_growth_rate_delayed_1_yr())
             )
             / total_demand(),
         )
@@ -396,8 +396,8 @@ def share_consum_goverment_and_inventories():
     depends_on={
         "exports_demand_to_roeu": 2,
         "gross_fixed_capital_formation": 1,
-        "household_demand": 1,
         "exports_demand_to_row": 1,
+        "household_demand": 1,
     },
 )
 def share_exp_roeu_vs_gfcfhdexp():
@@ -417,8 +417,8 @@ def share_exp_roeu_vs_gfcfhdexp():
     comp_subtype="Normal",
     depends_on={
         "exports_demand_to_row": 2,
-        "gross_fixed_capital_formation": 1,
         "exports_demand_to_roeu": 1,
+        "gross_fixed_capital_formation": 1,
         "household_demand": 1,
     },
 )
@@ -443,8 +443,8 @@ def share_exp_row_vs_gfcfhdexp():
     depends_on={
         "gross_fixed_capital_formation": 2,
         "exports_demand_to_roeu": 1,
-        "household_demand": 1,
         "exports_demand_to_row": 1,
+        "household_demand": 1,
     },
 )
 def share_gfcf_vs_gfcfhdexp():
@@ -506,10 +506,10 @@ def total_demand_adjusted():
         "time": 1,
         "historic_variation_demand": 1,
         "variation_exports_demand_to_roeu": 1,
-        "variation_household_demand": 1,
         "variation_exports_demand_to_row": 1,
-        "variation_gfcf": 1,
         "share_consum_goverment_and_inventories": 1,
+        "variation_gfcf": 1,
+        "variation_household_demand": 1,
     },
 )
 def variation_demand_flow_fd_cat():

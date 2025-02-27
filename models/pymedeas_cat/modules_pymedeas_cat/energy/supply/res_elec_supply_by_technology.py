@@ -245,8 +245,8 @@ def pe_real_generation_res_elec():
         "fe_demand_gas_elec_plants_twh": 1,
         "fe_demand_oil_elec_plants_twh": 1,
         "fe_nuclear_elec_generation_twh": 1,
-        "ej_per_twh": 1,
         "fes_elec_fossil_fuel_chp_plants_ej": 1,
+        "ej_per_twh": 1,
     },
 )
 def real_fe_demand_nre():

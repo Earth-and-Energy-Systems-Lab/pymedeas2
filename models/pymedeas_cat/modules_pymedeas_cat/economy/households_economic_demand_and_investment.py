@@ -362,13 +362,13 @@ def unit_correction_economic():
     depends_on={
         "gross_fixed_capital_formation": 1,
         "variation_historic_gfcf": 1,
-        "time": 1,
-        "cc_total": 2,
-        "unit_correction_economic": 2,
-        "variation_cc": 1,
-        "nvs_1_year": 1,
-        "beta_0_gfcf": 1,
         "beta_1_gfcf": 2,
+        "unit_correction_economic": 2,
+        "nvs_1_year": 1,
+        "variation_cc": 1,
+        "beta_0_gfcf": 1,
+        "cc_total": 2,
+        "time": 1,
     },
 )
 def variation_gfcf():
@@ -433,11 +433,11 @@ def variation_historic_gfcf():
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
-        "variation_lc": 1,
-        "beta_1_hd": 2,
         "lc": 2,
         "unit_correction_economic": 2,
         "nvs_1_year": 1,
+        "variation_lc": 1,
+        "beta_1_hd": 2,
         "beta_0_hd": 1,
     },
 )

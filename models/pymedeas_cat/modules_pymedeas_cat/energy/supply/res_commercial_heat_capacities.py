@@ -50,9 +50,9 @@ def abundance_res_heatcom2():
     depends_on={
         "time": 4,
         "past_res_growth_for_heatcom": 4,
-        "target_year_p_growth_res_heat": 2,
-        "p_res_for_heat": 2,
         "start_year_p_growth_res_heat": 3,
+        "p_res_for_heat": 2,
+        "target_year_p_growth_res_heat": 2,
     },
 )
 def adapt_growth_res_for_heatcom():
@@ -365,11 +365,11 @@ _ext_constant_losses_solar_for_heat = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "nvs_1_year": 1,
         "historic_res_capacity_for_heatcom": 2,
+        "nvs_1_year": 1,
         "installed_capacity_res_heatcom_tw": 1,
-        "adapt_growth_res_for_heatcom": 1,
         "remaining_potential_constraint_on_new_res_heat_capacity": 1,
+        "adapt_growth_res_for_heatcom": 1,
         "abundance_res_heatcom2": 1,
     },
 )

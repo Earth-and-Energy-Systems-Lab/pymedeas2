@@ -55,10 +55,10 @@ def available_max_pe_solid_bioe_for_heat_ej():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "time": 5,
-        "end_hist_data": 5,
-        "historic_biomass_fec": 3,
-        "policy_solid_bioe": 2,
+        "time": 2,
+        "end_hist_data": 1,
+        "historic_biomass_fec": 1,
+        "policy_solid_bioe": 1,
     },
 )
 def fes_biomass():
@@ -68,14 +68,7 @@ def fes_biomass():
     return if_then_else(
         time() < end_hist_data(),
         lambda: historic_biomass_fec(time()),
-        lambda: if_then_else(
-            time() < 2020,
-            lambda: historic_biomass_fec(end_hist_data())
-            + (policy_solid_bioe(2020) - historic_biomass_fec(end_hist_data()))
-            / (2020 - end_hist_data())
-            * (time() - end_hist_data()),
-            lambda: policy_solid_bioe(time()),
-        ),
+        lambda: policy_solid_bioe(),
     )
 
 
@@ -181,26 +174,28 @@ _ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
 @component.add(
     name="policy_solid_bioE",
     units="EJ/year",
-    comp_type="Lookup",
+    comp_type="Data",
     comp_subtype="External",
     depends_on={
-        "__external__": "_ext_lookup_policy_solid_bioe",
-        "__lookup__": "_ext_lookup_policy_solid_bioe",
+        "__external__": "_ext_data_policy_solid_bioe",
+        "__data__": "_ext_data_policy_solid_bioe",
+        "time": 1,
     },
 )
-def policy_solid_bioe(x, final_subs=None):
-    return _ext_lookup_policy_solid_bioe(x, final_subs)
+def policy_solid_bioe():
+    return _ext_data_policy_solid_bioe(time())
 
 
-_ext_lookup_policy_solid_bioe = ExtLookup(
+_ext_data_policy_solid_bioe = ExtData(
     r"../../scenarios/scen_cat.xlsx",
     "NZP",
     "year_RES_power",
     "p_solid_bioE",
+    "interpolate",
     {},
     _root,
     {},
-    "_ext_lookup_policy_solid_bioe",
+    "_ext_data_policy_solid_bioe",
 )
 
 

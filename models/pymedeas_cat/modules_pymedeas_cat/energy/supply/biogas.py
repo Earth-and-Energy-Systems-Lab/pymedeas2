@@ -8,7 +8,7 @@ Translated using PySD version 3.14.2
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "past_biogas_growth": 3, "p_biogas": 2, "nvs_5_years_ts": 1},
+    depends_on={"time": 3, "past_biogas_growth": 3, "nvs_5_years_ts": 1, "p_biogas": 2},
 )
 def adapt_growth_biogas():
     """
@@ -675,8 +675,8 @@ def share_efficiency_biogas_for_elec_in_chp_plants():
     depends_on={
         "time": 5,
         "historic_share_pes_biogas_for_elec_plants": 3,
-        "p_biogas_elec": 2,
         "nvs_5_years_ts": 1,
+        "p_biogas_elec": 2,
     },
 )
 def share_pes_biogas_elec_plants():

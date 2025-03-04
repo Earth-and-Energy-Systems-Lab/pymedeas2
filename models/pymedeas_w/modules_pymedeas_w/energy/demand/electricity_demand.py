@@ -167,8 +167,8 @@ def total_fe_elec_demand_ej():
     depends_on={
         "fe_demand_elec_consum_twh": 1,
         "share_trans_and_dist_losses": 1,
-        "ej_per_twh": 1,
         "total_electricity_demand_for_synthetic": 1,
+        "ej_per_twh": 1,
     },
 )
 def total_fe_elec_demand_twh():

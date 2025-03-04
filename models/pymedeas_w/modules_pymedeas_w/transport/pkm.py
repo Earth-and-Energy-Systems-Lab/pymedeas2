@@ -53,12 +53,12 @@ _ext_constant_eficiency_liquids_pkm = ExtConstant(
     name="EI_households_transport",
     units="EJ/T$",
     subscripts=["final_sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "energy_pkm": 4,
-        "household_demand_total": 3,
         "m_to_t": 3,
+        "household_demand_total": 3,
         "nvs_1_year": 3,
     },
 )
@@ -93,7 +93,7 @@ def ei_households_transport():
     name="energy_commercial_by_fuel_pkm",
     units="EJ/year",
     subscripts=["final_sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"energy_pkm": 4},
 )
@@ -719,8 +719,8 @@ def pkm_fuel_share():
         "end_historical_data": 4,
         "fuel_share_1995": 2,
         "initial_fuel_share_air_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_air_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_air():
@@ -759,8 +759,8 @@ def pkm_fuel_share_air():
         "end_historical_data": 4,
         "fuel_share_1995": 2,
         "initial_fuel_share_households_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_households_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_households():
@@ -799,8 +799,8 @@ def pkm_fuel_share_households():
         "end_historical_data": 4,
         "fuel_share_1995": 2,
         "initial_fuel_share_inland_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_inland_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_inland():

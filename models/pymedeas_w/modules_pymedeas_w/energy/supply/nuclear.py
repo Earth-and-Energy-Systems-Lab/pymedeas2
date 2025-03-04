@@ -362,8 +362,8 @@ def new_nuclear_capacity_under_planning():
         "time": 1,
         "total_elec_generation_ff_chp_plants_delayed": 1,
         "demand_elec_nre_twh": 1,
-        "p_nuclear_elec_gen": 1,
         "installed_capacity_nuclear_tw": 1,
+        "p_nuclear_elec_gen": 1,
         "effects_shortage_uranium": 1,
         "cp_limit_nuclear": 1,
     },
@@ -400,10 +400,10 @@ def new_required_capacity_nuclear():
     comp_subtype="Normal",
     depends_on={
         "selection_of_nuclear_scenario": 1,
-        "p_nuclear_scen34": 1,
-        "time": 1,
         "installed_capacity_nuclear_tw": 1,
         "start_year_nuclear_growth_scen34": 1,
+        "time": 1,
+        "p_nuclear_scen34": 1,
     },
 )
 def nuclear_capacity_phaseout():
@@ -429,9 +429,9 @@ def nuclear_capacity_phaseout():
     depends_on={
         "time": 3,
         "time_step": 2,
+        "cp_nuclear": 1,
         "historic_nuclear_generation_twh": 2,
         "twe_per_twh": 1,
-        "cp_nuclear": 1,
         "time_construction_nuclear": 1,
         "planned_nuclear_capacity_tw": 1,
     },
@@ -484,9 +484,9 @@ def nuclear_overcapacity():
     comp_subtype="Normal",
     depends_on={
         "selection_of_nuclear_scenario": 3,
-        "p_nuclear_scen34": 1,
-        "time": 1,
         "start_year_nuclear_growth_scen34": 1,
+        "time": 1,
+        "p_nuclear_scen34": 1,
     },
 )
 def p_nuclear_elec_gen():
@@ -623,10 +623,10 @@ def potential_generation_nuclear_elec_twh():
     depends_on={
         "time": 1,
         "nuclear_capacity_under_construction": 1,
-        "wear_nuclear": 1,
-        "nuclear_overcapacity": 1,
         "replacement_rate_nuclear": 1,
+        "wear_nuclear": 1,
         "selection_of_nuclear_scenario": 2,
+        "nuclear_overcapacity": 1,
         "cp_limit_nuclear": 1,
     },
 )

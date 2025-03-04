@@ -373,7 +373,7 @@ def real_fe_elec_stored_phs_twh():
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "phs_overcapacity": 1, "wear_phs": 1},
+    depends_on={"time": 1, "wear_phs": 1, "phs_overcapacity": 1},
 )
 def replacement_capacity_phs():
     """

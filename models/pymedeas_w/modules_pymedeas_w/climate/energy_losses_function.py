@@ -86,8 +86,8 @@ _ext_constant_b_logistic = ExtConstant(
     depends_on={
         "activate_elf": 1,
         "co2_ppm_concentrations": 1,
-        "b_logistic": 1,
         "a_logistic": 1,
+        "b_logistic": 1,
     },
 )
 def elf():

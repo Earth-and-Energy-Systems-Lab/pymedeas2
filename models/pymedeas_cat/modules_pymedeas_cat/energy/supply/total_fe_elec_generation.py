@@ -98,9 +98,9 @@ def fe_elec_generation_ff_twh():
         "efficiency_coal_for_electricity": 1,
         "share_coal_elec_plants": 1,
         "pec_coal": 1,
-        "pec_total_oil": 1,
-        "efficiency_liquids_for_electricity": 1,
         "share_oil_elec_plants": 1,
+        "efficiency_liquids_for_electricity": 1,
+        "pec_total_oil": 1,
     },
 )
 def fe_elec_generation_from_fossil_fuels():
@@ -267,8 +267,10 @@ def total_fe_elec_consumption_ej():
     depends_on={
         "fe_demand_elec_consum_twh": 1,
         "elec_exports_share": 1,
-        "share_transmdistr_elec_losses": 1,
+        "total_electricity_demand_for_synthetic": 1,
         "total_fe_elec_generation_twh_cat": 1,
+        "share_transmdistr_elec_losses": 1,
+        "ej_per_twh": 1,
     },
 )
 def total_fe_elec_consumption_twh():
@@ -278,8 +280,12 @@ def total_fe_elec_consumption_twh():
     return float(
         np.minimum(
             fe_demand_elec_consum_twh(),
-            total_fe_elec_generation_twh_cat()
-            / (1 + share_transmdistr_elec_losses() + elec_exports_share()),
+            (
+                total_fe_elec_generation_twh_cat()
+                - total_electricity_demand_for_synthetic() / ej_per_twh()
+            )
+            * (1 - elec_exports_share())
+            / (1 + share_transmdistr_elec_losses()),
         )
     )
 

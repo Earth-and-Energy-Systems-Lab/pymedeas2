@@ -255,16 +255,21 @@ def total_fe_elec_demand_ej():
     comp_subtype="Normal",
     depends_on={
         "fe_demand_elec_consum_twh": 1,
-        "elec_exports_share": 1,
         "share_transmdistr_elec_losses": 1,
+        "elec_exports_share": 1,
+        "ej_per_twh": 1,
+        "total_electricity_demand_for_synthetic": 1,
     },
 )
 def total_fe_elec_demand_twh():
     """
     Total final energy electricity demand (TWh). It includes new electric uses (e.g. EV & HEV) and electrical transmission and distribution losses.
     """
-    return fe_demand_elec_consum_twh() * (
-        1 + share_transmdistr_elec_losses() + elec_exports_share()
+    return (
+        fe_demand_elec_consum_twh()
+        * (1 + share_transmdistr_elec_losses())
+        / (1 - elec_exports_share())
+        + total_electricity_demand_for_synthetic() / ej_per_twh()
     )
 
 

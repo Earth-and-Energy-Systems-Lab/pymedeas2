@@ -27,8 +27,8 @@ def a_lineal_regr():
     comp_subtype="Normal",
     depends_on={
         "esoi_phs_depleted_potential": 1,
-        "max_capacity_potential_phs": 1,
         "a_lineal_regr": 1,
+        "max_capacity_potential_phs": 1,
     },
 )
 def b_lineal_regr():
@@ -82,8 +82,8 @@ def cedtot_over_lifetime_phs():
     comp_subtype="Normal",
     depends_on={
         "output_phs_over_lifetime": 1,
-        "gquality_of_electricity": 1,
         "cedtot_over_lifetime_phs": 1,
+        "gquality_of_electricity": 1,
     },
 )
 def esoi_phs():
@@ -126,7 +126,7 @@ _ext_constant_esoi_phs_depleted_potential = ExtConstant(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"eroiini_res_elec_dispatch": 1, "cpini_res_elec": 1, "cp_phs": 1},
+    depends_on={"eroiini_res_elec_dispatch": 1, "cp_phs": 1, "cpini_res_elec": 1},
 )
 def esoi_phs_full_potential():
     """

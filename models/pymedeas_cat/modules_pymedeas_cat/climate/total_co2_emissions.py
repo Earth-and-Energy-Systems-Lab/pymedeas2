@@ -89,8 +89,8 @@ _ext_data_afforestation_program_2020 = ExtData(
     depends_on={
         "afforestation_program_2020": 1,
         "activate_affores_program": 1,
-        "mtc_per_gtc": 1,
         "gtc_per_gtco2": 1,
+        "mtc_per_gtc": 1,
     },
 )
 def afforestation_program_2020_gtco2():
@@ -157,7 +157,7 @@ def co2_emissions_bioe_and_waste():
     name="CO2_emissions_biofuels",
     units="GtCO2/year",
     subscripts=["final_sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"gtco2_per_ej_biofuels": 1, "oil_liquids_saved_by_biofuels_ej": 1},
 )
@@ -203,7 +203,7 @@ def co2_emissions_biogas():
     name="CO2_emissions_biomass",
     units="GtCO2/year",
     subscripts=["final_sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_traditional_biomass": 1,
@@ -353,7 +353,7 @@ def co2_emissions_oil():
     name="CO2_emissions_peat",
     units="GtCO2/year",
     subscripts=["final_sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"pes_peat": 1, "gtco2_per_ej_peat": 1},
 )
@@ -392,8 +392,8 @@ def co2_emissions_per_fuel():
     depends_on={
         "gtco2_per_ej_solid_bioe": 3,
         "pe_real_generation_res_elec": 1,
-        "pes_res_for_heatnc_by_techn": 1,
         "pes_res_for_heatcom_by_techn": 1,
+        "pes_res_for_heatnc_by_techn": 1,
         "modern_bioe_in_households": 1,
     },
 )
@@ -644,9 +644,9 @@ _ext_constant_gtco2_per_ej_gtl = ExtConstant(
     depends_on={
         "share_conv_vs_total_oil_extraction": 2,
         "gtco2_per_ej_conv_oil": 1,
-        "gtco2_per_ej_shale_oil": 1,
-        "adapt_emissions_shale_oil": 1,
         "gtco2_per_ej_unconv_oil": 2,
+        "adapt_emissions_shale_oil": 1,
+        "gtco2_per_ej_shale_oil": 1,
     },
 )
 def gtco2_per_ej_oil():

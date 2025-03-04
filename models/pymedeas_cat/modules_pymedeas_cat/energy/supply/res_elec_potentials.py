@@ -28,8 +28,8 @@ def available_max_fe_solid_bioe_for_elec_ej():
     depends_on={
         "time": 2,
         "historic_share_installed_pv_urban_vs_tot_pv": 2,
-        "p_share_installed_pv_urban_vs_tot_pv": 1,
         "start_year_p_growth_res_elec": 1,
+        "p_share_installed_pv_urban_vs_tot_pv": 1,
     },
 )
 def desired_share_installed_pv_urban_vs_tot_pv():
@@ -690,8 +690,8 @@ def real_share_pv_urban_vs_total_pv():
     depends_on={
         "max_solar_pv_urban": 2,
         "twe_per_twh": 2,
-        "desired_share_installed_pv_urban_vs_tot_pv": 1,
         "potential_generation_res_elec_twh": 1,
+        "desired_share_installed_pv_urban_vs_tot_pv": 1,
     },
 )
 def remaining_potential_solar_pv_urban():

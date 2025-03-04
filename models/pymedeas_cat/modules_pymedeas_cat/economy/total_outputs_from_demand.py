@@ -460,10 +460,10 @@ def real_final_demand_by_sector_cat():
     depends_on={
         "required_final_energy_by_sector_and_fuel_cat": 3,
         "energy_scarcity_feedback_shortage_coeff_cat": 3,
-        "cc_impacts_feedback_shortage_coeff": 1,
+        "cc_impacts_feedback_shortage_coeff": 3,
+        "ej_per_twh": 3,
         "ccs_energy_consumption_sector": 1,
         "dac_energy_consumption_by_sector_and_fuel": 2,
-        "ej_per_twh": 3,
     },
 )
 def real_final_energy_by_sector_and_fuel_cat():
@@ -491,6 +491,7 @@ def real_final_energy_by_sector_and_fuel_cat():
             .loc["electricity", :]
             .reset_coords(drop=True)
             * float(energy_scarcity_feedback_shortage_coeff_cat().loc["electricity"])
+            * cc_impacts_feedback_shortage_coeff()
             - ccs_energy_consumption_sector()
             .loc[_subscript_dict["sectors"]]
             .rename({"SECTORS_and_HOUSEHOLDS": "sectors"})
@@ -510,6 +511,7 @@ def real_final_energy_by_sector_and_fuel_cat():
             .loc["heat", :]
             .reset_coords(drop=True)
             * float(energy_scarcity_feedback_shortage_coeff_cat().loc["heat"])
+            * cc_impacts_feedback_shortage_coeff()
             - dac_energy_consumption_by_sector_and_fuel()
             .loc["heat", _subscript_dict["sectors"]]
             .reset_coords(drop=True)
@@ -747,9 +749,9 @@ def required_fed_sectors_by_fuel():
         "final_energy_intensity_by_sector_and_fuel": 3,
         "m_to_t": 3,
         "nvs_1_year": 3,
+        "ej_per_twh": 3,
         "dac_energy_demand_per_sector_and_fuel": 2,
         "ccs_energy_demand_sect": 1,
-        "ej_per_twh": 4,
     },
 )
 def required_final_energy_by_sector_and_fuel_cat():
@@ -803,11 +805,10 @@ def required_final_energy_by_sector_and_fuel_cat():
         (
             total_output_required_by_sector()
             * final_energy_intensity_by_sector_and_fuel()
-            .loc["electricity", :]
+            .loc["heat", :]
             .reset_coords(drop=True)
             * m_to_t()
             / nvs_1_year()
-            * ej_per_twh()
             - dac_energy_demand_per_sector_and_fuel()
             .loc["heat", _subscript_dict["sectors"]]
             .reset_coords(drop=True)

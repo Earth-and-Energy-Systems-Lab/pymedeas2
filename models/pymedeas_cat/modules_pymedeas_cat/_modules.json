@@ -1350,6 +1350,16 @@
                 "pes_tot_res_for_heat",
                 "tpes_heat"
             ],
+            "hydrogen_and_synthetic": [
+                "efficiency_electricity_to_synthetic",
+                "electricity_consumption_for_synthetic_fuels",
+                "electricity_demand_for_synthetic_fuels",
+                "policy_ets",
+                "synthethic_fuel_generation",
+                "synthethic_fuel_generation_delayed",
+                "total_electricity_demand_for_synthetic",
+                "total_synthetic_fuel_generation"
+            ],
             "losses_in_transformation_and_distri": [
                 "energy_distr_losses_ff",
                 "fec_gasesliquids",
@@ -1492,6 +1502,7 @@
                 "p_power",
                 "potential_generation_res_elec_twh",
                 "potential_res_elec_after_intermitt_twh",
+                "potential_tot_generation_after_curtailment_res_elec_twh",
                 "potential_tot_generation_res_elec_twh",
                 "real_cp_res_elec",
                 "real_generation_res_elec_twh",

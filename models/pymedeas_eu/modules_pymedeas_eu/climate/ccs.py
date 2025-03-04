@@ -1032,3 +1032,19 @@ def total_energy_demand_sector_ccs():
         ),
         dim=["SECTORS_and_HOUSEHOLDS!"],
     )
+
+
+@component.add(
+    name="Total_process_emissions_captured",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"process_co2_captured_ccs": 1},
+)
+def total_process_emissions_captured():
+    return sum(
+        process_co2_captured_ccs().rename(
+            {"SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!"}
+        ),
+        dim=["SECTORS_and_HOUSEHOLDS!"],
+    )

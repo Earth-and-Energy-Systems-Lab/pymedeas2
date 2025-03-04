@@ -77,8 +77,8 @@ def dollars_to_tdollars():
     comp_subtype="Normal",
     depends_on={
         "activate_energy_scarcity_feedback": 1,
-        "real_fe_consumption_by_fuel_before_heat_correction": 1,
         "required_fed_by_fuel_before_heat_correction": 1,
+        "real_fe_consumption_by_fuel_before_heat_correction": 1,
     },
 )
 def energy_scarcity_feedback_shortage_coeff():
@@ -246,24 +246,24 @@ _delayfixed_real_demand_by_sector_delayed = DelayFixed(
     depends_on={
         "total_fe_elec_consumption_twh": 1,
         "ej_per_twh": 1,
-        "total_fe_heat_generation": 1,
         "share_heat_distribution_losses": 1,
-        "share_gases_for_final_energy": 1,
+        "total_fe_heat_generation": 1,
         "pes_gases": 1,
         "other_gases_required": 1,
+        "share_gases_for_final_energy": 1,
         "ped_nat_gas_for_gtl_ej": 1,
-        "pes_liquids": 1,
-        "other_liquids_required_ej": 1,
         "share_liquids_for_final_energy": 1,
-        "pe_traditional_biomass_ej_delayed": 1,
-        "share_solids_for_final_energy": 1,
-        "pes_waste_for_tfc": 1,
+        "other_liquids_required_ej": 1,
+        "pes_liquids": 1,
         "extraction_coal_ej": 1,
-        "ped_coal_for_ctl_ej": 1,
-        "other_solids_required": 1,
-        "solid_bioe_supply": 1,
-        "losses_in_charcoal_plants_historic": 1,
         "pes_peat": 1,
+        "share_solids_for_final_energy": 1,
+        "solid_bioe_supply": 1,
+        "other_solids_required": 1,
+        "pes_waste_for_tfc": 1,
+        "losses_in_charcoal_plants_historic": 1,
+        "ped_coal_for_ctl_ej": 1,
+        "pe_traditional_biomass_ej_delayed": 1,
     },
 )
 def real_fe_consumption_by_fuel():
@@ -338,9 +338,9 @@ def real_fe_consumption_by_fuel_before_heat_correction():
     depends_on={
         "required_final_energy_by_sector_and_fuel": 3,
         "energy_scarcity_feedback_shortage_coeff": 3,
-        "dac_energy_consumption_by_sector_and_fuel": 2,
-        "ccs_energy_consumption_sector": 1,
         "ej_per_twh": 3,
+        "ccs_energy_consumption_sector": 1,
+        "dac_energy_consumption_by_sector_and_fuel": 2,
     },
 )
 def real_final_energy_by_sector_and_fuel():
@@ -618,8 +618,8 @@ def required_fed_sectors_by_fuel():
         "m_to_t": 3,
         "nvs_1_year": 3,
         "ej_per_twh": 3,
-        "dac_energy_demand_per_sector_and_fuel": 2,
         "ccs_energy_demand_sect": 1,
+        "dac_energy_demand_per_sector_and_fuel": 2,
     },
 )
 def required_final_energy_by_sector_and_fuel():

@@ -93,9 +93,9 @@ _ext_constant_choose_energy_intensity_target_method = ExtConstant(
         "evol_final_energy_intensity_h": 2,
         "global_energy_intensity_h": 1,
         "minimum_fraction_source": 1,
+        "pressure_to_change_energy_technology_h": 1,
         "percentage_of_change_over_the_historic_maximun_variation_of_energy_intensities": 1,
         "max_yearly_change_between_sources": 1,
-        "pressure_to_change_energy_technology_h": 1,
     },
 )
 def decrease_of_intensity_due_to_change_energy_technology_h_top_down():
@@ -236,8 +236,8 @@ _delayfixed_ei_households_transport_delayed = DelayFixed(
     depends_on={
         "time": 1,
         "energy_intensity_of_households_rest": 3,
-        "activate_bottom_up_method": 1,
         "ei_households_transport_delayed": 1,
+        "activate_bottom_up_method": 1,
     },
 )
 def energy_intensity_of_households():
@@ -264,8 +264,8 @@ def energy_intensity_of_households():
     comp_subtype="Normal",
     depends_on={
         "activate_bottom_up_method": 3,
-        "evol_final_energy_intensity_h": 8,
         "change_total_intensity_to_rest": 3,
+        "evol_final_energy_intensity_h": 8,
     },
 )
 def energy_intensity_of_households_rest():
@@ -423,8 +423,8 @@ def global_energy_intensity_h():
         "energy_intensity_of_households": 2,
         "m_to_t": 2,
         "nvs_1_year": 2,
-        "ccs_energy_demand_sect": 1,
         "ej_per_twh": 1,
+        "ccs_energy_demand_sect": 1,
     },
 )
 def households_final_energy_demand():
@@ -532,13 +532,13 @@ def increase_of_intensity_due_to_change_energy_technology_net_h():
     depends_on={
         "time": 2,
         "historic_rate_final_energy_intensity": 1,
+        "choose_final_sectoral_energy_intensities_evolution_method": 2,
         "year_energy_intensity_target": 1,
-        "variation_energy_intensity_target_h": 1,
         "evol_final_energy_intensity_h": 4,
+        "efficiency_energy_acceleration": 12,
         "initial_energy_intensity_1995": 4,
         "historic_mean_rate_energy_intensity": 6,
-        "choose_final_sectoral_energy_intensities_evolution_method": 2,
-        "efficiency_energy_acceleration": 12,
+        "variation_energy_intensity_target_h": 1,
         "available_improvement_efficiency_h": 4,
     },
 )
@@ -945,9 +945,9 @@ def transport_households_final_energy_demand():
     depends_on={
         "choose_energy_intensity_target_method": 1,
         "year_energy_intensity_target": 2,
-        "final_year_energy_intensity_target": 4,
         "evol_final_energy_intensity_h": 2,
         "energy_intensity_target": 1,
+        "final_year_energy_intensity_target": 4,
         "time": 6,
         "final_energy_intensity_2020_h": 1,
         "pct_change_energy_intensity_target": 1,

@@ -96,8 +96,8 @@ def demand_not_covered_total_fd():
     depends_on={
         "time": 1,
         "total_demand": 1,
-        "desired_annual_total_demand_growth_rate": 1,
         "real_demand_delayed_1yr": 1,
+        "desired_annual_total_demand_growth_rate": 1,
         "nvs_1_year": 1,
     },
 )
@@ -323,8 +323,8 @@ def real_gfcf_by_sector():
     depends_on={
         "real_final_demand_by_sector_eu": 1,
         "share_consum_goverment_and_inventories": 1,
-        "share_exp_vs_gfcfhdexp": 1,
         "share_gfcf_vs_gfcfhdexp": 1,
+        "share_exp_vs_gfcfhdexp": 1,
     },
 )
 def real_household_demand_by_sector():
@@ -448,10 +448,10 @@ def total_demand_adjusted():
     depends_on={
         "time": 1,
         "historic_variation_demand": 1,
-        "variation_exports_demand": 1,
         "share_consum_goverment_and_inventories": 1,
-        "variation_household_demand": 1,
         "variation_gfcf": 1,
+        "variation_household_demand": 1,
+        "variation_exports_demand": 1,
     },
 )
 def variation_demand_flow_fd_eu():

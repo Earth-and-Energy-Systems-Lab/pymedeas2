@@ -11,8 +11,8 @@ Translated using PySD version 3.14.2
     depends_on={
         "time": 3,
         "past_waste_growth": 3,
-        "waste_change": 2,
         "nvs_5_years_ts": 1,
+        "waste_change": 2,
     },
 )
 def adapt_growth_waste():
@@ -356,10 +356,10 @@ _ext_constant_max_pe_waste = ExtConstant(
         "time": 3,
         "historic_pes_waste_ej": 2,
         "time_step": 2,
-        "adapt_growth_waste": 1,
-        "p_waste_change": 1,
-        "pes_waste_ej": 3,
         "max_pe_waste": 3,
+        "adapt_growth_waste": 1,
+        "pes_waste_ej": 3,
+        "p_waste_change": 1,
     },
 )
 def new_waste_supply_ej():

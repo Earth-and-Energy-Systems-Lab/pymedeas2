@@ -51,8 +51,8 @@ def cp_baseload_reduction():
     comp_subtype="Normal",
     depends_on={
         "min_cp_baseload_res": 1,
-        "shortage_bioe_for_elec": 1,
         "cpini_res_elec": 1,
+        "shortage_bioe_for_elec": 1,
     },
 )
 def cp_res_elec():
@@ -355,8 +355,8 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "installed_capacity_res_elec": 1,
         "res_installed_capacity_ts_delayed": 1,
+        "installed_capacity_res_elec": 1,
         "time_step": 1,
     },
 )
@@ -463,9 +463,9 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "twe_per_twh": 1,
         "installed_capacity_res_elec": 2,
         "real_generation_res_elec_twh": 1,
+        "twe_per_twh": 1,
     },
 )
 def real_cp_res_elec():

@@ -184,9 +184,9 @@ def desired_gdp():
         "time": 1,
         "historic_gdp_growth_rate": 1,
         "desired_gdp": 1,
-        "desired_gdppc": 1,
-        "population": 1,
         "dollars_to_tdollars": 1,
+        "population": 1,
+        "desired_gdppc": 1,
         "annual_gdppc_growth_rate": 1,
     },
 )
@@ -233,8 +233,8 @@ _integ_desired_gdppc = Integ(
     depends_on={
         "time": 1,
         "historic_gdppc": 1,
-        "historic_gdppc_delayed": 1,
         "time_step": 2,
+        "historic_gdppc_delayed": 1,
         "ts_growth_rate": 1,
         "desired_gdppc": 1,
     },
@@ -308,8 +308,8 @@ def growth_capital_share():
     depends_on={
         "time": 2,
         "year_initial_labour_share": 1,
-        "labour_share_growth": 1,
         "laborcapital_share_cte": 1,
+        "labour_share_growth": 1,
         "historic_labour_share_growth": 1,
     },
 )
@@ -694,8 +694,8 @@ _integ_labour_share = Integ(
         "p_labour_share": 1,
         "initial_labour_share": 2,
         "year_final_labour_share": 1,
-        "year_initial_labour_share": 1,
         "time_step": 1,
+        "year_initial_labour_share": 1,
     },
 )
 def labour_share_growth():
@@ -899,8 +899,8 @@ def variation_cc():
     depends_on={
         "time": 5,
         "historic_population": 2,
-        "historic_gdp": 2,
         "dollar_per_mdollar": 1,
+        "historic_gdp": 2,
         "time_step": 3,
     },
 )

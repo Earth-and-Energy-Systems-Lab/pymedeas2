@@ -74,8 +74,8 @@ def installed_capacity_phs():
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_phs": 3,
-        "p_phs_power": 2,
         "start_year_p_growth_res_elec": 3,
+        "p_phs_power": 2,
     },
 )
 def installed_capacity_phs_policies():
@@ -362,7 +362,7 @@ _integ_renewed_capacity_phs_tw = Integ(
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "wear_phs": 1, "phs_overcapacity": 1},
+    depends_on={"time": 1, "phs_overcapacity": 1, "wear_phs": 1},
 )
 def replacement_capacity_phs():
     """
@@ -404,7 +404,7 @@ _ext_lookup_table_hist_capacity_phs = ExtLookup(
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "lifetime_res_elec": 1, "renewed_capacity_phs_tw": 1},
+    depends_on={"time": 1, "renewed_capacity_phs_tw": 1, "lifetime_res_elec": 1},
 )
 def wear_phs():
     return if_then_else(

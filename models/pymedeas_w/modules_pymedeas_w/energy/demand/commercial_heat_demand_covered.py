@@ -410,8 +410,8 @@ _ext_constant_share_in_target_year_oil_for_heat = ExtConstant(
         "time": 2,
         "historic_share_liquids_for_heat_plants": 3,
         "start_year_policy_phaseout_oil_for_heat": 1,
-        "phaseout_oil_for_heat": 1,
         "p_share_oil_for_heat": 1,
+        "phaseout_oil_for_heat": 1,
     },
 )
 def share_liquids_fot_heat_plants():
@@ -495,8 +495,8 @@ _ext_constant_target_year_policy_phaseout_oil_for_heat = ExtConstant(
     depends_on={
         "ped_gases_for_heat_plants_ej": 1,
         "efficiency_gases_for_heat_plants": 1,
-        "ped_oil_for_heat_plants_ej": 1,
         "efficiency_liquids_for_heat_plants": 1,
+        "ped_oil_for_heat_plants_ej": 1,
         "ped_coal_for_heat_plants_ej": 1,
         "efficiency_coal_for_heat_plants": 1,
     },

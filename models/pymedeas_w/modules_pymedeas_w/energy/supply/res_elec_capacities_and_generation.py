@@ -293,9 +293,9 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "res_installed_capacity_ts_delayed": 1,
         "installed_capacity_res_elec": 1,
         "time_step": 1,
+        "res_installed_capacity_ts_delayed": 1,
     },
 )
 def new_res_installed_capacity():
@@ -475,7 +475,7 @@ def remaining_potential_res_elec_after_intermitt():
     subscripts=["RES_elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "wear_res_elec": 1, "res_elec_tot_overcapacity": 1},
+    depends_on={"time": 1, "res_elec_tot_overcapacity": 1, "wear_res_elec": 1},
 )
 def replacement_capacity_res_elec():
     """
@@ -723,8 +723,8 @@ _ext_constant_time_planification_res_elec = ExtConstant(
     depends_on={
         "time_construction_res_elec": 1,
         "time_step": 1,
-        "time": 1,
         "time_planification_res_elec": 1,
+        "time": 1,
     },
 )
 def total_time_planconstr_res_elec():

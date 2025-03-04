@@ -32,8 +32,8 @@ def ch4_atm_conc():
     depends_on={
         "sensitivity_of_methane_emissions_to_permafrost_and_clathrate": 1,
         "reference_sensitivity_of_ch4_from_permafrost_and_clathrate_to_temperature": 1,
-        "temperature_change": 1,
         "temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate": 1,
+        "temperature_change": 1,
     },
 )
 def ch4_emissions_from_permafrost_and_clathrate():
@@ -62,9 +62,9 @@ def ch4_emissions_from_permafrost_and_clathrate():
     depends_on={
         "reference_ch4_time_constant": 1,
         "stratospheric_ch4_path_share": 2,
+        "tropospheric_ch4_path_share": 2,
         "ch4_in_atm": 1,
         "preindustrial_ch4": 1,
-        "tropospheric_ch4_path_share": 2,
     },
 )
 def ch4_fractional_uptake():
@@ -174,8 +174,8 @@ _ext_constant_choose_rcp = ExtConstant(
     depends_on={
         "sensitivity_of_methane_emissions_to_permafrost_and_clathrate": 1,
         "reference_sensitivity_of_c_from_permafrost_and_clathrate_to_temperature": 1,
-        "temperature_change": 1,
         "temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate": 1,
+        "temperature_change": 1,
     },
 )
 def flux_c_from_permafrost_release():
@@ -1703,8 +1703,8 @@ _ext_constant_time_const_for_sf6 = ExtConstant(
             "initial": {},
             "step": {
                 "flux_c_from_permafrost_release": 1,
-                "ch4_emissions_from_permafrost_and_clathrate": 1,
                 "gtch4_per_gtc": 1,
+                "ch4_emissions_from_permafrost_and_clathrate": 1,
                 "mtch4_per_gtch4": 1,
             },
         }

@@ -174,8 +174,8 @@ def ped_coal_heatnc():
         "efficiency_liquids_for_heat_plants": 1,
         "share_fed_coal_vs_nre_heatnc": 1,
         "efficiency_coal_for_heat_plants": 1,
-        "share_fed_gas_vs_nre_heatnc": 1,
         "efficiency_gases_for_heat_plants": 1,
+        "share_fed_gas_vs_nre_heatnc": 1,
     },
 )
 def ped_ff_heatnc():

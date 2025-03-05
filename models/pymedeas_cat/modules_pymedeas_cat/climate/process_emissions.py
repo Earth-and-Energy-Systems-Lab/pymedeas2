@@ -60,8 +60,8 @@ _ext_constant_last_year_historic_process_emissions = ExtConstant(
         "time": 4,
         "last_year_historic_process_emissions": 7,
         "historic_process_emissions_intensity": 5,
-        "process_emissions_reduction_policy": 2,
         "target_year_process_emissions_improvement": 2,
+        "process_emissions_reduction_policy": 2,
     },
 )
 def process_emissions_intensity():
@@ -153,6 +153,9 @@ _ext_constant_target_year_process_emissions_improvement = ExtConstant(
     },
 )
 def total_process_emissions():
+    """
+    Total yearly process emissions
+    """
     return (
         float(
             total_output_required_by_sector().loc[

@@ -186,10 +186,10 @@ def tfec_per_capita():
     units="GJ/(year*person)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"real_tfec_before_heat_dem_corr": 1, "gj_per_ej": 1, "population": 1},
+    depends_on={"real_tfec_before_heat_corr": 1, "gj_per_ej": 1, "population": 1},
 )
 def tfec_per_capita_before_heat_dem_corr():
-    return zidz(real_tfec_before_heat_dem_corr() * gj_per_ej(), population())
+    return zidz(real_tfec_before_heat_corr() * gj_per_ej(), population())
 
 
 @component.add(

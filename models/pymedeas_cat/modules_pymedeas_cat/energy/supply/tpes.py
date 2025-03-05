@@ -243,6 +243,17 @@ def tpes_ej():
 
 
 @component.add(
+    name="TPES_intensity",
+    units="EJ/(year*T$)",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"tpes_ej": 1, "gdp_cat": 1},
+)
+def tpes_intensity():
+    return tpes_ej() / gdp_cat()
+
+
+@component.add(
     name="Year_scarcity_TPE",
     units="year",
     comp_type="Auxiliary",

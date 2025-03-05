@@ -202,8 +202,8 @@ def max_potential_phs_twh():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "installed_capacity_phs": 1,
         "installed_capacity_phs_year_delayed": 1,
+        "installed_capacity_phs": 1,
     },
 )
 def new_phs_installed():
@@ -409,7 +409,7 @@ _ext_lookup_table_hist_capacity_phs = ExtLookup(
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "lifetime_res_elec": 1, "installed_capacity_phs_tw": 1},
+    depends_on={"time": 1, "installed_capacity_phs_tw": 1, "lifetime_res_elec": 1},
 )
 def wear_phs():
     return if_then_else(

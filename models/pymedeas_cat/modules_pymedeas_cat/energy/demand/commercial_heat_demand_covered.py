@@ -212,8 +212,8 @@ def fed_heat_liquids_plants_ej():
         "efficiency_gases_for_heat_plants": 1,
         "ped_oil_for_heat_plants": 1,
         "efficiency_liquids_for_heat_plants": 1,
-        "ped_coal_for_heat_plants_ej": 1,
         "efficiency_coal_for_heat_plants": 1,
+        "ped_coal_for_heat_plants_ej": 1,
     },
 )
 def gen_losses_demand_for_ff_heat_plants():

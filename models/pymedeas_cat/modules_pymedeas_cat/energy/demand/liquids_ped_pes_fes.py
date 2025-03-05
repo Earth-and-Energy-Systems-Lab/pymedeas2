@@ -213,8 +213,8 @@ def imports_cat_unconv_oil_from_row_ej():
     comp_subtype="Normal",
     depends_on={
         "share_liquids_for_nonenergy_use": 1,
-        "transformation_ff_losses_ej": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses_ej": 1,
         "pes_liquids": 1,
     },
 )
@@ -236,10 +236,10 @@ def nonenergy_use_consumption():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_liquids": 1, "share_oil_for_fc_emissions_relevant": 1},
+    depends_on={"ped_total_oil_ej": 1, "share_oil_for_fc_emissions_relevant": 1},
 )
 def oil_tfc():
-    return ped_liquids() * share_oil_for_fc_emissions_relevant()
+    return ped_total_oil_ej() * share_oil_for_fc_emissions_relevant()
 
 
 @component.add(
@@ -494,18 +494,20 @@ def required_fed_by_liquids():
     name="self_consuption_energy_sector",
     units="EJ/year",
     subscripts=["matter_final_sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Constant",
     comp_subtype="Normal",
-    depends_on={"required_fed_by_liquids": 1, "required_fed_by_gases": 1},
 )
 def self_consuption_energy_sector():
+    """
+    liq: 0.164216*Required_FED_by_liquids gases:Required_FED_by_gases*0.0917106 Required FED by gases*0.0917106
+    """
     value = xr.DataArray(
         np.nan,
         {"matter_final_sources": _subscript_dict["matter_final_sources"]},
         ["matter_final_sources"],
     )
-    value.loc[["liquids"]] = 0.164216 * required_fed_by_liquids()
-    value.loc[["gases"]] = required_fed_by_gases() * 0.0917106
+    value.loc[["liquids"]] = 0
+    value.loc[["gases"]] = 0
     value.loc[["solids"]] = 0
     return value
 
@@ -542,9 +544,9 @@ def share_liquids_dem_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_liquids": 1,
-        "transformation_ff_losses_ej": 1,
         "ped_liquids": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses_ej": 1,
     },
 )
 def share_liquids_for_final_energy():
@@ -566,9 +568,9 @@ def share_liquids_for_final_energy():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
-        "transformation_ff_losses_ej": 1,
         "ped_liquids": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses_ej": 1,
     },
 )
 def share_liquids_for_nonenergy_use():
@@ -618,15 +620,16 @@ def share_oil_elec_plants():
         "ped_oil_elec_plants_ej": 1,
         "ped_oil_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp": 1,
-        "self_consuption_energy_sector": 1,
         "ped_total_oil_ej": 1,
+        "self_consuption_energy_sector": 1,
     },
 )
 def share_oil_for_elec_emissions_relevant():
-    return (
+    return zidz(
         ped_oil_elec_plants_ej()
-        + ped_oil_for_chp_plants_ej() * float(share_elec_gen_in_chp().loc["oil"])
-    ) / (ped_total_oil_ej() - float(self_consuption_energy_sector().loc["liquids"]))
+        + ped_oil_for_chp_plants_ej() * float(share_elec_gen_in_chp().loc["oil"]),
+        ped_total_oil_ej() - float(self_consuption_energy_sector().loc["liquids"]),
+    )
 
 
 @component.add(
@@ -637,6 +640,7 @@ def share_oil_for_elec_emissions_relevant():
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
         "ped_liquids": 1,
+        "share_ff_fs": 1,
         "share_oil_for_elec_emissions_relevant": 1,
         "share_oil_for_heat_emissions_relevant": 1,
     },
@@ -647,6 +651,7 @@ def share_oil_for_fc_emissions_relevant():
         - zidz(
             float(nonenergy_use_demand_by_final_fuel().loc["liquids"]), ped_liquids()
         )
+        * float(share_ff_fs().loc["liquids"])
         - share_oil_for_elec_emissions_relevant()
         - share_oil_for_heat_emissions_relevant()
     )
@@ -679,8 +684,8 @@ def share_oil_for_heat_chp_plants():
         "ped_ff_heatnc": 1,
         "ped_oil_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp": 1,
-        "self_consuption_energy_sector": 1,
         "ped_total_oil_ej": 1,
+        "self_consuption_energy_sector": 1,
     },
 )
 def share_oil_for_heat_emissions_relevant():

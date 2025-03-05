@@ -554,10 +554,10 @@ _delayfixed_extraction_fossil_oil_agg_delayed = DelayFixed(
     depends_on={
         "time": 1,
         "ped_domestic_cat_total_oil_ej": 3,
-        "remaining_extractable_fossil_oil_with_left_underground": 1,
         "activate_force_leaving_underground": 1,
-        "max_extraction_total_agg_oil": 2,
+        "remaining_extractable_fossil_oil_with_left_underground": 1,
         "nvs_1_year": 1,
+        "max_extraction_total_agg_oil": 2,
     },
 )
 def extraction_tot_agg_oil():
@@ -627,10 +627,10 @@ _delayfixed_extraction_unconv_oil_delayed = DelayFixed(
     depends_on={
         "rurr_unconv_oil_ej": 1,
         "max_unconv_oil_growth_extraction_ej": 1,
-        "historic_unconv_oil": 1,
         "time": 1,
         "separate_conv_and_unconv_oil": 1,
         "max_extraction_unconv_oil": 1,
+        "historic_unconv_oil": 1,
         "ped_total_oil_ej": 1,
     },
 )
@@ -802,8 +802,8 @@ def increase_scarcity_conv_oil():
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_oil": 1,
-        "tot_rurr_conv_oil": 1,
         "table_max_extraction_conv_oil": 1,
+        "tot_rurr_conv_oil": 1,
     },
 )
 def max_extraction_conv_oil_ej():
@@ -1430,8 +1430,8 @@ _sampleiftrue_rurr_total_agg_fossil_oil_in_reference_year = SampleIfTrue(
         "_integ_rurr_unconv_oil_ej": {
             "initial": {
                 "urr_unconv_oil": 1,
-                "separate_conv_and_unconv_oil": 1,
                 "cumulated_unconv_oil_extraction_to_1995": 1,
+                "separate_conv_and_unconv_oil": 1,
             },
             "step": {
                 "extraction_unconv_oil_ej": 1,
@@ -1714,8 +1714,8 @@ _ext_constant_share_rurr_unconv_oil_to_leave_underground = ExtConstant(
     depends_on={
         "time": 1,
         "evolution_share_unconv_oil_vs_tot_agg": 1,
-        "historic_unconv_oil": 1,
         "ped_total_oil_ej": 1,
+        "historic_unconv_oil": 1,
     },
 )
 def share_unconv_oil_vs_tot_agg():

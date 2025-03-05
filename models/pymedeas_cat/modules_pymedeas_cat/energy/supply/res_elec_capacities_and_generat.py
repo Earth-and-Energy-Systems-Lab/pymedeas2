@@ -347,8 +347,8 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "installed_capacity_res_elec": 1,
         "res_installed_capacity_year_delayed": 1,
+        "installed_capacity_res_elec": 1,
         "nvs_1_year": 1,
     },
 )
@@ -440,8 +440,8 @@ def potential_res_elec_after_intermitt_twh():
     comp_subtype="Normal",
     depends_on={
         "potential_tot_generation_res_elec_twh": 1,
-        "curtailment_and_storage_share_variable_res": 1,
         "time": 1,
+        "curtailment_and_storage_share_variable_res": 1,
     },
 )
 def potential_tot_generation_after_curtailment_res_elec_twh():
@@ -476,9 +476,9 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "replaced_capacity_res_elec_tw": 2,
         "twe_per_twh": 1,
         "real_generation_res_elec_twh": 1,
+        "replaced_capacity_res_elec_tw": 2,
     },
 )
 def real_cp_res_elec():

@@ -461,9 +461,9 @@ def real_final_demand_by_sector_cat():
         "required_final_energy_by_sector_and_fuel_cat": 3,
         "energy_scarcity_feedback_shortage_coeff_cat": 3,
         "cc_impacts_feedback_shortage_coeff": 3,
-        "ej_per_twh": 3,
-        "ccs_energy_consumption_sector": 1,
         "dac_energy_consumption_by_sector_and_fuel": 2,
+        "ccs_energy_consumption_sector": 1,
+        "ej_per_twh": 3,
     },
 )
 def real_final_energy_by_sector_and_fuel_cat():
@@ -542,13 +542,13 @@ def real_tfec():
 
 
 @component.add(
-    name="Real_TFEC_before_heat_dem_corr",
+    name="real_TFEC_before_heat_corr",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_fec_before_heat_dem_corr": 1},
 )
-def real_tfec_before_heat_dem_corr():
+def real_tfec_before_heat_corr():
     """
     Real total final energy consumption (not including non-energy uses) before heat demand correction
     """
@@ -585,8 +585,8 @@ def real_total_output():
         "real_final_energy_by_sector_and_fuel_cat": 1,
         "nvs_1_year": 1,
         "final_energy_intensity_by_sector_and_fuel": 1,
-        "total_output_required_by_sector": 1,
         "m_to_t": 2,
+        "total_output_required_by_sector": 1,
     },
 )
 def real_total_output_by_fuel_and_sector():
@@ -749,9 +749,9 @@ def required_fed_sectors_by_fuel():
         "final_energy_intensity_by_sector_and_fuel": 3,
         "m_to_t": 3,
         "nvs_1_year": 3,
-        "ej_per_twh": 3,
-        "dac_energy_demand_per_sector_and_fuel": 2,
         "ccs_energy_demand_sect": 1,
+        "dac_energy_demand_per_sector_and_fuel": 2,
+        "ej_per_twh": 3,
     },
 )
 def required_final_energy_by_sector_and_fuel_cat():
@@ -835,13 +835,13 @@ def share_e_losses_cc_world():
 
 
 @component.add(
-    name="share_elect_FE",
+    name="share_electricity_TFEC",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"real_fe_consumption_by_fuel": 1, "real_tfec": 1},
 )
-def share_elect_fe():
+def share_electricity_tfec():
     return float(real_fe_consumption_by_fuel().loc["electricity"]) / real_tfec()
 
 

@@ -149,8 +149,8 @@ def m_per_t():
     depends_on={
         "materials_per_new_capacity_installed_res": 1,
         "materials_per_new_res_elec_capacity_installed_material_overgrid_high_power": 1,
-        "include_materials_for_overgrids": 1,
         "materials_per_new_res_elec_capacity_installed_hvdcs": 1,
+        "include_materials_for_overgrids": 1,
     },
 )
 def materials_for_new_res_elec_per_capacity_installed():
@@ -181,7 +181,7 @@ def materials_for_new_res_elec_per_capacity_installed():
     units="kg/(MW*year)",
     subscripts=["RES_elec", "materials"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={
         "__external__": "_ext_constant_materials_for_om_per_capacity_installed_res_elec"
     },

@@ -402,11 +402,11 @@ _ext_constant_max_pe_biogas_ej = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "time_step": 2,
         "historic_biogas_pes": 2,
-        "max_pe_biogas_ej": 2,
-        "pes_biogas_ej": 2,
+        "time_step": 2,
         "adapt_growth_biogas": 1,
+        "pes_biogas_ej": 2,
+        "max_pe_biogas_ej": 2,
     },
 )
 def new_pes_biogas():

@@ -113,8 +113,8 @@ _ext_constant_beta_1_hd = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "real_gfcf_by_sector": 1,
         "gross_fixed_capital_formation": 1,
+        "real_gfcf_by_sector": 1,
         "nvs_1_year": 1,
     },
 )
@@ -361,14 +361,14 @@ def unit_correction_economic():
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 1,
-        "beta_0_gfcf": 1,
+        "cc_total": 2,
+        "nvs_1_year": 1,
+        "beta_1_gfcf": 2,
         "variation_historic_gfcf": 1,
         "unit_correction_economic": 2,
         "time": 1,
-        "beta_1_gfcf": 2,
-        "cc_total": 2,
         "variation_cc": 1,
-        "nvs_1_year": 1,
+        "beta_0_gfcf": 1,
     },
 )
 def variation_gfcf():
@@ -434,11 +434,11 @@ def variation_historic_gfcf():
         "time": 1,
         "variation_historic_demand": 1,
         "beta_0_hd": 1,
-        "unit_correction_economic": 2,
+        "nvs_1_year": 1,
         "lc": 2,
+        "unit_correction_economic": 2,
         "beta_1_hd": 2,
         "variation_lc": 1,
-        "nvs_1_year": 1,
     },
 )
 def variation_household_demand():

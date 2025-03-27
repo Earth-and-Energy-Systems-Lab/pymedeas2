@@ -62,8 +62,8 @@ _ext_constant_f1_pv_solar_in_target_year = ExtConstant(
         "time": 4,
         "f1ini_solar_pv": 4,
         "start_year_p_f1_solar_pv": 3,
-        "f1_pv_solar_in_target_year": 2,
         "target_year_f1_solar_pv": 2,
+        "f1_pv_solar_in_target_year": 2,
     },
 )
 def f1_solar_pv():
@@ -256,8 +256,8 @@ _ext_constant_power_density_initial_res_elec_twemha = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "power_density_initial_res_elec_twemha": 1,
-        "cpini_res_elec": 2,
         "cp_res_elec": 4,
+        "cpini_res_elec": 2,
         "power_density_solar_pv_on_land_twemha": 1,
     },
 )

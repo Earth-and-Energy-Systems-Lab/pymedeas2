@@ -286,6 +286,25 @@ def total_cumulated_co2_emissions():
 
 
 @component.add(
+    name="tots_FED",
+    units="EJ/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"energy_consumption_from_households_and_sectors": 1},
+)
+def tots_fed():
+    return sum(
+        energy_consumption_from_households_and_sectors().rename(
+            {
+                "final_sources": "final_sources!",
+                "SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!",
+            }
+        ),
+        dim=["final_sources!", "SECTORS_and_HOUSEHOLDS!"],
+    )
+
+
+@component.add(
     name="year_co2", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def year_co2():

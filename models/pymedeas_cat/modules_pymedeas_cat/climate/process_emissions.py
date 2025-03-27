@@ -60,8 +60,8 @@ _ext_constant_last_year_historic_process_emissions = ExtConstant(
         "time": 4,
         "last_year_historic_process_emissions": 7,
         "historic_process_emissions_intensity": 5,
-        "target_year_process_emissions_improvement": 2,
         "process_emissions_reduction_policy": 2,
+        "target_year_process_emissions_improvement": 2,
     },
 )
 def process_emissions_intensity():

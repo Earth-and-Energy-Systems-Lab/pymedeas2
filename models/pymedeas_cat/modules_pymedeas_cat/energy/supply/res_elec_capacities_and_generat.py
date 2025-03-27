@@ -52,8 +52,8 @@ def cp_baseload_reduction():
     comp_subtype="Normal",
     depends_on={
         "min_cp_baseload_res": 1,
-        "shortage_bioe_for_elec": 1,
         "cpini_res_elec": 1,
+        "shortage_bioe_for_elec": 1,
     },
 )
 def cp_res_elec():
@@ -476,9 +476,9 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "twe_per_twh": 1,
-        "real_generation_res_elec_twh": 1,
         "replaced_capacity_res_elec_tw": 2,
+        "real_generation_res_elec_twh": 1,
+        "twe_per_twh": 1,
     },
 )
 def real_cp_res_elec():
@@ -814,7 +814,7 @@ def total_time_planconstr_res_elec():
     subscripts=["RES_elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "lifetime_res_elec": 1, "replaced_capacity_res_elec_tw": 1},
+    depends_on={"time": 1, "replaced_capacity_res_elec_tw": 1, "lifetime_res_elec": 1},
 )
 def wear_res_elec():
     """

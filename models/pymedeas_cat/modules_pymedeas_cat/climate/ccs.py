@@ -703,8 +703,8 @@ _delayfixed_share_captured_delayed = DelayFixed(
     comp_subtype="Normal",
     depends_on={
         "co2_policy_captured_sector_ccs": 2,
-        "process_co2_captured_ccs": 1,
         "co2_captured_by_sector_energy_related": 1,
+        "process_co2_captured_ccs": 1,
     },
 )
 def share_captured_sector():

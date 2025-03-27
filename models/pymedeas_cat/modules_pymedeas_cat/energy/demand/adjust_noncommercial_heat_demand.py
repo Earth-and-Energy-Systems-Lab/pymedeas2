@@ -62,8 +62,8 @@ _ext_constant_debug_share_feh_oil_over_fed_solids = ExtConstant(
     depends_on={
         "fed_oil_for_heatnc": 1,
         "fed_nat_gas_for_heatnc": 1,
-        "fed_solid_bioe_for_heatnc": 1,
         "fed_coal_for_heatnc": 1,
+        "fed_solid_bioe_for_heatnc": 1,
     },
 )
 def fed_by_fuel_for_heatnc():
@@ -88,8 +88,8 @@ def fed_by_fuel_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_fuel_before_heat_correction": 1,
-        "share_feh_over_fed_by_final_fuel": 1,
         "share_feh_over_fed_solid_bioe": 1,
+        "share_feh_over_fed_by_final_fuel": 1,
         "efficiency_coal_for_heat_plants": 1,
         "share_heat_distribution_losses": 1,
     },

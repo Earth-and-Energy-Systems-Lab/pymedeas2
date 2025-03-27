@@ -22,6 +22,23 @@ def abundance_tpe():
 
 
 @component.add(
+    name="FEC_over_TPES",
+    units="1",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"real_fec_before_heat_dem_corr": 1, "tpes_ej": 1},
+)
+def fec_over_tpes():
+    return (
+        sum(
+            real_fec_before_heat_dem_corr().rename({"final_sources": "final_sources!"}),
+            dim=["final_sources!"],
+        )
+        / tpes_ej()
+    )
+
+
+@component.add(
     name='"g=quality_of_electricity"',
     units="Dmnl",
     comp_type="Auxiliary",

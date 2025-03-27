@@ -99,6 +99,7 @@
             "total_co2_emissions_gtco2",
             "total_co2_emissions_gtco2_before_ccs",
             "total_cumulated_co2_emissions",
+            "tots_fed",
             "year_co2"
         ],
         "process_emissions": [
@@ -361,6 +362,7 @@
             "gdp_cat",
             "gdp_delayed_1yr",
             "gdppc",
+            "global_energy_intensity_by_fuel",
             "m_to_t",
             "real_demand",
             "real_demand_by_sector_delayed_cat",
@@ -370,6 +372,7 @@
             "real_fe_consumption_by_fuel",
             "real_fe_consumption_by_fuel_before_heat_correction",
             "real_fec_before_heat_dem_corr",
+            "real_fed",
             "real_final_demand_by_sector_cat",
             "real_final_energy_by_sector_and_fuel_cat",
             "real_tfec",
@@ -383,6 +386,7 @@
             "required_fed_sectors_by_fuel",
             "required_final_energy_by_sector_and_fuel_cat",
             "share_e_losses_cc_world",
+            "share_electricity_fed",
             "share_electricity_tfec",
             "share_fed_by_sector",
             "shortage_coef_without_min_without_elosses",
@@ -971,6 +975,7 @@
                 "share_oil_for_fc_emissions_relevant",
                 "share_oil_for_heat_chp_plants",
                 "share_oil_for_heat_emissions_relevant",
+                "synthetic_liquid_generation",
                 "total_demand_liquids_mbd",
                 "year_scarcity_liquids"
             ],
@@ -1741,6 +1746,7 @@
             ],
             "tpes": [
                 "abundance_tpe",
+                "fec_over_tpes",
                 "gquality_of_electricity",
                 "quality_of_electricity_2015",
                 "share_imports_cat_nre_from_row_vs_world_extraction",
@@ -1996,7 +2002,6 @@
             "cum_materials_to_extract_for_res_elec",
             "cum_materials_to_extract_for_res_elec_from_2015",
             "include_materials_for_overgrids",
-            "initial_cumulated_material_requirements_for_res_elec_1995",
             "kg_per_mt",
             "m_per_t",
             "materials_for_new_res_elec_per_capacity_installed",

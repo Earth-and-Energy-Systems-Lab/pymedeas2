@@ -100,6 +100,7 @@
             "total_co2_emissions_gtco2_before_ccs",
             "total_cumulated_co2_emissions",
             "tots_fed",
+            "transport_emissions",
             "year_co2"
         ],
         "process_emissions": [

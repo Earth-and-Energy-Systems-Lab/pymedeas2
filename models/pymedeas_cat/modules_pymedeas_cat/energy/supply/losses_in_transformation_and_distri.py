@@ -7,7 +7,7 @@ Translated using PySD version 3.14.2
     name="Energy_distr_losses_FF",
     units="EJ/year",
     subscripts=["final_sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pes_fossil_fuel_extraction_delayed": 3,
@@ -236,8 +236,8 @@ _ext_data_oil_refinery_share = ExtData(
         "imports_cat_total_oil_from_row_ej": 1,
         "extraction_coal_cat": 1,
         "imports_cat_coal_from_row_ej": 1,
-        "pes_nat_gas_cat_": 1,
         "imports_cat_nat_gas_from_row_ej": 1,
+        "pes_nat_gas_cat_": 1,
     },
 )
 def pes_fossil_fuel_extraction():
@@ -441,7 +441,7 @@ def total_distribution_losses():
     name="Transformation_FF_losses_EJ",
     units="EJ/year",
     subscripts=["final_sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pes_fossil_fuel_extraction_delayed": 3,

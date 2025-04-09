@@ -404,9 +404,9 @@ _ext_constant_max_pe_biogas_ej = ExtConstant(
         "time": 3,
         "historic_biogas_pes": 2,
         "time_step": 2,
-        "adapt_growth_biogas": 1,
-        "pes_biogas_ej": 2,
         "max_pe_biogas_ej": 2,
+        "pes_biogas_ej": 2,
+        "adapt_growth_biogas": 1,
     },
 )
 def new_pes_biogas():
@@ -675,8 +675,8 @@ def share_efficiency_biogas_for_elec_in_chp_plants():
     depends_on={
         "time": 5,
         "historic_share_pes_biogas_for_elec_plants": 3,
-        "p_biogas_elec": 2,
         "nvs_5_years_ts": 1,
+        "p_biogas_elec": 2,
     },
 )
 def share_pes_biogas_elec_plants():

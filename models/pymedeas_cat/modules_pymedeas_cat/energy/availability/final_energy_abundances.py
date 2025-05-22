@@ -624,8 +624,8 @@ def sensitivity_to_scarcity():
     depends_on={
         "sensitivity_to_scarcity_option_h": 2,
         "sensitivity_to_energy_scarcity_low": 1,
-        "sensitivity_to_energy_scarcity_medium": 1,
         "sensitivity_to_energy_scarcity_high": 1,
+        "sensitivity_to_energy_scarcity_medium": 1,
     },
 )
 def sensitivity_to_scarcity_h():
@@ -766,7 +766,7 @@ def year_final_scarcity_resources():
     other_deps={
         "_integ_year_init_scarcity_final_fuels": {
             "initial": {},
-            "step": {"scarcity_final_fuels_flags": 1, "time_step": 1, "time": 1},
+            "step": {"scarcity_final_fuels_flags": 1, "time": 1, "time_step": 1},
         }
     },
 )
@@ -806,7 +806,7 @@ _integ_year_init_scarcity_final_fuels = Integ(
     other_deps={
         "_integ_year_init_scarcity_reserves": {
             "initial": {},
-            "step": {"materials_availability_reserves": 1, "time_step": 1, "time": 1},
+            "step": {"materials_availability_reserves": 1, "time": 1, "time_step": 1},
         }
     },
 )
@@ -844,7 +844,7 @@ _integ_year_init_scarcity_reserves = Integ(
     other_deps={
         "_integ_year_init_scarcity_resources": {
             "initial": {},
-            "step": {"materials_availability_resources": 1, "time_step": 1, "time": 1},
+            "step": {"materials_availability_resources": 1, "time": 1, "time_step": 1},
         }
     },
 )

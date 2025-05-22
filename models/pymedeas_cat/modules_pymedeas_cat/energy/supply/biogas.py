@@ -8,7 +8,7 @@ Translated using PySD version 3.14.2
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "past_biogas_growth": 3, "p_biogas": 2, "nvs_5_years_ts": 1},
+    depends_on={"time": 3, "past_biogas_growth": 3, "nvs_5_years_ts": 1, "p_biogas": 2},
 )
 def adapt_growth_biogas():
     """
@@ -402,11 +402,11 @@ _ext_constant_max_pe_biogas_ej = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "historic_biogas_pes": 2,
         "time_step": 2,
+        "historic_biogas_pes": 2,
+        "adapt_growth_biogas": 1,
         "max_pe_biogas_ej": 2,
         "pes_biogas_ej": 2,
-        "adapt_growth_biogas": 1,
     },
 )
 def new_pes_biogas():
@@ -597,8 +597,8 @@ def pes_biogas_for_tfc():
     depends_on={
         "pes_biogas_for_elec_plants": 1,
         "fes_elec_from_biogas_in_chp_plants": 1,
-        "losses_chp_biogas": 1,
         "share_efficiency_biogas_for_elec_in_chp_plants": 1,
+        "losses_chp_biogas": 1,
     },
 )
 def pes_tot_biogas_for_elec():
@@ -620,8 +620,8 @@ def pes_tot_biogas_for_elec():
     depends_on={
         "pes_biogas_for_heatcom_plants": 1,
         "fes_heatcom_from_biogas_in_chp_plants": 1,
-        "losses_chp_biogas": 1,
         "share_efficiency_biogas_for_elec_in_chp_plants": 1,
+        "losses_chp_biogas": 1,
     },
 )
 def pes_tot_biogas_for_heatcom():

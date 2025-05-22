@@ -457,8 +457,8 @@ def ped_gases():
         "ped_gas_for_chp_plants_ej": 1,
         "ped_gases_for_heat_plants_ej": 1,
         "synthethic_fuel_generation_delayed": 1,
-        "pes_biogas_ej": 1,
         "ped_gases": 1,
+        "pes_biogas_ej": 1,
     },
 )
 def ped_nat_gas_ej():
@@ -515,19 +515,24 @@ def pes_gases():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "pes_gases": 1,
+        "required_fed_by_gases": 1,
         "ped_nat_gas_for_gtl_ej": 1,
         "other_gases_required": 1,
         "share_gases_for_final_energy": 1,
+        "pes_gases": 1,
     },
 )
 def real_fe_consumption_gases_ej():
     """
     Real final energy consumption by gases after accounting for energy availability.
     """
-    return (
-        pes_gases() - ped_nat_gas_for_gtl_ej() - other_gases_required()
-    ) * share_gases_for_final_energy()
+    return float(
+        np.minimum(
+            required_fed_by_gases(),
+            (pes_gases() - ped_nat_gas_for_gtl_ej() - other_gases_required())
+            * share_gases_for_final_energy(),
+        )
+    )
 
 
 @component.add(
@@ -614,9 +619,9 @@ def share_gases_dem_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_gases": 1,
+        "ped_gases": 1,
         "ped_nat_gas_for_gtl_ej": 1,
         "other_gases_required": 1,
-        "ped_gases": 1,
     },
 )
 def share_gases_for_final_energy():

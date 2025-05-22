@@ -100,7 +100,6 @@
             "total_co2_emissions_gtco2_before_ccs",
             "total_cumulated_co2_emissions",
             "tots_fed",
-            "transport_emissions",
             "year_co2"
         ],
         "process_emissions": [
@@ -736,6 +735,7 @@
                 "remaining_share_transmdistr_elec_losses",
                 "share_transmdistr_elec_losses",
                 "share_transmdistr_elec_losses_initial",
+                "test",
                 "total_fe_elec_demand_ej",
                 "total_fe_elec_demand_twh",
                 "variation_share_transmdistr_elec_losses",
@@ -950,7 +950,6 @@
                 "imports_cat_conv_oil_from_row_ej",
                 "imports_cat_total_oil_from_row_ej",
                 "imports_cat_unconv_oil_from_row_ej",
-                "nonenergy_use_consumption",
                 "oil_tfc",
                 "other_liquids_required_ej",
                 "other_liquids_supply_ej",
@@ -976,7 +975,6 @@
                 "share_oil_for_fc_emissions_relevant",
                 "share_oil_for_heat_chp_plants",
                 "share_oil_for_heat_emissions_relevant",
-                "synthetic_liquid_generation",
                 "total_demand_liquids_mbd",
                 "year_scarcity_liquids"
             ],
@@ -1747,7 +1745,6 @@
             ],
             "tpes": [
                 "abundance_tpe",
-                "fec_over_tpes",
                 "gquality_of_electricity",
                 "quality_of_electricity_2015",
                 "share_imports_cat_nre_from_row_vs_world_extraction",
@@ -2003,6 +2000,7 @@
             "cum_materials_to_extract_for_res_elec",
             "cum_materials_to_extract_for_res_elec_from_2015",
             "include_materials_for_overgrids",
+            "initial_cumulated_material_requirements_for_res_elec_1995",
             "kg_per_mt",
             "m_per_t",
             "materials_for_new_res_elec_per_capacity_installed",

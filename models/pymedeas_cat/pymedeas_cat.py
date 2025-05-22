@@ -9,15 +9,15 @@ import xarray as xr
 
 from pysd.py_backend.functions import (
     if_then_else,
+    sum,
+    integer,
     zidz,
     xidz,
     step,
     invert_matrix,
-    sum,
-    integer,
 )
-from pysd.py_backend.statefuls import Smooth, SampleIfTrue, DelayFixed, Integ, Initial
-from pysd.py_backend.external import ExtLookup, ExtConstant, ExtData
+from pysd.py_backend.statefuls import SampleIfTrue, Integ, DelayFixed, Initial, Smooth
+from pysd.py_backend.external import ExtConstant, ExtData, ExtLookup
 from pysd.py_backend.data import TabData
 from pysd.py_backend.utils import load_modules, load_model_data
 from pysd import Component
@@ -111,13 +111,3 @@ def time_step():
 
 # load modules from modules_pymedeas_cat directory
 exec(load_modules("modules_pymedeas_cat", _modules, _root, []))
-
-
-@component.add(
-    name="initial_cumulated_material_requirements_for_RES_elec_1995",
-    units="Mt",
-    comp_type="Constant",
-    comp_subtype="Normal",
-)
-def initial_cumulated_material_requirements_for_res_elec_1995():
-    return 0

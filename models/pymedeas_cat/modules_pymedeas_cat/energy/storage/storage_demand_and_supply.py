@@ -11,8 +11,8 @@ Translated using PySD version 3.14.2
     comp_subtype="Normal",
     depends_on={
         "res_elec_variables": 1,
-        "demand_storage_capacity": 2,
         "total_capacity_elec_storage_tw": 3,
+        "demand_storage_capacity": 2,
     },
 )
 def constraint_elec_storage_availability():
@@ -194,8 +194,8 @@ def remaining_potential_elec_storage_by_res_techn():
     depends_on={
         "rt_storage_efficiency_phs": 1,
         "installed_capacity_phs_tw": 1,
-        "used_ev_batteries_for_elec_storage": 1,
         "rt_storage_efficiency_ev_batteries": 1,
+        "used_ev_batteries_for_elec_storage": 1,
         "total_capacity_elec_storage_tw": 1,
     },
 )

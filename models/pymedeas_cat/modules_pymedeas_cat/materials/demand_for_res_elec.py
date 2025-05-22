@@ -113,6 +113,16 @@ def include_materials_for_overgrids():
 
 
 @component.add(
+    name="initial_cumulated_material_requirements_for_RES_elec_1995",
+    units="Mt",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def initial_cumulated_material_requirements_for_res_elec_1995():
+    return 0
+
+
+@component.add(
     name="kg_per_Mt", units="kg/Mt", comp_type="Constant", comp_subtype="Normal"
 )
 def kg_per_mt():
@@ -134,7 +144,7 @@ def m_per_t():
     name="materials_for_new_RES_elec_per_capacity_installed",
     units="kg/MW",
     subscripts=["RES_elec", "materials"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "materials_per_new_capacity_installed_res": 1,

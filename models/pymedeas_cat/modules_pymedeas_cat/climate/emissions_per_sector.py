@@ -305,28 +305,6 @@ def tots_fed():
 
 
 @component.add(
-    name="transport_emissions",
-    units="GtCO2/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"co2_emissions_households_and_sectors_before_ccs": 2},
-)
-def transport_emissions():
-    """
-    Transport emissions approach: emissions from transport sector + emissions from liquids in Households
-    """
-    return sum(
-        co2_emissions_households_and_sectors_before_ccs()
-        .loc[:, "Transport_storage_and_communication"]
-        .reset_coords(drop=True)
-        .rename({"final_sources": "final_sources!"}),
-        dim=["final_sources!"],
-    ) + 0.8 * float(
-        co2_emissions_households_and_sectors_before_ccs().loc["liquids", "Households"]
-    )
-
-
-@component.add(
     name="year_co2", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def year_co2():

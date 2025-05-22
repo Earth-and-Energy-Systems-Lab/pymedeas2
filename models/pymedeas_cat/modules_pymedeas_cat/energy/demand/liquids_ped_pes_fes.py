@@ -206,32 +206,6 @@ def imports_cat_unconv_oil_from_row_ej():
 
 
 @component.add(
-    name='"Non-energy_use_consumption"',
-    units="EJ/year",
-    subscripts=["final_sources"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "share_liquids_for_nonenergy_use": 1,
-        "transformation_ff_losses_ej": 1,
-        "energy_distr_losses_ff": 1,
-        "pes_liquids": 1,
-    },
-)
-def nonenergy_use_consumption():
-    return xr.DataArray(
-        share_liquids_for_nonenergy_use()
-        * (
-            pes_liquids()
-            - float(transformation_ff_losses_ej().loc["liquids"])
-            - float(energy_distr_losses_ff().loc["liquids"])
-        ),
-        {"final_sources": _subscript_dict["final_sources"]},
-        ["final_sources"],
-    )
-
-
-@component.add(
     name="oil_TFC",
     units="EJ/year",
     comp_type="Auxiliary",
@@ -413,7 +387,7 @@ def ped_nre_liquids():
             0,
             ped_liquids()
             - fes_total_biofuels_ej()
-            - sum(
+            - -sum(
                 synthethic_fuel_generation_delayed()
                 .loc[_subscript_dict["ETL"]]
                 .rename({"E_to_synthetic": "ETL!"}),
@@ -434,7 +408,9 @@ def ped_total_oil_ej():
     """
     Primary energy demand of total oil (conventional and unconventional).
     """
-    return ped_nre_liquids() - fes_ctlgtl_ej() - oil_refinery_gains_ej()
+    return float(
+        np.maximum(0, ped_nre_liquids() - fes_ctlgtl_ej() - oil_refinery_gains_ej())
+    )
 
 
 @component.add(
@@ -542,8 +518,8 @@ def share_liquids_dem_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_liquids": 1,
-        "transformation_ff_losses_ej": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses_ej": 1,
         "ped_liquids": 1,
     },
 )
@@ -566,8 +542,8 @@ def share_liquids_for_final_energy():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
-        "transformation_ff_losses_ej": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses_ej": 1,
         "ped_liquids": 1,
     },
 )
@@ -618,8 +594,8 @@ def share_oil_elec_plants():
         "ped_oil_elec_plants_ej": 1,
         "ped_oil_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp": 1,
-        "ped_total_oil_ej": 1,
         "self_consuption_energy_sector": 1,
+        "ped_total_oil_ej": 1,
     },
 )
 def share_oil_for_elec_emissions_relevant():
@@ -682,8 +658,8 @@ def share_oil_for_heat_chp_plants():
         "ped_ff_heatnc": 1,
         "ped_oil_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp": 1,
-        "ped_total_oil_ej": 1,
         "self_consuption_energy_sector": 1,
+        "ped_total_oil_ej": 1,
     },
 )
 def share_oil_for_heat_emissions_relevant():
@@ -692,22 +668,6 @@ def share_oil_for_heat_emissions_relevant():
         + float(ped_ff_heatnc().loc["liquids"])
         + ped_oil_for_chp_plants_ej() * (1 - float(share_elec_gen_in_chp().loc["oil"])),
         ped_total_oil_ej() - float(self_consuption_energy_sector().loc["liquids"]),
-    )
-
-
-@component.add(
-    name="synthetic_liquid_generation",
-    units="EJ/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"synthethic_fuel_generation_delayed": 1},
-)
-def synthetic_liquid_generation():
-    return sum(
-        synthethic_fuel_generation_delayed()
-        .loc[_subscript_dict["ETL"]]
-        .rename({"E_to_synthetic": "ETL!"}),
-        dim=["ETL!"],
     )
 
 

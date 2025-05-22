@@ -81,8 +81,8 @@ _delayfixed_constrain_gas_exogenous_growth_delayed_1yr = DelayFixed(
     depends_on={
         "time": 1,
         "start_policy_leave_in_ground_conv_gas": 1,
-        "share_rurr_conv_gas_to_leave_underground": 1,
         "rurr_conv_gas_until_start_year_plg": 1,
+        "share_rurr_conv_gas_to_leave_underground": 1,
     },
 )
 def conv_gas_to_leave_underground():
@@ -432,9 +432,9 @@ def exponent_availability_conv_gas():
     comp_subtype="Normal",
     depends_on={
         "rurr_conv_gas": 1,
-        "ped_domestic_cat_conv_nat_gas_ej": 2,
         "time": 1,
         "max_extraction_conv_gas_ej": 1,
+        "ped_domestic_cat_conv_nat_gas_ej": 2,
     },
 )
 def extraction_conv_gas_ej():
@@ -573,11 +573,11 @@ _delayfixed_extraction_unconv_gas_delayed = DelayFixed(
     comp_subtype="Normal",
     depends_on={
         "rurr_unconv_gas": 1,
-        "max_extraction_unconv_gas": 1,
         "max_unconv_gas_growth_extraction_ej": 1,
+        "max_extraction_unconv_gas": 1,
+        "time": 1,
         "historic_unconv_gas": 1,
         "separate_conv_and_unconv_gas": 1,
-        "time": 1,
     },
 )
 def extraction_unconv_gas_ej():
@@ -745,9 +745,9 @@ def max_extraction_conv_gas_ej():
     depends_on={
         "activate_force_leaving_underground": 1,
         "max_extraction_total_agg_gas_technical_ej": 3,
-        "start_year_policy_leave_in_ground_fossil_gas": 1,
-        "max_extraction_total_agg_gas_policy": 1,
         "time": 1,
+        "max_extraction_total_agg_gas_policy": 1,
+        "start_year_policy_leave_in_ground_fossil_gas": 1,
     },
 )
 def max_extraction_tot_agg_gas():
@@ -972,8 +972,8 @@ def pes_nat_gas_without_gtl():
     comp_subtype="Normal",
     depends_on={
         "pec_conv_gas": 1,
-        "nonenergy_use_demand_by_final_fuel": 1,
         "share_conv_vs_total_gas_extraction_eu": 1,
+        "nonenergy_use_demand_by_final_fuel": 1,
     },
 )
 def real_consumption_ue_conv_gas_emissions_relevant_ej():
@@ -997,8 +997,8 @@ def real_consumption_ue_conv_gas_emissions_relevant_ej():
     comp_subtype="Normal",
     depends_on={
         "pec_unconv_gas": 1,
-        "nonenergy_use_demand_by_final_fuel": 1,
         "share_conv_vs_total_gas_extraction_eu": 1,
+        "nonenergy_use_demand_by_final_fuel": 1,
     },
 )
 def real_consumption_unconv_gas_emissions_relevant_ej():
@@ -1041,9 +1041,9 @@ def real_extraction_conv_gas():
     comp_subtype="Normal",
     depends_on={
         "real_extraction_conv_gas": 1,
+        "share_conv_vs_total_gas_extraction_eu": 1,
         "ped_nat_gas_for_gtl_ej": 1,
         "nonenergy_use_demand_by_final_fuel": 1,
-        "share_conv_vs_total_gas_extraction_eu": 1,
     },
 )
 def real_extraction_conv_gas_emissions_relevant_ej():
@@ -1089,9 +1089,9 @@ def real_extraction_unconv_gas():
     comp_subtype="Normal",
     depends_on={
         "real_extraction_unconv_gas": 1,
+        "share_conv_vs_total_gas_extraction_eu": 1,
         "ped_nat_gas_for_gtl_ej": 1,
         "nonenergy_use_demand_by_final_fuel": 1,
-        "share_conv_vs_total_gas_extraction_eu": 1,
     },
 )
 def real_extraction_unconv_gas_emissions_relevant_ej():
@@ -1199,8 +1199,8 @@ _sampleiftrue_rurr_conv_gas_until_start_year_plg = SampleIfTrue(
         "_integ_rurr_tot_agg_gas": {
             "initial": {
                 "separate_conv_and_unconv_gas": 1,
-                "urr_tot_agg_gas": 1,
                 "cumulated_tot_agg_gas_extraction_to_1995": 1,
+                "urr_tot_agg_gas": 1,
             },
             "step": {"extraction_tot_agg_gas_ej": 1},
         }
@@ -1871,8 +1871,8 @@ _integ_total_unconv_gas_left_in_ground = Integ(
     depends_on={
         "time": 1,
         "start_policy_leave_in_ground_unconv_gas": 1,
-        "share_rurr_unconv_gas_to_leave_underground": 1,
         "rurr_unconv_gas_until_start_year_plg": 1,
+        "share_rurr_unconv_gas_to_leave_underground": 1,
     },
 )
 def unconv_gas_to_leave_underground():

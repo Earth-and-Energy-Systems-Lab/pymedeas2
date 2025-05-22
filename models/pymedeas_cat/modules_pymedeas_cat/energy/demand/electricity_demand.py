@@ -235,6 +235,27 @@ _ext_constant_share_transmdistr_elec_losses_initial = ExtConstant(
 
 
 @component.add(
+    name="test",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "total_electricity_demand_for_synthetic": 1,
+        "ej_per_twh": 1,
+        "electrical_distribution_losses_twh": 1,
+        "fe_demand_elec_consum_twh": 1,
+        "fe_elec_demand_exports_twh": 1,
+    },
+)
+def test():
+    return (
+        total_electricity_demand_for_synthetic() / ej_per_twh()
+        + electrical_distribution_losses_twh()
+        + fe_demand_elec_consum_twh()
+        + fe_elec_demand_exports_twh()
+    )
+
+
+@component.add(
     name="Total_FE_Elec_demand_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
@@ -255,20 +276,19 @@ def total_fe_elec_demand_ej():
     comp_subtype="Normal",
     depends_on={
         "fe_demand_elec_consum_twh": 1,
-        "share_transmdistr_elec_losses": 1,
         "elec_exports_share": 1,
+        "share_transmdistr_elec_losses": 1,
         "ej_per_twh": 1,
         "total_electricity_demand_for_synthetic": 1,
     },
 )
 def total_fe_elec_demand_twh():
     """
-    Total final energy electricity demand (TWh). It includes new electric uses (e.g. EV & HEV) and electrical transmission and distribution losses.
+    Total final energy electricity demand (TWh). It includes new electric uses (e.g. EV & HEV) and electrical transmission and distribution losses. (FE_demand_Elec_consum_TWh)*(1+"share_transm&distr_elec_losses")/(1-Elec_exports_shar e )+Total_electricity_demand_for_synthetic/EJ_per_TWh
     """
     return (
         fe_demand_elec_consum_twh()
-        * (1 + share_transmdistr_elec_losses())
-        / (1 - elec_exports_share())
+        * (1 + share_transmdistr_elec_losses() + elec_exports_share())
         + total_electricity_demand_for_synthetic() / ej_per_twh()
     )
 
@@ -280,8 +300,8 @@ def total_fe_elec_demand_twh():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "remaining_share_transmdistr_elec_losses": 1,
         "variation_share_transmdistr_losses_elec": 1,
+        "remaining_share_transmdistr_elec_losses": 1,
     },
 )
 def variation_share_transmdistr_elec_losses():

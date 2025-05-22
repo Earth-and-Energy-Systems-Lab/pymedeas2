@@ -183,8 +183,8 @@ def land_module_activated():
     comp_subtype="Normal",
     depends_on={
         "land_module_activated": 1,
-        "power_density_solar_thermal_in_urban_twemha": 2,
         "urban_land": 1,
+        "power_density_solar_thermal_in_urban_twemha": 2,
         "urban_surface_2015": 1,
     },
 )

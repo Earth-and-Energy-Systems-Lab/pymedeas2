@@ -232,8 +232,8 @@ def exogenous_growth_ctl():
         "time": 1,
         "hist_growth_gtl": 2,
         "crash_programme_gtl": 2,
-        "p_gtl": 2,
         "abundance_liquids": 1,
+        "p_gtl": 2,
     },
 )
 def exogenous_growth_gtl():
@@ -709,10 +709,10 @@ def real_growth_gtl():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "wear_ctl": 2,
-        "constrain_liquids_exogenous_growth": 1,
         "crash_programme_ctl": 1,
+        "constrain_liquids_exogenous_growth": 1,
         "check_liquids": 1,
+        "wear_ctl": 2,
         "scarcity_conv_oil": 1,
     },
 )
@@ -746,8 +746,8 @@ def replacement_ctl():
     depends_on={
         "time": 1,
         "crash_programme_gtl": 1,
-        "constrain_liquids_exogenous_growth": 1,
         "check_liquids": 1,
+        "constrain_liquids_exogenous_growth": 1,
         "wear_gtl": 2,
         "scarcity_conv_oil": 1,
     },
@@ -794,11 +794,11 @@ def share_ctlgtl_overcapacity():
         "time": 3,
         "historic_ctl_production": 2,
         "time_step": 2,
-        "nvs_1_year": 1,
         "ctl_potential_production": 2,
-        "constrain_liquids_exogenous_growth": 1,
-        "real_growth_ctl": 1,
         "check_liquids": 1,
+        "constrain_liquids_exogenous_growth": 1,
+        "nvs_1_year": 1,
+        "real_growth_ctl": 1,
     },
 )
 def variation_ctl():
@@ -831,11 +831,11 @@ def variation_ctl():
         "time": 3,
         "time_step": 2,
         "historic_gtl_production": 2,
-        "nvs_1_year": 1,
-        "constrain_liquids_exogenous_growth": 1,
-        "gtl_potential_production": 2,
-        "real_growth_gtl": 1,
         "check_liquids": 1,
+        "constrain_liquids_exogenous_growth": 1,
+        "nvs_1_year": 1,
+        "real_growth_gtl": 1,
+        "gtl_potential_production": 2,
     },
 )
 def variation_gtl():
@@ -864,7 +864,7 @@ def variation_gtl():
     units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "ctl_potential_production": 1, "lifetime_ctl": 1},
+    depends_on={"time": 1, "lifetime_ctl": 1, "ctl_potential_production": 1},
 )
 def wear_ctl():
     """

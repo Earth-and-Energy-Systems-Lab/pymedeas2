@@ -48,8 +48,8 @@ def abundance_res_heatnc2():
         "time": 4,
         "past_res_growth_for_heatnc": 4,
         "start_year_p_growth_res_heat": 3,
-        "target_year_p_growth_res_heat": 2,
         "p_res_for_heat": 2,
+        "target_year_p_growth_res_heat": 2,
     },
 )
 def adapt_growth_res_for_heatnc():
@@ -241,11 +241,11 @@ _integ_installed_capacity_res_heatnc_tw = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "time_step": 2,
         "historic_res_capacity_for_heatnc": 2,
-        "installed_capacity_res_heatnc_tw": 1,
+        "time_step": 2,
         "remaining_potential_constraint_on_new_res_heat_capacity": 1,
         "adapt_growth_res_for_heatnc": 1,
+        "installed_capacity_res_heatnc_tw": 1,
         "abundance_res_heatnc2": 1,
     },
 )

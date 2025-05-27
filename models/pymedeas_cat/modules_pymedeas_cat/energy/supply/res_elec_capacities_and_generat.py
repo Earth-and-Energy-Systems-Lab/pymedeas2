@@ -124,7 +124,7 @@ _ext_lookup_curtailment_and_storage_share_variable_res = ExtLookup(
     name="curtailment_RES",
     units="Dmnl",
     subscripts=["RES_elec"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 4, "curtailment_and_storage_share_variable_res": 4},
 )
@@ -141,6 +141,24 @@ def curtailment_res():
     value.loc[["solar_PV"]] = curtailment_and_storage_share_variable_res(time())
     value.loc[["CSP"]] = curtailment_and_storage_share_variable_res(time())
     return value
+
+
+@component.add(
+    name="curtailment_variables_res",
+    units="TWh/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "potential_tot_generation_res_elec_twh": 1,
+        "curtailment_and_storage_share_variable_res": 1,
+        "time": 1,
+    },
+)
+def curtailment_variables_res():
+    return (
+        potential_tot_generation_res_elec_twh()
+        * curtailment_and_storage_share_variable_res(time())
+    )
 
 
 @component.add(
@@ -263,8 +281,8 @@ _delayfixed_installed_capacity_res_elec_delayed = DelayFixed(
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
-        "start_year_p_growth_res_elec": 3,
         "p_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def installed_capacity_res_elec_policies():
@@ -438,29 +456,9 @@ def potential_res_elec_after_intermitt_twh():
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "potential_tot_generation_res_elec_twh": 1,
-        "time": 1,
-        "curtailment_and_storage_share_variable_res": 1,
-    },
-)
-def potential_tot_generation_after_curtailment_res_elec_twh():
-    return potential_tot_generation_res_elec_twh() * (
-        1 - curtailment_and_storage_share_variable_res(time())
-    )
-
-
-@component.add(
-    name="potential_tot_generation_RES_elec_TWh",
-    units="TWh/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
     depends_on={"potential_generation_res_elec_twh": 1},
 )
-def potential_tot_generation_res_elec_twh():
-    """
-    Total potential generation of electricity from RES given the installed capacity.
-    """
+def potential_tot_generation_after_curtailment_res_elec_twh():
     return sum(
         potential_generation_res_elec_twh().rename({"RES_elec": "RES_elec!"}),
         dim=["RES_elec!"],
@@ -476,8 +474,8 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "real_generation_res_elec_twh": 1,
         "twe_per_twh": 1,
+        "real_generation_res_elec_twh": 1,
         "replaced_capacity_res_elec_tw": 2,
     },
 )
@@ -581,8 +579,8 @@ _integ_replaced_capacity_res_elec_tw = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "res_elec_tot_overcapacity": 1,
         "wear_res_elec": 1,
+        "res_elec_tot_overcapacity": 1,
         "shortage_bioe_for_elec": 1,
     },
 )

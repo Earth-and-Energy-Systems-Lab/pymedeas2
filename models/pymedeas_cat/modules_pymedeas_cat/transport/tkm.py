@@ -69,7 +69,7 @@ _ext_constant_end_historical_data = ExtConstant(
     name="energy_by_fuel_tkm",
     units="EJ/year",
     subscripts=["final_sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_tkm": 4},
 )
@@ -583,9 +583,9 @@ _ext_constant_saving_ratios_vehicles_tkm = ExtConstant(
     depends_on={
         "time": 2,
         "end_historical_data": 1,
-        "tkm_initial": 1,
-        "gdp_cat": 1,
         "tkmgdp_slope": 1,
+        "gdp_cat": 1,
+        "tkm_initial": 1,
         "hist_tkm": 1,
     },
 )
@@ -725,8 +725,8 @@ _delayfixed_tkm_fuel_share_delayed = DelayFixed(
         "time": 4,
         "end_historical_data": 3,
         "initial_fuel_share_inland_tkm": 3,
-        "fuel_share_inland_tkm": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_inland_tkm": 2,
     },
 )
 def tkm_fuel_share_inland():

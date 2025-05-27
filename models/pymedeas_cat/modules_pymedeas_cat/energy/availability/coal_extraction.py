@@ -226,8 +226,8 @@ _delayfixed_evol_extraction_rate_delayed = DelayFixed(
         "time": 1,
         "ped_domestic_cat_coal_ej": 3,
         "nvs_1_year": 1,
-        "max_extraction_coal": 2,
         "activate_force_leaving_underground": 1,
+        "max_extraction_coal": 2,
         "remaining_extractable_coal_with_left_underground": 1,
     },
 )
@@ -343,9 +343,9 @@ def extraction_coal_without_ctl_ej():
     depends_on={
         "activate_force_leaving_underground": 1,
         "max_extraction_coal_technical": 3,
-        "time": 1,
         "start_year_policy_leave_in_ground_coal": 1,
         "max_extraction_coal_policy": 1,
+        "time": 1,
     },
 )
 def max_extraction_coal():

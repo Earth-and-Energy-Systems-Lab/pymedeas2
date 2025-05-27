@@ -205,10 +205,10 @@ def cedtot_per_material_res_elec_var():
     comp_subtype="Normal",
     depends_on={
         "res_elec_variables": 1,
-        "twe_per_twh": 1,
         "ej_per_twh": 1,
-        "lifetime_res_elec": 1,
+        "twe_per_twh": 1,
         "cpini_res_elec": 1,
+        "lifetime_res_elec": 1,
         "eroiini_res_elec_dispatch": 1,
         "quality_of_electricity_2015": 1,
     },
@@ -403,8 +403,8 @@ def fei_over_lifetime_res_elec_dispatch():
         "share_energy_requirements_for_decom_res_elec": 1,
         "ced_om_over_lifetime_res_elec_var": 1,
         "gquality_of_electricity": 1,
-        "output_elec_over_lifetime_res_elec": 1,
         "selfelectricity_consumption_res_elec": 1,
+        "output_elec_over_lifetime_res_elec": 1,
     },
 )
 def fei_over_lifetime_res_elec_var():
@@ -434,8 +434,8 @@ def fei_over_lifetime_res_elec_var():
         "ced_decom_res_elec_capacity": 1,
         "cedtot_om_res_elec_var": 1,
         "gquality_of_electricity": 1,
-        "real_generation_res_elec": 1,
         "selfelectricity_consumption_res_elec": 1,
+        "real_generation_res_elec": 1,
     },
 )
 def fei_res_elec_var():
@@ -454,7 +454,7 @@ def fei_res_elec_var():
     units="Dmnl",
     subscripts=["RES_elec"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={"__external__": "_ext_constant_grid_correction_factor_res_elec"},
 )
 def grid_correction_factor_res_elec():
@@ -556,7 +556,7 @@ def res_elec_variables():
     units="Dmnl",
     subscripts=["RES_elec"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={"__external__": "_ext_constant_selfelectricity_consumption_res_elec"},
 )
 def selfelectricity_consumption_res_elec():
@@ -588,7 +588,7 @@ _ext_constant_selfelectricity_consumption_res_elec = ExtConstant(
     units="Dmnl",
     subscripts=["RES_elec"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={
         "__external__": "_ext_constant_share_energy_requirements_for_decom_res_elec"
     },

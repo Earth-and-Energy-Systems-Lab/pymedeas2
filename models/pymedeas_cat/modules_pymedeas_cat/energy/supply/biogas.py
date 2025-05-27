@@ -8,7 +8,7 @@ Translated using PySD version 3.14.2
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "past_biogas_growth": 3, "nvs_5_years_ts": 1, "p_biogas": 2},
+    depends_on={"time": 3, "past_biogas_growth": 3, "p_biogas": 2, "nvs_5_years_ts": 1},
 )
 def adapt_growth_biogas():
     """
@@ -402,11 +402,11 @@ _ext_constant_max_pe_biogas_ej = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "time_step": 2,
         "historic_biogas_pes": 2,
-        "adapt_growth_biogas": 1,
-        "max_pe_biogas_ej": 2,
+        "time_step": 2,
         "pes_biogas_ej": 2,
+        "max_pe_biogas_ej": 2,
+        "adapt_growth_biogas": 1,
     },
 )
 def new_pes_biogas():
@@ -675,8 +675,8 @@ def share_efficiency_biogas_for_elec_in_chp_plants():
     depends_on={
         "time": 5,
         "historic_share_pes_biogas_for_elec_plants": 3,
-        "nvs_5_years_ts": 1,
         "p_biogas_elec": 2,
+        "nvs_5_years_ts": 1,
     },
 )
 def share_pes_biogas_elec_plants():

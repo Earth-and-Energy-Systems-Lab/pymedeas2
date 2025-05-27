@@ -183,8 +183,8 @@ def land_module_activated():
     comp_subtype="Normal",
     depends_on={
         "land_module_activated": 1,
-        "urban_land": 1,
         "power_density_solar_thermal_in_urban_twemha": 2,
+        "urban_land": 1,
         "urban_surface_2015": 1,
     },
 )
@@ -206,8 +206,8 @@ def max_fe_solar_thermal_urban_twth():
     comp_subtype="Normal",
     depends_on={
         "land_module_activated": 1,
-        "urban_land": 1,
         "power_density_solar_pv_in_urban_twemha": 2,
+        "urban_land": 1,
         "urban_surface_2015": 1,
     },
 )
@@ -256,8 +256,8 @@ _ext_constant_power_density_initial_res_elec_twemha = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "power_density_initial_res_elec_twemha": 1,
-        "cp_res_elec": 4,
         "cpini_res_elec": 2,
+        "cp_res_elec": 4,
         "power_density_solar_pv_on_land_twemha": 1,
     },
 )

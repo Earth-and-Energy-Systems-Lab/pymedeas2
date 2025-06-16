@@ -352,10 +352,10 @@ def total_recycled_materials_for_other_mt():
         "time": 1,
         "time_step": 1,
         "historical_variation_minerals_extraction_rest": 1,
-        "a_extraction_projection_minerals": 1,
         "gdp_delayed_1yr": 1,
-        "minerals_extraction_projection_rest_cte_rr": 1,
         "gdp": 1,
+        "a_extraction_projection_minerals": 1,
+        "minerals_extraction_projection_rest_cte_rr": 1,
         "mt_per_t": 1,
     },
 )

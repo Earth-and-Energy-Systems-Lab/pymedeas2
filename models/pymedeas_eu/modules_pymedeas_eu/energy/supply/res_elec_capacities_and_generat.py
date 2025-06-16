@@ -123,7 +123,7 @@ _ext_lookup_curtailment_and_storage_share_variable_res = ExtLookup(
     name="curtailment_RES",
     units="Dmnl",
     subscripts=["RES_elec"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 4, "curtailment_and_storage_share_variable_res": 4},
 )
@@ -268,8 +268,8 @@ _delayfixed_installed_capacity_res_elec_delayed = DelayFixed(
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
-        "start_year_p_growth_res_elec": 3,
         "p_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def installed_capacity_res_elec_policies():
@@ -355,8 +355,8 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "res_installed_capacity_ts_delayed": 1,
         "installed_capacity_res_elec": 1,
+        "res_installed_capacity_ts_delayed": 1,
         "time_step": 1,
     },
 )
@@ -463,8 +463,8 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "installed_capacity_res_elec": 2,
         "real_generation_res_elec_twh": 1,
+        "installed_capacity_res_elec": 2,
         "twe_per_twh": 1,
     },
 )
@@ -502,7 +502,7 @@ def real_generation_res_elec_twh():
     """
     return (
         potential_generation_res_elec_twh()
-        * zidz(1, 1 + res_elec_tot_overcapacity())
+        * (1 / (1 + res_elec_tot_overcapacity()))
         * shortage_bioe_for_elec()
     )
 
@@ -621,9 +621,8 @@ def res_elec_tot_overcapacity():
     """
     Overcapacity for each technology RES for electricity taking into account the installed capacity and the real generation.
     """
-    return (
-        zidz(potential_tot_generation_res_elec_twh(), fe_real_tot_generation_res_elec())
-        - 1
+    return zidz(
+        potential_tot_generation_res_elec_twh(), fe_real_tot_generation_res_elec()
     )
 
 
@@ -784,8 +783,8 @@ def total_time_planconstr_res_elec():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "constructed_capacity_res_elec_tw": 1,
         "lifetime_res_elec": 1,
+        "constructed_capacity_res_elec_tw": 1,
     },
 )
 def wear_res_elec():

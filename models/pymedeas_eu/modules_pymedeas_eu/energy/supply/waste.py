@@ -356,10 +356,10 @@ _ext_constant_max_pe_waste = ExtConstant(
         "time": 3,
         "historic_pes_waste_ej": 2,
         "time_step": 2,
-        "max_pe_waste": 3,
-        "adapt_growth_waste": 1,
         "pes_waste_ej": 3,
         "p_waste_change": 1,
+        "adapt_growth_waste": 1,
+        "max_pe_waste": 3,
     },
 )
 def new_waste_supply_ej():
@@ -440,8 +440,8 @@ _ext_constant_past_waste_growth = ExtConstant(
     depends_on={
         "pes_waste_for_elec_plants": 1,
         "fes_elec_from_waste_in_chp_plants": 1,
-        "share_efficiency_waste_for_elec_in_chp_plants": 1,
         "losses_chp_waste": 1,
+        "share_efficiency_waste_for_elec_in_chp_plants": 1,
     },
 )
 def pes_tot_waste_for_elec():
@@ -463,8 +463,8 @@ def pes_tot_waste_for_elec():
     depends_on={
         "pes_waste_for_heatcom_plants": 1,
         "fes_heatcom_from_waste_in_chp_plants": 1,
-        "share_efficiency_waste_for_elec_in_chp_plants": 1,
         "losses_chp_waste": 1,
+        "share_efficiency_waste_for_elec_in_chp_plants": 1,
     },
 )
 def pes_tot_waste_for_heatcom():

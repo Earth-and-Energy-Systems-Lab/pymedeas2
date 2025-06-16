@@ -209,8 +209,8 @@ def installed_capacity_res_elec():
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
-        "start_year_p_growth_res_elec": 3,
         "p_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def installed_capacity_res_elec_policies():
@@ -293,9 +293,9 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "time_step": 1,
         "installed_capacity_res_elec": 1,
         "res_installed_capacity_ts_delayed": 1,
+        "time_step": 1,
     },
 )
 def new_res_installed_capacity():
@@ -407,8 +407,8 @@ def potential_tot_generation_res_elec_twh():
         "time": 1,
         "cp_res_elec": 1,
         "real_generation_res_elec_twh": 1,
-        "twe_per_twh": 1,
         "installed_capacity_res_elec": 2,
+        "twe_per_twh": 1,
     },
 )
 def real_cp_res_elec():
@@ -437,7 +437,7 @@ def real_cp_res_elec():
 )
 def real_generation_res_elec_twh():
     """
-    Electricity generation by RES technology.
+    Electricity generation by RES technology. potential generation RES elec TWh[RES elec]*(1-RES elec tot overcapacity)
     """
     return potential_generation_res_elec_twh() * zidz(
         1, 1 + res_elec_tot_overcapacity()
@@ -741,8 +741,8 @@ def total_time_planconstr_res_elec():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "constructed_capacity_res_elec_tw": 1,
         "lifetime_res_elec": 1,
+        "constructed_capacity_res_elec_tw": 1,
     },
 )
 def wear_res_elec():

@@ -116,8 +116,8 @@ def demand_storage_capacity():
     depends_on={
         "esoi_phs": 1,
         "installed_capacity_phs": 1,
-        "used_ev_batteries_for_elec_storage": 1,
         "esoi_ev_batteries": 1,
+        "used_ev_batteries_for_elec_storage": 1,
         "total_capacity_elec_storage_tw": 1,
     },
 )

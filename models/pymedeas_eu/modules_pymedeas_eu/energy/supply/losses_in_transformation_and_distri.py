@@ -7,7 +7,7 @@ Translated using PySD version 3.14.2
     name="Energy_distr_losses_FF",
     units="EJ/year",
     subscripts=["final_sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pes_fossil_fuel_extraction_delayed": 3,
@@ -195,10 +195,10 @@ def historic_share_pipeline_transport():
     depends_on={
         "pes_total_oil_ej_eu": 1,
         "imports_eu_total_oil_from_row_ej": 1,
-        "extraction_coal_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
-        "imports_eu_nat_gas_from_row_ej": 1,
+        "extraction_coal_eu": 1,
         "pes_nat_gas_eu": 1,
+        "imports_eu_nat_gas_from_row_ej": 1,
     },
 )
 def pes_fossil_fuel_extraction():
@@ -385,7 +385,7 @@ def total_distribution_losses():
     name="Transformation_FF_losses",
     units="EJ/year",
     subscripts=["final_sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pes_fossil_fuel_extraction_delayed": 3,

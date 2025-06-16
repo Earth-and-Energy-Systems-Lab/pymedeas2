@@ -303,7 +303,7 @@ _ext_constant_nist_share_feh_over_fed_nat_gas = ExtConstant(
     units="Dmnl",
     subscripts=["final_sources"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
     depends_on={"__external__": "_ext_constant_policy_share_feh_over_fed"},
 )
 def policy_share_feh_over_fed():

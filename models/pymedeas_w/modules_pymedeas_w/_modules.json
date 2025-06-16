@@ -102,8 +102,7 @@
             "total_co2_captured_ccs",
             "total_co2_captured_ccs_energy_related",
             "total_dac_co2_captured",
-            "total_dac_energy_demand",
-            "total_process_emissions_captured"
+            "total_dac_energy_demand"
         ],
         "emissions_per_sector": [
             "ch4_emissions_households_and_sectors",
@@ -116,8 +115,8 @@
             "share_energy_consumption_from_households_and_sectors",
             "total_co2_emissions_after_lulucf",
             "total_co2_emissions_gtco2_after_capture",
+            "total_co2_emissions_gtco2_before_ccs",
             "total_cumulated_co2_emissions",
-            "total_energy_co2_emissions_gtco2_before_ccs",
             "year_co2"
         ],
         "energy_losses_function": [

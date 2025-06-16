@@ -82,7 +82,7 @@ def co2_emissions_households_and_sectors_before_ccs():
 def co2_emissions_sectors_and_households_including_process():
     return if_then_else(
         total_process_emissions()
-        > sum(
+        < sum(
             process_co2_captured_ccs().rename(
                 {"SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!"}
             ),
@@ -169,21 +169,21 @@ def share_energy_consumption_from_households_and_sectors():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "total_co2_emissions_gtco2_after_capture": 1,
+        "total_co2_emissions_gtco2": 1,
         "co2_soillucf_emissions": 1,
         "afforestation_program_2020_gtco2": 1,
     },
 )
 def total_co2_emissions_after_lulucf():
     return (
-        total_co2_emissions_gtco2_after_capture()
+        total_co2_emissions_gtco2()
         + co2_soillucf_emissions()
         - afforestation_program_2020_gtco2()
     )
 
 
 @component.add(
-    name="Total_CO2_emissions_GTCO2_after_capture",
+    name="Total_CO2_emissions_GTCO2",
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -192,7 +192,7 @@ def total_co2_emissions_after_lulucf():
         "total_dac_co2_captured": 1,
     },
 )
-def total_co2_emissions_gtco2_after_capture():
+def total_co2_emissions_gtco2():
     """
     Total emissions taking into account the carbon capture technologies
     """
@@ -203,13 +203,13 @@ def total_co2_emissions_gtco2_after_capture():
 
 
 @component.add(
-    name="Total_energy_CO2_emissions_GTCO2_before_CCS",
+    name="Total_CO2_emissions_GTCO2_before_CCS",
     units="GtCO2/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"co2_emissions_households_and_sectors_before_ccs": 1},
 )
-def total_energy_co2_emissions_gtco2_before_ccs():
+def total_co2_emissions_gtco2_before_ccs():
     return sum(
         co2_emissions_households_and_sectors_before_ccs().rename(
             {

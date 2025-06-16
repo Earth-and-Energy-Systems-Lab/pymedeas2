@@ -49,8 +49,8 @@ _integ_capital_share = Integ(
     depends_on={
         "p_capital_share": 1,
         "initial_capital_share": 2,
-        "year_initial_capital_share": 1,
         "year_final_capial_share": 1,
+        "year_initial_capital_share": 1,
         "time_step": 1,
     },
 )
@@ -185,8 +185,8 @@ def desired_gdp():
         "historic_gdp_growth_rate": 1,
         "desired_gdp": 1,
         "dollars_to_tdollars": 1,
-        "population": 1,
         "desired_gdppc": 1,
+        "population": 1,
         "annual_gdppc_growth_rate": 1,
     },
 )
@@ -233,10 +233,10 @@ _integ_desired_gdppc = Integ(
     depends_on={
         "time": 1,
         "historic_gdppc": 1,
-        "time_step": 2,
         "historic_gdppc_delayed": 1,
-        "ts_growth_rate": 1,
+        "time_step": 2,
         "desired_gdppc": 1,
+        "ts_growth_rate": 1,
     },
 )
 def desired_variation_gdppc():
@@ -449,7 +449,7 @@ _ext_lookup_historic_gdp = ExtLookup(
     depends_on={"time": 3, "historic_gdp": 3},
 )
 def historic_gdp_growth_rate():
-    return (historic_gdp(time()) - historic_gdp(time() - 1)) / historic_gdp(time() - 1)
+    return (historic_gdp(time()) - historic_gdp(time() - 1)) / historic_gdp(time())
 
 
 @component.add(
@@ -693,9 +693,9 @@ _integ_labour_share = Integ(
     depends_on={
         "p_labour_share": 1,
         "initial_labour_share": 2,
+        "year_initial_labour_share": 1,
         "year_final_labour_share": 1,
         "time_step": 1,
-        "year_initial_labour_share": 1,
     },
 )
 def labour_share_growth():
@@ -868,9 +868,9 @@ def variation_capital_share():
     comp_subtype="Normal",
     depends_on={
         "capital_share": 1,
-        "growth_capital_share": 2,
         "nvs_1_year": 1,
         "desired_annual_total_demand_growth_rate": 2,
+        "growth_capital_share": 2,
         "gdp_eu": 1,
         "m_to_t": 1,
     },
@@ -898,10 +898,10 @@ def variation_cc():
     comp_subtype="Normal",
     depends_on={
         "time": 5,
-        "historic_population": 2,
-        "dollar_per_mdollar": 1,
-        "historic_gdp": 2,
         "time_step": 3,
+        "historic_population": 2,
+        "historic_gdp": 2,
+        "dollar_per_mdollar": 1,
     },
 )
 def variation_historic_gdppc():

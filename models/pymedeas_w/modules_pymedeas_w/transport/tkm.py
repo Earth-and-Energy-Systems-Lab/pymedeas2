@@ -586,9 +586,9 @@ _ext_constant_saving_ratios_vehicles_tkm = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 2,
+        "tkm_initial": 1,
         "gdp": 1,
         "tkmgdp_slope": 1,
-        "tkm_initial": 1,
         "hist_tkm": 1,
     },
 )
@@ -674,8 +674,8 @@ def tkm_fuel_share():
         "end_historical_data": 4,
         "fuel_share_1995": 2,
         "initial_fuel_share_air_tkm": 3,
-        "fuel_share_air": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_air": 2,
     },
 )
 def tkm_fuel_share_air():
@@ -712,10 +712,10 @@ def tkm_fuel_share_air():
     depends_on={
         "time": 5,
         "end_historical_data": 4,
-        "fuel_share_1995": 2,
         "initial_fuel_share_inland_tkm": 3,
-        "fuel_share_inland": 2,
+        "fuel_share_1995": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_inland": 2,
     },
 )
 def tkm_fuel_share_inland():
@@ -752,8 +752,8 @@ def tkm_fuel_share_inland():
     depends_on={
         "time": 5,
         "end_historical_data": 4,
-        "fuel_share_1995": 2,
         "initial_fuel_share_maritime_tkm": 3,
+        "fuel_share_1995": 2,
         "fuel_share_maritime": 2,
         "start_year_policies_transport": 3,
     },
@@ -815,8 +815,8 @@ _ext_constant_tkm_initial = ExtConstant(
         "time": 5,
         "end_historical_data": 5,
         "hist_transport_share_tkm": 3,
-        "mode_share_tkm": 2,
         "start_year_policies_transport": 3,
+        "mode_share_tkm": 2,
     },
 )
 def tkm_mode_share():

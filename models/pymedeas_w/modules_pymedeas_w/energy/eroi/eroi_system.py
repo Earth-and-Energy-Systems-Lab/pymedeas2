@@ -25,8 +25,8 @@ def eroist_system():
     depends_on={
         "fe_tot_generation_all_res_elec_twh": 1,
         "ej_per_twh": 1,
-        "time": 1,
         "policy_share_trans_and_dist_losses": 1,
+        "time": 1,
     },
 )
 def fe_tot_generation_all_res_elec_ej():

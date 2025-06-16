@@ -71,8 +71,8 @@ def installed_capacity_phs():
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_phs": 3,
-        "start_year_p_growth_res_elec": 3,
         "p_phs_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def installed_capacity_phs_policies():
@@ -202,8 +202,8 @@ def max_potential_phs_twh():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "installed_capacity_phs": 1,
         "installed_capacity_phs_year_delayed": 1,
+        "installed_capacity_phs": 1,
     },
 )
 def new_phs_installed():

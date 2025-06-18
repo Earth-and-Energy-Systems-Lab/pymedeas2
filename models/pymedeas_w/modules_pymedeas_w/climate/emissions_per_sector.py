@@ -93,6 +93,7 @@ def co2_emissions_households_and_sectors_before_ccs():
 
 @component.add(
     name="CO2_emissions_sectors_and_households_including_process",
+    units="GTCO2e/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -104,7 +105,7 @@ def co2_emissions_households_and_sectors_before_ccs():
 def co2_emissions_sectors_and_households_including_process():
     return if_then_else(
         total_process_emissions()
-        < sum(
+        > sum(
             process_co2_captured_ccs().rename(
                 {"SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!"}
             ),
@@ -263,25 +264,6 @@ def total_co2_emissions_gtco2_after_capture():
 
 
 @component.add(
-    name="Total_CO2_emissions_GTCO2_before_CCS",
-    units="GTCO2e/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"co2_emissions_households_and_sectors_before_ccs": 1},
-)
-def total_co2_emissions_gtco2_before_ccs():
-    return sum(
-        co2_emissions_households_and_sectors_before_ccs().rename(
-            {
-                "final_sources": "final_sources!",
-                "SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!",
-            }
-        ),
-        dim=["final_sources!", "SECTORS_and_HOUSEHOLDS!"],
-    )
-
-
-@component.add(
     name="Total_cumulated_CO2_emissions",
     units="GtCO2",
     comp_type="Auxiliary",
@@ -294,6 +276,25 @@ def total_cumulated_co2_emissions():
             {"SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!"}
         ),
         dim=["SECTORS_and_HOUSEHOLDS!"],
+    )
+
+
+@component.add(
+    name="Total_energy_CO2_emissions_GTCO2_before_CCS",
+    units="GTCO2e/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"co2_emissions_households_and_sectors_before_ccs": 1},
+)
+def total_energy_co2_emissions_gtco2_before_ccs():
+    return sum(
+        co2_emissions_households_and_sectors_before_ccs().rename(
+            {
+                "final_sources": "final_sources!",
+                "SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!",
+            }
+        ),
+        dim=["final_sources!", "SECTORS_and_HOUSEHOLDS!"],
     )
 
 

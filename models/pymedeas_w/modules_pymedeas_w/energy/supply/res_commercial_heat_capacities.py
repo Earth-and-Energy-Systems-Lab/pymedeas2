@@ -351,8 +351,8 @@ _ext_constant_losses_solar_for_heat = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "nvs_1_year": 1,
         "historic_res_capacity_for_heatcom": 2,
+        "nvs_1_year": 1,
         "remaining_potential_constraint_on_new_res_heat_capacity": 1,
         "installed_capacity_res_heatcom_tw": 1,
         "adapt_growth_res_for_heatcom": 1,

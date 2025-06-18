@@ -11,8 +11,8 @@ Translated using PySD version 3.14.2
     depends_on={
         "share_in_target_year_oil_for_elec": 1,
         "hist_share_oilff_elec": 1,
-        "target_year_policy_phaseout_oil_for_elec": 1,
         "start_year_policy_phaseout_oil_for_elec": 1,
+        "target_year_policy_phaseout_oil_for_elec": 1,
     },
 )
 def a_lineal_regr_phaseout_oil_for_elec():
@@ -126,10 +126,10 @@ def decrease_share_oil_for_elec():
     comp_subtype="Normal",
     depends_on={
         "switch_scarcityps_elec_substit": 1,
-        "demand_elec_plants_fossil_fuels_twh": 3,
         "share_oil_for_elec": 2,
-        "future_share_gascoalff_for_elec": 1,
+        "demand_elec_plants_fossil_fuels_twh": 3,
         "time": 1,
+        "future_share_gascoalff_for_elec": 1,
     },
 )
 def demand_elec_gas_and_coal_twh():
@@ -179,8 +179,8 @@ def demand_elec_plants_fossil_fuels_twh():
         "time": 3,
         "end_hist_data": 3,
         "hist_share_gascoal_gas_elec": 3,
-        "target_year_policy_gas_electricity": 2,
         "policy_share_gascoalgas_elec": 2,
+        "target_year_policy_gas_electricity": 2,
     },
 )
 def desired_share_gascoalgas_elec():
@@ -530,12 +530,12 @@ _ext_lookup_historic_efficiency_gas_for_electricity = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "percent_to_share": 1,
         "time_step": 2,
+        "percent_to_share": 1,
         "historic_efficiency_gas_for_electricity": 2,
         "remaining_efficiency_improv_gas_for_electricity": 1,
-        "efficiency_gas_for_electricity": 1,
         "efficiency_improv_gas_for_electricity": 1,
+        "efficiency_gas_for_electricity": 1,
     },
 )
 def improvement_efficiency_gas_for_electricity():
@@ -1195,8 +1195,8 @@ def scarcity_primary_sources():
     depends_on={
         "switch_scarcityps_elec_substit": 1,
         "desired_share_gascoalgas_elec": 2,
-        "future_share_gascoalgas_for_elec": 1,
         "time": 1,
+        "future_share_gascoalgas_for_elec": 1,
     },
 )
 def share_gascoal_gas_for_elec():
@@ -1272,11 +1272,11 @@ _ext_constant_share_in_target_year_oil_for_elec = ExtConstant(
     depends_on={
         "switch_scarcityps_elec_substit": 1,
         "hist_share_oilff_elec": 3,
-        "phaseout_oil_for_electricity": 1,
-        "future_share_oilff_for_elec": 1,
-        "time": 2,
-        "start_year_policy_phaseout_oil_for_elec": 1,
         "p_share_oil_for_elec": 1,
+        "time": 2,
+        "future_share_oilff_for_elec": 1,
+        "start_year_policy_phaseout_oil_for_elec": 1,
+        "phaseout_oil_for_electricity": 1,
     },
 )
 def share_oil_for_elec():
@@ -1424,10 +1424,10 @@ _ext_constant_target_year_policy_phaseout_oil_for_elec = ExtConstant(
     depends_on={
         "pe_demand_gas_elec_plants_ej": 1,
         "efficiency_gas_for_electricity": 1,
-        "pe_demand_coal_elec_plants_ej": 1,
         "efficiency_coal_for_electricity": 1,
-        "pe_demand_oil_elec_plants_ej": 1,
+        "pe_demand_coal_elec_plants_ej": 1,
         "efficiency_liquids_for_electricity": 1,
+        "pe_demand_oil_elec_plants_ej": 1,
         "pe_losses_uranium_for_elec_ej": 1,
         "pe_losses_bioe_for_elec_ej": 1,
     },

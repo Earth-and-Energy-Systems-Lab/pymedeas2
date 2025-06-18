@@ -57,8 +57,8 @@ def land_requirements_res_elec_compet_uses():
     depends_on={
         "potential_generation_res_elec_twh": 1,
         "real_share_pv_urban_vs_total_pv": 1,
-        "power_density_res_elec_twemha": 1,
         "twe_per_twh": 1,
+        "power_density_res_elec_twemha": 1,
     },
 )
 def land_saved_by_urban_pv():

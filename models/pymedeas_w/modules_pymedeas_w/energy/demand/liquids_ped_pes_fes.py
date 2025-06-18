@@ -254,8 +254,8 @@ def share_liquids_dem_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_liquids_ej": 1,
-        "ped_liquids_ej": 1,
         "other_liquids_required_ej": 1,
+        "ped_liquids_ej": 1,
     },
 )
 def share_liquids_for_final_energy():
@@ -321,8 +321,8 @@ def share_oil_dem_for_heatcom():
     comp_subtype="Normal",
     depends_on={
         "pe_demand_oil_elec_plants_ej": 1,
-        "ped_oil_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp_oil": 1,
+        "ped_oil_for_chp_plants_ej": 1,
         "ped_total_oil_ej": 1,
     },
 )
@@ -357,7 +357,7 @@ def share_oil_for_fc_emissions_relevant():
             float(nonenergy_use_demand_by_final_fuel_ej().loc["liquids"]),
             ped_liquids_ej(),
         )
-        * (ped_total_oil_ej() / ped_liquids_ej())
+        * zidz(ped_total_oil_ej(), ped_liquids_ej())
         - share_oil_for_elec_emissions_relevant()
         - share_oil_for_heat_emissions_relevant()
     )
@@ -371,8 +371,8 @@ def share_oil_for_fc_emissions_relevant():
     depends_on={
         "ped_oil_for_heat_plants_ej": 1,
         "ped_liquids_heatnc": 1,
-        "ped_oil_for_chp_plants_ej": 1,
         "share_elec_gen_in_chp_oil": 1,
+        "ped_oil_for_chp_plants_ej": 1,
         "ped_total_oil_ej": 1,
     },
 )

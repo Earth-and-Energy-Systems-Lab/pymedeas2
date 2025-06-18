@@ -89,8 +89,8 @@ _ext_data_afforestation_program_2020 = ExtData(
     depends_on={
         "afforestation_program_2020": 1,
         "activate_afforestation_program": 1,
-        "mtc_per_gtc": 1,
         "gtc_per_gtco2": 1,
+        "mtc_per_gtc": 1,
     },
 )
 def afforestation_program_2020_gtco2():
@@ -234,8 +234,8 @@ def co2_emissions_biomass():
         "extraction_coal_ej": 4,
         "share_coal_for_elec_emissions_relevant": 1,
         "share_coal_for_heat_emissions_relevant": 1,
-        "gtco2_per_ej_ctl": 1,
         "share_coal_for_ctl_emissions_relevant": 1,
+        "gtco2_per_ej_ctl": 1,
         "share_coal_for_fc_emissions_relevant": 1,
     },
 )
@@ -400,8 +400,8 @@ def co2_emissions_per_fuel():
     depends_on={
         "gtco2_per_ej_solid_bioe": 3,
         "pe_real_generation_res_elec": 1,
-        "pes_res_for_heatnc_by_techn": 1,
         "pes_res_for_heatcom_by_techn": 1,
+        "pes_res_for_heatnc_by_techn": 1,
         "modern_bioe_in_households": 1,
     },
 )
@@ -652,9 +652,9 @@ _ext_constant_gtco2_per_ej_gtl = ExtConstant(
     depends_on={
         "share_conv_vs_total_oil_extraction": 2,
         "gtco2_per_ej_conv_oil": 1,
+        "gtco2_per_ej_unconv_oil": 2,
         "gtco2_per_ej_shale_oil": 1,
         "adapt_emissions_shale_oil": 1,
-        "gtco2_per_ej_unconv_oil": 2,
     },
 )
 def gtco2_per_ej_oil():

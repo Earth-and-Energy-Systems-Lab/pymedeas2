@@ -58,8 +58,8 @@ _integ_demand_by_sector_fd_eu = Integ(
     depends_on={
         "time": 1,
         "nvs_1_year": 1,
-        "real_final_demand_by_sector_eu": 1,
         "demand_by_sector_fd_eu": 1,
+        "real_final_demand_by_sector_eu": 1,
     },
 )
 def demand_not_covered_by_sector_fd_eu():
@@ -448,9 +448,9 @@ def total_demand_adjusted():
     depends_on={
         "time": 1,
         "historic_variation_demand": 1,
+        "share_consum_goverment_and_inventories": 1,
         "variation_household_demand": 1,
         "variation_exports_demand": 1,
-        "share_consum_goverment_and_inventories": 1,
         "variation_gfcf": 1,
     },
 )

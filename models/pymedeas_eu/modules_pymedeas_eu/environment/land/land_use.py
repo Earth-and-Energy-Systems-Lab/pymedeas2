@@ -160,10 +160,10 @@ _integ_available_land = Integ(
     depends_on={
         "time": 2,
         "hist_variation_primary_forest": 1,
-        "historic_av_variation_primary_forests_area": 1,
         "primary_forests_area": 2,
         "p_variation_primary_forest": 1,
         "start_year_p_variation_primary_forest": 1,
+        "historic_av_variation_primary_forests_area": 1,
     },
 )
 def available_to_primary_forest_rate():
@@ -230,9 +230,9 @@ def compet_land_for_biofuels_rate():
     comp_subtype="Normal",
     depends_on={
         "demand_forest_energy_non_tradition_ej": 1,
+        "consum_wood_products_ej": 1,
         "forest_consumption_ej": 1,
         "consum_forest_energy_traditional_ej": 1,
-        "consum_wood_products_ej": 1,
     },
 )
 def consum_forest_energy_non_traditional_ej():
@@ -474,9 +474,9 @@ def forest_consumption_ej():
     depends_on={
         "available_forest_area": 1,
         "p_minimum_forest": 1,
+        "p_forest_overexplotation": 1,
         "max_sustainable_forest_extraction_ej": 1,
         "total_demand_forest_biomass_ej": 1,
-        "p_forest_overexplotation": 1,
     },
 )
 def forest_extraction_ej():
@@ -528,8 +528,8 @@ _ext_constant_forest_extraction_per_mha = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "aux_reach_available_land": 1,
-        "agricultural_land": 1,
         "agricultural_land_until_2015": 1,
+        "agricultural_land": 1,
         "nvs_1_year": 1,
     },
 )
@@ -602,7 +602,7 @@ def ha_to_mha():
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "historic_primary_forest": 2, "time_step": 2},
+    depends_on={"time": 3, "time_step": 2, "historic_primary_forest": 2},
 )
 def hist_variation_primary_forest():
     """
@@ -624,7 +624,7 @@ def hist_variation_primary_forest():
     units="MHa/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "historic_urban_land": 2, "time_step": 2},
+    depends_on={"time": 3, "time_step": 2, "historic_urban_land": 2},
 )
 def hist_variation_urban_land():
     """
@@ -747,8 +747,8 @@ def historic_urban_land_density():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "agricultural_land": 1,
         "agricultural_land_until_2015": 1,
+        "agricultural_land": 1,
         "aux_reach_available_land": 1,
         "nvs_1_year": 1,
     },
@@ -1648,8 +1648,8 @@ _integ_urban_land = Integ(
         "time": 4,
         "historic_urban_land_density": 4,
         "start_year_p_urban_land_density": 3,
-        "target_year_p_urban_land_density": 2,
         "p_urban_land_density_mha": 2,
+        "target_year_p_urban_land_density": 2,
     },
 )
 def urban_land_density():
@@ -1685,8 +1685,8 @@ def urban_land_density():
     depends_on={
         "time": 1,
         "hist_variation_urban_land": 1,
-        "pop_variation": 1,
         "urban_land_density": 1,
+        "pop_variation": 1,
     },
 )
 def urban_land_rate():

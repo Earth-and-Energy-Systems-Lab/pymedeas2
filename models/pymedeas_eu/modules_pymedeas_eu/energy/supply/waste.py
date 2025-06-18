@@ -354,11 +354,11 @@ _ext_constant_max_pe_waste = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "historic_pes_waste_ej": 2,
         "time_step": 2,
+        "historic_pes_waste_ej": 2,
         "pes_waste_ej": 3,
-        "p_waste_change": 1,
         "adapt_growth_waste": 1,
+        "p_waste_change": 1,
         "max_pe_waste": 3,
     },
 )

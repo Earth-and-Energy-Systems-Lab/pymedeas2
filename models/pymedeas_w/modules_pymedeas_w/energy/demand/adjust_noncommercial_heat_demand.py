@@ -60,8 +60,8 @@ def fed_by_fuel_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_fuel_before_heat_correction": 1,
-        "share_feh_over_fed_by_final_fuel": 1,
         "hist_share_feh_over_fed_solid_bioe": 1,
+        "share_feh_over_fed_by_final_fuel": 1,
         "efficiency_coal_for_heat_plants": 1,
         "share_heat_distribution_losses": 1,
     },

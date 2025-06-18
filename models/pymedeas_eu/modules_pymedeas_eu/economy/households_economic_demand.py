@@ -201,11 +201,11 @@ def variation_historic_demand():
     depends_on={
         "time": 1,
         "variation_historic_demand": 1,
+        "variation_lc": 1,
         "nvs_1_year": 1,
         "lc": 2,
-        "variation_lc": 1,
-        "beta_0_hd": 1,
         "unit_correction_economic": 2,
+        "beta_0_hd": 1,
         "beta_1_hd": 2,
     },
 )

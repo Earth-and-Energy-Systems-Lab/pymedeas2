@@ -635,8 +635,8 @@ _ext_constant_start_year_policies_transport = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "gdp_eu": 1,
         "tkm_slope": 1,
+        "gdp_eu": 1,
         "tkm_initial": 1,
         "hist_tkm": 1,
     },
@@ -775,8 +775,8 @@ def tkm_fuel_share_inland():
         "time": 4,
         "end_historical_data": 3,
         "initial_fuel_share_maritime_tkm": 3,
-        "fuel_share_maritime": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_maritime": 2,
     },
 )
 def tkm_fuel_share_maritime():
@@ -831,8 +831,8 @@ _ext_constant_tkm_initial = ExtConstant(
         "time": 5,
         "end_historical_data": 5,
         "hist_transport_share_tkm": 3,
-        "mode_share_tkm": 2,
         "start_year_policies_transport": 3,
+        "mode_share_tkm": 2,
     },
 )
 def tkm_mode_share():

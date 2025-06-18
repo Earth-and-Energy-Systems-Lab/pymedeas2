@@ -363,9 +363,9 @@ def imports_eu_unconv_oil_from_row_ej():
     comp_subtype="Normal",
     depends_on={
         "share_ff_for_nonenergy_use": 1,
+        "energy_distr_losses_ff": 1,
         "transformation_ff_losses": 1,
         "pes_fs": 1,
-        "energy_distr_losses_ff": 1,
     },
 )
 def nonenergy_use_consumption():
@@ -440,8 +440,8 @@ def other_ff_required_liquids():
         "pes_biogas_ej": 1,
         "pes_biogas_for_tfc": 1,
         "pes_waste_ej": 1,
-        "pes_waste_for_tfc": 1,
         "pe_solidbioe_for_heat_and_electricity": 1,
+        "pes_waste_for_tfc": 1,
     },
 )
 def other_fs_demands():
@@ -496,11 +496,11 @@ def other_liquids_supply_ej():
     depends_on={
         "extraction_coal_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
-        "pes_nat_gas_eu": 1,
         "imports_eu_nat_gas_from_row_ej": 1,
-        "fes_ctlgtl_ej": 1,
+        "pes_nat_gas_eu": 1,
         "pes_total_oil_ej_eu": 1,
         "imports_eu_total_oil_from_row_ej": 1,
+        "fes_ctlgtl_ej": 1,
     },
 )
 def pec_ff():
@@ -669,14 +669,14 @@ def ped_nat_gas_ej():
     depends_on={
         "ped_nre_fs_liquids": 1,
         "synthethic_fuel_generation_delayed": 2,
-        "ped_fs": 2,
         "pes_biogas_ej": 1,
+        "ped_fs": 2,
+        "pes_peat": 1,
+        "losses_in_charcoal_plants": 1,
         "pes_waste_for_tfc": 1,
         "modern_solids_bioe_demand_households": 1,
-        "pe_solidbioe_for_heat_and_electricity": 1,
-        "pes_peat": 1,
         "pe_traditional_biomass_ej_delayed_1yr": 1,
-        "losses_in_charcoal_plants": 1,
+        "pe_solidbioe_for_heat_and_electricity": 1,
     },
 )
 def ped_nre_fs():
@@ -772,8 +772,8 @@ def ped_total_oil_ej():
         "losses_in_charcoal_plants": 1,
         "pe_solidbioe_for_heat_and_electricity": 1,
         "other_liquids_supply_ej": 1,
-        "synthethic_fuel_generation_delayed": 1,
         "pes_biogas_ej": 1,
+        "synthethic_fuel_generation_delayed": 1,
         "pes_biogas_for_tfc": 1,
     },
 )
@@ -814,8 +814,8 @@ def pes_fs():
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "a_lin_reg_peat": 1,
         "b_lin_reg_peat": 1,
+        "a_lin_reg_peat": 1,
         "historic_pes_peat_ej": 1,
     },
 )
@@ -975,9 +975,9 @@ def share_ff_for_fc_emission_relevant():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_fuel": 1,
-        "ped_fs": 1,
-        "transformation_ff_losses": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses": 1,
+        "ped_fs": 1,
     },
 )
 def share_ff_for_final_energy():
@@ -1038,9 +1038,9 @@ def share_ff_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
-        "ped_fs": 1,
-        "transformation_ff_losses": 1,
         "energy_distr_losses_ff": 1,
+        "transformation_ff_losses": 1,
+        "ped_fs": 1,
     },
 )
 def share_ff_for_nonenergy_use():
@@ -1067,7 +1067,7 @@ def share_ff_for_nonenergy_use():
     depends_on={"ped_nre_fs": 1, "ped_fs": 1},
 )
 def share_ff_fs():
-    return ped_nre_fs() / ped_fs()
+    return zidz(ped_nre_fs(), ped_fs())
 
 
 @component.add(

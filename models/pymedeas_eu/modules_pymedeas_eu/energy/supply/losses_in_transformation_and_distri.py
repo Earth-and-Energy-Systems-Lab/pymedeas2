@@ -197,8 +197,8 @@ def historic_share_pipeline_transport():
         "imports_eu_total_oil_from_row_ej": 1,
         "imports_eu_coal_from_row_ej": 1,
         "extraction_coal_eu": 1,
-        "pes_nat_gas_eu": 1,
         "imports_eu_nat_gas_from_row_ej": 1,
+        "pes_nat_gas_eu": 1,
     },
 )
 def pes_fossil_fuel_extraction():

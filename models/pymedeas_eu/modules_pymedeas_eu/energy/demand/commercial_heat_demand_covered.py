@@ -210,8 +210,8 @@ def fed_heat_liquids_plants_ej():
     depends_on={
         "ped_gases_for_heat_plants_ej": 1,
         "efficiency_gases_for_heat_plants": 1,
-        "efficiency_liquids_for_heat_plants": 1,
         "ped_oil_for_heat_plants_ej": 1,
+        "efficiency_liquids_for_heat_plants": 1,
         "ped_coal_for_heat_plants_ej": 1,
         "efficiency_coal_for_heat_plants": 1,
     },
@@ -315,10 +315,10 @@ def ped_coal_for_heat_plants_ej():
     depends_on={
         "fed_heat_liquids_plants_ej": 1,
         "efficiency_liquids_for_heat_plants": 1,
-        "fed_heat_gas_plants_ej": 1,
         "efficiency_gases_for_heat_plants": 1,
-        "efficiency_coal_for_heat_plants": 1,
+        "fed_heat_gas_plants_ej": 1,
         "fed_heat_coal_plants": 1,
+        "efficiency_coal_for_heat_plants": 1,
     },
 )
 def ped_ff_for_heat_plants():

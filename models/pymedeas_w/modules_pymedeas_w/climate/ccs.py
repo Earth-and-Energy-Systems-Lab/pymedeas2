@@ -819,8 +819,8 @@ _ext_lookup_share_beccs = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "co2_policy_captured_sector_ccs": 2,
-        "co2_captured_by_sector_energy_related": 1,
         "process_co2_captured_ccs": 1,
+        "co2_captured_by_sector_energy_related": 1,
     },
 )
 def share_captured_sector():
@@ -1068,4 +1068,20 @@ def total_dac_energy_demand():
             }
         ),
         dim=["dac_final_sources!", "SECTORS_and_HOUSEHOLDS!"],
+    )
+
+
+@component.add(
+    name="Total_process_emissions_captured",
+    units="GTCO2e/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"process_co2_captured_ccs": 1},
+)
+def total_process_emissions_captured():
+    return sum(
+        process_co2_captured_ccs().rename(
+            {"SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!"}
+        ),
+        dim=["SECTORS_and_HOUSEHOLDS!"],
     )

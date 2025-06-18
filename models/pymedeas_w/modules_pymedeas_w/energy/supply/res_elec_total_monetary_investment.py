@@ -293,7 +293,7 @@ def share_extra_monet_invest_to_cope_with_variable_elec_res():
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"total_monet_invest_res_for_elec_tdolar": 1, "nvs_1_year": 1, "gdp": 1},
+    depends_on={"total_monet_invest_res_for_elec_tdolar": 1, "gdp": 1, "nvs_1_year": 1},
 )
 def share_tot_monet_invest_elec_res_vs_gdp():
     """

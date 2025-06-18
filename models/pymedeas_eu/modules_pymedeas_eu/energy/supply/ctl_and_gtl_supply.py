@@ -238,9 +238,9 @@ def ctlgtl_gb():
     depends_on={
         "time": 1,
         "hist_growth_ctl": 2,
+        "p_ctl": 2,
         "abundance_fs": 1,
         "crash_programme_ctl": 2,
-        "p_ctl": 2,
     },
 )
 def exogenous_growth_ctl():
@@ -273,9 +273,9 @@ def exogenous_growth_ctl():
     depends_on={
         "time": 1,
         "hist_growth_gtl": 2,
-        "ped_fs": 1,
-        "p_gtl": 2,
         "crash_programme_gtl": 2,
+        "p_gtl": 2,
+        "ped_fs": 1,
     },
 )
 def exogenous_growth_gtl():
@@ -754,8 +754,8 @@ def real_growth_gtl():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "check_liquids": 1,
         "wear_ctl": 2,
+        "check_liquids": 1,
         "constrain_liquids_exogenous_growth": 1,
         "crash_programme_ctl": 1,
         "scarcity_conv_oil": 1,
@@ -790,10 +790,10 @@ def replacement_ctl():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "check_liquids": 1,
-        "wear_gtl": 2,
         "crash_programme_gtl": 1,
+        "check_liquids": 1,
         "constrain_liquids_exogenous_growth": 1,
+        "wear_gtl": 2,
         "scarcity_conv_oil": 1,
     },
 )
@@ -837,12 +837,12 @@ def share_ctlgtl_overcapacity():
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "historic_ctl_production": 2,
         "time_step": 2,
+        "historic_ctl_production": 2,
         "nvs_1_year": 1,
+        "check_liquids": 1,
         "ctl_potential_production": 2,
         "real_growth_ctl": 1,
-        "check_liquids": 1,
         "constrain_liquids_exogenous_growth": 1,
     },
 )
@@ -878,8 +878,8 @@ def variation_ctl():
         "time_step": 2,
         "nvs_1_year": 1,
         "gtl_potential_production": 2,
-        "check_liquids": 1,
         "real_growth_gtl": 1,
+        "check_liquids": 1,
         "constrain_liquids_exogenous_growth": 1,
     },
 )

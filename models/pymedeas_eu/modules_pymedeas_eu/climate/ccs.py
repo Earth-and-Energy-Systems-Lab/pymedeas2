@@ -117,7 +117,7 @@ _ext_lookup_ccs_policy = ExtLookup(
     subscripts=["SECTORS_and_HOUSEHOLDS", "CCS_tech"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "ccs_tech_share": 1, "ccs_policy": 1},
+    depends_on={"time": 3, "ccs_policy": 1, "ccs_tech_share": 1},
 )
 def ccs_sector_tech():
     return if_then_else(
@@ -1028,6 +1028,22 @@ def total_dac_energy_demand():
 def total_energy_demand_sector_ccs():
     return sum(
         ccs_energy_demand_sect().rename(
+            {"SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!"}
+        ),
+        dim=["SECTORS_and_HOUSEHOLDS!"],
+    )
+
+
+@component.add(
+    name="Total_process_emissions_captured",
+    units="GtCO2/year",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"process_co2_captured_ccs": 1},
+)
+def total_process_emissions_captured():
+    return sum(
+        process_co2_captured_ccs().rename(
             {"SECTORS_and_HOUSEHOLDS": "SECTORS_and_HOUSEHOLDS!"}
         ),
         dim=["SECTORS_and_HOUSEHOLDS!"],

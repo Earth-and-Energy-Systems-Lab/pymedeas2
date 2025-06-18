@@ -50,8 +50,8 @@ _integ_capital_share = Integ(
         "p_capital_share": 1,
         "initial_capital_share": 2,
         "year_initial_capital_share": 1,
-        "time_step": 1,
         "year_final_capial_share": 1,
+        "time_step": 1,
     },
 )
 def capital_share_growth():
@@ -182,12 +182,12 @@ def desired_gdp():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "desired_gdp": 1,
         "historic_gdp_growth_rate": 1,
+        "desired_gdp": 1,
         "desired_gdppc": 1,
+        "annual_gdppc_growth_rate": 1,
         "population": 1,
         "dollars_to_tdollars": 1,
-        "annual_gdppc_growth_rate": 1,
     },
 )
 def desired_gdp_next_year():
@@ -232,8 +232,8 @@ _integ_desired_gdppc = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "time_step": 2,
         "historic_gdppc_delayed": 1,
+        "time_step": 2,
         "historic_gdppc": 1,
         "desired_gdppc": 1,
         "ts_growth_rate": 1,
@@ -282,9 +282,9 @@ def gdppc_initial_year():
     depends_on={
         "time": 2,
         "year_initial_capital_share": 1,
-        "laborcapital_share_cte": 1,
         "year_final_capial_share": 1,
         "capital_share_growth": 1,
+        "laborcapital_share_cte": 1,
         "historic_capital_share_growth": 1,
     },
 )
@@ -308,8 +308,8 @@ def growth_capital_share():
     depends_on={
         "time": 2,
         "year_initial_labour_share": 1,
-        "laborcapital_share_cte": 1,
         "labour_share_growth": 1,
+        "laborcapital_share_cte": 1,
         "historic_labour_share_growth": 1,
     },
 )
@@ -841,7 +841,7 @@ _ext_data_p_timeseries_gdppc_growth_rate = ExtData(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"annual_gdppc_growth_rate": 1, "nvs_1_year": 1, "time_step": 1},
+    depends_on={"annual_gdppc_growth_rate": 1, "time_step": 1, "nvs_1_year": 1},
 )
 def ts_growth_rate():
     return (1 + annual_gdppc_growth_rate()) ** (time_step() / nvs_1_year()) - 1
@@ -898,10 +898,10 @@ def variation_cc():
     comp_subtype="Normal",
     depends_on={
         "time": 5,
-        "historic_population": 2,
+        "historic_gdp": 2,
         "dollar_per_mdollar": 1,
         "time_step": 3,
-        "historic_gdp": 2,
+        "historic_population": 2,
     },
 )
 def variation_historic_gdppc():
@@ -943,8 +943,8 @@ def variation_labour_share():
     depends_on={
         "gdp_eu": 1,
         "labour_share": 1,
-        "nvs_1_year": 1,
         "growth_labour_share": 2,
+        "nvs_1_year": 1,
         "desired_annual_total_demand_growth_rate": 2,
         "m_to_t": 1,
     },

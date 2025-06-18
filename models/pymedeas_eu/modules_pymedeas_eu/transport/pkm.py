@@ -59,12 +59,12 @@ _ext_constant_eficiency_liquids_pkm = ExtConstant(
     name="EI_households_transport",
     units="EJ/T$",
     subscripts=["final_sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "energy_pkm": 4,
-        "household_demand_total": 3,
         "m_to_t": 3,
+        "household_demand_total": 3,
         "nvs_1_year": 3,
     },
 )
@@ -99,7 +99,7 @@ def ei_households_transport():
     name="energy_commercial_by_fuel_pkm",
     units="EJ/year",
     subscripts=["final_sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"energy_pkm": 4},
 )
@@ -163,7 +163,7 @@ def energy_pkm():
     name="Energy_scarcity_shortage_by_fuel",
     units="Dmnl",
     subscripts=["fuels"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"energy_scarcity_feedback_shortage_coeff_eu": 3},
 )
@@ -628,9 +628,9 @@ _ext_lookup_mode_share_pkm = ExtLookup(
     depends_on={
         "time": 3,
         "end_historical_data": 1,
-        "pkmgdp_slope": 1,
-        "gdp_eu": 2,
         "initial_pkmgdp": 1,
+        "gdp_eu": 2,
+        "pkmgdp_slope": 1,
         "hist_pkm_gdp": 1,
     },
 )
@@ -750,8 +750,8 @@ def pkm_fuel_share_air():
         "end_historical_data": 4,
         "fuel_share_1995": 2,
         "initial_fuel_share_households_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_households_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_households():
@@ -789,10 +789,10 @@ def pkm_fuel_share_households():
         "time": 5,
         "end_historical_data": 3,
         "fuel_share_1995": 2,
-        "initial_fuel_share_inland_pkm": 3,
         "end_hist_data": 1,
-        "start_year_policies_transport": 3,
+        "initial_fuel_share_inland_pkm": 3,
         "fuel_share_inland_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_inland():
@@ -870,8 +870,8 @@ def pkm_fuel_share_maritime():
         "time": 5,
         "end_historical_data": 5,
         "hist_transport_share_pkm": 3,
-        "start_year_policies_transport": 3,
         "mode_share_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_mode_share():

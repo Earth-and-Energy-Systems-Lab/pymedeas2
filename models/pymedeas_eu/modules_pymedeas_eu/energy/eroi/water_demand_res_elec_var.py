@@ -14,8 +14,8 @@ Translated using PySD version 3.14.2
         "water_for_om_res_elec": 1,
         "energy_requirements_per_unit_of_water_consumption": 1,
         "lifetime_res_elec": 1,
-        "kg_per_mt": 2,
         "mw_per_tw": 1,
+        "kg_per_mt": 2,
         "mj_per_ej": 1,
         "nvs_1_year": 1,
     },
@@ -114,7 +114,7 @@ def total_energy_requirements_om_for_water_consumption_res_elec():
     name='"Total_water_for_O&M_required_by_RES_elec"',
     units="Mt",
     subscripts=["water"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"total_water_for_om_required_by_res_elec_per_techn": 1},
 )
@@ -179,7 +179,7 @@ def water_for_om_required_for_res_elec():
     units="kg/MW",
     subscripts=["RES_elec", "water0"],
     comp_type="Constant",
-    comp_subtype="External, Normal",
+    comp_subtype="Normal, External",
     depends_on={"__external__": "_ext_constant_water_for_om_res_elec"},
 )
 def water_for_om_res_elec():

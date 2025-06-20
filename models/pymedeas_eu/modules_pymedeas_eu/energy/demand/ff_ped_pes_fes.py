@@ -363,9 +363,9 @@ def imports_eu_unconv_oil_from_row_ej():
     comp_subtype="Normal",
     depends_on={
         "share_ff_for_nonenergy_use": 1,
-        "energy_distr_losses_ff": 1,
-        "pes_fs": 1,
         "transformation_ff_losses": 1,
+        "pes_fs": 1,
+        "energy_distr_losses_ff": 1,
     },
 )
 def nonenergy_use_consumption():
@@ -434,7 +434,7 @@ def other_ff_required_liquids():
     name="Other_FS_demands",
     units="EJ/year",
     subscripts=["matter_final_sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pes_biogas_ej": 1,
@@ -464,8 +464,6 @@ def other_fs_demands():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "oil_refinery_gains_ej": 1,
-        "fes_ctlgtl_ej": 1,
         "fes_total_biofuels_production_ej": 1,
         "synthethic_fuel_generation_delayed": 1,
     },
@@ -474,16 +472,11 @@ def other_liquids_supply_ej():
     """
     Other liquids refer to: refinery gains, CTL, GTL and biofuels.
     """
-    return (
-        oil_refinery_gains_ej()
-        + fes_ctlgtl_ej()
-        + fes_total_biofuels_production_ej()
-        + sum(
-            synthethic_fuel_generation_delayed()
-            .loc[_subscript_dict["ETL"]]
-            .rename({"E_to_synthetic": "ETL!"}),
-            dim=["ETL!"],
-        )
+    return fes_total_biofuels_production_ej() + sum(
+        synthethic_fuel_generation_delayed()
+        .loc[_subscript_dict["ETL"]]
+        .rename({"E_to_synthetic": "ETL!"}),
+        dim=["ETL!"],
     )
 
 
@@ -496,11 +489,12 @@ def other_liquids_supply_ej():
     depends_on={
         "extraction_coal_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
-        "pes_nat_gas_eu": 1,
         "imports_eu_nat_gas_from_row_ej": 1,
-        "imports_eu_total_oil_from_row_ej": 1,
-        "fes_ctlgtl_ej": 1,
+        "pes_nat_gas_eu": 1,
         "pes_total_oil_ej_eu": 1,
+        "fes_ctlgtl_ej": 1,
+        "imports_eu_total_oil_from_row_ej": 1,
+        "oil_refinery_gains_ej": 1,
     },
 )
 def pec_ff():
@@ -512,7 +506,10 @@ def pec_ff():
     value.loc[["solids"]] = extraction_coal_eu() + imports_eu_coal_from_row_ej()
     value.loc[["gases"]] = pes_nat_gas_eu() + imports_eu_nat_gas_from_row_ej()
     value.loc[["liquids"]] = (
-        pes_total_oil_ej_eu() + imports_eu_total_oil_from_row_ej() + fes_ctlgtl_ej()
+        pes_total_oil_ej_eu()
+        + imports_eu_total_oil_from_row_ej()
+        + fes_ctlgtl_ej()
+        + oil_refinery_gains_ej()
     )
     return value
 
@@ -554,8 +551,8 @@ def ped_domestic_eu_conv_ff():
         "ped_nre_fs": 2,
         "imports_eu_coal_from_row_ej": 1,
         "imports_eu_nat_gas_from_row_ej": 1,
-        "imports_eu_total_oil_from_row_ej": 1,
         "ped_total_oil_ej": 1,
+        "imports_eu_total_oil_from_row_ej": 1,
     },
 )
 def ped_domestic_ff():
@@ -671,12 +668,12 @@ def ped_nat_gas_ej():
         "synthethic_fuel_generation_delayed": 2,
         "pes_biogas_ej": 1,
         "ped_fs": 2,
-        "losses_in_charcoal_plants": 1,
-        "pes_peat": 1,
+        "pes_waste_ej": 1,
+        "pe_traditional_biomass_ej_delayed_1yr": 1,
         "modern_solids_bioe_demand_households": 1,
         "pe_solidbioe_for_heat_and_electricity": 1,
-        "pe_traditional_biomass_ej_delayed_1yr": 1,
-        "pes_waste_for_tfc": 1,
+        "losses_in_charcoal_plants": 1,
+        "pes_peat": 1,
     },
 )
 def ped_nre_fs():
@@ -713,7 +710,7 @@ def ped_nre_fs():
     value.loc[["solids"]] = (
         float(ped_fs().loc["solids"])
         - pe_traditional_biomass_ej_delayed_1yr()
-        - pes_waste_for_tfc()
+        - pes_waste_ej()
         - modern_solids_bioe_demand_households()
         - pes_peat()
         - losses_in_charcoal_plants()
@@ -741,20 +738,13 @@ def ped_nre_fs_liquids():
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"ped_nre_fs": 1, "fes_ctlgtl_ej": 1, "oil_refinery_gains_ej": 1},
+    depends_on={"ped_nre_fs": 1, "fes_ctlgtl_ej": 1},
 )
 def ped_total_oil_ej():
     """
     Primary energy demand of total oil (conventional and unconventional).
     """
-    return float(
-        np.maximum(
-            0,
-            float(ped_nre_fs().loc["liquids"])
-            - fes_ctlgtl_ej()
-            - oil_refinery_gains_ej(),
-        )
-    )
+    return float(np.maximum(0, float(ped_nre_fs().loc["liquids"]) - fes_ctlgtl_ej()))
 
 
 @component.add(
@@ -774,7 +764,6 @@ def ped_total_oil_ej():
         "other_liquids_supply_ej": 1,
         "synthethic_fuel_generation_delayed": 1,
         "pes_biogas_ej": 1,
-        "pes_biogas_for_tfc": 1,
     },
 )
 def pes_fs():
@@ -795,7 +784,6 @@ def pes_fs():
     value.loc[["liquids"]] = float(pec_ff().loc["liquids"]) + other_liquids_supply_ej()
     value.loc[["gases"]] = (
         float(pec_ff().loc["gases"])
-        + pes_biogas_for_tfc()
         + sum(
             synthethic_fuel_generation_delayed()
             .loc[_subscript_dict["ETG"]]
@@ -975,9 +963,9 @@ def share_ff_for_fc_emission_relevant():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_fuel": 1,
-        "energy_distr_losses_ff": 1,
-        "ped_fs": 1,
         "transformation_ff_losses": 1,
+        "ped_fs": 1,
+        "energy_distr_losses_ff": 1,
     },
 )
 def share_ff_for_final_energy():
@@ -1038,9 +1026,9 @@ def share_ff_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
-        "energy_distr_losses_ff": 1,
-        "ped_fs": 1,
         "transformation_ff_losses": 1,
+        "ped_fs": 1,
+        "energy_distr_losses_ff": 1,
     },
 )
 def share_ff_for_nonenergy_use():

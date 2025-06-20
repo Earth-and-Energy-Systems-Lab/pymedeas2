@@ -7,7 +7,7 @@ Translated using PySD version 3.14.2
     name="Abundance_primary_sources",
     units="Dmnl",
     subscripts=["primary_sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "abundance_coal_world": 1,

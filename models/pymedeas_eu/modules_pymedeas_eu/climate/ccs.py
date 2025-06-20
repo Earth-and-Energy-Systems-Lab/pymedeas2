@@ -463,8 +463,8 @@ _ext_lookup_ccs_tech_share.add(
     comp_subtype="Normal",
     depends_on={
         "co2_policy_captured_sector_ccs": 2,
-        "time": 2,
         "share_ccs_energy_related": 2,
+        "time": 2,
         "co2_emissions_households_and_sectors_fossil_fuels": 2,
         "co2_emissions_per_fuel": 2,
     },
@@ -776,8 +776,8 @@ _ext_lookup_dac_tech_share = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "co2_policy_captured_sector_ccs": 1,
-        "time": 1,
         "share_ccs_energy_related": 1,
+        "time": 1,
     },
 )
 def process_co2_captured_ccs():
@@ -795,8 +795,8 @@ def process_co2_captured_ccs():
     comp_subtype="Normal",
     depends_on={
         "co2_policy_captured_sector_ccs": 2,
-        "process_co2_captured_ccs": 1,
         "co2_captured_by_sector_energy_related": 1,
+        "process_co2_captured_ccs": 1,
     },
 )
 def share_captured_sector():

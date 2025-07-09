@@ -465,6 +465,7 @@
             "gdp",
             "gdp_delayed_1yr",
             "gdppc",
+            "global_ei_fuel",
             "m_to_t",
             "real_demand",
             "real_demand_by_sector",

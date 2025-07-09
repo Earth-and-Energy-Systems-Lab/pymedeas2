@@ -77,9 +77,9 @@ _ext_constant_max_pe_geotelec_twth = ExtConstant(
         "__external__": "_ext_constant_max_potential_res_elec_twe",
         "efficiency_conversion_geot_pe_to_elec": 1,
         "max_pe_geotelec_twth": 1,
+        "available_potential_fe_solid_bioe_for_elec": 1,
         "ej_per_twh": 1,
         "twe_per_twh": 1,
-        "available_potential_fe_solid_bioe_for_elec": 1,
         "power_density_res_elec_twemha": 2,
         "max_solar_pv_on_land_mha": 1,
         "max_csp_on_land_mha": 1,
@@ -166,10 +166,10 @@ def max_potential_res_elec_twh():
     comp_subtype="Normal",
     depends_on={
         "max_potential_res_elec_twh": 1,
-        "max_potential_phs_twe": 1,
         "twe_per_twh": 1,
-        "ej_per_twh": 1,
+        "max_potential_phs_twe": 1,
         "max_biogas_ej": 1,
+        "ej_per_twh": 1,
         "share_pes_biogas_for_elec": 1,
     },
 )

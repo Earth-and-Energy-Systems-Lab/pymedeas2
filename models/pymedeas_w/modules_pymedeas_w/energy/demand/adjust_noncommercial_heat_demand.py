@@ -34,8 +34,8 @@ _ext_constant_end_year_policy_share_feh_over_fed = ExtConstant(
     depends_on={
         "fed_oil_for_heatnc": 1,
         "fed_nat_gas_for_heatnc": 1,
-        "fed_solid_bioe_for_heatnc": 1,
         "fed_coal_for_heatnc": 1,
+        "fed_solid_bioe_for_heatnc": 1,
     },
 )
 def fed_by_fuel_for_heatnc():

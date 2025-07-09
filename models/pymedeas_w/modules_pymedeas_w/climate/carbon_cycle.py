@@ -156,9 +156,9 @@ _ext_constant_buffer_c_coeff = ExtConstant(
             "initial": {"ref_buffer_factor": 1},
             "step": {
                 "ref_buffer_factor": 1,
-                "c_in_mixed_layer": 1,
                 "preindustrial_c_in_mixed_layer": 1,
                 "buffer_c_coeff": 1,
+                "c_in_mixed_layer": 1,
             },
         }
     },
@@ -1104,8 +1104,8 @@ _ext_constant_layer_depth = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "layer_depth": 2,
-        "mean_depth_of_adjacent_layers": 2,
         "eddy_diffusion_coef": 2,
+        "mean_depth_of_adjacent_layers": 2,
     },
 )
 def layer_time_constant():

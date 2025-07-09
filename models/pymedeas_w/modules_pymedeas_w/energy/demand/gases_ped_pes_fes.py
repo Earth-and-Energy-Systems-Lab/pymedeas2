@@ -225,9 +225,9 @@ def share_gases_dem_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_gas": 1,
+        "other_gases_required": 1,
         "ped_nat_gas_for_gtl_ej": 1,
         "ped_gases": 1,
-        "other_gases_required": 1,
     },
 )
 def share_gases_for_final_energy():

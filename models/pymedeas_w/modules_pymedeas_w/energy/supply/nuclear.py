@@ -265,8 +265,8 @@ _ext_data_invest_cost_nuclear = ExtData(
     comp_subtype="Normal",
     depends_on={
         "nuclear_capacity_under_construction": 2,
-        "invest_cost_nuclear": 1,
         "replacement_nuclear_capacity": 1,
+        "invest_cost_nuclear": 1,
     },
 )
 def invest_nuclear_tdolar():
@@ -360,10 +360,10 @@ def new_nuclear_capacity_under_planning():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "demand_elec_nre_twh": 1,
         "total_elec_generation_ff_chp_plants_delayed": 1,
-        "installed_capacity_nuclear_tw": 1,
+        "demand_elec_nre_twh": 1,
         "p_nuclear_elec_gen": 1,
+        "installed_capacity_nuclear_tw": 1,
         "effects_shortage_uranium": 1,
         "cp_limit_nuclear": 1,
     },
@@ -401,9 +401,9 @@ def new_required_capacity_nuclear():
     depends_on={
         "selection_of_nuclear_scenario": 1,
         "time": 1,
-        "p_nuclear_scen34": 1,
-        "installed_capacity_nuclear_tw": 1,
         "start_year_nuclear_growth_scen34": 1,
+        "installed_capacity_nuclear_tw": 1,
+        "p_nuclear_scen34": 1,
     },
 )
 def nuclear_capacity_phaseout():
@@ -428,12 +428,12 @@ def nuclear_capacity_phaseout():
     comp_subtype="Normal",
     depends_on={
         "time": 3,
+        "historic_nuclear_generation_twh": 2,
+        "cp_nuclear": 1,
         "time_step": 2,
         "twe_per_twh": 1,
-        "cp_nuclear": 1,
-        "historic_nuclear_generation_twh": 2,
-        "planned_nuclear_capacity_tw": 1,
         "time_construction_nuclear": 1,
+        "planned_nuclear_capacity_tw": 1,
     },
 )
 def nuclear_capacity_under_construction():
@@ -599,8 +599,8 @@ _integ_planned_nuclear_capacity_tw = Integ(
         "installed_capacity_nuclear_tw": 1,
         "cp_nuclear": 1,
         "twe_per_twh": 1,
-        "demand_elec_nre_twh": 1,
         "total_elec_generation_ff_chp_plants_delayed": 1,
+        "demand_elec_nre_twh": 1,
     },
 )
 def potential_generation_nuclear_elec_twh():
@@ -624,8 +624,8 @@ def potential_generation_nuclear_elec_twh():
         "time": 1,
         "nuclear_capacity_under_construction": 1,
         "wear_nuclear": 1,
-        "selection_of_nuclear_scenario": 2,
         "replacement_rate_nuclear": 1,
+        "selection_of_nuclear_scenario": 2,
         "nuclear_overcapacity": 1,
         "cp_limit_nuclear": 1,
     },
@@ -826,7 +826,7 @@ def twe_per_twh():
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "installed_capacity_nuclear_tw": 1, "life_time_nuclear": 1},
+    depends_on={"time": 1, "life_time_nuclear": 1, "installed_capacity_nuclear_tw": 1},
 )
 def wear_nuclear():
     """

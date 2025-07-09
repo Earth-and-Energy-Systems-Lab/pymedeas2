@@ -205,12 +205,12 @@ def cedtot_per_material_res_elec_var():
     comp_subtype="Normal",
     depends_on={
         "res_elec_variables": 1,
-        "ej_per_twh": 1,
         "cpini_res_elec": 1,
-        "twe_per_twh": 1,
+        "ej_per_twh": 1,
         "lifetime_res_elec": 1,
-        "eroiini_res_elec_dispatch": 1,
+        "twe_per_twh": 1,
         "quality_of_electricity_2015": 1,
+        "eroiini_res_elec_dispatch": 1,
     },
 )
 def cedtot_per_tw_over_lifetime_res_elec_dispatch():
@@ -392,8 +392,8 @@ def fei_over_lifetime_res_elec_dispatch():
         "share_energy_requirements_for_decom_res_elec": 1,
         "ced_om_over_lifetime_res_elec_var": 1,
         "quality_of_electricity": 1,
-        "selfelectricity_consumption_res_elec": 1,
         "output_elec_over_lifetime_res_elec": 1,
+        "selfelectricity_consumption_res_elec": 1,
     },
 )
 def fei_over_lifetime_res_elec_var():

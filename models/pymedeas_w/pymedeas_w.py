@@ -9,15 +9,15 @@ import xarray as xr
 
 from pysd.py_backend.functions import (
     xidz,
-    zidz,
-    sum,
-    if_then_else,
     invert_matrix,
+    sum,
     step,
+    zidz,
+    if_then_else,
     active_initial,
 )
-from pysd.py_backend.statefuls import DelayFixed, SampleIfTrue, Integ, Initial
-from pysd.py_backend.external import ExtConstant, ExtData, ExtLookup
+from pysd.py_backend.statefuls import Integ, Initial, SampleIfTrue, DelayFixed
+from pysd.py_backend.external import ExtLookup, ExtConstant, ExtData
 from pysd.py_backend.utils import load_modules, load_model_data
 from pysd import Component
 

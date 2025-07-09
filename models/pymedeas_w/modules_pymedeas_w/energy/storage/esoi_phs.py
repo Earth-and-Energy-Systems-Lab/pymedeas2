@@ -82,8 +82,8 @@ def cedtot_over_lifetime_phs():
     comp_subtype="Normal",
     depends_on={
         "output_phs_over_lifetime": 1,
-        "quality_of_electricity": 1,
         "cedtot_over_lifetime_phs": 1,
+        "quality_of_electricity": 1,
     },
 )
 def esoi_phs():

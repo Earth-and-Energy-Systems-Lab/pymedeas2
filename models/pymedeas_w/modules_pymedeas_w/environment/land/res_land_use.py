@@ -215,8 +215,8 @@ def surface_solar_pv_mha():
         "surface_csp_mha": 1,
         "surface_hydro_mha": 1,
         "land_compet_required_dedicated_crops_for_biofuels": 1,
-        "land_required_biofuels_land_marg": 1,
         "nvs_1_year": 1,
+        "land_required_biofuels_land_marg": 1,
         "surface_onshore_wind_mha": 1,
     },
 )

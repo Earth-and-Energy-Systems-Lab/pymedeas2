@@ -308,4 +308,4 @@ def tots_fed():
     name="year_co2", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def year_co2():
-    return 1995
+    return 2021

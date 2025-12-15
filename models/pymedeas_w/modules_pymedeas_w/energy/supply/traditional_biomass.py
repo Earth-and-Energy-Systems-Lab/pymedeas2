@@ -1,10 +1,10 @@
 """
 Module energy.supply.traditional_biomass
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="modern_BioE_in_households",
+    name="modern BioE in households",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -21,7 +21,7 @@ def modern_bioe_in_households():
 
 
 @component.add(
-    name="PE_consumption_trad_biomass_ref",
+    name="PE consumption trad biomass ref",
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -46,7 +46,7 @@ _ext_constant_pe_consumption_trad_biomass_ref = ExtConstant(
 
 
 @component.add(
-    name="PE_traditional_biomass_consum_EJ",
+    name="PE traditional biomass consum EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -60,7 +60,7 @@ def pe_traditional_biomass_consum_ej():
 
 
 @component.add(
-    name="PE_traditional_biomass_demand_EJ",
+    name="PE traditional biomass demand EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -74,7 +74,7 @@ def pe_traditional_biomass_demand_ej():
 
 
 @component.add(
-    name="PE_traditional_biomass_EJ_delayed",
+    name="PE traditional biomass EJ delayed",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -103,7 +103,7 @@ _delayfixed_pe_traditional_biomass_ej_delayed = DelayFixed(
 
 
 @component.add(
-    name="People_relying_trad_biomass_ref",
+    name="People relying trad biomass ref",
     units="people",
     comp_type="Constant",
     comp_subtype="External",
@@ -128,7 +128,7 @@ _ext_constant_people_relying_trad_biomass_ref = ExtConstant(
 
 
 @component.add(
-    name="PEpc_consumption_people_depending_on_trad_biomass",
+    name="PEpc consumption people depending on trad biomass",
     units="EJ/(year*people)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -145,7 +145,7 @@ def pepc_consumption_people_depending_on_trad_biomass():
 
 
 @component.add(
-    name='"phase_out_trad_biomass?"',
+    name='"phase out trad biomass?"',
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_phase_out_trad_biomass"},
@@ -166,7 +166,7 @@ _ext_constant_phase_out_trad_biomass = ExtConstant(
 
 
 @component.add(
-    name="Population_dependent_on_trad_biomass",
+    name="Population dependent on trad biomass",
     units="people",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -186,7 +186,7 @@ def population_dependent_on_trad_biomass():
 
 
 @component.add(
-    name="share_global_pop_dependent_on_trad_biomass",
+    name="share global pop dependent on trad biomass",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -197,7 +197,7 @@ def share_global_pop_dependent_on_trad_biomass():
 
 
 @component.add(
-    name="share_trad_biomass",
+    name="share trad biomass",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -222,7 +222,7 @@ def share_trad_biomass():
 
 
 @component.add(
-    name="share_trad_biomass_vs_solids_in_households",
+    name="share trad biomass vs solids in households",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",

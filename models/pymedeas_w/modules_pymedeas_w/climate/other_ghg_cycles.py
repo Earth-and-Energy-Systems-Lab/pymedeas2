@@ -1,10 +1,10 @@
 """
 Module climate.other_ghg_cycles
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="CF4_molar_mass", units="g/mole", comp_type="Constant", comp_subtype="Normal"
+    name="CF4 molar mass", units="g/mole", comp_type="Constant", comp_subtype="Normal"
 )
 def cf4_molar_mass():
     """
@@ -14,7 +14,7 @@ def cf4_molar_mass():
 
 
 @component.add(
-    name="CH4_atm_conc",
+    name="CH4 atm conc",
     units="ppb",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -25,7 +25,7 @@ def ch4_atm_conc():
 
 
 @component.add(
-    name="CH4_Emissions_from_Permafrost_and_Clathrate",
+    name="CH4 Emissions from Permafrost and Clathrate",
     units="MtCH4/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -54,17 +54,17 @@ def ch4_emissions_from_permafrost_and_clathrate():
 
 
 @component.add(
-    name="CH4_Fractional_Uptake",
+    name="CH4 Fractional Uptake",
     units="1/years",
     limits=(5.0, 15.0, 0.1),
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "reference_ch4_time_constant": 1,
-        "tropospheric_ch4_path_share": 2,
-        "ch4_in_atm": 1,
         "stratospheric_ch4_path_share": 2,
+        "tropospheric_ch4_path_share": 2,
         "preindustrial_ch4": 1,
+        "ch4_in_atm": 1,
     },
 )
 def ch4_fractional_uptake():
@@ -87,7 +87,7 @@ def ch4_fractional_uptake():
 
 
 @component.add(
-    name="CH4_in_Atm",
+    name="CH4 in Atm",
     units="MtCH4",
     limits=(3.01279e-43, np.nan),
     comp_type="Stateful",
@@ -118,7 +118,7 @@ _integ_ch4_in_atm = Integ(
 
 
 @component.add(
-    name="CH4_molar_mass",
+    name="CH4 molar mass",
     units="gCH4/mole",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -131,7 +131,7 @@ def ch4_molar_mass():
 
 
 @component.add(
-    name="CH4_Uptake",
+    name="CH4 Uptake",
     units="(MtCH4)/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -142,7 +142,7 @@ def ch4_uptake():
 
 
 @component.add(
-    name="Choose_RCP",
+    name="Choose RCP",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -167,7 +167,7 @@ _ext_constant_choose_rcp = ExtConstant(
 
 
 @component.add(
-    name="Flux_C_from_permafrost_release",
+    name="Flux C from permafrost release",
     units="GtC/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -193,28 +193,28 @@ def flux_c_from_permafrost_release():
 
 
 @component.add(
-    name="g_per_t", units="g/t", comp_type="Constant", comp_subtype="Unchangeable"
+    name="g per t", units="g/t", comp_type="Constant", comp_subtype="Unchangeable"
 )
 def g_per_t():
     return 1000000.0
 
 
 @component.add(
-    name="gCH4_per_tCH4", units="gCH4/tCH4", comp_type="Constant", comp_subtype="Normal"
+    name="gCH4 per tCH4", units="gCH4/tCH4", comp_type="Constant", comp_subtype="Normal"
 )
 def gch4_per_tch4():
     return 1000000.0
 
 
 @component.add(
-    name="global_CH4_anthro_emissions",
+    name="global CH4 anthro emissions",
     units="MtCH4/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "total_ch4_emissions_mtch4": 1,
-        "global_ch4_anthro_emissions_rcp": 4,
         "choose_rcp": 3,
+        "global_ch4_anthro_emissions_rcp": 4,
     },
 )
 def global_ch4_anthro_emissions():
@@ -237,9 +237,9 @@ def global_ch4_anthro_emissions():
 
 
 @component.add(
-    name="global_CH4_anthro_emissions_RCP",
+    name="global CH4 anthro emissions RCP",
     units="MtCH4/year",
-    subscripts=["RCP_Scenario"],
+    subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -261,15 +261,15 @@ _ext_data_global_ch4_anthro_emissions_rcp = ExtData(
     "year_emissions",
     "CH4_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     "_ext_data_global_ch4_anthro_emissions_rcp",
 )
 
 
 @component.add(
-    name="global_CH4_emissions",
+    name="global CH4 emissions",
     units="MtCH4/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -280,9 +280,9 @@ def global_ch4_emissions():
 
 
 @component.add(
-    name="global_HFC_emissions",
+    name="global HFC emissions",
     units="t/year",
-    subscripts=["HFC_type"],
+    subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"choose_rcp": 3, "global_hfc_emissions_rcp": 4},
@@ -311,9 +311,9 @@ def global_hfc_emissions():
 
 
 @component.add(
-    name="global_HFC_emissions_RCP",
+    name="global HFC emissions RCP",
     units="t/year",
-    subscripts=["RCP_Scenario", "HFC_type"],
+    subscripts=["RCP Scenario", "HFC type"],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -335,11 +335,11 @@ _ext_data_global_hfc_emissions_rcp = ExtData(
     "year_emissions",
     "HFC134a_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"], "HFC_type": ["HFC134a"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"], "HFC type": ["HFC134a"]},
     _root,
     {
-        "RCP_Scenario": _subscript_dict["RCP_Scenario"],
-        "HFC_type": _subscript_dict["HFC_type"],
+        "RCP Scenario": _subscript_dict["RCP Scenario"],
+        "HFC type": _subscript_dict["HFC type"],
     },
     "_ext_data_global_hfc_emissions_rcp",
 )
@@ -350,7 +350,7 @@ _ext_data_global_hfc_emissions_rcp.add(
     "year_emissions",
     "HFC23_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"], "HFC_type": ["HFC23"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"], "HFC type": ["HFC23"]},
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
@@ -359,7 +359,7 @@ _ext_data_global_hfc_emissions_rcp.add(
     "year_emissions",
     "HFC32_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"], "HFC_type": ["HFC32"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"], "HFC type": ["HFC32"]},
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
@@ -368,7 +368,7 @@ _ext_data_global_hfc_emissions_rcp.add(
     "year_emissions",
     "HFC125_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"], "HFC_type": ["HFC125"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"], "HFC type": ["HFC125"]},
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
@@ -377,7 +377,7 @@ _ext_data_global_hfc_emissions_rcp.add(
     "year_emissions",
     "HFC143a_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"], "HFC_type": ["HFC143a"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"], "HFC type": ["HFC143a"]},
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
@@ -386,7 +386,7 @@ _ext_data_global_hfc_emissions_rcp.add(
     "year_emissions",
     "HFC152a_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"], "HFC_type": ["HFC152a"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"], "HFC type": ["HFC152a"]},
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
@@ -395,7 +395,7 @@ _ext_data_global_hfc_emissions_rcp.add(
     "year_emissions",
     "HFC227ea_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"], "HFC_type": ["HFC227ea"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"], "HFC type": ["HFC227ea"]},
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
@@ -404,7 +404,7 @@ _ext_data_global_hfc_emissions_rcp.add(
     "year_emissions",
     "HFC245ca_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"], "HFC_type": ["HFC245ca"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"], "HFC type": ["HFC245ca"]},
 )
 
 _ext_data_global_hfc_emissions_rcp.add(
@@ -413,12 +413,12 @@ _ext_data_global_hfc_emissions_rcp.add(
     "year_emissions",
     "HFC4310mee_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"], "HFC_type": ["HFC4310mee"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"], "HFC type": ["HFC4310mee"]},
 )
 
 
 @component.add(
-    name="global_N2O_anthro_emissions",
+    name="global N2O anthro emissions",
     units="MtN/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -444,9 +444,9 @@ def global_n2o_anthro_emissions():
 
 
 @component.add(
-    name="global_N2O_anthro_emissions_RCP",
+    name="global N2O anthro emissions RCP",
     units="MtN/year",
-    subscripts=["RCP_Scenario"],
+    subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -468,15 +468,15 @@ _ext_data_global_n2o_anthro_emissions_rcp = ExtData(
     "year_emissions",
     "N2O_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     "_ext_data_global_n2o_anthro_emissions_rcp",
 )
 
 
 @component.add(
-    name="global_N2O_emissions",
+    name="global N2O emissions",
     units="MtN/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -487,7 +487,7 @@ def global_n2o_emissions():
 
 
 @component.add(
-    name="global_PFC_emissions",
+    name="global PFC emissions",
     units="t/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -513,9 +513,9 @@ def global_pfc_emissions():
 
 
 @component.add(
-    name="global_PFC_emissions_RCP",
+    name="global PFC emissions RCP",
     units="t/year",
-    subscripts=["RCP_Scenario"],
+    subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -537,15 +537,15 @@ _ext_data_global_pfc_emissions_rcp = ExtData(
     "year_emissions",
     "PFCs_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     "_ext_data_global_pfc_emissions_rcp",
 )
 
 
 @component.add(
-    name="global_SF6_emissions",
+    name="global SF6 emissions",
     units="t/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -571,9 +571,9 @@ def global_sf6_emissions():
 
 
 @component.add(
-    name="global_SF6_emissions_RCP",
+    name="global SF6 emissions RCP",
     units="t/year",
-    subscripts=["RCP_Scenario"],
+    subscripts=["RCP Scenario"],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -595,15 +595,15 @@ _ext_data_global_sf6_emissions_rcp = ExtData(
     "year_emissions",
     "SF6_emissions",
     "interpolate",
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     _root,
-    {"RCP_Scenario": _subscript_dict["RCP_Scenario"]},
+    {"RCP Scenario": _subscript_dict["RCP Scenario"]},
     "_ext_data_global_sf6_emissions_rcp",
 )
 
 
 @component.add(
-    name="global_total_PFC_emissions",
+    name="global total PFC emissions",
     units="t/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -614,9 +614,9 @@ def global_total_pfc_emissions():
 
 
 @component.add(
-    name="HFC_atm_conc",
+    name="HFC atm conc",
     units="ppt",
-    subscripts=["HFC_type"],
+    subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"hfc_in_atm": 1, "ppt_hfc_per_tons_hfc": 1},
@@ -626,10 +626,10 @@ def hfc_atm_conc():
 
 
 @component.add(
-    name="HFC_in_Atm",
+    name="HFC in Atm",
     units="t",
     limits=(2.5924e-43, np.nan),
-    subscripts=["HFC_type"],
+    subscripts=["HFC type"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_hfc_in_atm": 1},
@@ -652,9 +652,9 @@ _integ_hfc_in_atm = Integ(
 
 
 @component.add(
-    name="HFC_molar_mass",
+    name="HFC molar mass",
     units="g/mole",
-    subscripts=["HFC_type"],
+    subscripts=["HFC type"],
     comp_type="Constant",
     comp_subtype="Normal",
 )
@@ -664,15 +664,15 @@ def hfc_molar_mass():
     """
     return xr.DataArray(
         [102.0, 70.0, 52.0, 120.0, 84.0, 66.0, 170.0, 134.0, 252.0],
-        {"HFC_type": _subscript_dict["HFC_type"]},
-        ["HFC_type"],
+        {"HFC type": _subscript_dict["HFC type"]},
+        ["HFC type"],
     )
 
 
 @component.add(
-    name="HFC_radiative_efficiency",
+    name="HFC radiative efficiency",
     units="W/(ppb*m*m)",
-    subscripts=["HFC_type"],
+    subscripts=["HFC type"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_hfc_radiative_efficiency"},
@@ -688,17 +688,17 @@ _ext_constant_hfc_radiative_efficiency = ExtConstant(
     r"../climate.xlsx",
     "World",
     "HFC_radiative_efficiency*",
-    {"HFC_type": _subscript_dict["HFC_type"]},
+    {"HFC type": _subscript_dict["HFC type"]},
     _root,
-    {"HFC_type": _subscript_dict["HFC_type"]},
+    {"HFC type": _subscript_dict["HFC type"]},
     "_ext_constant_hfc_radiative_efficiency",
 )
 
 
 @component.add(
-    name="HFC_RF",
+    name="HFC RF",
     units="W/(m*m)",
-    subscripts=["HFC_type"],
+    subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -717,9 +717,9 @@ def hfc_rf():
 
 
 @component.add(
-    name="HFC_uptake",
+    name="HFC uptake",
     units="t/year",
-    subscripts=["HFC_type"],
+    subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"hfc_in_atm": 1, "time_const_for_hfc": 1},
@@ -729,7 +729,7 @@ def hfc_uptake():
 
 
 @component.add(
-    name="init_PFC_in_atm",
+    name="init PFC in atm",
     units="t",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -740,7 +740,7 @@ def init_pfc_in_atm():
 
 
 @component.add(
-    name="init_PFC_in_atm_con",
+    name="init PFC in atm con",
     units="ppt",
     comp_type="Constant",
     comp_subtype="External",
@@ -765,9 +765,9 @@ _ext_constant_init_pfc_in_atm_con = ExtConstant(
 
 
 @component.add(
-    name="inital_HFC_con",
+    name="inital HFC con",
     units="ppt",
-    subscripts=["HFC_type"],
+    subscripts=["HFC type"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_inital_hfc_con"},
@@ -780,15 +780,15 @@ _ext_constant_inital_hfc_con = ExtConstant(
     r"../climate.xlsx",
     "World",
     "inital_HFC_con*",
-    {"HFC_type": _subscript_dict["HFC_type"]},
+    {"HFC type": _subscript_dict["HFC type"]},
     _root,
-    {"HFC_type": _subscript_dict["HFC_type"]},
+    {"HFC type": _subscript_dict["HFC type"]},
     "_ext_constant_inital_hfc_con",
 )
 
 
 @component.add(
-    name="initial_CH4",
+    name="initial CH4",
     units="MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -799,7 +799,7 @@ def initial_ch4():
 
 
 @component.add(
-    name="initial_CH4_conc",
+    name="initial CH4 conc",
     units="ppb",
     comp_type="Constant",
     comp_subtype="External",
@@ -824,9 +824,9 @@ _ext_constant_initial_ch4_conc = ExtConstant(
 
 
 @component.add(
-    name="Initial_HFC",
+    name="Initial HFC",
     units="t",
-    subscripts=["HFC_type"],
+    subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"inital_hfc_con": 1, "ppt_hfc_per_tons_hfc": 1},
@@ -836,7 +836,7 @@ def initial_hfc():
 
 
 @component.add(
-    name="initial_N2O",
+    name="initial N2O",
     units="MtN",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -847,7 +847,7 @@ def initial_n2o():
 
 
 @component.add(
-    name="initial_N2O_conc",
+    name="initial N2O conc",
     units="ppb",
     comp_type="Constant",
     comp_subtype="External",
@@ -872,7 +872,7 @@ _ext_constant_initial_n2o_conc = ExtConstant(
 
 
 @component.add(
-    name="initial_SF6",
+    name="initial SF6",
     units="t",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -883,7 +883,7 @@ def initial_sf6():
 
 
 @component.add(
-    name="initial_SF6_conc",
+    name="initial SF6 conc",
     units="ppt",
     comp_type="Constant",
     comp_subtype="External",
@@ -908,7 +908,7 @@ _ext_constant_initial_sf6_conc = ExtConstant(
 
 
 @component.add(
-    name="N2O_atm_conc",
+    name="N2O atm conc",
     units="ppb",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -919,7 +919,7 @@ def n2o_atm_conc():
 
 
 @component.add(
-    name="N2O_in_Atm",
+    name="N2O in Atm",
     units="MtN",
     limits=(3.01279e-43, np.nan),
     comp_type="Stateful",
@@ -944,7 +944,7 @@ _integ_n2o_in_atm = Integ(
 
 
 @component.add(
-    name="N2O_Uptake",
+    name="N2O Uptake",
     units="MtN/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -955,7 +955,7 @@ def n2o_uptake():
 
 
 @component.add(
-    name='"N2O-N_molar_mass"',
+    name='"N2O-N molar mass"',
     units="g/mole",
     comp_type="Constant",
     comp_subtype="Unchangeable",
@@ -968,7 +968,7 @@ def n2on_molar_mass():
 
 
 @component.add(
-    name="natural_N2O_emissions",
+    name="natural N2O emissions",
     units="MtN/year",
     limits=(0.0, 20.0, 0.1),
     comp_type="Constant",
@@ -994,7 +994,7 @@ _ext_constant_natural_n2o_emissions = ExtConstant(
 
 
 @component.add(
-    name="natural_PFC_emissions",
+    name="natural PFC emissions",
     units="t/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1005,7 +1005,7 @@ def natural_pfc_emissions():
 
 
 @component.add(
-    name="PFC_atm_conc",
+    name="PFC atm conc",
     units="ppt",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1016,7 +1016,7 @@ def pfc_atm_conc():
 
 
 @component.add(
-    name="PFC_in_Atm",
+    name="PFC in Atm",
     units="t",
     limits=(3.01279e-43, np.nan),
     comp_type="Stateful",
@@ -1041,7 +1041,7 @@ _integ_pfc_in_atm = Integ(
 
 
 @component.add(
-    name="PFC_radiative_efficiency",
+    name="PFC radiative efficiency",
     units="W/(ppb*m*m)",
     comp_type="Constant",
     comp_subtype="External",
@@ -1066,7 +1066,7 @@ _ext_constant_pfc_radiative_efficiency = ExtConstant(
 
 
 @component.add(
-    name="PFC_RF",
+    name="PFC RF",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1086,7 +1086,7 @@ def pfc_rf():
 
 
 @component.add(
-    name="PFC_uptake",
+    name="PFC uptake",
     units="t/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1097,7 +1097,7 @@ def pfc_uptake():
 
 
 @component.add(
-    name="ppb_CH4_per_Mt_CH4",
+    name="ppb CH4 per Mt CH4",
     units="ppb/MtCH4",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1120,7 +1120,7 @@ def ppb_ch4_per_mt_ch4():
 
 
 @component.add(
-    name="ppb_N2O_per_MTonN",
+    name="ppb N2O per MTonN",
     units="ppb/MtN",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1137,9 +1137,9 @@ def ppb_n2o_per_mtonn():
 
 
 @component.add(
-    name="ppt_HFC_per_Tons_HFC",
+    name="ppt HFC per Tons HFC",
     units="ppt/t",
-    subscripts=["HFC_type"],
+    subscripts=["HFC type"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"ppt_per_mol": 1, "hfc_molar_mass": 1, "g_per_t": 1},
@@ -1149,7 +1149,7 @@ def ppt_hfc_per_tons_hfc():
 
 
 @component.add(
-    name="ppt_per_mol",
+    name="ppt per mol",
     units="ppt/mole",
     comp_type="Constant",
     comp_subtype="Unchangeable",
@@ -1159,7 +1159,7 @@ def ppt_per_mol():
 
 
 @component.add(
-    name="ppt_per_ppb",
+    name="ppt per ppb",
     units="ppt/ppb",
     comp_type="Constant",
     comp_subtype="Unchangeable",
@@ -1169,7 +1169,7 @@ def ppt_per_ppb():
 
 
 @component.add(
-    name="ppt_PFC_per_Tons_PFC",
+    name="ppt PFC per Tons PFC",
     units="ppt/t",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1183,7 +1183,7 @@ def ppt_pfc_per_tons_pfc():
 
 
 @component.add(
-    name="ppt_SF6_per_Tons_SF6",
+    name="ppt SF6 per Tons SF6",
     units="ppt/t",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1194,7 +1194,7 @@ def ppt_sf6_per_tons_sf6():
 
 
 @component.add(
-    name="preindustrial_CH4",
+    name="preindustrial CH4",
     units="MtCH4",
     comp_type="Constant",
     comp_subtype="External",
@@ -1219,7 +1219,7 @@ _ext_constant_preindustrial_ch4 = ExtConstant(
 
 
 @component.add(
-    name="preindustrial_HFC_conc",
+    name="preindustrial HFC conc",
     units="ppt",
     comp_type="Constant",
     comp_subtype="External",
@@ -1241,7 +1241,7 @@ _ext_constant_preindustrial_hfc_conc = ExtConstant(
 
 
 @component.add(
-    name="preindustrial_PFC",
+    name="preindustrial PFC",
     units="t",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1252,7 +1252,7 @@ def preindustrial_pfc():
 
 
 @component.add(
-    name="preindustrial_PFC_conc",
+    name="preindustrial PFC conc",
     units="ppt",
     comp_type="Constant",
     comp_subtype="External",
@@ -1274,7 +1274,7 @@ _ext_constant_preindustrial_pfc_conc = ExtConstant(
 
 
 @component.add(
-    name="preindustrial_SF6_conc",
+    name="preindustrial SF6 conc",
     units="ppt",
     comp_type="Constant",
     comp_subtype="External",
@@ -1296,7 +1296,7 @@ _ext_constant_preindustrial_sf6_conc = ExtConstant(
 
 
 @component.add(
-    name="reference_CH4_time_constant",
+    name="reference CH4 time constant",
     units="year",
     limits=(8.0, 10.0, 0.1),
     comp_type="Constant",
@@ -1322,7 +1322,7 @@ _ext_constant_reference_ch4_time_constant = ExtConstant(
 
 
 @component.add(
-    name="reference_sensitivity_of_C_from_permafrost_and_clathrate_to_temperature",
+    name="reference sensitivity of C from permafrost and clathrate to temperature",
     units="GtC/year/ºC",
     comp_type="Constant",
     comp_subtype="External",
@@ -1348,7 +1348,7 @@ _ext_constant_reference_sensitivity_of_c_from_permafrost_and_clathrate_to_temper
 
 
 @component.add(
-    name="reference_sensitivity_of_CH4_from_permafrost_and_clathrate_to_temperature",
+    name="reference sensitivity of CH4 from permafrost and clathrate to temperature",
     units="MtCH4/year/ºC",
     comp_type="Constant",
     comp_subtype="External",
@@ -1377,7 +1377,7 @@ _ext_constant_reference_sensitivity_of_ch4_from_permafrost_and_clathrate_to_temp
 
 
 @component.add(
-    name="sensitivity_of_methane_emissions_to_permafrost_and_clathrate",
+    name="sensitivity of methane emissions to permafrost and clathrate",
     units="Dmnl",
     limits=(0.0, 1.0, 0.1),
     comp_type="Constant",
@@ -1430,7 +1430,7 @@ _integ_sf6 = Integ(
 
 
 @component.add(
-    name="SF6_atm_conc",
+    name="SF6 atm conc",
     units="ppt",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1441,7 +1441,7 @@ def sf6_atm_conc():
 
 
 @component.add(
-    name="SF6_molar_mass", units="g/mole", comp_type="Constant", comp_subtype="Normal"
+    name="SF6 molar mass", units="g/mole", comp_type="Constant", comp_subtype="Normal"
 )
 def sf6_molar_mass():
     """
@@ -1451,7 +1451,7 @@ def sf6_molar_mass():
 
 
 @component.add(
-    name="SF6_radiative_efficiency",
+    name="SF6 radiative efficiency",
     units="W/(ppb*m*m)",
     comp_type="Constant",
     comp_subtype="External",
@@ -1476,7 +1476,7 @@ _ext_constant_sf6_radiative_efficiency = ExtConstant(
 
 
 @component.add(
-    name="SF6_RF",
+    name="SF6 RF",
     units="W/(m*m)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1496,7 +1496,7 @@ def sf6_rf():
 
 
 @component.add(
-    name="SF6_uptake",
+    name="SF6 uptake",
     units="t/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1507,7 +1507,7 @@ def sf6_uptake():
 
 
 @component.add(
-    name="Stratospheric_CH4_path_share",
+    name="Stratospheric CH4 path share",
     units="Dmnl",
     limits=(0.0, 1.0),
     comp_type="Constant",
@@ -1533,14 +1533,14 @@ _ext_constant_stratospheric_ch4_path_share = ExtConstant(
 
 
 @component.add(
-    name="t_per_Mt", units="t/MtN", comp_type="Constant", comp_subtype="Normal"
+    name="t per Mt", units="t/MtN", comp_type="Constant", comp_subtype="Normal"
 )
 def t_per_mt():
     return 1000000.0
 
 
 @component.add(
-    name="tCH4_per_MtCH4",
+    name="tCH4 per MtCH4",
     units="tCH4/MtCH4",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -1550,7 +1550,7 @@ def tch4_per_mtch4():
 
 
 @component.add(
-    name="temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate",
+    name="temperature threshold for methane emissions from permafrost and clathrate",
     units="DegreesC",
     limits=(0.0, 4.0, 0.1),
     comp_type="Constant",
@@ -1580,7 +1580,7 @@ _ext_constant_temperature_threshold_for_methane_emissions_from_permafrost_and_cl
 
 
 @component.add(
-    name="Time_Const_for_CH4",
+    name="Time Const for CH4",
     units="years",
     limits=(5.0, 15.0, 0.1),
     comp_type="Auxiliary",
@@ -1592,9 +1592,9 @@ def time_const_for_ch4():
 
 
 @component.add(
-    name="Time_Const_for_HFC",
+    name="Time Const for HFC",
     units="years",
-    subscripts=["HFC_type"],
+    subscripts=["HFC type"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_time_const_for_hfc"},
@@ -1610,15 +1610,15 @@ _ext_constant_time_const_for_hfc = ExtConstant(
     r"../climate.xlsx",
     "World",
     "time_const_for_HFC*",
-    {"HFC_type": _subscript_dict["HFC_type"]},
+    {"HFC type": _subscript_dict["HFC type"]},
     _root,
-    {"HFC_type": _subscript_dict["HFC_type"]},
+    {"HFC type": _subscript_dict["HFC type"]},
     "_ext_constant_time_const_for_hfc",
 )
 
 
 @component.add(
-    name="Time_Const_for_N2O",
+    name="Time Const for N2O",
     units="years",
     comp_type="Constant",
     comp_subtype="External",
@@ -1643,7 +1643,7 @@ _ext_constant_time_const_for_n2o = ExtConstant(
 
 
 @component.add(
-    name="Time_Const_for_PFC",
+    name="Time Const for PFC",
     units="years",
     comp_type="Constant",
     comp_subtype="External",
@@ -1668,7 +1668,7 @@ _ext_constant_time_const_for_pfc = ExtConstant(
 
 
 @component.add(
-    name="Time_Const_for_SF6",
+    name="Time Const for SF6",
     units="years",
     comp_type="Constant",
     comp_subtype="External",
@@ -1693,7 +1693,7 @@ _ext_constant_time_const_for_sf6 = ExtConstant(
 
 
 @component.add(
-    name="Total_C_from_permafrost",
+    name="Total C from permafrost",
     units="GtC",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1703,9 +1703,9 @@ _ext_constant_time_const_for_sf6 = ExtConstant(
             "initial": {},
             "step": {
                 "flux_c_from_permafrost_release": 1,
+                "mtch4_per_gtch4": 1,
                 "ch4_emissions_from_permafrost_and_clathrate": 1,
                 "gtch4_per_gtc": 1,
-                "mtch4_per_gtch4": 1,
             },
         }
     },
@@ -1728,7 +1728,7 @@ _integ_total_c_from_permafrost = Integ(
 
 
 @component.add(
-    name="Total_CH4_released",
+    name="Total CH4 released",
     units="GtC",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1761,7 +1761,7 @@ _integ_total_ch4_released = Integ(
 
 
 @component.add(
-    name="Tropospheric_CH4_path_share",
+    name="Tropospheric CH4 path share",
     units="Dmnl",
     limits=(0.0, 1.0),
     comp_type="Constant",

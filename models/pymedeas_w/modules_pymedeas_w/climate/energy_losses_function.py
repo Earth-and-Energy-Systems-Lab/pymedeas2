@@ -1,10 +1,10 @@
 """
 Module climate.energy_losses_function
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="a_logistic",
+    name="a logistic",
     units="ppm",
     comp_type="Constant",
     comp_subtype="External",
@@ -29,7 +29,7 @@ _ext_constant_a_logistic = ExtConstant(
 
 
 @component.add(
-    name="activate_ELF",
+    name="activate ELF",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -54,7 +54,7 @@ _ext_constant_activate_elf = ExtConstant(
 
 
 @component.add(
-    name="b_logistic",
+    name="b logistic",
     units="ppm",
     comp_type="Constant",
     comp_subtype="External",
@@ -85,23 +85,21 @@ _ext_constant_b_logistic = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "activate_elf": 1,
-        "a_logistic": 1,
         "b_logistic": 1,
-        "co2_ppm_concentrations": 1,
+        "a_logistic": 1,
+        "temperature_change": 1,
     },
 )
 def elf():
     return if_then_else(
         activate_elf(),
-        lambda: 1
-        - 1
-        / (1 + float(np.exp((co2_ppm_concentrations() - a_logistic()) / b_logistic()))),
+        lambda: (a_logistic() / b_logistic() ** 2) * temperature_change() ** 2,
         lambda: 0,
     )
 
 
 @component.add(
-    name="ELF_2015",
+    name="ELF 2015",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -120,7 +118,7 @@ _sampleiftrue_elf_2015 = SampleIfTrue(
 
 
 @component.add(
-    name="share_E_losses_CC",
+    name="share E losses CC",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",

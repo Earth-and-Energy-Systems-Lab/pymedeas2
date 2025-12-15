@@ -1,10 +1,10 @@
 """
 Module society.population
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="Annual_population_growth_rate",
+    name="Annual population growth rate",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -15,7 +15,7 @@ def annual_population_growth_rate():
 
 
 @component.add(
-    name="historic_population",
+    name="historic population",
     units="people",
     comp_type="Lookup",
     comp_subtype="External",
@@ -44,7 +44,7 @@ _ext_lookup_historic_population = ExtLookup(
 
 
 @component.add(
-    name="initial_population",
+    name="initial population",
     units="people",
     comp_type="Constant",
     comp_subtype="External",
@@ -69,7 +69,7 @@ _ext_constant_initial_population = ExtConstant(
 
 
 @component.add(
-    name="input_population",
+    name="input population",
     units="Mpeople",
     comp_type="Lookup",
     comp_subtype="External",
@@ -98,7 +98,7 @@ _ext_lookup_input_population = ExtLookup(
 
 
 @component.add(
-    name="P_timeseries_pop_growth_rate",
+    name="P timeseries pop growth rate",
     units="Dmnl/year",
     comp_type="Data",
     comp_subtype="External",
@@ -129,15 +129,15 @@ _ext_data_p_timeseries_pop_growth_rate = ExtData(
 
 
 @component.add(
-    name="pop_variation",
+    name="pop variation",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "variation_historic_pop": 1,
-        "population": 1,
         "annual_population_growth_rate": 1,
+        "population": 1,
     },
 )
 def pop_variation():
@@ -177,7 +177,7 @@ _integ_population = Integ(
 
 
 @component.add(
-    name="variation_historic_pop",
+    name="variation historic pop",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -198,7 +198,7 @@ def variation_historic_pop():
 
 
 @component.add(
-    name="variation_input_pop",
+    name="variation input pop",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",

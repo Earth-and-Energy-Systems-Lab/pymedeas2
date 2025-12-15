@@ -1601,7 +1601,7 @@
                 "share_res_electricity_generation",
                 "total_fe_elec_consumption_ej",
                 "total_fe_elec_consumption_twh",
-                "total_fe_elec_generation_twh",
+                "total_fe_elec_generation_twh_eu",
                 "year_scarcity_elec"
             ],
             "total_fe_heat_generation": [

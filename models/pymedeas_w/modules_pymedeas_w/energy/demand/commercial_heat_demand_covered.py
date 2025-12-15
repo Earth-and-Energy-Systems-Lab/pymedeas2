@@ -1,10 +1,10 @@
 """
 Module energy.demand.commercial_heat_demand_covered
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name='"a_lineal_regr_phase-out_oil_for_heat"',
+    name='"a lineal regr phase-out oil for heat"',
     units="1/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -28,7 +28,7 @@ def a_lineal_regr_phaseout_oil_for_heat():
 
 
 @component.add(
-    name='"b_lineal_regr_phase-out_oil_for_heat"',
+    name='"b lineal regr phase-out oil for heat"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -50,7 +50,7 @@ def b_lineal_regr_phaseout_oil_for_heat():
 
 
 @component.add(
-    name="efficiency_coal_for_heat_plants",
+    name="efficiency coal for heat plants",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -81,7 +81,7 @@ _ext_data_efficiency_coal_for_heat_plants = ExtData(
 
 
 @component.add(
-    name="efficiency_gases_for_heat_plants",
+    name="efficiency gases for heat plants",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -112,7 +112,7 @@ _ext_data_efficiency_gases_for_heat_plants = ExtData(
 
 
 @component.add(
-    name="efficiency_liquids_for_heat_plants",
+    name="efficiency liquids for heat plants",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -143,7 +143,7 @@ _ext_data_efficiency_liquids_for_heat_plants = ExtData(
 
 
 @component.add(
-    name="FED_Heat_coal_plants",
+    name="FED Heat coal plants",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -157,7 +157,7 @@ def fed_heat_coal_plants():
 
 
 @component.add(
-    name="FED_Heat_gas_plants",
+    name="FED Heat gas plants",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -171,7 +171,7 @@ def fed_heat_gas_plants():
 
 
 @component.add(
-    name='"FED_Heat_gas+coal_EJ"',
+    name='"FED Heat gas+coal EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -182,7 +182,7 @@ def fed_heat_gascoal_ej():
 
 
 @component.add(
-    name="FED_Heat_liquids_plants",
+    name="FED Heat liquids plants",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -199,7 +199,7 @@ def fed_heat_liquids_plants():
 
 
 @component.add(
-    name='"Historic_share_gas/(coal+gas)_for_heat_plants"',
+    name='"Historic share gas/(coal+gas) for heat plants"',
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -227,7 +227,7 @@ _ext_data_historic_share_gascoalgas_for_heat_plants = ExtData(
 
 
 @component.add(
-    name="Historic_share_liquids_for_heat_plants",
+    name="Historic share liquids for heat plants",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -258,7 +258,7 @@ _ext_data_historic_share_liquids_for_heat_plants = ExtData(
 
 
 @component.add(
-    name="P_share_oil_for_Heat",
+    name="P share oil for Heat",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -282,7 +282,7 @@ def p_share_oil_for_heat():
 
 
 @component.add(
-    name="PED_coal_for_Heat_plants_EJ",
+    name="PED coal for Heat plants EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -296,7 +296,7 @@ def ped_coal_for_heat_plants_ej():
 
 
 @component.add(
-    name="PED_gases_for_Heat_plants_EJ",
+    name="PED gases for Heat plants EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -310,7 +310,7 @@ def ped_gases_for_heat_plants_ej():
 
 
 @component.add(
-    name="PED_oil_for_Heat_plants_EJ",
+    name="PED oil for Heat plants EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -324,7 +324,7 @@ def ped_oil_for_heat_plants_ej():
 
 
 @component.add(
-    name='"phase-out_oil_for_heat?"',
+    name='"phase-out oil for heat?"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -349,7 +349,7 @@ _ext_constant_phaseout_oil_for_heat = ExtConstant(
 
 
 @component.add(
-    name='"share_coal(coal+gas)_for_heat_plants"',
+    name='"share coal(coal+gas) for heat plants"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -363,7 +363,7 @@ def share_coalcoalgas_for_heat_plants():
 
 
 @component.add(
-    name='"share_gas/(coal+gas)_for_heat_plants"',
+    name='"share gas/(coal+gas) for heat plants"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -377,7 +377,7 @@ def share_gascoalgas_for_heat_plants():
 
 
 @component.add(
-    name="share_in_target_year_oil_for_heat",
+    name="share in target year oil for heat",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -402,7 +402,7 @@ _ext_constant_share_in_target_year_oil_for_heat = ExtConstant(
 
 
 @component.add(
-    name="share_liquids_fot_heat_plants",
+    name="share liquids fot heat plants",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -434,7 +434,7 @@ def share_liquids_fot_heat_plants():
 
 
 @component.add(
-    name='"start_year_policy_phase-out_oil_for_heat"',
+    name='"start year policy phase-out oil for heat"',
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -461,7 +461,7 @@ _ext_constant_start_year_policy_phaseout_oil_for_heat = ExtConstant(
 
 
 @component.add(
-    name='"target_year_policy_phase-out_oil_for_heat"',
+    name='"target year policy phase-out oil for heat"',
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -488,17 +488,17 @@ _ext_constant_target_year_policy_phaseout_oil_for_heat = ExtConstant(
 
 
 @component.add(
-    name="Total_gen_losses_demand_for_Heat_plants_EJ",
+    name="Total gen losses demand for Heat plants EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ped_gases_for_heat_plants_ej": 1,
         "efficiency_gases_for_heat_plants": 1,
-        "efficiency_liquids_for_heat_plants": 1,
         "ped_oil_for_heat_plants_ej": 1,
-        "efficiency_coal_for_heat_plants": 1,
+        "efficiency_liquids_for_heat_plants": 1,
         "ped_coal_for_heat_plants_ej": 1,
+        "efficiency_coal_for_heat_plants": 1,
     },
 )
 def total_gen_losses_demand_for_heat_plants_ej():

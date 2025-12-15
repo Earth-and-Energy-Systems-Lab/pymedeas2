@@ -1,10 +1,10 @@
 """
 Module energy.availability.coal_extraction
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="abundance_coal",
+    name="abundance coal",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -22,7 +22,7 @@ def abundance_coal():
 
 
 @component.add(
-    name="Activate_force_leaving_underground",
+    name="Activate force leaving underground",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -47,7 +47,7 @@ _ext_constant_activate_force_leaving_underground = ExtConstant(
 
 
 @component.add(
-    name="coal_to_leave_underground",
+    name="coal to leave underground",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -64,7 +64,7 @@ def coal_to_leave_underground():
 
 
 @component.add(
-    name="Cumulated_coal_extraction",
+    name="Cumulated coal extraction",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -91,7 +91,7 @@ _integ_cumulated_coal_extraction = Integ(
 
 
 @component.add(
-    name="cumulated_coal_extraction_to_1995",
+    name="cumulated coal extraction to 1995",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -116,7 +116,7 @@ _ext_constant_cumulated_coal_extraction_to_1995 = ExtConstant(
 
 
 @component.add(
-    name="delay_coal_to_leave_underground",
+    name="delay coal to leave underground",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -148,7 +148,7 @@ _sampleiftrue_delay_coal_to_leave_underground = SampleIfTrue(
 
 
 @component.add(
-    name="evol_coal_extraction_rate_constraint",
+    name="evol coal extraction rate constraint",
     units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -166,7 +166,7 @@ def evol_coal_extraction_rate_constraint():
 
 
 @component.add(
-    name="evol_coal_extraction_rate_delayed",
+    name="evol coal extraction rate delayed",
     units="EJ/(year*year)",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -195,15 +195,15 @@ _delayfixed_evol_coal_extraction_rate_delayed = DelayFixed(
 
 
 @component.add(
-    name="extraction_coal_EJ",
+    name="extraction coal EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "ped_coal_ej": 3,
-        "remaining_extractable_coal_with_left_underground": 1,
         "activate_force_leaving_underground": 1,
+        "remaining_extractable_coal_with_left_underground": 1,
         "nvs_1_year": 1,
         "max_extraction_coal": 2,
     },
@@ -229,7 +229,7 @@ def extraction_coal_ej():
 
 
 @component.add(
-    name="extraction_coal_EJ_delayed",
+    name="extraction coal EJ delayed",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -258,7 +258,7 @@ _delayfixed_extraction_coal_ej_delayed = DelayFixed(
 
 
 @component.add(
-    name="max_extraction_coal",
+    name="max extraction coal",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -266,8 +266,8 @@ _delayfixed_extraction_coal_ej_delayed = DelayFixed(
         "activate_force_leaving_underground": 1,
         "max_extraction_coal_technical": 3,
         "max_extraction_coal_policy": 1,
-        "time": 1,
         "start_year_policy_leave_in_ground_coal": 1,
+        "time": 1,
     },
 )
 def max_extraction_coal():
@@ -290,7 +290,7 @@ def max_extraction_coal():
 
 
 @component.add(
-    name="max_extraction_coal_policy",
+    name="max extraction coal policy",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -310,7 +310,7 @@ def max_extraction_coal_policy():
 
 
 @component.add(
-    name="max_extraction_coal_technical",
+    name="max extraction coal technical",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -324,7 +324,7 @@ def max_extraction_coal_technical():
 
 
 @component.add(
-    name="remaining_extractable_coal_with_left_underground",
+    name="remaining extractable coal with left underground",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -338,7 +338,7 @@ def remaining_extractable_coal_with_left_underground():
 
 
 @component.add(
-    name="RURR_coal",
+    name="RURR coal",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -365,7 +365,7 @@ _integ_rurr_coal = Integ(
 
 
 @component.add(
-    name="RURR_coal_in_reference_year",
+    name="RURR coal in reference year",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -393,7 +393,7 @@ _sampleiftrue_rurr_coal_in_reference_year = SampleIfTrue(
 
 
 @component.add(
-    name="share_RURR_coal_to_leave_underground",
+    name="share RURR coal to leave underground",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -418,7 +418,7 @@ _ext_constant_share_rurr_coal_to_leave_underground = ExtConstant(
 
 
 @component.add(
-    name="Start_year_policy_leave_in_ground_coal",
+    name="Start year policy leave in ground coal",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -443,7 +443,7 @@ _ext_constant_start_year_policy_leave_in_ground_coal = ExtConstant(
 
 
 @component.add(
-    name="table_max_extraction_coal_technical",
+    name="table max extraction coal technical",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -472,7 +472,7 @@ _ext_lookup_table_max_extraction_coal_technical = ExtLookup(
 
 
 @component.add(
-    name="URR_coal",
+    name="URR coal",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -491,7 +491,7 @@ _ext_constant_urr_coal = ExtConstant(
 
 
 @component.add(
-    name="Year_reference_RURR",
+    name="Year reference RURR",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -516,7 +516,7 @@ _ext_constant_year_reference_rurr = ExtConstant(
 
 
 @component.add(
-    name="Year_scarcity_coal",
+    name="Year scarcity coal",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -530,7 +530,7 @@ def year_scarcity_coal():
 
 
 @component.add(
-    name="year_to_end_coal_extraction",
+    name="year to end coal extraction",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

@@ -89,8 +89,8 @@ _ext_data_afforestation_program_2020 = ExtData(
     depends_on={
         "afforestation_program_2020": 1,
         "activate_affores_program": 1,
-        "mtc_per_gtc": 1,
         "gtc_per_gtco2": 1,
+        "mtc_per_gtc": 1,
     },
 )
 def afforestation_program_2020_gtco2():
@@ -157,7 +157,7 @@ def co2_emissions_bioe_and_waste():
     name="CO2 emissions biofuels",
     units="GtCO2/year",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"gtco2_per_ej_biofuels": 1, "oil_liquids_saved_by_biofuels_ej": 1},
 )
@@ -178,7 +178,7 @@ def co2_emissions_biofuels():
     name="CO2 emissions biogas",
     units="GtCO2/year",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_biogas": 3,
@@ -203,7 +203,7 @@ def co2_emissions_biogas():
     name="CO2 emissions biomass",
     units="GtCO2/year",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_traditional_biomass": 1,
@@ -227,7 +227,7 @@ def co2_emissions_biomass():
     name="CO2 emissions coal",
     units="GtCO2/year",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_coal": 3,
@@ -285,15 +285,15 @@ def co2_emissions_fossil_fuels():
     name="CO2 emissions gas",
     units="GtCO2/year",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_gas": 3,
         "pec_nat_gas": 4,
         "share_nat_gas_for_elec_emissions_relevant": 1,
         "share_nat_gas_for_heat_emissions_relevant": 1,
-        "gtco2_per_ej_gtl": 1,
         "share_nat_gas_for_gtl_emissions_relevant": 1,
+        "gtco2_per_ej_gtl": 1,
         "share_nat_gas_for_fc_emissions_relevant": 1,
     },
 )
@@ -321,7 +321,7 @@ def co2_emissions_gas():
     name="CO2 emissions oil",
     units="GtCO2/year",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_oil": 3,
@@ -353,7 +353,7 @@ def co2_emissions_oil():
     name="CO2 emissions peat",
     units="GtCO2/year",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"pes_peat": 1, "gtco2_per_ej_peat": 1},
 )
@@ -387,13 +387,13 @@ def co2_emissions_per_fuel():
     name="CO2 emissions solid bioE",
     units="GtCO2/year",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_solid_bioe": 3,
         "pe_real_generation_res_elec": 1,
-        "pes_res_for_heatnc_by_techn": 1,
         "pes_res_for_heatcom_by_techn": 1,
+        "pes_res_for_heatnc_by_techn": 1,
         "modern_bioe_in_households": 1,
     },
 )
@@ -418,7 +418,7 @@ def co2_emissions_solid_bioe():
     name="CO2 emissions waste",
     units="GtCO2/year",
     subscripts=["final sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "gtco2_per_ej_waste": 3,

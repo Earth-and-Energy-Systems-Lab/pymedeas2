@@ -124,7 +124,7 @@ _ext_lookup_curtailment_and_storage_share_variable_res = ExtLookup(
     name="curtailment RES",
     units="Dmnl",
     subscripts=["RES elec"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"time": 4, "curtailment_and_storage_share_variable_res": 4},
 )
@@ -263,8 +263,8 @@ _delayfixed_installed_capacity_res_elec_delayed = DelayFixed(
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
-        "start_year_p_growth_res_elec": 3,
         "p_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def installed_capacity_res_elec_policies():
@@ -459,9 +459,9 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "real_generation_res_elec_twh": 1,
         "replaced_capacity_res_elec_tw": 2,
         "twe_per_twh": 1,
+        "real_generation_res_elec_twh": 1,
     },
 )
 def real_cp_res_elec():
@@ -564,8 +564,8 @@ _integ_replaced_capacity_res_elec_tw = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "wear_res_elec": 1,
         "res_elec_tot_overcapacity": 1,
+        "wear_res_elec": 1,
         "shortage_bioe_for_elec": 1,
     },
 )

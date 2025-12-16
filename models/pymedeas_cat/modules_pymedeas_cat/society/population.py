@@ -152,7 +152,7 @@ _integ_population = Integ(
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "time_step": 2, "historic_population": 2},
+    depends_on={"time": 3, "historic_population": 2, "time_step": 2},
 )
 def variation_historic_pop():
     """

@@ -435,6 +435,10 @@
         "natural gas",
         "others"
     ],
+    "process emissions sectors": [
+        "Coke and petroleum refineries",
+        "Chemical industry"
+    ],
     "sec map 0": [
         "sec99",
         "sec100",

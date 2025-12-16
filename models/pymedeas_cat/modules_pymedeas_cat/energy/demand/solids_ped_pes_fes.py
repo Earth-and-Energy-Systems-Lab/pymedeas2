@@ -54,8 +54,8 @@ _ext_lookup_historic_coal_extraction = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "historic_coal_extraction": 1,
         "imports_cat_coal_from_row_ej": 1,
+        "historic_coal_extraction": 1,
         "extraction_coal_cat": 1,
     },
 )
@@ -151,10 +151,10 @@ def pec_coal():
         "ped_coal_for_chp_plants_ej": 1,
         "fes_biomass": 1,
         "pes_peat": 1,
-        "losses_in_charcoal_plants_ej": 1,
         "ped_solids": 1,
-        "pes_waste": 1,
         "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "pes_waste": 1,
+        "losses_in_charcoal_plants_ej": 1,
     },
 )
 def ped_coal_ej():

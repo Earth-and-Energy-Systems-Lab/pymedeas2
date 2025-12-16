@@ -103,6 +103,7 @@
             "co2_emissions_from_year",
             "co2_emissions_households_and_sectors",
             "co2_emissions_households_and_sectors_before_ccs",
+            "co2_emissions_sectors_and_households_including_process",
             "cumulated_co2_emissions",
             "energy_consumption_from_households_and_sectors",
             "share_energy_consumption_from_households_and_sectors",
@@ -110,6 +111,14 @@
             "total_co2_emissions_gtco2",
             "total_cumulated_co2_emissions",
             "year_co2"
+        ],
+        "process_emissions": [
+            "historic_process_emissions_intensity",
+            "last_year_historic_process_emissions",
+            "process_emissions_intensity",
+            "process_emissions_reduction_policy",
+            "target_year_process_emissions_improvement",
+            "total_process_emissions"
         ],
         "total_ch4_emissions": [
             "ch4_emissions_bioe_and_waste",

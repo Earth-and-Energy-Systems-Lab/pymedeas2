@@ -4,7 +4,7 @@ Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="available PE potential solid bioE for elec",
+    name="available_PE_potential_solid_bioE_for_elec",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -22,14 +22,14 @@ def available_pe_potential_solid_bioe_for_elec():
         np.maximum(
             0,
             total_pe_solid_bioe_potential_heatelec()
-            - float(pes_res_for_heatcom_by_techn().loc["solid bioE heat"])
-            - float(pes_res_for_heatnc_by_techn().loc["solid bioE heat"]),
+            - float(pes_res_for_heatcom_by_techn().loc["solid_bioE_heat"])
+            - float(pes_res_for_heatnc_by_techn().loc["solid_bioE_heat"]),
         )
     )
 
 
 @component.add(
-    name="available PE potential solid bioE for heat",
+    name="available_PE_potential_solid_bioE_for_heat",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -46,13 +46,13 @@ def available_pe_potential_solid_bioe_for_heat():
         np.maximum(
             0,
             total_pe_solid_bioe_potential_heatelec()
-            - float(pe_real_generation_res_elec().loc["solid bioE elec"]),
+            - float(pe_real_generation_res_elec().loc["solid_bioE_elec"]),
         )
     )
 
 
 @component.add(
-    name="available potential FE solid bioE for elec",
+    name="available_potential_FE_solid_bioE_for_elec",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -72,7 +72,7 @@ def available_potential_fe_solid_bioe_for_elec():
 
 
 @component.add(
-    name='"Max potential NPP bioE conventional for heat+elec"',
+    name='"Max_potential_NPP_bioE_conventional_for_heat+elec"',
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -99,7 +99,7 @@ _ext_constant_max_potential_npp_bioe_conventional_for_heatelec = ExtConstant(
 
 
 @component.add(
-    name='"Total PE solid bioE potential heat+elec"',
+    name='"Total_PE_solid_bioE_potential_heat+elec"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

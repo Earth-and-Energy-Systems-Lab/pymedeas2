@@ -4,7 +4,7 @@ Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="historic process emissions intensity",
+    name="historic_process_emissions_intensity",
     units="GtCO2/T$/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -30,7 +30,7 @@ _ext_lookup_historic_process_emissions_intensity = ExtLookup(
 
 
 @component.add(
-    name="last year historic process emissions",
+    name="last_year_historic_process_emissions",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -52,7 +52,7 @@ _ext_constant_last_year_historic_process_emissions = ExtConstant(
 
 
 @component.add(
-    name="process emissions intensity",
+    name="process_emissions_intensity",
     units="GtCO2e/T$/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -60,8 +60,8 @@ _ext_constant_last_year_historic_process_emissions = ExtConstant(
         "time": 4,
         "last_year_historic_process_emissions": 7,
         "historic_process_emissions_intensity": 5,
-        "process_emissions_reduction_policy": 2,
         "target_year_process_emissions_improvement": 2,
+        "process_emissions_reduction_policy": 2,
     },
 )
 def process_emissions_intensity():
@@ -96,7 +96,7 @@ def process_emissions_intensity():
 
 
 @component.add(
-    name="process emissions reduction policy",
+    name="process_emissions_reduction_policy",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -107,7 +107,7 @@ def process_emissions_reduction_policy():
 
 
 _ext_constant_process_emissions_reduction_policy = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "policy_improvement_process_emissions_efficiency",
     {},
@@ -118,7 +118,7 @@ _ext_constant_process_emissions_reduction_policy = ExtConstant(
 
 
 @component.add(
-    name="target year process emissions improvement",
+    name="target_year_process_emissions_improvement",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -142,7 +142,7 @@ _ext_constant_target_year_process_emissions_improvement = ExtConstant(
 
 
 @component.add(
-    name="Total process emissions",
+    name="Total_process_emissions",
     units="GtCO2e/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -159,9 +159,9 @@ def total_process_emissions():
     return (
         sum(
             total_output_required_by_sector()
-            .loc[_subscript_dict["sector process emissions"]]
-            .rename({"sectors": "sector process emissions!"}),
-            dim=["sector process emissions!"],
+            .loc[_subscript_dict["sector_process_emissions"]]
+            .rename({"sectors": "sector_process_emissions!"}),
+            dim=["sector_process_emissions!"],
         )
         * m_to_t()
         * process_emissions_intensity()

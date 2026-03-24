@@ -245,6 +245,7 @@
             "exports_demand_not_covered_to_roeu",
             "exports_demand_to_roeu",
             "exports_demand_to_row",
+            "gdp_eu28_delayed",
             "gdp_eu28_next_step",
             "historic_exports_demand",
             "historic_exports_demand_1",

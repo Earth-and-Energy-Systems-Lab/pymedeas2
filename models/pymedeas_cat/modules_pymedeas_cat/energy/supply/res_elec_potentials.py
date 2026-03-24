@@ -433,8 +433,8 @@ def max_potential_solar_pv_twe():
     comp_subtype="Normal",
     depends_on={
         "max_potential_res_elec_twh": 1,
-        "twe_per_twh": 1,
         "max_potential_phs_twe": 1,
+        "twe_per_twh": 1,
         "max_pe_potential_biogas_for_elec": 1,
         "ej_per_twh": 1,
     },

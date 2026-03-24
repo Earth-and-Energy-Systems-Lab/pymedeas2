@@ -267,8 +267,8 @@ def share_fed_liquids_vs_nre_heatnc():
     depends_on={
         "debug_share_feh_oil_over_fed_solids": 1,
         "share_feh_over_fed_nat_gas": 1,
-        "debug_share_coal_feh_over_fed_solids": 1,
         "share_feh_over_fed_solid_bioe": 1,
+        "debug_share_coal_feh_over_fed_solids": 1,
     },
 )
 def share_feh_over_fed_by_final_fuel():

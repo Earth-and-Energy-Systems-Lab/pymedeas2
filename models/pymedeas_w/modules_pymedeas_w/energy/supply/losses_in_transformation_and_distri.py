@@ -4,9 +4,9 @@ Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="Energy distr losses FF EJ",
+    name="Energy_distr_losses_FF_EJ",
     units="EJ/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
@@ -19,7 +19,7 @@ def energy_distr_losses_ff_ej():
     Energy distribution losses of fossil fuels.
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     value.loc[["liquids"]] = float(
         pes_fossil_fuel_extraction_delayed().loc["liquids"]
@@ -36,9 +36,9 @@ def energy_distr_losses_ff_ej():
 
 
 @component.add(
-    name="Historic share of losses vs extraction",
+    name="Historic_share_of_losses_vs_extraction",
     units="Dmnl",
-    subscripts=["matter final sources"],
+    subscripts=["matter_final_sources"],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -60,9 +60,9 @@ _ext_data_historic_share_of_losses_vs_extraction = ExtData(
     "time_historic_data",
     "historic_share_losses_over_total_extraction_liquids",
     None,
-    {"matter final sources": ["liquids"]},
+    {"matter_final_sources": ["liquids"]},
     _root,
-    {"matter final sources": _subscript_dict["matter final sources"]},
+    {"matter_final_sources": _subscript_dict["matter_final_sources"]},
     "_ext_data_historic_share_of_losses_vs_extraction",
 )
 
@@ -72,7 +72,7 @@ _ext_data_historic_share_of_losses_vs_extraction.add(
     "time_historic_data",
     "historic_share_losses_over_total_extraction_solids",
     None,
-    {"matter final sources": ["solids"]},
+    {"matter_final_sources": ["solids"]},
 )
 
 _ext_data_historic_share_of_losses_vs_extraction.add(
@@ -81,14 +81,14 @@ _ext_data_historic_share_of_losses_vs_extraction.add(
     "time_historic_data",
     "historic_share_losses_over_total_extraction_gases",
     None,
-    {"matter final sources": ["gases"]},
+    {"matter_final_sources": ["gases"]},
 )
 
 
 @component.add(
-    name="Historic share of transformation losses vs extraction",
+    name="Historic_share_of_transformation_losses_vs_extraction",
     units="Dmnl",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Data",
     comp_subtype="External",
     depends_on={
@@ -110,9 +110,9 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction = ExtData(
     "time_historic_data",
     "historic_share_of_transformation_losses_over_total_extraction_liquids",
     None,
-    {"final sources": ["liquids"]},
+    {"final_sources": ["liquids"]},
     _root,
-    {"final sources": _subscript_dict["final sources"]},
+    {"final_sources": _subscript_dict["final_sources"]},
     "_ext_data_historic_share_of_transformation_losses_vs_extraction",
 )
 
@@ -122,14 +122,14 @@ _ext_data_historic_share_of_transformation_losses_vs_extraction.add(
     "time_historic_data",
     "historic_share_of_transformation_losses_over_total_extraction_solids",
     None,
-    {"final sources": ["solids"]},
+    {"final_sources": ["solids"]},
 )
 
 
 @component.add(
-    name="PES fossil fuel extraction",
+    name="PES_fossil_fuel_extraction",
     units="EJ/year",
-    subscripts=["matter final sources"],
+    subscripts=["matter_final_sources"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pes_oil_ej": 1, "extraction_coal_ej": 1, "pes_nat_gas": 1},
@@ -140,8 +140,8 @@ def pes_fossil_fuel_extraction():
     """
     value = xr.DataArray(
         np.nan,
-        {"matter final sources": _subscript_dict["matter final sources"]},
-        ["matter final sources"],
+        {"matter_final_sources": _subscript_dict["matter_final_sources"]},
+        ["matter_final_sources"],
     )
     value.loc[["liquids"]] = pes_oil_ej()
     value.loc[["solids"]] = extraction_coal_ej()
@@ -150,9 +150,9 @@ def pes_fossil_fuel_extraction():
 
 
 @component.add(
-    name="PES fossil fuel extraction delayed",
+    name="PES_fossil_fuel_extraction_delayed",
     units="EJ/year",
-    subscripts=["matter final sources"],
+    subscripts=["matter_final_sources"],
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={
@@ -181,8 +181,8 @@ def pes_fossil_fuel_extraction_delayed():
     """
     value = xr.DataArray(
         np.nan,
-        {"matter final sources": _subscript_dict["matter final sources"]},
-        ["matter final sources"],
+        {"matter_final_sources": _subscript_dict["matter_final_sources"]},
+        ["matter_final_sources"],
     )
     value.loc[["liquids"]] = _delayfixed_pes_fossil_fuel_extraction_delayed().values
     value.loc[["solids"]] = _delayfixed_pes_fossil_fuel_extraction_delayed_1().values
@@ -193,11 +193,11 @@ def pes_fossil_fuel_extraction_delayed():
 _delayfixed_pes_fossil_fuel_extraction_delayed = DelayFixed(
     lambda: xr.DataArray(
         float(pes_fossil_fuel_extraction().loc["liquids"]),
-        {"final sources": ["liquids"]},
-        ["final sources"],
+        {"final_sources": ["liquids"]},
+        ["final_sources"],
     ),
     lambda: time_step(),
-    lambda: xr.DataArray(139, {"final sources": ["liquids"]}, ["final sources"]),
+    lambda: xr.DataArray(139, {"final_sources": ["liquids"]}, ["final_sources"]),
     time_step,
     "_delayfixed_pes_fossil_fuel_extraction_delayed",
 )
@@ -205,11 +205,11 @@ _delayfixed_pes_fossil_fuel_extraction_delayed = DelayFixed(
 _delayfixed_pes_fossil_fuel_extraction_delayed_1 = DelayFixed(
     lambda: xr.DataArray(
         float(pes_fossil_fuel_extraction().loc["solids"]),
-        {"final sources": ["solids"]},
-        ["final sources"],
+        {"final_sources": ["solids"]},
+        ["final_sources"],
     ),
     lambda: time_step(),
-    lambda: xr.DataArray(101, {"final sources": ["solids"]}, ["final sources"]),
+    lambda: xr.DataArray(101, {"final_sources": ["solids"]}, ["final_sources"]),
     time_step,
     "_delayfixed_pes_fossil_fuel_extraction_delayed_1",
 )
@@ -217,18 +217,18 @@ _delayfixed_pes_fossil_fuel_extraction_delayed_1 = DelayFixed(
 _delayfixed_pes_fossil_fuel_extraction_delayed_2 = DelayFixed(
     lambda: xr.DataArray(
         float(pes_fossil_fuel_extraction().loc["gases"]),
-        {"final sources": ["gases"]},
-        ["final sources"],
+        {"final_sources": ["gases"]},
+        ["final_sources"],
     ),
     lambda: time_step(),
-    lambda: xr.DataArray(79, {"final sources": ["gases"]}, ["final sources"]),
+    lambda: xr.DataArray(79, {"final_sources": ["gases"]}, ["final_sources"]),
     time_step,
     "_delayfixed_pes_fossil_fuel_extraction_delayed_2",
 )
 
 
 @component.add(
-    name='"pipeline transport constant 2.6 EJ in 2014"',
+    name='"pipeline_transport_constant_2.6_EJ_in_2014"',
     units="EJ/year",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -241,7 +241,7 @@ def pipeline_transport_constant_26_ej_in_2014():
 
 
 @component.add(
-    name="Ratio gain gas vs lose solids in tranf processes",
+    name="Ratio_gain_gas_vs_lose_solids_in_tranf_processes",
     units="Dmnl",
     comp_type="Data",
     comp_subtype="External",
@@ -272,7 +272,7 @@ _ext_data_ratio_gain_gas_vs_lose_solids_in_tranf_processes = ExtData(
 
 
 @component.add(
-    name="Total distribution losses",
+    name="Total_distribution_losses",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -294,16 +294,16 @@ def total_distribution_losses():
         + heatnc_distribution_losses()
         + pipeline_transport_constant_26_ej_in_2014()
         + sum(
-            energy_distr_losses_ff_ej().rename({"final sources": "final sources!"}),
-            dim=["final sources!"],
+            energy_distr_losses_ff_ej().rename({"final_sources": "final_sources!"}),
+            dim=["final_sources!"],
         )
     )
 
 
 @component.add(
-    name="Transformation FF losses EJ",
+    name="Transformation_FF_losses_EJ",
     units="EJ/year",
-    subscripts=["final sources"],
+    subscripts=["final_sources"],
     comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
@@ -317,7 +317,7 @@ def transformation_ff_losses_ej():
     Losses in transformation processes of each fossil fuel
     """
     value = xr.DataArray(
-        np.nan, {"final sources": _subscript_dict["final sources"]}, ["final sources"]
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     value.loc[["liquids"]] = float(
         pes_fossil_fuel_extraction_delayed().loc["liquids"]

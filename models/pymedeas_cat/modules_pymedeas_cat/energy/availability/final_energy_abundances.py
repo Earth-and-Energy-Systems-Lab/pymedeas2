@@ -597,8 +597,8 @@ _ext_constant_sensitivity_to_energy_scarcity_medium = ExtConstant(
     depends_on={
         "sensitivity_to_scarcity_option": 2,
         "sensitivity_to_energy_scarcity_low": 1,
-        "sensitivity_to_energy_scarcity_high": 1,
         "sensitivity_to_energy_scarcity_medium": 1,
+        "sensitivity_to_energy_scarcity_high": 1,
     },
 )
 def sensitivity_to_scarcity():
@@ -624,8 +624,8 @@ def sensitivity_to_scarcity():
     depends_on={
         "sensitivity_to_scarcity_option_h": 2,
         "sensitivity_to_energy_scarcity_low": 1,
-        "sensitivity_to_energy_scarcity_high": 1,
         "sensitivity_to_energy_scarcity_medium": 1,
+        "sensitivity_to_energy_scarcity_high": 1,
     },
 )
 def sensitivity_to_scarcity_h():

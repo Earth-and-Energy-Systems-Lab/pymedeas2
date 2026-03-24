@@ -255,8 +255,8 @@ def total_fe_elec_demand_ej():
     comp_subtype="Normal",
     depends_on={
         "fe_demand_elec_consum_twh": 1,
-        "share_transmdistr_elec_losses": 1,
         "elec_exports_share": 1,
+        "share_transmdistr_elec_losses": 1,
     },
 )
 def total_fe_elec_demand_twh():

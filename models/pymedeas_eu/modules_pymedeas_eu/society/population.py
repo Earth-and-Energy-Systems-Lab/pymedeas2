@@ -4,7 +4,7 @@ Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="Annual population growth rate",
+    name="Annual_population_growth_rate",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -15,7 +15,7 @@ def annual_population_growth_rate():
 
 
 @component.add(
-    name="historic population",
+    name="historic_population",
     units="people",
     comp_type="Lookup",
     comp_subtype="External",
@@ -44,7 +44,7 @@ _ext_lookup_historic_population = ExtLookup(
 
 
 @component.add(
-    name="initial population",
+    name="initial_population",
     units="people",
     comp_type="Constant",
     comp_subtype="External",
@@ -69,7 +69,7 @@ _ext_constant_initial_population = ExtConstant(
 
 
 @component.add(
-    name="input population",
+    name="input_population",
     units="Mpeople",
     comp_type="Lookup",
     comp_subtype="External",
@@ -98,7 +98,7 @@ _ext_lookup_input_population = ExtLookup(
 
 
 @component.add(
-    name="P timeseries pop growth rate",
+    name="P_timeseries_pop_growth_rate",
     units="Dmnl/year",
     comp_type="Data",
     comp_subtype="External",
@@ -129,7 +129,7 @@ _ext_data_p_timeseries_pop_growth_rate = ExtData(
 
 
 @component.add(
-    name="pop variation",
+    name="pop_variation",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -145,7 +145,7 @@ def pop_variation():
     Population growth. (Historic data from 1990-2010; projection 2011-2100) 2011 UST$
     """
     return if_then_else(
-        time() < 2014,
+        time() <= 2025,
         lambda: variation_historic_pop(),
         lambda: population() * annual_population_growth_rate(),
     )
@@ -177,11 +177,11 @@ _integ_population = Integ(
 
 
 @component.add(
-    name="variation historic pop",
+    name="variation_historic_pop",
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "historic_population": 2, "nvs_1_year": 1},
+    depends_on={"time": 3, "time_step": 2, "historic_population": 2},
 )
 def variation_historic_pop():
     """
@@ -189,16 +189,17 @@ def variation_historic_pop():
     """
     return (
         if_then_else(
-            time() < 2014,
-            lambda: historic_population(time() + 1) - historic_population(time()),
+            time() <= 2025,
+            lambda: historic_population(time() + time_step())
+            - historic_population(time()),
             lambda: 0,
         )
-        / nvs_1_year()
+        / time_step()
     )
 
 
 @component.add(
-    name="variation input pop",
+    name="variation_input_pop",
     units="1",
     comp_type="Auxiliary",
     comp_subtype="Normal",

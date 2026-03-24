@@ -8,16 +8,16 @@ import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
+    step,
+    sum,
+    integer,
+    zidz,
+    if_then_else,
     xidz,
     invert_matrix,
-    step,
-    integer,
-    if_then_else,
-    zidz,
-    sum,
 )
-from pysd.py_backend.statefuls import Initial, Integ, SampleIfTrue, DelayFixed
-from pysd.py_backend.external import ExtData, ExtConstant, ExtLookup
+from pysd.py_backend.statefuls import Integ, SampleIfTrue, Initial, DelayFixed
+from pysd.py_backend.external import ExtData, ExtLookup, ExtConstant
 from pysd.py_backend.data import TabData
 from pysd.py_backend.utils import load_modules, load_model_data
 from pysd import Component
@@ -58,7 +58,7 @@ def time():
 
 
 @component.add(
-    name="FINAL TIME", units="year", comp_type="Constant", comp_subtype="Normal"
+    name="FINAL_TIME", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def final_time():
     """
@@ -68,7 +68,7 @@ def final_time():
 
 
 @component.add(
-    name="INITIAL TIME", units="year", comp_type="Constant", comp_subtype="Normal"
+    name="INITIAL_TIME", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def initial_time():
     """
@@ -92,7 +92,7 @@ def saveper():
 
 
 @component.add(
-    name="TIME STEP",
+    name="TIME_STEP",
     units="year",
     limits=(0.0, np.nan),
     comp_type="Constant",
@@ -114,7 +114,7 @@ exec(load_modules("modules_pymedeas_eu", _modules, _root, []))
 
 
 @component.add(
-    name="Pipeline transport evolution",
+    name="Pipeline_transport_evolution",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

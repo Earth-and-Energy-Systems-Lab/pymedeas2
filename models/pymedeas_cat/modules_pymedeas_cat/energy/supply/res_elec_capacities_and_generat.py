@@ -263,8 +263,8 @@ _delayfixed_installed_capacity_res_elec_delayed = DelayFixed(
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
-        "p_power": 2,
         "start_year_p_growth_res_elec": 3,
+        "p_power": 2,
     },
 )
 def installed_capacity_res_elec_policies():
@@ -347,8 +347,8 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "res_installed_capacity_year_delayed": 1,
         "installed_capacity_res_elec": 1,
+        "res_installed_capacity_year_delayed": 1,
         "nvs_1_year": 1,
     },
 )
@@ -459,9 +459,9 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
+        "real_generation_res_elec_twh": 1,
         "replaced_capacity_res_elec_tw": 2,
         "twe_per_twh": 1,
-        "real_generation_res_elec_twh": 1,
     },
 )
 def real_cp_res_elec():
@@ -794,7 +794,7 @@ def total_time_planconstr_res_elec():
     subscripts=["RES elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "replaced_capacity_res_elec_tw": 1, "lifetime_res_elec": 1},
+    depends_on={"time": 1, "lifetime_res_elec": 1, "replaced_capacity_res_elec_tw": 1},
 )
 def wear_res_elec():
     """

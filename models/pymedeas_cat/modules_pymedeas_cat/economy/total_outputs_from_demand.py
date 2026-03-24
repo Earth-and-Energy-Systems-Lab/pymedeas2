@@ -505,9 +505,9 @@ def real_final_energy():
         "required_final_energy_by_sector_and_fuel_cat": 3,
         "energy_scarcity_feedback_shortage_coeff_cat": 3,
         "cc_impacts_feedback_shortage_coeff": 1,
+        "ej_per_twh": 2,
         "dac_energy_consumption_by_sector_and_fuel": 1,
         "ccs_energy_consumption_sector": 1,
-        "ej_per_twh": 2,
     },
 )
 def real_final_energy_by_sector_and_fuel_cat():

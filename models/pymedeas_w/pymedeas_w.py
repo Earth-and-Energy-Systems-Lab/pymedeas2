@@ -8,17 +8,17 @@ import numpy as np
 import xarray as xr
 
 from pysd.py_backend.functions import (
-    zidz,
-    xidz,
     sum,
     invert_matrix,
+    if_then_else,
     active_initial,
     step,
-    if_then_else,
+    xidz,
+    zidz,
 )
-from pysd.py_backend.statefuls import SampleIfTrue, Initial, Integ, DelayFixed
-from pysd.py_backend.external import ExtData, ExtLookup, ExtConstant
-from pysd.py_backend.utils import load_modules, load_model_data
+from pysd.py_backend.statefuls import SampleIfTrue, Integ, DelayFixed, Initial
+from pysd.py_backend.external import ExtConstant, ExtLookup, ExtData
+from pysd.py_backend.utils import load_model_data, load_modules
 from pysd import Component
 
 __pysd_version__ = "3.14.3"

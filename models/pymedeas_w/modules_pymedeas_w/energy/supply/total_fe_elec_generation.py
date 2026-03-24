@@ -90,13 +90,13 @@ def chp_and_nuc():
     depends_on={
         "potential_fe_gen_elec_fossil_fuel_chp_plants_ej": 3,
         "pes_oil_ej": 1,
-        "share_oil_dem_for_elec": 1,
         "efficiency_liquids_for_electricity": 1,
-        "share_coal_dem_for_elec": 1,
+        "share_oil_dem_for_elec": 1,
         "efficiency_coal_for_electricity": 1,
+        "share_coal_dem_for_elec": 1,
         "extraction_coal_ej": 1,
-        "pes_nat_gas": 1,
         "efficiency_gas_for_electricity": 1,
+        "pes_nat_gas": 1,
         "share_nat_gas_dem_for_elec": 1,
     },
 )

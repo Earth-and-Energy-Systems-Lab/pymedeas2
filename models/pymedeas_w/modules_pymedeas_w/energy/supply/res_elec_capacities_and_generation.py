@@ -114,7 +114,7 @@ _ext_lookup_curtailment_and_storage_share_variable_res = ExtLookup(
     name="curtailment_RES",
     units="Dmnl",
     subscripts=["RES_elec"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"time": 4, "curtailment_and_storage_share_variable_res": 4},
 )
@@ -293,9 +293,9 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "installed_capacity_res_elec": 1,
-        "time_step": 1,
         "res_installed_capacity_ts_delayed": 1,
+        "time_step": 1,
+        "installed_capacity_res_elec": 1,
     },
 )
 def new_res_installed_capacity():
@@ -407,8 +407,8 @@ def potential_tot_generation_res_elec_twh():
         "time": 1,
         "cp_res_elec": 1,
         "twe_per_twh": 1,
-        "installed_capacity_res_elec": 2,
         "real_generation_res_elec_twh": 1,
+        "installed_capacity_res_elec": 2,
     },
 )
 def real_cp_res_elec():

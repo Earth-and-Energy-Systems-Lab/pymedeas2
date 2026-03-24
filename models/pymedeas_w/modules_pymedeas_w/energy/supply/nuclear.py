@@ -360,10 +360,10 @@ def new_nuclear_capacity_under_planning():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "demand_elec_nre_twh": 1,
         "total_elec_generation_ff_chp_plants_delayed": 1,
-        "p_nuclear_elec_gen": 1,
+        "demand_elec_nre_twh": 1,
         "installed_capacity_nuclear_tw": 1,
+        "p_nuclear_elec_gen": 1,
         "effects_shortage_uranium": 1,
         "cp_limit_nuclear": 1,
     },
@@ -400,10 +400,10 @@ def new_required_capacity_nuclear():
     comp_subtype="Normal",
     depends_on={
         "selection_of_nuclear_scenario": 1,
-        "time": 1,
-        "p_nuclear_scen34": 1,
         "installed_capacity_nuclear_tw": 1,
         "start_year_nuclear_growth_scen34": 1,
+        "p_nuclear_scen34": 1,
+        "time": 1,
     },
 )
 def nuclear_capacity_phaseout():
@@ -428,10 +428,10 @@ def nuclear_capacity_phaseout():
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "twe_per_twh": 1,
         "cp_nuclear": 1,
-        "time_step": 2,
         "historic_nuclear_generation_twh": 2,
+        "time_step": 2,
+        "twe_per_twh": 1,
         "planned_nuclear_capacity_tw": 1,
         "time_construction_nuclear": 1,
     },
@@ -484,9 +484,9 @@ def nuclear_overcapacity():
     comp_subtype="Normal",
     depends_on={
         "selection_of_nuclear_scenario": 3,
-        "time": 1,
-        "p_nuclear_scen34": 1,
         "start_year_nuclear_growth_scen34": 1,
+        "p_nuclear_scen34": 1,
+        "time": 1,
     },
 )
 def p_nuclear_elec_gen():
@@ -599,8 +599,8 @@ _integ_planned_nuclear_capacity_tw = Integ(
         "installed_capacity_nuclear_tw": 1,
         "cp_nuclear": 1,
         "twe_per_twh": 1,
-        "demand_elec_nre_twh": 1,
         "total_elec_generation_ff_chp_plants_delayed": 1,
+        "demand_elec_nre_twh": 1,
     },
 )
 def potential_generation_nuclear_elec_twh():
@@ -826,7 +826,7 @@ def twe_per_twh():
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "life_time_nuclear": 1, "installed_capacity_nuclear_tw": 1},
+    depends_on={"time": 1, "installed_capacity_nuclear_tw": 1, "life_time_nuclear": 1},
 )
 def wear_nuclear():
     """

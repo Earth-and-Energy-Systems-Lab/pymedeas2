@@ -4,7 +4,7 @@ Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="Enteric fermentation EF",
+    name="Enteric_fermentation_EF",
     units="KgCh4/year/Head",
     subscripts=["Livestock"],
     comp_type="Lookup",
@@ -31,7 +31,7 @@ _ext_lookup_enteric_fermentation_ef = ExtLookup(
 
 
 @component.add(
-    name="Enteric fermentation emissions",
+    name="Enteric_fermentation_emissions",
     units="KgCh4/year",
     subscripts=["Livestock"],
     comp_type="Auxiliary",
@@ -43,7 +43,7 @@ def enteric_fermentation_emissions():
 
 
 @component.add(
-    name="Livestock heads",
+    name="Livestock_heads",
     units="Head",
     subscripts=["Livestock"],
     comp_type="Lookup",
@@ -70,7 +70,7 @@ _ext_lookup_livestock_heads = ExtLookup(
 
 
 @component.add(
-    name="Manure emissions",
+    name="Manure_emissions",
     subscripts=["Livestock"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -91,9 +91,9 @@ def manure_emissions():
         * 0.67
         * sum(
             total_methane_conversion_factor().rename(
-                {"Manure management systems": "Manure management systems!"}
+                {"Manure_management_systems": "Manure_management_systems!"}
             ),
-            dim=["Manure management systems!"],
+            dim=["Manure_management_systems!"],
         )
         * 28
         * 1e-06
@@ -101,9 +101,9 @@ def manure_emissions():
 
 
 @component.add(
-    name="Manure management share",
+    name="Manure_management_share",
     units="Dmnl",
-    subscripts=["Manure management systems", "Livestock"],
+    subscripts=["Manure_management_systems", "Livestock"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_manure_management_share"},
@@ -117,12 +117,12 @@ _ext_constant_manure_management_share = ExtConstant(
     "Catalonia",
     "manure_management_share*",
     {
-        "Manure management systems": _subscript_dict["Manure management systems"],
+        "Manure_management_systems": _subscript_dict["Manure_management_systems"],
         "Livestock": _subscript_dict["Livestock"],
     },
     _root,
     {
-        "Manure management systems": _subscript_dict["Manure management systems"],
+        "Manure_management_systems": _subscript_dict["Manure_management_systems"],
         "Livestock": _subscript_dict["Livestock"],
     },
     "_ext_constant_manure_management_share",
@@ -130,9 +130,9 @@ _ext_constant_manure_management_share = ExtConstant(
 
 
 @component.add(
-    name="Methane conversion factor manure system",
+    name="Methane_conversion_factor_manure_system",
     units="Dmnl",
-    subscripts=["Manure management systems"],
+    subscripts=["Manure_management_systems"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
@@ -147,15 +147,15 @@ _ext_constant_methane_conversion_factor_manure_system = ExtConstant(
     r"../agriculture.xlsx",
     "Catalonia",
     "methane_conversion_factor*",
-    {"Manure management systems": _subscript_dict["Manure management systems"]},
+    {"Manure_management_systems": _subscript_dict["Manure_management_systems"]},
     _root,
-    {"Manure management systems": _subscript_dict["Manure management systems"]},
+    {"Manure_management_systems": _subscript_dict["Manure_management_systems"]},
     "_ext_constant_methane_conversion_factor_manure_system",
 )
 
 
 @component.add(
-    name="Methane production factor",
+    name="Methane_production_factor",
     units="M3CH4/KgVS",
     subscripts=["Livestock"],
     comp_type="Constant",
@@ -178,7 +178,7 @@ _ext_constant_methane_production_factor = ExtConstant(
 
 
 @component.add(
-    name="Total CH4 emissions livestock",
+    name="Total_CH4_emissions_livestock",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"enteric_fermentation_emissions": 1, "manure_emissions": 1},
@@ -191,8 +191,8 @@ def total_ch4_emissions_livestock():
 
 
 @component.add(
-    name="Total methane conversion factor",
-    subscripts=["Manure management systems", "Livestock"],
+    name="Total_methane_conversion_factor",
+    subscripts=["Manure_management_systems", "Livestock"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -205,7 +205,7 @@ def total_methane_conversion_factor():
 
 
 @component.add(
-    name="VS rate",
+    name="VS_rate",
     units="KgVS/Head/year",
     subscripts=["Livestock"],
     comp_type="Lookup",

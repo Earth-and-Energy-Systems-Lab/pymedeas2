@@ -107,7 +107,7 @@ def process_emissions_reduction_policy():
 
 
 _ext_constant_process_emissions_reduction_policy = ExtConstant(
-    r"../../scenarios/scen_eu.xlsx",
+    r"../../scenarios/scen_w.xlsx",
     "NZP",
     "policy_improvement_process_emissions_efficiency",
     {},

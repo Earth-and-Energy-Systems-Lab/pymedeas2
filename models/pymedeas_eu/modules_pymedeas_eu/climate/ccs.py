@@ -56,7 +56,7 @@ def ccs_energy_consumption_sector():
 
 @component.add(
     name="CCS_energy_demand_sect",
-    units="TWh/yearf",
+    units="TWh/year",
     subscripts=["SECTORS_and_HOUSEHOLDS"],
     comp_type="Auxiliary",
     comp_subtype="Normal",

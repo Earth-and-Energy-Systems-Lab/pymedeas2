@@ -145,7 +145,7 @@ def pop_variation():
     Population growth. (Historic data from 1990-2010; projection 2011-2100) 2011 UST$
     """
     return if_then_else(
-        time() <= 2025,
+        time() < 2014,
         lambda: variation_historic_pop(),
         lambda: population() * annual_population_growth_rate(),
     )
@@ -181,7 +181,7 @@ _integ_population = Integ(
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "time_step": 2, "historic_population": 2},
+    depends_on={"time": 3, "historic_population": 2, "nvs_1_year": 1},
 )
 def variation_historic_pop():
     """
@@ -189,12 +189,11 @@ def variation_historic_pop():
     """
     return (
         if_then_else(
-            time() <= 2025,
-            lambda: historic_population(time() + time_step())
-            - historic_population(time()),
+            time() < 2014,
+            lambda: historic_population(time() + 1) - historic_population(time()),
             lambda: 0,
         )
-        / time_step()
+        / nvs_1_year()
     )
 
 

@@ -130,9 +130,9 @@ def initial_cumulated_material_requirements_for_res_elec_1995():
     comp_subtype="Normal",
     depends_on={
         "materials_per_new_capacity_installed_res": 1,
-        "materials_per_new_res_elec_capacity_installed_material_overgrid_high_power": 1,
         "include_materials_for_overgrids": 1,
         "materials_per_new_res_elec_capacity_installed_hvdcs": 1,
+        "materials_per_new_res_elec_capacity_installed_material_overgrid_high_power": 1,
     },
 )
 def materials_for_new_res_elec_per_capacity_installed():

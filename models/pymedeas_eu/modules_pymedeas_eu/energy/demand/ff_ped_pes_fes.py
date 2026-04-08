@@ -363,8 +363,8 @@ def imports_eu_unconv_oil_from_row_ej():
     comp_subtype="Normal",
     depends_on={
         "share_ff_for_nonenergy_use": 1,
-        "energy_distr_losses_ff": 1,
         "pes_fs": 1,
+        "energy_distr_losses_ff": 1,
         "transformation_ff_losses": 1,
     },
 )
@@ -496,11 +496,11 @@ def other_liquids_supply_ej():
     depends_on={
         "extraction_coal_eu": 1,
         "imports_eu_coal_from_row_ej": 1,
-        "imports_eu_nat_gas_from_row_ej": 1,
         "pes_nat_gas_eu": 1,
-        "imports_eu_total_oil_from_row_ej": 1,
-        "pes_total_oil_ej_eu": 1,
+        "imports_eu_nat_gas_from_row_ej": 1,
         "fes_ctlgtl_ej": 1,
+        "pes_total_oil_ej_eu": 1,
+        "imports_eu_total_oil_from_row_ej": 1,
     },
 )
 def pec_ff():
@@ -669,15 +669,14 @@ def ped_nat_gas_ej():
     depends_on={
         "ped_nre_fs_liquids": 1,
         "synthethic_fuel_generation_delayed": 2,
-        "ped_fs": 2,
         "pes_biogas_ej": 1,
-        "hydrogen_demand_for_synthetic_delayed_ts": 1,
-        "modern_solids_bioe_demand_households": 1,
+        "ped_fs": 2,
         "pes_peat": 1,
-        "pes_waste_for_tfc": 1,
         "pe_solidbioe_for_heat_and_electricity": 1,
         "losses_in_charcoal_plants": 1,
+        "pes_waste_for_tfc": 1,
         "pe_traditional_biomass_ej_delayed_1yr": 1,
+        "modern_solids_bioe_demand_households": 1,
     },
 )
 def ped_nre_fs():
@@ -707,8 +706,7 @@ def ped_nre_fs():
         - sum(
             synthethic_fuel_generation_delayed()
             .loc[_subscript_dict["ETG"]]
-            .rename({"E_to_synthetic": "ETG!"})
-            - hydrogen_demand_for_synthetic_delayed_ts(),
+            .rename({"E_to_synthetic": "ETG!"}),
             dim=["ETG!"],
         )
     )
@@ -774,8 +772,8 @@ def ped_total_oil_ej():
         "losses_in_charcoal_plants": 1,
         "pe_solidbioe_for_heat_and_electricity": 1,
         "other_liquids_supply_ej": 1,
-        "pes_biogas_ej": 1,
         "synthethic_fuel_generation_delayed": 1,
+        "pes_biogas_ej": 1,
         "pes_biogas_for_tfc": 1,
     },
 )
@@ -816,8 +814,8 @@ def pes_fs():
     comp_subtype="Normal",
     depends_on={
         "time": 2,
-        "b_lin_reg_peat": 1,
         "a_lin_reg_peat": 1,
+        "b_lin_reg_peat": 1,
         "historic_pes_peat_ej": 1,
     },
 )
@@ -841,29 +839,22 @@ def pes_peat():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "required_fed_by_fuel": 1,
-        "energy_distr_losses_ff": 1,
         "pes_fs": 1,
         "transformation_ff_losses": 1,
+        "energy_distr_losses_ff": 1,
         "share_ff_for_final_energy": 1,
     },
 )
 def real_fe_consumption_fs():
-    return np.minimum(
-        required_fed_by_fuel()
+    return (
+        pes_fs()
+        - transformation_ff_losses()
         .loc[_subscript_dict["matter_final_sources"]]
-        .rename({"final_sources": "matter_final_sources"}),
-        (
-            pes_fs()
-            - transformation_ff_losses()
-            .loc[_subscript_dict["matter_final_sources"]]
-            .rename({"final_sources": "matter_final_sources"})
-            - energy_distr_losses_ff()
-            .loc[_subscript_dict["matter_final_sources"]]
-            .rename({"final_sources": "matter_final_sources"})
-        )
-        * share_ff_for_final_energy(),
-    )
+        .rename({"final_sources": "matter_final_sources"})
+        - energy_distr_losses_ff()
+        .loc[_subscript_dict["matter_final_sources"]]
+        .rename({"final_sources": "matter_final_sources"})
+    ) * share_ff_for_final_energy()
 
 
 @component.add(
@@ -984,8 +975,8 @@ def share_ff_for_fc_emission_relevant():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_fuel": 1,
-        "ped_fs": 1,
         "energy_distr_losses_ff": 1,
+        "ped_fs": 1,
         "transformation_ff_losses": 1,
     },
 )
@@ -1047,8 +1038,8 @@ def share_ff_for_heatnc():
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
-        "ped_fs": 1,
         "energy_distr_losses_ff": 1,
+        "ped_fs": 1,
         "transformation_ff_losses": 1,
     },
 )

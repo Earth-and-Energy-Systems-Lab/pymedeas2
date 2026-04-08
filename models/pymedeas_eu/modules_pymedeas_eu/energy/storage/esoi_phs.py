@@ -27,8 +27,8 @@ def a_lineal_regr():
     comp_subtype="Normal",
     depends_on={
         "esoi_phs_depleted_potential": 1,
-        "a_lineal_regr": 1,
         "max_capacity_potential_phs": 1,
+        "a_lineal_regr": 1,
     },
 )
 def b_lineal_regr():

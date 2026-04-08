@@ -4,7 +4,7 @@ Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="abundance liquids",
+    name="abundance_liquids",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -22,7 +22,7 @@ def abundance_liquids():
 
 
 @component.add(
-    name="check liquids",
+    name="check_liquids",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -36,7 +36,7 @@ def check_liquids():
 
 
 @component.add(
-    name='"constrain liquids exogenous growth?"',
+    name='"constrain_liquids_exogenous_growth?"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -50,7 +50,7 @@ def constrain_liquids_exogenous_growth():
 
 
 @component.add(
-    name="Historic conv oil domestic CAT extracted EJ",
+    name="Historic_conv_oil_domestic_CAT_extracted_EJ",
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
@@ -78,7 +78,7 @@ _ext_data_historic_conv_oil_domestic_cat_extracted_ej = ExtData(
 
 
 @component.add(
-    name="Historic net imports oil CAT",
+    name="Historic_net_imports_oil_CAT",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -97,7 +97,7 @@ def historic_net_imports_oil_cat():
 
 
 @component.add(
-    name='"Historic share conv. oil domestic CAT extraction"',
+    name='"Historic_share_conv._oil_domestic_CAT_extraction"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -108,7 +108,7 @@ def historic_share_conv_oil_domestic_cat_extraction():
 
 
 @component.add(
-    name='"Historic share conv. oil domestic CAT extraction\\" until 2016"',
+    name='"Historic_share_conv._oil_domestic_CAT_extraction\\"_until_2016"',
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -135,7 +135,7 @@ _sampleiftrue_historic_share_conv_oil_domestic_cat_extraction_until_2016 = Sampl
 
 
 @component.add(
-    name="Historic unconv oil domestic CAT extracted EJ",
+    name="Historic_unconv_oil_domestic_CAT_extracted_EJ",
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
@@ -163,7 +163,7 @@ _ext_data_historic_unconv_oil_domestic_cat_extracted_ej = ExtData(
 
 
 @component.add(
-    name="imports CAT conv oil from RoW EJ",
+    name="imports_CAT_conv_oil_from_RoW_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -179,7 +179,7 @@ def imports_cat_conv_oil_from_row_ej():
 
 
 @component.add(
-    name="imports CAT total oil from RoW EJ",
+    name="imports_CAT_total_oil_from_RoW_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -190,7 +190,7 @@ def imports_cat_total_oil_from_row_ej():
 
 
 @component.add(
-    name="imports CAT unconv oil from RoW EJ",
+    name="imports_CAT_unconv_oil_from_RoW_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -206,7 +206,7 @@ def imports_cat_unconv_oil_from_row_ej():
 
 
 @component.add(
-    name="oil TFC",
+    name="oil_TFC",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -217,7 +217,7 @@ def oil_tfc():
 
 
 @component.add(
-    name="Other liquids required EJ",
+    name="Other_liquids_required_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -236,7 +236,7 @@ def other_liquids_required_ej():
 
 
 @component.add(
-    name="Other liquids supply EJ",
+    name="Other_liquids_supply_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -254,7 +254,7 @@ def other_liquids_supply_ej():
 
 
 @component.add(
-    name="PEC oil emissions relevant",
+    name="PEC_oil_emissions_relevant",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -265,7 +265,7 @@ def pec_oil_emissions_relevant():
 
 
 @component.add(
-    name="PEC total oil",
+    name="PEC_total_oil",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -279,7 +279,7 @@ def pec_total_oil():
 
 
 @component.add(
-    name="PED CAT total oil from RoW",
+    name="PED_CAT_total_oil_from_RoW",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -290,7 +290,7 @@ def ped_cat_total_oil_from_row():
 
 
 @component.add(
-    name='"PED domestic CAT conv. oil EJ"',
+    name='"PED_domestic_CAT_conv._oil_EJ"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -307,7 +307,7 @@ def ped_domestic_cat_conv_oil_ej():
 
 
 @component.add(
-    name="PED domestic CAT total oil EJ",
+    name="PED_domestic_CAT_total_oil_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -324,7 +324,7 @@ def ped_domestic_cat_total_oil_ej():
 
 
 @component.add(
-    name="PED liquids",
+    name="PED_liquids",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -357,7 +357,7 @@ def ped_liquids():
 
 
 @component.add(
-    name="PED NRE Liquids",
+    name="PED_NRE_Liquids",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -371,7 +371,7 @@ def ped_nre_liquids():
 
 
 @component.add(
-    name="PED total oil EJ",
+    name="PED_total_oil_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -387,7 +387,7 @@ def ped_total_oil_ej():
 
 
 @component.add(
-    name="PES Liquids",
+    name="PES_Liquids",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -401,7 +401,7 @@ def pes_liquids():
 
 
 @component.add(
-    name="real FE consumption liquids EJ",
+    name="real_FE_consumption_liquids_EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -424,7 +424,7 @@ def real_fe_consumption_liquids_ej():
 
 
 @component.add(
-    name="Required FED by liquids",
+    name="Required_FED_by_liquids",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -438,9 +438,9 @@ def required_fed_by_liquids():
 
 
 @component.add(
-    name="self consuption energy sector",
+    name="self_consuption_energy_sector",
     units="EJ/year",
-    subscripts=["matter final sources"],
+    subscripts=["matter_final_sources"],
     comp_type="Constant",
     comp_subtype="Normal",
 )
@@ -450,8 +450,8 @@ def self_consuption_energy_sector():
     """
     value = xr.DataArray(
         np.nan,
-        {"matter final sources": _subscript_dict["matter final sources"]},
-        ["matter final sources"],
+        {"matter_final_sources": _subscript_dict["matter_final_sources"]},
+        ["matter_final_sources"],
     )
     value.loc[["liquids"]] = 0
     value.loc[["gases"]] = 0
@@ -460,7 +460,7 @@ def self_consuption_energy_sector():
 
 
 @component.add(
-    name="Share biofuel in PES",
+    name="Share_biofuel_in_PES",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -471,7 +471,7 @@ def share_biofuel_in_pes():
 
 
 @component.add(
-    name='"share liquids dem for Heat-nc"',
+    name='"share_liquids_dem_for_Heat-nc"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -485,15 +485,15 @@ def share_liquids_dem_for_heatnc():
 
 
 @component.add(
-    name="share liquids for final energy",
+    name="share_liquids_for_final_energy",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_liquids": 1,
-        "energy_distr_losses_ff": 1,
         "transformation_ff_losses_ej": 1,
         "ped_liquids": 1,
+        "energy_distr_losses_ff": 1,
     },
 )
 def share_liquids_for_final_energy():
@@ -509,15 +509,15 @@ def share_liquids_for_final_energy():
 
 
 @component.add(
-    name='"share liquids for non-energy use"',
+    name='"share_liquids_for_non-energy_use"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
-        "energy_distr_losses_ff": 1,
         "transformation_ff_losses_ej": 1,
         "ped_liquids": 1,
+        "energy_distr_losses_ff": 1,
     },
 )
 def share_liquids_for_nonenergy_use():
@@ -530,7 +530,7 @@ def share_liquids_for_nonenergy_use():
 
 
 @component.add(
-    name='"share oil dem for Heat-com"',
+    name='"share_oil_dem_for_Heat-com"',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -548,7 +548,7 @@ def share_oil_dem_for_heatcom():
 
 
 @component.add(
-    name="share oil elec plants",
+    name="share_oil_elec_plants",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -559,14 +559,14 @@ def share_oil_elec_plants():
 
 
 @component.add(
-    name="share oil for Elec emissions relevant",
+    name="share_oil_for_Elec_emissions_relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ped_oil_elec_plants_ej": 1,
-        "share_elec_gen_in_chp": 1,
         "ped_oil_for_chp_plants_ej": 1,
+        "share_elec_gen_in_chp": 1,
         "ped_total_oil_ej": 1,
     },
 )
@@ -578,7 +578,7 @@ def share_oil_for_elec_emissions_relevant():
 
 
 @component.add(
-    name="share oil for FC emissions relevant",
+    name="share_oil_for_FC_emissions_relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -592,7 +592,7 @@ def share_oil_for_fc_emissions_relevant():
 
 
 @component.add(
-    name="share oil for heat CHP plants",
+    name="share_oil_for_heat_CHP_plants",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -609,15 +609,15 @@ def share_oil_for_heat_chp_plants():
 
 
 @component.add(
-    name="share oil for Heat emissions relevant",
+    name="share_oil_for_Heat_emissions_relevant",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "ped_oil_for_heat_plants": 1,
         "ped_ff_heatnc": 1,
-        "share_elec_gen_in_chp": 1,
         "ped_oil_for_chp_plants_ej": 1,
+        "share_elec_gen_in_chp": 1,
         "ped_total_oil_ej": 1,
     },
 )
@@ -630,7 +630,7 @@ def share_oil_for_heat_emissions_relevant():
 
 
 @component.add(
-    name='"Total demand liquids mb/d"',
+    name='"Total_demand_liquids_mb/d"',
     units="Mb/d",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -644,7 +644,7 @@ def total_demand_liquids_mbd():
 
 
 @component.add(
-    name="Year scarcity liquids",
+    name="Year_scarcity_liquids",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

@@ -83,10 +83,7 @@ def cp_ev_batteries_for_elec_storage():
     Dynamic evolution of the Cp of EV batteries for electricity storage.
     """
     return float(
-        np.minimum(
-            cp_ev_batteries_required(),
-            float(max_cp_ev_batteries_for_elec_storage().loc["cars"]),
-        )
+        np.minimum(cp_ev_batteries_required(), max_cp_ev_batteries_for_elec_storage())
     )
 
 
@@ -99,13 +96,7 @@ def cp_ev_batteries_for_elec_storage():
 )
 def cp_ev_batteries_required():
     return float(
-        np.maximum(
-            0,
-            zidz(
-                demand_ev_batteries_for_elec_storage(),
-                sum(ev_batteries_tw().rename({"EV_bat": "EV_bat!"}), dim=["EV_bat!"]),
-            ),
-        )
+        np.maximum(0, zidz(demand_ev_batteries_for_elec_storage(), ev_batteries_tw()))
     )
 
 
@@ -150,8 +141,8 @@ def demand_storage_capacity():
     depends_on={
         "esoi_phs": 1,
         "installed_capacity_phs": 1,
-        "used_ev_batteries_for_elec_storage": 1,
         "esoi_ev_batteries": 1,
+        "used_ev_batteries_for_elec_storage": 1,
         "total_capacity_elec_storage_tw": 1,
     },
 )
@@ -351,7 +342,4 @@ def used_ev_batteries_for_elec_storage():
     """
     Bateries from electric vehicles used for electric storage.
     """
-    return (
-        sum(ev_batteries_tw().rename({"EV_bat": "EV_bat!"}), dim=["EV_bat!"])
-        * cp_ev_batteries_for_elec_storage()
-    )
+    return ev_batteries_tw() * cp_ev_batteries_for_elec_storage()

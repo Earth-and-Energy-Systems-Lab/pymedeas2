@@ -73,9 +73,9 @@ def annual_growth_rate_electricity_generation_res_elec_tot():
     comp_subtype="Normal",
     depends_on={
         "potential_fe_gen_elec_fossil_fuel_chp_plants": 3,
+        "efficiency_liquids_for_electricity": 1,
         "share_ff_for_electricity": 3,
         "pec_ff": 3,
-        "efficiency_liquids_for_electricity": 1,
         "efficiency_gas_for_electricity": 1,
         "efficiency_coal_for_electricity": 1,
     },
@@ -215,14 +215,14 @@ def fes_elec_from_biow():
     comp_subtype="Normal",
     depends_on={
         "fe_tot_generation_all_res_elec_twh": 1,
-        "total_fe_elec_generation_twh": 1,
+        "total_fe_elec_generation_twh_eu": 1,
     },
 )
 def share_res_electricity_generation():
     """
     Share of RES in the electricity generation.
     """
-    return fe_tot_generation_all_res_elec_twh() / total_fe_elec_generation_twh()
+    return fe_tot_generation_all_res_elec_twh() / total_fe_elec_generation_twh_eu()
 
 
 @component.add(
@@ -245,9 +245,9 @@ def total_fe_elec_consumption_ej():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "total_fe_elec_generation_twh": 1,
-        "total_electricity_demand_for_synthetic": 1,
+        "total_fe_elec_generation_twh_eu": 1,
         "ej_per_twh": 1,
+        "total_electricity_demand_for_synthetic": 1,
         "elec_exports_share": 1,
         "share_trans_and_dist_losses": 1,
     },
@@ -258,7 +258,7 @@ def total_fe_elec_consumption_twh():
     """
     return (
         (
-            total_fe_elec_generation_twh()
+            total_fe_elec_generation_twh_eu()
             - total_electricity_demand_for_synthetic() / ej_per_twh()
         )
         * (1 - elec_exports_share())
@@ -267,7 +267,7 @@ def total_fe_elec_consumption_twh():
 
 
 @component.add(
-    name="Total_FE_Elec_generation_TWh",
+    name="Total_FE_Elec_generation_TWh_EU",
     units="TWh/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -277,7 +277,7 @@ def total_fe_elec_consumption_twh():
         "fes_elec_from_waste": 1,
     },
 )
-def total_fe_elec_generation_twh():
+def total_fe_elec_generation_twh_eu():
     """
     Total final energy electricity generation (fossil fuels, nuclear, waste & renewables) (TWh).
     """

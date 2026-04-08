@@ -4,54 +4,20 @@ Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="aux_GDPpc0pkm",
-    units="T$/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"time": 1, "pkm_ref_year": 1, "gdppc": 1, "time_step": 1},
-)
-def aux_gdppc0pkm():
-    return (
-        if_then_else(time() == pkm_ref_year(), lambda: gdppc(), lambda: 0) / time_step()
-    )
-
-
-@component.add(
-    name="beta_pkm",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_beta_pkm"},
-)
-def beta_pkm():
-    return _ext_constant_beta_pkm()
-
-
-_ext_constant_beta_pkm = ExtConstant(
-    r"../transport.xlsx", "Europe", "beta_pkm", {}, _root, {}, "_ext_constant_beta_pkm"
-)
-
-
-@component.add(
     name='"commercial_pkm_vehicles/pkm"',
     units="year*vehicles/(person*km)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "historic_commercial_vehicles": 1,
-        "initial_share_pkm_buses": 1,
-        "initial_pkm": 1,
-    },
+    depends_on={"initial_commercial_vehicles": 1, "initial_pkm_commercial": 1},
 )
 def commercial_pkm_vehiclespkm():
-    return sum(
-        historic_commercial_vehicles(2023).rename({"fuels": "fuels!"}), dim=["fuels!"]
-    ) / (1000000000.0 * initial_pkm() * initial_share_pkm_buses())
+    return initial_commercial_vehicles() / initial_pkm_commercial()
 
 
 @component.add(
     name="desired_pkm_by_mode_and_fuel",
     units="person*km/year",
-    subscripts=["fuels", "Transport_Modes"],
+    subscripts=["fuels", "Transport_Modes_pkm"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"pkm": 1, "pkm_fuel_share": 1},
@@ -64,26 +30,28 @@ def desired_pkm_by_mode_and_fuel():
 
 
 @component.add(
-    name="efficiency_pkm",
-    subscripts=["Transport_Modes", "fuels"],
-    comp_type="Stateful",
-    comp_subtype="Integ",
-    depends_on={"_integ_efficiency_pkm": 1},
-    other_deps={
-        "_integ_efficiency_pkm": {
-            "initial": {"initial_efficiency_per_pkm": 1},
-            "step": {"variation_efficiency_pkm": 1},
-        }
-    },
+    name="eficiency_liquids_pkm",
+    units="EJ/(person*km)",
+    subscripts=["Transport_Modes_pkm"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_eficiency_liquids_pkm"},
 )
-def efficiency_pkm():
-    return _integ_efficiency_pkm()
+def eficiency_liquids_pkm():
+    """
+    Efficiency of different transport modes for liquids fuels
+    """
+    return _ext_constant_eficiency_liquids_pkm()
 
 
-_integ_efficiency_pkm = Integ(
-    lambda: variation_efficiency_pkm(),
-    lambda: initial_efficiency_per_pkm(),
-    "_integ_efficiency_pkm",
+_ext_constant_eficiency_liquids_pkm = ExtConstant(
+    r"../transport.xlsx",
+    "Global",
+    "EJ_pkm_liquids",
+    {"Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"]},
+    _root,
+    {"Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"]},
+    "_ext_constant_eficiency_liquids_pkm",
 )
 
 
@@ -95,8 +63,8 @@ _integ_efficiency_pkm = Integ(
     comp_subtype="Normal",
     depends_on={
         "energy_pkm": 4,
-        "household_demand_total": 3,
         "m_to_t": 3,
+        "household_demand_total": 3,
         "nvs_1_year": 3,
     },
 )
@@ -105,19 +73,19 @@ def ei_households_transport():
         np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
     value.loc[["electricity"]] = (
-        float(energy_pkm().loc["elect", "Road_light"])
+        float(energy_pkm().loc["elect", "Househ"])
         / (household_demand_total() * m_to_t())
         * nvs_1_year()
     )
     value.loc[["gases"]] = (
-        float(energy_pkm().loc["gas", "Road_light"])
+        float(energy_pkm().loc["gas", "Househ"])
         / (household_demand_total() * m_to_t())
         * nvs_1_year()
     )
     value.loc[["liquids"]] = (
         (
-            float(energy_pkm().loc["liq", "Road_light"])
-            + float(energy_pkm().loc["hybrid", "Road_light"])
+            float(energy_pkm().loc["liq", "Househ"])
+            + float(energy_pkm().loc["hybrid", "Househ"])
         )
         / (household_demand_total() * m_to_t())
         * nvs_1_year()
@@ -128,87 +96,66 @@ def ei_households_transport():
 
 
 @component.add(
-    name="end_historical_pkm", units="year", comp_type="Constant", comp_subtype="Normal"
-)
-def end_historical_pkm():
-    return 2023
-
-
-@component.add(
-    name="energy_by_fuel_mode_pkm",
+    name="energy_commercial_by_fuel_pkm",
     units="EJ/year",
-    subscripts=["final_sources", "Transport_Modes"],
+    subscripts=["final_sources"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
-    depends_on={"energy_pkm": 5, "time": 2, "historic_share_electricity_hybrid": 2},
+    depends_on={"energy_pkm": 4},
 )
-def energy_by_fuel_mode_pkm():
+def energy_commercial_by_fuel_pkm():
     value = xr.DataArray(
-        np.nan,
-        {
-            "final_sources": _subscript_dict["final_sources"],
-            "Transport_Modes": _subscript_dict["Transport_Modes"],
-        },
-        ["final_sources", "Transport_Modes"],
+        np.nan, {"final_sources": _subscript_dict["final_sources"]}, ["final_sources"]
     )
-    value.loc[["liquids"], :] = (
-        (
-            energy_pkm().loc["liq", :].reset_coords(drop=True)
-            + energy_pkm().loc["hybrid", :].reset_coords(drop=True)
-            * (1 - historic_share_electricity_hybrid(time()))
-        )
-        .expand_dims({"final_sources": ["liquids"]}, 0)
-        .values
-    )
-    value.loc[["gases"], :] = (
+    value.loc[["liquids"]] = sum(
         energy_pkm()
-        .loc["gas", :]
+        .loc["liq", _subscript_dict["Transport_Modes_pkm_Commercial"]]
         .reset_coords(drop=True)
-        .expand_dims({"final_sources": ["gases"]}, 0)
-        .values
+        .rename({"Transport_Modes_pkm": "Transport_Modes_pkm_Commercial!"}),
+        dim=["Transport_Modes_pkm_Commercial!"],
+    ) + sum(
+        energy_pkm()
+        .loc["hybrid", _subscript_dict["Transport_Modes_pkm_Commercial"]]
+        .reset_coords(drop=True)
+        .rename({"Transport_Modes_pkm": "Transport_Modes_pkm_Commercial!"}),
+        dim=["Transport_Modes_pkm_Commercial!"],
     )
-    value.loc[["electricity"], :] = (
-        (
-            energy_pkm().loc["elect", :].reset_coords(drop=True)
-            + energy_pkm().loc["hybrid", :].reset_coords(drop=True)
-            * historic_share_electricity_hybrid(time())
-        )
-        .expand_dims({"final_sources": ["electricity"]}, 0)
-        .values
+    value.loc[["gases"]] = sum(
+        energy_pkm()
+        .loc["gas", _subscript_dict["Transport_Modes_pkm_Commercial"]]
+        .reset_coords(drop=True)
+        .rename({"Transport_Modes_pkm": "Transport_Modes_pkm_Commercial!"}),
+        dim=["Transport_Modes_pkm_Commercial!"],
     )
-    value.loc[["heat"], :] = 0
-    value.loc[["solids"], :] = 0
+    value.loc[["electricity"]] = sum(
+        energy_pkm()
+        .loc["elect", _subscript_dict["Transport_Modes_pkm_Commercial"]]
+        .reset_coords(drop=True)
+        .rename({"Transport_Modes_pkm": "Transport_Modes_pkm_Commercial!"}),
+        dim=["Transport_Modes_pkm_Commercial!"],
+    )
+    value.loc[["heat"]] = 0
+    value.loc[["solids"]] = 0
     return value
 
 
 @component.add(
     name="energy_pkm",
-    units="person*km*EJ/(year*pkm)",
-    subscripts=["fuels", "Transport_Modes"],
+    units="EJ/year",
+    subscripts=["fuels", "Transport_Modes_pkm"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"real_pkm_by_mode_and_fuel": 1, "efficiency_pkm": 1, "mj_per_ej": 1},
+    depends_on={
+        "saving_ratios_vehicles_pkm": 1,
+        "real_pkm_by_mode_and_fuel": 1,
+        "eficiency_liquids_pkm": 1,
+    },
 )
 def energy_pkm():
     return (
-        real_pkm_by_mode_and_fuel()
-        * efficiency_pkm().transpose("fuels", "Transport_Modes")
-        / mj_per_ej()
-    )
-
-
-@component.add(
-    name="energy_pkm_fuel",
-    units="EJ/year",
-    subscripts=["fuels"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"energy_pkm": 1},
-)
-def energy_pkm_fuel():
-    return sum(
-        energy_pkm().rename({"Transport_Modes": "Transport_Modes!"}),
-        dim=["Transport_Modes!"],
+        saving_ratios_vehicles_pkm()
+        * real_pkm_by_mode_and_fuel()
+        * eficiency_liquids_pkm()
     )
 
 
@@ -312,6 +259,36 @@ _ext_lookup_fuel_share_households_pkm = ExtLookup(
 
 
 @component.add(
+    name="fuel_share_inland_pkm",
+    units="Dmnl",
+    subscripts=["fuels"],
+    comp_type="Lookup",
+    comp_subtype="External",
+    depends_on={
+        "__external__": "_ext_lookup_fuel_share_inland_pkm",
+        "__lookup__": "_ext_lookup_fuel_share_inland_pkm",
+    },
+)
+def fuel_share_inland_pkm(x, final_subs=None):
+    """
+    Fuel share of inland passenger transport every 5 years
+    """
+    return _ext_lookup_fuel_share_inland_pkm(x, final_subs)
+
+
+_ext_lookup_fuel_share_inland_pkm = ExtLookup(
+    r"../../scenarios/scen_eu.xlsx",
+    "NZP",
+    "year_transport_fuel_share_tkm",
+    "fuel_share_inland_pkm",
+    {"fuels": _subscript_dict["fuels"]},
+    _root,
+    {"fuels": _subscript_dict["fuels"]},
+    "_ext_lookup_fuel_share_inland_pkm",
+)
+
+
+@component.add(
     name="fuel_share_maritime_pkm",
     units="Dmnl",
     subscripts=["fuels"],
@@ -339,110 +316,38 @@ _ext_lookup_fuel_share_maritime_pkm = ExtLookup(
 
 
 @component.add(
-    name="fuel_share_rail_pkm",
-    units="Dmnl",
-    subscripts=["fuels"],
+    name="hist_pkm_gdp",
+    units="person*km/(year*T$)",
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
-        "__external__": "_ext_lookup_fuel_share_rail_pkm",
-        "__lookup__": "_ext_lookup_fuel_share_rail_pkm",
+        "__external__": "_ext_lookup_hist_pkm_gdp",
+        "__lookup__": "_ext_lookup_hist_pkm_gdp",
     },
 )
-def fuel_share_rail_pkm(x, final_subs=None):
-    return _ext_lookup_fuel_share_rail_pkm(x, final_subs)
-
-
-_ext_lookup_fuel_share_rail_pkm = ExtLookup(
-    r"../../scenarios/scen_eu.xlsx",
-    "NZP",
-    "year_transport_fuel_share_tkm",
-    "fuel_share_rail_pkm",
-    {"fuels": _subscript_dict["fuels"]},
-    _root,
-    {"fuels": _subscript_dict["fuels"]},
-    "_ext_lookup_fuel_share_rail_pkm",
-)
-
-
-@component.add(
-    name="fuel_share_road_pkm",
-    units="Dmnl",
-    subscripts=["fuels"],
-    comp_type="Lookup",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_lookup_fuel_share_road_pkm",
-        "__lookup__": "_ext_lookup_fuel_share_road_pkm",
-    },
-)
-def fuel_share_road_pkm(x, final_subs=None):
-    """
-    Fuel share of inland passenger transport every 5 years
-    """
-    return _ext_lookup_fuel_share_road_pkm(x, final_subs)
-
-
-_ext_lookup_fuel_share_road_pkm = ExtLookup(
-    r"../../scenarios/scen_eu.xlsx",
-    "NZP",
-    "year_transport_fuel_share_tkm",
-    "fuel_share_road_pkm",
-    {"fuels": _subscript_dict["fuels"]},
-    _root,
-    {"fuels": _subscript_dict["fuels"]},
-    "_ext_lookup_fuel_share_road_pkm",
-)
-
-
-@component.add(
-    name="GDP0pcpkm",
-    units="year*T$",
-    comp_type="Stateful",
-    comp_subtype="Integ",
-    depends_on={"_integ_gdp0pcpkm": 1},
-    other_deps={"_integ_gdp0pcpkm": {"initial": {}, "step": {"aux_gdppc0pkm": 1}}},
-)
-def gdp0pcpkm():
-    return _integ_gdp0pcpkm()
-
-
-_integ_gdp0pcpkm = Integ(lambda: aux_gdppc0pkm(), lambda: 0, "_integ_gdp0pcpkm")
-
-
-@component.add(
-    name="hist_pkm",
-    units="person*km/(year)",
-    comp_type="Lookup",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_lookup_hist_pkm",
-        "__lookup__": "_ext_lookup_hist_pkm",
-    },
-)
-def hist_pkm(x, final_subs=None):
+def hist_pkm_gdp(x, final_subs=None):
     """
     Historic values of pkm/GDP
     """
-    return _ext_lookup_hist_pkm(x, final_subs)
+    return _ext_lookup_hist_pkm_gdp(x, final_subs)
 
 
-_ext_lookup_hist_pkm = ExtLookup(
+_ext_lookup_hist_pkm_gdp = ExtLookup(
     r"../transport.xlsx",
     "Europe",
-    "time_index_2023",
-    "historic_pkm",
+    "time_index_2015",
+    "historic_pkm_GDP",
     {},
     _root,
     {},
-    "_ext_lookup_hist_pkm",
+    "_ext_lookup_hist_pkm_gdp",
 )
 
 
 @component.add(
     name="hist_transport_share_pkm",
     units="Dmnl",
-    subscripts=["Transport_Modes"],
+    subscripts=["Transport_Modes_pkm"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -457,206 +362,12 @@ def hist_transport_share_pkm(x, final_subs=None):
 _ext_lookup_hist_transport_share_pkm = ExtLookup(
     r"../transport.xlsx",
     "Europe",
-    "time_index_2023",
+    "time_index_2015",
     "share_transport_mode_hist_pkm",
-    {"Transport_Modes": _subscript_dict["Transport_Modes"]},
+    {"Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"]},
     _root,
-    {"Transport_Modes": _subscript_dict["Transport_Modes"]},
+    {"Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"]},
     "_ext_lookup_hist_transport_share_pkm",
-)
-
-
-@component.add(
-    name="historic_commercial_vehicles",
-    units="vehicles",
-    subscripts=["fuels"],
-    comp_type="Lookup",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_lookup_historic_commercial_vehicles",
-        "__lookup__": "_ext_lookup_historic_commercial_vehicles",
-    },
-)
-def historic_commercial_vehicles(x, final_subs=None):
-    return _ext_lookup_historic_commercial_vehicles(x, final_subs)
-
-
-_ext_lookup_historic_commercial_vehicles = ExtLookup(
-    r"../transport.xlsx",
-    "Europe",
-    "time_index_2023",
-    "initial_pkm_vehicles_com",
-    {"fuels": _subscript_dict["fuels"]},
-    _root,
-    {"fuels": _subscript_dict["fuels"]},
-    "_ext_lookup_historic_commercial_vehicles",
-)
-
-
-@component.add(
-    name="historic_fuel_share_households_pkm",
-    units="Dmnl",
-    subscripts=["fuels"],
-    comp_type="Lookup",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_lookup_historic_fuel_share_households_pkm",
-        "__lookup__": "_ext_lookup_historic_fuel_share_households_pkm",
-    },
-)
-def historic_fuel_share_households_pkm(x, final_subs=None):
-    return _ext_lookup_historic_fuel_share_households_pkm(x, final_subs)
-
-
-_ext_lookup_historic_fuel_share_households_pkm = ExtLookup(
-    r"../transport.xlsx",
-    "Europe",
-    "time_index_2023",
-    "historic_fuel_share_households_pkm",
-    {"fuels": _subscript_dict["fuels"]},
-    _root,
-    {"fuels": _subscript_dict["fuels"]},
-    "_ext_lookup_historic_fuel_share_households_pkm",
-)
-
-
-@component.add(
-    name="historic_fuel_share_maritime_pkm",
-    units="Dmnl",
-    subscripts=["fuels"],
-    comp_type="Lookup",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_lookup_historic_fuel_share_maritime_pkm",
-        "__lookup__": "_ext_lookup_historic_fuel_share_maritime_pkm",
-    },
-)
-def historic_fuel_share_maritime_pkm(x, final_subs=None):
-    return _ext_lookup_historic_fuel_share_maritime_pkm(x, final_subs)
-
-
-_ext_lookup_historic_fuel_share_maritime_pkm = ExtLookup(
-    r"../transport.xlsx",
-    "Europe",
-    "time_index_2023",
-    "historic_fuel_share_maritime_pkm",
-    {"fuels": _subscript_dict["fuels"]},
-    _root,
-    {"fuels": _subscript_dict["fuels"]},
-    "_ext_lookup_historic_fuel_share_maritime_pkm",
-)
-
-
-@component.add(
-    name="historic_fuel_share_rail_pkm",
-    units="Dmnl",
-    subscripts=["fuels"],
-    comp_type="Lookup",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_lookup_historic_fuel_share_rail_pkm",
-        "__lookup__": "_ext_lookup_historic_fuel_share_rail_pkm",
-    },
-)
-def historic_fuel_share_rail_pkm(x, final_subs=None):
-    """
-    Historic share of fuels for rail passenger transport
-    """
-    return _ext_lookup_historic_fuel_share_rail_pkm(x, final_subs)
-
-
-_ext_lookup_historic_fuel_share_rail_pkm = ExtLookup(
-    r"../transport.xlsx",
-    "Europe",
-    "time_index_2023",
-    "historic_fuel_share_rail_pkm",
-    {"fuels": _subscript_dict["fuels"]},
-    _root,
-    {"fuels": _subscript_dict["fuels"]},
-    "_ext_lookup_historic_fuel_share_rail_pkm",
-)
-
-
-@component.add(
-    name="historic_fuel_share_road_pkm",
-    units="Dmnl",
-    subscripts=["fuels"],
-    comp_type="Lookup",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_lookup_historic_fuel_share_road_pkm",
-        "__lookup__": "_ext_lookup_historic_fuel_share_road_pkm",
-    },
-)
-def historic_fuel_share_road_pkm(x, final_subs=None):
-    return _ext_lookup_historic_fuel_share_road_pkm(x, final_subs)
-
-
-_ext_lookup_historic_fuel_share_road_pkm = ExtLookup(
-    r"../transport.xlsx",
-    "Europe",
-    "time_index_2023",
-    "historic_fuel_share_inland_pkm",
-    {"fuels": _subscript_dict["fuels"]},
-    _root,
-    {"fuels": _subscript_dict["fuels"]},
-    "_ext_lookup_historic_fuel_share_road_pkm",
-)
-
-
-@component.add(
-    name="historic_households_vehicles",
-    units="vehicles",
-    subscripts=["fuels"],
-    comp_type="Lookup",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_lookup_historic_households_vehicles",
-        "__lookup__": "_ext_lookup_historic_households_vehicles",
-    },
-)
-def historic_households_vehicles(x, final_subs=None):
-    """
-    Historic households vehicles per fuel
-    """
-    return _ext_lookup_historic_households_vehicles(x, final_subs)
-
-
-_ext_lookup_historic_households_vehicles = ExtLookup(
-    r"../transport.xlsx",
-    "Europe",
-    "time_index_2023",
-    "historic_household_vehicles",
-    {"fuels": _subscript_dict["fuels"]},
-    _root,
-    {"fuels": _subscript_dict["fuels"]},
-    "_ext_lookup_historic_households_vehicles",
-)
-
-
-@component.add(
-    name="historic_share_electricity_hybrid",
-    units="Dmnl",
-    comp_type="Lookup",
-    comp_subtype="External",
-    depends_on={
-        "__external__": "_ext_lookup_historic_share_electricity_hybrid",
-        "__lookup__": "_ext_lookup_historic_share_electricity_hybrid",
-    },
-)
-def historic_share_electricity_hybrid(x, final_subs=None):
-    return _ext_lookup_historic_share_electricity_hybrid(x, final_subs)
-
-
-_ext_lookup_historic_share_electricity_hybrid = ExtLookup(
-    r"../transport.xlsx",
-    "Europe",
-    "time_index_2023",
-    "share_hybrid_electricity_pkm",
-    {},
-    _root,
-    {},
-    "_ext_lookup_historic_share_electricity_hybrid",
 )
 
 
@@ -665,76 +376,34 @@ _ext_lookup_historic_share_electricity_hybrid = ExtLookup(
     units="year*vehicles/(person*km)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "historic_households_vehicles": 1,
-        "initial_share_households_pkm": 1,
-        "initial_pkm": 1,
-    },
+    depends_on={"initial_households_vehicles": 1, "initial_pkm_households": 1},
 )
 def households_vehiclespkm():
     """
     Number of vehicles/pkm
     """
-    return sum(
-        historic_households_vehicles(2023).rename({"fuels": "fuels!"}), dim=["fuels!"]
-    ) / (initial_pkm() * initial_share_households_pkm() * 1000000000.0)
+    return initial_households_vehicles() / initial_pkm_households()
 
 
 @component.add(
-    name="improvement_efficiency_pkm",
-    units="Dmnl",
-    subscripts=["Transport_Modes", "fuels"],
+    name="initial_commercial_vehicles",
+    units="vehicles",
     comp_type="Constant",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_improvement_efficiency_pkm"},
+    depends_on={"__external__": "_ext_constant_initial_commercial_vehicles"},
 )
-def improvement_efficiency_pkm():
-    return _ext_constant_improvement_efficiency_pkm()
+def initial_commercial_vehicles():
+    return _ext_constant_initial_commercial_vehicles()
 
 
-_ext_constant_improvement_efficiency_pkm = ExtConstant(
+_ext_constant_initial_commercial_vehicles = ExtConstant(
     r"../transport.xlsx",
-    "Global",
-    "efficiency_pkm_improvment*",
-    {
-        "Transport_Modes": _subscript_dict["Transport_Modes"],
-        "fuels": _subscript_dict["fuels"],
-    },
+    "Europe",
+    "initial_pkm_vehicles_com",
+    {},
     _root,
-    {
-        "Transport_Modes": _subscript_dict["Transport_Modes"],
-        "fuels": _subscript_dict["fuels"],
-    },
-    "_ext_constant_improvement_efficiency_pkm",
-)
-
-
-@component.add(
-    name="initial_efficiency_per_pkm",
-    units="MJ/pkm",
-    subscripts=["Transport_Modes", "fuels"],
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_initial_efficiency_per_pkm"},
-)
-def initial_efficiency_per_pkm():
-    return _ext_constant_initial_efficiency_per_pkm()
-
-
-_ext_constant_initial_efficiency_per_pkm = ExtConstant(
-    r"../transport.xlsx",
-    "Global",
-    "efficiency_pkm*",
-    {
-        "Transport_Modes": _subscript_dict["Transport_Modes"],
-        "fuels": _subscript_dict["fuels"],
-    },
-    _root,
-    {
-        "Transport_Modes": _subscript_dict["Transport_Modes"],
-        "fuels": _subscript_dict["fuels"],
-    },
-    "_ext_constant_initial_efficiency_per_pkm",
+    {},
+    "_ext_constant_initial_commercial_vehicles",
 )
 
 
@@ -747,16 +416,13 @@ _ext_constant_initial_efficiency_per_pkm = ExtConstant(
     depends_on={"__external__": "_ext_constant_initial_fuel_share_air_pkm"},
 )
 def initial_fuel_share_air_pkm():
-    """
-    Air and maritiem transport 100% liquids in the historical period
-    """
     return _ext_constant_initial_fuel_share_air_pkm()
 
 
 _ext_constant_initial_fuel_share_air_pkm = ExtConstant(
     r"../transport.xlsx",
     "Europe",
-    "initial_fuel_share_air_tkm*",
+    "initial_fuel_share_air_pkm*",
     {"fuels": _subscript_dict["fuels"]},
     _root,
     {"fuels": _subscript_dict["fuels"]},
@@ -765,87 +431,172 @@ _ext_constant_initial_fuel_share_air_pkm = ExtConstant(
 
 
 @component.add(
-    name="initial_pkm",
+    name="initial_fuel_share_households_pkm",
+    units="Dmnl",
+    subscripts=["fuels"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_fuel_share_households_pkm"},
+)
+def initial_fuel_share_households_pkm():
+    return _ext_constant_initial_fuel_share_households_pkm()
+
+
+_ext_constant_initial_fuel_share_households_pkm = ExtConstant(
+    r"../transport.xlsx",
+    "Europe",
+    "initial_fuel_share_households_pkm*",
+    {"fuels": _subscript_dict["fuels"]},
+    _root,
+    {"fuels": _subscript_dict["fuels"]},
+    "_ext_constant_initial_fuel_share_households_pkm",
+)
+
+
+@component.add(
+    name="initial_fuel_share_inland_pkm",
+    units="Dmnl",
+    subscripts=["fuels"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_fuel_share_inland_pkm"},
+)
+def initial_fuel_share_inland_pkm():
+    return _ext_constant_initial_fuel_share_inland_pkm()
+
+
+_ext_constant_initial_fuel_share_inland_pkm = ExtConstant(
+    r"../transport.xlsx",
+    "Europe",
+    "initial_fuel_share_inland_pkm*",
+    {"fuels": _subscript_dict["fuels"]},
+    _root,
+    {"fuels": _subscript_dict["fuels"]},
+    "_ext_constant_initial_fuel_share_inland_pkm",
+)
+
+
+@component.add(
+    name="initial_fuel_share_maritime_pkm",
+    units="Dmnl",
+    subscripts=["fuels"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_fuel_share_maritime_pkm"},
+)
+def initial_fuel_share_maritime_pkm():
+    return _ext_constant_initial_fuel_share_maritime_pkm()
+
+
+_ext_constant_initial_fuel_share_maritime_pkm = ExtConstant(
+    r"../transport.xlsx",
+    "Europe",
+    "initial_fuel_share_maritime_pkm*",
+    {"fuels": _subscript_dict["fuels"]},
+    _root,
+    {"fuels": _subscript_dict["fuels"]},
+    "_ext_constant_initial_fuel_share_maritime_pkm",
+)
+
+
+@component.add(
+    name="initial_households_vehicles",
+    units="vehicles",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_households_vehicles"},
+)
+def initial_households_vehicles():
+    """
+    Initial number of households vehicles 2015
+    """
+    return _ext_constant_initial_households_vehicles()
+
+
+_ext_constant_initial_households_vehicles = ExtConstant(
+    r"../transport.xlsx",
+    "Europe",
+    "initial_household_vehicles",
+    {},
+    _root,
+    {},
+    "_ext_constant_initial_households_vehicles",
+)
+
+
+@component.add(
+    name="initial_pkm_commercial",
     units="person*km/year",
     comp_type="Constant",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_initial_pkm"},
+    depends_on={"__external__": "_ext_constant_initial_pkm_commercial"},
 )
-def initial_pkm():
-    """
-    Initial number of pkms at 2023
-    """
-    return _ext_constant_initial_pkm()
+def initial_pkm_commercial():
+    return _ext_constant_initial_pkm_commercial()
 
 
-_ext_constant_initial_pkm = ExtConstant(
+_ext_constant_initial_pkm_commercial = ExtConstant(
+    r"../transport.xlsx",
+    "Europe",
+    "initial_pkm__commercial_inland",
+    {},
+    _root,
+    {},
+    "_ext_constant_initial_pkm_commercial",
+)
+
+
+@component.add(
+    name="initial_pkm_households",
+    units="person*km/year",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_pkm_households"},
+)
+def initial_pkm_households():
+    """
+    Initial number of pkms done by households vehicles
+    """
+    return _ext_constant_initial_pkm_households()
+
+
+_ext_constant_initial_pkm_households = ExtConstant(
     r"../transport.xlsx",
     "Europe",
     "initial_pkm",
     {},
     _root,
     {},
-    "_ext_constant_initial_pkm",
+    "_ext_constant_initial_pkm_households",
 )
 
 
 @component.add(
-    name="initial_share_households_pkm",
-    units="Dmnl",
+    name='"initial_pkm/gdp"',
+    units="person*km/(year*T$)",
     comp_type="Constant",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_initial_share_households_pkm"},
+    depends_on={"__external__": "_ext_constant_initial_pkmgdp"},
 )
-def initial_share_households_pkm():
-    return _ext_constant_initial_share_households_pkm()
+def initial_pkmgdp():
+    return _ext_constant_initial_pkmgdp()
 
 
-_ext_constant_initial_share_households_pkm = ExtConstant(
+_ext_constant_initial_pkmgdp = ExtConstant(
     r"../transport.xlsx",
     "Europe",
-    "initial_share_private_pkm",
+    "pkm_gdp_2015",
     {},
     _root,
     {},
-    "_ext_constant_initial_share_households_pkm",
+    "_ext_constant_initial_pkmgdp",
 )
-
-
-@component.add(
-    name="initial_share_pkm_buses",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_initial_share_pkm_buses"},
-)
-def initial_share_pkm_buses():
-    return _ext_constant_initial_share_pkm_buses()
-
-
-_ext_constant_initial_share_pkm_buses = ExtConstant(
-    r"../transport.xlsx",
-    "Europe",
-    "initial_share_comercial_pkm",
-    {},
-    _root,
-    {},
-    "_ext_constant_initial_share_pkm_buses",
-)
-
-
-@component.add(
-    name="log_pkm",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"predicted_log_pkm_hat": 1, "resid_pkm": 1},
-)
-def log_pkm():
-    return predicted_log_pkm_hat() + resid_pkm()
 
 
 @component.add(
     name="mode_share_pkm",
     units="Dmnl",
-    subscripts=["Transport_Modes"],
+    subscripts=["Transport_Modes_pkm"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
@@ -862,26 +613,10 @@ _ext_lookup_mode_share_pkm = ExtLookup(
     "NZP",
     "Year_transport_share",
     "pkm_share",
-    {"Transport_Modes": _subscript_dict["Transport_Modes"]},
+    {"Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"]},
     _root,
-    {"Transport_Modes": _subscript_dict["Transport_Modes"]},
+    {"Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"]},
     "_ext_lookup_mode_share_pkm",
-)
-
-
-@component.add(
-    name="phi_pkm",
-    units="Dmnl",
-    comp_type="Constant",
-    comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_phi_pkm"},
-)
-def phi_pkm():
-    return _ext_constant_phi_pkm()
-
-
-_ext_constant_phi_pkm = ExtConstant(
-    r"../transport.xlsx", "Europe", "phi_pkm", {}, _root, {}, "_ext_constant_phi_pkm"
 )
 
 
@@ -890,48 +625,38 @@ _ext_constant_phi_pkm = ExtConstant(
     units="person*km/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "end_historical_data": 1, "hist_pkm": 1, "predicted_pkm": 1},
+    depends_on={
+        "time": 3,
+        "end_historical_data": 1,
+        "pkmgdp_slope": 1,
+        "gdp_eu": 2,
+        "initial_pkmgdp": 1,
+        "hist_pkm_gdp": 1,
+    },
 )
 def pkm():
     """
     passengers·km variations related to GDP. Amount of pkm at each time step
     """
-    return (
-        if_then_else(
-            time() <= end_historical_data(),
-            lambda: hist_pkm(time()),
-            lambda: predicted_pkm(),
-        )
-        * 1000000000.0
-    )
-
-
-@component.add(
-    name="pkm0",
-    units="person*km/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"time": 1, "pkm_ref_year": 2, "hist_pkm": 1},
-)
-def pkm0():
     return if_then_else(
-        time() >= pkm_ref_year(), lambda: hist_pkm(pkm_ref_year()), lambda: 0
+        time() > end_historical_data(),
+        lambda: (initial_pkmgdp() + pkmgdp_slope() * time()) * gdp_eu(),
+        lambda: hist_pkm_gdp(time()) * gdp_eu(),
     )
 
 
 @component.add(
     name="pkm_fuel_share",
     units="Dmnl",
-    subscripts=["fuels", "Transport_Modes"],
+    subscripts=["fuels", "Transport_Modes_pkm"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "pkm_fuel_share_road": 1,
-        "pkm_mode_share": 5,
+        "pkm_fuel_share_inland": 1,
+        "pkm_mode_share": 6,
         "pkm_fuel_share_maritime": 1,
         "pkm_fuel_share_air": 1,
         "pkm_fuel_share_households": 1,
-        "pkm_fuel_share_rail": 1,
     },
 )
 def pkm_fuel_share():
@@ -939,33 +664,36 @@ def pkm_fuel_share():
         np.nan,
         {
             "fuels": _subscript_dict["fuels"],
-            "Transport_Modes": _subscript_dict["Transport_Modes"],
+            "Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"],
         },
-        ["fuels", "Transport_Modes"],
+        ["fuels", "Transport_Modes_pkm"],
     )
-    value.loc[:, ["Road_heavy"]] = (
-        (pkm_fuel_share_road() * float(pkm_mode_share().loc["Road_heavy"]))
-        .expand_dims({"Land": ["Road_heavy"]}, 1)
+    value.loc[:, ["Inland"]] = (
+        (
+            pkm_fuel_share_inland()
+            * float(pkm_mode_share().loc["Inland"])
+            * (1 - float(pkm_mode_share().loc["Househ"]))
+        )
+        .expand_dims({"Transport_Modes_pkm_Commercial": ["Inland"]}, 1)
         .values
     )
     value.loc[:, ["Maritime"]] = (
         (pkm_fuel_share_maritime() * float(pkm_mode_share().loc["Maritime"]))
-        .expand_dims({"Transport_Modes": ["Maritime"]}, 1)
+        .expand_dims({"Transport_Modes_pkm_Commercial": ["Maritime"]}, 1)
         .values
     )
     value.loc[:, ["Air"]] = (
         (pkm_fuel_share_air() * float(pkm_mode_share().loc["Air"]))
-        .expand_dims({"Transport_Modes": ["Air"]}, 1)
+        .expand_dims({"Transport_Modes_pkm_Commercial": ["Air"]}, 1)
         .values
     )
-    value.loc[:, ["Road_light"]] = (
-        (pkm_fuel_share_households() * float(pkm_mode_share().loc["Road_light"]))
-        .expand_dims({"Land": ["Road_light"]}, 1)
-        .values
-    )
-    value.loc[:, ["Rail"]] = (
-        (pkm_fuel_share_rail() * float(pkm_mode_share().loc["Rail"]))
-        .expand_dims({"Land": ["Rail"]}, 1)
+    value.loc[:, ["Househ"]] = (
+        (
+            pkm_fuel_share_households()
+            * float(pkm_mode_share().loc["Househ"])
+            * float(pkm_mode_share().loc["Inland"])
+        )
+        .expand_dims({"Transport_Modes_pkm": ["Househ"]}, 1)
         .values
     )
     return value
@@ -979,20 +707,20 @@ def pkm_fuel_share():
     comp_subtype="Normal",
     depends_on={
         "time": 5,
-        "end_historical_pkm": 4,
-        "fuel_share_1995": 2,
+        "end_historical_data": 4,
         "initial_fuel_share_air_pkm": 3,
-        "fuel_share_air_pkm": 2,
+        "fuel_share_1995": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_air_pkm": 2,
     },
 )
 def pkm_fuel_share_air():
     return if_then_else(
-        time() < end_historical_pkm(),
+        time() < end_historical_data(),
         lambda: fuel_share_1995()
         + (
             (initial_fuel_share_air_pkm() - fuel_share_1995())
-            / (end_historical_pkm() - 1995)
+            / (end_historical_data() - 1995)
         )
         * (time() - 1995),
         lambda: if_then_else(
@@ -1003,9 +731,9 @@ def pkm_fuel_share_air():
                     fuel_share_air_pkm(start_year_policies_transport())
                     - initial_fuel_share_air_pkm()
                 )
-                / (start_year_policies_transport() - end_historical_pkm())
+                / (start_year_policies_transport() - end_historical_data())
             )
-            * (time() - end_historical_pkm()),
+            * (time() - end_historical_data()),
             lambda: fuel_share_air_pkm(time()),
         ),
     )
@@ -1019,8 +747,9 @@ def pkm_fuel_share_air():
     comp_subtype="Normal",
     depends_on={
         "time": 5,
-        "end_historical_data": 5,
-        "historic_fuel_share_households_pkm": 3,
+        "end_historical_data": 4,
+        "initial_fuel_share_households_pkm": 3,
+        "fuel_share_1995": 2,
         "fuel_share_households_pkm": 2,
         "start_year_policies_transport": 3,
     },
@@ -1028,19 +757,65 @@ def pkm_fuel_share_air():
 def pkm_fuel_share_households():
     return if_then_else(
         time() < end_historical_data(),
-        lambda: historic_fuel_share_households_pkm(time()),
+        lambda: fuel_share_1995()
+        + (
+            (initial_fuel_share_households_pkm() - fuel_share_1995())
+            / (end_historical_data() - 1995)
+        )
+        * (time() - 1995),
         lambda: if_then_else(
             time() < start_year_policies_transport(),
-            lambda: historic_fuel_share_households_pkm(end_historical_data())
+            lambda: initial_fuel_share_households_pkm()
             + (
                 (
                     fuel_share_households_pkm(start_year_policies_transport())
-                    - historic_fuel_share_households_pkm(end_historical_data())
+                    - initial_fuel_share_households_pkm()
                 )
                 / (start_year_policies_transport() - end_historical_data())
             )
             * (time() - end_historical_data()),
             lambda: fuel_share_households_pkm(time()),
+        ),
+    )
+
+
+@component.add(
+    name="pkm_fuel_share_inland",
+    units="Dmnl",
+    subscripts=["fuels"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 5,
+        "end_historical_data": 3,
+        "fuel_share_1995": 2,
+        "end_hist_data": 1,
+        "initial_fuel_share_inland_pkm": 3,
+        "fuel_share_inland_pkm": 2,
+        "start_year_policies_transport": 3,
+    },
+)
+def pkm_fuel_share_inland():
+    return if_then_else(
+        time() < end_historical_data(),
+        lambda: fuel_share_1995()
+        + (
+            (initial_fuel_share_inland_pkm() - fuel_share_1995())
+            / (end_hist_data() - 1995)
+        )
+        * (time() - 1995),
+        lambda: if_then_else(
+            time() < start_year_policies_transport(),
+            lambda: initial_fuel_share_inland_pkm()
+            + (
+                (
+                    fuel_share_inland_pkm(start_year_policies_transport())
+                    - initial_fuel_share_inland_pkm()
+                )
+                / (start_year_policies_transport() - end_historical_data())
+            )
+            * (time() - end_historical_data()),
+            lambda: fuel_share_inland_pkm(time()),
         ),
     )
 
@@ -1053,95 +828,34 @@ def pkm_fuel_share_households():
     comp_subtype="Normal",
     depends_on={
         "time": 5,
-        "end_historical_pkm": 5,
-        "historic_fuel_share_maritime_pkm": 3,
-        "fuel_share_maritime_pkm": 2,
+        "end_historical_data": 4,
+        "fuel_share_1995": 2,
+        "initial_fuel_share_maritime_pkm": 3,
         "start_year_policies_transport": 3,
+        "fuel_share_maritime_pkm": 2,
     },
 )
 def pkm_fuel_share_maritime():
     return if_then_else(
-        time() < end_historical_pkm(),
-        lambda: historic_fuel_share_maritime_pkm(time()),
+        time() < end_historical_data(),
+        lambda: fuel_share_1995()
+        + (
+            (initial_fuel_share_maritime_pkm() - fuel_share_1995())
+            / (end_historical_data() - 1995)
+        )
+        * (time() - 1995),
         lambda: if_then_else(
             time() < start_year_policies_transport(),
-            lambda: historic_fuel_share_maritime_pkm(end_historical_pkm())
+            lambda: initial_fuel_share_maritime_pkm()
             + (
                 (
                     fuel_share_maritime_pkm(start_year_policies_transport())
-                    - historic_fuel_share_maritime_pkm(end_historical_pkm())
+                    - initial_fuel_share_maritime_pkm()
                 )
-                / (start_year_policies_transport() - end_historical_pkm())
+                / (start_year_policies_transport() - end_historical_data())
             )
-            * (time() - end_historical_pkm()),
+            * (time() - end_historical_data()),
             lambda: fuel_share_maritime_pkm(time()),
-        ),
-    )
-
-
-@component.add(
-    name="pkm_fuel_share_rail",
-    subscripts=["fuels"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 4,
-        "end_historical_pkm": 6,
-        "historic_fuel_share_rail_pkm": 3,
-        "fuel_share_rail_pkm": 2,
-        "start_year_policies_transport": 3,
-    },
-)
-def pkm_fuel_share_rail():
-    return if_then_else(
-        time() < end_historical_pkm(),
-        lambda: historic_fuel_share_rail_pkm(end_historical_pkm()),
-        lambda: if_then_else(
-            time() < start_year_policies_transport(),
-            lambda: historic_fuel_share_rail_pkm(end_historical_pkm())
-            + (
-                (
-                    fuel_share_rail_pkm(start_year_policies_transport())
-                    - historic_fuel_share_rail_pkm(end_historical_pkm())
-                )
-                / (start_year_policies_transport() - end_historical_pkm())
-            )
-            * (time() - end_historical_pkm()),
-            lambda: fuel_share_rail_pkm(time()),
-        ),
-    )
-
-
-@component.add(
-    name="pkm_fuel_share_road",
-    units="Dmnl",
-    subscripts=["fuels"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 5,
-        "end_historical_pkm": 5,
-        "historic_fuel_share_road_pkm": 3,
-        "start_year_policies_transport": 3,
-        "fuel_share_road_pkm": 2,
-    },
-)
-def pkm_fuel_share_road():
-    return if_then_else(
-        time() < end_historical_pkm(),
-        lambda: historic_fuel_share_road_pkm(time()),
-        lambda: if_then_else(
-            time() < start_year_policies_transport(),
-            lambda: historic_fuel_share_road_pkm(end_historical_pkm())
-            + (
-                (
-                    fuel_share_road_pkm(start_year_policies_transport())
-                    - historic_fuel_share_road_pkm(end_historical_pkm())
-                )
-                / (start_year_policies_transport() - end_historical_pkm())
-            )
-            * (time() - end_historical_pkm()),
-            lambda: fuel_share_road_pkm(time()),
         ),
     )
 
@@ -1149,112 +863,63 @@ def pkm_fuel_share_road():
 @component.add(
     name="pkm_mode_share",
     units="Dmnl",
-    subscripts=["Transport_Modes"],
+    subscripts=["Transport_Modes_pkm"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 5,
-        "end_historical_pkm": 5,
+        "end_historical_data": 5,
         "hist_transport_share_pkm": 3,
-        "start_year_policies_transport": 3,
         "mode_share_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_mode_share():
     return if_then_else(
-        time() < end_historical_pkm(),
+        time() < end_historical_data(),
         lambda: hist_transport_share_pkm(time()),
         lambda: if_then_else(
             time() < start_year_policies_transport(),
-            lambda: hist_transport_share_pkm(end_historical_pkm())
+            lambda: hist_transport_share_pkm(end_historical_data())
             + (
                 (
                     mode_share_pkm(start_year_policies_transport())
-                    - hist_transport_share_pkm(end_historical_pkm())
+                    - hist_transport_share_pkm(end_historical_data())
                 )
-                / (start_year_policies_transport() - end_historical_pkm())
+                / (start_year_policies_transport() - end_historical_data())
             )
-            * (time() - end_historical_pkm()),
+            * (time() - end_historical_data()),
             lambda: mode_share_pkm(time()),
         ),
     )
 
 
 @component.add(
-    name="pkm_ref_year",
-    units="year",
+    name='"pkm/gdp_slope"',
+    units="person*km/(year*year*T$)",
     comp_type="Constant",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_pkm_ref_year"},
+    depends_on={"__external__": "_ext_constant_pkmgdp_slope"},
 )
-def pkm_ref_year():
-    return _ext_constant_pkm_ref_year()
+def pkmgdp_slope():
+    return _ext_constant_pkmgdp_slope()
 
 
-_ext_constant_pkm_ref_year = ExtConstant(
+_ext_constant_pkmgdp_slope = ExtConstant(
     r"../transport.xlsx",
     "Europe",
-    "year0_pkm",
+    "pkm_gdp_slope",
     {},
     _root,
     {},
-    "_ext_constant_pkm_ref_year",
+    "_ext_constant_pkmgdp_slope",
 )
-
-
-@component.add(
-    name="predicted_log_pkm_hat",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"gdppc": 2, "gdp0pcpkm": 2, "beta_pkm": 1},
-)
-def predicted_log_pkm_hat():
-    return if_then_else(
-        zidz(gdppc(), gdp0pcpkm()) > 0,
-        lambda: beta_pkm() * float(np.log(gdppc() / gdp0pcpkm())),
-        lambda: 0,
-    )
-
-
-@component.add(
-    name="predicted_pkm",
-    units="person*km/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"pkm0": 1, "log_pkm": 1},
-)
-def predicted_pkm():
-    return pkm0() * float(np.exp(log_pkm()))
-
-
-@component.add(
-    name="predicted_pkm_by_mode_and_fuel",
-    units="person*km/year",
-    subscripts=["fuels", "Transport_Modes"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"pkm_fuel_share": 1, "predicted_pkm": 1},
-)
-def predicted_pkm_by_mode_and_fuel():
-    return pkm_fuel_share() * predicted_pkm() * 1000000000.0
-
-
-@component.add(
-    name="real_pkm_by_mode",
-    units="person*km/year",
-    subscripts=["Transport_Modes"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"real_pkm_by_mode_and_fuel": 1},
-)
-def real_pkm_by_mode():
-    return sum(real_pkm_by_mode_and_fuel().rename({"fuels": "fuels!"}), dim=["fuels!"])
 
 
 @component.add(
     name="real_pkm_by_mode_and_fuel",
     units="person*km/year",
-    subscripts=["fuels", "Transport_Modes"],
+    subscripts=["fuels", "Transport_Modes_pkm"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"desired_pkm_by_mode_and_fuel": 1},
@@ -1267,147 +932,49 @@ def real_pkm_by_mode_and_fuel():
 
 
 @component.add(
-    name="res0_pkm",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"time": 1, "end_historical_data": 1, "residu_pkm": 1},
-)
-def res0_pkm():
-    return if_then_else(time() < end_historical_data(), lambda: 0, lambda: residu_pkm())
-
-
-@component.add(
-    name="resid_pkm",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 2,
-        "end_historical_data": 2,
-        "resid_pkm_delayed": 1,
-        "phi_pkm": 1,
-        "res0_pkm": 1,
-    },
-)
-def resid_pkm():
-    return if_then_else(
-        time() < end_historical_data(),
-        lambda: 0,
-        lambda: if_then_else(
-            time() == end_historical_data(),
-            lambda: res0_pkm(),
-            lambda: phi_pkm() * resid_pkm_delayed(),
-        ),
-    )
-
-
-@component.add(
-    name="resid_pkm_delayed",
+    name="saving_ratios_vehicles_pkm",
     units="Dmnl",
-    comp_type="Stateful",
-    comp_subtype="DelayFixed",
-    depends_on={"_delayfixed_resid_pkm_delayed": 1},
-    other_deps={
-        "_delayfixed_resid_pkm_delayed": {"initial": {}, "step": {"resid_pkm": 1}}
-    },
-)
-def resid_pkm_delayed():
-    return _delayfixed_resid_pkm_delayed()
-
-
-_delayfixed_resid_pkm_delayed = DelayFixed(
-    lambda: resid_pkm(),
-    lambda: 1,
-    lambda: 0,
-    time_step,
-    "_delayfixed_resid_pkm_delayed",
-)
-
-
-@component.add(
-    name="residu_pkm",
-    units="Dmnl",
+    subscripts=["fuels", "Transport_Modes_pkm"],
     comp_type="Constant",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_residu_pkm"},
+    depends_on={"__external__": "_ext_constant_saving_ratios_vehicles_pkm"},
 )
-def residu_pkm():
-    return _ext_constant_residu_pkm()
+def saving_ratios_vehicles_pkm():
+    """
+    Saving ratio of alternative fuels respect to liquids
+    """
+    return _ext_constant_saving_ratios_vehicles_pkm()
 
 
-_ext_constant_residu_pkm = ExtConstant(
+_ext_constant_saving_ratios_vehicles_pkm = ExtConstant(
     r"../transport.xlsx",
-    "Europe",
-    "res0_pkm",
-    {},
-    _root,
-    {},
-    "_ext_constant_residu_pkm",
-)
-
-
-@component.add(
-    name="total_energy_pkm",
-    units="EJ/year",
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={"energy_pkm_fuel": 1},
-)
-def total_energy_pkm():
-    return sum(energy_pkm_fuel().rename({"fuels": "fuels!"}), dim=["fuels!"])
-
-
-@component.add(
-    name="variation_efficiency_pkm",
-    subscripts=["Transport_Modes", "fuels"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
-    depends_on={
-        "time": 1,
-        "end_historical_data": 1,
-        "improvement_efficiency_pkm": 1,
-        "efficiency_pkm": 1,
+    "Global",
+    "saving_ratios_vehicles_pkm*",
+    {
+        "fuels": _subscript_dict["fuels"],
+        "Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"],
     },
+    _root,
+    {
+        "fuels": _subscript_dict["fuels"],
+        "Transport_Modes_pkm": _subscript_dict["Transport_Modes_pkm"],
+    },
+    "_ext_constant_saving_ratios_vehicles_pkm",
 )
-def variation_efficiency_pkm():
-    return if_then_else(
-        time() < end_historical_data(),
-        lambda: xr.DataArray(
-            0,
-            {
-                "Transport_Modes": _subscript_dict["Transport_Modes"],
-                "fuels": _subscript_dict["fuels"],
-            },
-            ["Transport_Modes", "fuels"],
-        ),
-        lambda: improvement_efficiency_pkm() * efficiency_pkm(),
-    )
 
 
 @component.add(
-    name="vehicles_buses_pkm",
+    name="vehicles_commercial_pkm",
     units="vehicles",
     subscripts=["fuels"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "time": 2,
-        "end_historical_data": 1,
-        "historic_commercial_vehicles": 1,
-        "commercial_pkm_vehiclespkm": 1,
-        "predicted_pkm_by_mode_and_fuel": 1,
-    },
+    depends_on={"real_pkm_by_mode_and_fuel": 1, "commercial_pkm_vehiclespkm": 1},
 )
-def vehicles_buses_pkm():
-    """
-    Passenger buses in the system
-    """
-    return if_then_else(
-        time() <= end_historical_data(),
-        lambda: historic_commercial_vehicles(time()),
-        lambda: predicted_pkm_by_mode_and_fuel()
-        .loc[:, "Road_heavy"]
-        .reset_coords(drop=True)
-        * commercial_pkm_vehiclespkm(),
+def vehicles_commercial_pkm():
+    return (
+        real_pkm_by_mode_and_fuel().loc[:, "Inland"].reset_coords(drop=True)
+        * commercial_pkm_vehiclespkm()
     )
 
 
@@ -1417,20 +984,10 @@ def vehicles_buses_pkm():
     subscripts=["fuels"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={
-        "time": 2,
-        "end_historical_data": 1,
-        "historic_households_vehicles": 1,
-        "households_vehiclespkm": 1,
-        "predicted_pkm_by_mode_and_fuel": 1,
-    },
+    depends_on={"real_pkm_by_mode_and_fuel": 1, "households_vehiclespkm": 1},
 )
 def vehicles_households():
-    return if_then_else(
-        time() <= end_historical_data(),
-        lambda: historic_households_vehicles(time()),
-        lambda: predicted_pkm_by_mode_and_fuel()
-        .loc[:, "Road_light"]
-        .reset_coords(drop=True)
-        * households_vehiclespkm(),
+    return (
+        real_pkm_by_mode_and_fuel().loc[:, "Househ"].reset_coords(drop=True)
+        * households_vehiclespkm()
     )

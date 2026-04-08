@@ -12,13 +12,6 @@
         "amonia",
         "synthetic_liq"
     ],
-    "EV_bat": [
-        "NCM_111",
-        "LFP",
-        "NCM_622",
-        "NCM_811",
-        "NCA"
-    ],
     "E_to_synthetic": [
         "amonia",
         "synthetic_liq",
@@ -67,10 +60,13 @@
         "HFC245ca",
         "HFC4310mee"
     ],
-    "Land": [
-        "Road_heavy",
-        "Road_light",
-        "Rail"
+    "Households_vehicles": [
+        "liq_4wheels",
+        "elec_4wheels",
+        "hib_4wheels",
+        "gas_4wheels",
+        "liq_2wheels",
+        "elec_2wheels"
     ],
     "MATERIALS_FOR_MAINTENANCE": [
         "Aluminium",
@@ -161,8 +157,7 @@
         "hydro",
         "geot_elec",
         "solid_bioE_elec",
-        "oceanic",
-        "fuel_cell"
+        "oceanic"
     ],
     "RES_ELEC_VARIABLE": [
         "wind_onshore",
@@ -178,8 +173,7 @@
         "wind_onshore",
         "wind_offshore",
         "solar_PV",
-        "CSP",
-        "fuel_cell"
+        "CSP"
     ],
     "RES_heat": [
         "solar_heat",
@@ -290,23 +284,20 @@
         "Wood_and_cork_industry"
     ],
     "Transport_Modes": [
-        "Road_heavy",
-        "Road_light",
-        "Rail",
+        "Inland",
         "Maritime",
         "Air"
+    ],
+    "Transport_Modes_pkm": [
+        "Inland",
+        "Maritime",
+        "Air",
+        "Househ"
     ],
     "Transport_Modes_pkm_Commercial": [
-        "Rail",
-        "Road_heavy",
+        "Inland",
         "Maritime",
         "Air"
-    ],
-    "battery_modes": [
-        "cars",
-        "buses",
-        "light_trucks",
-        "heavy_trucks"
     ],
     "dac_final_sources": [
         "heat",
@@ -960,11 +951,6 @@
         "secb96",
         "secb97",
         "secb98"
-    ],
-    "sectors_transport": [
-        "Land_transport_pipeline_transport",
-        "Air_transport",
-        "Maritime_and_inland_water_transport"
     ],
     "vehicles_bat": [
         "electric_vehicles",

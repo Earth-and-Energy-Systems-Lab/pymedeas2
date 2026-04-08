@@ -128,7 +128,7 @@ def kg_per_mt():
 @component.add(
     name="materials_per_new_capacity_installed_EV_batteries",
     units="kg/MW",
-    subscripts=["EV_bat", "materials"],
+    subscripts=["materials"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
@@ -146,9 +146,9 @@ _ext_constant_materials_per_new_capacity_installed_ev_batteries = ExtConstant(
     r"../materials.xlsx",
     "Global",
     "materials_per_new_capacity_installed_ev_batteries*",
-    {"EV_bat": _subscript_dict["EV_bat"], "materials": _subscript_dict["materials"]},
+    {"materials": _subscript_dict["materials"]},
     _root,
-    {"EV_bat": _subscript_dict["EV_bat"], "materials": _subscript_dict["materials"]},
+    {"materials": _subscript_dict["materials"]},
     "_ext_constant_materials_per_new_capacity_installed_ev_batteries",
 )
 
@@ -159,37 +159,19 @@ _ext_constant_materials_per_new_capacity_installed_ev_batteries = ExtConstant(
     subscripts=["materials"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"materials_required_for_ev_batteries_mt_by_tech": 1},
-)
-def materials_required_for_ev_batteries_mt():
-    return sum(
-        materials_required_for_ev_batteries_mt_by_tech().rename({"EV_bat": "EV_bat!"}),
-        dim=["EV_bat!"],
-    )
-
-
-@component.add(
-    name="materials_required_for_EV_batteries_Mt_by_tech",
-    units="Mt/year",
-    subscripts=["EV_bat", "materials"],
-    comp_type="Auxiliary",
-    comp_subtype="Normal",
     depends_on={
-        "newreplaced_batteries_kwh": 1,
+        "newreplaced_batteries_tw": 1,
         "materials_per_new_capacity_installed_ev_batteries": 1,
         "mw_per_tw": 1,
         "kg_per_mt": 1,
     },
 )
-def materials_required_for_ev_batteries_mt_by_tech():
+def materials_required_for_ev_batteries_mt():
     """
     Annual materials required for the fabrication of EV batteries.
     """
     return (
-        sum(
-            newreplaced_batteries_kwh().rename({"battery_modes": "battery_modes!"}),
-            dim=["battery_modes!"],
-        )
+        newreplaced_batteries_tw()
         * materials_per_new_capacity_installed_ev_batteries()
         * mw_per_tw()
         / kg_per_mt()

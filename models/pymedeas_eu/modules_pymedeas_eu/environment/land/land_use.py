@@ -162,8 +162,8 @@ _integ_available_land = Integ(
         "hist_variation_primary_forest": 1,
         "historic_av_variation_primary_forests_area": 1,
         "start_year_p_variation_primary_forest": 1,
-        "p_variation_primary_forest": 1,
         "primary_forests_area": 2,
+        "p_variation_primary_forest": 1,
     },
 )
 def available_to_primary_forest_rate():
@@ -474,9 +474,9 @@ def forest_consumption_ej():
     depends_on={
         "available_forest_area": 1,
         "p_minimum_forest": 1,
-        "total_demand_forest_biomass_ej": 1,
-        "p_forest_overexplotation": 1,
         "max_sustainable_forest_extraction_ej": 1,
+        "p_forest_overexplotation": 1,
+        "total_demand_forest_biomass_ej": 1,
     },
 )
 def forest_extraction_ej():
@@ -1348,7 +1348,6 @@ def shortage_bioe_for_elec():
     value.loc[["wind_offshore"]] = 1
     value.loc[["solar_PV"]] = 1
     value.loc[["CSP"]] = 1
-    value.loc[["fuel_cell"]] = 1
     return value
 
 
@@ -1648,8 +1647,8 @@ _integ_urban_land = Integ(
     depends_on={
         "time": 4,
         "historic_urban_land_density": 4,
-        "target_year_p_urban_land_density": 2,
         "p_urban_land_density_mha": 2,
+        "target_year_p_urban_land_density": 2,
         "start_year_p_urban_land_density": 3,
     },
 )
@@ -1686,8 +1685,8 @@ def urban_land_density():
     depends_on={
         "time": 1,
         "hist_variation_urban_land": 1,
-        "urban_land_density": 1,
         "pop_variation": 1,
+        "urban_land_density": 1,
     },
 )
 def urban_land_rate():

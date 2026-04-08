@@ -132,8 +132,8 @@ def pe_elec_generation_from_res_ej():
     comp_subtype="Normal",
     depends_on={
         "pe_real_generation_res_elec": 1,
-        "real_generation_res_elec_twh": 1,
         "ej_per_twh": 1,
+        "real_generation_res_elec_twh": 1,
     },
 )
 def pe_losses_bioe_for_elec_ej():
@@ -153,9 +153,9 @@ def pe_losses_bioe_for_elec_ej():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "real_generation_res_elec_twh": 9,
-        "ej_per_twh": 9,
-        "res_to_fossil_accounting": 8,
+        "real_generation_res_elec_twh": 8,
+        "ej_per_twh": 8,
+        "res_to_fossil_accounting": 7,
         "efficiency_conversion_bioe_to_elec": 1,
     },
 )
@@ -202,11 +202,6 @@ def pe_real_generation_res_elec():
     )
     value.loc[["CSP"]] = (
         float(real_generation_res_elec_twh().loc["CSP"])
-        * ej_per_twh()
-        * res_to_fossil_accounting()
-    )
-    value.loc[["fuel_cell"]] = (
-        float(real_generation_res_elec_twh().loc["fuel_cell"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )

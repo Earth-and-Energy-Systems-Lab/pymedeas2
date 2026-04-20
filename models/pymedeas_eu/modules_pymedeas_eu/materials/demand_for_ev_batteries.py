@@ -126,8 +126,15 @@ def kg_per_mt():
 
 
 @component.add(
+    name="kWh_per_MWh", units="kWh/MWh", comp_type="Constant", comp_subtype="Normal"
+)
+def kwh_per_mwh():
+    return 1000000.0
+
+
+@component.add(
     name="materials_per_new_capacity_installed_EV_batteries",
-    units="kg/MW",
+    units="kg/kWh",
     subscripts=["EV_bat", "materials"],
     comp_type="Constant",
     comp_subtype="External",
@@ -177,7 +184,6 @@ def materials_required_for_ev_batteries_mt():
     depends_on={
         "newreplaced_batteries_kwh": 1,
         "materials_per_new_capacity_installed_ev_batteries": 1,
-        "mw_per_tw": 1,
         "kg_per_mt": 1,
     },
 )
@@ -191,7 +197,6 @@ def materials_required_for_ev_batteries_mt_by_tech():
             dim=["battery_modes!"],
         )
         * materials_per_new_capacity_installed_ev_batteries()
-        * mw_per_tw()
         / kg_per_mt()
     )
 

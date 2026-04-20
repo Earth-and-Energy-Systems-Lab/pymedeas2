@@ -7,7 +7,7 @@ Translated using PySD version 3.14.3
     name="Energy_distr_losses_FF",
     units="EJ/year",
     subscripts=["final_sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "pes_fossil_fuel_extraction_delayed": 3,
@@ -386,7 +386,7 @@ def total_distribution_losses():
     name="Transformation_FF_losses",
     units="EJ/year",
     subscripts=["final_sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "pes_fossil_fuel_extraction_delayed": 3,

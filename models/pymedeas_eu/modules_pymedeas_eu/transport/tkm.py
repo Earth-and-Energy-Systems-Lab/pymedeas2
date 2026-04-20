@@ -52,7 +52,10 @@ def desired_tkm_by_mode_and_fuel():
     depends_on={"_integ_efficiency_tkm": 1},
     other_deps={
         "_integ_efficiency_tkm": {
-            "initial": {"initial_efficiency_per_tkm": 1},
+            "initial": {
+                "initial_efficiency_per_tkm": 1,
+                "sensibility_tkm_efficiency": 1,
+            },
             "step": {"variation_efficiency_tkm": 1},
         }
     },
@@ -63,7 +66,7 @@ def efficiency_tkm():
 
 _integ_efficiency_tkm = Integ(
     lambda: variation_efficiency_tkm(),
-    lambda: initial_efficiency_per_tkm(),
+    lambda: initial_efficiency_per_tkm() * sensibility_tkm_efficiency(),
     "_integ_efficiency_tkm",
 )
 
@@ -94,9 +97,9 @@ _ext_constant_end_historical_data = ExtConstant(
     name="energy_by_fuel_mode_tkm",
     units="EJ/year",
     subscripts=["final_sources", "Transport_Modes"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
-    depends_on={"energy_tkm": 5, "time": 2, "historic_share_electricity_hybrid": 2},
+    depends_on={"energy_tkm": 5, "historic_share_electricity_hybrid": 2, "time": 2},
 )
 def energy_by_fuel_mode_tkm():
     """
@@ -193,7 +196,7 @@ _delayfixed_energy_intensity_commercial_transport_delayed = DelayFixed(
     name="Energy_intensity_commercial_transport_variation",
     units="EJ/(T$*year)",
     subscripts=["final_sources", "sectors"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={
         "energy_intensity_by_transport_sector": 1,
@@ -464,8 +467,8 @@ _integ_gdp0_tkm = Integ(lambda: aux_gpd0_tkm(), lambda: 0, "_integ_gdp0_tkm")
     depends_on={
         "time": 1,
         "historic_heavy_truck_vehicles": 1,
-        "initial_tkm": 1,
         "initial_share_road_heavy_tkm": 1,
+        "initial_tkm": 1,
     },
 )
 def heavy_trucks_per_tkm():
@@ -772,6 +775,28 @@ _ext_constant_initial_fuel_share_maritime_tkm = ExtConstant(
 
 
 @component.add(
+    name="initial_share_rail_tkm",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_initial_share_rail_tkm"},
+)
+def initial_share_rail_tkm():
+    return _ext_constant_initial_share_rail_tkm()
+
+
+_ext_constant_initial_share_rail_tkm = ExtConstant(
+    r"../transport.xlsx",
+    "Europe",
+    "initial_share_rail_tkm",
+    {},
+    _root,
+    {},
+    "_ext_constant_initial_share_rail_tkm",
+)
+
+
+@component.add(
     name="initial_share_road_heavy_tkm",
     comp_type="Constant",
     comp_subtype="External",
@@ -793,28 +818,29 @@ _ext_constant_initial_share_road_heavy_tkm = ExtConstant(
 
 
 @component.add(
-    name="initial_share_road_tkm",
+    name="initial_share_road_light_tkm",
     comp_type="Constant",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_initial_share_road_tkm"},
+    depends_on={"__external__": "_ext_constant_initial_share_road_light_tkm"},
 )
-def initial_share_road_tkm():
-    return _ext_constant_initial_share_road_tkm()
+def initial_share_road_light_tkm():
+    return _ext_constant_initial_share_road_light_tkm()
 
 
-_ext_constant_initial_share_road_tkm = ExtConstant(
+_ext_constant_initial_share_road_light_tkm = ExtConstant(
     r"../transport.xlsx",
     "Europe",
-    "initial_share_road_tkm",
+    "initial_share_road_light_tkm",
     {},
     _root,
     {},
-    "_ext_constant_initial_share_road_tkm",
+    "_ext_constant_initial_share_road_light_tkm",
 )
 
 
 @component.add(
     name="initial_tkm",
+    units="tonnes*km/year",
     comp_type="Constant",
     comp_subtype="External",
     depends_on={"__external__": "_ext_constant_initial_tkm"},
@@ -841,14 +867,14 @@ _ext_constant_initial_tkm = ExtConstant(
     depends_on={
         "time": 1,
         "historic_truck_vehicles": 1,
-        "initial_share_road_tkm": 1,
         "initial_tkm": 1,
+        "initial_share_road_light_tkm": 1,
     },
 )
 def light_trucks_per_tkm():
     return sum(
         historic_truck_vehicles(time()).rename({"fuels": "fuels!"}), dim=["fuels!"]
-    ) / (initial_tkm() * initial_share_road_tkm() * 1000000000.0)
+    ) / (initial_tkm() * initial_share_road_light_tkm() * 1000000000.0)
 
 
 @component.add(
@@ -935,10 +961,41 @@ def predicted_tkm():
     subscripts=["fuels", "Transport_Modes"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"tkm_fuel_share": 1, "predicted_tkm": 1},
+    depends_on={
+        "time": 2,
+        "end_historical_data": 1,
+        "hist_tkm": 1,
+        "predicted_tkm": 1,
+        "tkm_fuel_share": 1,
+    },
 )
 def predicted_tkm_by_mode_and_fuel():
-    return tkm_fuel_share() * predicted_tkm() * 1000000000.0
+    return (
+        if_then_else(
+            time() <= end_historical_data(),
+            lambda: hist_tkm(time()),
+            lambda: predicted_tkm(),
+        )
+        * tkm_fuel_share()
+        * 1000000000.0
+    )
+
+
+@component.add(
+    name="rails_per_tkm",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "historic_rail_tkm_vehicles": 1,
+        "initial_tkm": 1,
+        "initial_share_rail_tkm": 1,
+    },
+)
+def rails_per_tkm():
+    return sum(
+        historic_rail_tkm_vehicles(time()).rename({"fuels": "fuels!"}), dim=["fuels!"]
+    ) / (initial_tkm() * initial_share_rail_tkm() * 1000000000.0)
 
 
 @component.add(
@@ -1055,9 +1112,9 @@ def required_fed_transport_sectors():
     depends_on={
         "time": 2,
         "end_historical_data": 2,
-        "resid_delayed": 1,
-        "resid_initial": 1,
         "phi_tkm": 1,
+        "resid_initial": 1,
+        "resid_delayed": 1,
     },
 )
 def resid():
@@ -1077,20 +1134,14 @@ def resid():
     comp_type="Stateful",
     comp_subtype="DelayFixed",
     depends_on={"_delayfixed_resid_delayed": 1},
-    other_deps={
-        "_delayfixed_resid_delayed": {"initial": {"tau_tkm": 1}, "step": {"resid": 1}}
-    },
+    other_deps={"_delayfixed_resid_delayed": {"initial": {}, "step": {"resid": 1}}},
 )
 def resid_delayed():
     return _delayfixed_resid_delayed()
 
 
 _delayfixed_resid_delayed = DelayFixed(
-    lambda: resid(),
-    lambda: tau_tkm(),
-    lambda: 0,
-    time_step,
-    "_delayfixed_resid_delayed",
+    lambda: resid(), lambda: 1, lambda: 0, time_step, "_delayfixed_resid_delayed"
 )
 
 
@@ -1123,6 +1174,16 @@ _ext_constant_residu_tkm = ExtConstant(
     {},
     "_ext_constant_residu_tkm",
 )
+
+
+@component.add(
+    name="sensibility_tkm_efficiency",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def sensibility_tkm_efficiency():
+    return 1
 
 
 @component.add(
@@ -1269,8 +1330,8 @@ def tkm_fuel_share():
         "time": 4,
         "end_historical_data": 3,
         "initial_fuel_share_air_tkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_air": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def tkm_fuel_share_air():
@@ -1303,8 +1364,8 @@ def tkm_fuel_share_air():
         "time": 4,
         "end_historical_data": 3,
         "initial_fuel_share_maritime_tkm": 3,
-        "fuel_share_maritime": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_maritime": 2,
     },
 )
 def tkm_fuel_share_maritime():
@@ -1336,8 +1397,8 @@ def tkm_fuel_share_maritime():
         "time": 5,
         "end_historical_data": 5,
         "historic_fuel_share_rail": 3,
-        "fuel_share_rail": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_rail": 2,
     },
 )
 def tkm_fuel_share_rail():
@@ -1437,8 +1498,8 @@ def tkm_fuel_share_road_light():
         "time": 5,
         "end_historical_data": 5,
         "hist_transport_share_tkm": 3,
-        "mode_share_tkm": 2,
         "start_year_policies_transport": 3,
+        "mode_share_tkm": 2,
     },
 )
 def tkm_mode_share():
@@ -1520,7 +1581,7 @@ def total_energy_transport_by_fuel():
     name="total_energy_transport_final_source",
     units="EJ/year",
     subscripts=["final_sources"],
-    comp_type="Constant, Auxiliary",
+    comp_type="Auxiliary, Constant",
     comp_subtype="Normal",
     depends_on={"total_energy_transport_by_fuel": 3},
 )
@@ -1568,12 +1629,22 @@ def variation_efficiency_tkm():
     subscripts=["fuels"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"predicted_tkm_by_mode_and_fuel": 1, "heavy_trucks_per_tkm": 1},
+    depends_on={
+        "time": 2,
+        "end_historical_data": 1,
+        "historic_heavy_truck_vehicles": 1,
+        "heavy_trucks_per_tkm": 1,
+        "predicted_tkm_by_mode_and_fuel": 1,
+    },
 )
 def vehicles_heavy_trucks():
-    return (
-        predicted_tkm_by_mode_and_fuel().loc[:, "Road_heavy"].reset_coords(drop=True)
-        * heavy_trucks_per_tkm()
+    return if_then_else(
+        time() <= end_historical_data(),
+        lambda: historic_heavy_truck_vehicles(time()),
+        lambda: predicted_tkm_by_mode_and_fuel()
+        .loc[:, "Road_heavy"]
+        .reset_coords(drop=True)
+        * heavy_trucks_per_tkm(),
     )
 
 
@@ -1582,10 +1653,42 @@ def vehicles_heavy_trucks():
     subscripts=["fuels"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"predicted_tkm_by_mode_and_fuel": 1, "light_trucks_per_tkm": 1},
+    depends_on={
+        "time": 2,
+        "end_historical_data": 1,
+        "historic_truck_vehicles": 1,
+        "predicted_tkm_by_mode_and_fuel": 1,
+        "light_trucks_per_tkm": 1,
+    },
 )
 def vehicles_light_trucks():
-    return (
-        predicted_tkm_by_mode_and_fuel().loc[:, "Road_light"].reset_coords(drop=True)
-        * light_trucks_per_tkm()
+    return if_then_else(
+        time() <= end_historical_data(),
+        lambda: historic_truck_vehicles(time()),
+        lambda: predicted_tkm_by_mode_and_fuel()
+        .loc[:, "Road_light"]
+        .reset_coords(drop=True)
+        * light_trucks_per_tkm(),
+    )
+
+
+@component.add(
+    name="vehicles_rail_tkm",
+    subscripts=["fuels"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 2,
+        "end_historical_data": 1,
+        "historic_rail_tkm_vehicles": 1,
+        "rails_per_tkm": 1,
+        "predicted_tkm_by_mode_and_fuel": 1,
+    },
+)
+def vehicles_rail_tkm():
+    return if_then_else(
+        time() <= end_historical_data(),
+        lambda: historic_rail_tkm_vehicles(time()),
+        lambda: predicted_tkm_by_mode_and_fuel().loc[:, "Rail"].reset_coords(drop=True)
+        * rails_per_tkm(),
     )

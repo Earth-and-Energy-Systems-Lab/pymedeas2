@@ -180,8 +180,8 @@ def fed_solid_bioe_for_heatnc():
     depends_on={
         "hist_share_feh_over_fed_oil": 1,
         "hist_share_feh_over_fed_nat_gas": 1,
-        "hist_share_feh_over_fed_solid_bioe": 1,
         "hist_share_feh_over_fed_coal": 1,
+        "hist_share_feh_over_fed_solid_bioe": 1,
     },
 )
 def hist_share_feh_over_fed_by_final_fuel():

@@ -467,8 +467,8 @@ def exponent_availability_conv_gas():
     depends_on={
         "rurr_conv_gas": 1,
         "max_extraction_conv_gas_ej": 1,
-        "time": 1,
         "ped_domestic_eu_conv_ff": 2,
+        "time": 1,
     },
 )
 def extraction_conv_gas_ej():
@@ -539,10 +539,10 @@ _delayfixed_extraction_fossil_gas_agg_ej_delayed = DelayFixed(
     depends_on={
         "time": 1,
         "ped_domestic_ff": 3,
-        "nvs_1_year": 1,
-        "remaining_extractable_fossil_gas_with_left_underground": 1,
         "activate_force_leaving_underground": 1,
+        "remaining_extractable_fossil_gas_with_left_underground": 1,
         "max_extraction_tot_agg_gas": 2,
+        "nvs_1_year": 1,
     },
 )
 def extraction_tot_agg_gas_ej():
@@ -610,9 +610,9 @@ _delayfixed_extraction_unconv_gas_delayed = DelayFixed(
         "rurr_unconv_gas": 1,
         "max_extraction_unconv_gas": 1,
         "historic_unconv_gas": 1,
-        "max_unconv_gas_growth_extraction_ej": 1,
         "separate_conv_and_unconv_gas": 1,
         "time": 1,
+        "max_unconv_gas_growth_extraction_ej": 1,
     },
 )
 def extraction_unconv_gas_ej():
@@ -658,8 +658,8 @@ def extraction_unconv_gas_tot_agg():
     depends_on={
         "time": 2,
         "start_policy_leave_in_ground_conv_gas": 2,
-        "conv_gas_to_leave_underground": 1,
         "nvs_1_year": 1,
+        "conv_gas_to_leave_underground": 1,
     },
 )
 def flow_conv_gas_left_in_ground():
@@ -685,8 +685,8 @@ def flow_conv_gas_left_in_ground():
     depends_on={
         "time": 2,
         "start_policy_leave_in_ground_unconv_gas": 2,
-        "unconv_gas_to_leave_underground": 1,
         "nvs_1_year": 1,
+        "unconv_gas_to_leave_underground": 1,
     },
 )
 def flow_unconv_gas_left_in_ground():
@@ -811,8 +811,8 @@ def max_extraction_conv_gas_ej():
         "activate_force_leaving_underground": 1,
         "max_extraction_total_agg_gas_technical_ej": 3,
         "start_year_policy_leave_in_ground_fossil_gas": 1,
-        "time": 1,
         "max_extraction_total_agg_gas_policy": 1,
+        "time": 1,
     },
 )
 def max_extraction_tot_agg_gas():
@@ -1174,8 +1174,8 @@ def remaining_extractable_fossil_gas_with_left_underground():
         "_integ_rurr_conv_gas": {
             "initial": {
                 "urr_conv_gas": 1,
-                "separate_conv_and_unconv_gas": 1,
                 "cumulated_conv_gas_extraction_to_1995": 1,
+                "separate_conv_and_unconv_gas": 1,
             },
             "step": {"extraction_conv_gas_ej": 1, "flow_conv_gas_left_in_ground": 1},
         }
@@ -1238,8 +1238,8 @@ _sampleiftrue_rurr_conv_gas_until_start_year_plg = SampleIfTrue(
         "_integ_rurr_tot_agg_gas": {
             "initial": {
                 "separate_conv_and_unconv_gas": 1,
-                "urr_tot_agg_gas": 1,
                 "cumulated_tot_agg_gas_extraction_to_1995": 1,
+                "urr_tot_agg_gas": 1,
             },
             "step": {"extraction_tot_agg_gas_ej": 1},
         }
@@ -1603,8 +1603,8 @@ _ext_constant_share_rurr_unconv_gas_to_leave_underground = ExtConstant(
     depends_on={
         "time": 1,
         "evolution_share_unconv_gas_vs_tot_agg": 1,
-        "ped_nat_gas_ej": 1,
         "historic_unconv_gas": 1,
+        "ped_nat_gas_ej": 1,
     },
 )
 def share_unconv_gas_vs_tot_agg():
@@ -1910,8 +1910,8 @@ _integ_total_unconv_gas_left_in_ground = Integ(
     depends_on={
         "time": 1,
         "start_policy_leave_in_ground_unconv_gas": 1,
-        "rurr_unconv_gas_until_start_year_plg": 1,
         "share_rurr_unconv_gas_to_leave_underground": 1,
+        "rurr_unconv_gas_until_start_year_plg": 1,
     },
 )
 def unconv_gas_to_leave_underground():

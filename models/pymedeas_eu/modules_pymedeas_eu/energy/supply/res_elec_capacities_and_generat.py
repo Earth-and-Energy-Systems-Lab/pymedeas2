@@ -51,10 +51,10 @@ def cp_baseload_reduction():
     comp_subtype="Normal",
     depends_on={
         "min_cp_baseload_res": 1,
-        "goal_cp_res_elec": 1,
         "shortage_bioe_for_elec": 1,
         "time": 2,
         "cpini_res_elec": 3,
+        "goal_cp_res_elec": 1,
     },
 )
 def cp_res_elec():
@@ -250,7 +250,11 @@ _ext_constant_initial_instal_cap_res_elec = ExtConstant(
     subscripts=["RES_elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"installed_capacity_res_elec_policies": 2, "max_res_elec_twe": 2},
+    depends_on={
+        "installed_capacity_res_elec_policies": 2,
+        "max_res_elec_twe": 2,
+        "renewable_sensitivity_factor": 1,
+    },
 )
 def installed_capacity_res_elec():
     """
@@ -259,7 +263,7 @@ def installed_capacity_res_elec():
     return if_then_else(
         installed_capacity_res_elec_policies() >= max_res_elec_twe(),
         lambda: max_res_elec_twe(),
-        lambda: installed_capacity_res_elec_policies(),
+        lambda: installed_capacity_res_elec_policies() * renewable_sensitivity_factor(),
     )
 
 
@@ -300,8 +304,8 @@ _delayfixed_installed_capacity_res_elec_delayed = DelayFixed(
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
-        "start_year_p_growth_res_elec": 3,
         "p_power": 2,
+        "start_year_p_growth_res_elec": 3,
     },
 )
 def installed_capacity_res_elec_policies():
@@ -387,8 +391,8 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "installed_capacity_res_elec": 1,
         "res_installed_capacity_ts_delayed": 1,
+        "installed_capacity_res_elec": 1,
         "time_step": 1,
     },
 )
@@ -495,9 +499,9 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "installed_capacity_res_elec": 2,
-        "real_generation_res_elec_twh": 1,
         "twe_per_twh": 1,
+        "real_generation_res_elec_twh": 1,
+        "installed_capacity_res_elec": 2,
     },
 )
 def real_cp_res_elec():
@@ -562,6 +566,13 @@ def remaining_potential_res_elec_after_intermitt():
             0, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
         ),
     )
+
+
+@component.add(
+    name="renewable_sensitivity_factor", comp_type="Constant", comp_subtype="Normal"
+)
+def renewable_sensitivity_factor():
+    return 1
 
 
 @component.add(
@@ -816,8 +827,8 @@ def total_time_planconstr_res_elec():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "constructed_capacity_res_elec_tw": 1,
         "lifetime_res_elec": 1,
+        "constructed_capacity_res_elec_tw": 1,
     },
 )
 def wear_res_elec():

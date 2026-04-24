@@ -74,8 +74,8 @@ def installed_capacity_phs():
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_phs": 3,
-        "p_phs_power": 2,
         "start_year_p_growth_res_elec": 3,
+        "p_phs_power": 2,
     },
 )
 def installed_capacity_phs_policies():

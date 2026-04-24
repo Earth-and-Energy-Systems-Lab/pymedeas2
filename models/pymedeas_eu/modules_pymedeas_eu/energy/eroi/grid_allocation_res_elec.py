@@ -162,8 +162,8 @@ def remaining_potential_res_elec_switch():
     depends_on={
         "static_eroi_res_elec": 2,
         "curtailment_res": 2,
-        "esoi_elec_storage": 1,
         "rt_elec_storage_efficiency": 2,
+        "esoi_elec_storage": 1,
     },
 )
 def static_eroigrid_res_elec():

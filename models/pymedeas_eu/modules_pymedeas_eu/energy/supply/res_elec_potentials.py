@@ -236,8 +236,8 @@ def max_potential_res_elec_twh():
     comp_subtype="Normal",
     depends_on={
         "max_potential_res_elec_twh": 1,
-        "max_potential_phs_twe": 1,
         "twe_per_twh": 1,
+        "max_potential_phs_twe": 1,
         "ej_per_twh": 1,
         "max_pe_potential_biogas_for_elec": 1,
     },
@@ -264,8 +264,8 @@ def max_potential_tot_res_elec_twh():
     comp_subtype="External, Normal",
     depends_on={
         "__external__": "_ext_constant_max_res_elec_twe",
-        "efficiency_conversion_geot_pe_to_elec": 1,
         "max_pe_geotelec_twth": 1,
+        "efficiency_conversion_geot_pe_to_elec": 1,
         "max_bioe_twe": 1,
         "max_solar_pv_on_land_twe": 1,
         "max_solar_pv_urban": 1,
@@ -559,8 +559,8 @@ def remaining_potential_res_elec():
     depends_on={
         "max_solar_pv_urban": 2,
         "twe_per_twh": 2,
-        "potential_generation_res_elec_twh": 1,
         "desired_share_installed_pv_urban_vs_tot_pv": 1,
+        "potential_generation_res_elec_twh": 1,
     },
 )
 def remaining_potential_solar_pv_urban():

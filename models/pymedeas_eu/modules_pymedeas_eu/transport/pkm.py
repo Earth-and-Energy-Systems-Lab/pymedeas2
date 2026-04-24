@@ -40,12 +40,18 @@ _ext_constant_beta_pkm = ExtConstant(
         "historic_commercial_vehicles": 1,
         "initial_pkm": 1,
         "initial_share_pkm_buses": 1,
+        "sensitivity_vehicles_efficiency": 1,
     },
 )
 def commercial_pkm_vehiclespkm():
-    return sum(
-        historic_commercial_vehicles(2023).rename({"fuels": "fuels!"}), dim=["fuels!"]
-    ) / (1000000000.0 * initial_pkm() * initial_share_pkm_buses())
+    return (
+        sum(
+            historic_commercial_vehicles(2023).rename({"fuels": "fuels!"}),
+            dim=["fuels!"],
+        )
+        / (1000000000.0 * initial_pkm() * initial_share_pkm_buses())
+        * sensitivity_vehicles_efficiency()
+    )
 
 
 @component.add(
@@ -54,13 +60,13 @@ def commercial_pkm_vehiclespkm():
     subscripts=["fuels", "Transport_Modes"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pkm": 1, "pkm_fuel_share": 1},
+    depends_on={"pkm": 1, "pkm_fuel_share": 1, "sensitivity_pkm_and_tkm": 1},
 )
 def desired_pkm_by_mode_and_fuel():
     """
     Number of pkms by mode and fuel
     """
-    return pkm() * pkm_fuel_share()
+    return pkm() * pkm_fuel_share() * sensitivity_pkm_and_tkm()
 
 
 @component.add(
@@ -73,7 +79,7 @@ def desired_pkm_by_mode_and_fuel():
         "_integ_efficiency_pkm": {
             "initial": {
                 "initial_efficiency_per_pkm": 1,
-                "sensibility_pkm_efficiency": 1,
+                "sensitivity_pkm_efficiency": 1,
             },
             "step": {"variation_efficiency_pkm": 1},
         }
@@ -85,7 +91,7 @@ def efficiency_pkm():
 
 _integ_efficiency_pkm = Integ(
     lambda: variation_efficiency_pkm(),
-    lambda: initial_efficiency_per_pkm() * sensibility_pkm_efficiency(),
+    lambda: initial_efficiency_per_pkm() * sensitivity_pkm_efficiency(),
     "_integ_efficiency_pkm",
 )
 
@@ -94,7 +100,7 @@ _integ_efficiency_pkm = Integ(
     name="EI_households_transport",
     units="EJ/T$",
     subscripts=["final_sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "energy_pkm": 4,
@@ -141,7 +147,7 @@ def end_historical_pkm():
     name="energy_by_fuel_mode_pkm",
     units="EJ/year",
     subscripts=["final_sources", "Transport_Modes"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_pkm": 5, "historic_share_electricity_hybrid": 2, "time": 2},
 )
@@ -672,15 +678,21 @@ _ext_lookup_historic_share_electricity_hybrid = ExtLookup(
         "historic_households_vehicles": 1,
         "initial_pkm": 1,
         "initial_share_households_pkm": 1,
+        "sensitivity_vehicles_efficiency": 1,
     },
 )
 def households_vehiclespkm():
     """
     Number of vehicles/pkm
     """
-    return sum(
-        historic_households_vehicles(2023).rename({"fuels": "fuels!"}), dim=["fuels!"]
-    ) / (initial_pkm() * initial_share_households_pkm() * 1000000000.0)
+    return (
+        sum(
+            historic_households_vehicles(2023).rename({"fuels": "fuels!"}),
+            dim=["fuels!"],
+        )
+        / (initial_pkm() * initial_share_households_pkm() * 1000000000.0)
+        * sensitivity_vehicles_efficiency()
+    )
 
 
 @component.add(
@@ -1007,8 +1019,8 @@ def pkm_fuel_share():
         "end_historical_pkm": 4,
         "fuel_share_1995": 2,
         "initial_fuel_share_air_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_air_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_air():
@@ -1046,8 +1058,8 @@ def pkm_fuel_share_air():
         "time": 5,
         "end_historical_data": 5,
         "historic_fuel_share_households_pkm": 3,
-        "fuel_share_households_pkm": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_households_pkm": 2,
     },
 )
 def pkm_fuel_share_households():
@@ -1080,8 +1092,8 @@ def pkm_fuel_share_households():
         "time": 5,
         "end_historical_pkm": 5,
         "historic_fuel_share_maritime_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_maritime_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_maritime():
@@ -1147,8 +1159,8 @@ def pkm_fuel_share_rail():
         "time": 5,
         "end_historical_pkm": 5,
         "historic_fuel_share_road_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_road_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_road():
@@ -1181,8 +1193,8 @@ def pkm_fuel_share_road():
         "time": 5,
         "end_historical_pkm": 5,
         "hist_transport_share_pkm": 3,
-        "start_year_policies_transport": 3,
         "mode_share_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_mode_share():
@@ -1273,12 +1285,18 @@ def predicted_pkm_by_mode_and_fuel():
         "historic_rail_pkm_vehicles": 1,
         "initial_pkm": 1,
         "initial_share_pkm_rail": 1,
+        "sensitivity_vehicles_efficiency": 1,
     },
 )
 def rail_vehiclepkm():
-    return sum(
-        historic_rail_pkm_vehicles(time()).rename({"fuels": "fuels!"}), dim=["fuels!"]
-    ) / (1000000000.0 * initial_pkm() * initial_share_pkm_rail())
+    return (
+        sum(
+            historic_rail_pkm_vehicles(time()).rename({"fuels": "fuels!"}),
+            dim=["fuels!"],
+        )
+        / (1000000000.0 * initial_pkm() * initial_share_pkm_rail())
+        * sensitivity_vehicles_efficiency()
+    )
 
 
 @component.add(
@@ -1325,9 +1343,9 @@ def res0_pkm():
     depends_on={
         "time": 2,
         "end_historical_data": 2,
+        "phi_pkm": 1,
         "resid_pkm_delayed": 1,
         "res0_pkm": 1,
-        "phi_pkm": 1,
     },
 )
 def resid_pkm():
@@ -1388,12 +1406,19 @@ _ext_constant_residu_pkm = ExtConstant(
 
 
 @component.add(
-    name="sensibility_pkm_efficiency",
+    name="sensitivity_pkm_and_tkm", comp_type="Constant", comp_subtype="Normal"
+)
+def sensitivity_pkm_and_tkm():
+    return 1
+
+
+@component.add(
+    name="sensitivity_pkm_efficiency",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
 )
-def sensibility_pkm_efficiency():
+def sensitivity_pkm_efficiency():
     """
     Variable used for the sensitivity analysis
     """
@@ -1476,8 +1501,8 @@ def vehicles_buses_pkm():
         "time": 2,
         "end_historical_data": 1,
         "historic_households_vehicles": 1,
-        "households_vehiclespkm": 1,
         "predicted_pkm_by_mode_and_fuel": 1,
+        "households_vehiclespkm": 1,
     },
 )
 def vehicles_households():

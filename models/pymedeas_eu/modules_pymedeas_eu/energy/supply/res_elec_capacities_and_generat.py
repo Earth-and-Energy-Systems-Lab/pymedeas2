@@ -51,10 +51,10 @@ def cp_baseload_reduction():
     comp_subtype="Normal",
     depends_on={
         "min_cp_baseload_res": 1,
-        "cpini_res_elec": 3,
         "goal_cp_res_elec": 1,
-        "shortage_bioe_for_elec": 1,
+        "cpini_res_elec": 3,
         "time": 2,
+        "shortage_bioe_for_elec": 1,
     },
 )
 def cp_res_elec():
@@ -300,6 +300,7 @@ _delayfixed_installed_capacity_res_elec_delayed = DelayFixed(
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
+        "sensitivity_res_elec": 2,
         "start_year_p_growth_res_elec": 3,
         "p_power": 2,
     },
@@ -316,13 +317,13 @@ def installed_capacity_res_elec_policies():
             lambda: table_hist_capacity_res_elec(end_hist_data())
             + (
                 (
-                    p_power(start_year_p_growth_res_elec())
+                    p_power(start_year_p_growth_res_elec()) * sensitivity_res_elec()
                     - table_hist_capacity_res_elec(end_hist_data())
                 )
                 / (start_year_p_growth_res_elec() - end_hist_data())
             )
             * (time() - end_hist_data()),
-            lambda: p_power(time()),
+            lambda: p_power(time()) * sensitivity_res_elec(),
         ),
     )
 
@@ -387,8 +388,8 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "res_installed_capacity_ts_delayed": 1,
         "installed_capacity_res_elec": 1,
+        "res_installed_capacity_ts_delayed": 1,
         "time_step": 1,
     },
 )
@@ -495,9 +496,9 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "real_generation_res_elec_twh": 1,
         "installed_capacity_res_elec": 2,
         "twe_per_twh": 1,
+        "real_generation_res_elec_twh": 1,
     },
 )
 def real_cp_res_elec():
@@ -572,8 +573,8 @@ def remaining_potential_res_elec_after_intermitt():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "wear_res_elec": 1,
         "res_elec_tot_overcapacity": 1,
+        "wear_res_elec": 1,
         "shortage_bioe_for_elec": 1,
     },
 )
@@ -684,6 +685,16 @@ _delayfixed_res_installed_capacity_ts_delayed = DelayFixed(
     time_step,
     "_delayfixed_res_installed_capacity_ts_delayed",
 )
+
+
+@component.add(
+    name="sensitivity_res_elec",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def sensitivity_res_elec():
+    return 1
 
 
 @component.add(
@@ -816,8 +827,8 @@ def total_time_planconstr_res_elec():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "lifetime_res_elec": 1,
         "constructed_capacity_res_elec_tw": 1,
+        "lifetime_res_elec": 1,
     },
 )
 def wear_res_elec():

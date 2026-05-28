@@ -54,7 +54,7 @@ def desired_tkm_by_mode_and_fuel():
         "_integ_efficiency_tkm": {
             "initial": {
                 "initial_efficiency_per_tkm": 1,
-                "sensibility_tkm_efficiency": 1,
+                "sensitivity_tkm_efficiency": 1,
             },
             "step": {"variation_efficiency_tkm": 1},
         }
@@ -66,7 +66,7 @@ def efficiency_tkm():
 
 _integ_efficiency_tkm = Integ(
     lambda: variation_efficiency_tkm(),
-    lambda: initial_efficiency_per_tkm() * sensibility_tkm_efficiency(),
+    lambda: initial_efficiency_per_tkm() * sensitivity_tkm_efficiency(),
     "_integ_efficiency_tkm",
 )
 
@@ -467,15 +467,20 @@ _integ_gdp0_tkm = Integ(lambda: aux_gpd0_tkm(), lambda: 0, "_integ_gdp0_tkm")
     depends_on={
         "time": 1,
         "historic_heavy_truck_vehicles": 1,
-        "initial_share_road_heavy_tkm": 1,
         "initial_tkm": 1,
+        "initial_share_road_heavy_tkm": 1,
+        "sensitivity_vehicles_efficiency": 1,
     },
 )
 def heavy_trucks_per_tkm():
-    return sum(
-        historic_heavy_truck_vehicles(time()).rename({"fuels": "fuels!"}),
-        dim=["fuels!"],
-    ) / (initial_tkm() * initial_share_road_heavy_tkm() * 1000000000.0)
+    return (
+        sum(
+            historic_heavy_truck_vehicles(time()).rename({"fuels": "fuels!"}),
+            dim=["fuels!"],
+        )
+        / (initial_tkm() * initial_share_road_heavy_tkm() * 1000000000.0)
+        * sensitivity_vehicles_efficiency()
+    )
 
 
 @component.add(
@@ -867,14 +872,17 @@ _ext_constant_initial_tkm = ExtConstant(
     depends_on={
         "time": 1,
         "historic_truck_vehicles": 1,
-        "initial_share_road_light_tkm": 1,
         "initial_tkm": 1,
+        "initial_share_road_light_tkm": 1,
+        "sensitivity_vehicles_efficiency": 1,
     },
 )
 def light_trucks_per_tkm():
-    return sum(
-        historic_truck_vehicles(time()).rename({"fuels": "fuels!"}), dim=["fuels!"]
-    ) / (initial_tkm() * initial_share_road_light_tkm() * 1000000000.0)
+    return (
+        sum(historic_truck_vehicles(time()).rename({"fuels": "fuels!"}), dim=["fuels!"])
+        / (initial_tkm() * initial_share_road_light_tkm() * 1000000000.0)
+        * sensitivity_vehicles_efficiency()
+    )
 
 
 @component.add(
@@ -907,7 +915,8 @@ def mode_share_tkm():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "tkm_mode_share": 5,
+        "time": 5,
+        "mode_share_tkm_policy": 5,
         "sensitivity_rail_mode_share": 5,
         "proportion_mode_share_tkm": 4,
     },
@@ -924,7 +933,8 @@ def mode_share_tkm_aux():
             float(
                 np.minimum(
                     1,
-                    float(tkm_mode_share().loc["Rail"]) + sensitivity_rail_mode_share(),
+                    float(mode_share_tkm_policy(time()).loc["Rail"])
+                    + sensitivity_rail_mode_share(),
                 )
             ),
         )
@@ -935,7 +945,7 @@ def mode_share_tkm_aux():
             float(
                 np.minimum(
                     1,
-                    float(tkm_mode_share().loc["Road_light"])
+                    float(mode_share_tkm_policy(time()).loc["Road_light"])
                     - sensitivity_rail_mode_share()
                     * float(proportion_mode_share_tkm().loc["Road_light"]),
                 )
@@ -948,7 +958,7 @@ def mode_share_tkm_aux():
             float(
                 np.minimum(
                     1,
-                    float(tkm_mode_share().loc["Road_heavy"])
+                    float(mode_share_tkm_policy(time()).loc["Road_heavy"])
                     - sensitivity_rail_mode_share()
                     * float(proportion_mode_share_tkm().loc["Road_heavy"]),
                 )
@@ -961,7 +971,7 @@ def mode_share_tkm_aux():
             float(
                 np.minimum(
                     1,
-                    float(tkm_mode_share().loc["Maritime"])
+                    float(mode_share_tkm_policy(time()).loc["Maritime"])
                     - sensitivity_rail_mode_share()
                     * float(proportion_mode_share_tkm().loc["Maritime"]),
                 )
@@ -974,7 +984,7 @@ def mode_share_tkm_aux():
             float(
                 np.minimum(
                     1,
-                    float(tkm_mode_share().loc["Air"])
+                    float(mode_share_tkm_policy(time()).loc["Air"])
                     - sensitivity_rail_mode_share()
                     * float(proportion_mode_share_tkm().loc["Air"]),
                 )
@@ -1012,6 +1022,17 @@ _ext_lookup_mode_share_tkm_policy = ExtLookup(
 
 
 @component.add(
+    name="mode_share_tkm_policy_last_year",
+    subscripts=["Transport_Modes"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"start_year_policies_transport": 1, "mode_share_tkm_policy": 1},
+)
+def mode_share_tkm_policy_last_year():
+    return mode_share_tkm_policy(start_year_policies_transport())
+
+
+@component.add(
     name="phi_tkm",
     units="Dmnl",
     comp_type="Constant",
@@ -1046,10 +1067,10 @@ def predicted_log_tkm_hat():
     units="ton*km/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"tkm0": 1, "log_tkm": 1},
+    depends_on={"tkm0": 1, "log_tkm": 1, "sensitivity_pkm_and_tkm": 1},
 )
 def predicted_tkm():
-    return tkm0() * float(np.exp(log_tkm()))
+    return tkm0() * float(np.exp(log_tkm())) * sensitivity_pkm_and_tkm()
 
 
 @component.add(
@@ -1102,12 +1123,18 @@ def proportion_mode_share_tkm():
         "historic_rail_tkm_vehicles": 1,
         "initial_share_rail_tkm": 1,
         "initial_tkm": 1,
+        "sensitivity_vehicles_efficiency": 1,
     },
 )
 def rails_per_tkm():
-    return sum(
-        historic_rail_tkm_vehicles(time()).rename({"fuels": "fuels!"}), dim=["fuels!"]
-    ) / (initial_tkm() * initial_share_rail_tkm() * 1000000000.0)
+    return (
+        sum(
+            historic_rail_tkm_vehicles(time()).rename({"fuels": "fuels!"}),
+            dim=["fuels!"],
+        )
+        / (initial_tkm() * initial_share_rail_tkm() * 1000000000.0)
+        * sensitivity_vehicles_efficiency()
+    )
 
 
 @component.add(
@@ -1224,9 +1251,9 @@ def required_fed_transport_sectors():
     depends_on={
         "time": 2,
         "end_historical_data": 2,
-        "resid_delayed": 1,
-        "resid_initial": 1,
         "phi_tkm": 1,
+        "resid_initial": 1,
+        "resid_delayed": 1,
     },
 )
 def resid():
@@ -1289,20 +1316,33 @@ _ext_constant_residu_tkm = ExtConstant(
 
 
 @component.add(
-    name="sensibility_tkm_efficiency",
+    name="sensitivity_pkm_and_tkm",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
 )
-def sensibility_tkm_efficiency():
+def sensitivity_pkm_and_tkm():
     return 1
 
 
 @component.add(
-    name="sensitivity_rail_mode_share", comp_type="Constant", comp_subtype="Normal"
+    name="sensitivity_rail_mode_share",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
 )
 def sensitivity_rail_mode_share():
     return 0
+
+
+@component.add(
+    name="sensitivity_tkm_efficiency",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def sensitivity_tkm_efficiency():
+    return 1
 
 
 @component.add(
@@ -1392,7 +1432,7 @@ def tkm0():
     comp_subtype="Normal",
     depends_on={
         "tkm_fuel_share_road_heavy": 1,
-        "mode_share_tkm": 5,
+        "tkm_mode_share": 5,
         "tkm_fuel_share_maritime": 1,
         "tkm_fuel_share_air": 1,
         "tkm_fuel_share_rail": 1,
@@ -1412,27 +1452,27 @@ def tkm_fuel_share():
         ["fuels", "Transport_Modes"],
     )
     value.loc[:, ["Road_heavy"]] = (
-        (tkm_fuel_share_road_heavy() * float(mode_share_tkm().loc["Road_heavy"]))
+        (tkm_fuel_share_road_heavy() * float(tkm_mode_share().loc["Road_heavy"]))
         .expand_dims({"Land": ["Road_heavy"]}, 1)
         .values
     )
     value.loc[:, ["Maritime"]] = (
-        (tkm_fuel_share_maritime() * float(mode_share_tkm().loc["Maritime"]))
+        (tkm_fuel_share_maritime() * float(tkm_mode_share().loc["Maritime"]))
         .expand_dims({"Transport_Modes": ["Maritime"]}, 1)
         .values
     )
     value.loc[:, ["Air"]] = (
-        (tkm_fuel_share_air() * float(mode_share_tkm().loc["Air"]))
+        (tkm_fuel_share_air() * float(tkm_mode_share().loc["Air"]))
         .expand_dims({"Transport_Modes": ["Air"]}, 1)
         .values
     )
     value.loc[:, ["Rail"]] = (
-        (tkm_fuel_share_rail() * float(mode_share_tkm().loc["Rail"]))
+        (tkm_fuel_share_rail() * float(tkm_mode_share().loc["Rail"]))
         .expand_dims({"Land": ["Rail"]}, 1)
         .values
     )
     value.loc[:, ["Road_light"]] = (
-        (tkm_fuel_share_road_light() * float(mode_share_tkm().loc["Road_light"]))
+        (tkm_fuel_share_road_light() * float(tkm_mode_share().loc["Road_light"]))
         .expand_dims({"Land": ["Road_light"]}, 1)
         .values
     )
@@ -1449,8 +1489,8 @@ def tkm_fuel_share():
         "time": 4,
         "end_historical_data": 3,
         "initial_fuel_share_air_tkm": 3,
-        "fuel_share_air": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_air": 2,
     },
 )
 def tkm_fuel_share_air():
@@ -1516,8 +1556,8 @@ def tkm_fuel_share_maritime():
         "time": 5,
         "end_historical_data": 5,
         "historic_fuel_share_rail": 3,
-        "fuel_share_rail": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_rail": 2,
     },
 )
 def tkm_fuel_share_rail():
@@ -1614,11 +1654,12 @@ def tkm_fuel_share_road_light():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "time": 5,
+        "time": 4,
         "end_historical_data": 5,
         "hist_transport_share_tkm": 3,
-        "mode_share_tkm_policy": 2,
-        "start_year_policies_transport": 3,
+        "mode_share_tkm": 1,
+        "start_year_policies_transport": 2,
+        "mode_share_tkm_policy_last_year": 1,
     },
 )
 def tkm_mode_share():
@@ -1630,13 +1671,13 @@ def tkm_mode_share():
             lambda: hist_transport_share_tkm(end_historical_data())
             + (
                 (
-                    mode_share_tkm_policy(start_year_policies_transport())
+                    mode_share_tkm_policy_last_year()
                     - hist_transport_share_tkm(end_historical_data())
                 )
                 / (start_year_policies_transport() - end_historical_data())
             )
             * (time() - end_historical_data()),
-            lambda: mode_share_tkm_policy(time()),
+            lambda: mode_share_tkm(),
         ),
     )
 
@@ -1800,8 +1841,8 @@ def vehicles_light_trucks():
         "time": 2,
         "end_historical_data": 1,
         "historic_rail_tkm_vehicles": 1,
-        "rails_per_tkm": 1,
         "predicted_tkm_by_mode_and_fuel": 1,
+        "rails_per_tkm": 1,
     },
 )
 def vehicles_rail_tkm():

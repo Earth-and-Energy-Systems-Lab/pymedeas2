@@ -755,11 +755,11 @@ _ext_lookup_policy_share_battery.add(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
+        "historic_rail_pkm_vehicles": 1,
         "vehicles_rail_pkm": 1,
         "initial_rail_kms": 1,
-        "vehicles_rail_tkm": 1,
         "historic_rail_tkm_vehicles": 1,
-        "historic_rail_pkm_vehicles": 1,
+        "vehicles_rail_tkm": 1,
     },
 )
 def rail_kms_new():

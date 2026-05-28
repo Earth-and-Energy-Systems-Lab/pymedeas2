@@ -148,8 +148,8 @@ def pop_not_dependent_on_trad_biomass():
     comp_subtype="Normal",
     depends_on={
         "net_tfec": 1,
-        "tpes_ej": 1,
         "total_real_nonenergy_use_consumption_ej": 1,
+        "tpes_ej": 1,
     },
 )
 def share_total_net_energy_vs_tpes():

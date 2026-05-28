@@ -364,10 +364,10 @@ def new_nuclear_capacity_under_planning():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "total_elec_generation_ff_chp_plants_delayed": 1,
         "installed_capacity_nuclear_tw": 1,
-        "p_nuclear_elec_gen": 1,
         "demand_elec_nre_twh": 1,
+        "p_nuclear_elec_gen": 1,
+        "total_elec_generation_ff_chp_plants_delayed": 1,
         "effects_shortage_uranium": 1,
         "cp_limit_nuclear": 1,
     },
@@ -406,9 +406,9 @@ def new_required_capacity_nuclear():
     depends_on={
         "selection_of_nuclear_scenario": 1,
         "installed_capacity_nuclear_tw": 1,
+        "time": 1,
         "start_year_nuclear_growth_scen34": 1,
         "p_nuclear_scen34": 1,
-        "time": 1,
     },
 )
 def nuclear_capacity_phaseout():
@@ -433,10 +433,10 @@ def nuclear_capacity_phaseout():
     comp_subtype="Normal",
     depends_on={
         "time": 3,
+        "time_step": 2,
+        "twe_per_twh": 1,
         "historic_nuclear_generation_twh": 2,
         "cp_nuclear": 1,
-        "twe_per_twh": 1,
-        "time_step": 2,
         "planned_nuclear_capacity_tw": 1,
         "time_construction_nuclear": 1,
     },
@@ -489,9 +489,9 @@ def nuclear_overcapacity():
     comp_subtype="Normal",
     depends_on={
         "selection_of_nuclear_scenario": 4,
+        "time": 1,
         "start_year_nuclear_growth_scen34": 1,
         "p_nuclear_scen34": 1,
-        "time": 1,
     },
 )
 def p_nuclear_elec_gen():
@@ -610,8 +610,8 @@ _integ_planned_nuclear_capacity_tw = Integ(
         "installed_capacity_nuclear_tw": 1,
         "cp_nuclear": 1,
         "twe_per_twh": 1,
-        "total_elec_generation_ff_chp_plants_delayed": 1,
         "demand_elec_nre_twh": 1,
+        "total_elec_generation_ff_chp_plants_delayed": 1,
     },
 )
 def potential_generation_nuclear_elec_twh():
@@ -634,11 +634,11 @@ def potential_generation_nuclear_elec_twh():
     depends_on={
         "time": 2,
         "nuclear_capacity_under_construction": 1,
+        "wear_nuclear": 2,
         "replacement_rate_nuclear": 2,
+        "start_year_nuclear_growth_scen34": 1,
         "selection_of_nuclear_scenario": 3,
         "nuclear_overcapacity": 2,
-        "start_year_nuclear_growth_scen34": 1,
-        "wear_nuclear": 2,
         "cp_limit_nuclear": 1,
     },
 )

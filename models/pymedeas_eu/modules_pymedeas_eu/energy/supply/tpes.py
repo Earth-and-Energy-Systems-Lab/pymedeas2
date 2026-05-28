@@ -90,8 +90,8 @@ def share_imports_eu_nre_vs_tpec():
     comp_subtype="Normal",
     depends_on={
         "real_tfec": 1,
-        "tpes_ej": 1,
         "total_real_nonenergy_use_consumption_ej": 1,
+        "tpes_ej": 1,
     },
 )
 def share_total_final_energy_vs_tpes():

@@ -95,9 +95,9 @@ def demand_not_covered_total_fd():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
+        "real_demand_delayed_1yr": 1,
         "desired_annual_total_demand_growth_rate": 1,
         "total_demand": 1,
-        "real_demand_delayed_1yr": 1,
         "nvs_1_year": 1,
     },
 )
@@ -449,9 +449,9 @@ def total_demand_adjusted():
         "time": 1,
         "historic_variation_demand": 1,
         "variation_exports_demand": 1,
-        "share_consum_goverment_and_inventories": 1,
-        "variation_gfcf": 1,
         "variation_household_demand": 1,
+        "variation_gfcf": 1,
+        "share_consum_goverment_and_inventories": 1,
     },
 )
 def variation_demand_flow_fd_eu():

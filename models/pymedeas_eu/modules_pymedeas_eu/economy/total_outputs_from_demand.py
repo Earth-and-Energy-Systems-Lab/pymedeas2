@@ -223,8 +223,8 @@ def gdppc():
     comp_subtype="Normal",
     depends_on={
         "required_fed_by_fuel": 1,
-        "household_demand_total": 1,
         "total_output_required_by_sector": 1,
+        "household_demand_total": 1,
     },
 )
 def global_ei_fuel():
@@ -474,9 +474,9 @@ def real_final_demand_by_sector_eu():
         "required_final_energy_by_sector_and_fuel_eu": 3,
         "energy_scarcity_feedback_shortage_coeff_eu": 3,
         "cc_impacts_feedback_shortage_coeff": 1,
-        "ej_per_twh": 2,
         "dac_energy_consumption_by_sector_and_fuel": 1,
         "ccs_energy_consumption_sector": 1,
+        "ej_per_twh": 2,
     },
 )
 def real_final_energy_by_sector_and_fuel_eu():
@@ -774,9 +774,9 @@ def required_fed_sectors_by_fuel():
         "final_energy_intensity_by_sector_and_fuel_eu": 3,
         "m_to_t": 3,
         "nvs_1_year": 3,
-        "ej_per_twh": 2,
         "dac_energy_demand_per_sector_and_fuel": 1,
         "ccs_energy_demand_sect": 1,
+        "ej_per_twh": 2,
     },
 )
 def required_final_energy_by_sector_and_fuel_eu():

@@ -257,9 +257,9 @@ def extraction_coal_emissions_relevant_ej():
         "time": 1,
         "ped_domestic_ff": 3,
         "nvs_1_year": 1,
+        "activate_force_leaving_underground": 1,
         "remaining_extractable_coal_with_left_underground": 1,
         "max_extraction_coal": 2,
-        "activate_force_leaving_underground": 1,
     },
 )
 def extraction_coal_eu():
@@ -356,9 +356,9 @@ def extraction_coal_without_ctl_ej():
     depends_on={
         "activate_force_leaving_underground": 1,
         "max_extraction_coal_technical": 3,
-        "max_extraction_coal_policy": 1,
         "start_year_policy_leave_in_ground_coal": 1,
         "time": 1,
+        "max_extraction_coal_policy": 1,
     },
 )
 def max_extraction_coal():

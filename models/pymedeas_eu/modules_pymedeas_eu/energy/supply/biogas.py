@@ -349,9 +349,9 @@ _ext_constant_max_pe_biogas_ej = ExtConstant(
         "time": 3,
         "time_step": 2,
         "historic_biogas_pes": 2,
-        "pes_biogas_ej": 2,
         "adapt_growth_biogas": 1,
         "max_pe_biogas_ej": 2,
+        "pes_biogas_ej": 2,
     },
 )
 def new_pes_biogas():

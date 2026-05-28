@@ -117,7 +117,7 @@ _ext_lookup_ccs_policy = ExtLookup(
     subscripts=["SECTORS_and_HOUSEHOLDS", "CCS_tech"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "ccs_policy": 1, "ccs_tech_share": 1},
+    depends_on={"time": 3, "ccs_tech_share": 1, "ccs_policy": 1},
 )
 def ccs_sector_tech():
     return if_then_else(
@@ -1059,8 +1059,8 @@ def process_co2_captured_ccs():
     comp_subtype="Normal",
     depends_on={
         "co2_policy_captured_sector_ccs": 2,
-        "process_co2_captured_ccs": 1,
         "co2_captured_by_sector_energy_related": 1,
+        "process_co2_captured_ccs": 1,
     },
 )
 def share_captured_sector():

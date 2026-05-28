@@ -34,8 +34,8 @@ def a_lineal_regr_phaseout_oil_for_heat():
     comp_subtype="Normal",
     depends_on={
         "share_in_target_year_oil_for_heat": 1,
-        "target_year_policy_phaseout_oil_for_heat": 1,
         "a_lineal_regr_phaseout_oil_for_heat": 1,
+        "target_year_policy_phaseout_oil_for_heat": 1,
     },
 )
 def b_lineal_regr_phaseout_oil_for_heat():
@@ -315,10 +315,10 @@ def ped_coal_for_heat_plants_ej():
     depends_on={
         "fed_heat_liquids_plants_ej": 1,
         "efficiency_liquids_for_heat_plants": 1,
-        "efficiency_gases_for_heat_plants": 1,
         "fed_heat_gas_plants_ej": 1,
-        "fed_heat_coal_plants": 1,
+        "efficiency_gases_for_heat_plants": 1,
         "efficiency_coal_for_heat_plants": 1,
+        "fed_heat_coal_plants": 1,
     },
 )
 def ped_ff_for_heat_plants():

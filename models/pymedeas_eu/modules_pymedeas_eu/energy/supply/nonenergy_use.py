@@ -159,9 +159,9 @@ def total_real_nonenergy_use_consumption_ej():
     depends_on={
         "nonenergy_use_demand_by_final_fuel": 1,
         "nvs_1_year": 1,
-        "gdp_delayed_1yr": 1,
         "gdp_eu": 1,
         "a_lin_reg_nonenergy": 1,
+        "gdp_delayed_1yr": 1,
     },
 )
 def variation_nonenergy_use():

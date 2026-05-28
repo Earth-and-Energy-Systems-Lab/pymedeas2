@@ -8,10 +8,10 @@ Translated using PySD version 3.14.3
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"p_timeseries_gdppc_growth_rate": 1, "gdp_sensitivity_factor": 1},
+    depends_on={"p_timeseries_gdppc_growth_rate": 1},
 )
 def annual_gdppc_growth_rate():
-    return p_timeseries_gdppc_growth_rate() + gdp_sensitivity_factor()
+    return p_timeseries_gdppc_growth_rate()
 
 
 @component.add(
@@ -49,8 +49,8 @@ _integ_capital_share = Integ(
     depends_on={
         "p_capital_share": 1,
         "initial_capital_share": 2,
-        "year_initial_capital_share": 1,
         "year_final_capial_share": 1,
+        "year_initial_capital_share": 1,
         "time_step": 1,
     },
 )
@@ -208,13 +208,13 @@ def desired_gdp():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "historic_gdp_growth_rate": 1,
         "desired_gdp": 1,
+        "historic_gdp_growth_rate": 1,
         "population": 2,
         "desired_gdppc": 1,
-        "annual_gdppc_growth_rate": 1,
-        "delayed_population": 1,
         "dollars_to_tdollars": 1,
+        "delayed_population": 1,
+        "annual_gdppc_growth_rate": 1,
     },
 )
 def desired_gdp_next_year():
@@ -292,13 +292,6 @@ def dollar_per_mdollar():
 
 
 @component.add(
-    name="gdp_sensitivity_factor", comp_type="Constant", comp_subtype="Normal"
-)
-def gdp_sensitivity_factor():
-    return 1
-
-
-@component.add(
     name="GDPpc_initial_year",
     units="$/person",
     comp_type="Auxiliary",
@@ -317,9 +310,9 @@ def gdppc_initial_year():
     depends_on={
         "time": 2,
         "year_initial_capital_share": 1,
+        "capital_share_growth": 1,
         "laborcapital_share_cte": 1,
         "year_final_capial_share": 1,
-        "capital_share_growth": 1,
         "historic_capital_share_growth": 1,
     },
 )
@@ -728,8 +721,8 @@ _integ_labour_share = Integ(
     depends_on={
         "p_labour_share": 1,
         "initial_labour_share": 2,
-        "year_final_labour_share": 1,
         "year_initial_labour_share": 1,
+        "year_final_labour_share": 1,
         "time_step": 1,
     },
 )
@@ -933,10 +926,10 @@ def variation_cc():
     comp_subtype="Normal",
     depends_on={
         "time": 5,
-        "dollar_per_mdollar": 1,
-        "historic_gdp": 2,
-        "historic_population": 2,
         "time_step": 3,
+        "historic_gdp": 2,
+        "dollar_per_mdollar": 1,
+        "historic_population": 2,
     },
 )
 def variation_historic_gdppc():

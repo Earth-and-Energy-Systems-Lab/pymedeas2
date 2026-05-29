@@ -47,8 +47,8 @@ def abundance_res_heatnc2():
     depends_on={
         "time": 4,
         "past_res_growth_for_heatnc": 4,
-        "target_year_p_growth_res_heat": 2,
         "p_res_for_heat": 2,
+        "target_year_p_growth_res_heat": 2,
         "start_year_p_growth_res_heat": 3,
     },
 )

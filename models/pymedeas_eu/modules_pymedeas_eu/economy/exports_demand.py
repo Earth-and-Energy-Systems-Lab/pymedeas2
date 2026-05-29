@@ -370,13 +370,13 @@ def total_gfcf():
     comp_subtype="Normal",
     depends_on={
         "exports_demand": 1,
-        "beta_1_exp": 2,
-        "variation_historic_exports_demand": 1,
         "real_demand_world_next_step": 1,
-        "time": 1,
+        "real_demand_world": 1,
         "unit_correction_economic": 2,
         "beta_0_exp": 1,
-        "real_demand_world": 1,
+        "time": 1,
+        "beta_1_exp": 2,
+        "variation_historic_exports_demand": 1,
     },
 )
 def variation_exports_demand():
@@ -407,13 +407,13 @@ def variation_exports_demand():
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 1,
-        "beta_0_gfcf": 1,
+        "variation_cc": 1,
+        "unit_correction_economic": 2,
         "nvs_1_year": 1,
         "beta_1_gfcf": 2,
-        "time": 1,
-        "unit_correction_economic": 2,
         "cc_total": 2,
-        "variation_cc": 1,
+        "time": 1,
+        "beta_0_gfcf": 1,
         "variation_historic_gfcf": 1,
     },
 )

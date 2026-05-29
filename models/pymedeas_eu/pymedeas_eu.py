@@ -9,17 +9,17 @@ import xarray as xr
 
 from pysd.py_backend.functions import (
     zidz,
-    xidz,
-    if_then_else,
-    step,
     sum,
-    invert_matrix,
+    step,
+    if_then_else,
     integer,
+    invert_matrix,
+    xidz,
 )
-from pysd.py_backend.statefuls import Initial, Integ, Smooth, DelayFixed, SampleIfTrue
-from pysd.py_backend.external import ExtData, ExtConstant, ExtLookup
+from pysd.py_backend.statefuls import Initial, SampleIfTrue, Integ, Smooth, DelayFixed
+from pysd.py_backend.external import ExtLookup, ExtData, ExtConstant
 from pysd.py_backend.data import TabData
-from pysd.py_backend.utils import load_model_data, load_modules
+from pysd.py_backend.utils import load_modules, load_model_data
 from pysd import Component
 
 __pysd_version__ = "3.14.3"

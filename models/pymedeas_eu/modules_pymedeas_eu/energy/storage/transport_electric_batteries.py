@@ -357,7 +357,7 @@ _ext_lookup_historic_share_ev_per_battery.add(
     name="initial_pkm_vehicles",
     units="vehicles",
     subscripts=["fuels", "Transport_Modes"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "historic_households_vehicles": 1,
@@ -423,7 +423,7 @@ _ext_constant_initial_rail_kms = ExtConstant(
     name="initial_tkm_vehicles",
     units="vehicles",
     subscripts=["fuels", "Transport_Modes"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "historic_truck_vehicles": 1,
@@ -755,11 +755,11 @@ _ext_lookup_policy_share_battery.add(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
+        "historic_rail_tkm_vehicles": 1,
+        "initial_rail_kms": 1,
+        "vehicles_rail_tkm": 1,
         "historic_rail_pkm_vehicles": 1,
         "vehicles_rail_pkm": 1,
-        "initial_rail_kms": 1,
-        "historic_rail_tkm_vehicles": 1,
-        "vehicles_rail_tkm": 1,
     },
 )
 def rail_kms_new():
@@ -1082,7 +1082,7 @@ _integ_vehicles_mode_fuel_pkm = Integ(
     name="vehicles_pkm_mode",
     units="vehicles",
     subscripts=["fuels", "Transport_Modes"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "vehicles_buses_pkm": 1,
@@ -1117,7 +1117,7 @@ def vehicles_pkm_mode():
     name="vehicles_tkm_mode",
     units="vehicles",
     subscripts=["fuels", "Transport_Modes"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "vehicles_heavy_trucks": 1,

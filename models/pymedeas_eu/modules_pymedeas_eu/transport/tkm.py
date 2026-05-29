@@ -97,7 +97,7 @@ _ext_constant_end_historical_data = ExtConstant(
     name="energy_by_fuel_mode_tkm",
     units="EJ/year",
     subscripts=["final_sources", "Transport_Modes"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_tkm": 5, "historic_share_electricity_hybrid": 2, "time": 2},
 )
@@ -196,7 +196,7 @@ _delayfixed_energy_intensity_commercial_transport_delayed = DelayFixed(
     name="Energy_intensity_commercial_transport_variation",
     units="EJ/(T$*year)",
     subscripts=["final_sources", "sectors"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "energy_intensity_by_transport_sector": 1,
@@ -1067,10 +1067,25 @@ def predicted_log_tkm_hat():
     units="ton*km/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"tkm0": 1, "log_tkm": 1, "sensitivity_pkm_and_tkm": 1},
+    depends_on={
+        "time": 1,
+        "end_historical_data": 1,
+        "tkm0": 2,
+        "log_tkm": 1,
+        "sensitivity_pkm_and_tkm": 1,
+        "gdp_eu": 1,
+        "beta_tkm": 1,
+        "gdp0_tkm": 1,
+    },
 )
 def predicted_tkm():
-    return tkm0() * float(np.exp(log_tkm())) * sensitivity_pkm_and_tkm()
+    return if_then_else(
+        time() <= end_historical_data(),
+        lambda: tkm0() * float(np.exp(log_tkm())),
+        lambda: tkm0()
+        * (gdp_eu() / gdp0_tkm()) ** beta_tkm()
+        * sensitivity_pkm_and_tkm(),
+    )
 
 
 @component.add(
@@ -1121,8 +1136,8 @@ def proportion_mode_share_tkm():
     depends_on={
         "time": 1,
         "historic_rail_tkm_vehicles": 1,
-        "initial_share_rail_tkm": 1,
         "initial_tkm": 1,
+        "initial_share_rail_tkm": 1,
         "sensitivity_vehicles_efficiency": 1,
     },
 )
@@ -1251,9 +1266,9 @@ def required_fed_transport_sectors():
     depends_on={
         "time": 2,
         "end_historical_data": 2,
-        "phi_tkm": 1,
-        "resid_initial": 1,
         "resid_delayed": 1,
+        "resid_initial": 1,
+        "phi_tkm": 1,
     },
 )
 def resid():
@@ -1523,8 +1538,8 @@ def tkm_fuel_share_air():
         "time": 4,
         "end_historical_data": 3,
         "initial_fuel_share_maritime_tkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_maritime": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def tkm_fuel_share_maritime():
@@ -1556,8 +1571,8 @@ def tkm_fuel_share_maritime():
         "time": 5,
         "end_historical_data": 5,
         "historic_fuel_share_rail": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_rail": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def tkm_fuel_share_rail():
@@ -1589,8 +1604,8 @@ def tkm_fuel_share_rail():
         "time": 4,
         "end_historical_data": 6,
         "historic_fuel_share_road_heavy": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_road": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def tkm_fuel_share_road_heavy():
@@ -1623,8 +1638,8 @@ def tkm_fuel_share_road_heavy():
         "time": 4,
         "end_historical_data": 6,
         "historic_fuel_share_road_light": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_road": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def tkm_fuel_share_road_light():
@@ -1657,9 +1672,9 @@ def tkm_fuel_share_road_light():
         "time": 4,
         "end_historical_data": 5,
         "hist_transport_share_tkm": 3,
+        "mode_share_tkm_policy_last_year": 1,
         "mode_share_tkm": 1,
         "start_year_policies_transport": 2,
-        "mode_share_tkm_policy_last_year": 1,
     },
 )
 def tkm_mode_share():
@@ -1741,7 +1756,7 @@ def total_energy_transport_by_fuel():
     name="total_energy_transport_final_source",
     units="EJ/year",
     subscripts=["final_sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"total_energy_transport_by_fuel": 3},
 )

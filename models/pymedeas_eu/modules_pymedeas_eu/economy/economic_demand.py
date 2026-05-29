@@ -57,9 +57,9 @@ _integ_demand_by_sector_fd_eu = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "nvs_1_year": 1,
         "real_final_demand_by_sector_eu": 1,
         "demand_by_sector_fd_eu": 1,
+        "nvs_1_year": 1,
     },
 )
 def demand_not_covered_by_sector_fd_eu():
@@ -323,8 +323,8 @@ def real_gfcf_by_sector():
     depends_on={
         "real_final_demand_by_sector_eu": 1,
         "share_consum_goverment_and_inventories": 1,
-        "share_exp_vs_gfcfhdexp": 1,
         "share_gfcf_vs_gfcfhdexp": 1,
+        "share_exp_vs_gfcfhdexp": 1,
     },
 )
 def real_household_demand_by_sector():
@@ -368,8 +368,8 @@ def share_consum_goverment_and_inventories():
     comp_subtype="Normal",
     depends_on={
         "exports_demand": 2,
-        "household_demand": 1,
         "gross_fixed_capital_formation": 1,
+        "household_demand": 1,
     },
 )
 def share_exp_vs_gfcfhdexp():
@@ -389,8 +389,8 @@ def share_exp_vs_gfcfhdexp():
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 2,
-        "household_demand": 1,
         "exports_demand": 1,
+        "household_demand": 1,
     },
 )
 def share_gfcf_vs_gfcfhdexp():

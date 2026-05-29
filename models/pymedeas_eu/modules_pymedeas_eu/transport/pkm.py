@@ -38,8 +38,8 @@ _ext_constant_beta_pkm = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "historic_commercial_vehicles": 1,
-        "initial_pkm": 1,
         "initial_share_pkm_buses": 1,
+        "initial_pkm": 1,
         "sensitivity_vehicles_efficiency": 1,
     },
 )
@@ -100,12 +100,12 @@ _integ_efficiency_pkm = Integ(
     name="EI_households_transport",
     units="EJ/T$",
     subscripts=["final_sources"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "energy_pkm": 4,
-        "m_to_t": 3,
         "household_demand_total": 3,
+        "m_to_t": 3,
         "nvs_1_year": 3,
     },
 )
@@ -147,7 +147,7 @@ def end_historical_pkm():
     name="energy_by_fuel_mode_pkm",
     units="EJ/year",
     subscripts=["final_sources", "Transport_Modes"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_pkm": 5, "historic_share_electricity_hybrid": 2, "time": 2},
 )
@@ -225,7 +225,7 @@ def energy_pkm_fuel():
     name="Energy_scarcity_shortage_by_fuel",
     units="Dmnl",
     subscripts=["fuels"],
-    comp_type="Auxiliary, Constant",
+    comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
     depends_on={"energy_scarcity_feedback_shortage_coeff_eu": 3},
 )
@@ -676,8 +676,8 @@ _ext_lookup_historic_share_electricity_hybrid = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "historic_households_vehicles": 1,
-        "initial_pkm": 1,
         "initial_share_households_pkm": 1,
+        "initial_pkm": 1,
         "sensitivity_vehicles_efficiency": 1,
     },
 )
@@ -1128,10 +1128,10 @@ def pkm_fuel_share():
     depends_on={
         "time": 5,
         "end_historical_pkm": 4,
-        "fuel_share_1995": 2,
         "initial_fuel_share_air_pkm": 3,
-        "start_year_policies_transport": 3,
+        "fuel_share_1995": 2,
         "fuel_share_air_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_air():
@@ -1203,8 +1203,8 @@ def pkm_fuel_share_households():
         "time": 5,
         "end_historical_pkm": 5,
         "historic_fuel_share_maritime_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_maritime_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_maritime():
@@ -1270,8 +1270,8 @@ def pkm_fuel_share_rail():
         "time": 5,
         "end_historical_pkm": 5,
         "historic_fuel_share_road_pkm": 3,
-        "fuel_share_road_pkm": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_road_pkm": 2,
     },
 )
 def pkm_fuel_share_road():
@@ -1304,9 +1304,9 @@ def pkm_fuel_share_road():
         "time": 4,
         "end_historical_pkm": 5,
         "hist_transport_share_pkm": 3,
+        "mode_share_pkm": 1,
         "start_year_policies_transport": 2,
         "mode_shar_pkm_policy_last_year": 1,
-        "mode_share_pkm": 1,
     },
 )
 def pkm_mode_share():
@@ -1370,10 +1370,28 @@ def predicted_log_pkm_hat():
     units="person*km/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"pkm0": 1, "log_pkm": 1, "sensitivity_pkm_and_tkm": 1},
+    depends_on={
+        "time": 1,
+        "end_historical_data": 1,
+        "pkm0": 2,
+        "log_pkm": 1,
+        "gdp0pcpkm": 1,
+        "sensitivity_pkm_and_tkm": 1,
+        "beta_pkm": 1,
+        "gdppc": 1,
+    },
 )
 def predicted_pkm():
-    return pkm0() * float(np.exp(log_pkm())) * sensitivity_pkm_and_tkm()
+    """
+    pkm0*EXP(log_pkm)*sensitivity_pkm_and_tkm
+    """
+    return if_then_else(
+        time() <= end_historical_data(),
+        lambda: pkm0() * float(np.exp(log_pkm())),
+        lambda: pkm0()
+        * (gdppc() / gdp0pcpkm()) ** beta_pkm()
+        * sensitivity_pkm_and_tkm(),
+    )
 
 
 @component.add(
@@ -1470,8 +1488,8 @@ def res0_pkm():
     depends_on={
         "time": 2,
         "end_historical_data": 2,
-        "phi_pkm": 1,
         "res0_pkm": 1,
+        "phi_pkm": 1,
         "resid_pkm_delayed": 1,
     },
 )
@@ -1574,8 +1592,8 @@ def total_energy_pkm():
     depends_on={
         "time": 1,
         "end_historical_data": 1,
-        "improvement_efficiency_pkm": 1,
         "efficiency_pkm": 1,
+        "improvement_efficiency_pkm": 1,
     },
 )
 def variation_efficiency_pkm():
@@ -1631,8 +1649,8 @@ def vehicles_buses_pkm():
         "time": 2,
         "end_historical_data": 1,
         "historic_households_vehicles": 1,
-        "predicted_pkm_by_mode_and_fuel": 1,
         "households_vehiclespkm": 1,
+        "predicted_pkm_by_mode_and_fuel": 1,
     },
 )
 def vehicles_households():

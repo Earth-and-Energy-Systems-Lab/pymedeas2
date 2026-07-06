@@ -104,8 +104,8 @@ _integ_efficiency_pkm = Integ(
     comp_subtype="Normal",
     depends_on={
         "energy_pkm": 4,
-        "household_demand_total": 3,
         "m_to_t": 3,
+        "household_demand_total": 3,
         "nvs_1_year": 3,
     },
 )
@@ -149,7 +149,7 @@ def end_historical_pkm():
     subscripts=["final_sources", "Transport_Modes"],
     comp_type="Constant, Auxiliary",
     comp_subtype="Normal",
-    depends_on={"energy_pkm": 5, "historic_share_electricity_hybrid": 2, "time": 2},
+    depends_on={"energy_pkm": 5, "time": 2, "historic_share_electricity_hybrid": 2},
 )
 def energy_by_fuel_mode_pkm():
     value = xr.DataArray(
@@ -644,6 +644,30 @@ _ext_lookup_historic_households_vehicles = ExtLookup(
 
 
 @component.add(
+    name='"historic_rail_vehicle/pkm"',
+    units="vehicle/pkm",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "time": 1,
+        "historic_rail_pkm_vehicles": 1,
+        "initial_share_pkm_rail": 1,
+        "initial_pkm": 1,
+        "sensitivity_vehicles_efficiency": 1,
+    },
+)
+def historic_rail_vehiclepkm():
+    return (
+        sum(
+            historic_rail_pkm_vehicles(time()).rename({"fuels": "fuels!"}),
+            dim=["fuels!"],
+        )
+        / (1000000000.0 * initial_pkm() * initial_share_pkm_rail())
+        * sensitivity_vehicles_efficiency()
+    )
+
+
+@component.add(
     name="historic_share_electricity_hybrid",
     units="Dmnl",
     comp_type="Lookup",
@@ -1128,8 +1152,8 @@ def pkm_fuel_share():
     depends_on={
         "time": 5,
         "end_historical_pkm": 4,
-        "initial_fuel_share_air_pkm": 3,
         "fuel_share_1995": 2,
+        "initial_fuel_share_air_pkm": 3,
         "fuel_share_air_pkm": 2,
         "start_year_policies_transport": 3,
     },
@@ -1169,8 +1193,8 @@ def pkm_fuel_share_air():
         "time": 5,
         "end_historical_data": 5,
         "historic_fuel_share_households_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_households_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_households():
@@ -1203,8 +1227,8 @@ def pkm_fuel_share_households():
         "time": 5,
         "end_historical_pkm": 5,
         "historic_fuel_share_maritime_pkm": 3,
-        "fuel_share_maritime_pkm": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_maritime_pkm": 2,
     },
 )
 def pkm_fuel_share_maritime():
@@ -1236,8 +1260,8 @@ def pkm_fuel_share_maritime():
         "time": 4,
         "end_historical_pkm": 6,
         "historic_fuel_share_rail_pkm": 3,
-        "fuel_share_rail_pkm": 2,
         "start_year_policies_transport": 3,
+        "fuel_share_rail_pkm": 2,
     },
 )
 def pkm_fuel_share_rail():
@@ -1270,8 +1294,8 @@ def pkm_fuel_share_rail():
         "time": 5,
         "end_historical_pkm": 5,
         "historic_fuel_share_road_pkm": 3,
-        "start_year_policies_transport": 3,
         "fuel_share_road_pkm": 2,
+        "start_year_policies_transport": 3,
     },
 )
 def pkm_fuel_share_road():
@@ -1305,8 +1329,8 @@ def pkm_fuel_share_road():
         "end_historical_pkm": 5,
         "hist_transport_share_pkm": 3,
         "mode_share_pkm": 1,
-        "start_year_policies_transport": 2,
         "mode_shar_pkm_policy_last_year": 1,
+        "start_year_policies_transport": 2,
     },
 )
 def pkm_mode_share():
@@ -1375,10 +1399,10 @@ def predicted_log_pkm_hat():
         "end_historical_data": 1,
         "pkm0": 2,
         "log_pkm": 1,
-        "gdp0pcpkm": 1,
         "sensitivity_pkm_and_tkm": 1,
-        "beta_pkm": 1,
         "gdppc": 1,
+        "gdp0pcpkm": 1,
+        "beta_pkm": 1,
     },
 )
 def predicted_pkm():
@@ -1422,25 +1446,45 @@ def proportion_mode_share_pkm():
 
 
 @component.add(
+    name="rail_vehicle_pkm_dalayed_1_year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_rail_vehicle_pkm_dalayed_1_year": 1},
+    other_deps={
+        "_delayfixed_rail_vehicle_pkm_dalayed_1_year": {
+            "initial": {"historic_rail_vehiclepkm": 1},
+            "step": {"rail_vehiclepkm": 1},
+        }
+    },
+)
+def rail_vehicle_pkm_dalayed_1_year():
+    return _delayfixed_rail_vehicle_pkm_dalayed_1_year()
+
+
+_delayfixed_rail_vehicle_pkm_dalayed_1_year = DelayFixed(
+    lambda: rail_vehiclepkm(),
+    lambda: 1,
+    lambda: historic_rail_vehiclepkm(),
+    time_step,
+    "_delayfixed_rail_vehicle_pkm_dalayed_1_year",
+)
+
+
+@component.add(
     name='"rail_vehicle/pkm"',
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "historic_rail_pkm_vehicles": 1,
-        "initial_share_pkm_rail": 1,
-        "initial_pkm": 1,
-        "sensitivity_vehicles_efficiency": 1,
+        "historic_rail_vehiclepkm": 1,
+        "rail_vehicle_pkm_dalayed_1_year": 1,
     },
 )
 def rail_vehiclepkm():
-    return (
-        sum(
-            historic_rail_pkm_vehicles(time()).rename({"fuels": "fuels!"}),
-            dim=["fuels!"],
-        )
-        / (1000000000.0 * initial_pkm() * initial_share_pkm_rail())
-        * sensitivity_vehicles_efficiency()
+    return if_then_else(
+        time() < 2023,
+        lambda: historic_rail_vehiclepkm(),
+        lambda: rail_vehicle_pkm_dalayed_1_year() * (1 - 0.0112),
     )
 
 
@@ -1488,9 +1532,9 @@ def res0_pkm():
     depends_on={
         "time": 2,
         "end_historical_data": 2,
-        "res0_pkm": 1,
-        "phi_pkm": 1,
         "resid_pkm_delayed": 1,
+        "phi_pkm": 1,
+        "res0_pkm": 1,
     },
 )
 def resid_pkm():
@@ -1621,8 +1665,8 @@ def variation_efficiency_pkm():
         "time": 2,
         "end_historical_data": 1,
         "historic_commercial_vehicles": 1,
-        "predicted_pkm_by_mode_and_fuel": 1,
         "commercial_pkm_vehiclespkm": 1,
+        "predicted_pkm_by_mode_and_fuel": 1,
     },
 )
 def vehicles_buses_pkm():

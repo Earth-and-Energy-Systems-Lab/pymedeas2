@@ -755,8 +755,8 @@ _ext_lookup_policy_share_battery.add(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "historic_rail_tkm_vehicles": 1,
         "initial_rail_kms": 1,
+        "historic_rail_tkm_vehicles": 1,
         "vehicles_rail_tkm": 1,
         "historic_rail_pkm_vehicles": 1,
         "vehicles_rail_pkm": 1,
@@ -764,7 +764,7 @@ _ext_lookup_policy_share_battery.add(
 )
 def rail_kms_new():
     """
-    new kms of rail from 2023
+    new kms of rail from 2023: IF THEN ELSE(Time < 2025, 0, MAX(0, 0.5 * initial rail kms * ( ( (SUM(vehicles rail pkm[fuels!]) + SUM(vehicles rail tkm[fuels!])) / (SUM(historic rail pkm vehicles[fuels!](2023)) + SUM(historic rail tkm vehicles[fuels!](2023))) ) - 2 ) ) )
     """
     return if_then_else(
         time() < 2025,
@@ -772,7 +772,7 @@ def rail_kms_new():
         lambda: float(
             np.maximum(
                 0,
-                0.5
+                (0.5 / 0.75)
                 * initial_rail_kms()
                 * (
                     (

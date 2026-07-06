@@ -136,8 +136,8 @@ _ext_data_p_timeseries_pop_growth_rate = ExtData(
     depends_on={
         "time": 1,
         "variation_historic_pop": 1,
-        "annual_population_growth_rate": 1,
         "population": 1,
+        "annual_population_growth_rate": 1,
     },
 )
 def pop_variation():
@@ -181,7 +181,7 @@ _integ_population = Integ(
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "time_step": 2, "historic_population": 2},
+    depends_on={"time": 3, "historic_population": 2, "time_step": 2},
 )
 def variation_historic_pop():
     """

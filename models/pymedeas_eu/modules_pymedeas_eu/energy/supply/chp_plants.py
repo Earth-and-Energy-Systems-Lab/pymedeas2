@@ -342,12 +342,12 @@ def fes_heatcom_nuclear_chp_plants():
         "ped_gas_for_chp_plants_ej": 1,
         "efficiency_elec_gas_chp_plants": 1,
         "efficiency_heat_gas_chp_plants": 1,
-        "ped_oil_for_chp_plants_ej": 1,
         "efficiency_elec_oil_chp_plants": 1,
         "efficiency_heat_oil_chp_plants": 1,
-        "ped_coal_for_chp_plants_ej": 1,
+        "ped_oil_for_chp_plants_ej": 1,
         "efficiency_elec_coal_chp_plants": 1,
         "efficiency_heat_coal_chp_plants": 1,
+        "ped_coal_for_chp_plants_ej": 1,
     },
 )
 def gen_losses_demand_for_chp_plants():
@@ -455,8 +455,8 @@ def ped_coal_for_chp_plants_ej():
         "efficiency_heat_gas_chp_plants": 1,
         "fed_heat_liquids_chp_plants_ej": 1,
         "efficiency_heat_oil_chp_plants": 1,
-        "fed_heat_coal_chp_plants_ej": 1,
         "efficiency_heat_coal_chp_plants": 1,
+        "fed_heat_coal_chp_plants_ej": 1,
     },
 )
 def ped_ff_for_chp_plants():
@@ -531,10 +531,10 @@ def potential_fe_gen_elec_coal_chp_plants_ej():
     depends_on={
         "ped_coal_for_chp_plants_ej": 1,
         "efficiency_elec_coal_chp_plants": 1,
-        "efficiency_elec_gas_chp_plants": 1,
         "ped_gas_for_chp_plants_ej": 1,
-        "ped_oil_for_chp_plants_ej": 1,
+        "efficiency_elec_gas_chp_plants": 1,
         "efficiency_elec_oil_chp_plants": 1,
+        "ped_oil_for_chp_plants_ej": 1,
     },
 )
 def potential_fe_gen_elec_fossil_fuel_chp_plants():

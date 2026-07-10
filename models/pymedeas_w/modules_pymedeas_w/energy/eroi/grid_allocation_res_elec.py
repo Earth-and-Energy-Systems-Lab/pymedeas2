@@ -1,6 +1,6 @@
 """
 Module energy.eroi.grid_allocation_res_elec
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -187,8 +187,8 @@ def share_res_elec_generation_curtailedstored():
     depends_on={
         "static_eroi_res_elec": 2,
         "share_res_elec_generation_curtailedstored": 3,
-        "esoi_elec_storage": 1,
         "rt_elec_storage_efficiency": 2,
+        "esoi_elec_storage": 1,
     },
 )
 def static_eroigrid_res_elec():

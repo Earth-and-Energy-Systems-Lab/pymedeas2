@@ -9,20 +9,20 @@ import xarray as xr
 
 from pysd.py_backend.functions import (
     step,
-    zidz,
-    integer,
-    invert_matrix,
-    if_then_else,
-    sum,
     xidz,
+    if_then_else,
+    invert_matrix,
+    integer,
+    sum,
+    zidz,
 )
-from pysd.py_backend.statefuls import Integ, Smooth, SampleIfTrue, Initial, DelayFixed
-from pysd.py_backend.external import ExtLookup, ExtData, ExtConstant
+from pysd.py_backend.statefuls import SampleIfTrue, Integ, DelayFixed, Smooth, Initial
+from pysd.py_backend.external import ExtConstant, ExtData, ExtLookup
 from pysd.py_backend.data import TabData
-from pysd.py_backend.utils import load_modules, load_model_data
+from pysd.py_backend.utils import load_model_data, load_modules
 from pysd import Component
 
-__pysd_version__ = "3.14.2"
+__pysd_version__ = "3.14.3"
 
 __data = {"scope": None, "time": lambda: 0}
 
@@ -58,7 +58,7 @@ def time():
 
 
 @component.add(
-    name="FINAL_TIME", units="year", comp_type="Constant", comp_subtype="Normal"
+    name="FINAL TIME", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def final_time():
     """
@@ -68,7 +68,7 @@ def final_time():
 
 
 @component.add(
-    name="INITIAL_TIME", units="year", comp_type="Constant", comp_subtype="Normal"
+    name="INITIAL TIME", units="year", comp_type="Constant", comp_subtype="Normal"
 )
 def initial_time():
     """
@@ -92,7 +92,7 @@ def saveper():
 
 
 @component.add(
-    name="TIME_STEP",
+    name="TIME STEP",
     units="year",
     limits=(0.0, np.nan),
     comp_type="Constant",
@@ -111,3 +111,26 @@ def time_step():
 
 # load modules from modules_pymedeas_cat directory
 exec(load_modules("modules_pymedeas_cat", _modules, _root, []))
+
+
+@component.add(
+    name="Initial global energy intensity 2019",
+    units="EJ/Tdollars",
+    subscripts=["SECTORS and HOUSEHOLDS"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"historic_final_energy_intensity": 1, "mdollar_per_tdollar": 1},
+)
+def initial_global_energy_intensity_2019():
+    """
+    Initial global energy intensity by sector 2009
+    """
+    return (
+        sum(
+            historic_final_energy_intensity(2019).rename(
+                {"final sources": "final sources!"}
+            ),
+            dim=["final sources!"],
+        )
+        * mdollar_per_tdollar()
+    )

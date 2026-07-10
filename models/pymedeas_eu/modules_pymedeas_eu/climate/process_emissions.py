@@ -1,6 +1,6 @@
 """
 Module climate.process_emissions
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -107,7 +107,7 @@ def process_emissions_reduction_policy():
 
 
 _ext_constant_process_emissions_reduction_policy = ExtConstant(
-    r"../../scenarios/scen_w.xlsx",
+    r"../../scenarios/scen_eu.xlsx",
     "NZP",
     "policy_improvement_process_emissions_efficiency",
     {},

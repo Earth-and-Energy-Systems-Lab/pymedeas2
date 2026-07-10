@@ -1,6 +1,6 @@
 """
 Module energy.supply.ped_from_nonelectric_res
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(

@@ -1,6 +1,6 @@
 """
 Module economy.exports_demand
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -141,8 +141,8 @@ _integ_exports_demand = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "exports_demand": 1,
         "real_exports_demand_by_sector": 1,
+        "exports_demand": 1,
         "nvs_1_year": 1,
     },
 )
@@ -370,12 +370,12 @@ def total_gfcf():
     comp_subtype="Normal",
     depends_on={
         "exports_demand": 1,
-        "unit_correction_economic": 2,
         "real_demand_world": 1,
+        "unit_correction_economic": 2,
         "beta_1_exp": 2,
-        "variation_historic_exports_demand": 1,
-        "real_demand_world_next_step": 1,
         "beta_0_exp": 1,
+        "real_demand_world_next_step": 1,
+        "variation_historic_exports_demand": 1,
         "time": 1,
     },
 )
@@ -407,14 +407,14 @@ def variation_exports_demand():
     comp_subtype="Normal",
     depends_on={
         "gross_fixed_capital_formation": 1,
-        "variation_historic_gfcf": 1,
         "unit_correction_economic": 2,
+        "variation_cc": 1,
+        "beta_1_gfcf": 2,
+        "variation_historic_gfcf": 1,
+        "beta_0_gfcf": 1,
+        "cc_total": 2,
         "nvs_1_year": 1,
         "time": 1,
-        "cc_total": 2,
-        "beta_1_gfcf": 2,
-        "beta_0_gfcf": 1,
-        "variation_cc": 1,
     },
 )
 def variation_gfcf():

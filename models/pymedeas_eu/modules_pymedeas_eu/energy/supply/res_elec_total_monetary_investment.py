@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_elec_total_monetary_investment
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(

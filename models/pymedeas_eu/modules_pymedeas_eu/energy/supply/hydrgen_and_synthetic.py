@@ -1,6 +1,6 @@
 """
 Module energy.supply.hydrgen_and_synthetic
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -57,6 +57,73 @@ def electricity_demand_for_synthetic_fuels():
     Demand of electricity for hydrogen and synthetic fuels production
     """
     return policy_ets(time()) / efficiency_electricity_to_synthetic()
+
+
+@component.add(
+    name="hydrogen_demand_for_synthetic",
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "synthethic_fuel_generation": 1,
+        "hydrogen_for_synthetic_efficiency": 1,
+    },
+)
+def hydrogen_demand_for_synthetic():
+    return (
+        float(synthethic_fuel_generation().loc["synthetic_liq"])
+        * hydrogen_for_synthetic_efficiency()
+    )
+
+
+@component.add(
+    name="hydrogen_demand_for_synthetic_delayed_ts",
+    units="EJ/year",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_hydrogen_demand_for_synthetic_delayed_ts": 1},
+    other_deps={
+        "_delayfixed_hydrogen_demand_for_synthetic_delayed_ts": {
+            "initial": {"time_step": 1},
+            "step": {"hydrogen_demand_for_synthetic": 1},
+        }
+    },
+)
+def hydrogen_demand_for_synthetic_delayed_ts():
+    return _delayfixed_hydrogen_demand_for_synthetic_delayed_ts()
+
+
+_delayfixed_hydrogen_demand_for_synthetic_delayed_ts = DelayFixed(
+    lambda: hydrogen_demand_for_synthetic(),
+    lambda: time_step(),
+    lambda: 0,
+    time_step,
+    "_delayfixed_hydrogen_demand_for_synthetic_delayed_ts",
+)
+
+
+@component.add(
+    name="hydrogen_for_synthetic_efficiency",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_hydrogen_for_synthetic_efficiency"},
+)
+def hydrogen_for_synthetic_efficiency():
+    """
+    Hydrogen for each EJ of liquid synthetic fuel
+    """
+    return _ext_constant_hydrogen_for_synthetic_efficiency()
+
+
+_ext_constant_hydrogen_for_synthetic_efficiency = ExtConstant(
+    r"../energy.xlsx",
+    "Europe",
+    "h_to_synthetic",
+    {},
+    _root,
+    {},
+    "_ext_constant_hydrogen_for_synthetic_efficiency",
+)
 
 
 @component.add(

@@ -1,6 +1,6 @@
 """
 Module materials.demand_for_ev_batteries
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(

@@ -1,6 +1,6 @@
 """
 Module society.population
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -136,8 +136,8 @@ _ext_data_p_timeseries_pop_growth_rate = ExtData(
     depends_on={
         "time": 1,
         "variation_historic_pop": 1,
-        "population": 1,
         "annual_population_growth_rate": 1,
+        "population": 1,
     },
 )
 def pop_variation():

@@ -1,6 +1,6 @@
 """
 Module energy.storage.storage_demand_and_supply
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -83,7 +83,10 @@ def cp_ev_batteries_for_elec_storage():
     Dynamic evolution of the Cp of EV batteries for electricity storage.
     """
     return float(
-        np.minimum(cp_ev_batteries_required(), max_cp_ev_batteries_for_elec_storage())
+        np.minimum(
+            cp_ev_batteries_required(),
+            float(max_cp_ev_batteries_for_elec_storage().loc["cars"]),
+        )
     )
 
 
@@ -96,7 +99,13 @@ def cp_ev_batteries_for_elec_storage():
 )
 def cp_ev_batteries_required():
     return float(
-        np.maximum(0, zidz(demand_ev_batteries_for_elec_storage(), ev_batteries_tw()))
+        np.maximum(
+            0,
+            zidz(
+                demand_ev_batteries_for_elec_storage(),
+                sum(ev_batteries_tw().rename({"EV_bat": "EV_bat!"}), dim=["EV_bat!"]),
+            ),
+        )
     )
 
 
@@ -342,4 +351,7 @@ def used_ev_batteries_for_elec_storage():
     """
     Bateries from electric vehicles used for electric storage.
     """
-    return ev_batteries_tw() * cp_ev_batteries_for_elec_storage()
+    return (
+        sum(ev_batteries_tw().rename({"EV_bat": "EV_bat!"}), dim=["EV_bat!"])
+        * cp_ev_batteries_for_elec_storage()
+    )

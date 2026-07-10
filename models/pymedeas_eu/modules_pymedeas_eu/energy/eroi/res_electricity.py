@@ -1,6 +1,6 @@
 """
 Module energy.eroi.res_electricity
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -205,12 +205,12 @@ def cedtot_per_material_res_elec_var():
     comp_subtype="Normal",
     depends_on={
         "res_elec_variables": 1,
-        "twe_per_twh": 1,
-        "lifetime_res_elec": 1,
         "ej_per_twh": 1,
+        "twe_per_twh": 1,
         "cpini_res_elec": 1,
-        "quality_of_electricity_2015": 1,
+        "lifetime_res_elec": 1,
         "eroiini_res_elec_dispatch": 1,
+        "quality_of_electricity_2015": 1,
     },
 )
 def cedtot_per_tw_over_lifetime_res_elec_dispatch():
@@ -340,7 +340,7 @@ _ext_constant_eroiini_res_elec_dispatch = ExtConstant(
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "fei_over_lifetime_res_elec_dispatch": 4,
+        "fei_over_lifetime_res_elec_dispatch": 5,
         "fei_over_lifetime_res_elec_var": 4,
     },
 )
@@ -367,6 +367,9 @@ def fei_over_lifetime_res_elec():
     )
     value.loc[["solar_PV"]] = float(fei_over_lifetime_res_elec_var().loc["solar_PV"])
     value.loc[["CSP"]] = float(fei_over_lifetime_res_elec_var().loc["CSP"])
+    value.loc[["fuel_cell"]] = float(
+        fei_over_lifetime_res_elec_dispatch().loc["fuel_cell"]
+    )
     return value
 
 
@@ -399,8 +402,8 @@ def fei_over_lifetime_res_elec_dispatch():
     comp_subtype="Normal",
     depends_on={
         "cedtot_new_cap_res_elec_var": 1,
-        "grid_correction_factor_res_elec": 1,
         "share_energy_requirements_for_decom_res_elec": 1,
+        "grid_correction_factor_res_elec": 1,
         "ced_om_over_lifetime_res_elec_var": 1,
         "gquality_of_electricity": 1,
         "output_elec_over_lifetime_res_elec": 1,
@@ -454,7 +457,7 @@ def fei_res_elec_var():
     units="Dmnl",
     subscripts=["RES_elec"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={"__external__": "_ext_constant_grid_correction_factor_res_elec"},
 )
 def grid_correction_factor_res_elec():
@@ -545,7 +548,7 @@ def res_elec_variables():
     Vector to distinguis between RES elec variables and dispatchables: *If=1, RES elec variables (fully endogenous calculation from the materials requirements). *If=0, RES elec dispatchables (partially endogenous calculation requiring a value of EROI as starting point).
     """
     return xr.DataArray(
-        [0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0],
+        [0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0],
         {"RES_elec": _subscript_dict["RES_elec"]},
         ["RES_elec"],
     )
@@ -556,7 +559,7 @@ def res_elec_variables():
     units="Dmnl",
     subscripts=["RES_elec"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={"__external__": "_ext_constant_selfelectricity_consumption_res_elec"},
 )
 def selfelectricity_consumption_res_elec():
@@ -588,7 +591,7 @@ _ext_constant_selfelectricity_consumption_res_elec = ExtConstant(
     units="Dmnl",
     subscripts=["RES_elec"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={
         "__external__": "_ext_constant_share_energy_requirements_for_decom_res_elec"
     },
@@ -629,9 +632,9 @@ _ext_constant_share_energy_requirements_for_decom_res_elec = ExtConstant(
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "fei_over_lifetime_res_elec_dispatch": 8,
-        "output_elec_over_lifetime_res_elec": 8,
-        "gquality_of_electricity": 4,
+        "fei_over_lifetime_res_elec_dispatch": 10,
+        "gquality_of_electricity": 5,
+        "output_elec_over_lifetime_res_elec": 9,
         "fei_over_lifetime_res_elec_var": 8,
     },
 )
@@ -701,6 +704,15 @@ def static_eroi_res_elec():
         lambda: 0,
         lambda: float(output_elec_over_lifetime_res_elec().loc["CSP"])
         / float(fei_over_lifetime_res_elec_var().loc["CSP"]),
+    )
+    value.loc[["fuel_cell"]] = if_then_else(
+        float(fei_over_lifetime_res_elec_dispatch().loc["fuel_cell"]) == 0,
+        lambda: 0,
+        lambda: float(output_elec_over_lifetime_res_elec().loc["fuel_cell"])
+        / (
+            float(fei_over_lifetime_res_elec_dispatch().loc["fuel_cell"])
+            * gquality_of_electricity()
+        ),
     )
     return value
 

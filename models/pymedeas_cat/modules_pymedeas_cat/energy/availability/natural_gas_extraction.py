@@ -1,10 +1,10 @@
 """
 Module energy.availability.natural_gas_extraction
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name='"abundance_total_nat._gas_CAT_"',
+    name='"abundance total nat. gas CAT "',
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -22,7 +22,7 @@ def abundance_total_nat_gas_cat_():
 
 
 @component.add(
-    name="check_gas_delayed_1yr",
+    name="check gas delayed 1yr",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -48,7 +48,7 @@ _delayfixed_check_gas_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name='"constrain_gas_exogenous_growth?_delayed_1yr"',
+    name='"constrain gas exogenous growth? delayed 1yr"',
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -74,15 +74,15 @@ _delayfixed_constrain_gas_exogenous_growth_delayed_1yr = DelayFixed(
 
 
 @component.add(
-    name="conv_gas_to_leave_underground",
+    name="conv gas to leave underground",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "start_policy_leave_in_ground_conv_gas": 1,
-        "rurr_conv_gas_until_start_year_plg": 1,
         "share_rurr_conv_gas_to_leave_underground": 1,
+        "rurr_conv_gas_until_start_year_plg": 1,
     },
 )
 def conv_gas_to_leave_underground():
@@ -98,7 +98,7 @@ def conv_gas_to_leave_underground():
 
 
 @component.add(
-    name="cumulated_conv_gas_extraction",
+    name="cumulated conv gas extraction",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -125,7 +125,7 @@ _integ_cumulated_conv_gas_extraction = Integ(
 
 
 @component.add(
-    name="cumulated_conv_gas_extraction_to_1995",
+    name="cumulated conv gas extraction to 1995",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -150,7 +150,7 @@ _ext_constant_cumulated_conv_gas_extraction_to_1995 = ExtConstant(
 
 
 @component.add(
-    name="cumulated_tot_agg_gas_extraction",
+    name="cumulated tot agg gas extraction",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -177,7 +177,7 @@ _integ_cumulated_tot_agg_gas_extraction = Integ(
 
 
 @component.add(
-    name="cumulated_tot_agg_gas_extraction_to_1995",
+    name="cumulated tot agg gas extraction to 1995",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -197,7 +197,7 @@ def cumulated_tot_agg_gas_extraction_to_1995():
 
 
 @component.add(
-    name="Cumulated_unconv_gas_extraction",
+    name="Cumulated unconv gas extraction",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -224,7 +224,7 @@ _integ_cumulated_unconv_gas_extraction = Integ(
 
 
 @component.add(
-    name="cumulated_unconv_gas_extraction_to_1995",
+    name="cumulated unconv gas extraction to 1995",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -251,7 +251,7 @@ _ext_constant_cumulated_unconv_gas_extraction_to_1995 = ExtConstant(
 
 
 @component.add(
-    name="delay_gas_to_leave_underground",
+    name="delay gas to leave underground",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -280,7 +280,7 @@ _sampleiftrue_delay_gas_to_leave_underground = SampleIfTrue(
 
 
 @component.add(
-    name="Demand_conv_gas",
+    name="Demand conv gas",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -294,7 +294,7 @@ def demand_conv_gas():
 
 
 @component.add(
-    name="demand_gas_for_oil_refinery_gains",
+    name="demand gas for oil refinery gains",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -308,7 +308,7 @@ def demand_gas_for_oil_refinery_gains():
 
 
 @component.add(
-    name="Efficiency_gas_for_oil_refinery_gains",
+    name="Efficiency gas for oil refinery gains",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -333,7 +333,7 @@ _ext_constant_efficiency_gas_for_oil_refinery_gains = ExtConstant(
 
 
 @component.add(
-    name="evol_fossil_gas_extraction_rate_constraint",
+    name="evol fossil gas extraction rate constraint",
     units="EJ/(year*year)",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -356,7 +356,7 @@ def evol_fossil_gas_extraction_rate_constraint():
 
 
 @component.add(
-    name="evol_fossil_gas_extraction_rate_delayed",
+    name="evol fossil gas extraction rate delayed",
     units="EJ/(year*year)",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -385,14 +385,14 @@ _delayfixed_evol_fossil_gas_extraction_rate_delayed = DelayFixed(
 
 
 @component.add(
-    name="evolution_share_unconv_gas_vs_tot_agg",
+    name="evolution share unconv gas vs tot agg",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "share_unconv_gas_vs_tot_agg_in_2050": 3,
-        "year_2012": 2,
         "year_2050": 3,
+        "year_2012": 2,
         "time": 1,
     },
 )
@@ -413,7 +413,7 @@ def evolution_share_unconv_gas_vs_tot_agg():
 
 
 @component.add(
-    name="exponent_availability_conv_gas",
+    name="exponent availability conv gas",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="Normal",
@@ -426,7 +426,7 @@ def exponent_availability_conv_gas():
 
 
 @component.add(
-    name="extraction_conv_gas_EJ",
+    name="extraction conv gas EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -457,7 +457,7 @@ def extraction_conv_gas_ej():
 
 
 @component.add(
-    name='"extraction_conv_gas_-_tot_agg"',
+    name='"extraction conv gas - tot agg"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -468,7 +468,7 @@ def extraction_conv_gas_tot_agg():
 
 
 @component.add(
-    name="extraction_fossil_gas_agg_EJ_delayed",
+    name="extraction fossil gas agg EJ delayed",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -497,7 +497,7 @@ _delayfixed_extraction_fossil_gas_agg_ej_delayed = DelayFixed(
 
 
 @component.add(
-    name="extraction_tot_agg_gas_EJ",
+    name="extraction tot agg gas EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -506,8 +506,8 @@ _delayfixed_extraction_fossil_gas_agg_ej_delayed = DelayFixed(
         "ped_domestic_cat_total_natgas_ej": 3,
         "remaining_extractable_fossil_gas_with_left_underground": 1,
         "nvs_1_year": 1,
-        "activate_force_leaving_underground": 1,
         "max_extraction_tot_agg_gas": 2,
+        "activate_force_leaving_underground": 1,
     },
 )
 def extraction_tot_agg_gas_ej():
@@ -541,7 +541,7 @@ def extraction_tot_agg_gas_ej():
 
 
 @component.add(
-    name="extraction_unconv_gas_delayed",
+    name="extraction unconv gas delayed",
     units="EJ/year",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -567,17 +567,17 @@ _delayfixed_extraction_unconv_gas_delayed = DelayFixed(
 
 
 @component.add(
-    name="extraction_unconv_gas_EJ",
+    name="extraction unconv gas EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "rurr_unconv_gas": 1,
-        "max_extraction_unconv_gas": 1,
         "historic_unconv_gas": 1,
-        "time": 1,
-        "separate_conv_and_unconv_gas": 1,
         "max_unconv_gas_growth_extraction_ej": 1,
+        "max_extraction_unconv_gas": 1,
+        "separate_conv_and_unconv_gas": 1,
+        "time": 1,
     },
 )
 def extraction_unconv_gas_ej():
@@ -605,7 +605,7 @@ def extraction_unconv_gas_ej():
 
 
 @component.add(
-    name='"extraction_unconv_gas_-_tot_agg"',
+    name='"extraction unconv gas - tot agg"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -616,15 +616,15 @@ def extraction_unconv_gas_tot_agg():
 
 
 @component.add(
-    name="Flow_conv_gas_left_in_ground",
+    name="Flow conv gas left in ground",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 2,
         "start_policy_leave_in_ground_conv_gas": 2,
-        "conv_gas_to_leave_underground": 1,
         "nvs_1_year": 1,
+        "conv_gas_to_leave_underground": 1,
     },
 )
 def flow_conv_gas_left_in_ground():
@@ -643,7 +643,7 @@ def flow_conv_gas_left_in_ground():
 
 
 @component.add(
-    name="Flow_unconv_gas_left_in_ground",
+    name="Flow unconv gas left in ground",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -670,7 +670,7 @@ def flow_unconv_gas_left_in_ground():
 
 
 @component.add(
-    name="Historic_unconv_gas",
+    name="Historic unconv gas",
     units="EJ/year",
     comp_type="Data",
     comp_subtype="External",
@@ -701,7 +701,7 @@ _ext_data_historic_unconv_gas = ExtData(
 
 
 @component.add(
-    name="increase_scarcity_conv_gas",
+    name="increase scarcity conv gas",
     units="Dmnl/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -716,14 +716,14 @@ def increase_scarcity_conv_gas():
 
 
 @component.add(
-    name="max_extraction_conv_gas_EJ",
+    name="max extraction conv gas EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "separate_conv_and_unconv_gas": 1,
-        "tot_rurr_conv_gas": 1,
         "table_max_extraction_conv_gas": 1,
+        "tot_rurr_conv_gas": 1,
     },
 )
 def max_extraction_conv_gas_ej():
@@ -738,7 +738,7 @@ def max_extraction_conv_gas_ej():
 
 
 @component.add(
-    name="max_extraction_tot_agg_gas",
+    name="max extraction tot agg gas",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -746,8 +746,8 @@ def max_extraction_conv_gas_ej():
         "activate_force_leaving_underground": 1,
         "max_extraction_total_agg_gas_technical_ej": 3,
         "start_year_policy_leave_in_ground_fossil_gas": 1,
-        "time": 1,
         "max_extraction_total_agg_gas_policy": 1,
+        "time": 1,
     },
 )
 def max_extraction_tot_agg_gas():
@@ -771,7 +771,7 @@ def max_extraction_tot_agg_gas():
 
 
 @component.add(
-    name="max_extraction_total_agg_gas_policy",
+    name="max extraction total agg gas policy",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -792,7 +792,7 @@ def max_extraction_total_agg_gas_policy():
 
 
 @component.add(
-    name="max_extraction_total_agg_gas_technical_EJ",
+    name="max extraction total agg gas technical EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -814,7 +814,7 @@ def max_extraction_total_agg_gas_technical_ej():
 
 
 @component.add(
-    name="max_extraction_unconv_gas",
+    name="max extraction unconv gas",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -828,7 +828,7 @@ def max_extraction_unconv_gas():
 
 
 @component.add(
-    name="max_unconv_gas_growth_extraction",
+    name="max unconv gas growth extraction",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -854,7 +854,7 @@ def max_unconv_gas_growth_extraction():
 
 
 @component.add(
-    name="max_unconv_gas_growth_extraction_EJ",
+    name="max unconv gas growth extraction EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -878,7 +878,7 @@ def max_unconv_gas_growth_extraction_ej():
 
 
 @component.add(
-    name="P_constraint_growth_extraction_unconv_gas",
+    name="P constraint growth extraction unconv gas",
     units="Dmnl/year",
     comp_type="Constant",
     comp_subtype="External",
@@ -905,7 +905,7 @@ _ext_constant_p_constraint_growth_extraction_unconv_gas = ExtConstant(
 
 
 @component.add(
-    name="PEC_conv_gas",
+    name="PEC conv gas",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -916,7 +916,7 @@ def pec_conv_gas():
 
 
 @component.add(
-    name="PEC_unconv_gas",
+    name="PEC unconv gas",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -927,7 +927,7 @@ def pec_unconv_gas():
 
 
 @component.add(
-    name='"PED_nat._gas_without_GTL"',
+    name='"PED nat. gas without GTL"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -941,7 +941,7 @@ def ped_nat_gas_without_gtl():
 
 
 @component.add(
-    name='"PES_nat._gas_CAT_"',
+    name='"PES nat. gas CAT "',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -952,7 +952,7 @@ def pes_nat_gas_cat_():
 
 
 @component.add(
-    name='"PES_nat._gas_without_GTL"',
+    name='"PES nat. gas without GTL"',
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -966,14 +966,14 @@ def pes_nat_gas_without_gtl():
 
 
 @component.add(
-    name="real_consumption_UE_conv_gas_emissions_relevant_EJ",
+    name="real consumption UE conv gas emissions relevant EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pec_conv_gas": 1,
-        "nonenergy_use_demand_by_final_fuel": 1,
         "share_conv_vs_total_gas_extraction_eu": 1,
+        "nonenergy_use_demand_by_final_fuel": 1,
     },
 )
 def real_consumption_ue_conv_gas_emissions_relevant_ej():
@@ -991,14 +991,14 @@ def real_consumption_ue_conv_gas_emissions_relevant_ej():
 
 
 @component.add(
-    name="real_consumption_unconv_gas_emissions_relevant_EJ",
+    name="real consumption unconv gas emissions relevant EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "pec_unconv_gas": 1,
-        "nonenergy_use_demand_by_final_fuel": 1,
         "share_conv_vs_total_gas_extraction_eu": 1,
+        "nonenergy_use_demand_by_final_fuel": 1,
     },
 )
 def real_consumption_unconv_gas_emissions_relevant_ej():
@@ -1016,7 +1016,7 @@ def real_consumption_unconv_gas_emissions_relevant_ej():
 
 
 @component.add(
-    name="real_extraction_conv_gas",
+    name="real extraction conv gas",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1035,15 +1035,15 @@ def real_extraction_conv_gas():
 
 
 @component.add(
-    name="real_extraction_conv_gas_emissions_relevant_EJ",
+    name="real extraction conv gas emissions relevant EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "real_extraction_conv_gas": 1,
         "ped_nat_gas_for_gtl_ej": 1,
-        "nonenergy_use_demand_by_final_fuel": 1,
         "share_conv_vs_total_gas_extraction_eu": 1,
+        "nonenergy_use_demand_by_final_fuel": 1,
     },
 )
 def real_extraction_conv_gas_emissions_relevant_ej():
@@ -1064,7 +1064,7 @@ def real_extraction_conv_gas_emissions_relevant_ej():
 
 
 @component.add(
-    name="real_extraction_unconv_gas",
+    name="real extraction unconv gas",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1083,15 +1083,15 @@ def real_extraction_unconv_gas():
 
 
 @component.add(
-    name="real_extraction_unconv_gas_emissions_relevant_EJ",
+    name="real extraction unconv gas emissions relevant EJ",
     units="EJ/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "real_extraction_unconv_gas": 1,
         "ped_nat_gas_for_gtl_ej": 1,
-        "nonenergy_use_demand_by_final_fuel": 1,
         "share_conv_vs_total_gas_extraction_eu": 1,
+        "nonenergy_use_demand_by_final_fuel": 1,
     },
 )
 def real_extraction_unconv_gas_emissions_relevant_ej():
@@ -1112,7 +1112,7 @@ def real_extraction_unconv_gas_emissions_relevant_ej():
 
 
 @component.add(
-    name="remaining_extractable_fossil_gas_with_left_underground",
+    name="remaining extractable fossil gas with left underground",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1126,7 +1126,7 @@ def remaining_extractable_fossil_gas_with_left_underground():
 
 
 @component.add(
-    name="RURR_conv_gas",
+    name="RURR conv gas",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1158,7 +1158,7 @@ _integ_rurr_conv_gas = Integ(
 
 
 @component.add(
-    name="RURR_conv_gas_until_start_year_PLG",
+    name="RURR conv gas until start year PLG",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -1190,7 +1190,7 @@ _sampleiftrue_rurr_conv_gas_until_start_year_plg = SampleIfTrue(
 
 
 @component.add(
-    name="RURR_tot_agg_gas",
+    name="RURR tot agg gas",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1199,8 +1199,8 @@ _sampleiftrue_rurr_conv_gas_until_start_year_plg = SampleIfTrue(
         "_integ_rurr_tot_agg_gas": {
             "initial": {
                 "separate_conv_and_unconv_gas": 1,
-                "urr_tot_agg_gas": 1,
                 "cumulated_tot_agg_gas_extraction_to_1995": 1,
+                "urr_tot_agg_gas": 1,
             },
             "step": {"extraction_tot_agg_gas_ej": 1},
         }
@@ -1225,7 +1225,7 @@ _integ_rurr_tot_agg_gas = Integ(
 
 
 @component.add(
-    name="RURR_total_agg_fossil_gas_in_reference_year",
+    name="RURR total agg fossil gas in reference year",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -1253,7 +1253,7 @@ _sampleiftrue_rurr_total_agg_fossil_gas_in_reference_year = SampleIfTrue(
 
 
 @component.add(
-    name="RURR_unconv_gas",
+    name="RURR unconv gas",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1288,7 +1288,7 @@ _integ_rurr_unconv_gas = Integ(
 
 
 @component.add(
-    name="RURR_unconv_gas_until_start_year_PLG",
+    name="RURR unconv gas until start year PLG",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="SampleIfTrue",
@@ -1320,14 +1320,14 @@ _sampleiftrue_rurr_unconv_gas_until_start_year_plg = SampleIfTrue(
 
 
 @component.add(
-    name="scarcity_conv_gas",
+    name="scarcity conv gas",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "max_extraction_conv_gas_ej": 4,
-        "extraction_conv_gas_ej": 2,
         "exponent_availability_conv_gas": 1,
+        "extraction_conv_gas_ej": 2,
     },
 )
 def scarcity_conv_gas():
@@ -1351,7 +1351,7 @@ def scarcity_conv_gas():
 
 
 @component.add(
-    name="scarcity_conv_gas_delayed_TS",
+    name="scarcity conv gas delayed TS",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="DelayFixed",
@@ -1380,7 +1380,7 @@ _delayfixed_scarcity_conv_gas_delayed_ts = DelayFixed(
 
 
 @component.add(
-    name="scarcity_conv_gas_stock",
+    name="scarcity conv gas stock",
     units="Dmnl",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1405,7 +1405,7 @@ _integ_scarcity_conv_gas_stock = Integ(
 
 
 @component.add(
-    name='"separate_conv_and_unconv_gas?"',
+    name='"separate conv and unconv gas?"',
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1430,7 +1430,7 @@ _ext_constant_separate_conv_and_unconv_gas = ExtConstant(
 
 
 @component.add(
-    name="share_conv_gas_vs_tot_agg",
+    name="share conv gas vs tot agg",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1441,7 +1441,7 @@ def share_conv_gas_vs_tot_agg():
 
 
 @component.add(
-    name="share_conv_vs_total_gas_extraction_EU",
+    name="share conv vs total gas extraction EU",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1458,7 +1458,7 @@ def share_conv_vs_total_gas_extraction_eu():
 
 
 @component.add(
-    name="share_gas_for_oil_refinery_gains",
+    name="share gas for oil refinery gains",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1476,7 +1476,7 @@ def share_gas_for_oil_refinery_gains():
 
 
 @component.add(
-    name="share_RURR_conv_gas_to_leave_underground",
+    name="share RURR conv gas to leave underground",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1503,7 +1503,7 @@ _ext_constant_share_rurr_conv_gas_to_leave_underground = ExtConstant(
 
 
 @component.add(
-    name="share_RURR_tot_agg_fossil_gas_to_leave_underground",
+    name="share RURR tot agg fossil gas to leave underground",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1530,7 +1530,7 @@ _ext_constant_share_rurr_tot_agg_fossil_gas_to_leave_underground = ExtConstant(
 
 
 @component.add(
-    name="share_RURR_unconv_gas_to_leave_underground",
+    name="share RURR unconv gas to leave underground",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1557,15 +1557,15 @@ _ext_constant_share_rurr_unconv_gas_to_leave_underground = ExtConstant(
 
 
 @component.add(
-    name="share_unconv_gas_vs_tot_agg",
+    name="share unconv gas vs tot agg",
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "evolution_share_unconv_gas_vs_tot_agg": 1,
-        "ped_nat_gas_ej": 1,
         "historic_unconv_gas": 1,
+        "ped_nat_gas_ej": 1,
     },
 )
 def share_unconv_gas_vs_tot_agg():
@@ -1580,7 +1580,7 @@ def share_unconv_gas_vs_tot_agg():
 
 
 @component.add(
-    name="share_unconv_gas_vs_tot_agg_in_2050",
+    name="share unconv gas vs tot agg in 2050",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -1605,7 +1605,7 @@ _ext_constant_share_unconv_gas_vs_tot_agg_in_2050 = ExtConstant(
 
 
 @component.add(
-    name="Start_policy_leave_in_ground_conv_gas",
+    name="Start policy leave in ground conv gas",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1630,7 +1630,7 @@ _ext_constant_start_policy_leave_in_ground_conv_gas = ExtConstant(
 
 
 @component.add(
-    name="Start_policy_leave_in_ground_unconv_gas",
+    name="Start policy leave in ground unconv gas",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1657,7 +1657,7 @@ _ext_constant_start_policy_leave_in_ground_unconv_gas = ExtConstant(
 
 
 @component.add(
-    name="Start_year_policy_leave_in_ground_fossil_gas",
+    name="Start year policy leave in ground fossil gas",
     units="year",
     comp_type="Constant",
     comp_subtype="External",
@@ -1684,7 +1684,7 @@ _ext_constant_start_year_policy_leave_in_ground_fossil_gas = ExtConstant(
 
 
 @component.add(
-    name="table_max_extraction_agg_gas",
+    name="table max extraction agg gas",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -1710,7 +1710,7 @@ _ext_lookup_table_max_extraction_agg_gas = ExtLookup(
 
 
 @component.add(
-    name="table_max_extraction_conv_gas",
+    name="table max extraction conv gas",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -1736,7 +1736,7 @@ _ext_lookup_table_max_extraction_conv_gas = ExtLookup(
 
 
 @component.add(
-    name="table_max_extraction_unconv_gas",
+    name="table max extraction unconv gas",
     units="EJ/year",
     comp_type="Lookup",
     comp_subtype="External",
@@ -1762,7 +1762,7 @@ _ext_lookup_table_max_extraction_unconv_gas = ExtLookup(
 
 
 @component.add(
-    name="Tot_RURR_conv_gas",
+    name="Tot RURR conv gas",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1776,7 +1776,7 @@ def tot_rurr_conv_gas():
 
 
 @component.add(
-    name="Tot_RURR_unconv_gas",
+    name="Tot RURR unconv gas",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1790,7 +1790,7 @@ def tot_rurr_unconv_gas():
 
 
 @component.add(
-    name="total_agg_fossil_gas_to_leave_underground",
+    name="total agg fossil gas to leave underground",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1810,7 +1810,7 @@ def total_agg_fossil_gas_to_leave_underground():
 
 
 @component.add(
-    name="Total_conv_gas_left_in_ground",
+    name="Total conv gas left in ground",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1837,7 +1837,7 @@ _integ_total_conv_gas_left_in_ground = Integ(
 
 
 @component.add(
-    name="Total_unconv_gas_left_in_ground",
+    name="Total unconv gas left in ground",
     units="EJ",
     comp_type="Stateful",
     comp_subtype="Integ",
@@ -1864,15 +1864,15 @@ _integ_total_unconv_gas_left_in_ground = Integ(
 
 
 @component.add(
-    name="unconv_gas_to_leave_underground",
+    name="unconv gas to leave underground",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
         "start_policy_leave_in_ground_unconv_gas": 1,
-        "rurr_unconv_gas_until_start_year_plg": 1,
         "share_rurr_unconv_gas_to_leave_underground": 1,
+        "rurr_unconv_gas_until_start_year_plg": 1,
     },
 )
 def unconv_gas_to_leave_underground():
@@ -1888,7 +1888,7 @@ def unconv_gas_to_leave_underground():
 
 
 @component.add(
-    name="URR_conv_gas",
+    name="URR conv gas",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1904,7 +1904,7 @@ def urr_conv_gas():
 
 
 @component.add(
-    name="URR_conv_gas_input",
+    name="URR conv gas input",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -1926,7 +1926,7 @@ _ext_constant_urr_conv_gas_input = ExtConstant(
 
 
 @component.add(
-    name="URR_tot_agg_gas",
+    name="URR tot agg gas",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1942,7 +1942,7 @@ def urr_tot_agg_gas():
 
 
 @component.add(
-    name="URR_total_gas_input",
+    name="URR total gas input",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -1967,7 +1967,7 @@ _ext_constant_urr_total_gas_input = ExtConstant(
 
 
 @component.add(
-    name="URR_unconv_gas",
+    name="URR unconv gas",
     units="EJ",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -1983,7 +1983,7 @@ def urr_unconv_gas():
 
 
 @component.add(
-    name="URR_unconv_gas_input",
+    name="URR unconv gas input",
     units="EJ",
     comp_type="Constant",
     comp_subtype="External",
@@ -2005,7 +2005,7 @@ _ext_constant_urr_unconv_gas_input = ExtConstant(
 
 
 @component.add(
-    name='"Year_scarcity_total_nat._gas"',
+    name='"Year scarcity total nat. gas"',
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -2021,7 +2021,7 @@ def year_scarcity_total_nat_gas():
 
 
 @component.add(
-    name="year_to_end_fossil_gas_extraction",
+    name="year to end fossil gas extraction",
     units="year",
     comp_type="Auxiliary",
     comp_subtype="Normal",

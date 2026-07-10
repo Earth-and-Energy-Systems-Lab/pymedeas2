@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_elec_capacities_and_generat
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -51,8 +51,10 @@ def cp_baseload_reduction():
     comp_subtype="Normal",
     depends_on={
         "min_cp_baseload_res": 1,
+        "goal_cp_res_elec": 1,
+        "cpini_res_elec": 3,
         "shortage_bioe_for_elec": 1,
-        "cpini_res_elec": 1,
+        "time": 2,
     },
 )
 def cp_res_elec():
@@ -60,7 +62,14 @@ def cp_res_elec():
     Capacity factor of RES technologies (after accounting for the overcapacities required to manage the intermittency of RES elec variables).
     """
     return np.maximum(
-        min_cp_baseload_res(), cpini_res_elec() * shortage_bioe_for_elec()
+        min_cp_baseload_res(),
+        if_then_else(
+            time() < 2020,
+            lambda: cpini_res_elec(),
+            lambda: cpini_res_elec()
+            + (goal_cp_res_elec() - cpini_res_elec()) * (time() - 2020) / (2050 - 2020),
+        )
+        * shortage_bioe_for_elec(),
     )
 
 
@@ -139,6 +148,7 @@ def curtailment_res():
     value.loc[["wind_offshore"]] = curtailment_and_storage_share_variable_res(time())
     value.loc[["solar_PV"]] = curtailment_and_storage_share_variable_res(time())
     value.loc[["CSP"]] = curtailment_and_storage_share_variable_res(time())
+    value.loc[["fuel_cell"]] = 0
     return value
 
 
@@ -184,6 +194,28 @@ def fe_real_tot_generation_res_elec():
             potential_tot_generation_res_elec_twh(),
         )
     )
+
+
+@component.add(
+    name="goal_cp_res_elec",
+    subscripts=["RES_elec"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_goal_cp_res_elec"},
+)
+def goal_cp_res_elec():
+    return _ext_constant_goal_cp_res_elec()
+
+
+_ext_constant_goal_cp_res_elec = ExtConstant(
+    r"../../scenarios/scen_eu.xlsx",
+    "NZP",
+    "goal_cp*",
+    {"RES_elec": _subscript_dict["RES_elec"]},
+    _root,
+    {"RES_elec": _subscript_dict["RES_elec"]},
+    "_ext_constant_goal_cp_res_elec",
+)
 
 
 @component.add(
@@ -268,6 +300,7 @@ _delayfixed_installed_capacity_res_elec_delayed = DelayFixed(
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
+        "sensitivity_res_elec": 2,
         "start_year_p_growth_res_elec": 3,
         "p_power": 2,
     },
@@ -284,13 +317,13 @@ def installed_capacity_res_elec_policies():
             lambda: table_hist_capacity_res_elec(end_hist_data())
             + (
                 (
-                    p_power(start_year_p_growth_res_elec())
+                    p_power(start_year_p_growth_res_elec()) * sensitivity_res_elec()
                     - table_hist_capacity_res_elec(end_hist_data())
                 )
                 / (start_year_p_growth_res_elec() - end_hist_data())
             )
             * (time() - end_hist_data()),
-            lambda: p_power(time()),
+            lambda: p_power(time()) * sensitivity_res_elec(),
         ),
     )
 
@@ -355,8 +388,8 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "installed_capacity_res_elec": 1,
         "res_installed_capacity_ts_delayed": 1,
+        "installed_capacity_res_elec": 1,
         "time_step": 1,
     },
 )
@@ -464,8 +497,8 @@ def potential_tot_generation_res_elec_twh():
         "time": 1,
         "cp_res_elec": 1,
         "twe_per_twh": 1,
-        "installed_capacity_res_elec": 2,
         "real_generation_res_elec_twh": 1,
+        "installed_capacity_res_elec": 2,
     },
 )
 def real_cp_res_elec():
@@ -655,6 +688,16 @@ _delayfixed_res_installed_capacity_ts_delayed = DelayFixed(
 
 
 @component.add(
+    name="sensitivity_res_elec",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def sensitivity_res_elec():
+    return 1
+
+
+@component.add(
     name="Start_year_P_growth_RES_elec",
     units="year",
     comp_type="Constant",
@@ -784,8 +827,8 @@ def total_time_planconstr_res_elec():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "lifetime_res_elec": 1,
         "constructed_capacity_res_elec_tw": 1,
+        "lifetime_res_elec": 1,
     },
 )
 def wear_res_elec():

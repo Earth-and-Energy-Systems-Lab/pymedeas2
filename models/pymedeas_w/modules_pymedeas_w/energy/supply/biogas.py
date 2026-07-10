@@ -1,6 +1,6 @@
 """
 Module energy.supply.biogas
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -367,9 +367,9 @@ _ext_constant_max_biogas_ej = ExtConstant(
         "time": 3,
         "historic_biogas_pes": 2,
         "time_step": 2,
-        "max_biogas_ej": 2,
         "pes_biogas_ej": 2,
         "adapt_growth_biogas": 1,
+        "max_biogas_ej": 2,
     },
 )
 def new_pes_biogas():

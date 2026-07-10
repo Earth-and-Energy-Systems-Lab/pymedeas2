@@ -1,6 +1,6 @@
 """
 Module energy.supply.total_fe_elec_generation
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -92,12 +92,12 @@ def chp_and_nuc():
         "pes_oil_ej": 1,
         "share_oil_dem_for_elec": 1,
         "efficiency_liquids_for_electricity": 1,
-        "extraction_coal_ej": 1,
         "share_coal_dem_for_elec": 1,
         "efficiency_coal_for_electricity": 1,
+        "extraction_coal_ej": 1,
+        "pes_nat_gas": 1,
         "efficiency_gas_for_electricity": 1,
         "share_nat_gas_dem_for_elec": 1,
-        "pes_nat_gas": 1,
     },
 )
 def fe_elec_generation_from_fossil_fuels():

@@ -1,6 +1,6 @@
 """
 Module energy.eroi.water_demand_res_elec_var
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -179,7 +179,7 @@ def water_for_om_required_for_res_elec():
     units="kg/MW",
     subscripts=["RES_elec", "water0"],
     comp_type="Constant",
-    comp_subtype="Normal, External",
+    comp_subtype="External, Normal",
     depends_on={"__external__": "_ext_constant_water_for_om_res_elec"},
 )
 def water_for_om_res_elec():

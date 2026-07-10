@@ -1,6 +1,6 @@
 """
 Module climate.energy_losses_function
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -85,17 +85,15 @@ _ext_constant_b_logistic = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "activate_elf": 1,
-        "a_logistic": 1,
         "b_logistic": 1,
-        "co2_ppm_concentrations": 1,
+        "temperature_change": 1,
+        "a_logistic": 1,
     },
 )
 def elf():
     return if_then_else(
         activate_elf(),
-        lambda: 1
-        - 1
-        / (1 + float(np.exp((co2_ppm_concentrations() - a_logistic()) / b_logistic()))),
+        lambda: (a_logistic() / b_logistic() ** 2) * temperature_change() ** 2,
         lambda: 0,
     )
 

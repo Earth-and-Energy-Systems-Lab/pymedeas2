@@ -1,6 +1,6 @@
 """
 Module energy.availability.final_energy_abundances
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -628,8 +628,8 @@ def sensitivity_to_scarcity():
     depends_on={
         "sensitivity_to_scarcity_option_h": 2,
         "sensitivity_to_energy_scarcity_low": 1,
-        "sensitivity_to_energy_scarcity_high": 1,
         "sensitivity_to_energy_scarcity_medium": 1,
+        "sensitivity_to_energy_scarcity_high": 1,
     },
 )
 def sensitivity_to_scarcity_h():

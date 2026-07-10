@@ -1,6 +1,6 @@
 """
 Module energy.eroi.grid_allocation_res_elec
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -154,31 +154,6 @@ def remaining_potential_res_elec_switch():
 
 
 @component.add(
-    name='"share_RES_elec_generation_curtailed&stored"',
-    units="Dmnl",
-    subscripts=["RES_elec"],
-    comp_type="Constant",
-    comp_subtype="Normal",
-)
-def share_res_elec_generation_curtailedstored():
-    """
-    Share of the generation of electricity from RES technologies curtailed or stored.
-    """
-    value = xr.DataArray(
-        np.nan, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
-    )
-    value.loc[["hydro"]] = 0
-    value.loc[["geot_elec"]] = 0
-    value.loc[["solid_bioE_elec"]] = 0
-    value.loc[["oceanic"]] = 0
-    value.loc[["wind_onshore"]] = 0.2
-    value.loc[["wind_offshore"]] = 0.2
-    value.loc[["solar_PV"]] = 0.2
-    value.loc[["CSP"]] = 0.2
-    return value
-
-
-@component.add(
     name="\"'static'_EROIgrid_RES_elec\"",
     units="Dmnl",
     subscripts=["RES_elec"],
@@ -186,9 +161,9 @@ def share_res_elec_generation_curtailedstored():
     comp_subtype="Normal",
     depends_on={
         "static_eroi_res_elec": 2,
-        "rt_elec_storage_efficiency": 2,
         "esoi_elec_storage": 1,
-        "share_res_elec_generation_curtailedstored": 3,
+        "rt_elec_storage_efficiency": 2,
+        "curtailment_res": 2,
     },
 )
 def static_eroigrid_res_elec():
@@ -200,14 +175,10 @@ def static_eroigrid_res_elec():
         lambda: xr.DataArray(
             0, {"RES_elec": _subscript_dict["RES_elec"]}, ["RES_elec"]
         ),
-        lambda: (
-            1
-            - share_res_elec_generation_curtailedstored()
-            + share_res_elec_generation_curtailedstored() * rt_elec_storage_efficiency()
-        )
+        lambda: (1 - curtailment_res() * rt_elec_storage_efficiency())
         / (
             1 / static_eroi_res_elec()
-            + share_res_elec_generation_curtailedstored()
+            + curtailment_res()
             * zidz(rt_elec_storage_efficiency(), esoi_elec_storage())
         ),
     )

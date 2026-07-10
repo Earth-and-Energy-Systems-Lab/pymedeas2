@@ -1,6 +1,6 @@
 """
 Module economy.gdp_desired_labour_and_capital_share
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -8,10 +8,10 @@ Translated using PySD version 3.14.2
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"p_timeseries_gdppc_growth_rate": 1},
+    depends_on={"p_timeseries_gdppc_growth_rate": 1, "gdp_sensitivity_factor": 1},
 )
 def annual_gdppc_growth_rate():
-    return p_timeseries_gdppc_growth_rate()
+    return p_timeseries_gdppc_growth_rate() + gdp_sensitivity_factor()
 
 
 @component.add(
@@ -49,9 +49,9 @@ _integ_capital_share = Integ(
     depends_on={
         "p_capital_share": 1,
         "initial_capital_share": 2,
-        "year_initial_capital_share": 1,
         "year_final_capial_share": 1,
         "time_step": 1,
+        "year_initial_capital_share": 1,
     },
 )
 def capital_share_growth():
@@ -102,6 +102,32 @@ def cc_total_not_covered():
     Gap between capital compensation required and real capital compensation (after energy-economy feedback)
     """
     return demand_not_covered_total_fd() * capital_share()
+
+
+@component.add(
+    name="delayed_population",
+    units="person",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_delayed_population": 1},
+    other_deps={
+        "_delayfixed_delayed_population": {
+            "initial": {"population": 1},
+            "step": {"population": 1},
+        }
+    },
+)
+def delayed_population():
+    return _delayfixed_delayed_population()
+
+
+_delayfixed_delayed_population = DelayFixed(
+    lambda: population(),
+    lambda: 1,
+    lambda: population(),
+    time_step,
+    "_delayfixed_delayed_population",
+)
 
 
 @component.add(
@@ -184,10 +210,11 @@ def desired_gdp():
         "time": 1,
         "historic_gdp_growth_rate": 1,
         "desired_gdp": 1,
+        "delayed_population": 1,
         "dollars_to_tdollars": 1,
+        "population": 2,
         "annual_gdppc_growth_rate": 1,
         "desired_gdppc": 1,
-        "population": 1,
     },
 )
 def desired_gdp_next_year():
@@ -195,9 +222,10 @@ def desired_gdp_next_year():
         time() < 2015,
         lambda: desired_gdp() * (1 + historic_gdp_growth_rate()),
         lambda: desired_gdppc()
+        * (1 + annual_gdppc_growth_rate())
         * population()
-        / dollars_to_tdollars()
-        * (1 + annual_gdppc_growth_rate()),
+        * (population() / delayed_population())
+        / dollars_to_tdollars(),
     )
 
 
@@ -264,6 +292,16 @@ def dollar_per_mdollar():
 
 
 @component.add(
+    name="gdp_sensitivity_factor",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def gdp_sensitivity_factor():
+    return 0
+
+
+@component.add(
     name="GDPpc_initial_year",
     units="$/person",
     comp_type="Auxiliary",
@@ -282,9 +320,9 @@ def gdppc_initial_year():
     depends_on={
         "time": 2,
         "year_initial_capital_share": 1,
-        "laborcapital_share_cte": 1,
         "year_final_capial_share": 1,
         "capital_share_growth": 1,
+        "laborcapital_share_cte": 1,
         "historic_capital_share_growth": 1,
     },
 )
@@ -841,7 +879,7 @@ _ext_data_p_timeseries_gdppc_growth_rate = ExtData(
     units="Dmnl",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"annual_gdppc_growth_rate": 1, "time_step": 1, "nvs_1_year": 1},
+    depends_on={"annual_gdppc_growth_rate": 1, "nvs_1_year": 1, "time_step": 1},
 )
 def ts_growth_rate():
     return (1 + annual_gdppc_growth_rate()) ** (time_step() / nvs_1_year()) - 1
@@ -899,9 +937,9 @@ def variation_cc():
     depends_on={
         "time": 5,
         "historic_gdp": 2,
-        "dollar_per_mdollar": 1,
-        "time_step": 3,
         "historic_population": 2,
+        "time_step": 3,
+        "dollar_per_mdollar": 1,
     },
 )
 def variation_historic_gdppc():

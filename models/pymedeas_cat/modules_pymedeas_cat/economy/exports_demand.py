@@ -1,10 +1,10 @@
 """
 Module economy.exports_demand
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="beta_0_EXP_0",
+    name="beta 0 EXP 0",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -30,7 +30,7 @@ _ext_constant_beta_0_exp_0 = ExtConstant(
 
 
 @component.add(
-    name="beta_0_EXP_1",
+    name="beta 0 EXP 1",
     units="Dmnl",
     subscripts=["sectors"],
     comp_type="Constant",
@@ -56,7 +56,7 @@ _ext_constant_beta_0_exp_1 = ExtConstant(
 
 
 @component.add(
-    name="beta_1_EXP_0",
+    name="beta 1 EXP 0",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -81,7 +81,7 @@ _ext_constant_beta_1_exp_0 = ExtConstant(
 
 
 @component.add(
-    name="beta_1_EXP_1",
+    name="beta 1 EXP 1",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -106,16 +106,16 @@ _ext_constant_beta_1_exp_1 = ExtConstant(
 
 
 @component.add(
-    name="Exports_demand_not_covered_RoW",
+    name="Exports demand not covered RoW",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "real_exports_demand_to_row_by_sector": 1,
-        "nvs_1_year": 1,
         "exports_demand_to_row": 1,
+        "nvs_1_year": 1,
+        "real_exports_demand_to_row_by_sector": 1,
     },
 )
 def exports_demand_not_covered_row():
@@ -123,7 +123,7 @@ def exports_demand_not_covered_row():
     Gap between exports required and real exports (after energy-economy feedback)
     """
     return if_then_else(
-        time() < 2009,
+        time() < 2019,
         lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
         lambda: (exports_demand_to_row() - real_exports_demand_to_row_by_sector())
         / nvs_1_year(),
@@ -131,7 +131,7 @@ def exports_demand_not_covered_row():
 
 
 @component.add(
-    name="Exports_demand_not_covered_to_RoEU",
+    name="Exports demand not covered to RoEU",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -149,7 +149,7 @@ def exports_demand_not_covered_to_roeu():
     """
     return (
         if_then_else(
-            time() < 2009,
+            time() < 2019,
             lambda: xr.DataArray(
                 0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]
             ),
@@ -160,7 +160,7 @@ def exports_demand_not_covered_to_roeu():
 
 
 @component.add(
-    name="Exports_demand_to_RoEU",
+    name="Exports demand to RoEU",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -191,7 +191,7 @@ _integ_exports_demand_to_roeu = Integ(
 
 
 @component.add(
-    name="Exports_demand_to_RoW",
+    name="Exports demand to RoW",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Stateful",
@@ -222,7 +222,33 @@ _integ_exports_demand_to_row = Integ(
 
 
 @component.add(
-    name="GDP_EU28_next_step",
+    name="GDP EU28 delayed",
+    units="Mdollars",
+    comp_type="Stateful",
+    comp_subtype="DelayFixed",
+    depends_on={"_delayfixed_gdp_eu28_delayed": 1},
+    other_deps={
+        "_delayfixed_gdp_eu28_delayed": {
+            "initial": {"gdp_eu28": 1},
+            "step": {"gdp_eu28": 1},
+        }
+    },
+)
+def gdp_eu28_delayed():
+    return _delayfixed_gdp_eu28_delayed()
+
+
+_delayfixed_gdp_eu28_delayed = DelayFixed(
+    lambda: gdp_eu28(),
+    lambda: 1,
+    lambda: gdp_eu28(),
+    time_step,
+    "_delayfixed_gdp_eu28_delayed",
+)
+
+
+@component.add(
+    name="GDP EU28 next step",
     units="Mdollar",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -233,7 +259,7 @@ def gdp_eu28_next_step():
 
 
 @component.add(
-    name="historic_exports_demand",
+    name="historic exports demand",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -253,7 +279,7 @@ def historic_exports_demand(x, final_subs=None):
 _ext_lookup_historic_exports_demand = ExtLookup(
     r"../economy.xlsx",
     "Catalonia",
-    "time_index_2009",
+    "time_index2019",
     "historic_exports_demand_0",
     {"sectors": _subscript_dict["sectors"]},
     _root,
@@ -263,7 +289,7 @@ _ext_lookup_historic_exports_demand = ExtLookup(
 
 
 @component.add(
-    name="historic_exports_demand_1",
+    name="historic exports demand 1",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Lookup",
@@ -283,7 +309,7 @@ def historic_exports_demand_1(x, final_subs=None):
 _ext_lookup_historic_exports_demand_1 = ExtLookup(
     r"../economy.xlsx",
     "Catalonia",
-    "time_index_2009",
+    "time_index2019",
     "historic_exports_demand_1",
     {"sectors": _subscript_dict["sectors"]},
     _root,
@@ -293,7 +319,7 @@ _ext_lookup_historic_exports_demand_1 = ExtLookup(
 
 
 @component.add(
-    name="Initial_exports_demand_to_RoEU",
+    name="Initial exports demand to RoEU",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -308,7 +334,7 @@ def initial_exports_demand_to_roeu():
 
 
 @component.add(
-    name="Initial_exports_demand_to_RoW",
+    name="Initial exports demand to RoW",
     units="Mdollars",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -323,7 +349,7 @@ def initial_exports_demand_to_row():
 
 
 @component.add(
-    name="real_demand_world_next_step",
+    name="real demand world next step",
     units="Mdollar",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -334,7 +360,7 @@ def real_demand_world_next_step():
 
 
 @component.add(
-    name="Total_exports",
+    name="Total exports",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -345,7 +371,7 @@ def total_exports():
 
 
 @component.add(
-    name="Total_exports_to_RoEU",
+    name="Total exports to RoEU",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -361,7 +387,7 @@ def total_exports_to_roeu():
 
 
 @component.add(
-    name="Total_exports_to_RoW",
+    name="Total exports to RoW",
     units="Mdollars",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -377,20 +403,20 @@ def total_exports_to_row():
 
 
 @component.add(
-    name="variation_exports_demand_to_RoEU",
+    name="variation exports demand to RoEU",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "exports_demand_to_roeu": 1,
-        "gdp_eu28": 1,
+        "beta_0_exp_1": 1,
+        "gdp_eu28_delayed": 1,
         "beta_1_exp_1": 2,
         "variation_historic_exports_demand_to_roeu": 1,
-        "unit_correction_economic": 2,
-        "gdp_eu28_next_step": 1,
         "time": 1,
-        "beta_0_exp_1": 1,
+        "gdp_eu28": 1,
+        "unit_correction_economic": 2,
     },
 )
 def variation_exports_demand_to_roeu():
@@ -401,32 +427,32 @@ def variation_exports_demand_to_roeu():
         exports_demand_to_roeu() < 0,
         lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
         lambda: if_then_else(
-            time() < 2009,
+            time() < 2019,
             lambda: variation_historic_exports_demand_to_roeu(),
             lambda: np.exp(beta_0_exp_1())
             * (
-                (gdp_eu28_next_step() * unit_correction_economic()) ** beta_1_exp_1()
-                - (gdp_eu28() * unit_correction_economic()) ** beta_1_exp_1()
+                (gdp_eu28() * unit_correction_economic()) ** beta_1_exp_1()
+                - (gdp_eu28_delayed() * unit_correction_economic()) ** beta_1_exp_1()
             ),
         ),
     )
 
 
 @component.add(
-    name="variation_exports_demand_to_RoW",
+    name="variation exports demand to RoW",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "exports_demand_to_row": 1,
-        "variation_historic_exports_demand_row": 1,
-        "real_demand_world_next_step": 1,
+        "real_demand_world": 1,
         "beta_0_exp_0": 1,
+        "real_demand_world_next_step": 1,
         "beta_1_exp_0": 2,
         "unit_correction_economic": 2,
+        "variation_historic_exports_demand_row": 1,
         "time": 1,
-        "real_demand_world": 1,
     },
 )
 def variation_exports_demand_to_row():
@@ -437,7 +463,7 @@ def variation_exports_demand_to_row():
         exports_demand_to_row() < 0,
         lambda: xr.DataArray(0, {"sectors": _subscript_dict["sectors"]}, ["sectors"]),
         lambda: if_then_else(
-            time() < 2009,
+            time() < 2019,
             lambda: variation_historic_exports_demand_row(),
             lambda: np.exp(beta_0_exp_0())
             * (
@@ -450,7 +476,7 @@ def variation_exports_demand_to_row():
 
 
 @component.add(
-    name="variation_historic_exports_demand_row",
+    name="variation historic exports demand row",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",
@@ -467,7 +493,7 @@ def variation_historic_exports_demand_row():
 
 
 @component.add(
-    name="variation_historic_exports_demand_to_RoEU",
+    name="variation historic exports demand to RoEU",
     units="Mdollars/year",
     subscripts=["sectors"],
     comp_type="Auxiliary",

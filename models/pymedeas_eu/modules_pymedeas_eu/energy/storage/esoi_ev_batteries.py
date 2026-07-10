@@ -1,16 +1,52 @@
 """
 Module energy.storage.esoi_ev_batteries
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
     name="Cp_EV_batteries_for_Transp",
     units="Dmnl",
+    subscripts=["battery_modes"],
     comp_type="Constant",
-    comp_subtype="Normal",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_cp_ev_batteries_for_transp"},
 )
 def cp_ev_batteries_for_transp():
-    return 0.0055
+    return _ext_constant_cp_ev_batteries_for_transp()
+
+
+_ext_constant_cp_ev_batteries_for_transp = ExtConstant(
+    r"../transport.xlsx",
+    "Global",
+    "cp_evs_transport*",
+    {"battery_modes": _subscript_dict["battery_modes"]},
+    _root,
+    {"battery_modes": _subscript_dict["battery_modes"]},
+    "_ext_constant_cp_ev_batteries_for_transp",
+)
+
+
+@component.add(
+    name="cycles_over_lifetime",
+    units="cycles_ev",
+    subscripts=["EV_bat"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_cycles_over_lifetime"},
+)
+def cycles_over_lifetime():
+    return _ext_constant_cycles_over_lifetime()
+
+
+_ext_constant_cycles_over_lifetime = ExtConstant(
+    r"../transport.xlsx",
+    "Global",
+    "cicles_over_lifetime*",
+    {"EV_bat": _subscript_dict["EV_bat"]},
+    _root,
+    {"EV_bat": _subscript_dict["EV_bat"]},
+    "_ext_constant_cycles_over_lifetime",
+)
 
 
 @component.add(
@@ -45,10 +81,10 @@ def energy_intensity_construction_ev_batteries_mjmw():
         "lifetime_ev_batteries": 1,
         "cp_ev_batteries_for_elec_storage": 1,
         "mw_in_1_year_to_mj": 1,
-        "gquality_of_electricity": 1,
-        "grid_correction_factor_ev_batteries": 1,
         "share_energy_requirements_for_decom_ev_batteries": 1,
         "energy_intensity_construction_ev_batteries_mjmw": 1,
+        "gquality_of_electricity": 1,
+        "grid_correction_factor_ev_batteries": 1,
     },
 )
 def esoi_ev_batteries():
@@ -56,17 +92,19 @@ def esoi_ev_batteries():
     ESOI batteries of electric vehicles for electricity storage. (To estimate the ESOI static: g=0.7 and constant recycling rates)
     """
     return (
-        lifetime_ev_batteries()
+        float(lifetime_ev_batteries().loc["LFP", "cars"])
         * cp_ev_batteries_for_elec_storage()
-        * mw_in_1_year_to_mj()
-        / (
-            gquality_of_electricity()
-            * energy_intensity_construction_ev_batteries_mjmw()
+        * zidz(
+            mw_in_1_year_to_mj(),
+            (
+                gquality_of_electricity()
+                * energy_intensity_construction_ev_batteries_mjmw()
+            )
             * (
                 1
                 + share_energy_requirements_for_decom_ev_batteries()
                 + grid_correction_factor_ev_batteries()
-            )
+            ),
         )
     )
 
@@ -85,7 +123,15 @@ def fei_ev_batteries():
     """
     Final energy invested (equivalent to the denominator of the EROI (=CED*g).
     """
-    return zidz(output_ev_bateries_for_storage_over_lifetime(), esoi_ev_batteries())
+    return zidz(
+        sum(
+            output_ev_bateries_for_storage_over_lifetime().rename(
+                {"EV_bat": "EV_bat!", "battery_modes": "battery_modes!"}
+            ),
+            dim=["EV_bat!", "battery_modes!"],
+        ),
+        esoi_ev_batteries(),
+    )
 
 
 @component.add(
@@ -123,40 +169,43 @@ def kw_per_mw():
 @component.add(
     name="lifetime_EV_batteries",
     units="Years",
+    subscripts=["EV_bat", "battery_modes"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "net_stored_energy_ev_battery_over_lifetime": 1,
-        "kw_per_battery_ev": 1,
-        "mw_in_1_year_to_mj": 1,
-        "cp_ev_batteries_for_transp": 1,
-        "cp_ev_batteries_for_elec_storage": 1,
-        "kw_per_mw": 1,
+        "mj_to_kwh": 1,
+        "kwh_per_battery_ev": 1,
+        "yearly_cycles": 1,
     },
 )
 def lifetime_ev_batteries():
     """
     Lifetime of standard EV batteries considered.
     """
-    return zidz(
-        net_stored_energy_ev_battery_over_lifetime(),
-        (cp_ev_batteries_for_elec_storage() + cp_ev_batteries_for_transp())
-        * mw_in_1_year_to_mj()
-        * (kw_per_battery_ev() / kw_per_mw()),
+    return (
+        zidz(
+            net_stored_energy_ev_battery_over_lifetime(),
+            (kwh_per_battery_ev() / mj_to_kwh()).expand_dims(
+                {"EV_bat": _subscript_dict["EV_bat"]}, 0
+            ),
+        )
+        / yearly_cycles()
     )
 
 
 @component.add(
     name="max_Cp_EV_batteries",
     units="Dmnl",
+    subscripts=["EV_bat", "battery_modes"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
         "net_stored_energy_ev_battery_over_lifetime": 1,
-        "min_lifetime_ev_batteries": 1,
         "kw_per_battery_ev": 1,
         "mw_in_1_year_to_mj": 1,
         "kw_per_mw": 1,
+        "min_lifetime_ev_batteries": 1,
     },
 )
 def max_cp_ev_batteries():
@@ -173,6 +222,7 @@ def max_cp_ev_batteries():
 @component.add(
     name="max_Cp_EV_batteries_for_elec_storage",
     units="Dmnl",
+    subscripts=["battery_modes"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"cp_ev_batteries_for_transp": 1},
@@ -210,6 +260,13 @@ _ext_constant_min_lifetime_ev_batteries = ExtConstant(
 
 
 @component.add(
+    name="MJ_to_KWh", units="kWh/MJ", comp_type="Constant", comp_subtype="Normal"
+)
+def mj_to_kwh():
+    return 0.27778
+
+
+@component.add(
     name="MW_in_1_year_to_MJ",
     units="MJ/(year*MW)",
     comp_type="Constant",
@@ -225,6 +282,7 @@ def mw_in_1_year_to_mj():
 @component.add(
     name="Net_stored_energy_EV_battery_over_lifetime",
     units="MJ/battery",
+    subscripts=["EV_bat", "battery_modes"],
     comp_type="Constant",
     comp_subtype="External",
     depends_on={
@@ -242,9 +300,15 @@ _ext_constant_net_stored_energy_ev_battery_over_lifetime = ExtConstant(
     r"../energy.xlsx",
     "Global",
     "net_stored_energy_ev_battery_over_lifetime",
-    {},
+    {
+        "EV_bat": _subscript_dict["EV_bat"],
+        "battery_modes": _subscript_dict["battery_modes"],
+    },
     _root,
-    {},
+    {
+        "EV_bat": _subscript_dict["EV_bat"],
+        "battery_modes": _subscript_dict["battery_modes"],
+    },
     "_ext_constant_net_stored_energy_ev_battery_over_lifetime",
 )
 
@@ -252,6 +316,7 @@ _ext_constant_net_stored_energy_ev_battery_over_lifetime = ExtConstant(
 @component.add(
     name="output_EV_bateries_for_storage_over_lifetime",
     units="EJ/year",
+    subscripts=["EV_bat", "battery_modes"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -297,3 +362,46 @@ _ext_constant_share_energy_requirements_for_decom_ev_batteries = ExtConstant(
     {},
     "_ext_constant_share_energy_requirements_for_decom_ev_batteries",
 )
+
+
+@component.add(
+    name="T_cycles",
+    units="hours",
+    subscripts=["battery_modes"],
+    comp_type="Constant",
+    comp_subtype="External",
+    depends_on={"__external__": "_ext_constant_t_cycles"},
+)
+def t_cycles():
+    return _ext_constant_t_cycles()
+
+
+_ext_constant_t_cycles = ExtConstant(
+    r"../transport.xlsx",
+    "Global",
+    "t_cycle*",
+    {"battery_modes": _subscript_dict["battery_modes"]},
+    _root,
+    {"battery_modes": _subscript_dict["battery_modes"]},
+    "_ext_constant_t_cycles",
+)
+
+
+@component.add(
+    name="yearly_cycles",
+    units="cycles",
+    subscripts=["battery_modes"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={
+        "cp_ev_batteries_for_transp": 1,
+        "cp_ev_batteries_for_elec_storage": 1,
+        "t_cycles": 1,
+    },
+)
+def yearly_cycles():
+    return (
+        (cp_ev_batteries_for_transp() + cp_ev_batteries_for_elec_storage())
+        * 8760
+        / t_cycles()
+    )

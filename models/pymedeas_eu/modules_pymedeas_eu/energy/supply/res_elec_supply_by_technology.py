@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_elec_supply_by_technology
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -153,9 +153,9 @@ def pe_losses_bioe_for_elec_ej():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "real_generation_res_elec_twh": 8,
-        "ej_per_twh": 8,
-        "res_to_fossil_accounting": 7,
+        "real_generation_res_elec_twh": 9,
+        "ej_per_twh": 9,
+        "res_to_fossil_accounting": 8,
         "efficiency_conversion_bioe_to_elec": 1,
     },
 )
@@ -202,6 +202,11 @@ def pe_real_generation_res_elec():
     )
     value.loc[["CSP"]] = (
         float(real_generation_res_elec_twh().loc["CSP"])
+        * ej_per_twh()
+        * res_to_fossil_accounting()
+    )
+    value.loc[["fuel_cell"]] = (
+        float(real_generation_res_elec_twh().loc["fuel_cell"])
         * ej_per_twh()
         * res_to_fossil_accounting()
     )

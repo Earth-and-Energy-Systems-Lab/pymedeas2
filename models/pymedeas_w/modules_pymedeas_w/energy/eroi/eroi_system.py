@@ -1,6 +1,6 @@
 """
 Module energy.eroi.eroi_system
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -100,8 +100,8 @@ _ext_lookup_historic_energy_industry_ownuse = ExtLookup(
     depends_on={
         "time": 2,
         "real_tfec": 1,
-        "historic_energy_industry_ownuse": 1,
         "fe_tot_generation_all_res_elec_ej": 1,
+        "historic_energy_industry_ownuse": 1,
     },
 )
 def historic_share_e_industry_ownuse_vs_tfec():

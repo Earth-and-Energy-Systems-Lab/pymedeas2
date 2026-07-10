@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_elec_capacities_and_generation
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -293,9 +293,9 @@ _ext_constant_min_cp_baseload_res = ExtConstant(
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "res_installed_capacity_ts_delayed": 1,
-        "time_step": 1,
         "installed_capacity_res_elec": 1,
+        "time_step": 1,
+        "res_installed_capacity_ts_delayed": 1,
     },
 )
 def new_res_installed_capacity():
@@ -406,9 +406,9 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "real_generation_res_elec_twh": 1,
         "twe_per_twh": 1,
         "installed_capacity_res_elec": 2,
+        "real_generation_res_elec_twh": 1,
     },
 )
 def real_cp_res_elec():
@@ -475,7 +475,7 @@ def remaining_potential_res_elec_after_intermitt():
     subscripts=["RES_elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "wear_res_elec": 1, "res_elec_tot_overcapacity": 1},
+    depends_on={"time": 1, "res_elec_tot_overcapacity": 1, "wear_res_elec": 1},
 )
 def replacement_capacity_res_elec():
     """
@@ -741,8 +741,8 @@ def total_time_planconstr_res_elec():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "constructed_capacity_res_elec_tw": 1,
         "lifetime_res_elec": 1,
+        "constructed_capacity_res_elec_tw": 1,
     },
 )
 def wear_res_elec():

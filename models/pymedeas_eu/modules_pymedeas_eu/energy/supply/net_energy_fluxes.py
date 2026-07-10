@@ -1,6 +1,6 @@
 """
 Module energy.supply.net_energy_fluxes
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -134,10 +134,10 @@ def maximum_oil_available_in_eu():
     comp_subtype="Normal",
     depends_on={
         "ped_nre_fs": 1,
-        "projected_net_coal_flux_eu": 1,
         "maximum_coal_available_in_eu": 1,
-        "last_historical_year": 1,
         "historic_coal_imports": 1,
+        "last_historical_year": 1,
+        "projected_net_coal_flux_eu": 1,
         "time": 3,
     },
 )
@@ -166,11 +166,11 @@ def net_coal_flux_eu():
     comp_subtype="Normal",
     depends_on={
         "ped_nre_fs": 1,
-        "last_historical_year": 1,
-        "time": 3,
-        "historic_gas_imports": 1,
         "maximum_gas_available_in_eu": 1,
+        "last_historical_year": 1,
+        "historic_gas_imports": 1,
         "projected_net_gas_flux_eu": 1,
+        "time": 3,
     },
 )
 def net_gas_flux_eu():
@@ -196,18 +196,18 @@ def net_gas_flux_eu():
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
-        "ped_total_oil_ej": 1,
-        "historic_oil_imports": 1,
-        "maximum_oil_available_in_eu": 1,
+        "ped_nre_fs": 1,
         "projected_net_oil_flux_eu": 1,
+        "maximum_oil_available_in_eu": 1,
         "last_historical_year": 1,
+        "historic_oil_imports": 1,
         "time": 3,
     },
 )
 def net_oil_flux_eu():
     return float(
         np.minimum(
-            ped_total_oil_ej(),
+            float(ped_nre_fs().loc["liquids"]),
             if_then_else(
                 time() <= last_historical_year(),
                 lambda: historic_oil_imports(time()),

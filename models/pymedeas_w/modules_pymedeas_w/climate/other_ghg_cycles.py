@@ -1,6 +1,6 @@
 """
 Module climate.other_ghg_cycles
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -32,8 +32,8 @@ def ch4_atm_conc():
     depends_on={
         "sensitivity_of_methane_emissions_to_permafrost_and_clathrate": 1,
         "reference_sensitivity_of_ch4_from_permafrost_and_clathrate_to_temperature": 1,
-        "temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate": 1,
         "temperature_change": 1,
+        "temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate": 1,
     },
 )
 def ch4_emissions_from_permafrost_and_clathrate():
@@ -61,8 +61,8 @@ def ch4_emissions_from_permafrost_and_clathrate():
     comp_subtype="Normal",
     depends_on={
         "reference_ch4_time_constant": 1,
-        "tropospheric_ch4_path_share": 2,
         "ch4_in_atm": 1,
+        "tropospheric_ch4_path_share": 2,
         "stratospheric_ch4_path_share": 2,
         "preindustrial_ch4": 1,
     },
@@ -174,8 +174,8 @@ _ext_constant_choose_rcp = ExtConstant(
     depends_on={
         "sensitivity_of_methane_emissions_to_permafrost_and_clathrate": 1,
         "reference_sensitivity_of_c_from_permafrost_and_clathrate_to_temperature": 1,
-        "temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate": 1,
         "temperature_change": 1,
+        "temperature_threshold_for_methane_emissions_from_permafrost_and_clathrate": 1,
     },
 )
 def flux_c_from_permafrost_release():

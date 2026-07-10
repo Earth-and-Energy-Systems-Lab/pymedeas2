@@ -1,6 +1,6 @@
 """
 Module environment.water.water_use_and_resources_indica
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -68,7 +68,7 @@ def historic_water_by_type_intensities_by_sector():
     subscripts=["water"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 2, "historic_water_use": 1, "household_demand_total": 1},
+    depends_on={"time": 2, "household_demand_total": 1, "historic_water_use": 1},
 )
 def historic_water_by_type_intensities_for_households():
     return if_then_else(
@@ -305,8 +305,8 @@ def share_blue_water_use_vs_ar():
     comp_subtype="Normal",
     depends_on={
         "total_water_use_by_type": 1,
-        "renewable_water_resources": 1,
         "dam3_per_km3": 1,
+        "renewable_water_resources": 1,
     },
 )
 def share_blue_water_use_vs_renewable_water_resources():
@@ -339,8 +339,8 @@ def share_total_water_use_vs_ar():
     comp_subtype="Normal",
     depends_on={
         "total_water_use": 1,
-        "renewable_water_resources": 1,
         "dam3_per_km3": 1,
+        "renewable_water_resources": 1,
     },
 )
 def share_total_water_use_vs_renewable_water_resources():
@@ -408,8 +408,8 @@ def total_water_use_by_type():
     depends_on={
         "time": 1,
         "historic_water_intensities_by_sector_delayed_1yr": 1,
-        "historic_water_by_type_intensities_by_sector": 1,
         "nvs_1_year": 1,
+        "historic_water_by_type_intensities_by_sector": 1,
     },
 )
 def variation_water_intensity_by_sector():
@@ -439,9 +439,9 @@ def variation_water_intensity_by_sector():
     comp_subtype="Normal",
     depends_on={
         "time": 1,
-        "historic_water_intensities_for_households_delayed_1yr": 1,
         "historic_water_by_type_intensities_for_households": 1,
         "nvs_1_year": 1,
+        "historic_water_intensities_for_households_delayed_1yr": 1,
     },
 )
 def variation_water_intensity_households():

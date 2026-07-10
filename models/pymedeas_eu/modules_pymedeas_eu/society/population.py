@@ -1,6 +1,6 @@
 """
 Module society.population
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -136,8 +136,8 @@ _ext_data_p_timeseries_pop_growth_rate = ExtData(
     depends_on={
         "time": 1,
         "variation_historic_pop": 1,
-        "annual_population_growth_rate": 1,
         "population": 1,
+        "annual_population_growth_rate": 1,
     },
 )
 def pop_variation():
@@ -145,7 +145,7 @@ def pop_variation():
     Population growth. (Historic data from 1990-2010; projection 2011-2100) 2011 UST$
     """
     return if_then_else(
-        time() < 2014,
+        time() <= 2025,
         lambda: variation_historic_pop(),
         lambda: population() * annual_population_growth_rate(),
     )
@@ -181,7 +181,7 @@ _integ_population = Integ(
     units="people/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "historic_population": 2, "nvs_1_year": 1},
+    depends_on={"time": 3, "historic_population": 2, "time_step": 2},
 )
 def variation_historic_pop():
     """
@@ -189,11 +189,12 @@ def variation_historic_pop():
     """
     return (
         if_then_else(
-            time() < 2014,
-            lambda: historic_population(time() + 1) - historic_population(time()),
+            time() <= 2025,
+            lambda: historic_population(time() + time_step())
+            - historic_population(time()),
             lambda: 0,
         )
-        / nvs_1_year()
+        / time_step()
     )
 
 

@@ -1,6 +1,6 @@
 """
 Module energy.demand.electricity_demand
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -241,8 +241,8 @@ def total_fe_elec_demand_ej():
         "fe_demand_elec_consum_twh": 1,
         "share_trans_and_dist_losses": 1,
         "elec_exports_share": 1,
-        "total_electricity_demand_for_synthetic": 1,
         "ej_per_twh": 1,
+        "total_electricity_demand_for_synthetic": 1,
     },
 )
 def total_fe_elec_demand_twh():

@@ -1,6 +1,6 @@
 """
 Module energy.availability.final_energy_abundances
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -774,9 +774,9 @@ def year_final_scarcity_resources():
             "initial": {},
             "step": {
                 "scarcity_final_fuels_flags": 1,
-                "scarcity_final_fuels_counter": 1,
                 "time": 1,
                 "time_step": 1,
+                "scarcity_final_fuels_counter": 1,
             },
         }
     },

@@ -1,7 +1,17 @@
 """
 Module climate.ccs
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
+
+@component.add(
+    name="CCS_capacity_sensitivity_factor",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def ccs_capacity_sensitivity_factor():
+    return 1
+
 
 @component.add(
     name="CCS_cp",
@@ -19,25 +29,47 @@ def ccs_cp():
 
 @component.add(
     name="CCS_efficiency",
+    units="TWh/GTCO2e",
+    subscripts=["CCS_tech"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"ccs_efficiency_input": 1, "ccs_efficiency_sensitivity_factor": 1},
+)
+def ccs_efficiency():
+    return ccs_efficiency_input() * ccs_efficiency_sensitivity_factor()
+
+
+@component.add(
+    name="CCS_efficiency_input",
     units="TWh/GtCO2",
     subscripts=["CCS_tech"],
     comp_type="Constant",
     comp_subtype="External",
-    depends_on={"__external__": "_ext_constant_ccs_efficiency"},
+    depends_on={"__external__": "_ext_constant_ccs_efficiency_input"},
 )
-def ccs_efficiency():
-    return _ext_constant_ccs_efficiency()
+def ccs_efficiency_input():
+    return _ext_constant_ccs_efficiency_input()
 
 
-_ext_constant_ccs_efficiency = ExtConstant(
+_ext_constant_ccs_efficiency_input = ExtConstant(
     r"../climate.xlsx",
     "Global",
     "ccs_efficiency*",
     {"CCS_tech": _subscript_dict["CCS_tech"]},
     _root,
     {"CCS_tech": _subscript_dict["CCS_tech"]},
-    "_ext_constant_ccs_efficiency",
+    "_ext_constant_ccs_efficiency_input",
 )
+
+
+@component.add(
+    name="CCS_efficiency_sensitivity_factor",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def ccs_efficiency_sensitivity_factor():
+    return 1
 
 
 @component.add(
@@ -91,18 +123,30 @@ def ccs_energy_demand_sect_tech():
     name="CCS_policy",
     units="TW",
     subscripts=["SECTORS_and_HOUSEHOLDS"],
+    comp_type="Auxiliary",
+    comp_subtype="Normal",
+    depends_on={"time": 1, "ccs_policy_input": 1, "ccs_capacity_sensitivity_factor": 1},
+)
+def ccs_policy():
+    return ccs_policy_input(time()) * ccs_capacity_sensitivity_factor()
+
+
+@component.add(
+    name="CCS_policy_input",
+    units="TW",
+    subscripts=["SECTORS_and_HOUSEHOLDS"],
     comp_type="Lookup",
     comp_subtype="External",
     depends_on={
-        "__external__": "_ext_lookup_ccs_policy",
-        "__lookup__": "_ext_lookup_ccs_policy",
+        "__external__": "_ext_lookup_ccs_policy_input",
+        "__lookup__": "_ext_lookup_ccs_policy_input",
     },
 )
-def ccs_policy(x, final_subs=None):
-    return _ext_lookup_ccs_policy(x, final_subs)
+def ccs_policy_input(x, final_subs=None):
+    return _ext_lookup_ccs_policy_input(x, final_subs)
 
 
-_ext_lookup_ccs_policy = ExtLookup(
+_ext_lookup_ccs_policy_input = ExtLookup(
     r"../../scenarios/scen_w.xlsx",
     "NZP",
     "year_RES_power",
@@ -110,7 +154,7 @@ _ext_lookup_ccs_policy = ExtLookup(
     {"SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"]},
     _root,
     {"SECTORS_and_HOUSEHOLDS": _subscript_dict["SECTORS_and_HOUSEHOLDS"]},
-    "_ext_lookup_ccs_policy",
+    "_ext_lookup_ccs_policy_input",
 )
 
 
@@ -120,7 +164,7 @@ _ext_lookup_ccs_policy = ExtLookup(
     subscripts=["SECTORS_and_HOUSEHOLDS", "CCS_tech"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 3, "ccs_policy": 1, "ccs_tech_share": 1},
+    depends_on={"time": 2, "ccs_policy": 1, "ccs_tech_share": 1},
 )
 def ccs_sector_tech():
     return if_then_else(
@@ -133,7 +177,7 @@ def ccs_sector_tech():
             },
             ["SECTORS_and_HOUSEHOLDS", "CCS_tech"],
         ),
-        lambda: ccs_policy(time()) * ccs_tech_share(time()),
+        lambda: ccs_policy() * ccs_tech_share(time()),
     )
 
 
@@ -468,8 +512,8 @@ _ext_lookup_ccs_tech_share.add(
         "co2_policy_captured_sector_ccs": 2,
         "time": 4,
         "share_ccs_energy_related": 2,
-        "share_beccs": 2,
         "co2_emissions_households_and_sectors_fossil_fuels": 2,
+        "share_beccs": 2,
         "co2_emissions_per_fuel": 2,
     },
 )
@@ -819,8 +863,8 @@ _ext_lookup_share_beccs = ExtLookup(
     comp_subtype="Normal",
     depends_on={
         "co2_policy_captured_sector_ccs": 2,
-        "co2_captured_by_sector_energy_related": 1,
         "process_co2_captured_ccs": 1,
+        "co2_captured_by_sector_energy_related": 1,
     },
 )
 def share_captured_sector():

@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_elec_capacities_and_generation
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -185,6 +185,7 @@ def fe_real_tot_generation_res_elec():
     comp_subtype="Normal",
     depends_on={
         "installed_capacity_res_elec_policies": 2,
+        "res_sensitivity_factor": 2,
         "max_potential_res_elec_twe": 2,
     },
 )
@@ -193,9 +194,10 @@ def installed_capacity_res_elec():
     Introdue the limitation of the techno-ecological potential
     """
     return if_then_else(
-        installed_capacity_res_elec_policies() >= max_potential_res_elec_twe(),
+        installed_capacity_res_elec_policies() * res_sensitivity_factor()
+        >= max_potential_res_elec_twe(),
         lambda: max_potential_res_elec_twe(),
-        lambda: installed_capacity_res_elec_policies(),
+        lambda: installed_capacity_res_elec_policies() * res_sensitivity_factor(),
     )
 
 
@@ -209,8 +211,8 @@ def installed_capacity_res_elec():
         "time": 5,
         "end_hist_data": 5,
         "table_hist_capacity_res_elec": 3,
-        "p_power": 2,
         "start_year_p_growth_res_elec": 3,
+        "p_power": 2,
     },
 )
 def installed_capacity_res_elec_policies():
@@ -406,9 +408,9 @@ def potential_tot_generation_res_elec_twh():
     depends_on={
         "time": 1,
         "cp_res_elec": 1,
-        "real_generation_res_elec_twh": 1,
         "twe_per_twh": 1,
         "installed_capacity_res_elec": 2,
+        "real_generation_res_elec_twh": 1,
     },
 )
 def real_cp_res_elec():
@@ -475,7 +477,7 @@ def remaining_potential_res_elec_after_intermitt():
     subscripts=["RES_elec"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
-    depends_on={"time": 1, "wear_res_elec": 1, "res_elec_tot_overcapacity": 1},
+    depends_on={"time": 1, "res_elec_tot_overcapacity": 1, "wear_res_elec": 1},
 )
 def replacement_capacity_res_elec():
     """
@@ -611,6 +613,16 @@ _delayfixed_res_installed_capacity_ts_delayed = DelayFixed(
 
 
 @component.add(
+    name="res_sensitivity_factor",
+    units="Dmnl",
+    comp_type="Constant",
+    comp_subtype="Normal",
+)
+def res_sensitivity_factor():
+    return 1
+
+
+@component.add(
     name="Start_year_P_growth_RES_elec",
     units="year",
     comp_type="Constant",
@@ -723,8 +735,8 @@ _ext_constant_time_planification_res_elec = ExtConstant(
     depends_on={
         "time_construction_res_elec": 1,
         "time_step": 1,
-        "time_planification_res_elec": 1,
         "time": 1,
+        "time_planification_res_elec": 1,
     },
 )
 def total_time_planconstr_res_elec():

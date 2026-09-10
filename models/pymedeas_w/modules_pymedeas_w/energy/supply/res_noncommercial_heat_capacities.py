@@ -1,6 +1,6 @@
 """
 Module energy.supply.res_noncommercial_heat_capacities
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -42,8 +42,8 @@ def abundance_res_heatnc2():
     depends_on={
         "time": 3,
         "past_res_growth_for_heatnc": 3,
-        "start_year_p_growth_res_heat": 2,
         "p_res_for_heat": 2,
+        "start_year_p_growth_res_heat": 2,
     },
 )
 def adapt_growth_res_for_heatnc():
@@ -231,11 +231,11 @@ _integ_installed_capacity_res_heatnc_tw = Integ(
     comp_subtype="Normal",
     depends_on={
         "time": 3,
-        "historic_res_capacity_for_heatnc": 2,
         "nvs_1_year": 1,
+        "historic_res_capacity_for_heatnc": 2,
+        "adapt_growth_res_for_heatnc": 1,
         "installed_capacity_res_heatnc_tw": 1,
         "remaining_potential_constraint_on_new_res_heat_capacity": 1,
-        "adapt_growth_res_for_heatnc": 1,
         "abundance_res_heatnc": 1,
     },
 )

@@ -1,6 +1,6 @@
 """
 Module energy.storage.storage_demand_and_supply
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -11,8 +11,8 @@ Translated using PySD version 3.14.2
     comp_subtype="Normal",
     depends_on={
         "res_elec_variables": 1,
-        "demand_storage_capacity": 2,
         "total_capacity_elec_storage_tw": 3,
+        "demand_storage_capacity": 2,
     },
 )
 def constraint_elec_storage_availability():

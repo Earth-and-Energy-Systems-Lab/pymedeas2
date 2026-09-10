@@ -1,6 +1,6 @@
 """
 Module energy.availability.coal_extraction
-Translated using PySD version 3.14.2
+Translated using PySD version 3.14.3
 """
 
 @component.add(
@@ -203,9 +203,9 @@ _delayfixed_evol_coal_extraction_rate_delayed = DelayFixed(
         "time": 1,
         "ped_coal_ej": 3,
         "remaining_extractable_coal_with_left_underground": 1,
-        "activate_force_leaving_underground": 1,
         "nvs_1_year": 1,
         "max_extraction_coal": 2,
+        "activate_force_leaving_underground": 1,
     },
 )
 def extraction_coal_ej():
@@ -265,8 +265,8 @@ _delayfixed_extraction_coal_ej_delayed = DelayFixed(
     depends_on={
         "activate_force_leaving_underground": 1,
         "max_extraction_coal_technical": 3,
-        "max_extraction_coal_policy": 1,
         "time": 1,
+        "max_extraction_coal_policy": 1,
         "start_year_policy_leave_in_ground_coal": 1,
     },
 )

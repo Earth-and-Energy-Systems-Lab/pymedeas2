@@ -4,7 +4,7 @@ Translated using PySD version 3.14.3
 """
 
 @component.add(
-    name="bat_number_EV",
+    name="bat number EV",
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -20,7 +20,7 @@ def bat_number_ev():
 
 
 @component.add(
-    name="bat_number_hib",
+    name="bat number hib",
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -41,7 +41,7 @@ def bat_number_hib():
 
 
 @component.add(
-    name="bateries_ratio_hib_HV",
+    name="bateries ratio hib HV",
     units="Dmnl",
     comp_type="Constant",
     comp_subtype="External",
@@ -66,8 +66,9 @@ _ext_constant_bateries_ratio_hib_hv = ExtConstant(
 
 
 @component.add(
-    name='"batteries_EV+hib+2wE"',
+    name='"batteries EV+hib+2wE"',
     units="batteries",
+    subscripts=["battery modes", "EV bat"],
     comp_type="Stateful",
     comp_subtype="Integ",
     depends_on={"_integ_batteries_evhib2we": 1},
@@ -91,14 +92,22 @@ def batteries_evhib2we():
 
 _integ_batteries_evhib2we = Integ(
     lambda: new_batteries() + replacement_batteries() - discarded_batteries(),
-    lambda: 1,
+    lambda: xr.DataArray(
+        1,
+        {
+            "battery modes": _subscript_dict["battery modes"],
+            "EV bat": _subscript_dict["EV bat"],
+        },
+        ["battery modes", "EV bat"],
+    ),
     "_integ_batteries_evhib2we",
 )
 
 
 @component.add(
-    name="discarded_batteries",
+    name="discarded batteries",
     units="batteries/year",
+    subscripts=["battery modes", "EV bat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"batteries_evhib2we": 1, "lifetime_ev_batteries": 1},
@@ -107,12 +116,19 @@ def discarded_batteries():
     """
     Discarded electric batteries due to wear.
     """
-    return float(np.maximum(0, zidz(batteries_evhib2we(), lifetime_ev_batteries())))
+    return np.maximum(
+        0,
+        zidz(
+            batteries_evhib2we(),
+            lifetime_ev_batteries().transpose("battery modes", "EV bat"),
+        ),
+    )
 
 
 @component.add(
-    name="EV_batteries_TW",
+    name="EV batteries TW",
     units="TW",
+    subscripts=["EV bat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"batteries_evhib2we": 1, "kw_per_battery_ev": 1, "kw_per_tw": 1},
@@ -121,11 +137,22 @@ def ev_batteries_tw():
     """
     Electric batteries from electric vehicles, expresed in terms of power available (TW)
     """
-    return batteries_evhib2we() * kw_per_battery_ev() / kw_per_tw()
+    return xr.DataArray(
+        sum(
+            batteries_evhib2we().rename(
+                {"battery modes": "battery modes!", "EV bat": "EV bat!"}
+            ),
+            dim=["battery modes!", "EV bat!"],
+        )
+        * kw_per_battery_ev()
+        / kw_per_tw(),
+        {"EV bat": _subscript_dict["EV bat"]},
+        ["EV bat"],
+    )
 
 
 @component.add(
-    name="kW_per_battery_EV",
+    name="kW per battery EV",
     units="kW/battery",
     comp_type="Constant",
     comp_subtype="External",
@@ -150,15 +177,16 @@ _ext_constant_kw_per_battery_ev = ExtConstant(
 
 
 @component.add(
-    name="kW_per_TW", units="kW/TW", comp_type="Constant", comp_subtype="Normal"
+    name="kW per TW", units="kW/TW", comp_type="Constant", comp_subtype="Normal"
 )
 def kw_per_tw():
     return 1000000000.0
 
 
 @component.add(
-    name="new_batteries",
+    name="new batteries",
     units="batteries/year",
+    subscripts=["battery modes", "EV bat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={
@@ -175,7 +203,7 @@ def new_batteries():
 
 
 @component.add(
-    name='"new+replaced_batteries_TW"',
+    name='"new+replaced batteries TW"',
     units="TW/year",
     comp_type="Auxiliary",
     comp_subtype="Normal",
@@ -191,13 +219,29 @@ def newreplaced_batteries_tw():
     New and replaced electric batteries.
     """
     return (
-        (new_batteries() + replacement_batteries()) * kw_per_battery_ev() / kw_per_tw()
+        (
+            sum(
+                new_batteries().rename(
+                    {"battery modes": "battery modes!", "EV bat": "EV bat!"}
+                ),
+                dim=["battery modes!", "EV bat!"],
+            )
+            + sum(
+                replacement_batteries().rename(
+                    {"battery modes": "battery modes!", "EV bat": "EV bat!"}
+                ),
+                dim=["battery modes!", "EV bat!"],
+            )
+        )
+        * kw_per_battery_ev()
+        / kw_per_tw()
     )
 
 
 @component.add(
-    name="replacement_batteries",
+    name="replacement batteries",
     units="batteries/year",
+    subscripts=["battery modes", "EV bat"],
     comp_type="Auxiliary",
     comp_subtype="Normal",
     depends_on={"discarded_batteries": 1},
@@ -210,7 +254,7 @@ def replacement_batteries():
 
 
 @component.add(
-    name="required_number_standard_batteries",
+    name="required number standard batteries",
     units="batteries",
     comp_type="Auxiliary",
     comp_subtype="Normal",

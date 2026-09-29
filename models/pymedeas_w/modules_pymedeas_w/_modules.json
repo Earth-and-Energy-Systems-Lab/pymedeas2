@@ -1816,6 +1816,8 @@
             "initial_cumulated_material_requirements_for_ev_batteries_1995",
             "materials_per_new_capacity_installed_ev_batteries",
             "materials_required_for_ev_batteries_mt",
+            "materials_required_for_ev_batteries_mt_by_tech",
+            "newreplaced_batteries_kwh",
             "total_materials_required_for_ev_batteries",
             "total_materials_to_extract_for_ev_batteries_from_2015_mt",
             "total_materials_to_extract_for_ev_batteries_mt",
